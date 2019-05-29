@@ -162,10 +162,10 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
     }
 }
 
-interface URLFactory {
+internal interface URLFactory {
     fun getURL(url: String): URL
 }
 
-class URLFactoryImpl: URLFactory {
+internal class URLFactoryImpl: URLFactory {
     override fun getURL(url: String): URL = URL(url)
 }

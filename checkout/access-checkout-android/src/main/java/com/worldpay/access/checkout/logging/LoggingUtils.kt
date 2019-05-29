@@ -3,6 +3,9 @@ package com.worldpay.access.checkout.logging
 import android.util.Log
 import com.worldpay.access.checkout.BuildConfig
 
+/**
+ * Static utility methods for logging
+ */
 class LoggingUtils {
     companion object {
         @JvmStatic

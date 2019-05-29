@@ -5,8 +5,18 @@ import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.validation.CardBrandUtils.findCardBrandMatchingPAN
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 
+/**
+ * Validator for the cvv field
+ */
 interface CVVValidator {
 
+    /**
+     * Validates the cvv field
+     *
+     * @param cvv the pan to validate
+     * @param pan (Optional) the pan field to validate against the cvv
+     * @return a [Pair] of [ValidationResult] and [CardBrand] for the cvv field
+     */
     fun validate(cvv: CVV, pan: PAN?): Pair<ValidationResult, CardBrand?>
 }
 

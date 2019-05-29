@@ -10,6 +10,11 @@ import com.worldpay.access.checkout.validation.CardBrandUtils
 import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
 
+/**
+ * [AbstractCardFieldLengthFilter] which is used to restrict length of a card field
+ *
+ * @param cardConfiguration the configuration to use for determining the length for the field
+ */
 sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardConfiguration) : InputFilter {
 
     internal val lengthFiltersBySizeCache: MutableMap<Int, InputFilter.LengthFilter> = mutableMapOf()
