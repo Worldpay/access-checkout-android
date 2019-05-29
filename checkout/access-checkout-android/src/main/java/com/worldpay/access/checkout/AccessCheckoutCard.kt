@@ -25,7 +25,7 @@ import java.util.*
  * @param yearLengthFilter (Optional) The class responsible for restricting the length of input into the year field. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
  * @constructor Constructs an instance of [AccessCheckoutCard]
  */
-class AccessCheckoutCard(
+class AccessCheckoutCard @JvmOverloads constructor(
     context: Context,
     private val panView: CardView,
     private val cvvView: CardView,
