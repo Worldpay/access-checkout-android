@@ -43,7 +43,7 @@ allprojects {
 Add the following lines to the app level dependency list (kotlin version can be changed):
 
 ``` 
-implementation (name:'access-checkout-android-release', ext:'aar')
+implementation (name:'access-checkout-android-1.0.0-SNAPSHOT', ext:'aar')
 implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 ```
 
