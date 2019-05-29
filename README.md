@@ -43,7 +43,7 @@ allprojects {
 Add the following lines to the app level dependency list (kotlin version can be changed):
 
 ``` 
-implementation (name:'access-checkout-android-release', ext:'aar')
+implementation (name:'access-checkout-android-1.0.0-SNAPSHOT', ext:'aar')
 implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 ```
 
@@ -175,7 +175,9 @@ If there is a problem, `SessionResponseListener` will be notified through the sa
 
 These errors can be found in the enum class `com.worldpay.access.checkout.api.AccessCheckoutException.Error`
 
+
 If presented with a `bodyDoesNotMatchSchema` error, a list of the broken validation rules may be provided to help with debugging the problem.
+
 
 `AccessCheckoutClientError` is the subclass used for the above issues.
 ```
