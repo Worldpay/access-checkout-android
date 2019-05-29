@@ -1,4 +1,4 @@
-# Access Checkout Android SDK - test
+# Access Checkout Android SDK - test 2
 
 
 A lightweight library and sample app that generates a Worldpay session reference from payment card data.
