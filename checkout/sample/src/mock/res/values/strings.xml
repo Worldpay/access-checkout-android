@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="session_reference">http://access.worldpay.com/verifiedTokens/sessions/&lt;encrypted-data&gt;</string>
+    <string name="error_response_card_number">7687655651111111113</string>
+    <string name="long_delay_card_number">5420597835928694</string>
+</resources>

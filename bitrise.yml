@@ -1,0 +1,297 @@
+---
+format_version: '6'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+project_type: android
+workflows:
+  deploy:
+    steps:
+    - cache-pull@2.0.1: {}
+    - script@1.1.5:
+        title: Get project version
+        inputs:
+          - content: |-
+              #!/bin/bash
+              VERSION=$($PROJECT_LOCATION/gradlew -b $PROJECT_LOCATION/build.gradle :$LIBRARY_MODULE:properties \
+                          --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
+              if [[ -z $VERSION ]] || [[ $VERSION == *"-SNAPSHOT"* ]]; then
+                  echo "Project had incorrect version set - not allowed to be empty or a SNAPSHOT: $VERSION"
+                  exit 1
+              fi
+              envman add --key "PROJECT_VERSION" --value "$VERSION"
+    - script@1.1.5:
+        title: Do anything with Script step
+    - install-missing-android-tools@2.3.4:
+        inputs:
+        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+    - android-lint@0.9.5:
+        title: "Lint check on Library module"
+        inputs:
+        - project_location: "$PROJECT_LOCATION"
+        - module: "$LIBRARY_MODULE"
+        - variant: "$LIBRARY_VARIANT"
+    - android-unit-test@0.9.5:
+        title: "Unit tests on Library module"
+        inputs:
+        - project_location: "$PROJECT_LOCATION"
+        - module: "$LIBRARY_MODULE"
+        - variant: "$LIBRARY_VARIANT"
+    - deploy-to-bitrise-io@1.3.19:
+        title: "Export pact files to bitrise"
+        inputs:
+        - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/target/pacts"
+    - gradle-runner@1.8.4:
+        title: "Code coverage check"
+        inputs:
+        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradle_task: jacocoTestCoverageVerification
+        - gradle_file: "$PROJECT_LOCATION/build.gradle"
+    - deploy-to-bitrise-io@1.3.19:
+        title: "Export code coverage results to Bitrise"
+        inputs:
+        - is_compress: 'true'
+        - zip_name: jacoco-reports
+        - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
+    - gradle-runner@1.8.4:
+        title: Build release aar
+        inputs:
+          - gradlew_path: $PROJECT_LOCATION/gradlew
+          - gradle_task: ":$LIBRARY_MODULE:assembleRelease"
+          - gradle_file: $PROJECT_LOCATION/build.gradle
+    - android-build@0.9.5:
+        title: "Build test APK"
+        inputs:
+        - variant: debugAndroidTest
+        - project_location: "$PROJECT_LOCATION"
+        - module: "$APP_MODULE"
+    - script@1.1.5:
+        title: "Set path to test APK"
+        inputs:
+        - content: |-
+            #!/bin/bash
+            envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
+    - android-build:
+        title: "Build app APK"
+        inputs:
+        - module: "$APP_MODULE"
+        - variant: "$APP_VARIANT"
+        - project_location: "$PROJECT_LOCATION"
+    - virtual-device-testing-for-android@1.0.5:
+        title: "Run UI tests against app"
+        inputs:
+        - test_type: instrumentation
+        - test_apk_path: "$BITRISE_TEST_APK"
+        - test_devices: |-
+            Pixel2,28,en,portrait
+            Nexus6P,27,en,portrait
+            Nexus5X,26,en,landscape
+            NexusLowRes,25,en,portrait
+            Nexus9,24,en,landscape
+            NexusLowRes,23,en,portrait
+            Nexus10,22,en,portrait
+            Nexus4,21,en,portrait
+    - sign-apk@1.2.4:
+        run_if: '{{getenv "BITRISEIO_ANDROID_KEYSTORE_URL" | ne ""}}'
+    - deploy-to-bitrise-io@1.3.19:
+        inputs:
+        - notify_user_groups: none
+    - github-release@0.10.0:
+        title: "Deploy release to github"
+        inputs:
+          - username: $GITHUB_USERNAME
+          - repository_url: $GIT_REPOSITORY_URL
+          - tag: "v$PROJECT_VERSION"
+          - name: "$PROJECT_VERSION-RELEASE"
+          - files_to_upload: $PROJECT_LOCATION/$LIBRARY_MODULE/build/outputs/aar/$LIBRARY_MODULE-$PROJECT_VERSION.aar
+          - commit: master
+          - body: Release of SDK version $PROJECT_VERSION
+          - api_token: $GITHUB_PERSONAL_ACCESS_TOKEN
+    - gradle-runner@1.8.4:
+        title: "Deploy to Nexus"
+        inputs:
+        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradle_task: "clean uploadArchives -PnexusUrl=$NEXUS_URL -PnexusSnapshotUrl=$NEXUS_SNAPSHOT_URL -PossrhUsername=$NEXUS_USERNAME -PossrhPassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=$BITRISEIO_GPG_SECRET_KEY_RING_FILE_URL"
+        - gradle_file: "$PROJECT_LOCATION/build.gradle"
+    - cache-push@2.0.5: {}
+  primary:
+    steps:
+    - cache-pull@2.0.1: {}
+    - script@1.1.5:
+        title: Do anything with Script step
+    - install-missing-android-tools@2.3.4:
+        inputs:
+        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+    - android-lint@0.9.5:
+        title: "Lint check on Library module"
+        inputs:
+        - project_location: "$PROJECT_LOCATION"
+        - module: "$LIBRARY_MODULE"
+        - variant: "$LIBRARY_VARIANT"
+    - android-unit-test@0.9.5:
+        title: "Unit tests on Library module"
+        inputs:
+        - project_location: "$PROJECT_LOCATION"
+        - module: "$LIBRARY_MODULE"
+        - variant: "$LIBRARY_VARIANT"
+    - deploy-to-bitrise-io@1.3.19:
+        title: "Export pact files to bitrise"
+        inputs:
+        - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/target/pacts"
+    - gradle-runner@1.8.4:
+        title: "Code coverage check"
+        inputs:
+        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradle_task: jacocoTestCoverageVerification
+        - gradle_file: "$PROJECT_LOCATION/build.gradle"
+    - deploy-to-bitrise-io@1.3.19:
+        title: "Export code coverage results to Bitrise"
+        inputs:
+        - is_compress: 'true'
+        - zip_name: jacoco-reports
+        - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
+    - gradle-runner@1.8.4:
+        title: "Generate javadoc documentation"
+        inputs:
+        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradle_task: dokka
+        - gradle_file: "$PROJECT_LOCATION/build.gradle"
+    - deploy-to-bitrise-io@1.3.19:
+        title: "Export javadoc to Bitrise"
+        inputs:
+        - is_compress: 'true'
+        - zip_name: javadoc
+        - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/build/javadoc"
+
+    # Instrumented tests running agains the access-checkout-android androidTests should be here,
+    # however there is a limitation on bitrise that we cannot run more than one instrumented virtual device test
+    # per workflow. See: https://discuss.bitrise.io/t/android-virtual-device-testing-on-multiple-modules/4241
+    # Once the demo app is split into a seperate project from the library, then we will be able to run these in the
+    # Bitrise pipeline
+
+    - android-build@0.9.5:
+        title: "Build test APK"
+        inputs:
+        - variant: "${APP_VARIANT}AndroidTest"
+        - project_location: "$PROJECT_LOCATION"
+        - module: "$APP_MODULE"
+    - script@1.1.5:
+        title: "Set path to test APK"
+        inputs:
+        - content: |-
+            #!/bin/bash
+            envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
+    - android-build:
+        title: "Build app APK"
+        inputs:
+        - module: "$APP_MODULE"
+        - variant: "$APP_VARIANT"
+        - project_location: "$PROJECT_LOCATION"
+    - virtual-device-testing-for-android@1.0.5:
+        title: "Run UI tests against app"
+        inputs:
+        - test_type: instrumentation
+        - test_apk_path: "$BITRISE_TEST_APK"
+        - test_devices: |-
+            Pixel2,28,en,portrait
+    - deploy-to-bitrise-io@1.3.19:
+        inputs:
+        - notify_user_groups: none
+    - cache-push@2.0.5: {}
+
+  overnight-ui:
+    steps:
+    - cache-pull@2.0.1: {}
+    - script@1.1.5:
+        title: Do anything with Script step
+    - install-missing-android-tools@2.3.4:
+        inputs:
+          - gradlew_path: "$PROJECT_LOCATION/gradlew"
+    - android-build@0.9.5:
+        title: "Build test APK"
+        inputs:
+          - variant: "${APP_VARIANT}AndroidTest"
+          - project_location: "$PROJECT_LOCATION"
+          - module: "$APP_MODULE"
+    - script@1.1.5:
+        title: "Set path to test APK"
+        inputs:
+          - content: |-
+              #!/bin/bash
+              envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
+    - android-build:
+        title: "Build app APK"
+        inputs:
+          - module: "$APP_MODULE"
+          - variant: "$APP_VARIANT"
+          - project_location: "$PROJECT_LOCATION"
+    - virtual-device-testing-for-android@1.0.5:
+        title: "Run UI tests against app"
+        inputs:
+          - test_type: instrumentation
+          - test_apk_path: "$BITRISE_TEST_APK"
+          - test_devices: |-
+              Pixel2,28,en,landscape
+              Nexus6P,27,en,portrait
+              Nexus5X,26,en,landscape
+              NexusLowRes,25,en,portrait
+              Nexus9,24,en,landscape
+              NexusLowRes,23,en,portrait
+              Nexus10,22,en,portrait
+              Nexus4,21,en,portrait
+    - deploy-to-bitrise-io@1.3.19:
+        inputs:
+          - notify_user_groups: testers, developers
+    - cache-push@2.0.5: {}
+  overnight-integration:
+    steps:
+      - cache-pull@2.0.1: {}
+      - script@1.1.5:
+          title: Do anything with Script step
+      - install-missing-android-tools@2.3.4:
+          inputs:
+            - gradlew_path: "$PROJECT_LOCATION/gradlew"
+      - android-build@0.9.5:
+          title: "Build test APK"
+          inputs:
+            - variant: "${LIBRARY_VARIANT}AndroidTest"
+            - project_location: "$PROJECT_LOCATION"
+            - module: "$LIBRARY_MODULE"
+      - script@1.1.5:
+          title: "Set path to test APK"
+          inputs:
+            - content: |-
+                #!/bin/bash
+                envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
+      - android-build:
+          title: "Build app APK"
+          inputs:
+            - module: "$APP_MODULE"
+            - variant: "$APP_VARIANT"
+            - project_location: "$PROJECT_LOCATION"
+      - virtual-device-testing-for-android@1.0.5:
+          title: "Run integration tests against app"
+          inputs:
+            - test_type: instrumentation
+            - test_apk_path: "$BITRISE_TEST_APK"
+            - test_devices: |-
+                Pixel2,28,en,portrait
+      - deploy-to-bitrise-io@1.3.19:
+          inputs:
+            - notify_user_groups: testers, developers
+      - cache-push@2.0.5: {}
+app:
+  envs:
+  - PROJECT_LOCATION: checkout
+  - LIBRARY_MODULE: access-checkout-android
+    opts:
+      is_expand: false
+  - APP_MODULE: sample
+    opts:
+      is_expand: false
+  - LIBRARY_VARIANT: debug
+    opts:
+      is_expand: false
+  - APP_VARIANT: mockWorldpayDebug
+    opts:
+      is_expand: false
+  - NEXUS_URL: https://oss.sonatype.org/service/local/staging/deploy/maven2/
+  - NEXUS_SNAPSHOT_URL: https://oss.sonatype.org/content/repositories/snapshots/

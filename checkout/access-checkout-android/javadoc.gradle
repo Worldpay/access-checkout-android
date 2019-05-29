@@ -1,0 +1,26 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+apply plugin: 'org.jetbrains.dokka-android'
+
+
+android {
+    dokka {
+        outputFormat = 'javadoc'
+        outputDirectory = "$buildDir/javadoc"
+
+        includeNonPublic = false
+        skipEmptyPackages = true
+
+        includes = ['overview.md']
+    }
+
+    task javadocJar(type: Jar, dependsOn: dokka) {
+        classifier = 'javadoc'
+        from "$buildDir/javadoc"
+    }
+
+    task sourcesJar(type: Jar) {
+        classifier = 'sources'
+        from android.sourceSets.main.java.srcDirs
+    }
+}

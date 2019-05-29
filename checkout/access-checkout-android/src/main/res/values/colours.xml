@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="BLACK">@android:color/black</color>
+    <color name="GREEN">@android:color/holo_green_dark</color>
+    <color name="RED">@android:color/holo_red_light</color>
+
+    <color name="SUCCESS">@color/BLACK</color>
+    <color name="FAIL">@color/RED</color>
+</resources>
