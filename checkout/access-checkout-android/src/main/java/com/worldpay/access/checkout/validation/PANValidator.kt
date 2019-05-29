@@ -8,8 +8,17 @@ import com.worldpay.access.checkout.validation.CardBrandUtils.validateAgainstMat
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import com.worldpay.access.checkout.validation.ValidatorUtils.isNumeric
 
+/**
+ * Validator for the pan field
+ */
 interface PANValidator {
 
+    /**
+     * Validates the pan field
+     *
+     * @param pan the pan to validate
+     * @return a [Pair] of [ValidationResult] and [CardBrand] for the pan field
+     */
     fun validate(pan: PAN): Pair<ValidationResult, CardBrand?>
 }
 

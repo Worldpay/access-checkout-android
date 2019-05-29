@@ -1,5 +1,8 @@
 # Module access-checkout-android
 
+# Package com.worldpay.access.checkout
+
+Classes which contain the concrete implementations for the core interfaces of the SDK
 
 # Package com.worldpay.access.checkout.api
 
@@ -9,9 +12,9 @@ Classes related to making a request to the Access Worldpay API's
 
 Classes related to discovering the endpoints required for the SDK requests
 
-# Package com.worldpay.access.checkout.controllers
+# Package com.worldpay.access.checkout.logging
 
-Classes related to communicating state information back to the view layer
+Logging utility classes
 
 # Package com.worldpay.access.checkout.model
 

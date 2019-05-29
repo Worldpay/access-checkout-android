@@ -3,6 +3,9 @@ package com.worldpay.access.checkout.api
 import com.worldpay.access.checkout.api.AccessCheckoutException.Error.*
 import com.worldpay.access.checkout.api.AccessCheckoutException.ValidationRuleName.*
 
+/**
+ * [AccessCheckoutException] to indicate that something went wrong during the request for a session state
+ */
 sealed class AccessCheckoutException : RuntimeException() {
 
     companion object {
