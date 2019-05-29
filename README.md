@@ -146,21 +146,21 @@ These include all the functions invoked by the SDK at the time when the fields h
 See an example of this interface being implemented in our sample application in the `MainActivity`
 
 
-#### Getting the Session State 
+#### Receiving the Session State 
 
 
-When the request for a `SessionState` starts, `SessionResponseListener` is notified via the  `onRequestStarted()` callback method. 
+When the request for a session state starts, the `SessionResponseListener` is notified via the  `onRequestStarted()` callback method. 
 
- When a result becomes available, the implementing class of `SessionResponseListener` will receive the callback holding the `SessionState` or an exception describing the error.
+When a result becomes available, the implementing class of `SessionResponseListener` will receive the callback holding the session state or an exception describing the error.
 
-`onRequestFinished(sessionReference: String?, error: AccessCheckoutException?)`
+`onRequestFinished(sessionState: String?, error: AccessCheckoutException?)`
 
 #### When things go wrong: `AccessCheckoutException`
 
-If there is a problem, `SessionResponseListener` will be notified through the same `onRequestFinished(sessionReference: String?, error: AccessCheckoutException?)` callback, this time with a `null` sessionReference and non-null error.
+If there is a problem, `SessionResponseListener` will be notified through the same `onRequestFinished(sessionState: String?, error: AccessCheckoutException?)` callback, this time with a `null` sessionState and non-null error.
 
 
-| Code | errorName | message |
+| HTTP Code | Error name | Message |
 | --- | --- | --- |
 | 400 | bodyIsNotJson | The body within the request is not valid json |
 | 400 | bodyIsEmpty | The body within the request is empty |
@@ -175,7 +175,7 @@ If there is a problem, `SessionResponseListener` will be notified through the sa
 
 These errors can be found in the enum class `com.worldpay.access.checkout.api.AccessCheckoutException.Error`
 
-If presented with a `bodyDoesNotMatchSchema` error, a list of the broken validation rules may be provided to help with debug.
+If presented with a `bodyDoesNotMatchSchema` error, a list of the broken validation rules may be provided to help with debugging the problem.
 
 `AccessCheckoutClientError` is the subclass used for the above issues.
 ```
@@ -186,6 +186,6 @@ data class AccessCheckoutClientError(
     ) : AccessCheckoutException()
 ```
 
-The class `ValidationRule` includes the broken rule, a description message and the JSON path to the guilty property.
+The property `validationRules` contains a list of `ValidationRule`s which includes the broken rule, a description message and the JSON path to the offending property.
 
 `data class ValidationRule(val errorName: ValidationRuleName, val message: String, val jsonPath: String)`

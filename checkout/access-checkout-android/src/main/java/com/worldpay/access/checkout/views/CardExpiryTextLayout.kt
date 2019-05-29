@@ -12,7 +12,13 @@ import android.widget.LinearLayout
 import com.worldpay.access.checkout.R
 import kotlinx.android.synthetic.main.date_view_layout.view.*
 
-
+/**
+ * Access Checkout's default implementation of a expiry date field
+ *
+ * This class will handle the operations related to text changes and on focus changes, communicating those changes to the
+ * required [CardViewListener], and receiving updates to change it's state through the [onValidationResult],
+ * [onMonthValidationResult] and [onYearValidationResult] methods
+ */
 open class CardExpiryTextLayout @JvmOverloads constructor(
     context: Context,
     attrSet: AttributeSet? = null,
@@ -26,9 +32,15 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
 
     override var cardViewListener: CardViewListener? = null
 
+    /**
+     * The month field [EditText] property
+     */
     @JvmField
     val monthEditText: EditText
 
+    /**
+     * The year field [EditText] property
+     */
     @JvmField
     val yearEditText: EditText
 
@@ -50,21 +62,46 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
 
     override fun getYear(): Int = Integer.parseInt("20${getInsertedYear()}")
 
+    /**
+     * Handles applying the length filter of the month field
+     *
+     * @param filter the length filter to apply to the month field
+     */
     fun setMonthLengthFilter(filter: InputFilter?) {
         monthEditText.filters += filter
     }
 
+    /**
+     * Handles applying the length filter of the year field
+     *
+     * @param filter the length filter to apply to the year field
+     */
     fun setYearLengthFilter(filter: InputFilter?) {
         yearEditText.filters += filter
     }
 
+    /**
+     * Handles applying the state of the expiry date fields based on it's overall validity
+     *
+     * @param valid whether the full date field is valid
+     */
     fun onValidationResult(valid: Boolean) {
         onMonthValidationResult(valid)
         onYearValidationResult(valid)
     }
 
+    /**
+     * Handles applying the state of the expiry month field based on it's validity
+     *
+     * @param valid whether the month field is valid
+     */
     fun onMonthValidationResult(valid: Boolean) = setLayout(valid, monthEditText)
 
+    /**
+     * Handles applying the state of the expiry year field based on it's validity
+     *
+     * @param valid whether the year field is valid
+     */
     fun onYearValidationResult(valid: Boolean) = setLayout(valid, yearEditText)
 
     private fun setContentListeners() {
