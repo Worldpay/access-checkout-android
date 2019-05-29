@@ -8,7 +8,24 @@ import com.worldpay.access.checkout.views.*
 import com.worldpay.access.checkout.views.PANLengthFilter
 import java.util.*
 
-class AccessCheckoutCard(
+/**
+ * [AccessCheckoutCard] is responsible for responding to state changes on a Card field, by returning validation results
+ * back to the [CardListener]
+ *
+ * @param context The android [Context] object
+ * @param panView The reference to the pan field which needs to implement [CardView]
+ * @param cvvView The reference to the cvv field which needs to implement [CardView]
+ * @param dateView The reference to the date field which needs to implement [DateCardView]
+ * @param factory (Optional) The object which is responsible for constructing dependencies for a [Card]. The default is [AccessCheckoutCardDefaultFactory]
+ * @param cardConfiguration (Optional) The card configuration contains all the validation rules for the card fields. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
+ * @param cardValidator (Optional) The class responsible for validating the state of the card fields. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
+ * @param panLengthFilter (Optional) The class responsible for restricting the length of input into the pan field. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
+ * @param cvvLengthFilter (Optional) The class responsible for restricting the length of input into the cvv field. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
+ * @param monthLengthFilter (Optional) The class responsible for restricting the length of input into the month field. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
+ * @param yearLengthFilter (Optional) The class responsible for restricting the length of input into the year field. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
+ * @constructor Constructs an instance of [AccessCheckoutCard]
+ */
+class AccessCheckoutCard @JvmOverloads constructor(
     context: Context,
     private val panView: CardView,
     private val cvvView: CardView,
@@ -126,21 +143,64 @@ class AccessCheckoutCard(
 
 }
 
+/**
+ * [CardFactory] is responsible for constructing the dependencies needed for a [Card]
+ */
 interface CardFactory {
 
+    /**
+     * Creates a [CardValidator] instance
+     * @param cardConfiguration the card configuration to use
+     * @return [CardValidator] for validating the inputs of a card
+     */
     fun getCardValidator(cardConfiguration: CardConfiguration): CardValidator
+
+    /**
+     * Creates a [CardConfiguration] instance
+     * @return [CardConfiguration] for holding configurations for validating a card
+     */
     fun getCardConfiguration(): CardConfiguration
+
+    /**
+     * Creates a [PANLengthFilter] instance
+     * @param (Optional)[cardValidator] the card validator to use
+     * @param cardConfiguration the card configuration to use
+     * @return (Optional)[PANLengthFilter] for restricting the inputs of a pan field
+     */
     fun getPANLengthFilter(cardValidator: CardValidator?, cardConfiguration: CardConfiguration): PANLengthFilter?
+
+    /**
+     * Creates a [CVVLengthFilter] instance
+     * @param (Optional)[cardValidator] the card validator to use
+     * @param cardConfiguration the card configuration to use
+     * @param panView the pan field so that the cvv length can be validated against the current pan
+     * @return (Optional)[CVVLengthFilter] for restricting the inputs of a cvv field
+     */
     fun getCVVLengthFilter(
         cardValidator: CardValidator?,
         cardConfiguration: CardConfiguration,
         panView: CardView
     ): CVVLengthFilter?
 
+    /**
+     * Creates a [MonthLengthFilter] instance
+     * @param cardConfiguration the card configuration to use
+     * @return [MonthLengthFilter] for restricting the inputs of a month field
+     */
     fun getMonthLengthFilter(cardConfiguration: CardConfiguration): MonthLengthFilter
+
+    /**
+     * Creates a [YearLengthFilter] instance
+     * @param cardConfiguration the card configuration to use
+     * @return [YearLengthFilter] for restricting the inputs of a year field
+     */
     fun getYearLengthFilter(cardConfiguration: CardConfiguration): YearLengthFilter
 }
 
+/**
+ * [AccessCheckoutCardDefaultFactory] is an implementation of [CardFactory] which is to be used by [AccessCheckoutCard]
+ * @param context The android [Context] object
+ */
 class AccessCheckoutCardDefaultFactory(private val context: Context) : CardFactory {
 
     override fun getCardValidator(cardConfiguration: CardConfiguration): AccessCheckoutCardValidator {
