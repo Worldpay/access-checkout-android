@@ -94,7 +94,7 @@ workflows:
 #        - notify_user_groups: none
     - file-downloader@1.0.1:
         inputs:
-          - destination: "$PROJECT_LOCATION/secring.gpg"
+          - destination: "$PROJECT_LOCATION/$LIBRARY_MODULE/secring.gpg"
           - source: "$BITRISEIO_GPG_SECRET_KEY_RING_FILE_URL"
     - github-release@0.10.0:
         title: "Deploy release to github"
