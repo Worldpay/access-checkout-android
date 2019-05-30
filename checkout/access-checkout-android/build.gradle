@@ -67,7 +67,7 @@ uploadArchives {
                     developer {
                         id 'worldpay'
                         name 'Worldpay'
-                        organization 'Worldpay'
+                        organization = 'Worldpay'
                         organizationUrl 'https://www.worldpay.com/'
                     }
                 }
