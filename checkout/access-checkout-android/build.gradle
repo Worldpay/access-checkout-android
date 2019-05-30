@@ -62,6 +62,15 @@ uploadArchives {
                         url 'https://raw.githubusercontent.com/Worldpay/access-checkout-android/master/LICENSE'
                     }
                 }
+
+                developers {
+                    developer {
+                        id 'worldpay'
+                        name 'Worldpay'
+                        organization 'Worldpay'
+                        organizationUrl 'https://www.worldpay.com/'
+                    }
+                }
             }
         }
     }
