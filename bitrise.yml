@@ -50,10 +50,10 @@ workflows:
         - zip_name: jacoco-reports
         - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
     - gradle-runner@1.8.4:
-        title: Build release aar
+        title: Build release artifacts
         inputs:
           - gradlew_path: $PROJECT_LOCATION/gradlew
-          - gradle_task: ":$LIBRARY_MODULE:assembleRelease"
+          - gradle_task: ":$LIBRARY_MODULE:assembleRelease javadocJar sourcesJar"
           - gradle_file: $PROJECT_LOCATION/build.gradle
 #    - android-build@0.9.5:
 #        title: "Build test APK"
@@ -99,7 +99,10 @@ workflows:
           - repository_url: $GIT_REPOSITORY_URL
           - tag: "v$PROJECT_VERSION"
           - name: $PROJECT_VERSION
-          - files_to_upload: $PROJECT_LOCATION/$LIBRARY_MODULE/build/outputs/aar/$LIBRARY_MODULE-$PROJECT_VERSION.aar
+          - files_to_upload: |-
+              $PROJECT_LOCATION/$LIBRARY_MODULE/build/outputs/aar/$LIBRARY_MODULE-$PROJECT_VERSION.aar
+              $PROJECT_LOCATION/$LIBRARY_MODULE/build/libs/$LIBRARY_MODULE-$PROJECT_VERSION-javadoc.jar
+              $PROJECT_LOCATION/$LIBRARY_MODULE/build/libs/$LIBRARY_MODULE-$PROJECT_VERSION-sources.jar
           - commit: $GIT_CLONE_COMMIT_HASH
           - body: Release of SDK version $PROJECT_VERSION
           - api_token: $GITHUB_PERSONAL_ACCESS_TOKEN
