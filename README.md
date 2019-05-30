@@ -9,12 +9,13 @@ It includes, optionally, custom Android views that identifies card brands and va
 
 ## Download
 
-Download the latest AAR from [Maven Central](https://search.maven.org/search?q=worldpay) or grab via Gradle:
+Download the latest AAR from [Maven Central](https://search.maven.org/search?q=com.worldpay.access):
+
+* Gradle:
 
 `implementation 'com.worldpay.access:access-checkout-android:XXXXXX`
 
-
-or Maven:
+* Maven:
 
 ```
 <dependency>
@@ -24,7 +25,7 @@ or Maven:
 </dependency>
 ```
 
-or Local AAR library integration:
+Local AAR library integration:
 
 Copy the library file into your `app/libs` folder
 
