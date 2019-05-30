@@ -5,10 +5,9 @@ import com.worldpay.access.checkout.config.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.validation.*
 import com.worldpay.access.checkout.views.*
-import com.worldpay.access.checkout.views.PANLengthFilter
 import java.util.*
 
-class AccessCheckoutCard(
+class AccessCheckoutCard @JvmOverloads constructor(
     context: Context,
     private val panView: CardView,
     private val cvvView: CardView,
@@ -104,9 +103,19 @@ class AccessCheckoutCard(
 
                 if (!validator.canUpdate(monthField, yearField)) {
                     val validationResult = validator.validateDate(monthField, yearField)
-                    listener.onDateUpdateValidationResult(validationResult, validationResult, monthLengthFilter, yearLengthFilter)
+                    listener.onDateUpdateValidationResult(
+                        validationResult,
+                        validationResult,
+                        monthLengthFilter,
+                        yearLengthFilter
+                    )
                 } else {
-                    listener.onDateUpdateValidationResult(monthValidationResult, yearValidationResult, monthLengthFilter, yearLengthFilter)
+                    listener.onDateUpdateValidationResult(
+                        monthValidationResult,
+                        yearValidationResult,
+                        monthLengthFilter,
+                        yearLengthFilter
+                    )
                 }
 
                 listener.onValidationResult(ValidationResult(false, isValid()))
