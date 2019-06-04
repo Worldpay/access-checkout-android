@@ -60,40 +60,6 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         }
     }
 
-    override fun onPANUpdateValidationResult(validationResult: ValidationResult, cardBrand: CardBrand?, lengthFilter: InputFilter?) {
-        panView.onValidationResult(validationResult.partial || validationResult.complete, cardBrand?.image ?: "card_unknown")
-        panView.setLengthFilter(lengthFilter)
-    }
-
-    override fun onPANEndUpdateValidationResult(validationResult: ValidationResult, cardBrand: CardBrand?) {
-        panView.onValidationResult(validationResult.complete, cardBrand?.image ?: "card_unknown")
-    }
-
-    override fun onCVVUpdateValidationResult(validationResult: ValidationResult, lengthFilter: InputFilter?) {
-        cvvText.onValidationResult(validationResult.partial || validationResult.complete)
-        cvvText.setLengthFilter(lengthFilter)
-    }
-
-    override fun onCVVEndUpdateValidationResult(validationResult: ValidationResult) {
-        cvvText.onValidationResult(validationResult.complete)
-    }
-
-    override fun onDateUpdateValidationResult(monthValidationResult: ValidationResult?, yearValidationResult: ValidationResult?,
-                                              monthLengthFilter: InputFilter, yearLengthFilter: InputFilter) {
-        monthValidationResult?.let {
-            dateText.onMonthValidationResult(monthValidationResult.partial || monthValidationResult.complete)
-        }
-        yearValidationResult?.let {
-            dateText.onYearValidationResult(yearValidationResult.partial || yearValidationResult.complete)
-        }
-        dateText.setMonthLengthFilter(monthLengthFilter)
-        dateText.setYearLengthFilter(yearLengthFilter)
-    }
-
-    override fun onDateEndUpdateValidationResult(validationResult: ValidationResult) {
-        dateText.onValidationResult(validationResult.complete)
-    }
-
     override fun onRequestStarted() {
         debugLog("MainActivity", "Started request")
         loading = true
@@ -117,8 +83,17 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show()
     }
 
-    override fun onValidationResult(validationResult: ValidationResult) {
-        submit.isEnabled = validationResult.complete && !loading
+    override fun onUpdate(cardView: CardView, valid: Boolean) {
+        cardView.isValid(valid)
+        submit.isEnabled = card.isValid() && !loading
+    }
+
+    override fun onUpdateLengthFilter(cardView: CardView, inputFilter: InputFilter) {
+        cardView.applyLengthFilter(inputFilter)
+    }
+
+    override fun onUpdateCardBrand(cardBrand: CardBrand?) {
+        panView.applyCardLogo(cardBrand?.image ?: "card_unknown")
     }
 
     private fun fieldsToggle(enableFields: Boolean) {

@@ -23,6 +23,31 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
         attrSet,
         defStyles
     ), DateCardView {
+    override fun isValid(valid: Boolean) {
+        onValidationResult(valid)
+    }
+
+    override fun applyLengthFilter(inputFilter: InputFilter) {
+        setMonthLengthFilter(inputFilter)
+        setYearLengthFilter(inputFilter)
+    }
+
+    override fun isValidYear(valid: Boolean) {
+        onYearValidationResult(valid)
+    }
+
+    override fun isValidMonth(valid: Boolean) {
+        onMonthValidationResult(valid)
+    }
+
+    override fun applyMonthLengthFilter(inputFilter: InputFilter) {
+        setMonthLengthFilter(inputFilter)
+    }
+
+    override fun applyYearLengthFilter(inputFilter: InputFilter) {
+        setYearLengthFilter(inputFilter)
+    }
+
 
     override var cardViewListener: CardViewListener? = null
 
@@ -90,7 +115,7 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
 
     internal fun monthEditTextOnFocusChange(): OnFocusChangeListener {
         return OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
+            if (!hasFocus && !yearEditText.hasFocus()) {
                 cardViewListener?.onEndUpdateDate(getInsertedMonth(), null)
             }
         }
@@ -99,7 +124,7 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
 
     internal fun yearEditTextOnFocusChange(): OnFocusChangeListener {
         return OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
+            if (!hasFocus && !monthEditText.hasFocus()) {
                 cardViewListener?.onEndUpdateDate(null, getInsertedYear())
             }
         }

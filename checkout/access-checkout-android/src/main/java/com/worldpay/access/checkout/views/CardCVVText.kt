@@ -12,6 +12,14 @@ import com.worldpay.access.checkout.R
 @SuppressLint("AppCompatCustomView")
 open class CardCVVText : EditText, CardView {
 
+    override fun isValid(valid: Boolean) {
+        onValidationResult(valid)
+    }
+
+    override fun applyLengthFilter(inputFilter: InputFilter) {
+        this.filters += inputFilter
+    }
+
     constructor(context: Context) : super(context)
 
     constructor(context: Context, attrs: AttributeSet) :

@@ -25,6 +25,16 @@ open class PANLayout @JvmOverloads constructor(
         defStyles
     ),
     TextWatcher, CardView {
+    override fun isValid(valid: Boolean) {
+        when (valid) {
+            true -> mEditText.setTextColor(getColor(this.context.resources, R.color.SUCCESS, this.context.theme))
+            else -> mEditText.setTextColor(getColor(this.context.resources, R.color.FAIL, this.context.theme))
+        }
+    }
+
+    override fun applyLengthFilter(inputFilter: InputFilter) {
+        mEditText.filters += inputFilter
+    }
 
     @JvmField
     val mEditText: EditText
@@ -55,6 +65,12 @@ open class PANLayout @JvmOverloads constructor(
 
     fun setLengthFilter(filter: InputFilter?) {
         mEditText.filters += filter
+    }
+
+    fun applyCardLogo(logoName: String) {
+        val resID = context.resIdByName(logoName, "drawable")
+        mImageView.setTag(CARD_TAG, logoName)
+        mImageView.setImageResource(resID)
     }
 
     fun onValidationResult(valid: Boolean, logoResName: String) {
