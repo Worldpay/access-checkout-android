@@ -24,7 +24,7 @@ open class PANLayout @JvmOverloads constructor(
         attrSet,
         defStyles
     ),
-    TextWatcher, CardView {
+    TextWatcher, CardTextView {
 
     @JvmField
     val mEditText: EditText

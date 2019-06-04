@@ -9,9 +9,9 @@ import java.util.*
 
 class AccessCheckoutCard @JvmOverloads constructor(
     context: Context,
-    private val panView: CardView,
-    private val cvvView: CardView,
-    private val dateView: DateCardView,
+    private val panView: CardTextView,
+    private val cvvView: CardTextView,
+    private val dateView: CardDateView,
     private val factory: CardFactory = AccessCheckoutCardDefaultFactory(context),
     private val cardConfiguration: CardConfiguration = factory.getCardConfiguration(),
     override var cardValidator: CardValidator? = factory.getCardValidator(cardConfiguration),
@@ -127,7 +127,7 @@ interface CardFactory {
     fun getCVVLengthFilter(
         cardValidator: CardValidator?,
         cardConfiguration: CardConfiguration,
-        panView: CardView
+        panView: CardTextView
     ): CVVLengthFilter?
 
 
@@ -158,7 +158,7 @@ class AccessCheckoutCardDefaultFactory(private val context: Context) : CardFacto
     override fun getCVVLengthFilter(
         cardValidator: CardValidator?,
         cardConfiguration: CardConfiguration,
-        panView: CardView
+        panView: CardTextView
     ): CVVLengthFilter? =
         cardValidator?.let { CVVLengthFilter(it, cardConfiguration, panView) }
 

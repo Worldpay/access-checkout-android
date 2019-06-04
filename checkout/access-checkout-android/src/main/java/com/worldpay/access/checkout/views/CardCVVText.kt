@@ -10,7 +10,7 @@ import android.widget.EditText
 import com.worldpay.access.checkout.R
 
 @SuppressLint("AppCompatCustomView")
-open class CardCVVText : EditText, CardView {
+open class CardCVVText : EditText, CardTextView {
 
     constructor(context: Context) : super(context)
 

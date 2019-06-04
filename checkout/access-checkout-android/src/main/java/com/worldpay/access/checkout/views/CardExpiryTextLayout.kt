@@ -22,7 +22,7 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
         context,
         attrSet,
         defStyles
-    ), DateCardView {
+    ), CardDateView {
 
 
     override var cardViewListener: CardViewListener? = null
@@ -40,8 +40,6 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
         yearEditText = rootView.year_edit_text
         setContentListeners()
     }
-
-    override fun getInsertedText(): String = getInsertedMonth() + "/" + getInsertedYear()
 
     override fun getInsertedMonth() = monthEditText.text.toString()
 

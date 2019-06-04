@@ -58,7 +58,7 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
 class CVVLengthFilter(
     private val cardValidator: CardValidator,
     cardConfiguration: CardConfiguration,
-    private val panView: CardView
+    private val panView: CardTextView
 ) : AbstractCardFieldLengthFilter(cardConfiguration) {
 
     override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =

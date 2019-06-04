@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.views
 
-interface DateCardView: CardView {
+interface CardDateView: CardView {
 
     fun getInsertedMonth(): String
     fun getInsertedYear(): String

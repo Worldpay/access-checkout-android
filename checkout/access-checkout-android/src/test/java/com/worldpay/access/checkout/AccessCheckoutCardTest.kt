@@ -27,7 +27,7 @@ class AccessCheckoutCardTest {
     private val context = ShadowInstrumentation.getInstrumentation().targetContext.applicationContext
 
     private lateinit var card: Card
-    private lateinit var panView: CardView
+    private lateinit var panView: CardTextView
     private lateinit var cvvView: CardCVVText
     private lateinit var dateView: CardExpiryTextLayout
     private lateinit var cardValidator: CardValidator

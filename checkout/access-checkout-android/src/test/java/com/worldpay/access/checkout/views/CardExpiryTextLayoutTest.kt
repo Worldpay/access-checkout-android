@@ -167,14 +167,6 @@ class CardExpiryTextLayoutTest {
     }
 
     @Test
-    fun `get inserted text should return full date`() {
-        cardExpiryTextLayout.monthEditText.setText("12")
-        cardExpiryTextLayout.yearEditText.setText("20")
-
-        assertEquals("12/20", cardExpiryTextLayout.getInsertedText())
-    }
-
-    @Test
     fun `should be able to parse a month field`() {
         cardExpiryTextLayout.monthEditText.setText("12")
 

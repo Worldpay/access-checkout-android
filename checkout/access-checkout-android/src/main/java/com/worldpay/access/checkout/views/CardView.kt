@@ -6,8 +6,6 @@ interface CardView {
 
     var cardViewListener: CardViewListener?
 
-    fun getInsertedText(): String
-
     fun isValid(valid: Boolean)
     fun applyLengthFilter(inputFilter: InputFilter)
 }
