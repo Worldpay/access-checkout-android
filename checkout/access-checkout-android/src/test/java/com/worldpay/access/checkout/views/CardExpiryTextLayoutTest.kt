@@ -1,14 +1,12 @@
 package com.worldpay.access.checkout.views
 
 import android.text.InputFilter
-import android.util.AttributeSet
 import com.worldpay.access.checkout.R
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 import org.robolectric.Robolectric.buildAttributeSet as robolectricBuildAttributeSet

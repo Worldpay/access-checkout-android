@@ -1,24 +1,17 @@
 package com.worldpay.access.checkout.views
 
-import android.content.res.TypedArray
 import android.text.InputFilter
-import android.util.AttributeSet
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.testutils.typeSafeAny
-import com.worldpay.access.checkout.testutils.typeSafeEq
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.assertEquals
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.Mockito.`when`
-import org.robolectric.Robolectric
-import org.robolectric.android.XmlResourceParserImpl
 
 
 @RunWith(RobolectricTestRunner::class)
