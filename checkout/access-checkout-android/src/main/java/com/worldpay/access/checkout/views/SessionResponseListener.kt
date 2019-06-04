@@ -15,8 +15,8 @@ interface SessionResponseListener {
 
     /**
      * Method for being notified when the session state is available, or an error has occurred when trying to generate one
-     * @param (Optional) sessionState when the session has been created successfully
-     * @param (Optional) [AccessCheckoutException] when there has been an error generating the session state
+     * @param sessionState (Optional) when the session has been created successfully
+     * @param error (Optional) a subclass of [AccessCheckoutException] when there has been an error generating the session state
      */
     fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?)
 }

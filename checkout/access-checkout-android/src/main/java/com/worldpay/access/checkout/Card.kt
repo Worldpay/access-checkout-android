@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.views.CardViewListener
  * A [Card] is the coordinator class between the view inputs, the (optional) validations of those inputs,
  * and the callback of those validation results to the [CardListener]
  *
- * @see AccessCheckoutCard for an out-of-the-box implementation of this
+ * See [AccessCheckoutCard] for an out-of-the-box implementation of this
  */
 interface Card: CardViewListener {
 

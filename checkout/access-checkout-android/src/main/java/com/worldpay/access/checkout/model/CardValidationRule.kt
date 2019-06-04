@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.model
 
 /**
- * [CardValidationRule] stores the validation rule attributes
+ * [CardValidationRule] stores a set of validation rule attributes
  *
  * @property matcher a regex which is used to match a field to this rule
  * @property minLength a rule which defines the fields minimum length

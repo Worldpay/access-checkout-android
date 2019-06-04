@@ -172,18 +172,18 @@ interface CardFactory {
 
     /**
      * Creates a [PANLengthFilter] instance
-     * @param (Optional)[cardValidator] the card validator to use
+     * @param cardValidator (Optional) the card validator to use
      * @param cardConfiguration the card configuration to use
-     * @return (Optional)[PANLengthFilter] for restricting the inputs of a pan field
+     * @return [PANLengthFilter] (Optional) for restricting the inputs of a pan field
      */
     fun getPANLengthFilter(cardValidator: CardValidator?, cardConfiguration: CardConfiguration): PANLengthFilter?
 
     /**
      * Creates a [CVVLengthFilter] instance
-     * @param (Optional)[cardValidator] the card validator to use
+     * @param cardValidator (Optional) the card validator to use
      * @param cardConfiguration the card configuration to use
      * @param panView the pan field so that the cvv length can be validated against the current pan
-     * @return (Optional)[CVVLengthFilter] for restricting the inputs of a cvv field
+     * @return [CVVLengthFilter] (Optional) for restricting the inputs of a cvv field
      */
     fun getCVVLengthFilter(
         cardValidator: CardValidator?,

@@ -59,7 +59,7 @@ open class PANLayout @JvmOverloads constructor(
      * Handles text changes from the cvv field. If a [CardViewListener] has been set, then it will notify that this
      * field has been updated
      *
-     * @param s The text the [CardCVVText] is displaying
+     * @param s The text the [PANLayout] is displaying
      * @param start The offset of the start of the range of the text that was
      * modified
      * @param before The length of the former text that has been replaced

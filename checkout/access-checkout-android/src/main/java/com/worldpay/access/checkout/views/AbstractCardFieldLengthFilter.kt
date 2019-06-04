@@ -11,7 +11,7 @@ import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
 
 /**
- * [AbstractCardFieldLengthFilter] which is used to restrict length of a card field
+ * [AbstractCardFieldLengthFilter] is a common abstraction class which is used by individual field implementers to restrict the length of a particular card field
  *
  * @param cardConfiguration the configuration to use for determining the length for the field
  */

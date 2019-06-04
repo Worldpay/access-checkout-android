@@ -16,10 +16,9 @@ import com.worldpay.access.checkout.validation.ValidationResult
  * Implementers can choose how to style their pan field based on this information, such as showing a small icon for that
  * card brand.
  *
- * A [InputFilter] can be attached to a field to restrict the length of that field based on the current input.
- * For example, a card brand may have a particular limit on the number of characters it will accept and therefore applying the length
- * filter will help reduce human user error on that field by not allowing them to type more characters than the maximum
- * length for that card brand
+ * An [InputFilter] can be attached to a field to restrict the length of that field based on the current input. For example, 
+ * a card brand may have a particular limit on the number of characters it will accept. Therefore applying the length filter 
+ * will help reduce human user error by not allowing the user to type more characters than is allowed for that field.
  */
 interface CardListener {
 
@@ -27,7 +26,7 @@ interface CardListener {
    * Receives an update once any validation has finished after an update to the pan field
    *
    * @param validationResult The validation result of this pan field update
-   * @param cardBrand (Optional) The card brand that was associated with this pan field update
+   * @param cardBrand (Optional) The card brand, if identified, that is associated with this pan field update
    * @param lengthFilter (Optional) The length filter that can be applied to the pan field as a result of this update
    */
   fun onPANUpdateValidationResult(validationResult: ValidationResult, cardBrand: CardBrand?, lengthFilter: InputFilter?)
@@ -36,7 +35,7 @@ interface CardListener {
    * Receives an update once any validation has finished after the pan field has been completed
    *
    * @param validationResult The validation result for this pan field
-   * @param cardBrand (Optional) The card brand that was associated with this pan field update
+   * @param cardBrand (Optional) The card brand, if identified, that is associated with this pan field
    */
   fun onPANEndUpdateValidationResult(validationResult: ValidationResult, cardBrand: CardBrand?)
 

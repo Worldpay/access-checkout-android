@@ -43,7 +43,7 @@ allprojects {
 Add the following lines to the app level dependency list (kotlin version can be changed):
 
 ``` 
-implementation (name:'access-checkout-android-1.0.0-SNAPSHOT', ext:'aar')
+implementation (name:'access-checkout-android-1.0.0', ext:'aar')
 implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 ```
 
@@ -60,7 +60,7 @@ This can be achieved by invoking the `init()` method of this class and by provid
 
 `AccessCheckoutCard` is the coordinator class between the view inputs, the (optional) validators of those inputs, and the callback of those validation results to an implementation of `CardListener`
 
-The SDK is fully customizable and provides default card views that implement the required interfaces out of the box. For advanced styling it is possible to override some of the default implementations or to provide fully customized implementations of the required interfaces (interfaces are described at the end of the section)
+The SDK is fully customizable and provides default card views that implement the required interfaces out of the box. For advanced styling, it is possible to override some of the default implementations or to provide fully customized implementations of the required interfaces. The interfaces are described at the end of the section.
 
 Firstly, a layout configuration file with the card views is defined as below:
 ```
@@ -159,6 +159,7 @@ When a result becomes available, the implementing class of `SessionResponseListe
 
 If there is a problem, `SessionResponseListener` will be notified through the same `onRequestFinished(sessionState: String?, error: AccessCheckoutException?)` callback, this time with a `null` sessionState and non-null error.
 
+The following table of errors can be found in the enum class `com.worldpay.access.checkout.api.AccessCheckoutException.Error`
 
 | HTTP Code | Error name | Message |
 | --- | --- | --- |
@@ -170,14 +171,11 @@ If there is a problem, `SessionResponseListener` will be notified through the sa
 | 405 | methodNotAllowed | Requested method is not allowed |
 | 406 | unsupportedAcceptHeader | Accept header is not supported |
 | 415 | unsupportedContentType | Content-type header is not supported |
-| 500 | internalErrorOccurred |  |
-| 500 | unknownError |  |
-
-These errors can be found in the enum class `com.worldpay.access.checkout.api.AccessCheckoutException.Error`
+| 500 | internalErrorOccurred | Internal server error |
+| 500 | unknownError | Unknown error |
 
 
 If presented with a `bodyDoesNotMatchSchema` error, a list of the broken validation rules may be provided to help with debugging the problem.
-
 
 `AccessCheckoutClientError` is the subclass used for the above issues.
 ```

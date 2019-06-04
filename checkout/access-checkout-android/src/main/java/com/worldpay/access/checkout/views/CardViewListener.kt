@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.views
 
 /**
  * [CardViewListener] is the interface which will listen to updates when fields have changed or have finished updating
- *
  */
 interface CardViewListener {
 
@@ -23,14 +22,14 @@ interface CardViewListener {
     /**
      * Method to handle text changes to the cvv field
      * The cvv field should call this method on any text changes
-     * @param cvv The current input of the pan field
+     * @param cvv The current input of the cvv field
      */
     fun onUpdateCVV(cvv: String)
 
     /**
      * Method to handle the completion of the cvv field
      * The cvv field should call this method when the focus has changed to another field
-     * @param cvv The current input of the pan field
+     * @param cvv The current input of the cvv field
      */
     fun onEndUpdateCVV(cvv: String)
 
