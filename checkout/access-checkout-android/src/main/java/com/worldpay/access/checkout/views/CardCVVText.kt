@@ -13,7 +13,7 @@ import com.worldpay.access.checkout.R
  * Access Checkout's default implementation of a CVV field
  *
  * This class will handle the operations related to text changes and on focus changes, communicating those changes to the
- * required [CardViewListener], and receiving updates to change it's state through the [onValidationResult] method
+ * required [CardViewListener], and receiving updates to change it's state through the [isValid] method
  */
 @SuppressLint("AppCompatCustomView")
 open class CardCVVText : EditText, CardTextView {

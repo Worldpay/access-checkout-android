@@ -16,8 +16,7 @@ import kotlinx.android.synthetic.main.date_view_layout.view.*
  * Access Checkout's default implementation of a expiry date field
  *
  * This class will handle the operations related to text changes and on focus changes, communicating those changes to the
- * required [CardViewListener], and receiving updates to change it's state through the [onValidationResult],
- * [onMonthValidationResult] and [onYearValidationResult] methods
+ * required [CardViewListener], and receiving updates to change it's state through the [isValid] method
  */
 open class CardExpiryTextLayout @JvmOverloads constructor(
     context: Context,
@@ -61,21 +60,11 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
 
     override fun getYear(): Int = Integer.parseInt("20${getInsertedYear()}")
 
-    /**
-     * Handles applying the state of the expiry date fields based on it's overall validity
-     *
-     * @param valid whether the full date field is valid
-     */
     override fun isValid(valid: Boolean) {
         setLayout(valid, monthEditText)
         setLayout(valid, yearEditText)
     }
 
-    /**
-     * Handles applying the length filter of the date fields
-     *
-     * @param filter the length filter to apply to the date fields
-     */
     override fun applyLengthFilter(inputFilter: InputFilter) {
         monthEditText.filters += inputFilter
         yearEditText.filters += inputFilter

@@ -17,7 +17,7 @@ import kotlinx.android.synthetic.main.card_number_view_layout.view.*
  * Access Checkout's default implementation of a pan field
  *
  * This class will handle the operations related to text changes and on focus changes, communicating those changes to the
- * required [CardViewListener], and receiving updates to change it's state through the [onValidationResult] method
+ * required [CardViewListener], and receiving updates to change it's state through the [isValid] method
  */
 open class PANLayout @JvmOverloads constructor(
     context: Context,
@@ -71,12 +71,6 @@ open class PANLayout @JvmOverloads constructor(
 
     override fun getInsertedText(): String = mEditText.text.toString()
 
-    /**
-     * Handles applying the state of the pan field based on it's validity, and a brand icon that is associated with the
-     * card input
-     *
-     * @param valid whether the pan field is valid
-     */
     override fun isValid(valid: Boolean) {
         when (valid) {
             true -> mEditText.setTextColor(getColor(this.context.resources, R.color.SUCCESS, this.context.theme))
@@ -84,11 +78,6 @@ open class PANLayout @JvmOverloads constructor(
         }
     }
 
-    /**
-     * Handles applying the length filter of the pan field
-     *
-     * @param inputFilter the length filter to apply to the pan field
-     */
     override fun applyLengthFilter(inputFilter: InputFilter) {
         mEditText.filters += inputFilter
     }
