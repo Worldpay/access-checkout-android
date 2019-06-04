@@ -89,14 +89,14 @@ class CardCVVTextTest {
 
     @Test
     fun `should update to success text color on valid result`() {
-        cardCVVText.onValidationResult(true)
+        cardCVVText.isValid(true)
 
         assertEquals(context.resources.getColor(R.color.SUCCESS, context.theme), cardCVVText.currentTextColor)
     }
 
     @Test
     fun `should update to fail text color on invalid result`() {
-        cardCVVText.onValidationResult(false)
+        cardCVVText.isValid(false)
 
         assertEquals(context.resources.getColor(R.color.FAIL, context.theme), cardCVVText.currentTextColor)
     }
@@ -106,7 +106,7 @@ class CardCVVTextTest {
         val filter = InputFilter.LengthFilter(3)
         val filtersBefore: Array<InputFilter> = cardCVVText.filters
 
-        cardCVVText.setLengthFilter(filter)
+        cardCVVText.applyLengthFilter(filter)
 
         val filtersAfter: Array<InputFilter> = cardCVVText.filters
         assertArrayEquals(filtersBefore.plus(filter), filtersAfter)

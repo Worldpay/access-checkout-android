@@ -82,20 +82,25 @@ class PANLayoutTest {
     }
 
     @Test
-    fun `should update to success text color on valid result and update card tag`() {
-        val logo = "card_visa"
-        panLayout.onValidationResult(true, logo)
+    fun `should update to success text color on valid result`() {
+        panLayout.isValid(true)
 
         assertEquals(context.resources.getColor(R.color.SUCCESS, context.theme), panLayout.mEditText.currentTextColor)
-        assertEquals(logo, panLayout.mImageView.getTag(CARD_TAG))
     }
 
     @Test
-    fun `should update to fail text color on invalid result and update card tag`() {
-        val logo = "card_mastercard"
-        panLayout.onValidationResult(false, logo)
+    fun `should update to fail text color on invalid result`() {
+        panLayout.isValid(false)
 
         assertEquals(context.resources.getColor(R.color.FAIL, context.theme), panLayout.mEditText.currentTextColor)
+    }
+
+    @Test
+    fun `should update card tag`() {
+        val logo = "card_mastercard"
+
+        panLayout.applyCardLogo(logo)
+
         assertEquals(logo, panLayout.mImageView.getTag(CARD_TAG))
     }
 
@@ -104,7 +109,7 @@ class PANLayoutTest {
         val filter = InputFilter.LengthFilter(3)
         val filtersBefore: Array<InputFilter> = panLayout.mEditText.filters
 
-        panLayout.setLengthFilter(filter)
+        panLayout.applyLengthFilter(filter)
 
         val filtersAfter: Array<InputFilter> = panLayout.mEditText.filters
         assertArrayEquals(filtersBefore.plus(filter), filtersAfter)

@@ -23,30 +23,6 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
         attrSet,
         defStyles
     ), DateCardView {
-    override fun isValid(valid: Boolean) {
-        onValidationResult(valid)
-    }
-
-    override fun applyLengthFilter(inputFilter: InputFilter) {
-        setMonthLengthFilter(inputFilter)
-        setYearLengthFilter(inputFilter)
-    }
-
-    override fun isValidYear(valid: Boolean) {
-        onYearValidationResult(valid)
-    }
-
-    override fun isValidMonth(valid: Boolean) {
-        onMonthValidationResult(valid)
-    }
-
-    override fun applyMonthLengthFilter(inputFilter: InputFilter) {
-        setMonthLengthFilter(inputFilter)
-    }
-
-    override fun applyYearLengthFilter(inputFilter: InputFilter) {
-        setYearLengthFilter(inputFilter)
-    }
 
 
     override var cardViewListener: CardViewListener? = null
@@ -75,22 +51,15 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
 
     override fun getYear(): Int = Integer.parseInt("20${getInsertedYear()}")
 
-    fun setMonthLengthFilter(filter: InputFilter?) {
-        monthEditText.filters += filter
+    override fun isValid(valid: Boolean) {
+        setLayout(valid, monthEditText)
+        setLayout(valid, yearEditText)
     }
 
-    fun setYearLengthFilter(filter: InputFilter?) {
-        yearEditText.filters += filter
+    override fun applyLengthFilter(inputFilter: InputFilter) {
+        monthEditText.filters += inputFilter
+        yearEditText.filters += inputFilter
     }
-
-    fun onValidationResult(valid: Boolean) {
-        onMonthValidationResult(valid)
-        onYearValidationResult(valid)
-    }
-
-    fun onMonthValidationResult(valid: Boolean) = setLayout(valid, monthEditText)
-
-    fun onYearValidationResult(valid: Boolean) = setLayout(valid, yearEditText)
 
     private fun setContentListeners() {
         monthEditText.addTextChangedListener(object : TextWatcher {

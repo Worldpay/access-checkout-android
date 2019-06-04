@@ -3,6 +3,8 @@ package com.worldpay.access.checkout
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.testutils.mock
+import com.worldpay.access.checkout.testutils.typeSafeAny
+import com.worldpay.access.checkout.testutils.typeSafeEq
 import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.views.*
@@ -10,6 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
+import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.robolectric.RobolectricTestRunner
@@ -171,7 +174,7 @@ class AccessCheckoutCardTest {
     }
 
     @Test
-    fun givenPANHasBeenUpdatedThenCardListenerIsNotifiedOfResult() {
+    fun givenPANHasBeenUpdatedToCompletelyValidThenCardListenerIsNotifiedOfResult() {
         val updatedPan = "1234"
         val cardBrand = CardBrand("test", "test", null, emptyList())
         val panValidationResult = ValidationResult(partial = false, complete = true)
@@ -184,6 +187,76 @@ class AccessCheckoutCardTest {
         verify(cardListener).onUpdate(panView, true)
         verify(cardListener).onUpdateCardBrand(cardBrand)
         verify(cardListener).onUpdateLengthFilter(panView, panLengthFilter)
+        verify(cardListener).onUpdate(cvvView, false)
+    }
+
+    @Test
+    fun givenPANHasBeenUpdatedToPartiallyValidThenCardListenerIsNotifiedOfResult() {
+        val updatedPan = "1234"
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val panValidationResult = ValidationResult(partial = true, complete = false)
+        val cvvValidationResult = ValidationResult(partial = false, complete = false)
+        given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
+        given(cardValidator.validateCVV(cvv, updatedPan)).willReturn(Pair(cvvValidationResult, cardBrand))
+
+        card.onUpdatePAN(updatedPan)
+
+        verify(cardListener).onUpdate(panView, true)
+        verify(cardListener).onUpdateCardBrand(cardBrand)
+        verify(cardListener).onUpdateLengthFilter(panView, panLengthFilter)
+        verify(cardListener).onUpdate(cvvView, false)
+    }
+
+    @Test
+    fun givenPANHasBeenUpdatedToInvalidThenCardListenerIsNotifiedOfResult() {
+        val updatedPan = "1234"
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val panValidationResult = ValidationResult(partial = false, complete = false)
+        val cvvValidationResult = ValidationResult(partial = false, complete = false)
+        given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
+        given(cardValidator.validateCVV(cvv, updatedPan)).willReturn(Pair(cvvValidationResult, cardBrand))
+
+        card.onUpdatePAN(updatedPan)
+
+        verify(cardListener).onUpdate(panView, false)
+        verify(cardListener).onUpdateCardBrand(cardBrand)
+        verify(cardListener).onUpdateLengthFilter(panView, panLengthFilter)
+        verify(cardListener).onUpdate(cvvView, false)
+    }
+
+    @Test
+    fun givenPANHasBeenUpdatedToPartiallyAndCompletelyValidThenCardListenerIsNotifiedOfResult() {
+        val updatedPan = "1234"
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val panValidationResult = ValidationResult(partial = true, complete = true)
+        val cvvValidationResult = ValidationResult(partial = false, complete = false)
+        given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
+        given(cardValidator.validateCVV(cvv, updatedPan)).willReturn(Pair(cvvValidationResult, cardBrand))
+
+        card.onUpdatePAN(updatedPan)
+
+        verify(cardListener).onUpdate(panView, true)
+        verify(cardListener).onUpdateCardBrand(cardBrand)
+        verify(cardListener).onUpdateLengthFilter(panView, panLengthFilter)
+        verify(cardListener).onUpdate(cvvView, false)
+    }
+
+    @Test
+    fun givenPANHasBeenUpdatedAndNoLengthFilterThenCardListenerIsNotifiedOfResultButNoLengthFilterUpdate() {
+        val updatedPan = "1234"
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val panValidationResult = ValidationResult(partial = true, complete = true)
+        val cvvValidationResult = ValidationResult(partial = false, complete = false)
+        given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
+        given(cardValidator.validateCVV(cvv, updatedPan)).willReturn(Pair(cvvValidationResult, cardBrand))
+        card = AccessCheckoutCard(context, panView, cvvView, dateView, factory, panLengthFilter = null)
+        card.cardListener = cardListener
+
+        card.onUpdatePAN(updatedPan)
+
+        verify(cardListener).onUpdate(panView, true)
+        verify(cardListener).onUpdateCardBrand(cardBrand)
+        verify(cardListener, Mockito.times(0)).onUpdateLengthFilter(typeSafeEq(panView), typeSafeAny())
         verify(cardListener).onUpdate(cvvView, false)
     }
 
@@ -245,7 +318,33 @@ class AccessCheckoutCardTest {
     }
 
     @Test
-    fun givenCVVHasBeenUpdatedThenCardListenerIsNotifiedOfResult() {
+    fun givenCVVHasBeenUpdatedToCompletelyValidThenCardListenerIsNotifiedOfResult() {
+        val updatedCVV = "1234"
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val cvvValidationResult = ValidationResult(partial = false, complete = true)
+        given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
+
+        card.onUpdateCVV(updatedCVV)
+
+        verify(cardListener).onUpdate(cvvView, true)
+        verify(cardListener).onUpdateLengthFilter(cvvView, cvvLengthFilter)
+    }
+
+    @Test
+    fun givenCVVHasBeenUpdatedToPartiallyValidThenCardListenerIsNotifiedOfResult() {
+        val updatedCVV = "1234"
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val cvvValidationResult = ValidationResult(partial = true, complete = false)
+        given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
+
+        card.onUpdateCVV(updatedCVV)
+
+        verify(cardListener).onUpdate(cvvView, true)
+        verify(cardListener).onUpdateLengthFilter(cvvView, cvvLengthFilter)
+    }
+
+    @Test
+    fun givenCVVHasBeenUpdatedToInvalidThenCardListenerIsNotifiedOfResult() {
         val updatedCVV = "1234"
         val cardBrand = CardBrand("test", "test", null, emptyList())
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
@@ -255,6 +354,34 @@ class AccessCheckoutCardTest {
 
         verify(cardListener).onUpdate(cvvView, false)
         verify(cardListener).onUpdateLengthFilter(cvvView, cvvLengthFilter)
+    }
+
+    @Test
+    fun givenCVVHasBeenUpdatedToPartiallyAndCompletelyValidThenCardListenerIsNotifiedOfResult() {
+        val updatedCVV = "1234"
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val cvvValidationResult = ValidationResult(partial = true, complete = true)
+        given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
+
+        card.onUpdateCVV(updatedCVV)
+
+        verify(cardListener).onUpdate(cvvView, true)
+        verify(cardListener).onUpdateLengthFilter(cvvView, cvvLengthFilter)
+    }
+
+    @Test
+    fun givenCVVHasBeenUpdatedAndNoLengthFilterThenCardListenerIsNotifiedOfResultButNoLengthFilterUpdate() {
+        val updatedCVV = "1234"
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val cvvValidationResult = ValidationResult(partial = true, complete = false)
+        given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
+        card = AccessCheckoutCard(context, panView, cvvView, dateView, factory, cvvLengthFilter = null)
+        card.cardListener = cardListener
+
+        card.onUpdateCVV(updatedCVV)
+
+        verify(cardListener).onUpdate(cvvView, true)
+        verify(cardListener, Mockito.times(0)).onUpdateLengthFilter(typeSafeEq(cvvView), typeSafeAny())
     }
 
     @Test
@@ -344,6 +471,40 @@ class AccessCheckoutCardTest {
     }
 
     @Test
+    fun givenMonthHasBeenUpdatedToPartiallyCompleteMonthThenCardListenerIsNotifiedOfValidationResult() {
+        val month = "0"
+        val year = "1"
+        given(dateView.getInsertedMonth()).willReturn(month)
+        given(dateView.getInsertedYear()).willReturn(year)
+        given(cardValidator.canUpdate(month, year)).willReturn(true)
+
+        val monthValidationResult = ValidationResult(partial = true, complete = false)
+        given(cardValidator.validateDate(month, null)).willReturn(monthValidationResult)
+
+        card.onUpdateDate(month, null)
+
+        verify(cardListener).onUpdate(dateView, true)
+        verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
+    }
+
+    @Test
+    fun givenMonthHasBeenUpdatedToInvalidMonthThenCardListenerIsNotifiedOfValidationResult() {
+        val month = "13"
+        val year = "1"
+        given(dateView.getInsertedMonth()).willReturn(month)
+        given(dateView.getInsertedYear()).willReturn(year)
+        given(cardValidator.canUpdate(month, year)).willReturn(true)
+
+        val monthValidationResult = ValidationResult(partial = false, complete = false)
+        given(cardValidator.validateDate(month, null)).willReturn(monthValidationResult)
+
+        card.onUpdateDate(month, null)
+
+        verify(cardListener).onUpdate(dateView, false)
+        verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
+    }
+
+    @Test
     fun givenMonthHasBeenUpdatedThenCardListenerIsNotifiedOfMonthValidationResult() {
         val month = "08"
         given(dateView.getInsertedYear()).willReturn("")
@@ -370,6 +531,36 @@ class AccessCheckoutCardTest {
         card.onUpdateDate(null, year)
 
         verify(cardListener).onUpdate(dateView, true)
+        verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
+    }
+
+    @Test
+    fun givenYearHasBeenUpdatedToPartiallyValidThenCardListenerIsNotifiedOfYearValidationResult() {
+        val year = "2"
+        given(dateView.getInsertedMonth()).willReturn("")
+        given(dateView.getInsertedYear()).willReturn(year)
+        given(cardValidator.canUpdate("", year)).willReturn(true)
+
+        given(cardValidator.validateDate(null, year)).willReturn(ValidationResult(partial = true, complete = false))
+
+        card.onUpdateDate(null, year)
+
+        verify(cardListener).onUpdate(dateView, true)
+        verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
+    }
+
+    @Test
+    fun givenYearHasBeenUpdatedToInvalidThenCardListenerIsNotifiedOfYearValidationResult() {
+        val year = "18"
+        given(dateView.getInsertedMonth()).willReturn("")
+        given(dateView.getInsertedYear()).willReturn(year)
+        given(cardValidator.canUpdate("", year)).willReturn(true)
+
+        given(cardValidator.validateDate(null, year)).willReturn(ValidationResult(partial = false, complete = false))
+
+        card.onUpdateDate(null, year)
+
+        verify(cardListener).onUpdate(dateView, false)
         verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
     }
 
