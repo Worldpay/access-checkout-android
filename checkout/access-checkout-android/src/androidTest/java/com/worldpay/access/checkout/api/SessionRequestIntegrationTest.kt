@@ -110,9 +110,9 @@ class SessionRequestIntegrationTest {
         var assertResponse = false
 
         val responseListener = object : SessionResponseListener {
-            override fun onRequestFinished(sessionReference: String?, error: AccessCheckoutException?) {
-                assertResponse = sessionReference!! == expectedSessionReference
-                assertTrue("Actual response is $sessionReference") { assertResponse }
+            override fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?) {
+                assertResponse = sessionState!! == expectedSessionReference
+                assertTrue("Actual response is $sessionState") { assertResponse }
             }
 
             override fun onRequestStarted() {
@@ -178,11 +178,11 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
-                assertResponse = sessionReference == null && error != null
-                assertTrue("Actual response is $sessionReference") { assertResponse }
+                assertResponse = sessionState == null && error != null
+                assertTrue("Actual response is $sessionState") { assertResponse }
             }
         }
 
@@ -250,14 +250,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.PAN_FAILED_LUHN_CHECK)
 
@@ -333,7 +333,7 @@ class SessionRequestIntegrationTest {
         var assertResponse = false
 
         val responseListener = object : SessionResponseListener {
-            override fun onRequestFinished(sessionReference: String?, error: AccessCheckoutException?) {
+            override fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?) {
 
                 if (error == null)
                     fail("Expected error not detected")
@@ -346,9 +346,9 @@ class SessionRequestIntegrationTest {
                         listOf(ValidationRule(ValidationRuleName.FIELD_HAS_INVALID_VALUE, "", ""))
                     )
                 )
-                assertResponse = sessionReference == null && exceptionValidated
+                assertResponse = sessionState == null && exceptionValidated
 
-                assertTrue("Actual response is $sessionReference") { assertResponse }
+                assertTrue("Actual response is $sessionState") { assertResponse }
             }
 
             override fun onRequestStarted() {
@@ -416,14 +416,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.FIELD_IS_MISSING)
 
@@ -498,14 +498,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.STRING_IS_TOO_SHORT)
 
@@ -578,14 +578,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.STRING_IS_TOO_LONG)
 
@@ -656,14 +656,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.FIELD_MUST_BE_INTEGER)
 
@@ -734,14 +734,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.INTEGER_IS_TOO_SMALL)
 
@@ -812,14 +812,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.INTEGER_IS_TOO_LARGE)
 
@@ -890,14 +890,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.FIELD_MUST_BE_NUMBER)
 
@@ -961,14 +961,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.BODY_IS_NOT_JSON)
 
 
@@ -1031,14 +1031,14 @@ class SessionRequestIntegrationTest {
             }
 
             override fun onRequestFinished(
-                sessionReference: String?,
+                sessionState: String?,
                 error: AccessCheckoutException?
             ) {
                 if (error == null)
                     fail("Expected error not detected")
 
                 error as AccessCheckoutClientError
-                assertExpectedErrorRaised = sessionReference == null &&
+                assertExpectedErrorRaised = sessionState == null &&
                         matchesExpectedType(error, Error.METHOD_NOT_ALLOWED)
 
 

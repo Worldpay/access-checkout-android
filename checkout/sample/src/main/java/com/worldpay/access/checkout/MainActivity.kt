@@ -12,7 +12,6 @@ import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.views.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
-import java.lang.Exception
 
 
 class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener {
@@ -66,13 +65,13 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         toggleLoading(false)
     }
 
-    override fun onRequestFinished(sessionReference: String?, error: AccessCheckoutException?) {
-        debugLog("MainActivity", "Received session reference: $sessionReference")
+    override fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?) {
+        debugLog("MainActivity", "Received session reference: $sessionState")
         loading = false
         toggleLoading(true)
         val toastMessage : String
-        if (!sessionReference.isNullOrBlank()){
-            toastMessage = "Ref: $sessionReference"
+        if (!sessionState.isNullOrBlank()){
+            toastMessage = "Ref: $sessionState"
             resetFields()
         }
         else {

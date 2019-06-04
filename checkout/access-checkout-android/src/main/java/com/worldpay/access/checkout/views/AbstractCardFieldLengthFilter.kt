@@ -10,6 +10,11 @@ import com.worldpay.access.checkout.validation.CardBrandUtils
 import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
 
+/**
+ * [AbstractCardFieldLengthFilter] is a common abstraction class which is used by individual field implementers to restrict the length of a particular card field
+ *
+ * @param cardConfiguration the configuration to use for determining the length for the field
+ */
 sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardConfiguration) : InputFilter {
 
     internal val lengthFiltersBySizeCache: MutableMap<Int, InputFilter.LengthFilter> = mutableMapOf()
@@ -55,6 +60,10 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
     abstract fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule?
 }
 
+/**
+ * [CVVLengthFilter] applies a length restriction to the cvv field based on the identity of the card detected during
+ * input
+ */
 class CVVLengthFilter(
     private val cardValidator: CardValidator,
     cardConfiguration: CardConfiguration,
@@ -70,6 +79,10 @@ class CVVLengthFilter(
 
 }
 
+/**
+ * [PANLengthFilter] applies a length restriction to the pan field based on the identity of the card detected during
+ * input
+ */
 class PANLengthFilter(private val cardValidator: CardValidator, cardConfiguration: CardConfiguration) :
     AbstractCardFieldLengthFilter(cardConfiguration) {
 
@@ -83,6 +96,9 @@ class PANLengthFilter(private val cardValidator: CardValidator, cardConfiguratio
 
 }
 
+/**
+ * [DateLengthFilter] applies a length restriction to the date field based on configuration defaults
+ */
 class DateLengthFilter(cardConfiguration: CardConfiguration): AbstractCardFieldLengthFilter(cardConfiguration) {
     override fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule? = cardDefaults?.month ?: cardDefaults?.year
 

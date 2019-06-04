@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.api
 
-interface Callback<T> {
+internal interface Callback<T> {
 
     fun onResponse(error: Exception?, response: T?)
 }

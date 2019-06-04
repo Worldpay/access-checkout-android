@@ -17,7 +17,9 @@ import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientF
 import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
 import com.worldpay.access.checkout.views.*
 
-
+/**
+ * [AccessCheckoutClient] is responsible for handling the request for a session state from the Access Worldpay services.
+ */
 class AccessCheckoutClient private constructor(
     private val baseURL: String,
     private val merchantID: String,
@@ -70,6 +72,15 @@ class AccessCheckoutClient private constructor(
         }
     }
 
+    /**
+     * Method which triggers a generate session state request to the Access Worldpay sessions API. The response will come back through the
+     * [SessionResponseListener]
+     *
+     * @param pan the pan to submit
+     * @param month the month to submit
+     * @param year the year to submit
+     * @param cvv the cvv to submit
+     */
     fun generateSessionState(pan: String, month: Int, year: Int, cvv: String) {
         mListener.onRequestStarted()
         val cardExpiryDate = SessionRequest.CardExpiryDate(month, year)
@@ -83,9 +94,9 @@ class AccessCheckoutClient private constructor(
 
     override fun onRequestStarted() {}
 
-    override fun onRequestFinished(sessionReference: String?, error: AccessCheckoutException?) {
+    override fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?) {
         debugLog(TAG, "Received session reference")
-        mListener.onRequestFinished(sessionReference, error)
+        mListener.onRequestFinished(sessionState, error)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
