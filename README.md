@@ -43,7 +43,7 @@ allprojects {
 Add the following lines to the app level dependency list (kotlin version can be changed):
 
 ``` 
-implementation (name:'access-checkout-android-release', ext:'aar')
+implementation (name:'access-checkout-android-1.0.0', ext:'aar')
 implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 ```
 
@@ -53,14 +53,16 @@ implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 ### Basics
 
 
-`AccessCheckoutClient` is the class you will need to initialise, at the very least, in order to use the Access Checkout SDK. It will be the class that you will interact with in order to generate a session state from
-the Access Worldpay services. In order for you to do this, you must first call the `init()` method of this class and provide some dependencies, more details on this will be explained later.
+The main step required in order to use the Access Checkout SDK is the initialisation of an instance of `AccessCheckoutClient`. 
+Interaction with this class will allow developers to obtain a session state from Access Worldpay services. 
 
-`AccessCheckoutCard` is the coordinator class between the view inputs, the (optional) validations of those inputs, and the callback of those validation results to your `CardListener`
+This can be achieved by invoking the `init()` method of this class and by providing the required dependencies, more details provided in the following sections.
 
-Our SDK is fully customizable and provides default card views that implement the required interfaces out of the box. For advanced styling you may choose to override certain aspects of it or implement the required interfaces yourself (interfaces are described at the end of the section)
+`AccessCheckoutCard` is the coordinator class between the view inputs, the (optional) validators of those inputs, and the callback of those validation results to an implementation of `CardListener`
 
-Firstly, you will need to define the card views in a layout configuration file:
+The SDK is fully customizable and provides default card views that implement the required interfaces out of the box. For advanced styling, it is possible to override some of the default implementations or to provide fully customized implementations of the required interfaces. The interfaces are described at the end of the section.
+
+Firstly, a layout configuration file with the card views is defined as below:
 ```
 <com.worldpay.access.checkout.views.PANLayout
             android:id="@+id/panView"
@@ -81,7 +83,7 @@ Firstly, you will need to define the card views in a layout configuration file:
 ```
 
 
-Having inflated the custom views, initialize the `AccessCheckoutClient`. You may wish to do this at any point in your `Application`'s lifecycle, but this will need to be done prior to the point at which the card details should be submitted.
+Having inflated the custom views, initialize the `AccessCheckoutClient`. Initialisation can be performed at any point suitable for the application, but it will need to be done prior to card details submission.
 
 ```
 import com.worldpay.access.checkout.AccessCheckoutClient
@@ -101,7 +103,7 @@ accessCheckoutClient = AccessCheckoutClient.init(
         )
 ```
 
-When the form data is ready to be submitted, call the `generateSessionState` in order to create a session state, passing along the data from each of the fields:
+When the form data is ready to be submitted, `generateSessionState` may be called in order to create a session state, passing along the data from each of the fields:
 
 ```
 val pan = panView.getInsertedText()
@@ -121,8 +123,7 @@ accessCheckoutClient.generateSessionState(pan, month, year, cvv)
 
 ### Validation
 
-In order to take advantage of using the in-built validation on the card fields, then you will need to do
-some additional set up of the SDK. 
+In order to take advantage of the in-built validation on the card fields, there is an additional setup step. 
 
 ```
 val card = AccessCheckoutCard(
@@ -131,15 +132,60 @@ val card = AccessCheckoutCard(
         cardCVVText,        // The CVV view
         cardExpiryText      // The Expiry view
   )
-card.cardListener = this    // or wherever the reference to your `CardListener` is
+card.cardListener = this    // reference to `CardListener` implementation
 
 panView.cardViewListener = card
 cardCVVText.cardViewListener = card
 cardExpiryText.cardViewListener = card
 ```
 
-It is important that if you do wish to take advantage of our validation rules, that you implement the 
-following interface for the callbacks: `CardListener`. These include all the functions which will be invoked
-by the SDK when the fields have finished validating on different user events, for e.g. on each key stroke, on a field losing focus etc.
+If taking advantage of the provided validators it is important to implement the `CardListener` interface for its callback methods.
+
+These include all the functions invoked by the SDK at the time when the fields have finished validating on different user input events, for e.g. on each key stroke, on a field losing focus etc.
 
 See an example of this interface being implemented in our sample application in the `MainActivity`
+
+
+#### Receiving the Session State 
+
+
+When the request for a session state starts, the `SessionResponseListener` is notified via the  `onRequestStarted()` callback method. 
+
+When a result becomes available, the implementing class of `SessionResponseListener` will receive the callback holding the session state or an exception describing the error.
+
+`onRequestFinished(sessionState: String?, error: AccessCheckoutException?)`
+
+#### When things go wrong: `AccessCheckoutException`
+
+If there is a problem, `SessionResponseListener` will be notified through the same `onRequestFinished(sessionState: String?, error: AccessCheckoutException?)` callback, this time with a `null` sessionState and non-null error.
+
+The following table of errors can be found in the enum class `com.worldpay.access.checkout.api.AccessCheckoutException.Error`
+
+| HTTP Code | Error name | Message |
+| --- | --- | --- |
+| 400 | bodyIsNotJson | The body within the request is not valid json |
+| 400 | bodyIsEmpty | The body within the request is empty |
+| 400 | bodyDoesNotMatchSchema | The json body provided does not match the expected schema |
+| 404 | resourceNotFound | Requested resource was not found |
+| 404 | endpointNotFound | Requested endpoint was not found |
+| 405 | methodNotAllowed | Requested method is not allowed |
+| 406 | unsupportedAcceptHeader | Accept header is not supported |
+| 415 | unsupportedContentType | Content-type header is not supported |
+| 500 | internalErrorOccurred | Internal server error |
+| 500 | unknownError | Unknown error |
+
+
+If presented with a `bodyDoesNotMatchSchema` error, a list of the broken validation rules may be provided to help with debugging the problem.
+
+`AccessCheckoutClientError` is the subclass used for the above issues.
+```
+data class AccessCheckoutClientError(
+        val error: Error,
+        override val message: String?,
+        val validationRules: List<ValidationRule>? = null
+    ) : AccessCheckoutException()
+```
+
+The property `validationRules` contains a list of `ValidationRule`s which includes the broken rule, a description message and the JSON path to the offending property.
+
+`data class ValidationRule(val errorName: ValidationRuleName, val message: String, val jsonPath: String)`

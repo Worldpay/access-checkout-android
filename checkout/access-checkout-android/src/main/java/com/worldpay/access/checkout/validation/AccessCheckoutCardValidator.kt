@@ -2,6 +2,10 @@ package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.model.CardBrand
 
+/**
+ * Implementation of a [CardValidator] which delegates responsibility of validating the card fields to the individual
+ * card validator implementations
+ */
 class AccessCheckoutCardValidator(
     private val panValidator: PANValidator,
     private val cvvValidator: CVVValidator,

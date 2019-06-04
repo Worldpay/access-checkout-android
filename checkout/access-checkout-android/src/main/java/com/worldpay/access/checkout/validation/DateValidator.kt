@@ -6,8 +6,26 @@ import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResul
 import java.util.*
 import java.util.Calendar.*
 
+/**
+ * Validator for the date field
+ */
 interface DateValidator {
+    /**
+     * Validates the date field
+     *
+     * @param month (Optional) the month to validate
+     * @param year (Optional) the year to validate
+     * @return a [ValidationResult] for the date field
+     */
     fun validate(month: Month?, year: Year?): ValidationResult
+
+    /**
+     * Determines whether the date field can be updated with extra characters
+     *
+     * @param month (Optional) the month to validate
+     * @param year (Optional) the year to validate
+     * @return true if extra characters can be entered, false otherwise
+     */
     fun canUpdate(month: Month?, year: Year?): Boolean
 }
 
