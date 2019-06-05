@@ -14,6 +14,8 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
+import org.mockito.BDDMockito.given
+import org.mockito.Mockito.mock
 import java.net.URL
 import kotlin.test.fail
 
@@ -294,6 +296,62 @@ class PactTest {
             .toPact()
     }
 
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
+    fun createEmptyBodyErrorInteractionRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
+        return builder
+            .uponReceiving("A request for a session reference with empty body")
+            .path(path)
+            .method("POST")
+            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .body("")
+            .willRespondWith()
+            .status(400)
+            .headers(
+                mapOf(
+                    Pair(
+                        "Content-Type",
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                    )
+                )
+            )
+            .body(
+                generateResponseVariation1(
+                    "bodyIsEmpty",
+                    "The body within the request is empty"
+                )
+            )
+            .toPact()
+    }
+
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
+    fun createVariation2ErrorInteraction(builder: PactDslWithProvider): RequestResponsePact {
+        return builder
+            .uponReceiving("A request for a session reference with empty body")
+            .path(path)
+            .method("POST")
+            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .body(generateEmptyBodyRequest())
+            .willRespondWith()
+            .status(400)
+            .headers(
+                mapOf(
+                    Pair(
+                        "Content-Type",
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                    )
+                )
+            )
+            .body(
+                generateResponseVariation1(
+                    "bodyIsEmpty",
+                    "The body within the request is empty"
+                )
+            )
+            .toPact()
+    }
+
 
     @Test
     @PactVerification("verified-tokens", fragment = "createSuccessfulRequestInteraction")
@@ -447,7 +505,6 @@ class PactTest {
         }
     }
 
-
     @Test
     @PactVerification("verified-tokens", fragment = "createIntegerMonthTooLargeRequestInteraction")
     fun givenIntegerMonthTooLargeInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
@@ -503,8 +560,41 @@ class PactTest {
         } catch (ex: Exception) {
             fail("Should not have reached here!")
         }
-    }//--------------------<
+    }
 
+    @Test
+    @PactVerification("verified-tokens", fragment = "createEmptyBodyErrorInteractionRequestInteraction")
+    fun givenEmptyBodyInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
+
+        val mockEmptySerializer = mock(SessionRequestSerializer::class.java)
+
+        val emptyString = ""
+        val sessionRequest =
+            SessionRequest(emptyString, SessionRequest.CardExpiryDate(1, 99), emptyString, emptyString)
+
+
+        given(mockEmptySerializer.serialize(sessionRequest))
+            .willReturn(emptyString)
+
+        sessionClient = SessionClientImpl(SessionResponseDeserializer(), mockEmptySerializer, HttpClient())
+
+        try {
+            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            fail("Should not have reached here!")
+        } catch (ex: AccessCheckoutClientError) {
+
+            val accessCheckoutClientError = AccessCheckoutClientError(
+                Error.BODY_IS_EMPTY,
+                "The body within the request is empty"
+            )
+            assertEquals(accessCheckoutClientError, ex)
+        } catch (ex: Exception) {
+            fail("Should not have reached here!")
+        }
+    }
+
+
+    private fun generateEmptyBodyRequest() = ""
 
     private fun generateRequest(
         identity: String = this.identity,
@@ -524,14 +614,21 @@ class PactTest {
             .stringValue("identity", identity)
     }
 
-    private fun generateResponse(errorName: String, message: String, jsonPath: String) = PactDslJsonBody()
-        .stringValue("errorName", "bodyDoesNotMatchSchema")
-        .stringValue("message", "The json body provided does not match the expected schema")
-        .array("validationErrors")
-        .`object`()
-        .stringValue("errorName", errorName)
-        .stringValue("message", message)
-        .stringValue("jsonPath", jsonPath)
-        .closeObject()
-        .closeArray()
+    private fun generateResponse(brokenRuleErrorName: String, brokenRuleMessage: String, jsonPath: String) =
+        PactDslJsonBody()
+            .stringValue("errorName", "bodyDoesNotMatchSchema")
+            .stringValue("message", "The json body provided does not match the expected schema")
+            .array("validationErrors")
+            .`object`()
+            .stringValue("errorName", brokenRuleErrorName)
+            .stringValue("message", brokenRuleMessage)
+            .stringValue("jsonPath", jsonPath)
+            .closeObject()
+            .closeArray()
+
+    private fun generateResponseVariation1(errorName: String, message: String) =
+        PactDslJsonBody()
+            .stringValue("errorName", errorName)
+            .stringValue("message", message)
+
 }
