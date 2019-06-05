@@ -209,7 +209,7 @@ class MockServerTest {
             .url("$baseURL/access-checkout/cardConfiguration.json")
             .build()
 
-        val cardConfigurationInputStream = activityRule.activity.resources.openRawResource(R.raw.card_configuration)
+        val cardConfigurationInputStream = activityRule.activity.resources.openRawResource(R.raw.card_configuration_file)
         val cardConfigurationAsString = cardConfigurationInputStream.reader(Charsets.UTF_8).readText()
 
         client.newCall(request).execute().use { response ->
