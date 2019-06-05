@@ -117,6 +117,7 @@ object MockServer {
                 .withRequestBody(AnythingPattern())
                 .willReturn(validSessionResponseWithDelay(context, 2000))
         )
+        stubCardConfiguration(context)
     }
 
     fun simulateDelayedResponse(context: Context) {
@@ -197,6 +198,16 @@ object MockServer {
                 .withRequestBody(AnythingPattern())
                 .willReturn(validSessionResponseWithDelay(context, 2000))
         )
+    }
+
+    fun stubCardConfiguration(context: Context) {
+        wireMockServer.stubFor(get("/access-checkout/cardConfiguration.json")
+            .willReturn(
+                aResponse()
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(context.resources.openRawResource(R.raw.card_configuration).reader(Charsets.UTF_8).readText())
+            ))
     }
 
     private fun stubRootResource() {

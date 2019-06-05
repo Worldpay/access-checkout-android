@@ -12,7 +12,6 @@ import okhttp3.Request
 import okhttp3.RequestBody
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matchers.equalTo
-import org.junit.After
 import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
@@ -198,5 +197,23 @@ class MockServerTest {
             )))
         }
 
+    }
+
+    @Test
+    fun givenCardConfigurationIsHosted_ThenShouldBeAbleToFetchTheConfigurationExternally() {
+        val client = OkHttpClient()
+
+        val baseURL = "http://localhost:$port"
+
+        val request = Request.Builder()
+            .url("$baseURL/access-checkout/cardConfiguration.json")
+            .build()
+
+        val cardConfigurationInputStream = activityRule.activity.resources.openRawResource(R.raw.card_configuration)
+        val cardConfigurationAsString = cardConfigurationInputStream.reader(Charsets.UTF_8).readText()
+
+        client.newCall(request).execute().use { response ->
+            assertThat(response.body()?.string(), CoreMatchers.equalTo(cardConfigurationAsString))
+        }
     }
 }
