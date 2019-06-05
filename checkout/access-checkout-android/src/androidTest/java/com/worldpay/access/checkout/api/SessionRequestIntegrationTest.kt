@@ -280,8 +280,6 @@ class SessionRequestIntegrationTest {
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
 
         accessCheckoutClient.disconnectListener()
-
-
     }
 
     @Test
@@ -1066,18 +1064,6 @@ class SessionRequestIntegrationTest {
         expected.message.orEmpty().let {
             ex.message.orEmpty().contains(it, true)
         }
-
-    private fun assertActualExceptionIsExpected(ex: Exception, expectedMessage: String): Boolean {
-        if (ex.message.orEmpty().contains(expectedMessage, true))
-            return true
-        else {
-            (ex as AccessCheckoutClientError).validationRules.orEmpty().forEach {
-                if (it.message.contains(expectedMessage))
-                    return true
-            }
-        }
-        return false
-    }
 
     private fun matchesExpectedType(exception: AccessCheckoutClientError, expectedErrorType: Error) =
         exception.error == expectedErrorType

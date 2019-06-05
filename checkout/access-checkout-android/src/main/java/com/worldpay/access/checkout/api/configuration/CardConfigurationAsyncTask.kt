@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.model.CardConfiguration
 import java.net.URL
 
 internal class CardConfigurationAsyncTask(private val callback: Callback<CardConfiguration>,
-                                          private val cardConfigurationClient: CardConfigurationClient) :
+                                          private val cardConfigurationClient: CardConfigurationClient = CardConfigurationClient()) :
     AsyncTask<String, Void, AsyncTaskResult<CardConfiguration>>() {
 
 
