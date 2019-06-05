@@ -1,8 +1,6 @@
 package com.worldpay.access.checkout.views
 
-import android.content.Context
 import android.text.InputFilter
-import android.util.AttributeSet
 import com.worldpay.access.checkout.R
 import org.junit.Assert.assertArrayEquals
 import org.junit.Assert.assertNotNull
@@ -10,15 +8,18 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.Mockito.*
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.assertEquals
+
 
 @RunWith(RobolectricTestRunner::class)
 class CardCVVTextTest {
 
     private lateinit var cardCVVText: CardCVVText
     private val context = ShadowInstrumentation.getInstrumentation().context
+    private val attr = Robolectric.buildAttributeSet().build()
 
     @Before
     fun setup() {
@@ -32,14 +33,14 @@ class CardCVVTextTest {
 
     @Test
     fun `should initialise using context and attribute set`() {
-        val cardCVVText = CardCVVText(context, mock(AttributeSet::class.java))
+        val cardCVVText = CardCVVText(context, attr)
 
         assertNotNull(cardCVVText)
     }
 
     @Test
     fun `should initialise using context and attribute set and style set`() {
-        val cardCVVText = CardCVVText(context, mock(AttributeSet::class.java), 0)
+        val cardCVVText = CardCVVText(context, attr, 0)
 
         assertNotNull(cardCVVText)
     }

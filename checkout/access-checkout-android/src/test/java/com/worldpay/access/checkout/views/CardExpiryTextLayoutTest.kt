@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.views
 
 import android.text.InputFilter
-import android.util.AttributeSet
 import android.view.View.FOCUSABLE
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.testutils.typeSafeAny
@@ -12,6 +11,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
+import org.robolectric.Robolectric.buildAttributeSet as robolectricBuildAttributeSet
 
 @RunWith(RobolectricTestRunner::class)
 class CardExpiryTextLayoutTest {
@@ -22,7 +22,7 @@ class CardExpiryTextLayoutTest {
 
     @Before
     fun setup() {
-        cardExpiryTextLayout = CardExpiryTextLayout(context, mock(AttributeSet::class.java), 0)
+        cardExpiryTextLayout = CardExpiryTextLayout(context, robolectricBuildAttributeSet().build(), 0)
         cardViewListener = mock(CardViewListener::class.java)
         cardExpiryTextLayout.cardViewListener = cardViewListener
     }
