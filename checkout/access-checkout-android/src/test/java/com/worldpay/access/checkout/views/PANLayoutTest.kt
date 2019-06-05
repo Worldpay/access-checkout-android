@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.views
 
 import android.content.Context
 import android.text.InputFilter
-import android.util.AttributeSet
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.views.PANLayout.Companion.CARD_TAG
 import org.junit.Assert.*
@@ -12,6 +11,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mockito.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
+import org.robolectric.Robolectric.buildAttributeSet as robolectricBuildAttributeSet
 
 @RunWith(RobolectricTestRunner::class)
 class PANLayoutTest {
@@ -112,7 +112,7 @@ class PANLayoutTest {
 
 }
 
-class PANLayoutTestInstance(context: Context) : PANLayout(context, mock(AttributeSet::class.java), 0) {
+class PANLayoutTestInstance(context: Context) : PANLayout(context, robolectricBuildAttributeSet().build(), 0) {
 
     fun finishInflate() {
         super.onFinishInflate()
