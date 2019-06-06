@@ -16,8 +16,7 @@ import kotlinx.android.synthetic.main.date_view_layout.view.*
  * Access Checkout's default implementation of a expiry date field
  *
  * This class will handle the operations related to text changes and on focus changes, communicating those changes to the
- * required [CardViewListener], and receiving updates to change it's state through the [onValidationResult],
- * [onMonthValidationResult] and [onYearValidationResult] methods
+ * required [CardViewListener], and receiving updates to change it's state through the [isValid] method
  */
 open class CardExpiryTextLayout @JvmOverloads constructor(
     context: Context,
@@ -28,7 +27,8 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
         context,
         attrSet,
         defStyles
-    ), DateCardView {
+    ), CardDateView {
+
 
     override var cardViewListener: CardViewListener? = null
 
@@ -52,8 +52,6 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
         setContentListeners()
     }
 
-    override fun getInsertedText(): String = getInsertedMonth() + "/" + getInsertedYear()
-
     override fun getInsertedMonth() = monthEditText.text.toString()
 
     override fun getInsertedYear() = yearEditText.text.toString()
@@ -62,47 +60,15 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
 
     override fun getYear(): Int = Integer.parseInt("20${getInsertedYear()}")
 
-    /**
-     * Handles applying the length filter of the month field
-     *
-     * @param filter the length filter to apply to the month field
-     */
-    fun setMonthLengthFilter(filter: InputFilter?) {
-        monthEditText.filters += filter
+    override fun isValid(valid: Boolean) {
+        setLayout(valid, monthEditText)
+        setLayout(valid, yearEditText)
     }
 
-    /**
-     * Handles applying the length filter of the year field
-     *
-     * @param filter the length filter to apply to the year field
-     */
-    fun setYearLengthFilter(filter: InputFilter?) {
-        yearEditText.filters += filter
+    override fun applyLengthFilter(inputFilter: InputFilter) {
+        monthEditText.filters += inputFilter
+        yearEditText.filters += inputFilter
     }
-
-    /**
-     * Handles applying the state of the expiry date fields based on it's overall validity
-     *
-     * @param valid whether the full date field is valid
-     */
-    fun onValidationResult(valid: Boolean) {
-        onMonthValidationResult(valid)
-        onYearValidationResult(valid)
-    }
-
-    /**
-     * Handles applying the state of the expiry month field based on it's validity
-     *
-     * @param valid whether the month field is valid
-     */
-    fun onMonthValidationResult(valid: Boolean) = setLayout(valid, monthEditText)
-
-    /**
-     * Handles applying the state of the expiry year field based on it's validity
-     *
-     * @param valid whether the year field is valid
-     */
-    fun onYearValidationResult(valid: Boolean) = setLayout(valid, yearEditText)
 
     private fun setContentListeners() {
         monthEditText.addTextChangedListener(object : TextWatcher {
@@ -127,7 +93,7 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
 
     internal fun monthEditTextOnFocusChange(): OnFocusChangeListener {
         return OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
+            if (!hasFocus && !yearEditText.hasFocus()) {
                 cardViewListener?.onEndUpdateDate(getInsertedMonth(), null)
             }
         }
@@ -136,7 +102,7 @@ open class CardExpiryTextLayout @JvmOverloads constructor(
 
     internal fun yearEditTextOnFocusChange(): OnFocusChangeListener {
         return OnFocusChangeListener { _, hasFocus ->
-            if (!hasFocus) {
+            if (!hasFocus && !monthEditText.hasFocus()) {
                 cardViewListener?.onEndUpdateDate(null, getInsertedYear())
             }
         }

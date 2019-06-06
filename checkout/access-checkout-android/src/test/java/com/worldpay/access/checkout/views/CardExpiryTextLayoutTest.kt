@@ -1,7 +1,9 @@
 package com.worldpay.access.checkout.views
 
 import android.text.InputFilter
+import android.view.View.FOCUSABLE
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.testutils.typeSafeAny
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -104,6 +106,17 @@ class CardExpiryTextLayoutTest {
     }
 
     @Test
+    fun `should not update card view listener if month loses focus and moves to year field`() {
+        cardExpiryTextLayout.monthEditText.setText("12")
+        cardExpiryTextLayout.yearEditText.focusable = FOCUSABLE
+        cardExpiryTextLayout.yearEditText.requestFocus()
+
+        cardExpiryTextLayout.monthEditTextOnFocusChange().onFocusChange(null, false)
+
+        verify(cardViewListener, times(0)).onEndUpdateDate(typeSafeAny(), typeSafeAny())
+    }
+
+    @Test
     fun `should update card view listener on year loses focus`() {
         cardExpiryTextLayout.yearEditText.setText("29")
 
@@ -113,77 +126,44 @@ class CardExpiryTextLayoutTest {
     }
 
     @Test
-    fun `should update to success text color on valid month result`() {
-        cardExpiryTextLayout.onMonthValidationResult(true)
+    fun `should not update card view listener if year loses focus and moves to month field`() {
+        cardExpiryTextLayout.yearEditText.setText("29")
+        cardExpiryTextLayout.monthEditText.focusable = FOCUSABLE
+        cardExpiryTextLayout.monthEditText.requestFocus()
 
-        assertEquals(context.resources.getColor(R.color.SUCCESS, context.theme), cardExpiryTextLayout.monthEditText.currentTextColor)
+        cardExpiryTextLayout.yearEditTextOnFocusChange().onFocusChange(null, false)
+
+        verify(cardViewListener, times(0)).onEndUpdateDate(typeSafeAny(), typeSafeAny())
     }
 
     @Test
-    fun `should update to failure text color on invalid month result`() {
-        cardExpiryTextLayout.onMonthValidationResult(false)
-
-        assertEquals(context.resources.getColor(R.color.FAIL, context.theme), cardExpiryTextLayout.monthEditText.currentTextColor)
-    }
-
-    @Test
-    fun `should update to success text color on valid year result`() {
-        cardExpiryTextLayout.onYearValidationResult(true)
-
-        assertEquals(context.resources.getColor(R.color.SUCCESS, context.theme), cardExpiryTextLayout.yearEditText.currentTextColor)
-    }
-
-    @Test
-    fun `should update to failure text color on invalid year result`() {
-        cardExpiryTextLayout.onYearValidationResult(false)
-
-        assertEquals(context.resources.getColor(R.color.FAIL, context.theme), cardExpiryTextLayout.yearEditText.currentTextColor)
-    }
-
-    @Test
-    fun `should update both month and year to success text color on valid full date validation result`() {
-        cardExpiryTextLayout.onValidationResult(true)
+    fun `should update to success text color on valid result`() {
+        cardExpiryTextLayout.isValid(true)
 
         assertEquals(context.resources.getColor(R.color.SUCCESS, context.theme), cardExpiryTextLayout.monthEditText.currentTextColor)
         assertEquals(context.resources.getColor(R.color.SUCCESS, context.theme), cardExpiryTextLayout.yearEditText.currentTextColor)
     }
 
     @Test
-    fun `should update both month and year to fail text color on invalid full date validation result`() {
-        cardExpiryTextLayout.onValidationResult(false)
+    fun `should update to failure text color on invalid result`() {
+        cardExpiryTextLayout.isValid(false)
 
         assertEquals(context.resources.getColor(R.color.FAIL, context.theme), cardExpiryTextLayout.monthEditText.currentTextColor)
         assertEquals(context.resources.getColor(R.color.FAIL, context.theme), cardExpiryTextLayout.yearEditText.currentTextColor)
     }
 
     @Test
-    fun `should set month length filters`() {
+    fun `should set length filters`() {
         val filter = InputFilter.LengthFilter(2)
-        val filtersBefore: Array<InputFilter> = cardExpiryTextLayout.monthEditText.filters
+        val monthFiltersBefore: Array<InputFilter> = cardExpiryTextLayout.monthEditText.filters
+        val yearFiltersBefore: Array<InputFilter> = cardExpiryTextLayout.yearEditText.filters
 
-        cardExpiryTextLayout.setMonthLengthFilter(filter)
+        cardExpiryTextLayout.applyLengthFilter(filter)
 
-        val filtersAfter: Array<InputFilter> = cardExpiryTextLayout.monthEditText.filters
-        assertArrayEquals(filtersBefore.plus(filter), filtersAfter)
-    }
-
-    @Test
-    fun `should set year length filters`() {
-        val filter = InputFilter.LengthFilter(2)
-        val filtersBefore: Array<InputFilter> = cardExpiryTextLayout.yearEditText.filters
-
-        cardExpiryTextLayout.setYearLengthFilter(filter)
-
-        val filtersAfter: Array<InputFilter> = cardExpiryTextLayout.yearEditText.filters
-        assertArrayEquals(filtersBefore.plus(filter), filtersAfter)
-    }
-
-    @Test
-    fun `get inserted text should return full date`() {
-        cardExpiryTextLayout.monthEditText.setText("12")
-        cardExpiryTextLayout.yearEditText.setText("20")
-
-        assertEquals("12/20", cardExpiryTextLayout.getInsertedText())
+        val monthFiltersAfter: Array<InputFilter> = cardExpiryTextLayout.monthEditText.filters
+        val yearFiltersAfter: Array<InputFilter> = cardExpiryTextLayout.yearEditText.filters
+        assertArrayEquals(monthFiltersBefore.plus(filter), monthFiltersAfter)
+        assertArrayEquals(yearFiltersBefore.plus(filter), yearFiltersAfter)
     }
 
     @Test

@@ -21,7 +21,7 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class CVVLengthFilterTest {
 
-    private val panView: CardView = mock(CardView::class.java)
+    private val panView: CardTextView = mock(CardTextView::class.java)
     private val cardValidator: CardValidator = mock(CardValidator::class.java)
     private val cardConfiguration: CardConfiguration = mock(CardConfiguration::class.java)
     private val cardNumber = "444"

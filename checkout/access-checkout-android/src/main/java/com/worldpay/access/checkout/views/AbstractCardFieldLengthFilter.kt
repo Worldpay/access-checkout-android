@@ -67,7 +67,7 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
 class CVVLengthFilter(
     private val cardValidator: CardValidator,
     cardConfiguration: CardConfiguration,
-    private val panView: CardView
+    private val panView: CardTextView
 ) : AbstractCardFieldLengthFilter(cardConfiguration) {
 
     override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
@@ -97,17 +97,9 @@ class PANLengthFilter(private val cardValidator: CardValidator, cardConfiguratio
 }
 
 /**
- * [MonthLengthFilter] applies a length restriction to the month field based on configuration defaults
+ * [DateLengthFilter] applies a length restriction to the date field based on configuration defaults
  */
-class MonthLengthFilter(cardConfiguration: CardConfiguration): AbstractCardFieldLengthFilter(cardConfiguration) {
+class DateLengthFilter(cardConfiguration: CardConfiguration): AbstractCardFieldLengthFilter(cardConfiguration) {
+    override fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule? = cardDefaults?.month ?: cardDefaults?.year
 
-    override fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule? = cardDefaults?.month
-}
-
-/**
- * [YearLengthFilter] applies a length restriction to the year field based on configuration defaults
- */
-class YearLengthFilter(cardConfiguration: CardConfiguration): AbstractCardFieldLengthFilter(cardConfiguration) {
-
-    override fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule? = cardDefaults?.year
 }
