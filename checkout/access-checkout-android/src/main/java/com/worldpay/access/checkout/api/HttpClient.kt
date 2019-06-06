@@ -35,14 +35,19 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
             OutputStreamWriter(outputStream).use {
                 it.write(requestBody)
                 it.flush()
-                return if (isRedirectStatus(httpUrlConn)) {
-                    handleRedirect(httpUrlConn, request, headers, serializer, deserializer)
-                } else {
-                    val responseData = getBodyStream(httpUrlConn)
-                    deserializer.deserialize(responseData)
+
+                val responseData = when (httpUrlConn.responseCode) {
+                    in successfulHttpRange -> getResponseData(httpUrlConn.inputStream)
+                    in redirectHttpRange -> return handleRedirect(httpUrlConn, request, headers, serializer, deserializer)
+                    in clientErrorHttpRange -> throw getClientError(httpUrlConn)
+                    else -> throw getServerError(httpUrlConn)
                 }
+
+                return deserializer.deserialize(responseData)
             }
         } catch (ex: AccessCheckoutClientError) {
+            throw ex
+        } catch (ex: AccessCheckoutError) {
             throw ex
         } catch (ex: AccessCheckoutException) {
             val message = ex.message
@@ -64,13 +69,17 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
             httpUrlConn.connectTimeout = 15000
             httpUrlConn.readTimeout = 10000
 
-            return if (isRedirectStatus(httpUrlConn)) {
-                handleRedirect(httpUrlConn, deserializer)
-            } else {
-                val responseBody = getBodyStream(httpUrlConn)
-                deserializer.deserialize(responseBody)
+            val responseData = when (httpUrlConn.responseCode) {
+                in successfulHttpRange -> getResponseData(httpUrlConn.inputStream)
+                in redirectHttpRange -> return handleRedirect(httpUrlConn, deserializer)
+                in clientErrorHttpRange -> throw getClientError(httpUrlConn)
+                else -> throw getServerError(httpUrlConn)
             }
 
+            return deserializer.deserialize(responseData)
+
+        } catch (ex: AccessCheckoutError) {
+            throw ex
         } catch (ex: AccessCheckoutException) {
             throw AccessCheckoutHttpException(ex.message, ex)
         } catch (ex: Exception) {
@@ -85,38 +94,37 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
         headers.forEach { httpURLConnection.setRequestProperty(it.key, it.value) }
     }
 
-    private fun getBodyStream(conn: HttpURLConnection): String {
-        val successfulHttpRange = 200..299
-
-        if (conn.responseCode !in successfulHttpRange) {
-            throw getClientError(conn)
-        }
-
-        return getResponseFromInputStream(conn.inputStream)
-    }
-
     private fun getClientError(conn: HttpURLConnection): AccessCheckoutException {
         var clientException: AccessCheckoutClientError? = null
         var errorData: String? = null
 
         if (conn.errorStream != null) {
-            errorData = getResponseFromInputStream(conn.errorStream)
+            errorData = getResponseData(conn.errorStream)
             clientException = clientErrorDeserializer.deserialize(errorData)
         }
 
-        return clientException.let { it } ?: AccessCheckoutHttpException(getMessage(conn, errorData), null)
+        return clientException.let { it } ?: AccessCheckoutHttpException(getMessage(conn, errorData))
+    }
+
+    private fun getServerError(conn: HttpURLConnection): AccessCheckoutException {
+        if (conn.errorStream != null) {
+            val errorData = getResponseData(conn.errorStream)
+            val message = getMessage(conn, errorData)
+            return AccessCheckoutError(message)
+        }
+        return AccessCheckoutError("A server error occurred when trying to make the request")
     }
 
     private fun getMessage(conn: HttpURLConnection, errorData: String?): String {
         var message = "Error message was: ${conn.responseMessage}"
 
-        if (errorData != null && errorData.isNotEmpty()) {
+        if (!errorData.isNullOrEmpty()) {
             message = "$message. Error response was: $errorData"
         }
         return message
     }
 
-    private fun getResponseFromInputStream(inputStream: InputStream): String {
+    private fun getResponseData(inputStream: InputStream): String {
         return BufferedReader(InputStreamReader(inputStream)).use { reader ->
             val response = StringBuilder()
             var currentLine: String? = null
@@ -147,18 +155,18 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
     private fun <Response> handleRedirect(httpUrlConn: HttpURLConnection, exec: (String) -> Response): Response {
         val location = httpUrlConn.getHeaderField(LOCATION)
         if (location.isNullOrBlank()) {
-            throw AccessCheckoutHttpException("Response from server was a redirect HTTP response code: ${httpUrlConn.responseCode} but did not include a Location header", null)
+            throw AccessCheckoutHttpException("Response from server was a redirect HTTP response code: ${httpUrlConn.responseCode} but did not include a Location header")
         }
         return exec(location)
     }
-
-    private fun isRedirectStatus(httpUrlConn: HttpURLConnection) = httpUrlConn.responseCode in 300..399
-
 
     companion object {
         private const val POST_METHOD = "POST"
         private const val GET_METHOD = "GET"
         private const val LOCATION = "Location"
+        private val successfulHttpRange = 200..299
+        private val redirectHttpRange = 300..399
+        private val clientErrorHttpRange = 400..499
     }
 }
 

@@ -1062,22 +1062,72 @@ class SessionRequestIntegrationTest {
         accessCheckoutClient.disconnectListener()
     }
 
+    @Test
+    fun givenInternalServerError_thenAccessCheckoutExceptionIsPropagatedToClient() {
+
+        val request = """
+                {
+                    "cardNumber": "$cardNumber",
+                    "cardExpiryDate": {
+                        "month": $month,
+                        "year": $year
+                    },
+                    "cvc": "$cvv",
+                    "identity": "$identity"
+                }"""
+
+
+        stubFor(
+            WireMock.post(WireMock.urlEqualTo("/$verifiedTokensEndpoint"))
+                .withHeader("Accept", WireMock.equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
+                .withHeader("Content-Type", WireMock.equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
+                .withRequestBody(EqualToJsonPattern(request, true, true))
+                .willReturn(
+                    WireMock.aResponse()
+                        .withStatus(500)
+                        .withStatusMessage("Internal Server Error")
+                )
+        )
+
+
+        var assertExpectedErrorRaised = false
+
+        val errorListener = object : SessionResponseListener {
+            override fun onRequestStarted() {}
+            override fun onRequestFinished(
+                sessionState: String?,
+                error: AccessCheckoutException?
+            ) {
+                if (error == null)
+                    fail("Expected error not detected")
+
+                assertExpectedErrorRaised = sessionState == null
+                        && error is AccessCheckoutError
+                        && error.message == "Error message was: Internal Server Error"
+                assertTrue("Detected error is $error") { assertExpectedErrorRaised }
+            }
+        }
+
+        accessCheckoutClient = AccessCheckoutClient.init(
+            wireMockRule.baseUrl(),
+            identity,
+            errorListener,
+            applicationContext,
+            lifecycleOwner
+        )
+        accessCheckoutClient.startListener()
+
+        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+
+        await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
+
+        accessCheckoutClient.disconnectListener()
+    }
+
     private fun <T> assertActualExceptionIsExpected(ex: Exception, expected: T): Boolean where T : Exception =
         expected.message.orEmpty().let {
             ex.message.orEmpty().contains(it, true)
         }
-
-    private fun assertActualExceptionIsExpected(ex: Exception, expectedMessage: String): Boolean {
-        if (ex.message.orEmpty().contains(expectedMessage, true))
-            return true
-        else {
-            (ex as AccessCheckoutClientError).validationRules.orEmpty().forEach {
-                if (it.message.contains(expectedMessage))
-                    return true
-            }
-        }
-        return false
-    }
 
     private fun matchesExpectedType(exception: AccessCheckoutClientError, expectedErrorType: Error) =
         exception.error == expectedErrorType
