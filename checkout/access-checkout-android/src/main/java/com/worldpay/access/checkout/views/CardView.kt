@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.views
 
+import android.text.InputFilter
+
 /**
  * [CardView] is an interface which represents a particular field in the payment form
  */
@@ -11,9 +13,18 @@ interface CardView {
      */
     var cardViewListener: CardViewListener?
 
+
     /**
-     * This [CardView] should return the text from the field that it is representing
-     * @return the text from the field
+     * A method to respond to validation updates
+     *
+     * @param valid whether this view is valid or not
      */
-    fun getInsertedText(): String
+    fun isValid(valid: Boolean)
+
+    /**
+     * A method to respond to length updates
+     *
+     * @param inputFilter the length filter to apply to this card view
+     */
+    fun applyLengthFilter(inputFilter: InputFilter)
 }
