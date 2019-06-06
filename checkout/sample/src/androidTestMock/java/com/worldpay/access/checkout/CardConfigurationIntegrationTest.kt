@@ -6,7 +6,8 @@ import com.worldpay.access.checkout.UITestUtils.assertFieldsAlpha
 import com.worldpay.access.checkout.UITestUtils.assertInProgressState
 import com.worldpay.access.checkout.UITestUtils.assertValidInitialUIFields
 import com.worldpay.access.checkout.UITestUtils.cardNumberMatcher
-import com.worldpay.access.checkout.UITestUtils.checkFieldIsValidState
+import com.worldpay.access.checkout.UITestUtils.checkFieldInState
+import com.worldpay.access.checkout.UITestUtils.checkSubmitInState
 import com.worldpay.access.checkout.UITestUtils.monthMatcher
 import com.worldpay.access.checkout.UITestUtils.typeFormInputs
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
@@ -15,10 +16,11 @@ import com.worldpay.access.checkout.UITestUtils.updatePANDetails
 import com.worldpay.access.checkout.UITestUtils.yearMatcher
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertTrue
 
 class CardConfigurationIntegrationTest {
 
-    private val luhnValidUnknownCard = "0000000"
+    private val luhnValidUnknownCard = "000000"
     private val luhnInvalidUnknownCard = "111234"
     private val unknownCvv = "123456"
     private val month = "12"
@@ -32,17 +34,25 @@ class CardConfigurationIntegrationTest {
     fun givenCardConfigurationCallFails_AndValidUnknownCardDataIsInsertedAndUserPressesSubmit_ThenSuccessfulResponseIsReceived() {
         assertValidInitialUIFields()
 
-        typeFormInputs(luhnInvalidUnknownCard, unknownCvv, "13", year)
+        typeFormInputs(luhnInvalidUnknownCard, unknownCvv, "13", year, true)
 
-        checkFieldIsValidState(false, cardNumberMatcher, cardConfigurationRule.activity)
-        checkFieldIsValidState(false, monthMatcher, cardConfigurationRule.activity)
-        checkFieldIsValidState(false, yearMatcher, cardConfigurationRule.activity)
+        checkFieldInState(false, cardNumberMatcher, cardConfigurationRule.activity)
+        checkFieldInState(false, monthMatcher, cardConfigurationRule.activity)
+        checkFieldInState(false, yearMatcher, cardConfigurationRule.activity)
+
+        checkSubmitInState(false)
 
         updatePANDetails(luhnValidUnknownCard)
         updateMonthDetails(month)
 
+        checkFieldInState(true, cardNumberMatcher, cardConfigurationRule.activity)
+        checkFieldInState(true, monthMatcher, cardConfigurationRule.activity)
+        checkFieldInState(true, yearMatcher, cardConfigurationRule.activity)
+
+        checkSubmitInState(true)
+
         assertFieldsAlpha(1.0f)
-        uiObjectWithId(R.id.submit).exists()
+        assertTrue(uiObjectWithId(R.id.submit).exists())
         uiObjectWithId(R.id.submit).click()
 
         assertInProgressState()

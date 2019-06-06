@@ -13,7 +13,7 @@ import android.view.View
 import android.widget.ImageView
 import com.worldpay.access.checkout.BrandVectorImageMatcher.Companion.withBrandVectorImageId
 import com.worldpay.access.checkout.UITestUtils.cardNumberMatcher
-import com.worldpay.access.checkout.UITestUtils.checkFieldIsValidState
+import com.worldpay.access.checkout.UITestUtils.checkFieldInState
 import com.worldpay.access.checkout.views.PANLayout
 import org.hamcrest.Description
 import org.junit.Rule
@@ -46,7 +46,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("1111111"), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -65,7 +65,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("4026344341791618"), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -83,7 +83,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("4024001728904375"), pressImeActionButton())
 
-        checkFieldIsValidState(false, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -101,7 +101,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("5555555555554444"), pressImeActionButton())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -121,7 +121,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("5555555555554443"), closeSoftKeyboard())
 
-        checkFieldIsValidState(false, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -142,7 +142,7 @@ class CardUITest {
             .perform(closeSoftKeyboard())
             .perform(click(), typeText("343434343434343"), pressImeActionButton())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -160,7 +160,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("343434343434341"), pressImeActionButton())
 
-        checkFieldIsValidState(false, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -179,7 +179,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("1111111111111117"), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -199,7 +199,7 @@ class CardUITest {
 
             .perform(click(), typeText("1111111111111111112"), closeSoftKeyboard())
 
-        checkFieldIsValidState(false, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -217,7 +217,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("44"), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -238,7 +238,7 @@ class CardUITest {
             .perform(closeSoftKeyboard())
             .perform(click(), typeText("22"), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -257,7 +257,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("34"), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -277,7 +277,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("44000000"), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -297,7 +297,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), replaceText("55000000"), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -317,7 +317,7 @@ class CardUITest {
             .perform(closeSoftKeyboard())
             .perform(click(), typeText("40"))
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -328,7 +328,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(pressImeActionButton())
 
-        checkFieldIsValidState(false, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -349,7 +349,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText(validVisaCardNumber), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -378,7 +378,7 @@ class CardUITest {
         onView(withId(R.id.card_number_edit_text))
             .check(matches(withText(validVisaCardNumber)))
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -401,7 +401,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText(validMastercardCardNumber), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -426,7 +426,7 @@ class CardUITest {
             .perform(closeSoftKeyboard())
             .perform(click(), typeText(validAmexCardNumber), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
@@ -450,7 +450,7 @@ class CardUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText(validUnidentifiedCardNumber), closeSoftKeyboard())
 
-        checkFieldIsValidState(true, cardNumberMatcher, activityRule.activity)
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))

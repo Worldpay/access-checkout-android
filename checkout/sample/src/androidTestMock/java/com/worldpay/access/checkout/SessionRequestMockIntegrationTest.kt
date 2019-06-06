@@ -23,6 +23,7 @@ import com.worldpay.access.checkout.UITestUtils.typeFormInputs
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.UITestUtils.updateCVVDetails
 import com.worldpay.access.checkout.UITestUtils.yearMatcher
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -51,7 +52,7 @@ class SessionRequestMockIntegrationTest {
         assertValidInitialUIFields()
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
-        uiObjectWithId(R.id.submit).exists()
+        assertTrue(uiObjectWithId(R.id.submit).exists())
         uiObjectWithId(R.id.submit).click()
 
         assertInProgressState()
@@ -66,7 +67,7 @@ class SessionRequestMockIntegrationTest {
         assertValidInitialUIFields()
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
-        uiObjectWithId(R.id.submit).exists()
+        assertTrue(uiObjectWithId(R.id.submit).exists())
         uiObjectWithId(R.id.submit).click()
 
         assertInProgressState()
@@ -80,7 +81,7 @@ class SessionRequestMockIntegrationTest {
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
 
-        uiObjectWithId(R.id.submit).exists()
+        assertTrue(uiObjectWithId(R.id.submit).exists())
         uiObjectWithId(R.id.submit).click()
         assertInProgressState()
 
@@ -93,7 +94,7 @@ class SessionRequestMockIntegrationTest {
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
 
-        uiObjectWithId(R.id.submit).exists()
+        assertTrue(uiObjectWithId(R.id.submit).exists())
         uiObjectWithId(R.id.submit).click()
         assertInProgressState()
 
@@ -122,7 +123,7 @@ class SessionRequestMockIntegrationTest {
         typeFormInputs(unknownCardError, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
 
-        uiObjectWithId(R.id.submit).exists()
+        assertTrue(uiObjectWithId(R.id.submit).exists())
         uiObjectWithId(R.id.submit).click()
         assertInProgressState()
 
@@ -152,7 +153,7 @@ class SessionRequestMockIntegrationTest {
         assertValidInitialUIFields()
         typeFormInputs(cardNumber, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
-        uiObjectWithId(R.id.submit).exists()
+        assertTrue(uiObjectWithId(R.id.submit).exists())
         uiObjectWithId(R.id.submit).click()
         activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 

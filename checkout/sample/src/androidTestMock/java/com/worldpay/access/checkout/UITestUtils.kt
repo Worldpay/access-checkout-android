@@ -1,19 +1,16 @@
 package com.worldpay.access.checkout
 
 import android.content.Context
-import android.content.res.Resources
 import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso
 import android.support.test.espresso.Espresso.*
 import android.support.test.espresso.action.ViewActions
-import android.support.test.espresso.assertion.ViewAssertions
+import android.support.test.espresso.action.ViewActions.click
 import android.support.test.espresso.assertion.ViewAssertions.*
 import android.support.test.espresso.matcher.RootMatchers
-import android.support.test.espresso.matcher.ViewMatchers
+import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.uiautomator.UiDevice
 import android.support.test.uiautomator.UiObject
 import android.support.test.uiautomator.UiSelector
-import android.support.v4.content.res.ResourcesCompat
 import android.support.v4.content.res.ResourcesCompat.getColor
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
@@ -23,68 +20,80 @@ import org.junit.Assert
 
 object UITestUtils {
 
-    val cardNumberMatcher: Matcher<View> = ViewMatchers.withId(R.id.card_number_edit_text)
-    val cvvMatcher: Matcher<View> = ViewMatchers.withId(R.id.cardCVVText)
-    val monthMatcher: Matcher<View> = ViewMatchers.withId(R.id.month_edit_text)
-    val yearMatcher: Matcher<View> = ViewMatchers.withId(R.id.year_edit_text)
-    private val cardExpiryMatcher: Matcher<View> = ViewMatchers.withId(R.id.cardExpiryText)
-    private val buttonMatcher: Matcher<View> = ViewMatchers.withId(R.id.submit)
-    private val progressMatcher: Matcher<View> = ViewMatchers.withId(R.id.loading_bar)
+    val cardNumberMatcher: Matcher<View> = withId(R.id.card_number_edit_text)
+    val cvvMatcher: Matcher<View> = withId(R.id.cardCVVText)
+    val monthMatcher: Matcher<View> = withId(R.id.month_edit_text)
+    val yearMatcher: Matcher<View> = withId(R.id.year_edit_text)
+    private val cardExpiryMatcher: Matcher<View> = withId(R.id.cardExpiryText)
+    private val buttonMatcher: Matcher<View> = withId(R.id.submit)
+    private val progressMatcher: Matcher<View> = withId(R.id.loading_bar)
 
     fun assertValidInitialUIFields() {
         onView(cardNumberMatcher)
-            .check(matches(ViewMatchers.isDisplayed()))
-            .check(matches(ViewMatchers.isEnabled()))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
 
         onView(cvvMatcher)
-            .check(matches(ViewMatchers.isDisplayed()))
-            .check(matches(ViewMatchers.isEnabled()))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
 
         onView(cardExpiryMatcher)
-            .check(matches(ViewMatchers.isDisplayed()))
-            .check(matches(ViewMatchers.isEnabled()))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
 
         checkSubmitInState(enabled = false)
 
         onView(progressMatcher)
-            .check(matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
+            .check(matches(CoreMatchers.not(isDisplayed())))
     }
 
-    fun typeFormInputs(card: String, cvv: String, month: String, year: String) {
+    fun typeFormInputs(card: String, cvv: String, month: String, year: String, assertInsertedCompleteText: Boolean = false) {
         typeCardDetails(card)
         typeCVVDetails(cvv)
         typeMonth(month)
         typeYear(year)
+
+        if (assertInsertedCompleteText) {
+            checkFieldText(cardNumberMatcher, card)
+            checkFieldText(cvvMatcher, cvv)
+            checkFieldText(monthMatcher, card)
+            checkFieldText(yearMatcher, year)
+        }
     }
 
     fun updatePANDetails(pan: String) {
         onView(cardNumberMatcher)
-            .perform(ViewActions.replaceText(pan), ViewActions.closeSoftKeyboard())
+            .perform(click(), ViewActions.replaceText(pan), ViewActions.closeSoftKeyboard())
     }
 
     fun updateCVVDetails(cvv: String) {
         onView(cvvMatcher)
-            .perform(ViewActions.replaceText(cvv), ViewActions.closeSoftKeyboard())
+            .perform(click(), ViewActions.replaceText(cvv), ViewActions.closeSoftKeyboard())
     }
 
     fun updateMonthDetails(month: String) {
         onView(monthMatcher)
-            .perform(ViewActions.replaceText(month), ViewActions.closeSoftKeyboard())
+            .perform(click(), ViewActions.replaceText(month), ViewActions.closeSoftKeyboard())
     }
 
     fun checkSubmitInState(enabled: Boolean) {
         val enabledMatcher: Matcher<View> =
-            if (enabled) ViewMatchers.isEnabled() else CoreMatchers.not(ViewMatchers.isEnabled())
+            if (enabled) isEnabled() else CoreMatchers.not(isEnabled())
         onView(buttonMatcher)
-            .check(matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
             .check(matches(enabledMatcher))
     }
 
-    fun checkFieldIsValidState(shouldBeValid: Boolean, viewMatcher: Matcher<View>, context: Context) {
+    fun checkFieldInState(shouldBeValid: Boolean, viewMatcher: Matcher<View>, context: Context) {
         val expectedColor = if (shouldBeValid) getSuccessColor(context) else getFailColor(context)
 
         onView(viewMatcher)
             .check(matches(EditTextColorMatcher.withEditTextColor(expectedColor)))
+    }
+
+    fun checkFieldText(viewMatcher: Matcher<View>, expectedText: String) {
+        onView(viewMatcher)
+            .check(matches(withText(expectedText)))
     }
 
     fun assertFieldsAlpha(alpha: Float) {
@@ -119,9 +128,9 @@ object UITestUtils {
         } else {
             "Ref: $responseString"
         }
-        onView(ViewMatchers.withText(expectedToastText))
+        onView(withText(expectedToastText))
             .inRoot(RootMatchers.withDecorView(CoreMatchers.not(view)))
-            .check(matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
     }
 
     private fun getSuccessColor(context: Context) = getColor(context.resources, R.color.SUCCESS, context.theme)
