@@ -324,34 +324,6 @@ class PactTest {
             .toPact()
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
-    fun createVariation2ErrorInteraction(builder: PactDslWithProvider): RequestResponsePact {
-        return builder
-            .uponReceiving("A request for a session reference with empty body")
-            .path(path)
-            .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .body(generateEmptyBodyRequest())
-            .willRespondWith()
-            .status(400)
-            .headers(
-                mapOf(
-                    Pair(
-                        "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
-                    )
-                )
-            )
-            .body(
-                generateResponseVariation1(
-                    "bodyIsEmpty",
-                    "The body within the request is empty"
-                )
-            )
-            .toPact()
-    }
-
 
     @Test
     @PactVerification("verified-tokens", fragment = "createSuccessfulRequestInteraction")
