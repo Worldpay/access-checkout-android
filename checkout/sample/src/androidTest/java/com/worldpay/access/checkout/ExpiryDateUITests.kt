@@ -73,6 +73,9 @@ class ExpiryDateUITests {
         closeSoftKeyboard()
         moveToYear()
         closeSoftKeyboard()
+        validateMonthField(true)
+        closeSoftKeyboard()
+        moveToCardNumberField()
         validateMonthField(false)
         closeSoftKeyboard()
     }
@@ -92,6 +95,9 @@ class ExpiryDateUITests {
         closeSoftKeyboard()
         validateYearField(true)
         closeSoftKeyboard()
+        moveToMonth()
+        validateYearField(true)
+        closeSoftKeyboard()
         moveToCardNumberField()
         closeSoftKeyboard()
         validateFullExpiryField(false)
@@ -101,6 +107,8 @@ class ExpiryDateUITests {
     fun givenValidMonth_AndEmptyYear_ThenMonthFieldShouldBeValidUntilLosesFocus() {
         closeSoftKeyboard()
         enterMonth("01")
+        validateMonthField(true)
+        moveToYear()
         validateMonthField(true)
         moveToCardNumberField()
         validateFullExpiryField(false)
@@ -112,6 +120,8 @@ class ExpiryDateUITests {
         enterYear(getCurrentYearWithOffset(1).substring(0, 1))
         validateYearField(true)
         moveToMonth()
+        validateYearField(true)
+        moveToCardNumberField()
         validateYearField(false)
     }
 
