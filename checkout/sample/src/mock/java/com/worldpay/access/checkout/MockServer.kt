@@ -21,6 +21,7 @@ object MockServer {
     private var hasStarted = false
 
     private const val verifiedTokensSessionResourcePath = "verifiedTokens/sessions"
+    private const val cardConfigurationResourcePath = "access-checkout/cardConfiguration.json"
 
     private fun verifiedTokensResponse(context: Context) =
         """{
@@ -201,12 +202,20 @@ object MockServer {
     }
 
     fun stubCardConfiguration(context: Context) {
-        wireMockServer.stubFor(get("/access-checkout/cardConfiguration.json")
+        wireMockServer.stubFor(get("/$cardConfigurationResourcePath")
             .willReturn(
                 aResponse()
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
                     .withBody(context.resources.openRawResource(R.raw.card_configuration_file).reader(Charsets.UTF_8).readText())
+            ))
+    }
+
+    fun simulateCardConfigurationServerError() {
+        wireMockServer.stubFor(get("/$cardConfigurationResourcePath")
+            .willReturn(
+                aResponse()
+                    .withStatus(500)
             ))
     }
 

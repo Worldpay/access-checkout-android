@@ -21,7 +21,7 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
             AsyncTaskResult(cardConfiguration)
         } catch (ex: AccessCheckoutConfigurationException) {
             AsyncTaskResult(ex)
-        } catch (ex: AccessCheckoutException) {
+        } catch (ex: Exception) {
             val accessCheckoutConfigurationException = AccessCheckoutConfigurationException("There was an error when trying to fetch the card configuration", ex)
             AsyncTaskResult(accessCheckoutConfigurationException)
         }
