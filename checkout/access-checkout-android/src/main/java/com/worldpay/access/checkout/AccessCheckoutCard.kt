@@ -136,13 +136,6 @@ class AccessCheckoutCard constructor(
 interface CardFactory {
 
     /**
-     * Creates a [CardValidator] instance
-     * @param cardConfiguration the card configuration to use
-     * @return [CardValidator] for validating the inputs of a card
-     */
-    fun getCardValidator(cardConfiguration: CardConfiguration): CardValidator
-
-    /**
      * Creates a [PANLengthFilter] instance
      * @param cardValidator (Optional) the card validator to use
      * @return [PANLengthFilter] (Optional) for restricting the inputs of a pan field
@@ -172,10 +165,6 @@ interface CardFactory {
  * [AccessCheckoutCardDefaultFactory] is an implementation of [CardFactory] which is to be used by [AccessCheckoutCard]
  */
 class AccessCheckoutCardDefaultFactory : CardFactory {
-
-    override fun getCardValidator(cardConfiguration: CardConfiguration): AccessCheckoutCardValidator {
-        return AccessCheckoutCardValidator(cardConfiguration)
-    }
 
     override fun getPANLengthFilter(cardValidator: CardValidator?): PANLengthFilter? {
         return cardValidator?.let { PANLengthFilter(it) }

@@ -27,7 +27,7 @@ class PANLengthFilterTest {
 
     @Before
     fun setup() {
-        panLengthFilter = PANLengthFilter(cardValidator, cardConfiguration)
+        panLengthFilter = PANLengthFilter(cardValidator)
     }
 
     @Test

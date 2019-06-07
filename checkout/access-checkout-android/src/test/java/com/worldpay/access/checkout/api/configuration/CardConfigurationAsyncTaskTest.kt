@@ -2,6 +2,9 @@ package com.worldpay.access.checkout.api.configuration
 
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.api.HttpClient
+import com.worldpay.access.checkout.api.URLFactory
+import com.worldpay.access.checkout.config.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.testutils.mock
 import org.awaitility.Awaitility
@@ -11,6 +14,7 @@ import org.mockito.BDDMockito.given
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.annotation.Config
 import java.net.MalformedURLException
+import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -34,7 +38,7 @@ class CardConfigurationAsyncTaskTest {
             }
         }
 
-        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, mock())
+        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
 
         cardConfigurationAsyncTask.execute("")
 
@@ -54,7 +58,7 @@ class CardConfigurationAsyncTaskTest {
             }
         }
 
-        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, mock())
+        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
 
         cardConfigurationAsyncTask.execute()
 
@@ -75,7 +79,7 @@ class CardConfigurationAsyncTaskTest {
             }
         }
 
-        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, mock())
+        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
 
         cardConfigurationAsyncTask.execute("abc")
 
@@ -98,10 +102,7 @@ class CardConfigurationAsyncTaskTest {
         }
         val baseURL = "http://localhost"
 
-        val cardConfigurationClient = mock<CardConfigurationClient>()
-        given(cardConfigurationClient.getCardConfiguration(baseURL)).willReturn(cardConfiguration)
-
-        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, cardConfigurationClient)
+        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
 
         cardConfigurationAsyncTask.execute(baseURL)
 
@@ -125,9 +126,13 @@ class CardConfigurationAsyncTaskTest {
 
         val baseURL = "http://localhost"
 
-        val cardConfigurationClient = mock<CardConfigurationClient>()
-        given(cardConfigurationClient.getCardConfiguration(baseURL)).willThrow(AccessCheckoutException.AccessCheckoutHttpException("Something went wrong!", null))
-        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, cardConfigurationClient)
+        val httpClient = mock<HttpClient>()
+        val cardConfigurationParser = mock<CardConfigurationParser>()
+        val urlFactory = mock<URLFactory>()
+        val url = URL(baseURL)
+        given(urlFactory.getURL(baseURL)).willReturn(url)
+        given(httpClient.doGet(url, cardConfigurationParser)).willThrow(AccessCheckoutException.AccessCheckoutHttpException("Something went wrong!", null))
+        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, urlFactory, httpClient, cardConfigurationParser)
 
         cardConfigurationAsyncTask.execute(baseURL)
 

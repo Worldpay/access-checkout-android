@@ -16,15 +16,12 @@ import org.mockito.Mockito
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyZeroInteractions
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 class AccessCheckoutCardTest {
-
-    private val context = ShadowInstrumentation.getInstrumentation().targetContext.applicationContext
 
     private lateinit var card: Card
     private lateinit var panView: CardTextView
@@ -55,29 +52,20 @@ class AccessCheckoutCardTest {
         panLengthFilter = mock()
         cvvLengthFilter = mock()
         dateLengthFilter = mock()
-        given(factory.getCardConfiguration()).willReturn(cardConfiguration)
-        given(factory.getPANLengthFilter(cardValidator, cardConfiguration)).willReturn(panLengthFilter)
-        given(factory.getCVVLengthFilter(cardValidator, cardConfiguration, panView)).willReturn(cvvLengthFilter)
-        given(factory.getCardValidator(cardConfiguration)).willReturn(cardValidator)
+        given(factory.getPANLengthFilter(cardValidator)).willReturn(panLengthFilter)
+        given(factory.getCVVLengthFilter(cardValidator, panView)).willReturn(cvvLengthFilter)
         given(factory.getDateLengthFilter(cardConfiguration)).willReturn(dateLengthFilter)
         given(panView.getInsertedText()).willReturn(pan)
         given(cvvView.getInsertedText()).willReturn(cvv)
         given(dateView.getInsertedMonth()).willReturn(month)
         given(dateView.getInsertedYear()).willReturn(year)
-        card = AccessCheckoutCard(context, panView, cvvView, dateView, factory)
+        card = AccessCheckoutCard(panView, cvvView, dateView, factory)
         card.cardListener = cardListener
     }
 
     @Test
     fun givenOnlyDefaultConstructorArgs_ThenAccessCheckoutCardIsConstructed() {
         val card = AccessCheckoutCard(panView, cvvView, dateView)
-
-        assertNotNull(card)
-    }
-
-    @Test
-    fun givenEmptyCardValidatorInConstructorArgs_ThenAccessCheckoutCardIsConstructed() {
-        val card = AccessCheckoutCard(context, panView, cvvView, dateView, cardValidator = null)
 
         assertNotNull(card)
     }
@@ -249,7 +237,7 @@ class AccessCheckoutCardTest {
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
         given(cardValidator.validateCVV(cvv, updatedPan)).willReturn(Pair(cvvValidationResult, cardBrand))
-        card = AccessCheckoutCard(context, panView, cvvView, dateView, factory, panLengthFilter = null)
+        card = AccessCheckoutCard(panView, cvvView, dateView, factory)
         card.cardListener = cardListener
 
         card.onUpdatePAN(updatedPan)
@@ -375,7 +363,7 @@ class AccessCheckoutCardTest {
         val cardBrand = CardBrand("test", "test", null, emptyList())
         val cvvValidationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
-        card = AccessCheckoutCard(context, panView, cvvView, dateView, factory, cvvLengthFilter = null)
+        card = AccessCheckoutCard(panView, cvvView, dateView, factory)
         card.cardListener = cardListener
 
         card.onUpdateCVV(updatedCVV)

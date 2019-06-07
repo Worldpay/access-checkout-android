@@ -30,7 +30,7 @@ class CVVLengthFilterTest {
 
     @Before
     fun setup() {
-        cvvLengthFilter = CVVLengthFilter(cardValidator, cardConfiguration, panView)
+        cvvLengthFilter = CVVLengthFilter(cardValidator, panView)
 
 
         given(panView.getInsertedText()).willReturn(cardNumber)

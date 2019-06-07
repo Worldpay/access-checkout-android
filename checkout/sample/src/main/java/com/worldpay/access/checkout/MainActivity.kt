@@ -41,14 +41,13 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         card = AccessCheckoutCard(panView, cvvText, dateText)
         card.cardListener = this
 
-        CardConfigurationClient().getCardConfiguration(getBaseUrl(), object : Callback<CardConfiguration> {
+        CardConfigurationClient(object : Callback<CardConfiguration> {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {
-                card.cardValidator = response?.let {
-                    AccessCheckoutCardValidator(it)
-                } ?: AccessCheckoutCardValidator(CardConfiguration.empty())
+                card.cardValidator = response?.let { AccessCheckoutCardValidator(it) } ?:
+                        AccessCheckoutCardValidator(CardConfiguration.empty())
             }
-        })
-
+        }).getCardConfiguration(getBaseUrl())
+        
         panView.cardViewListener = card
         cvvText.cardViewListener = card
         dateText.cardViewListener = card

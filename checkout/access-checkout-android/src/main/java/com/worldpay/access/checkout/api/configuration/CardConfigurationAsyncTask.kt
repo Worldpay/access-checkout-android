@@ -1,17 +1,18 @@
 package com.worldpay.access.checkout.api.configuration
 
 import android.os.AsyncTask
-import com.worldpay.access.checkout.api.AccessCheckoutException
+import com.worldpay.access.checkout.api.*
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutConfigurationException
 import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
-import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
+import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.config.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardConfiguration
 import java.net.URL
 
 internal class CardConfigurationAsyncTask(private val callback: Callback<CardConfiguration>,
+                                          private val urlFactory: URLFactory = URLFactoryImpl(),
                                           private val httpClient: HttpClient = HttpClient(),
                                           private val cardConfigurationParser: CardConfigurationParser = CardConfigurationParser()
 ) :
@@ -24,7 +25,8 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
     override fun doInBackground(vararg params: String?): AsyncTaskResult<CardConfiguration> {
         return try {
             val baseURL = validateAndGetURL(params)
-            val cardConfiguration = httpClient.doGet(URL("$baseURL/$CARD_CONFIGURATION_RESOURCE"), cardConfigurationParser)
+            val url = urlFactory.getURL("$baseURL/$CARD_CONFIGURATION_RESOURCE")
+            val cardConfiguration = httpClient.doGet(url, cardConfigurationParser)
             AsyncTaskResult(cardConfiguration)
         } catch (ex: AccessCheckoutConfigurationException) {
             AsyncTaskResult(ex)

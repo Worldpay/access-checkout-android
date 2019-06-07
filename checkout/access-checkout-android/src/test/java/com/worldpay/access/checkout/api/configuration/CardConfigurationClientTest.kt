@@ -1,18 +1,18 @@
 package com.worldpay.access.checkout.api.configuration
 
+import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.testutils.mock
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import java.net.URL
+import org.mockito.Mockito.verify
+import org.mockito.internal.util.reflection.FieldSetter
+import org.mockito.internal.util.reflection.FieldSetter.setField
 
 class CardConfigurationClientTest {
 
-    private lateinit var cardConfigurationClient: CardConfigurationClient
     private lateinit var httpClient: HttpClient
     private lateinit var deserializer: Deserializer<CardConfiguration>
 
@@ -20,18 +20,22 @@ class CardConfigurationClientTest {
     fun setup() {
         httpClient = mock()
         deserializer = mock()
-        cardConfigurationClient = CardConfigurationClient(httpClient, deserializer)
     }
 
     @Test
     fun givenARequestForCardConfiguration_ThenShouldBuildCardConfiguration() {
-        val cardConfiguration = CardConfiguration()
-        given(httpClient.doGet(URL("http://localhost/access-checkout/cardConfiguration.json"), deserializer)).willReturn(
-            cardConfiguration
-        )
+        val callback = object : Callback<CardConfiguration> {
+            override fun onResponse(error: Exception?, response: CardConfiguration?) {
+            }
+        }
 
-        val actualCardConfiguration = cardConfigurationClient.getCardConfiguration("http://localhost")
+        val cardConfigurationClient = CardConfigurationClient(callback)
+        val cardConfigurationAsyncTask = mock<CardConfigurationAsyncTask>()
+        setField(cardConfigurationClient, cardConfigurationClient::class.java.getDeclaredField("cardConfigurationAsyncTask"), cardConfigurationAsyncTask)
 
-        assertEquals(cardConfiguration, actualCardConfiguration)
+        val baseURL = "http://localhost"
+        cardConfigurationClient.getCardConfiguration(baseURL)
+
+        verify(cardConfigurationAsyncTask).execute(baseURL)
     }
 }
