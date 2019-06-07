@@ -2,6 +2,7 @@ package com.worldpay.access.checkout
 
 import android.support.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.MockServer.simulateCardConfigurationServerError
+import com.worldpay.access.checkout.MockServer.stubCardConfiguration
 import com.worldpay.access.checkout.UITestUtils.assertBrandImage
 import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.UITestUtils.assertFieldsAlpha
@@ -17,6 +18,7 @@ import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.UITestUtils.updateMonthDetails
 import com.worldpay.access.checkout.UITestUtils.updatePANDetails
 import com.worldpay.access.checkout.UITestUtils.yearMatcher
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import kotlin.test.assertTrue
@@ -33,6 +35,11 @@ class CardConfigurationIntegrationTest {
     @get:Rule
     var cardConfigurationRule: CardConfigurationRule =
         CardConfigurationRule(MainActivity::class.java)
+
+    @After
+    fun tearDown() {
+        stubCardConfiguration(cardConfigurationRule.activity)
+    }
 
     @Test
     fun givenCardConfigurationCallFails_AndValidUnknownCardDataIsInsertedAndUserPressesSubmit_ThenSuccessfulResponseIsReceived() {
@@ -71,7 +78,7 @@ class CardConfigurationIntegrationTest {
     }
 }
 
-class CardConfigurationRule(private val activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
+class CardConfigurationRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
 
     override fun beforeActivityLaunched() {
         super.beforeActivityLaunched()
