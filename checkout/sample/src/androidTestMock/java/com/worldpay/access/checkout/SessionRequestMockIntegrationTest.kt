@@ -32,20 +32,12 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class SessionRequestMockIntegrationTest {
+class SessionRequestMockIntegrationTest: AbstractUITest() {
 
     private val amexCard = "343434343434343"
     private val amexCvv = "1234"
     private val month = "12"
     private val year = "99"
-
-    @get:Rule
-    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
-
-    @Before
-    fun setup() {
-        defaultStubMappings(activityRule.activity)
-    }
 
     @Test
     fun givenDiscoveryIsDoneOnStartUp_AndValidDataIsInsertedAndUserPressesSubmit_UiFieldsWillBeDisabledAndUiDisplaysResponse() {

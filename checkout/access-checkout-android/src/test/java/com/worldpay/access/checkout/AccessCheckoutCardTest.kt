@@ -70,7 +70,7 @@ class AccessCheckoutCardTest {
 
     @Test
     fun givenOnlyDefaultConstructorArgs_ThenAccessCheckoutCardIsConstructed() {
-        val card = AccessCheckoutCard(context, panView, cvvView, dateView)
+        val card = AccessCheckoutCard(panView, cvvView, dateView)
 
         assertNotNull(card)
     }

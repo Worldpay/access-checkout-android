@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.model.CardBrand
+import com.worldpay.access.checkout.model.CardConfiguration
 
 typealias PAN = String
 typealias CVV = String
@@ -11,6 +12,8 @@ typealias Year = String
  * The interface responsible for validating the state of card fields
  */
 interface CardValidator {
+
+    val cardConfiguration: CardConfiguration
 
     /**
      * Validates the pan field

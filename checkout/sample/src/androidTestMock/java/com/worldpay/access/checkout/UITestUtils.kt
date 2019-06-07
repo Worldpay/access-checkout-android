@@ -14,6 +14,9 @@ import android.support.test.uiautomator.UiSelector
 import android.support.v4.content.res.ResourcesCompat.getColor
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
+import com.worldpay.access.checkout.matchers.AlphaMatcher
+import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
+import com.worldpay.access.checkout.matchers.EditTextColorMatcher
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.junit.Assert
@@ -24,6 +27,7 @@ object UITestUtils {
     val cvvMatcher: Matcher<View> = withId(R.id.cardCVVText)
     val monthMatcher: Matcher<View> = withId(R.id.month_edit_text)
     val yearMatcher: Matcher<View> = withId(R.id.year_edit_text)
+    val brandImageMatcher: Matcher<View> = withId(R.id.logo_view)
     private val cardExpiryMatcher: Matcher<View> = withId(R.id.cardExpiryText)
     private val buttonMatcher: Matcher<View> = withId(R.id.submit)
     private val progressMatcher: Matcher<View> = withId(R.id.loading_bar)
@@ -56,7 +60,7 @@ object UITestUtils {
         if (assertInsertedCompleteText) {
             checkFieldText(cardNumberMatcher, card)
             checkFieldText(cvvMatcher, cvv)
-            checkFieldText(monthMatcher, card)
+            checkFieldText(monthMatcher, month)
             checkFieldText(yearMatcher, year)
         }
     }
@@ -131,6 +135,17 @@ object UITestUtils {
         onView(withText(expectedToastText))
             .inRoot(RootMatchers.withDecorView(CoreMatchers.not(view)))
             .check(matches(isDisplayed()))
+    }
+
+    fun moveToField(viewMatcher: Matcher<View>) {
+        onView(viewMatcher)
+            .perform(click(), ViewActions.closeSoftKeyboard())
+    }
+
+    fun assertBrandImage(expectedImage: Int) {
+        onView(brandImageMatcher)
+            .check(matches(isDisplayed()))
+            .check(matches(BrandVectorImageMatcher.withBrandVectorImageId(expectedImage)))
     }
 
     private fun getSuccessColor(context: Context) = getColor(context.resources, R.color.SUCCESS, context.theme)

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.matchers
 
 import android.support.test.espresso.matcher.BoundedMatcher
 import android.view.View

@@ -17,4 +17,9 @@ data class CardConfiguration(
 	 * @return true if it is, false otherwise
 	 */
     fun isEmpty(): Boolean = brands == null && defaults == null
+
+	companion object {
+		@JvmStatic
+		fun empty() = CardConfiguration()
+	}
 }

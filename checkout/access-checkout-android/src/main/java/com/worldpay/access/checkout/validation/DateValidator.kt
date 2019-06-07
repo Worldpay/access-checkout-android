@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.model.CardConfiguration
+import com.worldpay.access.checkout.model.CardDefaults
 import com.worldpay.access.checkout.model.CardValidationRule
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import java.util.*
@@ -34,12 +35,8 @@ internal class DateValidatorImpl(
     private val cardConfiguration: CardConfiguration
 ) : DateValidator {
 
-    private val defaultValidationResult = ValidationResult(partial = true, complete = true)
-
     override fun validate(month: Month?, year: Year?): ValidationResult {
-        val defaults = cardConfiguration.defaults ?: return defaultValidationResult
-        val monthRule = defaults.month ?: return defaultValidationResult
-        val yearRule = defaults.year ?: return defaultValidationResult
+        val (monthRule, yearRule) = getRulesForDate(cardConfiguration)
 
         var partial = true
         var complete = true
@@ -75,9 +72,7 @@ internal class DateValidatorImpl(
     }
 
     override fun canUpdate(month: Month?, year: Year?): Boolean {
-        val defaults = cardConfiguration.defaults ?: return true
-        val monthRule = defaults.month ?: return true
-        val yearRule = defaults.year ?: return true
+        val (monthRule, yearRule) = getRulesForDate(cardConfiguration)
 
         var complete: Boolean
 
@@ -92,6 +87,13 @@ internal class DateValidatorImpl(
         } ?: false
 
         return !complete
+    }
+
+    private fun getRulesForDate(cardConfiguration: CardConfiguration): Pair<CardValidationRule, CardValidationRule> {
+        val defaults = cardConfiguration.defaults ?: CardDefaults(null, null, null, null)
+        val monthRule = defaults.month ?: CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", null, null, 2)
+        val yearRule = defaults.year ?: CardValidationRule(null, null, null, 2)
+        return Pair(monthRule, yearRule)
     }
 
     private fun getValidationResult(rule: CardValidationRule, insertedDateField: String): ValidationResult {

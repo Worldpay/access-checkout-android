@@ -6,18 +6,25 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutCo
 import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
 import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.api.HttpClient
+import com.worldpay.access.checkout.config.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardConfiguration
 import java.net.URL
 
 internal class CardConfigurationAsyncTask(private val callback: Callback<CardConfiguration>,
-                                          private val cardConfigurationClient: CardConfigurationClient = CardConfigurationClient()) :
+                                          private val httpClient: HttpClient = HttpClient(),
+                                          private val cardConfigurationParser: CardConfigurationParser = CardConfigurationParser()
+) :
     AsyncTask<String, Void, AsyncTaskResult<CardConfiguration>>() {
 
+    companion object {
+        private const val CARD_CONFIGURATION_RESOURCE = "access-checkout/cardConfiguration.json"
+    }
 
     override fun doInBackground(vararg params: String?): AsyncTaskResult<CardConfiguration> {
         return try {
             val baseURL = validateAndGetURL(params)
-            val cardConfiguration = cardConfigurationClient.getCardConfiguration(baseURL)
+            val cardConfiguration = httpClient.doGet(URL("$baseURL/$CARD_CONFIGURATION_RESOURCE"), cardConfigurationParser)
             AsyncTaskResult(cardConfiguration)
         } catch (ex: AccessCheckoutConfigurationException) {
             AsyncTaskResult(ex)

@@ -66,9 +66,8 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
  */
 class CVVLengthFilter(
     private val cardValidator: CardValidator,
-    cardConfiguration: CardConfiguration,
     private val panView: CardTextView
-) : AbstractCardFieldLengthFilter(cardConfiguration) {
+) : AbstractCardFieldLengthFilter(cardValidator.cardConfiguration) {
 
     override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
         cardValidator.validateCVV(field.toString(), panView.getInsertedText())
@@ -83,8 +82,8 @@ class CVVLengthFilter(
  * [PANLengthFilter] applies a length restriction to the pan field based on the identity of the card detected during
  * input
  */
-class PANLengthFilter(private val cardValidator: CardValidator, cardConfiguration: CardConfiguration) :
-    AbstractCardFieldLengthFilter(cardConfiguration) {
+class PANLengthFilter(private val cardValidator: CardValidator) :
+    AbstractCardFieldLengthFilter(cardValidator.cardConfiguration) {
 
     override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
         cardValidator.validatePAN(field.toString())
