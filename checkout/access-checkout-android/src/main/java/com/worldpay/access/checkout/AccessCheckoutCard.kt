@@ -41,6 +41,12 @@ class AccessCheckoutCard @JvmOverloads constructor(
 ) : Card {
 
     override var cardListener: CardListener? = null
+        set(value) {
+            panLengthFilter?.let { value?.onUpdateLengthFilter(panView, it) }
+            cvvLengthFilter?.let { value?.onUpdateLengthFilter(cvvView, it) }
+            value?.onUpdateLengthFilter(dateView, dateLengthFilter)
+            field = value
+        }
 
     override fun isValid(): Boolean {
         val pan = panView.getInsertedText()
