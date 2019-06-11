@@ -7,19 +7,20 @@ import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.testutils.mock
 import org.junit.Before
 import org.junit.Test
+import org.mockito.BDDMockito.given
 import org.mockito.Mockito.verify
 import org.mockito.internal.util.reflection.FieldSetter
 import org.mockito.internal.util.reflection.FieldSetter.setField
 
-class CardConfigurationClientTest {
+class CardConfigurationClientImplTest {
 
-    private lateinit var httpClient: HttpClient
-    private lateinit var deserializer: Deserializer<CardConfiguration>
+    private lateinit var cardConfigurationAsyncTaskFactory: CardConfigurationAsyncTaskFactory
+    private lateinit var cardConfigurationClientImpl: CardConfigurationClientImpl
 
     @Before
     fun setup() {
-        httpClient = mock()
-        deserializer = mock()
+        cardConfigurationAsyncTaskFactory = mock()
+        cardConfigurationClientImpl = CardConfigurationClientImpl(cardConfigurationAsyncTaskFactory)
     }
 
     @Test
@@ -29,13 +30,12 @@ class CardConfigurationClientTest {
             }
         }
 
-        val cardConfigurationClient = CardConfigurationClient(callback)
-        val cardConfigurationAsyncTask = mock<CardConfigurationAsyncTask>()
-        setField(cardConfigurationClient, cardConfigurationClient::class.java.getDeclaredField("cardConfigurationAsyncTask"), cardConfigurationAsyncTask)
+        val asyncTask = mock<CardConfigurationAsyncTask>()
+        given(cardConfigurationAsyncTaskFactory.getAsyncTask(callback)).willReturn(asyncTask)
 
         val baseURL = "http://localhost"
-        cardConfigurationClient.getCardConfiguration(baseURL)
+        cardConfigurationClientImpl.getCardConfiguration(baseURL, callback)
 
-        verify(cardConfigurationAsyncTask).execute(baseURL)
+        verify(asyncTask).execute(baseURL)
     }
 }

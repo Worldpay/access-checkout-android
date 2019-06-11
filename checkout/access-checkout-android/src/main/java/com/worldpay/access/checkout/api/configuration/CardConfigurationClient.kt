@@ -2,17 +2,17 @@ package com.worldpay.access.checkout.api.configuration
 
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.model.CardConfiguration
-import java.net.URL
 
-open class CardConfigurationClient(callback: Callback<CardConfiguration>) {
+interface CardConfigurationClient {
+    fun getCardConfiguration(baseURL: String, callback: Callback<CardConfiguration>)
+}
 
-    private val cardConfigurationAsyncTask: CardConfigurationAsyncTask = getAsyncTask(callback)
+internal class CardConfigurationClientImpl(
+    private val cardConfigurationAsyncTaskFactory: CardConfigurationAsyncTaskFactory = CardConfigurationAsyncTaskFactory()) :
+    CardConfigurationClient {
 
-    fun getCardConfiguration(baseURL: String) {
-        cardConfigurationAsyncTask.execute(baseURL)
-    }
-
-    private fun getAsyncTask(callback: Callback<CardConfiguration>): CardConfigurationAsyncTask {
-        return CardConfigurationAsyncTask(callback)
+    override fun getCardConfiguration(baseURL: String, callback: Callback<CardConfiguration>) {
+        val asyncTask = cardConfigurationAsyncTaskFactory.getAsyncTask(callback)
+        asyncTask.execute(baseURL)
     }
 }

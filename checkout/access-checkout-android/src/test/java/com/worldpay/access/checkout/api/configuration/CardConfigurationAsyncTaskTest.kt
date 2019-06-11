@@ -102,7 +102,15 @@ class CardConfigurationAsyncTaskTest {
         }
         val baseURL = "http://localhost"
 
-        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
+        val urlFactory = mock<URLFactory>()
+        val url = URL(baseURL)
+        given(urlFactory.getURL("$baseURL/access-checkout/cardConfiguration.json")).willReturn(url)
+        val httpClient = mock<HttpClient>()
+        val cardConfigurationParser = mock<CardConfigurationParser>()
+        given(httpClient.doGet(url, cardConfigurationParser)).willReturn(cardConfiguration)
+        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, urlFactory, httpClient,
+            cardConfigurationParser
+        )
 
         cardConfigurationAsyncTask.execute(baseURL)
 
@@ -130,7 +138,7 @@ class CardConfigurationAsyncTaskTest {
         val cardConfigurationParser = mock<CardConfigurationParser>()
         val urlFactory = mock<URLFactory>()
         val url = URL(baseURL)
-        given(urlFactory.getURL(baseURL)).willReturn(url)
+        given(urlFactory.getURL("$baseURL/access-checkout/cardConfiguration.json")).willReturn(url)
         given(httpClient.doGet(url, cardConfigurationParser)).willThrow(AccessCheckoutException.AccessCheckoutHttpException("Something went wrong!", null))
         val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, urlFactory, httpClient, cardConfigurationParser)
 

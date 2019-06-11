@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.Toast
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
+import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
@@ -41,12 +41,13 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         card = AccessCheckoutCard(panView, cvvText, dateText)
         card.cardListener = this
 
-        CardConfigurationClient(object : Callback<CardConfiguration> {
+        CardConfigurationClientFactory.createClient().getCardConfiguration(getBaseUrl(), object : Callback<CardConfiguration> {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {
-                card.cardValidator = response?.let { AccessCheckoutCardValidator(it) } ?:
-                        AccessCheckoutCardValidator(CardConfiguration.empty())
+                card.cardValidator = response?.let { AccessCheckoutCardValidator(it) } ?: AccessCheckoutCardValidator(
+                    CardConfiguration.empty()
+                )
             }
-        }).getCardConfiguration(getBaseUrl())
+        })
         
         panView.cardViewListener = card
         cvvText.cardViewListener = card
