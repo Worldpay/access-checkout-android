@@ -90,9 +90,11 @@ internal class DateValidatorImpl(
     }
 
     private fun getRulesForDate(cardConfiguration: CardConfiguration): Pair<CardValidationRule, CardValidationRule> {
-        val defaults = cardConfiguration.defaults ?: CardDefaults(null, null, null, null)
-        val monthRule = defaults.month ?: CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", null, null, 2)
-        val yearRule = defaults.year ?: CardValidationRule("^\\d{0,2}$", null, null, 2)
+        val monthDefaultRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", null, null, 2)
+        val yearDefaultRule = CardValidationRule("^\\d{0,2}$", null, null, 2)
+        val defaults = cardConfiguration.defaults ?: return Pair(monthDefaultRule, yearDefaultRule)
+        val monthRule = defaults.month ?: monthDefaultRule
+        val yearRule = defaults.year ?: yearDefaultRule
         return Pair(monthRule, yearRule)
     }
 

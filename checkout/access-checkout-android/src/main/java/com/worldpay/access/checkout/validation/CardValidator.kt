@@ -13,6 +13,9 @@ typealias Year = String
  */
 interface CardValidator {
 
+    /**
+     * The [CardConfiguration] to use for validating the fields
+     */
     val cardConfiguration: CardConfiguration
 
     /**

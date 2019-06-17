@@ -3,7 +3,15 @@ package com.worldpay.access.checkout.api.configuration
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.model.CardConfiguration
 
+/**
+ * A client to fetch a [CardConfiguration]
+ */
 interface CardConfigurationClient {
+
+    /**
+     * @param baseURL the base URL of the server to fetch the config from
+     * @param callback a callback function which will be used to return the [CardConfiguration] back to
+     */
     fun getCardConfiguration(baseURL: String, callback: Callback<CardConfiguration>)
 }
 
