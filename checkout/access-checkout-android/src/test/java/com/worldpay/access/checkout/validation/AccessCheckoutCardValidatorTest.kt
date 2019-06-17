@@ -68,4 +68,9 @@ class AccessCheckoutCardValidatorTest {
 
         assertFalse(canUpdate)
     }
+
+    @Test
+    fun `given a validator is constructed then should be able to fetch card configuration`() {
+        assertEquals(cardConfiguration, accessCheckoutCardValidator.cardConfiguration)
+    }
 }

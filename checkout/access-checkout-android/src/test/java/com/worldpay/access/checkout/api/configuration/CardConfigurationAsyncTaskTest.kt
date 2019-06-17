@@ -33,7 +33,7 @@ class CardConfigurationAsyncTaskTest {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {
                 assertNotNull(error)
                 assertTrue(error is AccessCheckoutException.AccessCheckoutConfigurationException)
-                assertEquals("Blank URL specified", error.message)
+                assertEquals("Empty URL specified", error.message)
                 asserted = true
             }
         }
@@ -53,14 +53,14 @@ class CardConfigurationAsyncTaskTest {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {
                 assertNotNull(error)
                 assertTrue(error is AccessCheckoutException.AccessCheckoutConfigurationException)
-                assertEquals("Null URL specified", error.message)
+                assertEquals("Empty URL specified", error.message)
                 asserted = true
             }
         }
 
         val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
 
-        cardConfigurationAsyncTask.execute()
+        cardConfigurationAsyncTask.execute(null)
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }

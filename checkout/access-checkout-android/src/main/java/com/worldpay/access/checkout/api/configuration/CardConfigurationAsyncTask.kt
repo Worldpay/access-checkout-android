@@ -26,8 +26,8 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
 
     override fun doInBackground(vararg params: String?): AsyncTaskResult<CardConfiguration> {
         return try {
-            val baseURL = validateAndGetURL(params)
-            val url = urlFactory.getURL("$baseURL/$CARD_CONFIGURATION_RESOURCE")
+            validateURL(params)
+            val url = urlFactory.getURL("${params[0]}/$CARD_CONFIGURATION_RESOURCE")
             val cardConfiguration = httpClient.doGet(url, cardConfigurationParser)
             debugLog(TAG, "Received card configuration: $cardConfiguration")
             AsyncTaskResult(cardConfiguration)
@@ -46,22 +46,16 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
         callbackOnTaskResult(callback, result)
     }
 
-    private fun validateAndGetURL(params: Array<out String?>): String {
-        if (params.isEmpty()) throw AccessCheckoutConfigurationException("Null URL specified")
-        return params[0]?.let {
-            if (it.isBlank()) {
-                throw AccessCheckoutConfigurationException("Blank URL specified")
-            }
-            parseURL(it)
-            it
-        } ?: throw AccessCheckoutConfigurationException("Null URL specified")
-    }
-
-    private fun parseURL(url: String) {
+    private fun validateURL(params: Array<out String?>) {
+        val url = params[0]
+        if (url.isNullOrBlank()) {
+            throw AccessCheckoutConfigurationException("Empty URL specified")
+        }
         try {
             URL(url)
         } catch (ex: Exception) {
             throw AccessCheckoutConfigurationException("Invalid URL specified", ex)
         }
     }
+
 }
