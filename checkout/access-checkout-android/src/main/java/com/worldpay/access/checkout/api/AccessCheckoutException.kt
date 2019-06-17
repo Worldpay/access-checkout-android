@@ -82,7 +82,7 @@ sealed class AccessCheckoutException : RuntimeException() {
 
     data class AccessCheckoutHttpException(
         override val message: String?,
-        override val cause: Throwable?
+        override val cause: Throwable? = null
     ) : AccessCheckoutException()
 
 

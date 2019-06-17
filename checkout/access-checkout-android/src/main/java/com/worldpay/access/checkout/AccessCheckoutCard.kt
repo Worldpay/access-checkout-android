@@ -1,11 +1,8 @@
 package com.worldpay.access.checkout
 
-import android.content.Context
-import com.worldpay.access.checkout.config.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.validation.*
+import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.views.*
-import java.util.*
 
 /**
  * [AccessCheckoutCard] is responsible for responding to state changes on a Card field, by returning validation results
@@ -30,12 +27,16 @@ class AccessCheckoutCard constructor(
 
     override var cardListener: CardListener? = null
     override var cardValidator: CardValidator? = null
-    set(value) {
-        field = value
-        panLengthFilter = factory.getPANLengthFilter(value)
-        cvvLengthFilter = factory.getCVVLengthFilter(value, panView)
-        dateLengthFilter = factory.getDateLengthFilter(value?.cardConfiguration)
-    }
+        set(value) {
+            field = value
+            panLengthFilter = factory.getPANLengthFilter(value)
+            cvvLengthFilter = factory.getCVVLengthFilter(value, panView)
+            dateLengthFilter = factory.getDateLengthFilter(value?.cardConfiguration)
+
+            panLengthFilter?.let { cardListener?.onUpdateLengthFilter(panView, it) }
+            cvvLengthFilter?.let { cardListener?.onUpdateLengthFilter(cvvView, it) }
+            dateLengthFilter?.let { cardListener?.onUpdateLengthFilter(dateView, it) }
+        }
 
     override fun isValid(): Boolean {
         val pan = panView.getInsertedText()

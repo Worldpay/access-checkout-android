@@ -80,7 +80,12 @@ class AccessCheckoutCardTest {
     @Test
     fun givenValidatorHasBeenSetOnTheCard_AndAllFieldsAreValid_ThenCardShouldBeValid() {
         given(cardValidator.validatePAN(pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
-        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = true),
+                null
+            )
+        )
         given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = true))
 
         assertTrue(card.isValid())
@@ -89,7 +94,12 @@ class AccessCheckoutCardTest {
     @Test
     fun givenValidatorHasBeenSetOnTheCard_AndOnlyPANValid_ThenCardShouldNotBeValid() {
         given(cardValidator.validatePAN(pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
-        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(ValidationResult(partial = false, complete = false), null))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = false),
+                null
+            )
+        )
         given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = false))
 
         assertFalse(card.isValid())
@@ -98,7 +108,12 @@ class AccessCheckoutCardTest {
     @Test
     fun givenValidatorHasBeenSetOnTheCard_AndOnlyPANAndCVVValid_ThenCardShouldNotBeValid() {
         given(cardValidator.validatePAN(pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
-        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = true),
+                null
+            )
+        )
         given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = false))
 
         assertFalse(card.isValid())
@@ -107,7 +122,12 @@ class AccessCheckoutCardTest {
     @Test
     fun givenValidatorHasBeenSetOnTheCard_AndOnlyPANAndExpiryValid_ThenCardShouldNotBeValid() {
         given(cardValidator.validatePAN(pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
-        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(ValidationResult(partial = false, complete = false), null))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = false),
+                null
+            )
+        )
         given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = true))
 
         assertFalse(card.isValid())
@@ -115,8 +135,18 @@ class AccessCheckoutCardTest {
 
     @Test
     fun givenValidatorHasBeenSetOnTheCard_AndOnlyCVVValid_ThenCardShouldNotBeValid() {
-        given(cardValidator.validatePAN(pan)).willReturn(Pair(ValidationResult(partial = false, complete = false), null))
-        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
+        given(cardValidator.validatePAN(pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = false),
+                null
+            )
+        )
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = true),
+                null
+            )
+        )
         given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = false))
 
         assertFalse(card.isValid())
@@ -124,8 +154,18 @@ class AccessCheckoutCardTest {
 
     @Test
     fun givenValidatorHasBeenSetOnTheCard_AndOnlyCVVAndExpiryValid_ThenCardShouldNotBeValid() {
-        given(cardValidator.validatePAN(pan)).willReturn(Pair(ValidationResult(partial = false, complete = false), null))
-        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
+        given(cardValidator.validatePAN(pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = false),
+                null
+            )
+        )
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = true),
+                null
+            )
+        )
         given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = true))
 
         assertFalse(card.isValid())
@@ -133,29 +173,52 @@ class AccessCheckoutCardTest {
 
     @Test
     fun givenValidatorHasBeenSetOnTheCard_AndOnlyExpiryValid_ThenCardShouldNotBeValid() {
-        given(cardValidator.validatePAN(pan)).willReturn(Pair(ValidationResult(partial = false, complete = false), null))
-        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(ValidationResult(partial = false, complete = false), null))
+        given(cardValidator.validatePAN(pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = false),
+                null
+            )
+        )
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = false),
+                null
+            )
+        )
         given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = true))
 
         assertFalse(card.isValid())
     }
 
     @Test
-    fun givenPANHasBeenUpdatedAndNoCardValidatorHasBeenSetThenCardListenerIsNotNotified() {
+    fun givenPANHasBeenUpdatedAndNoCardValidatorHasBeenSetThenCardListenerIsNotifiedOncePerFieldLengthFilter() {
         card.cardValidator = null
 
+        Mockito.reset(cardListener)
         card.onUpdatePAN("1234")
 
         verifyZeroInteractions(cardListener)
     }
 
     @Test
-    fun givenPANHasBeenUpdatedAndNoCardListenerHasBeenSetThenCardListenerIsNotNotified() {
+    fun givenPANHasBeenUpdatedAndNoCardListenerHasBeenSetThenCardListenerIsNotifiedOncePerFieldLengthFilter() {
         val updatedPan = "1234"
         card.cardListener = null
-        given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
-        given(cardValidator.validateCVV(cvv, updatedPan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
-
+        given(cardValidator.validatePAN(updatedPan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = true),
+                null
+            )
+        )
+        given(cardValidator.validateCVV(cvv, updatedPan)).willReturn(
+            Pair(
+                ValidationResult(
+                    partial = false,
+                    complete = true
+                ), null
+            )
+        )
+        Mockito.reset(cardListener)
         card.onUpdatePAN(updatedPan)
 
         verifyZeroInteractions(cardListener)
@@ -174,7 +237,7 @@ class AccessCheckoutCardTest {
 
         verify(cardListener).onUpdate(panView, true)
         verify(cardListener).onUpdateCardBrand(cardBrand)
-        verify(cardListener).onUpdateLengthFilter(panView, panLengthFilter)
+        verify(cardListener, Mockito.atLeast(2)).onUpdateLengthFilter(panView, panLengthFilter)
         verify(cardListener).onUpdate(cvvView, false)
     }
 
@@ -191,7 +254,7 @@ class AccessCheckoutCardTest {
 
         verify(cardListener).onUpdate(panView, true)
         verify(cardListener).onUpdateCardBrand(cardBrand)
-        verify(cardListener).onUpdateLengthFilter(panView, panLengthFilter)
+        verify(cardListener, Mockito.atLeast(2)).onUpdateLengthFilter(panView, panLengthFilter)
         verify(cardListener).onUpdate(cvvView, false)
     }
 
@@ -208,7 +271,7 @@ class AccessCheckoutCardTest {
 
         verify(cardListener).onUpdate(panView, false)
         verify(cardListener).onUpdateCardBrand(cardBrand)
-        verify(cardListener).onUpdateLengthFilter(panView, panLengthFilter)
+        verify(cardListener, Mockito.atLeast(2)).onUpdateLengthFilter(panView, panLengthFilter)
         verify(cardListener).onUpdate(cvvView, false)
     }
 
@@ -225,12 +288,12 @@ class AccessCheckoutCardTest {
 
         verify(cardListener).onUpdate(panView, true)
         verify(cardListener).onUpdateCardBrand(cardBrand)
-        verify(cardListener).onUpdateLengthFilter(panView, panLengthFilter)
+        verify(cardListener, Mockito.atLeast(2)).onUpdateLengthFilter(panView, panLengthFilter)
         verify(cardListener).onUpdate(cvvView, false)
     }
 
     @Test
-    fun givenPANHasBeenUpdatedAndNoLengthFilterThenCardListenerIsNotifiedOfResultButNoLengthFilterUpdate() {
+    fun givenPANHasBeenUpdatedAndNoLengthFilterThenCardListenerIsNotifiedOfResultButOnlyDefaultLengthFilterUpdate() {
         val updatedPan = "1234"
         val cardBrand = CardBrand("test", "test", null, emptyList())
         val panValidationResult = ValidationResult(partial = true, complete = true)
@@ -244,26 +307,40 @@ class AccessCheckoutCardTest {
 
         verify(cardListener).onUpdate(panView, true)
         verify(cardListener).onUpdateCardBrand(cardBrand)
-        verify(cardListener, Mockito.times(0)).onUpdateLengthFilter(typeSafeEq(panView), typeSafeAny())
+        verify(cardListener, Mockito.times(1)).onUpdateLengthFilter(typeSafeEq(panView), typeSafeAny())
         verify(cardListener).onUpdate(cvvView, false)
     }
 
     @Test
-    fun givenPANHasEndedUpdateAndNoCardValidatorHasBeenSetThenCardListenerIsNotNotified() {
+    fun givenPANHasEndedUpdateAndNoCardValidatorHasBeenSetThenCardListenerIsNotifiedOncePerFieldLengthFilter() {
         card.cardValidator = null
 
+        Mockito.reset(cardListener)
         card.onEndUpdatePAN("1234")
 
         verifyZeroInteractions(cardListener)
     }
 
     @Test
-    fun givenPANHasEndedUpdateAndNoCardListenerHasBeenSetThenCardListenerIsNotNotified() {
+    fun givenPANHasEndedUpdateAndNoCardListenerHasBeenSetThenCardListenerIsNotifiedOncePerFieldLengthFilter() {
         val updatedPan = "1234"
         card.cardListener = null
-        given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
-        given(cardValidator.validateCVV(cvv, updatedPan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
+        given(cardValidator.validatePAN(updatedPan)).willReturn(
+            Pair(
+                ValidationResult(partial = false, complete = true),
+                null
+            )
+        )
+        given(cardValidator.validateCVV(cvv, updatedPan)).willReturn(
+            Pair(
+                ValidationResult(
+                    partial = false,
+                    complete = true
+                ), null
+            )
+        )
 
+        Mockito.reset(cardListener)
         card.onEndUpdatePAN(updatedPan)
 
         verifyZeroInteractions(cardListener)
@@ -289,17 +366,26 @@ class AccessCheckoutCardTest {
     fun givenCVVHasBeenUpdatedAndNoCardValidatorHasBeenSetThenCardListenerIsNotNotified() {
         card.cardValidator = null
 
+        Mockito.reset(cardListener)
         card.onUpdateCVV("1234")
 
         verifyZeroInteractions(cardListener)
     }
 
     @Test
-    fun givenCVVHasBeenUpdatedAndNoCardListenerHasBeenSetThenCardListenerIsNotNotified() {
+    fun givenCVVHasBeenUpdatedAndNoCardListenerHasBeenSetThenCardListenerIsNotifiedOncePerFieldLengthFilter() {
         val updatedCVV = "1234"
         card.cardListener = null
-        given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
+        given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(
+            Pair(
+                ValidationResult(
+                    partial = false,
+                    complete = true
+                ), null
+            )
+        )
 
+        Mockito.reset(cardListener)
         card.onUpdateCVV(updatedCVV)
 
         verifyZeroInteractions(cardListener)
@@ -312,6 +398,7 @@ class AccessCheckoutCardTest {
         val cvvValidationResult = ValidationResult(partial = false, complete = true)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 
+        Mockito.reset(cardListener)
         card.onUpdateCVV(updatedCVV)
 
         verify(cardListener).onUpdate(cvvView, true)
@@ -325,6 +412,7 @@ class AccessCheckoutCardTest {
         val cvvValidationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 
+        Mockito.reset(cardListener)
         card.onUpdateCVV(updatedCVV)
 
         verify(cardListener).onUpdate(cvvView, true)
@@ -338,6 +426,7 @@ class AccessCheckoutCardTest {
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 
+        Mockito.reset(cardListener)
         card.onUpdateCVV(updatedCVV)
 
         verify(cardListener).onUpdate(cvvView, false)
@@ -351,6 +440,7 @@ class AccessCheckoutCardTest {
         val cvvValidationResult = ValidationResult(partial = true, complete = true)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 
+        Mockito.reset(cardListener)
         card.onUpdateCVV(updatedCVV)
 
         verify(cardListener).onUpdate(cvvView, true)
@@ -366,6 +456,7 @@ class AccessCheckoutCardTest {
         card = AccessCheckoutCard(panView, cvvView, dateView, factory)
         card.cardListener = cardListener
 
+        Mockito.reset(cardListener)
         card.onUpdateCVV(updatedCVV)
 
         verify(cardListener).onUpdate(cvvView, true)
@@ -376,6 +467,7 @@ class AccessCheckoutCardTest {
     fun givenCVVHasEndedUpdateAndNoCardValidatorHasBeenSetThenCardListenerIsNotNotified() {
         card.cardValidator = null
 
+        Mockito.reset(cardListener)
         card.onEndUpdateCVV("1234")
 
         verifyZeroInteractions(cardListener)
@@ -385,8 +477,15 @@ class AccessCheckoutCardTest {
     fun givenCVVHasEndedUpdateAndNoCardListenerHasBeenSetThenCardListenerIsNotNotified() {
         val updatedCVV = "1234"
         card.cardListener = null
-        given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(ValidationResult(partial = false, complete = true), null))
-
+        given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(
+            Pair(
+                ValidationResult(
+                    partial = false,
+                    complete = true
+                ), null
+            )
+        )
+        Mockito.reset(cardListener)
         card.onEndUpdateCVV(updatedCVV)
 
         verifyZeroInteractions(cardListener)
@@ -408,18 +507,19 @@ class AccessCheckoutCardTest {
     fun givenDateHasBeenUpdatedAndNoCardValidatorHasBeenSetThenCardListenerIsNotNotified() {
         card.cardValidator = null
 
+        Mockito.reset(cardListener)
         card.onUpdateDate("01", "20")
 
         verifyZeroInteractions(cardListener)
     }
 
     @Test
-    fun givenDateHasBeenUpdatedAndNoCardListenerHasBeenSetThenCardListenerIsNotNotified() {
+    fun givenDateHasBeenUpdatedAndNoCardListenerHasBeenSetThenCardListenerIsNotifiedOncePerFieldLengthFilter() {
         card.cardListener = null
         val month = "01"
         val year = "19"
         given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = false))
-
+        Mockito.reset(cardListener)
         card.onUpdateDate(month, year)
 
         verifyZeroInteractions(cardListener)
@@ -435,6 +535,7 @@ class AccessCheckoutCardTest {
         val validationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validateDate(month, year)).willReturn(validationResult)
 
+        Mockito.reset(cardListener)
         card.onUpdateDate(month, null)
 
         verify(cardListener).onUpdate(dateView, false)
@@ -455,7 +556,7 @@ class AccessCheckoutCardTest {
         card.onUpdateDate(month, null)
 
         verify(cardListener).onUpdate(dateView, true)
-        verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
+        verify(cardListener, Mockito.atLeast(2)).onUpdateLengthFilter(dateView, dateLengthFilter)
     }
 
     @Test
@@ -472,7 +573,7 @@ class AccessCheckoutCardTest {
         card.onUpdateDate(month, null)
 
         verify(cardListener).onUpdate(dateView, true)
-        verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
+        verify(cardListener, Mockito.atLeast(2)).onUpdateLengthFilter(dateView, dateLengthFilter)
     }
 
     @Test
@@ -489,7 +590,7 @@ class AccessCheckoutCardTest {
         card.onUpdateDate(month, null)
 
         verify(cardListener).onUpdate(dateView, false)
-        verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
+        verify(cardListener, Mockito.atLeast(2)).onUpdateLengthFilter(dateView, dateLengthFilter)
     }
 
     @Test
@@ -504,7 +605,7 @@ class AccessCheckoutCardTest {
         card.onUpdateDate(month, null)
 
         verify(cardListener).onUpdate(dateView, true)
-        verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
+        verify(cardListener, Mockito.atLeast(2)).onUpdateLengthFilter(dateView, dateLengthFilter)
     }
 
     @Test
@@ -519,7 +620,7 @@ class AccessCheckoutCardTest {
         card.onUpdateDate(null, year)
 
         verify(cardListener).onUpdate(dateView, true)
-        verify(cardListener).onUpdateLengthFilter(dateView, dateLengthFilter)
+        verify(cardListener, Mockito.atLeast(2)).onUpdateLengthFilter(dateView, dateLengthFilter)
     }
 
     @Test
@@ -531,6 +632,7 @@ class AccessCheckoutCardTest {
 
         given(cardValidator.validateDate(null, year)).willReturn(ValidationResult(partial = true, complete = false))
 
+        Mockito.reset(cardListener)
         card.onUpdateDate(null, year)
 
         verify(cardListener).onUpdate(dateView, true)
@@ -546,6 +648,7 @@ class AccessCheckoutCardTest {
 
         given(cardValidator.validateDate(null, year)).willReturn(ValidationResult(partial = false, complete = false))
 
+        Mockito.reset(cardListener)
         card.onUpdateDate(null, year)
 
         verify(cardListener).onUpdate(dateView, false)
@@ -553,8 +656,9 @@ class AccessCheckoutCardTest {
     }
 
     @Test
-    fun givenDateHasEndedUpdateAndNoCardValidatorHasBeenSetThenCardListenerIsNotNotified() {
+    fun givenDateHasEndedUpdateAndNoCardValidatorHasBeenSetThenCardListenerIsNotifiedOncePerFieldLengthFilter() {
         card.cardValidator = null
+        Mockito.reset(cardListener)
 
         card.onEndUpdateDate("01", "20")
 
@@ -562,12 +666,13 @@ class AccessCheckoutCardTest {
     }
 
     @Test
-    fun givenDateHasEndedUpdateAndNoCardListenerHasBeenSetThenCardListenerIsNotNotified() {
+    fun givenDateHasEndedUpdateAndNoCardListenerHasBeenSetThenCardListenerIsNotifiedOncePerFieldLengthFilter() {
         card.cardListener = null
         val month = "01"
         val year = "19"
         given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = false))
 
+        Mockito.reset(cardListener)
         card.onEndUpdateDate(month, year)
 
         verifyZeroInteractions(cardListener)

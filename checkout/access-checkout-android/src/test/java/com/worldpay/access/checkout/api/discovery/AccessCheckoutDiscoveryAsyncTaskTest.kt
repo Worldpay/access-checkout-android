@@ -15,6 +15,7 @@ import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -69,6 +70,36 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
                 "Some message",
                 AccessCheckoutDeserializationException("deserialization")
             )
+        )
+
+        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryAsyncTask(
+            callback,
+            mockedRootDeserializer,
+            mockedSessionsResourceDeserializer,
+            mockedHttpClient
+        )
+
+        accessCheckoutDiscoveryClient.execute("http://localhost")
+
+        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+    }
+
+    @Test
+    fun givenRootServiceDiscoveryThrowsAServerError_ThenShouldThrowAnAccessCheckoutDiscoveryException() {
+        var asserted = false
+
+        val callback = object : Callback<String> {
+            override fun onResponse(error: Exception?, response: String?) {
+                assertTrue(error is AccessCheckoutDiscoveryException)
+                assertTrue(error.cause is AccessCheckoutError)
+                assertEquals(error.message, "An error was thrown when trying to make a connection to the service")
+                asserted = true
+            }
+        }
+
+        val rootURL = URL("http://localhost")
+        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedRootDeserializer)).willThrow(
+            AccessCheckoutError("Some message")
         )
 
         val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryAsyncTask(
@@ -182,8 +213,9 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
                 assertTrue(error is AccessCheckoutDiscoveryException)
-                assertTrue(error.cause is MalformedURLException)
-                assertEquals(error.message, "Invalid URL supplied: $rubbishResponse")
+                assertNotNull(error.cause)
+                assertEquals(MalformedURLException::class.java, error.cause!!::class.java)
+                assertEquals("Invalid URL supplied: $rubbishResponse", error.message)
                 asserted = true
             }
         }

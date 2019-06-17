@@ -98,13 +98,25 @@ class HttpClientTest {
     }
 
     @Test
-    fun givenHttp500Error_ThenShouldThrowAccessCheckoutExceptionWithMessageFromServerOnPost() {
-
-        val errorMessage = "Some message"
-        expectedException.expect(AccessCheckoutHttpException::class.java)
+    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBodyOnPost() {
+        val errorMessage = "A server error occurred when trying to make the request"
+        expectedException.expect(AccessCheckoutError::class.java)
         expectedException.expectMessage(errorMessage)
 
-        stubResponse(buildMockedResponse(500, null, errorMessage))
+        stubResponse(buildMockedResponse(500, null, null))
+
+        given(serializer.serialize(testRequest)).willReturn(testRequestString)
+
+        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+    }
+
+    @Test
+    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithMessageFromServerWhenBodyInResponseOnPost() {
+        expectedException.expect(AccessCheckoutError::class.java)
+        expectedException.expectMessage("Some http message")
+        expectedException.expectMessage("Some exception occurred")
+
+        stubResponse(buildMockedResponse(500, "Some exception occurred", "Some http message"))
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
@@ -160,6 +172,18 @@ class HttpClientTest {
 
         httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
 
+    }
+
+    @Test
+    fun givenHttp400ErrorWithEmptyResponseData_ThenShouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBodyOnPost() {
+        expectedException.expect(AccessCheckoutHttpException::class.java)
+        expectedException.expectMessage("Error message was: Some Client Error")
+
+        stubResponse(MockedResponse(400, null, "Some Client Error"))
+
+        given(serializer.serialize(testRequest)).willReturn(testRequestString)
+
+        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
     }
 
     @Test
@@ -300,12 +324,24 @@ class HttpClientTest {
     }
 
     @Test
-    fun givenHttp500Error_ThenShouldThrowAccessCheckoutExceptionWithMessageFromServerOnGet() {
-        val errorMessage = "Some message"
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectMessage(errorMessage)
+    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBodyOnGet() {
+        expectedException.expect(AccessCheckoutError::class.java)
+        expectedException.expectMessage("A server error occurred when trying to make the request")
 
-        stubResponse(buildMockedResponse(500, null, errorMessage))
+        stubResponse(buildMockedResponse(500, null, null))
+
+        httpClient.doGet(url, deserializer)
+    }
+
+    @Test
+    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithMessageFromServerWhenBodyInResponseOnGet() {
+        expectedException.expect(AccessCheckoutError::class.java)
+        expectedException.expectMessage("Some http message")
+        expectedException.expectMessage("Some exception occurred")
+
+        stubResponse(buildMockedResponse(500, "Some exception occurred", "Some http message"))
+
+        given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         httpClient.doGet(url, deserializer)
     }
@@ -345,6 +381,18 @@ class HttpClientTest {
 
         stubResponse(buildMockedResponse(400, "", errorMessage))
 
+
+        httpClient.doGet(url, deserializer)
+    }
+
+    @Test
+    fun givenHttp400ErrorWithEmptyResponseData_ThenShouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBodyOnGet() {
+        expectedException.expect(AccessCheckoutHttpException::class.java)
+        expectedException.expectMessage("Error message was: Some Client Error")
+
+        stubResponse(MockedResponse(400, null, "Some Client Error"))
+
+        given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         httpClient.doGet(url, deserializer)
     }
