@@ -23,7 +23,7 @@ class AccessCheckoutCardValidatorTest {
         cvvValidator = mock(CVVValidator::class.java)
         dateValidator = mock(DateValidator::class.java)
         cardConfiguration = mock(CardConfiguration::class.java)
-        accessCheckoutCardValidator = AccessCheckoutCardValidator(cardConfiguration)
+        accessCheckoutCardValidator = AccessCheckoutCardValidator(cardConfiguration, panValidator, cvvValidator, dateValidator)
     }
 
     @Test

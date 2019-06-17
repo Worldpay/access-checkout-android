@@ -92,16 +92,16 @@ internal class DateValidatorImpl(
     private fun getRulesForDate(cardConfiguration: CardConfiguration): Pair<CardValidationRule, CardValidationRule> {
         val defaults = cardConfiguration.defaults ?: CardDefaults(null, null, null, null)
         val monthRule = defaults.month ?: CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", null, null, 2)
-        val yearRule = defaults.year ?: CardValidationRule(null, null, null, 2)
+        val yearRule = defaults.year ?: CardValidationRule("^\\d{0,2}$", null, null, 2)
         return Pair(monthRule, yearRule)
     }
 
     private fun getValidationResult(rule: CardValidationRule, insertedDateField: String): ValidationResult {
         if (rule.matcher != null) {
-            return if (ValidatorUtils.regexMatches(rule.matcher, insertedDateField)) {
-                getValidationResultFor(insertedDateField, rule)
-            } else {
-                ValidationResult(partial = false, complete = false)
+            return when {
+                ValidatorUtils.regexMatches(rule.matcher, insertedDateField) -> getValidationResultFor(insertedDateField, rule)
+                insertedDateField.isBlank() -> ValidationResult(partial = true, complete = false)
+                else -> ValidationResult(partial = false, complete = false)
             }
         }
 
