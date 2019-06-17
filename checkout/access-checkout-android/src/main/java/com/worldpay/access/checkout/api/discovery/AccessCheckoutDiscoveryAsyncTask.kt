@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
+import java.lang.Exception
 import java.net.MalformedURLException
 import java.net.URL
 
@@ -29,14 +30,18 @@ internal class AccessCheckoutDiscoveryAsyncTask(
             val url = fetchLinkFromUrl(vtsServiceUrl, sessionsResourceDeserializer)
             debugLog(TAG, "Received response from service discovery endpoint")
             AsyncTaskResult(url)
-        } catch (e: AccessCheckoutHttpException) {
+        } catch (ex: Exception) {
             val errorMessage = "An error was thrown when trying to make a connection to the service"
-            debugLog(TAG, errorMessage)
-            AsyncTaskResult(AccessCheckoutDiscoveryException(errorMessage, e))
-        } catch (e: Exception) {
-            val errorMessage = "An error was thrown when trying to make a connection to the service"
-            debugLog(TAG, e.message ?: errorMessage)
-            AsyncTaskResult(e)
+            when (ex) {
+                is AccessCheckoutHttpException, is AccessCheckoutError -> {
+                    debugLog(TAG, errorMessage)
+                    AsyncTaskResult(AccessCheckoutDiscoveryException(errorMessage, ex))
+                }
+                else -> {
+                    debugLog(TAG, ex.message ?: errorMessage)
+                    AsyncTaskResult(ex)
+                }
+            }
         }
     }
 
