@@ -52,6 +52,21 @@ class DateValidatorImplTest {
     }
 
     @Test
+    fun `given empty month and year then should be partially valid`() {
+        assertEquals(ValidationResult(partial = true, complete = false), validator.validate("", ""))
+    }
+
+    @Test
+    fun `given empty month only then should be partially and completely invalid`() {
+        assertEquals(ValidationResult(partial = false, complete = false), validator.validate("", "20"))
+    }
+
+    @Test
+    fun `given empty year only then should be partially and completely invalid`() {
+        assertEquals(ValidationResult(partial = false, complete = false), validator.validate("12", ""))
+    }
+
+    @Test
     fun `given month and year rule without matcher then will validate against only length check`() {
         setCurrentDate(2019, 5 /* May */, 7)
 

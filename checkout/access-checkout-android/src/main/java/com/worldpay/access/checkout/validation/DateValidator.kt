@@ -60,7 +60,7 @@ internal class DateValidatorImpl(
             val validationResultForYear = getValidationResult(yearRule, it)
             var validDate = isYearValid(it, validationResultForYear)
 
-            if (month != null && validDate) {
+            if (!month.isNullOrBlank() && validDate) {
                 validDate = isFullDateValid(it, month)
             }
 
