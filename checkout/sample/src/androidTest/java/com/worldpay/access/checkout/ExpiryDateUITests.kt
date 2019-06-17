@@ -180,6 +180,30 @@ class ExpiryDateUITests {
             .check(matches(withText("01")))
     }
 
+    @Test
+    fun givenUserLongClicksAndPastesTooLongStringIntoMonthFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
+        closeSoftKeyboard()
+        val pastedText = "12345"
+
+        onView(withId(R.id.month_edit_text))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
+            .perform(replaceText(pastedText))
+            .check(matches(withText(pastedText.substring(0, 2))))
+    }
+
+    @Test
+    fun givenUserLongClicksAndPastesTooLongStringIntoYearFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
+        closeSoftKeyboard()
+        val pastedText = "9988"
+
+        onView(withId(R.id.year_edit_text))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
+            .perform(replaceText(pastedText))
+            .check(matches(withText(pastedText.substring(0, 2))))
+    }
+
     private fun enterMonth(month: String, typeText: Boolean = false) {
         closeSoftKeyboard()
         val typeAction = if (typeText) typeText(month) else replaceText(month)
