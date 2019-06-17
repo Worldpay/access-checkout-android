@@ -51,7 +51,7 @@ open class PANLayout @JvmOverloads constructor(
     }
 
     override fun onFinishInflate() {
-        mImageView.setTag(CARD_TAG, resources.getResourceEntryName(R.drawable.card_unknown))
+        mImageView.setTag(CARD_TAG, resources.getResourceEntryName(R.drawable.card_unknown_logo))
         super.onFinishInflate()
     }
 

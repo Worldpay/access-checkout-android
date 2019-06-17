@@ -24,6 +24,55 @@ class CardConfigurationIntegrationTest {
 
     private val cardConfigurationEndpoint = "/access-checkout/cardConfiguration.json"
 
+    private val cardConfigJson = """
+        {
+            "defaults": {
+                "pan": {
+                    "matcher": "^\\d{0,19}${'$'}",
+                    "minLength": 13,
+                    "maxLength": 19
+                },
+                "cvv": {
+                    "matcher": "^\\d{0,4}${'$'}",
+                    "minLength": 3,
+                    "maxLength": 4
+                },
+                "month": {
+                    "matcher": "^0[1-9]{0,1}${'$'}|^1[0-2]{0,1}${'$'}",
+                    "minLength": 2,
+                    "maxLength": 2
+                },
+                "year": {
+                    "matcher": "^\\d{0,2}${'$'}",
+                    "minLength": 2,
+                    "maxLength": 2
+                }
+            },
+            "brands": [
+                {
+                    "name": "test",
+                    "image": "test_logo",
+                    "cvv": {
+                        "matcher": "^\\d{0,3}${'$'}",
+                        "validLength": 3
+                    },
+                    "pans": [
+                        {
+                            "matcher": "^4\\d{0,15}",
+                            "validLength": 16,
+                            "subRules": [
+                                {
+                                    "matcher": "^(413600|444509|444550|450603|450617|450628|450636|450640|450662|463100|476142|476143|492901|492920|492923|492928|492937|492939|492960)\\d{0,7}",
+                                    "validLength": 13
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    """.trimIndent()
+
     @get:Rule
     var wireMockRule = WireMockRule(
         WireMockConfiguration
@@ -40,7 +89,7 @@ class CardConfigurationIntegrationTest {
                 WireMock.aResponse()
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
-                    .withBody(getInstrumentation().context.resources.openRawResource(R.raw.card_configuration).reader(Charsets.UTF_8).readText())
+                    .withBody(cardConfigJson)
             ))
 
         var cardConfiguration: CardConfiguration? = null

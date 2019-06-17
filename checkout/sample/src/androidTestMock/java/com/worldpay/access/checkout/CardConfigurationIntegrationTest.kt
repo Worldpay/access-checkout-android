@@ -47,19 +47,19 @@ class CardConfigurationIntegrationTest {
 
         typeFormInputs(luhnInvalidUnknownCard, unknownCvv, "13", year, true)
 
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
         checkFieldInState(false, cardNumberMatcher, cardConfigurationRule.activity)
         checkFieldInState(false, monthMatcher, cardConfigurationRule.activity)
         checkFieldInState(false, yearMatcher, cardConfigurationRule.activity)
         checkSubmitInState(false)
 
         updatePANDetails(luhnValidUnknownCard)
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
         checkFieldInState(true, cardNumberMatcher, cardConfigurationRule.activity)
         updateMonthDetails(month)
 
         updatePANDetails(luhnValidMastercardCard)
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
         checkFieldInState(true, cardNumberMatcher, cardConfigurationRule.activity)
 
         checkFieldInState(true, cardNumberMatcher, cardConfigurationRule.activity)

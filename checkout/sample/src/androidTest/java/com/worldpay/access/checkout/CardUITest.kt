@@ -25,7 +25,7 @@ class CardUITest: AbstractUITest() {
     @Test
     fun givenUserClicksCardViewAndInsertsUnknownPartiallyValidCardNumberThenTextShouldTurnGreenAndDisplayUnknownCardIcon() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -35,13 +35,13 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsValidVisaCardNumberThenTextShouldTurnGreenAndDisplayVisaIcon() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
 
         onView(withId(R.id.card_number_edit_text))
@@ -51,12 +51,12 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa)
+        assertBrandImage(R.drawable.card_visa_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnInvalidVisaCardNumberThenTextShouldTurnRedAndDisplayVisaIcon() {
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -65,12 +65,12 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa)
+        assertBrandImage(R.drawable.card_visa_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnValidMastercardCardNumberThenTextShouldTurnGreenAndDisplayMastercardIcon() {
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -79,13 +79,13 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard)
+        assertBrandImage(R.drawable.card_mastercard_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnInvalidMastercardCardNumberThenTextShouldTurnRedAndDisplayMastercardIcon() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
@@ -95,12 +95,12 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard)
+        assertBrandImage(R.drawable.card_mastercard_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnValidAmexCardNumberThenTextShouldTurnGreenAndDisplayAmexIcon() {
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
@@ -112,12 +112,12 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_amex)
+        assertBrandImage(R.drawable.card_amex_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnInvalidAmexCardNumberThenTextShouldTurnRedAndDisplayAmexIcon() {
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -126,12 +126,12 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_amex)
+        assertBrandImage(R.drawable.card_amex_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnValidUnknownCardNumberThenTextShouldTurnGreenAndDisplayUnknownIcon() {
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -141,12 +141,12 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnInvalidUnknownCardNumberThenTextShouldTurnRedAndDisplayUnknownIcon() {
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -157,12 +157,12 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenTextShouldDisplayVisaIcon() {
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -171,14 +171,14 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa)
+        assertBrandImage(R.drawable.card_visa_logo)
 
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialMastercardCardNumberThenTextShouldDisplayMastercardIcon() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -189,13 +189,13 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard)
+        assertBrandImage(R.drawable.card_mastercard_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialAmexCardNumberThenTextShouldDisplayAmexIcon() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -204,13 +204,13 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_amex)
+        assertBrandImage(R.drawable.card_amex_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenChangesToPartialMastercardTextShouldNotIndicateInvalidAndIconShouldBeMastercard() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -220,14 +220,14 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa)
+        assertBrandImage(R.drawable.card_visa_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), replaceText(""), closeSoftKeyboard())
 
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -236,12 +236,12 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard)
+        assertBrandImage(R.drawable.card_mastercard_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberAndMovesToDifferentFieldThenTextShouldDisplayVisaIconButDisplayErrorText() {
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -252,7 +252,7 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa)
+        assertBrandImage(R.drawable.card_visa_logo)
 
         onView(withId(R.id.month_edit_text))
             .check(matches(isDisplayed()))
@@ -261,14 +261,14 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa)
+        assertBrandImage(R.drawable.card_visa_logo)
     }
 
 
     @Test
     fun givenUserClicksCardViewAndInsertsVisaIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         val validVisaCardNumber = "4026344341791618"
         onView(withId(R.id.card_number_edit_text))
@@ -278,7 +278,7 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa)
+        assertBrandImage(R.drawable.card_visa_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), typeTextIntoFocusedView("1"), closeSoftKeyboard())
@@ -289,7 +289,7 @@ class CardUITest: AbstractUITest() {
     @Test
     fun givenUserClicksCardViewAndInsertsVisaIdentifiedCardNumberWhichMatchesSubRuleThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         // 413600 is a sub rule in the card config file with valid length of 13
         val validVisaCardNumber = "4136000000008"
@@ -303,7 +303,7 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa)
+        assertBrandImage(R.drawable.card_visa_logo)
 
         closeSoftKeyboard()
     }
@@ -311,7 +311,7 @@ class CardUITest: AbstractUITest() {
     @Test
     fun givenUserClicksCardViewAndInsertsMastercardIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         val validMastercardCardNumber = "5555555555554444"
         onView(withId(R.id.card_number_edit_text))
@@ -322,7 +322,7 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard)
+        assertBrandImage(R.drawable.card_mastercard_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(typeTextIntoFocusedView("4"), pressImeActionButton())
@@ -332,7 +332,7 @@ class CardUITest: AbstractUITest() {
     @Test
     fun givenUserClicksCardViewAndInsertsAmexIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         val validAmexCardNumber = "343434343434343"
         onView(withId(R.id.card_number_edit_text))
@@ -343,7 +343,7 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_amex)
+        assertBrandImage(R.drawable.card_amex_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(typeTextIntoFocusedView("4"), closeSoftKeyboard())
@@ -353,7 +353,7 @@ class CardUITest: AbstractUITest() {
     @Test
     fun givenUserClicksCardViewAndInsertsUnidentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         val validUnidentifiedCardNumber = "0000000000000000000"
         onView(withId(R.id.card_number_edit_text))
@@ -363,7 +363,7 @@ class CardUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_unknown)
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(typeTextIntoFocusedView("0"), closeSoftKeyboard())

@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.config.CardConfigurationParser
+import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
 import com.worldpay.access.checkout.model.CardConfiguration
 import java.net.URL
 
@@ -19,6 +20,7 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
     AsyncTask<String, Void, AsyncTaskResult<CardConfiguration>>() {
 
     companion object {
+        private const val TAG = "CardConfigurationAsyncTask"
         private const val CARD_CONFIGURATION_RESOURCE = "access-checkout/cardConfiguration.json"
     }
 
@@ -27,11 +29,15 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
             val baseURL = validateAndGetURL(params)
             val url = urlFactory.getURL("$baseURL/$CARD_CONFIGURATION_RESOURCE")
             val cardConfiguration = httpClient.doGet(url, cardConfigurationParser)
+            debugLog(TAG, "Received card configuration: $cardConfiguration")
             AsyncTaskResult(cardConfiguration)
         } catch (ex: AccessCheckoutConfigurationException) {
+            debugLog(TAG, "AccessCheckoutException thrown when fetching card configuration: $ex")
             AsyncTaskResult(ex)
         } catch (ex: Exception) {
-            val accessCheckoutConfigurationException = AccessCheckoutConfigurationException("There was an error when trying to fetch the card configuration", ex)
+            val message = "There was an error when trying to fetch the card configuration"
+            debugLog(TAG, "$message: $ex")
+            val accessCheckoutConfigurationException = AccessCheckoutConfigurationException(message, ex)
             AsyncTaskResult(accessCheckoutConfigurationException)
         }
     }

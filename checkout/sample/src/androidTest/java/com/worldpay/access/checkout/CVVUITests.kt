@@ -58,7 +58,7 @@ class CVVUITests: AbstractUITest() {
     fun givenNoCardDataEnteredThenCVVFieldShouldBeValidUpTo4Digits() {
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_unknown_logo)))
 
         onView(withId(R.id.cardCVVText))
             .perform(pressImeActionButton())
@@ -120,7 +120,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -141,7 +141,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -162,7 +162,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -186,7 +186,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -219,7 +219,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_visa_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -240,7 +240,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_visa_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -275,7 +275,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_visa_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
@@ -300,7 +300,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -321,7 +321,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -356,7 +356,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
@@ -379,7 +379,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_unknown_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))

@@ -20,7 +20,7 @@
             android:layout_height="match_parent"
             android:layout_weight="0.3"
             android:scaleType="centerInside"
-            android:src="@drawable/card_unknown"
+            android:src="@drawable/card_unknown_logo"
             android:contentDescription="@string/card_brand_icon"
     />
 
