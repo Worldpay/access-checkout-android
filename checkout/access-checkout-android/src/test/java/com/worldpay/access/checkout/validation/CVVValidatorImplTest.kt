@@ -14,7 +14,7 @@ class CVVValidatorImplTest {
 
     @Before
     fun setup() {
-       cvvValidator = CVVValidatorImpl(CardConfiguration())
+       cvvValidator = CVVValidatorImpl(null)
     }
 
     // validateCVV

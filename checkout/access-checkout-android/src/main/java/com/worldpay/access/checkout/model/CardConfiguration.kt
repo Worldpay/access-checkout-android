@@ -9,21 +9,4 @@ package com.worldpay.access.checkout.model
 data class CardConfiguration(
     val brands: List<CardBrand>? = null,
     val defaults: CardDefaults? = null
-) {
-
-    /**
-     * Defines whether this card configuration is empty
-     *
-     * @return true if it is, false otherwise
-     */
-    fun isEmpty(): Boolean = brands == null && defaults == null
-
-    companion object {
-
-        /**
-         * @return an empty [CardConfiguration]
-         */
-        @JvmStatic
-        fun empty() = CardConfiguration()
-    }
-}
+)

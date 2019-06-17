@@ -43,9 +43,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
 
         CardConfigurationClientFactory.createClient().getCardConfiguration(getBaseUrl(), object : Callback<CardConfiguration> {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {
-                card.cardValidator = response?.let { AccessCheckoutCardValidator(it) } ?: AccessCheckoutCardValidator(
-                    CardConfiguration.empty()
-                )
+                card.cardValidator = response?.let { AccessCheckoutCardValidator(it) } ?: AccessCheckoutCardValidator()
             }
         })
         

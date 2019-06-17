@@ -13,9 +13,9 @@ import com.worldpay.access.checkout.validation.ValidationResult
 /**
  * [AbstractCardFieldLengthFilter] is a common abstraction class which is used by individual field implementers to restrict the length of a particular card field
  *
- * @param cardConfiguration the configuration to use for determining the length for the field
+ * @param cardConfiguration (optional) the configuration to use for determining the length for the field
  */
-sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardConfiguration) : InputFilter {
+sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardConfiguration?) : InputFilter {
 
     internal val lengthFiltersBySizeCache: MutableMap<Int, InputFilter.LengthFilter> = mutableMapOf()
 
@@ -40,7 +40,7 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
     }
 
     private fun getMaxForDefaultRules(): Int? {
-        return ruleSelectorForDefaults(cardConfiguration.defaults)?.let { getValueToUseForRule(it) }
+        return ruleSelectorForDefaults(cardConfiguration?.defaults)?.let { getValueToUseForRule(it) }
     }
 
     private fun getMaxForIdentifiedBrand(result: Pair<ValidationResult, CardBrand?>, spanned: Spanned): Int? {

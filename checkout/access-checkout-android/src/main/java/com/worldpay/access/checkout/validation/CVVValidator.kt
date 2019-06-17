@@ -21,13 +21,11 @@ interface CVVValidator {
 }
 
 internal class CVVValidatorImpl(
-    private val cardConfiguration: CardConfiguration
+    private val cardConfiguration: CardConfiguration?
 ) : CVVValidator {
 
-    private val defaultValidationResult = ValidationResult(partial = true, complete = true)
-
     override fun validate(cvv: CVV, pan: PAN?): Pair<ValidationResult, CardBrand?> {
-        if (cardConfiguration.isEmpty()) {
+        if (cardConfiguration == null) {
             return Pair(ValidationResult(partial = true, complete = true), null)
         }
 
@@ -38,13 +36,11 @@ internal class CVVValidatorImpl(
             }
         }
 
-        return Pair(getDefaultValidationResult(cvv), null)
+        return Pair(getDefaultValidationResult(cvv, cardConfiguration), null)
     }
 
-    private fun getDefaultValidationResult(cvv: CVV): ValidationResult {
-        return if (cardConfiguration.defaults != null) {
-            val defaultRule = cardConfiguration.defaults.cvv ?: return defaultValidationResult
-            getValidationResultFor(cvv, defaultRule)
-        } else defaultValidationResult
+    private fun getDefaultValidationResult(cvv: CVV, cardConfiguration: CardConfiguration): ValidationResult {
+        val defaultRule = cardConfiguration.defaults?.cvv ?: return ValidationResult(partial = true, complete = true)
+        return getValidationResultFor(cvv, defaultRule)
     }
 }

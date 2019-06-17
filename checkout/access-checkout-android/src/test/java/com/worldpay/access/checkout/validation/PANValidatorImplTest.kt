@@ -21,14 +21,14 @@ class PANValidatorImplTest {
 
     @Before
     fun setup() {
-        panValidator = PANValidatorImpl(CardConfiguration())
+        panValidator = PANValidatorImpl(null)
     }
 
     // validatePAN
 
     @Test
     fun `given empty configuration then pan validator should not be null`() {
-        assertNotNull(PANValidatorImpl(CardConfiguration()))
+        assertNotNull(PANValidatorImpl(null))
     }
 
     @Test

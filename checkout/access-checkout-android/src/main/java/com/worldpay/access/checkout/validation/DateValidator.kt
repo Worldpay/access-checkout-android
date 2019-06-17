@@ -32,7 +32,7 @@ interface DateValidator {
 
 internal class DateValidatorImpl(
     private val now: Calendar,
-    private val cardConfiguration: CardConfiguration
+    private val cardConfiguration: CardConfiguration?
 ) : DateValidator {
 
     override fun validate(month: Month?, year: Year?): ValidationResult {
@@ -89,10 +89,10 @@ internal class DateValidatorImpl(
         return !complete
     }
 
-    private fun getRulesForDate(cardConfiguration: CardConfiguration): Pair<CardValidationRule, CardValidationRule> {
+    private fun getRulesForDate(cardConfiguration: CardConfiguration?): Pair<CardValidationRule, CardValidationRule> {
         val monthDefaultRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", null, null, 2)
         val yearDefaultRule = CardValidationRule("^\\d{0,2}$", null, null, 2)
-        val defaults = cardConfiguration.defaults ?: return Pair(monthDefaultRule, yearDefaultRule)
+        val defaults = cardConfiguration?.defaults ?: return Pair(monthDefaultRule, yearDefaultRule)
         val monthRule = defaults.month ?: monthDefaultRule
         val yearRule = defaults.year ?: yearDefaultRule
         return Pair(monthRule, yearRule)

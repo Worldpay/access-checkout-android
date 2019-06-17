@@ -266,6 +266,9 @@ class PANLengthFilterTest {
 
     @Test
     fun givenNonIdentifiedCardAndNoCardConfigurationThenShouldNotFilter() {
+        given(cardValidator.cardConfiguration).willReturn(null)
+        val panLengthFilter = PANLengthFilter(cardValidator)
+
         val thirtyDigitCardInput = "400000000000000000000000000000"
 
         val validationResult = ValidationResult(partial = true, complete = true)

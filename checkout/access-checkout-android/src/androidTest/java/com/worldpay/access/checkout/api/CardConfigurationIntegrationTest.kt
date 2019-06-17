@@ -106,7 +106,7 @@ class CardConfigurationIntegrationTest {
 
         await().atMost(5, TimeUnit.SECONDS).until {
             Log.d("CardConfigurationIntegrationTest", "Got card configuration: $cardConfiguration")
-            cardConfiguration != null && !cardConfiguration!!.isEmpty()
+            cardConfiguration != null
         }
     }
 
