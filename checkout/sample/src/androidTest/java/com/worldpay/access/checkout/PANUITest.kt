@@ -15,7 +15,8 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class CardUITest: AbstractUITest() {
+class PANUITest: AbstractUITest() {
+
 
     @Test
     fun cardNumber_exists() {
@@ -65,42 +66,6 @@ class CardUITest: AbstractUITest() {
             .check(matches(isEnabled()))
             .perform(replaceText(pastedText))
             .check(matches(withText(pastedText.substring(0, 19))))
-    }
-
-    @Test
-    fun givenUserLongClicksAndPastesTooLongStringIntoMonthFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
-        closeSoftKeyboard()
-        val pastedText = "12345"
-
-        onView(withId(R.id.month_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(replaceText(pastedText))
-            .check(matches(withText(pastedText.substring(0, 2))))
-    }
-
-    @Test
-    fun givenUserLongClicksAndPastesTooLongStringIntoYearFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
-        closeSoftKeyboard()
-        val pastedText = "9988"
-
-        onView(withId(R.id.year_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(replaceText(pastedText))
-            .check(matches(withText(pastedText.substring(0, 2))))
-    }
-
-    @Test
-    fun givenUserLongClicksAndPastesTooLongStringIntoCvvFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
-        closeSoftKeyboard()
-        val pastedText = "12345678"
-
-        onView(withId(R.id.cardCVVText))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(replaceText(pastedText))
-            .check(matches(withText(pastedText.substring(0, 4))))
     }
 
     @Test

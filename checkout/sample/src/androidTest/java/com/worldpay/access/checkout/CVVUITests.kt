@@ -415,6 +415,18 @@ class CVVUITests: AbstractUITest() {
             .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
     }
 
+    @Test
+    fun givenUserLongClicksAndPastesTooLongStringIntoCvvFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
+        closeSoftKeyboard()
+        val pastedText = "12345678"
+
+        onView(withId(R.id.cardCVVText))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
+            .perform(replaceText(pastedText))
+            .check(matches(withText(pastedText.substring(0, 4))))
+    }
+
     private fun platformCompatGetColor(colorRef: Int) =
         if (Build.VERSION.SDK_INT >= 23)
             activityRule.activity.getColor(colorRef)
