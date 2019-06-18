@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.model.CardConfiguration
+import com.worldpay.access.checkout.model.CardDefaults
 import com.worldpay.access.checkout.model.CardValidationRule
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import java.util.*
@@ -31,15 +32,11 @@ interface DateValidator {
 
 internal class DateValidatorImpl(
     private val now: Calendar,
-    private val cardConfiguration: CardConfiguration
+    private val cardConfiguration: CardConfiguration?
 ) : DateValidator {
 
-    private val defaultValidationResult = ValidationResult(partial = true, complete = true)
-
     override fun validate(month: Month?, year: Year?): ValidationResult {
-        val defaults = cardConfiguration.defaults ?: return defaultValidationResult
-        val monthRule = defaults.month ?: return defaultValidationResult
-        val yearRule = defaults.year ?: return defaultValidationResult
+        val (monthRule, yearRule) = getRulesForDate(cardConfiguration)
 
         var partial = true
         var complete = true
@@ -63,7 +60,7 @@ internal class DateValidatorImpl(
             val validationResultForYear = getValidationResult(yearRule, it)
             var validDate = isYearValid(it, validationResultForYear)
 
-            if (month != null && validDate) {
+            if (!month.isNullOrBlank() && validDate) {
                 validDate = isFullDateValid(it, month)
             }
 
@@ -75,9 +72,7 @@ internal class DateValidatorImpl(
     }
 
     override fun canUpdate(month: Month?, year: Year?): Boolean {
-        val defaults = cardConfiguration.defaults ?: return true
-        val monthRule = defaults.month ?: return true
-        val yearRule = defaults.year ?: return true
+        val (monthRule, yearRule) = getRulesForDate(cardConfiguration)
 
         var complete: Boolean
 
@@ -94,12 +89,21 @@ internal class DateValidatorImpl(
         return !complete
     }
 
+    private fun getRulesForDate(cardConfiguration: CardConfiguration?): Pair<CardValidationRule, CardValidationRule> {
+        val monthDefaultRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", null, null, 2)
+        val yearDefaultRule = CardValidationRule("^\\d{0,2}$", null, null, 2)
+        val defaults = cardConfiguration?.defaults ?: return Pair(monthDefaultRule, yearDefaultRule)
+        val monthRule = defaults.month ?: monthDefaultRule
+        val yearRule = defaults.year ?: yearDefaultRule
+        return Pair(monthRule, yearRule)
+    }
+
     private fun getValidationResult(rule: CardValidationRule, insertedDateField: String): ValidationResult {
         if (rule.matcher != null) {
-            return if (ValidatorUtils.regexMatches(rule.matcher, insertedDateField)) {
-                getValidationResultFor(insertedDateField, rule)
-            } else {
-                ValidationResult(partial = false, complete = false)
+            return when {
+                ValidatorUtils.regexMatches(rule.matcher, insertedDateField) -> getValidationResultFor(insertedDateField, rule)
+                insertedDateField.isBlank() -> ValidationResult(partial = true, complete = false)
+                else -> ValidationResult(partial = false, complete = false)
             }
         }
 

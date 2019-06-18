@@ -1,33 +1,22 @@
 package com.worldpay.access.checkout
 
-import android.graphics.drawable.BitmapDrawable
 import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.BoundedMatcher
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.filters.LargeTest
-import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import android.support.v4.content.res.ResourcesCompat
-import android.view.View
-import android.widget.ImageView
-import com.worldpay.access.checkout.BrandVectorImageMatcher.Companion.withBrandVectorImageId
-import com.worldpay.access.checkout.EditTextColorMatcher.Companion.withEditTextColor
-import com.worldpay.access.checkout.views.PANLayout
-import org.hamcrest.Description
-import org.junit.Rule
+import com.worldpay.access.checkout.UITestUtils.assertBrandImage
+import com.worldpay.access.checkout.UITestUtils.cardNumberMatcher
+import com.worldpay.access.checkout.UITestUtils.checkFieldInState
 import org.junit.Test
 import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class PANUITest {
+class PANUITest: AbstractUITest() {
 
-    @get:Rule
-    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
     @Test
     fun cardNumber_exists() {
@@ -37,9 +26,7 @@ class PANUITest {
     @Test
     fun givenUserClicksCardViewAndInsertsUnknownPartiallyValidCardNumberThenTextShouldTurnGreenAndDisplayUnknownCardIcon() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -47,32 +34,25 @@ class PANUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("1111111"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsValidVisaCardNumberThenTextShouldTurnGreenAndDisplayVisaIcon() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
+
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("4026344341791618"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+        assertBrandImage(R.drawable.card_visa_logo)
     }
 
     @Test
@@ -90,48 +70,36 @@ class PANUITest {
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnInvalidVisaCardNumberThenTextShouldTurnRedAndDisplayVisaIcon() {
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("4024001728904375"), pressImeActionButton())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getFailColor())))
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+        assertBrandImage(R.drawable.card_visa_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnValidMastercardCardNumberThenTextShouldTurnGreenAndDisplayMastercardIcon() {
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("5555555555554444"), pressImeActionButton())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+        assertBrandImage(R.drawable.card_mastercard_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnInvalidMastercardCardNumberThenTextShouldTurnRedAndDisplayMastercardIcon() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
@@ -139,19 +107,14 @@ class PANUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("5555555555554443"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getFailColor())))
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+        assertBrandImage(R.drawable.card_mastercard_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnValidAmexCardNumberThenTextShouldTurnGreenAndDisplayAmexIcon() {
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
@@ -161,38 +124,28 @@ class PANUITest {
             .perform(closeSoftKeyboard())
             .perform(click(), typeText("343434343434343"), pressImeActionButton())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+        assertBrandImage(R.drawable.card_amex_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnInvalidAmexCardNumberThenTextShouldTurnRedAndDisplayAmexIcon() {
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("343434343434341"), pressImeActionButton())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getFailColor())))
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+        assertBrandImage(R.drawable.card_amex_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnValidUnknownCardNumberThenTextShouldTurnGreenAndDisplayUnknownIcon() {
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -200,19 +153,14 @@ class PANUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("1111111111111117"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsLuhnInvalidUnknownCardNumberThenTextShouldTurnRedAndDisplayUnknownIcon() {
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -221,39 +169,30 @@ class PANUITest {
 
             .perform(click(), typeText("1111111111111111112"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getFailColor())))
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenTextShouldDisplayVisaIcon() {
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("44"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+        assertBrandImage(R.drawable.card_visa_logo)
+
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialMastercardCardNumberThenTextShouldDisplayMastercardIcon() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -262,40 +201,30 @@ class PANUITest {
             .perform(closeSoftKeyboard())
             .perform(click(), typeText("22"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+        assertBrandImage(R.drawable.card_mastercard_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialAmexCardNumberThenTextShouldDisplayAmexIcon() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("34"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+        assertBrandImage(R.drawable.card_amex_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenChangesToPartialMastercardTextShouldNotIndicateInvalidAndIconShouldBeMastercard() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -303,40 +232,30 @@ class PANUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText("44000000"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+        assertBrandImage(R.drawable.card_visa_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), replaceText(""), closeSoftKeyboard())
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), replaceText("55000000"), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+        assertBrandImage(R.drawable.card_mastercard_logo)
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberAndMovesToDifferentFieldThenTextShouldDisplayVisaIconButDisplayErrorText() {
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(closeSoftKeyboard())
@@ -345,33 +264,25 @@ class PANUITest {
             .perform(closeSoftKeyboard())
             .perform(click(), typeText("40"))
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+        assertBrandImage(R.drawable.card_visa_logo)
 
         onView(withId(R.id.month_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(pressImeActionButton())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getFailColor())))
+        checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+        assertBrandImage(R.drawable.card_visa_logo)
     }
 
 
     @Test
     fun givenUserClicksCardViewAndInsertsVisaIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         val validVisaCardNumber = "4026344341791618"
         onView(withId(R.id.card_number_edit_text))
@@ -379,15 +290,12 @@ class PANUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText(validVisaCardNumber), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+        assertBrandImage(R.drawable.card_visa_logo)
 
         onView(withId(R.id.card_number_edit_text))
-            .perform(click(), ViewActions.typeTextIntoFocusedView("1"), closeSoftKeyboard())
+            .perform(click(), typeTextIntoFocusedView("1"), closeSoftKeyboard())
             .check(matches(withText(validVisaCardNumber)))
         closeSoftKeyboard()
     }
@@ -395,9 +303,7 @@ class PANUITest {
     @Test
     fun givenUserClicksCardViewAndInsertsVisaIdentifiedCardNumberWhichMatchesSubRuleThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         // 413600 is a sub rule in the card config file with valid length of 13
         val validVisaCardNumber = "4136000000008"
@@ -408,11 +314,10 @@ class PANUITest {
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(withText(validVisaCardNumber)))
-            .check(matches(withEditTextColor(getSuccessColor())))
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
+
+        assertBrandImage(R.drawable.card_visa_logo)
 
         closeSoftKeyboard()
     }
@@ -420,9 +325,7 @@ class PANUITest {
     @Test
     fun givenUserClicksCardViewAndInsertsMastercardIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         val validMastercardCardNumber = "5555555555554444"
         onView(withId(R.id.card_number_edit_text))
@@ -431,24 +334,19 @@ class PANUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText(validMastercardCardNumber), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+        assertBrandImage(R.drawable.card_mastercard_logo)
 
         onView(withId(R.id.card_number_edit_text))
-            .perform(ViewActions.typeTextIntoFocusedView("4"), pressImeActionButton())
+            .perform(typeTextIntoFocusedView("4"), pressImeActionButton())
             .check(matches(withText(validMastercardCardNumber)))
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsAmexIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         val validAmexCardNumber = "343434343434343"
         onView(withId(R.id.card_number_edit_text))
@@ -457,24 +355,19 @@ class PANUITest {
             .perform(closeSoftKeyboard())
             .perform(click(), typeText(validAmexCardNumber), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+        assertBrandImage(R.drawable.card_amex_logo)
 
         onView(withId(R.id.card_number_edit_text))
-            .perform(ViewActions.typeTextIntoFocusedView("4"), closeSoftKeyboard())
+            .perform(typeTextIntoFocusedView("4"), closeSoftKeyboard())
             .check(matches(withText(validAmexCardNumber)))
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsUnidentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
         closeSoftKeyboard()
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         val validUnidentifiedCardNumber = "0000000000000000000"
         onView(withId(R.id.card_number_edit_text))
@@ -482,15 +375,12 @@ class PANUITest {
             .check(matches(isEnabled()))
             .perform(click(), typeText(validUnidentifiedCardNumber), closeSoftKeyboard())
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(withEditTextColor(getSuccessColor())))
+        checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+        assertBrandImage(R.drawable.card_unknown_logo)
 
         onView(withId(R.id.card_number_edit_text))
-            .perform(ViewActions.typeTextIntoFocusedView("0"), closeSoftKeyboard())
+            .perform(typeTextIntoFocusedView("0"), closeSoftKeyboard())
             .check(matches(withText(validUnidentifiedCardNumber)))
     }
 
@@ -498,59 +388,6 @@ class PANUITest {
     fun cardExpiry_exists() {
         onView(withId(R.id.cardExpiryText)).check(matches(isDisplayed()))
     }
-
-    private fun getSuccessColor() =
-        ResourcesCompat.getColor(
-            this@PANUITest.activityRule.activity.resources,
-            R.color.SUCCESS,
-            this@PANUITest.activityRule.activity.theme
-        )
-
-    private fun getFailColor() =
-        ResourcesCompat.getColor(
-            this@PANUITest.activityRule.activity.resources,
-            R.color.FAIL,
-            this@PANUITest.activityRule.activity.theme
-        )
 }
 
-internal class BrandImageMatcher private constructor(private val id: Int) :
-    BoundedMatcher<View, ImageView>(ImageView::class.java) {
-    override fun matchesSafely(item: ImageView): Boolean {
-        val context = item.context
-        val expectedBitmap = context.getDrawable(id) as BitmapDrawable
-        return (item.drawable as BitmapDrawable).bitmap.sameAs(expectedBitmap.bitmap)
-    }
 
-    override fun describeTo(description: Description) {
-        description.appendText("with drawable ID:")
-            .appendValue(id)
-    }
-
-    companion object {
-        fun withBrandImageId(id: Int): BrandImageMatcher {
-            return BrandImageMatcher(id)
-        }
-    }
-}
-
-internal class BrandVectorImageMatcher private constructor(private val id: Int) :
-    BoundedMatcher<View, ImageView>(ImageView::class.java) {
-    override fun matchesSafely(item: ImageView): Boolean {
-        val context = item.context
-        val expectedResName = context.resources.getResourceEntryName(id)//getDrawable(id) as BitmapDrawable
-        return (item.getTag(PANLayout.CARD_TAG)).equals(expectedResName)
-    }
-
-    override fun describeTo(description: Description) {
-        description.appendText("with drawable ID:")
-            .appendValue(id)
-    }
-
-    companion object {
-
-        fun withBrandVectorImageId(id: Int): BrandVectorImageMatcher {
-            return BrandVectorImageMatcher(id)
-        }
-    }
-}

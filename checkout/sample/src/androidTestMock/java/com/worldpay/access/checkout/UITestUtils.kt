@@ -1,80 +1,116 @@
 package com.worldpay.access.checkout
 
+import android.content.Context
 import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso
+import android.support.test.espresso.Espresso.*
 import android.support.test.espresso.action.ViewActions
-import android.support.test.espresso.assertion.ViewAssertions
+import android.support.test.espresso.action.ViewActions.click
+import android.support.test.espresso.assertion.ViewAssertions.*
 import android.support.test.espresso.matcher.RootMatchers
-import android.support.test.espresso.matcher.ViewMatchers
+import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.uiautomator.UiDevice
 import android.support.test.uiautomator.UiObject
 import android.support.test.uiautomator.UiSelector
+import android.support.v4.content.res.ResourcesCompat.getColor
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
+import com.worldpay.access.checkout.matchers.AlphaMatcher
+import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
+import com.worldpay.access.checkout.matchers.EditTextColorMatcher
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.junit.Assert
 
 object UITestUtils {
 
-    val cardNumberMatcher: Matcher<View> = ViewMatchers.withId(R.id.card_number_edit_text)
-    val cvvMatcher: Matcher<View> = ViewMatchers.withId(R.id.cardCVVText)
-    val monthMatcher: Matcher<View> = ViewMatchers.withId(R.id.month_edit_text)
-    val yearMatcher: Matcher<View> = ViewMatchers.withId(R.id.year_edit_text)
-    private val cardExpiryMatcher: Matcher<View> = ViewMatchers.withId(R.id.cardExpiryText)
-    private val buttonMatcher: Matcher<View> = ViewMatchers.withId(R.id.submit)
-    private val progressMatcher: Matcher<View> = ViewMatchers.withId(R.id.loading_bar)
+    val cardNumberMatcher: Matcher<View> = withId(R.id.card_number_edit_text)
+    val cvvMatcher: Matcher<View> = withId(R.id.cardCVVText)
+    val monthMatcher: Matcher<View> = withId(R.id.month_edit_text)
+    val yearMatcher: Matcher<View> = withId(R.id.year_edit_text)
+    val brandImageMatcher: Matcher<View> = withId(R.id.logo_view)
+    private val cardExpiryMatcher: Matcher<View> = withId(R.id.cardExpiryText)
+    private val buttonMatcher: Matcher<View> = withId(R.id.submit)
+    private val progressMatcher: Matcher<View> = withId(R.id.loading_bar)
 
     fun assertValidInitialUIFields() {
-        Espresso.onView(cardNumberMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(ViewMatchers.isEnabled()))
+        onView(cardNumberMatcher)
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
 
-        Espresso.onView(cvvMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(ViewMatchers.isEnabled()))
+        onView(cvvMatcher)
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
 
-        Espresso.onView(cardExpiryMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(ViewMatchers.isEnabled()))
+        onView(cardExpiryMatcher)
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
 
         checkSubmitInState(enabled = false)
 
-        Espresso.onView(progressMatcher)
-            .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
+        onView(progressMatcher)
+            .check(matches(CoreMatchers.not(isDisplayed())))
     }
 
-    fun typeFormInputs(card: String, cvv: String, month: String, year: String) {
+    fun typeFormInputs(card: String, cvv: String, month: String, year: String, assertInsertedCompleteText: Boolean = false) {
         typeCardDetails(card)
         typeCVVDetails(cvv)
         typeMonth(month)
         typeYear(year)
+
+        if (assertInsertedCompleteText) {
+            checkFieldText(cardNumberMatcher, card)
+            checkFieldText(cvvMatcher, cvv)
+            checkFieldText(monthMatcher, month)
+            checkFieldText(yearMatcher, year)
+        }
+    }
+
+    fun updatePANDetails(pan: String) {
+        onView(cardNumberMatcher)
+            .perform(click(), ViewActions.replaceText(pan), ViewActions.closeSoftKeyboard())
     }
 
     fun updateCVVDetails(cvv: String) {
-        Espresso.onView(cvvMatcher)
-            .perform(ViewActions.replaceText(cvv), ViewActions.closeSoftKeyboard())
+        onView(cvvMatcher)
+            .perform(click(), ViewActions.replaceText(cvv), ViewActions.closeSoftKeyboard())
+    }
+
+    fun updateMonthDetails(month: String) {
+        onView(monthMatcher)
+            .perform(click(), ViewActions.replaceText(month), ViewActions.closeSoftKeyboard())
     }
 
     fun checkSubmitInState(enabled: Boolean) {
         val enabledMatcher: Matcher<View> =
-            if (enabled) ViewMatchers.isEnabled() else CoreMatchers.not(ViewMatchers.isEnabled())
-        Espresso.onView(buttonMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(enabledMatcher))
+            if (enabled) isEnabled() else CoreMatchers.not(isEnabled())
+        onView(buttonMatcher)
+            .check(matches(isDisplayed()))
+            .check(matches(enabledMatcher))
+    }
+
+    fun checkFieldInState(shouldBeValid: Boolean, viewMatcher: Matcher<View>, context: Context) {
+        val expectedColor = if (shouldBeValid) getSuccessColor(context) else getFailColor(context)
+
+        onView(viewMatcher)
+            .check(matches(EditTextColorMatcher.withEditTextColor(expectedColor)))
+    }
+
+    fun checkFieldText(viewMatcher: Matcher<View>, expectedText: String) {
+        onView(viewMatcher)
+            .check(matches(withText(expectedText)))
     }
 
     fun assertFieldsAlpha(alpha: Float) {
-        Espresso.onView(cardNumberMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
-        Espresso.onView(cvvMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
-        Espresso.onView(monthMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
-        Espresso.onView(yearMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
-        Espresso.onView(buttonMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
+        onView(cardNumberMatcher)
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
+        onView(cvvMatcher)
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
+        onView(monthMatcher)
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
+        onView(yearMatcher)
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
+        onView(buttonMatcher)
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
     }
 
     fun uiObjectWithId(resId: Int): UiObject {
@@ -91,33 +127,48 @@ object UITestUtils {
     }
 
     fun assertDisplaysResponseFromServer(responseString: String, view: View) {
-        val expectedToastText: String
-        if (responseString.contains("Error"))
-            expectedToastText = responseString
-        else
-            expectedToastText = "Ref: $responseString"
-        Espresso.onView(ViewMatchers.withText(expectedToastText))
+        val expectedToastText: String = if (responseString.contains("Error")) {
+            responseString
+        } else {
+            "Ref: $responseString"
+        }
+        onView(withText(expectedToastText))
             .inRoot(RootMatchers.withDecorView(CoreMatchers.not(view)))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
     }
 
+    fun moveToField(viewMatcher: Matcher<View>) {
+        onView(viewMatcher)
+            .perform(click(), ViewActions.closeSoftKeyboard())
+    }
+
+    fun assertBrandImage(expectedImage: Int) {
+        onView(brandImageMatcher)
+            .check(matches(isDisplayed()))
+            .check(matches(BrandVectorImageMatcher.withBrandVectorImageId(expectedImage)))
+    }
+
+    private fun getSuccessColor(context: Context) = getColor(context.resources, R.color.SUCCESS, context.theme)
+
+    private fun getFailColor(context: Context) = getColor(context.resources, R.color.FAIL, context.theme)
+
     private fun typeYear(year: String) {
-        Espresso.onView(yearMatcher)
+        onView(yearMatcher)
             .perform(ViewActions.typeText(year), ViewActions.closeSoftKeyboard())
     }
 
     private fun typeMonth(month: String) {
-        Espresso.onView(monthMatcher)
+        onView(monthMatcher)
             .perform(ViewActions.typeText(month), ViewActions.closeSoftKeyboard())
     }
 
     private fun typeCVVDetails(cvv: String) {
-        Espresso.onView(cvvMatcher)
+        onView(cvvMatcher)
             .perform(ViewActions.typeText(cvv), ViewActions.closeSoftKeyboard())
     }
 
     private fun typeCardDetails(card: String) {
-        Espresso.onView(cardNumberMatcher)
+        onView(cardNumberMatcher)
             .perform(ViewActions.typeText(card), ViewActions.closeSoftKeyboard())
     }
 

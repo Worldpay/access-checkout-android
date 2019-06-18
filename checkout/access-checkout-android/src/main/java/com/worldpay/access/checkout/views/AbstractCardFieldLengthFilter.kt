@@ -13,9 +13,9 @@ import com.worldpay.access.checkout.validation.ValidationResult
 /**
  * [AbstractCardFieldLengthFilter] is a common abstraction class which is used by individual field implementers to restrict the length of a particular card field
  *
- * @param cardConfiguration the configuration to use for determining the length for the field
+ * @param cardConfiguration (optional) the configuration to use for determining the length for the field
  */
-sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardConfiguration) : InputFilter {
+sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardConfiguration?) : InputFilter {
 
     internal val lengthFiltersBySizeCache: MutableMap<Int, InputFilter.LengthFilter> = mutableMapOf()
 
@@ -40,7 +40,7 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
     }
 
     private fun getMaxForDefaultRules(): Int? {
-        return ruleSelectorForDefaults(cardConfiguration.defaults)?.let { getValueToUseForRule(it) }
+        return ruleSelectorForDefaults(cardConfiguration?.defaults)?.let { getValueToUseForRule(it) }
     }
 
     private fun getMaxForIdentifiedBrand(result: Pair<ValidationResult, CardBrand?>, spanned: Spanned): Int? {
@@ -66,9 +66,8 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
  */
 class CVVLengthFilter(
     private val cardValidator: CardValidator,
-    cardConfiguration: CardConfiguration,
     private val panView: CardTextView
-) : AbstractCardFieldLengthFilter(cardConfiguration) {
+) : AbstractCardFieldLengthFilter(cardValidator.cardConfiguration) {
 
     override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
         cardValidator.validateCVV(field.toString(), panView.getInsertedText())
@@ -83,8 +82,8 @@ class CVVLengthFilter(
  * [PANLengthFilter] applies a length restriction to the pan field based on the identity of the card detected during
  * input
  */
-class PANLengthFilter(private val cardValidator: CardValidator, cardConfiguration: CardConfiguration) :
-    AbstractCardFieldLengthFilter(cardConfiguration) {
+class PANLengthFilter(private val cardValidator: CardValidator) :
+    AbstractCardFieldLengthFilter(cardValidator.cardConfiguration) {
 
     override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
         cardValidator.validatePAN(field.toString())

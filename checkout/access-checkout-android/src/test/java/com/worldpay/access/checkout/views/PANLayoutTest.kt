@@ -36,7 +36,7 @@ class PANLayoutTest {
     fun `should set unknown brand tag on image view after inflation`() {
         panLayout.finishInflate()
 
-        assertEquals("card_unknown", panLayout.mImageView.getTag(CARD_TAG))
+        assertEquals("card_unknown_logo", panLayout.mImageView.getTag(CARD_TAG))
     }
 
     @Test
@@ -97,7 +97,7 @@ class PANLayoutTest {
 
     @Test
     fun `should update card tag`() {
-        val logo = "card_mastercard"
+        val logo = "card_mastercard_logo"
 
         panLayout.applyCardLogo(logo)
 

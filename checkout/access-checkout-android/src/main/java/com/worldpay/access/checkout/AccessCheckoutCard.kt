@@ -1,51 +1,41 @@
 package com.worldpay.access.checkout
 
-import android.content.Context
-import com.worldpay.access.checkout.config.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.validation.*
+import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.views.*
-import java.util.*
 
 /**
  * [AccessCheckoutCard] is responsible for responding to state changes on a Card field, by returning validation results
  * back to the [CardListener]
  *
- * @param context The android [Context] object
  * @param panView The reference to the pan field which needs to implement [CardTextView]
  * @param cvvView The reference to the cvv field which needs to implement [CardTextView]
  * @param dateView The reference to the date field which needs to implement [CardDateView]
  * @param factory (Optional) The object which is responsible for constructing dependencies for a [Card]. The default is [AccessCheckoutCardDefaultFactory]
- * @param cardConfiguration (Optional) The card configuration contains all the validation rules for the card fields. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
- * @param cardValidator (Optional) The class responsible for validating the state of the card fields. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
- * @param panLengthFilter (Optional) The class responsible for restricting the length of input into the pan field. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
- * @param cvvLengthFilter (Optional) The class responsible for restricting the length of input into the cvv field. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
- * @param dateLengthFilter (Optional) The class responsible for restricting the length of input into the date field. The default will be constructed by the [AccessCheckoutCardDefaultFactory]
  * @constructor Constructs an instance of [AccessCheckoutCard]
  */
-class AccessCheckoutCard @JvmOverloads constructor(
-    context: Context,
+class AccessCheckoutCard constructor(
     private val panView: CardTextView,
     private val cvvView: CardTextView,
     private val dateView: CardDateView,
-    private val factory: CardFactory = AccessCheckoutCardDefaultFactory(context),
-    private val cardConfiguration: CardConfiguration = factory.getCardConfiguration(),
-    override var cardValidator: CardValidator? = factory.getCardValidator(cardConfiguration),
-    private val panLengthFilter: PANLengthFilter? = factory.getPANLengthFilter(cardValidator, cardConfiguration),
-    private val cvvLengthFilter: CVVLengthFilter? = factory.getCVVLengthFilter(
-        cardValidator,
-        cardConfiguration,
-        panView
-    ),
-    private val dateLengthFilter: DateLengthFilter = factory.getDateLengthFilter(cardConfiguration)
+    private val factory: CardFactory = AccessCheckoutCardDefaultFactory()
 ) : Card {
 
+    private var panLengthFilter: PANLengthFilter? = null
+    private var cvvLengthFilter: CVVLengthFilter? = null
+    private var dateLengthFilter: DateLengthFilter? = null
+
     override var cardListener: CardListener? = null
+    override var cardValidator: CardValidator? = null
         set(value) {
-            panLengthFilter?.let { value?.onUpdateLengthFilter(panView, it) }
-            cvvLengthFilter?.let { value?.onUpdateLengthFilter(cvvView, it) }
-            value?.onUpdateLengthFilter(dateView, dateLengthFilter)
             field = value
+            panLengthFilter = factory.getPANLengthFilter(value)
+            cvvLengthFilter = factory.getCVVLengthFilter(value, panView)
+            dateLengthFilter = factory.getDateLengthFilter(value?.cardConfiguration)
+
+            panLengthFilter?.let { cardListener?.onUpdateLengthFilter(panView, it) }
+            cvvLengthFilter?.let { cardListener?.onUpdateLengthFilter(cvvView, it) }
+            dateLengthFilter?.let { cardListener?.onUpdateLengthFilter(dateView, it) }
         }
 
     override fun isValid(): Boolean {
@@ -70,7 +60,7 @@ class AccessCheckoutCard @JvmOverloads constructor(
 
             cardListener?.onUpdate(panView, panValidationResult.partial || panValidationResult.complete)
             cardListener?.onUpdateCardBrand(panCardBrand)
-            panLengthFilter?.let { cardListener?.onUpdateLengthFilter(panView, panLengthFilter) }
+            panLengthFilter?.let { filter -> cardListener?.onUpdateLengthFilter(panView, filter) }
 
             val (cvvValidationResult) = it.validateCVV(cvvView.getInsertedText(), pan)
             cardListener?.onUpdate(cvvView, cvvValidationResult.complete)
@@ -94,7 +84,7 @@ class AccessCheckoutCard @JvmOverloads constructor(
             val (cvvValidationResult) = it.validateCVV(cvv, panView.getInsertedText())
 
             cardListener?.onUpdate(cvvView, cvvValidationResult.partial || cvvValidationResult.complete)
-            cvvLengthFilter?.let { cardListener?.onUpdateLengthFilter(cvvView, cvvLengthFilter) }
+            cvvLengthFilter?.let { filter -> cardListener?.onUpdateLengthFilter(cvvView, filter) }
         }
     }
 
@@ -112,7 +102,7 @@ class AccessCheckoutCard @JvmOverloads constructor(
                 val monthField = month ?: dateView.getInsertedMonth()
                 val yearField = year ?: dateView.getInsertedYear()
 
-                listener.onUpdateLengthFilter(dateView, dateLengthFilter)
+                dateLengthFilter?.let { filter -> listener.onUpdateLengthFilter(dateView, filter) }
 
                 if (!validator.canUpdate(monthField, yearField)) {
                     val validationResult = validator.validateDate(monthField, yearField)
@@ -147,36 +137,20 @@ class AccessCheckoutCard @JvmOverloads constructor(
 interface CardFactory {
 
     /**
-     * Creates a [CardValidator] instance
-     * @param cardConfiguration the card configuration to use
-     * @return [CardValidator] for validating the inputs of a card
-     */
-    fun getCardValidator(cardConfiguration: CardConfiguration): CardValidator
-
-    /**
-     * Creates a [CardConfiguration] instance
-     * @return [CardConfiguration] for holding configurations for validating a card
-     */
-    fun getCardConfiguration(): CardConfiguration
-
-    /**
      * Creates a [PANLengthFilter] instance
      * @param cardValidator (Optional) the card validator to use
-     * @param cardConfiguration the card configuration to use
      * @return [PANLengthFilter] (Optional) for restricting the inputs of a pan field
      */
-    fun getPANLengthFilter(cardValidator: CardValidator?, cardConfiguration: CardConfiguration): PANLengthFilter?
+    fun getPANLengthFilter(cardValidator: CardValidator?): PANLengthFilter?
 
     /**
      * Creates a [CVVLengthFilter] instance
      * @param cardValidator (Optional) the card validator to use
-     * @param cardConfiguration the card configuration to use
      * @param panView the pan field so that the cvv length can be validated against the current pan
      * @return [CVVLengthFilter] (Optional) for restricting the inputs of a cvv field
      */
     fun getCVVLengthFilter(
         cardValidator: CardValidator?,
-        cardConfiguration: CardConfiguration,
         panView: CardTextView
     ): CVVLengthFilter?
 
@@ -185,47 +159,25 @@ interface CardFactory {
      * @param cardConfiguration the card configuration to use
      * @return [DateLengthFilter] for restricting the inputs of a date field
      */
-    fun getDateLengthFilter(cardConfiguration: CardConfiguration): DateLengthFilter
+    fun getDateLengthFilter(cardConfiguration: CardConfiguration?): DateLengthFilter?
 }
 
 /**
  * [AccessCheckoutCardDefaultFactory] is an implementation of [CardFactory] which is to be used by [AccessCheckoutCard]
- * @param context The android [Context] object
  */
-class AccessCheckoutCardDefaultFactory(private val context: Context) : CardFactory {
+class AccessCheckoutCardDefaultFactory : CardFactory {
 
-    override fun getCardValidator(cardConfiguration: CardConfiguration): AccessCheckoutCardValidator {
-        return AccessCheckoutCardValidator(
-            getPANValidator(cardConfiguration),
-            getCVVValidator(cardConfiguration),
-            getExpiryDateValidator(cardConfiguration)
-        )
+    override fun getPANLengthFilter(cardValidator: CardValidator?): PANLengthFilter? {
+        return cardValidator?.let { PANLengthFilter(it) }
     }
 
-    override fun getCardConfiguration(): CardConfiguration {
-        val cardConfiguration = context.resources.openRawResource(R.raw.card_configuration)
-        return CardConfigurationParser().parse(cardConfiguration)
+    override fun getCVVLengthFilter(cardValidator: CardValidator?, panView: CardTextView): CVVLengthFilter? {
+        return cardValidator?.let { CVVLengthFilter(it, panView) }
     }
 
-    override fun getPANLengthFilter(
-        cardValidator: CardValidator?,
-        cardConfiguration: CardConfiguration
-    ): PANLengthFilter? =
-        cardValidator?.let { PANLengthFilter(it, cardConfiguration) }
-
-    override fun getCVVLengthFilter(
-        cardValidator: CardValidator?,
-        cardConfiguration: CardConfiguration,
-        panView: CardTextView
-    ): CVVLengthFilter? =
-        cardValidator?.let { CVVLengthFilter(it, cardConfiguration, panView) }
-
-    override fun getDateLengthFilter(cardConfiguration: CardConfiguration): DateLengthFilter = DateLengthFilter(cardConfiguration)
-
-    private fun getPANValidator(cardConfiguration: CardConfiguration) = PANValidatorImpl(cardConfiguration)
-    private fun getCVVValidator(cardConfiguration: CardConfiguration) = CVVValidatorImpl(cardConfiguration)
-    private fun getExpiryDateValidator(cardConfiguration: CardConfiguration) =
-        DateValidatorImpl(Calendar.getInstance(), cardConfiguration)
+    override fun getDateLengthFilter(cardConfiguration: CardConfiguration?): DateLengthFilter? {
+        return cardConfiguration?.let { DateLengthFilter(it) }
+    }
 
 }
 

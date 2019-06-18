@@ -13,6 +13,7 @@ import android.support.test.uiautomator.UiObject
 import android.support.test.uiautomator.UiSelector
 import android.support.v4.content.res.ResourcesCompat
 import android.view.View
+import com.worldpay.access.checkout.matchers.EditTextColorMatcher
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.Assert
@@ -23,7 +24,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class SessionRequestTest {
+class SessionRequestTest: AbstractUITest() {
 
     private lateinit var cardNumberMatcher: Matcher<View>
     private lateinit var cvvMatcher: Matcher<View>
@@ -43,9 +44,6 @@ class SessionRequestTest {
         yearMatcher = withId(R.id.year_edit_text)
         progressMatcher = withId(R.id.loading_bar)
     }
-
-    @get:Rule
-    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
     @Test
     fun submitButton_exists() {

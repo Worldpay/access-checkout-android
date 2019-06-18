@@ -90,7 +90,7 @@ class CardConfigurationParserTest {
     @Test
     fun givenANonEmptyConfigFileShouldReturnACompleteCardConfiguration() {
         val cardConfiguration =
-            cardConfigurationParser.parse(context.resources.openRawResource(R.raw.card_configuration))
+            cardConfigurationParser.parse(getTestFile("card_configuration_file.json"))
 
         assertNotNull(cardConfiguration.defaults?.pan)
         assertNotNull(cardConfiguration.defaults?.cvv)
@@ -116,7 +116,7 @@ class CardConfigurationParserTest {
 
         val visa = cardConfiguration.brands?.get(0)
         assertEquals("visa", visa!!.name)
-        assertEquals("card_visa", visa.image)
+        assertEquals("card_visa_logo", visa.image)
         assertEquals("^\\d{0,3}$", visa.cvv?.matcher)
         assertEquals(3, visa.cvv?.validLength)
         assertEquals(1, visa.pans.size)
@@ -135,7 +135,7 @@ class CardConfigurationParserTest {
 
         val mastercard = cardConfiguration.brands?.get(1)
         assertEquals("mastercard", mastercard!!.name)
-        assertEquals("card_mastercard", mastercard.image)
+        assertEquals("card_mastercard_logo", mastercard.image)
         assertEquals("^\\d{0,3}$", mastercard.cvv?.matcher)
         assertEquals(3, mastercard.cvv?.validLength)
         assertEquals(3, mastercard.pans.size)
@@ -154,7 +154,7 @@ class CardConfigurationParserTest {
 
         val amex = cardConfiguration.brands?.get(2)
         assertEquals("amex", amex!!.name)
-        assertEquals("card_amex", amex.image)
+        assertEquals("card_amex_logo", amex.image)
         assertEquals("^\\d{0,4}$", amex.cvv?.matcher)
         assertEquals(4, amex.cvv?.validLength)
         assertEquals(1, amex.pans.size)

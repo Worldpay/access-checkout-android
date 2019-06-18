@@ -24,31 +24,46 @@ class DateValidatorImplTest {
     }
 
     @Test
-    fun `given no default rules then should be completely and partially valid`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration())
+    fun `given no card configuration and empty dates then should be partially valid`() {
+        val emptyConfigValidator = DateValidatorImpl(now, null)
 
-        assertEquals(ValidationResult(partial = true, complete = true), emptyConfigValidator.validate("", ""))
+        assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
     }
 
     @Test
-    fun `given no month and year rule then should be completely and partially valid`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, null, null)))
+    fun `given no month and year rule and empty dates then should be partially valid`() {
+        val emptyConfigValidator = DateValidatorImpl(now, null)
 
-        assertEquals(ValidationResult(partial = true, complete = true), emptyConfigValidator.validate("", ""))
+        assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
     }
 
     @Test
-    fun `given no month rule only then should be completely and partially valid`() {
+    fun `given no month rule only and empty dates then should be partially valid`() {
         val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, null, CardValidationRule(null, null, null, 2))))
 
-        assertEquals(ValidationResult(partial = true, complete = true), emptyConfigValidator.validate("", ""))
+        assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
     }
 
     @Test
-    fun `given no year rule only then should be completely and partially valid`() {
+    fun `given no year rule only and empty dates then should be partially valid`() {
         val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, CardValidationRule(null, null, null, 2), null)))
 
-        assertEquals(ValidationResult(partial = true, complete = true), emptyConfigValidator.validate("", ""))
+        assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
+    }
+
+    @Test
+    fun `given empty month and year then should be partially valid`() {
+        assertEquals(ValidationResult(partial = true, complete = false), validator.validate("", ""))
+    }
+
+    @Test
+    fun `given empty month only then should be partially and completely invalid`() {
+        assertEquals(ValidationResult(partial = false, complete = false), validator.validate("", "20"))
+    }
+
+    @Test
+    fun `given empty year only then should be partially and completely invalid`() {
+        assertEquals(ValidationResult(partial = false, complete = false), validator.validate("12", ""))
     }
 
     @Test

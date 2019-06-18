@@ -280,8 +280,6 @@ class SessionRequestIntegrationTest {
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
 
         accessCheckoutClient.disconnectListener()
-
-
     }
 
     @Test

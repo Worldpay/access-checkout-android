@@ -7,25 +7,19 @@ import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.filters.LargeTest
-import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.support.v4.content.ContextCompat
-import com.worldpay.access.checkout.BrandVectorImageMatcher.Companion.withBrandVectorImageId
-import com.worldpay.access.checkout.EditTextColorMatcher.Companion.withEditTextColor
-import org.junit.Rule
+import com.worldpay.access.checkout.matchers.EditTextColorMatcher.Companion.withEditTextColor
+import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher.Companion.withBrandVectorImageId
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class CVVUITests {
+class CVVUITests: AbstractUITest() {
 
     val amexCard = "343434343434343"
     val masterCard = "5555555555554444"
-
-    @Rule
-    @JvmField
-    var mActivityTestRule = ActivityTestRule(MainActivity::class.java)
 
     @Test
     fun cardCVVExists() {
@@ -64,7 +58,7 @@ class CVVUITests {
     fun givenNoCardDataEnteredThenCVVFieldShouldBeValidUpTo4Digits() {
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_unknown_logo)))
 
         onView(withId(R.id.cardCVVText))
             .perform(pressImeActionButton())
@@ -126,7 +120,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -147,7 +141,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -168,7 +162,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -192,7 +186,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -225,7 +219,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_visa_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -246,7 +240,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_visa_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -281,7 +275,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_visa_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
@@ -306,7 +300,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -327,7 +321,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -362,7 +356,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
@@ -385,7 +379,7 @@ class CVVUITests {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown)))
+            .check(matches(withBrandVectorImageId(R.drawable.card_unknown_logo)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -435,7 +429,7 @@ class CVVUITests {
 
     private fun platformCompatGetColor(colorRef: Int) =
         if (Build.VERSION.SDK_INT >= 23)
-            mActivityTestRule.activity.getColor(colorRef)
+            activityRule.activity.getColor(colorRef)
         else
-            ContextCompat.getColor(mActivityTestRule.activity, colorRef)
+            ContextCompat.getColor(activityRule.activity, colorRef)
 }

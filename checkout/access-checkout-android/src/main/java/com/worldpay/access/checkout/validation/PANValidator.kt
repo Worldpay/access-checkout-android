@@ -22,17 +22,17 @@ interface PANValidator {
     fun validate(pan: PAN): Pair<ValidationResult, CardBrand?>
 }
 
-internal class PANValidatorImpl(private val cardConfiguration: CardConfiguration) : PANValidator {
+internal class PANValidatorImpl(private val cardConfiguration: CardConfiguration?) : PANValidator {
 
     override fun validate(pan: PAN): Pair<ValidationResult, CardBrand?> {
-        if (pan.isBlank() && cardConfiguration.isEmpty()) {
+        if (pan.isBlank() && cardConfiguration == null) {
             return Pair(ValidationResult(partial = true, complete = true), null)
         }
 
-        val (cardBrand, cardBrandValidationRule) = findCardBrandMatchingPAN(cardConfiguration.brands, pan)
+        val (cardBrand, cardBrandValidationRule) = findCardBrandMatchingPAN(cardConfiguration?.brands, pan)
 
         val validationRule: CardValidationRule = cardBrandValidationRule
-                ?: cardConfiguration.defaults?.pan
+                ?: cardConfiguration?.defaults?.pan
                 ?: return Pair(ValidationResult(partial = true, complete = isLuhnValid(pan)), null)
 
         return Pair(getValidationResult(validationRule, pan), cardBrand)

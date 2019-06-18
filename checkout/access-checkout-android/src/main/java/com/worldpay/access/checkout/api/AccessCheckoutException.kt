@@ -75,6 +75,11 @@ sealed class AccessCheckoutException : RuntimeException() {
         override val cause: Throwable? = null
     ) : AccessCheckoutException()
 
+    data class AccessCheckoutConfigurationException(
+        override val message: String?,
+        override val cause: Throwable? = null
+    ) : AccessCheckoutException()
+
     data class AccessCheckoutHttpException(
         override val message: String?,
         override val cause: Throwable? = null

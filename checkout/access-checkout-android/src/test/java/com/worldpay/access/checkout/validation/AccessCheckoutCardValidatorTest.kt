@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.model.CardBrand
+import com.worldpay.access.checkout.model.CardConfiguration
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
@@ -13,6 +14,7 @@ class AccessCheckoutCardValidatorTest {
     private lateinit var panValidator: PANValidator
     private lateinit var cvvValidator: CVVValidator
     private lateinit var dateValidator: DateValidator
+    private lateinit var cardConfiguration: CardConfiguration
     private lateinit var accessCheckoutCardValidator: CardValidator
 
     @Before
@@ -20,7 +22,8 @@ class AccessCheckoutCardValidatorTest {
         panValidator = mock(PANValidator::class.java)
         cvvValidator = mock(CVVValidator::class.java)
         dateValidator = mock(DateValidator::class.java)
-        accessCheckoutCardValidator = AccessCheckoutCardValidator(panValidator, cvvValidator, dateValidator)
+        cardConfiguration = mock(CardConfiguration::class.java)
+        accessCheckoutCardValidator = AccessCheckoutCardValidator(cardConfiguration, panValidator, cvvValidator, dateValidator)
     }
 
     @Test
@@ -64,5 +67,10 @@ class AccessCheckoutCardValidatorTest {
         val canUpdate = accessCheckoutCardValidator.canUpdate("01", "29")
 
         assertFalse(canUpdate)
+    }
+
+    @Test
+    fun `given a validator is constructed then should be able to fetch card configuration`() {
+        assertEquals(cardConfiguration, accessCheckoutCardValidator.cardConfiguration)
     }
 }
