@@ -7,6 +7,7 @@ It includes, optionally, custom Android views that identifies card brands and va
 
 <img width="300" alt="app02" src=https://github.com/com-worldpay-gateway/checkout-android/blob/master/images/sample.png>
 
+
 ## Download
 
 Download the latest AAR from [Maven Central](https://search.maven.org/search?q=g:com.worldpay.access%20AND%20a:access-checkout-android) or include in your project's build dependencies via Gradle:
