@@ -12,12 +12,12 @@ VERSION=$($PROJECT_LOCATION/gradlew -b $PROJECT_LOCATION/build.gradle :$LIBRARY_
 
 
 if [[ -z ${VERSION} ]] || [[ ${VERSION} = "unspecified" ]]; then
-  echo "Project version was not set!"
+  echo "The project version was not set!"
   exit 1
 fi
 
 if [[ ${ALLOW_SNAPSHOTS} = false ]] && [[ ${VERSION} == *"-SNAPSHOT"* ]]; then
-  echo "Project had incorrect version set - not allowed to be empty or a SNAPSHOT: $VERSION"
+  echo "The project had an incorrect version set - it is not allowed to be a SNAPSHOT version: $VERSION"
   exit 1
 fi
 
