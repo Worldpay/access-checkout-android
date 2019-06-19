@@ -12,7 +12,7 @@ VERSION=$($PROJECT_LOCATION/gradlew -b $PROJECT_LOCATION/build.gradle :$LIBRARY_
 
 
 if [[ -z ${VERSION} ]] || [[ ${VERSION} = "unspecified" ]]; then
-  echo "Project version was not set!"
+  echo "The project version was not set!"
   exit 1
 fi
 
