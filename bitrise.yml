@@ -167,9 +167,34 @@ workflows:
         - is_compress: 'true'
         - zip_name: javadoc
         - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/build/javadoc"
+    - android-build@0.9.5:
+        title: "Build test APK"
+        inputs:
+          - variant: "${LIBRARY_VARIANT}AndroidTest"
+          - project_location: "$PROJECT_LOCATION"
+          - module: "$LIBRARY_MODULE"
+    - script@1.1.5:
+        title: "Set path to test APK"
+        inputs:
+          - content: |-
+              #!/bin/bash
+              envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
+    - android-build:
+        title: "Build app APK"
+        inputs:
+          - module: "$APP_MODULE"
+          - variant: "$APP_VARIANT"
+          - project_location: "$PROJECT_LOCATION"
+    - virtual-device-testing-for-android@1.0.5:
+        title: "Run integration tests against app"
+        inputs:
+          - test_type: instrumentation
+          - test_apk_path: "$BITRISE_TEST_APK"
+          - test_devices: |-
+              Pixel2,28,en,portrait
     - deploy-to-bitrise-io@1.3.19:
         inputs:
-        - notify_user_groups: none
+          - notify_user_groups: testers, developers
     - cache-push@2.0.5: {}
 
   overnight-ui:
@@ -243,43 +268,6 @@ workflows:
             - project_location: "$PROJECT_LOCATION"
       - virtual-device-testing-for-android@1.0.5:
           title: "Run UI tests against app"
-          inputs:
-            - test_type: instrumentation
-            - test_apk_path: "$BITRISE_TEST_APK"
-            - test_devices: |-
-                Pixel2,28,en,portrait
-      - deploy-to-bitrise-io@1.3.19:
-          inputs:
-            - notify_user_groups: testers, developers
-      - cache-push@2.0.5: {}
-  integration:
-    steps:
-      - cache-pull@2.0.1: {}
-      - script@1.1.5:
-          title: Do anything with Script step
-      - install-missing-android-tools@2.3.4:
-          inputs:
-            - gradlew_path: "$PROJECT_LOCATION/gradlew"
-      - android-build@0.9.5:
-          title: "Build test APK"
-          inputs:
-            - variant: "${LIBRARY_VARIANT}AndroidTest"
-            - project_location: "$PROJECT_LOCATION"
-            - module: "$LIBRARY_MODULE"
-      - script@1.1.5:
-          title: "Set path to test APK"
-          inputs:
-            - content: |-
-                #!/bin/bash
-                envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
-      - android-build:
-          title: "Build app APK"
-          inputs:
-            - module: "$APP_MODULE"
-            - variant: "$APP_VARIANT"
-            - project_location: "$PROJECT_LOCATION"
-      - virtual-device-testing-for-android@1.0.5:
-          title: "Run integration tests against app"
           inputs:
             - test_type: instrumentation
             - test_apk_path: "$BITRISE_TEST_APK"
