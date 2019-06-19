@@ -115,9 +115,9 @@ workflows:
   primary:
     steps:
     - build-router-start@0.11.2:
-      inputs:
-      - workflows: |-
-          primary-ui
+        inputs:
+        - workflows: |-
+            primary-ui
       - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
     - cache-pull@2.0.1: {}
     - install-missing-android-tools@2.3.4:
