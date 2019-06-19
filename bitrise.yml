@@ -114,6 +114,11 @@ workflows:
     - cache-push@2.0.5: {}
   primary:
     steps:
+    - build-router-start@0.11.2:
+      inputs:
+      - workflows: |-
+          primary-ui
+      - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
     - cache-pull@2.0.1: {}
     - install-missing-android-tools@2.3.4:
         inputs:
@@ -192,6 +197,9 @@ workflows:
         inputs:
           - notify_user_groups: testers, developers
     - cache-push@2.0.5: {}
+    - build-router-wait@0.9.1:
+        inputs:
+          - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
 
   overnight-ui:
     steps:
