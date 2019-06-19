@@ -17,7 +17,7 @@ if [[ -z ${VERSION} ]] || [[ ${VERSION} = "unspecified" ]]; then
 fi
 
 if [[ ${ALLOW_SNAPSHOTS} = false ]] && [[ ${VERSION} == *"-SNAPSHOT"* ]]; then
-  echo "Project had incorrect version set - not allowed to be empty or a SNAPSHOT: $VERSION"
+  echo "The project had an incorrect version set - it is not allowed to be a SNAPSHOT version: $VERSION"
   exit 1
 fi
 
