@@ -118,7 +118,7 @@ workflows:
         inputs:
         - workflows: |-
             primary-ui
-      - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
+        - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
     - cache-pull@2.0.1: {}
     - install-missing-android-tools@2.3.4:
         inputs:
