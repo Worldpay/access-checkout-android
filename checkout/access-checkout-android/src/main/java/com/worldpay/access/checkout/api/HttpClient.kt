@@ -26,8 +26,8 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
             httpUrlConn.requestMethod = POST_METHOD
             setRequestProperties(httpUrlConn, headers)
             httpUrlConn.doOutput = true
-            httpUrlConn.connectTimeout = 15000
-            httpUrlConn.readTimeout = 10000
+            httpUrlConn.connectTimeout = CONNECT_TIMEOUT
+            httpUrlConn.readTimeout = READ_TIMEOUT
             httpUrlConn.setChunkedStreamingMode(0)
 
 
@@ -66,8 +66,8 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
         try {
             httpUrlConn = url.openConnection() as HttpURLConnection
             httpUrlConn.requestMethod = GET_METHOD
-            httpUrlConn.connectTimeout = 15000
-            httpUrlConn.readTimeout = 10000
+            httpUrlConn.connectTimeout = CONNECT_TIMEOUT
+            httpUrlConn.readTimeout = READ_TIMEOUT
 
             val responseData = when (httpUrlConn.responseCode) {
                 in successfulHttpRange -> getResponseData(httpUrlConn.inputStream)
@@ -164,6 +164,10 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
         private const val POST_METHOD = "POST"
         private const val GET_METHOD = "GET"
         private const val LOCATION = "Location"
+
+        private const val CONNECT_TIMEOUT = 30000
+        private const val READ_TIMEOUT = 30000
+
         private val successfulHttpRange = 200..299
         private val redirectHttpRange = 300..399
         private val clientErrorHttpRange = 400..499

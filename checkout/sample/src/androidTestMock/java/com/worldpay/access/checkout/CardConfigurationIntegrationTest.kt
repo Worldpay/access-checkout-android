@@ -12,7 +12,6 @@ import com.worldpay.access.checkout.UITestUtils.cardNumberMatcher
 import com.worldpay.access.checkout.UITestUtils.checkFieldInState
 import com.worldpay.access.checkout.UITestUtils.checkSubmitInState
 import com.worldpay.access.checkout.UITestUtils.monthMatcher
-import com.worldpay.access.checkout.UITestUtils.moveToField
 import com.worldpay.access.checkout.UITestUtils.typeFormInputs
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.UITestUtils.updateMonthDetails
@@ -33,12 +32,12 @@ class CardConfigurationIntegrationTest {
     private val year = "99"
 
     @get:Rule
-    var cardConfigurationRule: CardConfigurationRule =
-        CardConfigurationRule(MainActivity::class.java)
+    var cardConfigurationErrorRule: CardConfigurationErrorRule =
+        CardConfigurationErrorRule(MainActivity::class.java)
 
     @After
     fun tearDown() {
-        stubCardConfiguration(cardConfigurationRule.activity)
+        stubCardConfiguration(cardConfigurationErrorRule.activity)
     }
 
     @Test
@@ -48,23 +47,23 @@ class CardConfigurationIntegrationTest {
         typeFormInputs(luhnInvalidUnknownCard, unknownCvv, "13", year, true)
 
         assertBrandImage(R.drawable.card_unknown_logo)
-        checkFieldInState(false, cardNumberMatcher, cardConfigurationRule.activity)
-        checkFieldInState(false, monthMatcher, cardConfigurationRule.activity)
-        checkFieldInState(false, yearMatcher, cardConfigurationRule.activity)
+        checkFieldInState(false, cardNumberMatcher, cardConfigurationErrorRule.activity)
+        checkFieldInState(false, monthMatcher, cardConfigurationErrorRule.activity)
+        checkFieldInState(false, yearMatcher, cardConfigurationErrorRule.activity)
         checkSubmitInState(false)
 
         updatePANDetails(luhnValidUnknownCard)
         assertBrandImage(R.drawable.card_unknown_logo)
-        checkFieldInState(true, cardNumberMatcher, cardConfigurationRule.activity)
+        checkFieldInState(true, cardNumberMatcher, cardConfigurationErrorRule.activity)
         updateMonthDetails(month)
 
         updatePANDetails(luhnValidMastercardCard)
         assertBrandImage(R.drawable.card_unknown_logo)
-        checkFieldInState(true, cardNumberMatcher, cardConfigurationRule.activity)
+        checkFieldInState(true, cardNumberMatcher, cardConfigurationErrorRule.activity)
 
-        checkFieldInState(true, cardNumberMatcher, cardConfigurationRule.activity)
-        checkFieldInState(true, monthMatcher, cardConfigurationRule.activity)
-        checkFieldInState(true, yearMatcher, cardConfigurationRule.activity)
+        checkFieldInState(true, cardNumberMatcher, cardConfigurationErrorRule.activity)
+        checkFieldInState(true, monthMatcher, cardConfigurationErrorRule.activity)
+        checkFieldInState(true, yearMatcher, cardConfigurationErrorRule.activity)
 
         checkSubmitInState(true)
 
@@ -74,11 +73,11 @@ class CardConfigurationIntegrationTest {
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(cardConfigurationRule.activity.getString(R.string.session_reference), cardConfigurationRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(cardConfigurationErrorRule.activity.getString(R.string.session_reference), cardConfigurationErrorRule.activity.window.decorView)
     }
 }
 
-class CardConfigurationRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
+class CardConfigurationErrorRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
 
     override fun beforeActivityLaunched() {
         super.beforeActivityLaunched()

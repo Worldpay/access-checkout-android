@@ -12,7 +12,10 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import com.github.tomakehurst.wiremock.matching.AnythingPattern
 import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
 import com.github.tomakehurst.wiremock.stubbing.Scenario
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
+import com.worldpay.access.checkout.model.CardConfiguration
 
 object MockServer {
 
@@ -208,6 +211,18 @@ object MockServer {
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
                     .withBody(context.resources.openRawResource(R.raw.card_configuration_file).reader(Charsets.UTF_8).readText())
+            ))
+    }
+
+    fun stubCardConfigurationWithDelay(cardConfiguration: CardConfiguration, delay: Int = 0) {
+        val json = GsonBuilder().create().toJson(cardConfiguration)
+        wireMockServer.stubFor(get("/$cardConfigurationResourcePath")
+            .willReturn(
+                aResponse()
+                    .withFixedDelay(delay)
+                    .withStatus(200)
+                    .withHeader("Content-Type", "application/json")
+                    .withBody(json)
             ))
     }
 
