@@ -64,7 +64,7 @@ workflows:
 #        title: "Build app APK"
 #        inputs:
 #        - module: "$APP_MODULE"
-#        - variant: "$APP_VARIANT"
+#        - variant: "$APP_MOCK_VARIANT"
 #        - project_location: "$PROJECT_LOCATION"
 #    - virtual-device-testing-for-android@1.0.5:
 #        title: "Run UI tests against app"
@@ -184,7 +184,7 @@ workflows:
         title: "Build app APK"
         inputs:
           - module: "$APP_MODULE"
-          - variant: "$APP_VARIANT"
+          - variant: "$APP_PROD_VARIANT"
           - project_location: "$PROJECT_LOCATION"
     - virtual-device-testing-for-android@1.0.5:
         title: "Run integration tests against app"
@@ -212,7 +212,7 @@ workflows:
     - android-build@0.9.5:
         title: "Build test APK"
         inputs:
-          - variant: "${APP_VARIANT}AndroidTest"
+          - variant: "${APP_MOCK_VARIANT}AndroidTest"
           - project_location: "$PROJECT_LOCATION"
           - module: "$APP_MODULE"
     - script@1.1.5:
@@ -225,7 +225,7 @@ workflows:
         title: "Build app APK"
         inputs:
           - module: "$APP_MODULE"
-          - variant: "$APP_VARIANT"
+          - variant: "$APP_MOCK_VARIANT"
           - project_location: "$PROJECT_LOCATION"
     - virtual-device-testing-for-android@1.0.5:
         title: "Run UI tests against app"
@@ -255,7 +255,7 @@ workflows:
       - android-build@0.9.5:
           title: "Build test APK"
           inputs:
-            - variant: "${APP_VARIANT}AndroidTest"
+            - variant: "${APP_MOCK_VARIANT}AndroidTest"
             - project_location: "$PROJECT_LOCATION"
             - module: "$APP_MODULE"
       - script@1.1.5:
@@ -268,7 +268,7 @@ workflows:
           title: "Build app APK"
           inputs:
             - module: "$APP_MODULE"
-            - variant: "$APP_VARIANT"
+            - variant: "$APP_MOCK_VARIANT"
             - project_location: "$PROJECT_LOCATION"
       - virtual-device-testing-for-android@1.0.5:
           title: "Run UI tests against app"
@@ -293,7 +293,10 @@ app:
   - LIBRARY_VARIANT: debug
     opts:
       is_expand: false
-  - APP_VARIANT: mockWorldpayDebug
+  - APP_MOCK_VARIANT: mockWorldpayDebug
+    opts:
+      is_expand: false
+  - APP_PROD_VARIANT: prodWorldpayDebug
     opts:
       is_expand: false
   - NEXUS_URL: https://oss.sonatype.org/service/local/staging/deploy/maven2/
