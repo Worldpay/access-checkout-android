@@ -186,7 +186,7 @@ workflows:
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
           - project_location: "$PROJECT_LOCATION"
-          - arguments: "-PmerchantID=\"${MERCHANT_ID}\""
+          - arguments: -PmerchantID=\"${MERCHANT_ID}\"
     - virtual-device-testing-for-android@1.0.5:
         title: "Run integration tests against app"
         inputs:
