@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.config
 
-import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
+import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -10,7 +10,6 @@ import org.junit.Test
 import org.junit.rules.ExpectedException
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
@@ -18,8 +17,6 @@ import kotlin.test.assertNull
 class CardConfigurationParserTest {
 
     private lateinit var cardConfigurationParser: CardConfigurationParser
-
-    private val context = ShadowInstrumentation.getInstrumentation().targetContext.applicationContext
 
     @get:Rule
     val expectedException: ExpectedException = ExpectedException.none()
@@ -85,6 +82,97 @@ class CardConfigurationParserTest {
         expectedException.expectMessage("Invalid property type: 'maxLength', expected 'Int'")
 
         cardConfigurationParser.parse(getTestFile("card_configuration_with_wrong_property_type_for_int.json"))
+    }
+
+    @Test
+    fun givenEmptyBrandsConfigThenShouldParseSuccessfully() {
+        val missingBrands = """
+            {
+                "defaults": {
+                    "pan": {
+                        "matcher": "^\\d{0,19}${'$'}",
+                        "minLength": 13,
+                        "maxLength": 19
+                    },
+                    "cvv": {
+                        "matcher": "^\\d{0,4}${'$'}",
+                        "minLength": 3,
+                        "maxLength": 4
+                    },
+                    "month": {
+                        "matcher": "^0[1-9]{0,1}${'$'}|^1[0-2]{0,1}${'$'}",
+                        "minLength": 2,
+                        "maxLength": 2
+                    },
+                    "year": {
+                        "matcher": "^\\d{0,2}${'$'}",
+                        "minLength": 2,
+                        "maxLength": 2
+                    }
+                }
+            }
+        """.trimIndent()
+
+        val cardConfiguration = cardConfigurationParser.parse(missingBrands.byteInputStream())
+
+        assertNull(cardConfiguration.brands)
+    }
+
+    @Test
+    fun givenNoDefaultsConfigThenShouldParseSuccessfully() {
+        val missingDefaults = """
+            {
+                "brands": [{
+                    "name": "test",
+                    "image": "test",
+                    "cvv": {
+                        "matcher": "^\\d{0,3}${'$'}",
+                        "validLength": 3
+                    },
+                    "pans": [
+                        {
+                            "matcher": "^4\\d{0,15}",
+                            "validLength": 16
+                        }
+                    ]
+                }]
+            }
+        """.trimIndent()
+
+
+        val cardConfiguration = cardConfigurationParser.parse(missingDefaults.byteInputStream())
+
+        assertNull(cardConfiguration.defaults)
+    }
+
+    @Test
+    fun givenDefaultConfigWithEmptyCardValidationRulesThenShouldParseSuccessfully() {
+        val emptyDefaults = """
+            {
+                "defaults": {}
+            }
+        """.trimIndent()
+
+        val cardConfiguration = cardConfigurationParser.parse(emptyDefaults.byteInputStream())
+
+        assertNotNull(cardConfiguration.defaults)
+        assertNull(cardConfiguration.defaults?.pan)
+        assertNull(cardConfiguration.defaults?.cvv)
+        assertNull(cardConfiguration.defaults?.month)
+        assertNull(cardConfiguration.defaults?.year)
+    }
+
+    @Test
+    fun givenBrandsConfigWithEmptyCardValidationRulesThenShouldParseSuccessfully() {
+        val emptyBrands = """
+            {
+                "brands": []
+            }
+        """.trimIndent()
+
+        val cardConfiguration = cardConfigurationParser.parse(emptyBrands.byteInputStream())
+
+        assertEquals(emptyList<CardBrand>(), cardConfiguration.brands)
     }
 
     @Test

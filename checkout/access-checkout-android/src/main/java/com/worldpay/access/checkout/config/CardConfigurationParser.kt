@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.model.CardValidationRule
 import org.json.JSONObject
 import java.io.InputStream
 
-internal class CardConfigurationParser: Deserializer<CardConfiguration>() {
+internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
 
     companion object {
         //CardConfiguration fields
@@ -40,7 +40,7 @@ internal class CardConfigurationParser: Deserializer<CardConfiguration>() {
             val json = it.reader(Charsets.UTF_8).readText()
             return if (json.isBlank()) CardConfiguration()
             else deserialize(json)
-        }?: CardConfiguration()
+        } ?: CardConfiguration()
     }
 
     override fun deserialize(json: String): CardConfiguration {
@@ -50,36 +50,41 @@ internal class CardConfigurationParser: Deserializer<CardConfiguration>() {
         }
     }
 
-    private fun parseBrandsConfig(root: JSONObject): List<CardBrand> {
-        val brandsArray = fetchArray(root, BRANDS_FIELD)
-        val brandsList = mutableListOf<CardBrand>()
-        for (i in 0 until brandsArray.length()) {
-            val brandRoot = brandsArray.getJSONObject(i)
-            val name = toStringProperty(brandRoot, NAME_FIELD)
-            val image = toStringProperty(brandRoot, IMAGE_FIELD)
-            val cvv = fetchObject(brandRoot, BRANDED_CVV_FIELD)
-            val cvvConfig = parseCardValidationRule(cvv)
-            val pans = fetchArray(brandRoot, PANS_FIELD)
-            val panList = mutableListOf<CardValidationRule>()
-            for (panRuleIndex in 0 until pans.length()) {
-                panList.add(parseCardValidationRule(pans.getJSONObject(panRuleIndex)))
+    private fun parseBrandsConfig(root: JSONObject): List<CardBrand>? {
+        val brandsArray = fetchOptionalArray(root, BRANDS_FIELD)
+        return brandsArray?.let {
+            val brandsList = mutableListOf<CardBrand>()
+            for (i in 0 until it.length()) {
+                val brandRoot = it.getJSONObject(i)
+                val name = toStringProperty(brandRoot, NAME_FIELD)
+                val image = toStringProperty(brandRoot, IMAGE_FIELD)
+                val cvv = fetchObject(brandRoot, BRANDED_CVV_FIELD)
+                val cvvConfig = parseCardValidationRule(cvv)
+                val pans = fetchArray(brandRoot, PANS_FIELD)
+                val panList = mutableListOf<CardValidationRule>()
+                for (panRuleIndex in 0 until pans.length()) {
+                    val panValidationRule = parseCardValidationRule(pans.getJSONObject(panRuleIndex))
+                    panList.add(panValidationRule)
+                }
+                brandsList.add(CardBrand(name, image, cvvConfig, panList))
             }
-            brandsList.add(CardBrand(name, image, cvvConfig, panList))
+            brandsList
         }
-        return brandsList
     }
 
-    private fun parseDefaultConfig(jsonObject: JSONObject): CardDefaults {
-        val defaults = fetchObject(jsonObject, DEFAULTS_FIELD)
-        val pan = fetchObject(defaults, PAN_FIELD)
-        val cvv = fetchObject(defaults, CVV_FIELD)
-        val month = fetchObject(defaults, MONTH_FIELD)
-        val year = fetchObject(defaults, YEAR_FIELD)
-        val panConfig = parseCardValidationRule(pan)
-        val cvvConfig = parseCardValidationRule(cvv)
-        val monthConfig = parseCardValidationRule(month)
-        val yearConfig = parseCardValidationRule(year)
-        return CardDefaults(panConfig, cvvConfig, monthConfig, yearConfig)
+    private fun parseDefaultConfig(jsonObject: JSONObject): CardDefaults? {
+        val defaults = fetchOptionalObject(jsonObject, DEFAULTS_FIELD)
+        return defaults?.let {
+            val pan = fetchOptionalObject(it, PAN_FIELD)
+            val cvv = fetchOptionalObject(it, CVV_FIELD)
+            val month = fetchOptionalObject(it, MONTH_FIELD)
+            val year = fetchOptionalObject(it, YEAR_FIELD)
+            val panConfig = parseOptionalCardValidationRule(pan)
+            val cvvConfig = parseOptionalCardValidationRule(cvv)
+            val monthConfig = parseOptionalCardValidationRule(month)
+            val yearConfig = parseOptionalCardValidationRule(year)
+            CardDefaults(panConfig, cvvConfig, monthConfig, yearConfig)
+        }
     }
 
     private fun parseCardValidationRule(jsonObject: JSONObject): CardValidationRule {
@@ -91,12 +96,17 @@ internal class CardConfigurationParser: Deserializer<CardConfiguration>() {
         return CardValidationRule(matcher, minLength, maxLength, validLength, subRulesList)
     }
 
+    private fun parseOptionalCardValidationRule(jsonObject: JSONObject?): CardValidationRule? {
+        return jsonObject?.let { parseCardValidationRule(it) }
+    }
+
     private fun parseSubRules(jsonObject: JSONObject): List<CardValidationRule> {
         val subRules = fetchOptionalArray(jsonObject, SUB_RULES_FIELD)
         val subRulesList = mutableListOf<CardValidationRule>()
         subRules?.let {
             for (i in 0 until it.length()) {
-                subRulesList.add(parseCardValidationRule(it.getJSONObject(i)))
+                val cardValidationRule = parseCardValidationRule(it.getJSONObject(i))
+                subRulesList.add(cardValidationRule)
             }
         }
         return subRulesList
