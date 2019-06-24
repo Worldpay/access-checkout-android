@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.model.CardConfiguration
 /**
  * A client to fetch a [CardConfiguration]
  */
-interface CardConfigurationClient {
+internal interface CardConfigurationClient {
 
     /**
      * @param baseURL the base URL of the server to fetch the config from

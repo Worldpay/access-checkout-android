@@ -8,7 +8,7 @@ import java.util.*
  * Implementation of a [CardValidator] which delegates responsibility of validating the card fields to the individual
  * card validator implementations
  */
-class AccessCheckoutCardValidator(override val cardConfiguration: CardConfiguration? = null,
+class AccessCheckoutCardValidator(override var cardConfiguration: CardConfiguration? = null,
                                   private val panValidator: PANValidator = PANValidatorImpl(cardConfiguration),
                                   private val cvvValidator: CVVValidator = CVVValidatorImpl(cardConfiguration),
                                   private val dateValidator: DateValidator = DateValidatorImpl(Calendar.getInstance(),

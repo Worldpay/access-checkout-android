@@ -16,7 +16,7 @@ interface CardValidator {
     /**
      * The (optional) [CardConfiguration] to use for validating the fields
      */
-    val cardConfiguration: CardConfiguration?
+    var cardConfiguration: CardConfiguration?
 
     /**
      * Validates the pan field
