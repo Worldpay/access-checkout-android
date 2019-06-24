@@ -38,6 +38,10 @@ android {
             dimension = "merchant"
         }
     }
+
+    applicationVariants.all { variant ->
+        variant.buildConfigField "String", "MERCHANT_ID", merchantID
+    }
 }
 
 dependencies {
