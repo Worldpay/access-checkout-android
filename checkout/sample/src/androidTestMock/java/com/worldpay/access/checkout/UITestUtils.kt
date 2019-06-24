@@ -9,6 +9,7 @@ import android.support.test.espresso.assertion.ViewAssertions.*
 import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.uiautomator.UiDevice
+import android.support.test.uiautomator.UiDevice.*
 import android.support.test.uiautomator.UiObject
 import android.support.test.uiautomator.UiSelector
 import android.support.v4.content.res.ResourcesCompat.getColor
@@ -20,6 +21,7 @@ import com.worldpay.access.checkout.matchers.EditTextColorMatcher
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.junit.Assert
+import org.junit.Assert.assertTrue
 
 object UITestUtils {
 
@@ -116,14 +118,19 @@ object UITestUtils {
     fun uiObjectWithId(resId: Int): UiObject {
         val resName = InstrumentationRegistry.getTargetContext().resources.getResourceName(resId)
         val selector = UiSelector().resourceId(resName)
-        return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).findObject(selector)
+        return getInstance(InstrumentationRegistry.getInstrumentation()).findObject(selector)
     }
 
     fun assertInProgressState() {
-        Assert.assertTrue(progressBar().exists())
-        if (isKeyboardOpened())
-            UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
+        assertTrue(progressBar().exists())
+        closeKeyboard()
         assertFieldsAndSubmitButtonIsDisabled()
+    }
+
+    fun closeKeyboard() {
+        if (isKeyboardOpened()) {
+            getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
+        }
     }
 
     fun assertDisplaysResponseFromServer(responseString: String, view: View) {
@@ -148,9 +155,9 @@ object UITestUtils {
             .check(matches(BrandVectorImageMatcher.withBrandVectorImageId(expectedImage)))
     }
 
-    private fun getSuccessColor(context: Context) = getColor(context.resources, R.color.SUCCESS, context.theme)
+    fun getSuccessColor(context: Context) = getColor(context.resources, R.color.SUCCESS, context.theme)
 
-    private fun getFailColor(context: Context) = getColor(context.resources, R.color.FAIL, context.theme)
+    fun getFailColor(context: Context) = getColor(context.resources, R.color.FAIL, context.theme)
 
     private fun typeYear(year: String) {
         onView(yearMatcher)
