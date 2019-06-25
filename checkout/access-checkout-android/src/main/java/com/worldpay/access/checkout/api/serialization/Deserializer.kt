@@ -50,6 +50,10 @@ internal abstract class Deserializer<T> {
         }
     }
 
+    protected fun fetchOptionalObject(obj: JSONObject, field: String): JSONObject? {
+        return obj.optJSONObject(field)
+    }
+
     protected fun fetchObject(obj: JSONObject, field: String): JSONObject {
         return fetchOrElseThrow(obj.optJSONObject(field), field, "object")
     }

@@ -12,7 +12,7 @@ It includes, optionally, custom Android views that identifies card brands and va
 
 Download the latest AAR from [Maven Central](https://search.maven.org/search?q=g:com.worldpay.access%20AND%20a:access-checkout-android) or include in your project's build dependencies via Gradle:
 
-`implementation 'com.worldpay.access:access-checkout-android:1.0.0`
+`implementation 'com.worldpay.access:access-checkout-android:1.1.0`
 
 
 or Maven:
@@ -21,7 +21,7 @@ or Maven:
 <dependency>
   <groupId>com.worldpay.access</groupId>
   <artifactId>access-checkout-android</artifactId>
-  <version>1.0.0</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 
@@ -124,28 +124,83 @@ accessCheckoutClient.generateSessionState(pan, month, year, cvv)
 
 ### Validation
 
-In order to take advantage of the in-built validation on the card fields, there is an additional setup step. 
+In order to take advantage of the in-built validation on the card fields, there are additional setup steps.
 
+#### 1) Instantiate the Card
+
+Firstly, instantiate an instance of `AccessCheckoutCard`, passing in the references to the views:
 ```
 val card = AccessCheckoutCard(
-        applicationContext, // Context
         panView,            // The PAN view
         cardCVVText,        // The CVV view
         cardExpiryText      // The Expiry view
   )
+```
+
+#### 2) Implement a `CardListener`
+
+The `CardListener` includes the callback functions invoked by the SDK at the point when the fields have finished validating on different user input events, for e.g. on each key stroke, on a field losing focus etc.
+
+```
+override fun onUpdate(cardView: CardView, valid: Boolean) {
+    cardView.isValid(valid)
+    submit.isEnabled = card.isValid() && !loading
+}
+
+override fun onUpdateLengthFilter(cardView: CardView, inputFilter: InputFilter) {
+    cardView.applyLengthFilter(inputFilter)
+}
+
+override fun onUpdateCardBrand(cardBrand: CardBrand?) {
+    panView.applyCardLogo(cardBrand?.image ?: "card_unknown_logo")
+}
+```
+
+`onUpdate` is the method that will be invoked when a field has finished validation. The `CardView` to apply the effect of the validation result to is returned,
+alongside a property `valid` indicating whether that field is in a valid or invalid state.
+
+`onUpdateLengthFilter` is the method which will be invoked when the card view needs to be updated with a reference to a length filter, for restricting
+input length for that card view.
+
+`onUpdateCardBrand` is the method which will be invoked when there has been an update to the identity of the card. A non-null reference to the particular `CardBrand`
+will be returned if it an identified card brand, otherwise null if we have been unable to identify the card. 
+
+#### 3) Set the references
+
+Once the required callback interface has been implemented, you now need to set the reference to it on the `AccessCheckoutCard` object.
+
+```
 card.cardListener = this    // reference to `CardListener` implementation
+card.cardValidator = AccessCheckoutCardValidator()  // reference to an AccessCheckoutCardValidator implementation
 
 panView.cardViewListener = card
 cardCVVText.cardViewListener = card
 cardExpiryText.cardViewListener = card
+
 ```
 
-If taking advantage of the provided validators it is important to implement the `CardListener` interface for its callback methods.
+You will also need to set the reference to the `CardViewListener` on each of the views, which will be the instance of `AccessCheckoutCard` you created earlier. This is what binds the interactions on the views to the business logic inside the SDK.
 
-These include all the functions invoked by the SDK at the time when the fields have finished validating on different user input events, for e.g. on each key stroke, on a field losing focus etc.
+If you wish to use our implementation of a `CardValidator` then you can do so by specifying an `AccessCheckoutCardValidator` instance as the `cardValidator` on the `AccessCheckoutCard`, or provide your own implementation by implementing the `CardValidator` interface
+and plug that in instead.
 
-See an example of this interface being implemented in our sample application in the `MainActivity`
+#### 4) Plug in the card configuration
 
+The validation logic, especially the PAN and the CVV fields, inside `AccessCheckoutCard` is based off of a `CardConfiguration`. Access Worldpay hosts a JSON based version of the card configuration file which 
+is available to consume via a `CardConfigurationClientImpl`, and all that is required to set that up is as follows:
+
+```
+CardConfigurationClientFactory.createClient().getCardConfiguration(getBaseUrl(), object : Callback<CardConfiguration> {
+    override fun onResponse(error: Exception?, response: CardConfiguration?) {
+        response?.let { card.cardValidator = AccessCheckoutCardValidator(it) }
+    }
+})
+```
+Of course, you can build and provide your own `CardConfiguration` if you'd prefer:
+```
+val cardConfiguration = CardConfiguration(brands = ..., defaults = ...)
+`card.cardValidator = AccessCheckoutCardValidator(cardConfiguration)`
+```
 
 #### Receiving the Session State 
 

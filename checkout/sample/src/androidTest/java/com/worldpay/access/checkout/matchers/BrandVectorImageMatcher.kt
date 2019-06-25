@@ -6,23 +6,27 @@ import android.widget.ImageView
 import com.worldpay.access.checkout.views.PANLayout
 import org.hamcrest.Description
 
-internal class BrandVectorImageMatcher private constructor(private val id: Int) :
+internal class BrandVectorImageMatcher private constructor(private val expectedId: Int) :
     BoundedMatcher<View, ImageView>(ImageView::class.java) {
-    override fun matchesSafely(item: ImageView): Boolean {
-        val context = item.context
-        val expectedResName = context.resources.getResourceEntryName(id)//getDrawable(id) as BitmapDrawable
-        return (item.getTag(PANLayout.CARD_TAG)).equals(expectedResName)
+    override fun matchesSafely(actualItem: ImageView): Boolean {
+        return equalsBrandVectorImage(actualItem, expectedId)
     }
 
     override fun describeTo(description: Description) {
         description.appendText("with drawable ID:")
-            .appendValue(id)
+            .appendValue(expectedId)
     }
 
     companion object {
 
         fun withBrandVectorImageId(id: Int): BrandVectorImageMatcher {
             return BrandVectorImageMatcher(id)
+        }
+
+        fun equalsBrandVectorImage(actualItem: ImageView, expectedId: Int): Boolean {
+            val context = actualItem.context
+            val expectedResName = context.resources.getResourceEntryName(expectedId)
+            return (actualItem.getTag(PANLayout.CARD_TAG)) == expectedResName
         }
     }
 }

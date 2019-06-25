@@ -8,6 +8,7 @@ object CardConfigurationClientFactory {
     /**
      * @return a [CardConfigurationClient] instance
      */
+    @JvmStatic
     fun createClient(): CardConfigurationClient {
         return CardConfigurationClientImpl()
     }

@@ -40,10 +40,12 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
 
         card = AccessCheckoutCard(panView, cvvText, dateText)
         card.cardListener = this
+        card.cardValidator = AccessCheckoutCardValidator()
 
         CardConfigurationClientFactory.createClient().getCardConfiguration(getBaseUrl(), object : Callback<CardConfiguration> {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {
-                card.cardValidator = response?.let { AccessCheckoutCardValidator(it) } ?: AccessCheckoutCardValidator()
+                response?.let { card.cardValidator = AccessCheckoutCardValidator(it) }
+                error?.let { debugLog("MainActivity", "Error while fetching card configuration: $it")  }
             }
         })
         
@@ -146,7 +148,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         super.onRestoreInstanceState(savedInstanceState)
     }
 
-    private fun getMerchantID() = getString(R.string.merchantId)
+    private fun getMerchantID() = BuildConfig.MERCHANT_ID
 
     private fun getBaseUrl() = getString(R.string.endpoint)
 }
