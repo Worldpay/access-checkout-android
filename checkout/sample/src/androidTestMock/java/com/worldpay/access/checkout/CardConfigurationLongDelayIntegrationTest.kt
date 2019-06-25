@@ -12,6 +12,9 @@ import com.worldpay.access.checkout.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.UITestUtils.getFailColor
 import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
+import com.worldpay.access.checkout.UITestUtils.updateCVVDetails
+import com.worldpay.access.checkout.UITestUtils.updateMonthDetails
+import com.worldpay.access.checkout.UITestUtils.updatePANDetails
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
@@ -128,16 +131,14 @@ class CardConfigurationLongDelayIntegrationTest {
         assertFalse(submit.isEnabled)
 
         // Re-enter a luhn valid, mastercard identified card and valid date
-        cardText.text = luhnValidMastercardCard
-        monthText.click()
-        monthText.text = month
-        cvvText.click()
+        updatePANDetails(luhnValidMastercardCard)
+        updateMonthDetails(month)
 
         // Attempt to type more than allowed input for CVV
         val validCVV = "123"
-        cvvText.text = validCVV
+        updateCVVDetails(validCVV)
         assertEquals(successColor, cvvEditText.currentTextColor)
-        cvvText.text = "12345"
+        updateCVVDetails("12345")
         assertEquals(validCVV, cvvEditText.text.toString())
 
         // Verify that all the fields are now in a success state and can be submitted
