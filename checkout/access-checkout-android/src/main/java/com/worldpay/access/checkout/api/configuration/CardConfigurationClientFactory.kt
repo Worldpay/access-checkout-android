@@ -25,6 +25,7 @@ object CardConfigurationClientFactory {
     /**
      * @return a [CardConfigurationClient] instance
      */
+    @JvmStatic
     internal fun createClient(): CardConfigurationClient {
         return CardConfigurationClientImpl()
     }
