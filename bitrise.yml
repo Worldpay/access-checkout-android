@@ -109,7 +109,7 @@ workflows:
         title: "Deploy to Nexus"
         inputs:
         - gradlew_path: "$PROJECT_LOCATION/gradlew"
-        - gradle_task: "clean uploadArchives closeAndReleaseRepository -PnexusUrl=$NEXUS_URL -PnexusSnapshotUrl=$NEXUS_SNAPSHOT_URL -PossrhUsername=$NEXUS_USERNAME -PossrhPassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
+        - gradle_task: "clean uploadArchives closeAndReleaseRepository --info -s -PnexusUrl=$NEXUS_URL -PnexusSnapshotUrl=$NEXUS_SNAPSHOT_URL -PossrhUsername=$NEXUS_USERNAME -PossrhPassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
         - gradle_file: "$PROJECT_LOCATION/build.gradle"
     - cache-push@2.0.5: {}
   primary:
