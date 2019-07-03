@@ -12,25 +12,25 @@ import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.validation.CardValidator
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentCaptor
-import org.mockito.BDDMockito
 import org.mockito.Captor
 import org.mockito.Mockito.*
-import java.lang.NullPointerException
-import kotlin.test.*
 
 
 class CardConfigurationFactoryTest {
 
 
-    lateinit var card: Card
-    lateinit var cardValidator: AccessCheckoutCardValidator
-    lateinit var client: CardConfigurationClient
-    lateinit var callbackObject: Callback<CardConfiguration>
-    lateinit var cardConfiguration: CardConfiguration
+    private lateinit var card: Card
+    private lateinit var cardValidator: AccessCheckoutCardValidator
+    private lateinit var client: CardConfigurationClient
+    private lateinit var callbackObject: Callback<CardConfiguration>
+    private lateinit var cardConfiguration: CardConfiguration
     val baseURL = "http://localhost"
+    @Captor
+    private lateinit var callbackCaptor: ArgumentCaptor<Callback<CardConfiguration>>
+    @Captor
+    private lateinit var cardValidatorCaptor: ArgumentCaptor<CardValidator>
 
     @Before
     fun setup() {
@@ -39,59 +39,43 @@ class CardConfigurationFactoryTest {
         client = mock(CardConfigurationClient::class.java)
         callbackObject = mock()
         cardConfiguration = mock(CardConfiguration::class.java)
-
     }
-
-    @Captor private lateinit var captor: ArgumentCaptor<Callback<CardConfiguration>>
-    @Captor private lateinit var captor2: ArgumentCaptor<CardValidator>
 
     @Test
     fun givenACardShouldFetchRemoteConfiguration() {
 
-        captor = argumentCaptor<Callback<CardConfiguration>>()
-
+        callbackCaptor = argumentCaptor<Callback<CardConfiguration>>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
 
-        CardConfigurationFactory.getRemoteCardValidatorConfiguration(card, baseURL, cardConfigurationClient)
-
-        verify(cardConfigurationClient).getCardConfiguration(typeSafeEq(baseURL), capture(captor))
-
+        CardConfigurationFactory.getRemoteCardConfiguration(card, baseURL, cardConfigurationClient)
+        verify(cardConfigurationClient).getCardConfiguration(typeSafeEq(baseURL), capture(callbackCaptor))
         val configuration = CardConfiguration(brands = listOf(CardBrand("test", "test", null, listOf())))
-        captor.value.onResponse(null, configuration)
+        callbackCaptor.value.onResponse(null, configuration)
+        cardValidatorCaptor = argumentCaptor()
 
-        captor2 = argumentCaptor()
-
-        verify(card, atLeastOnce()).cardValidator = capture(captor2)
-
-        val cardValidatorCaptured = captor2.value
-
+        verify(card, atLeastOnce()).cardValidator = capture(cardValidatorCaptor)
+        val cardValidatorCaptured = cardValidatorCaptor.value
         assertEquals(configuration, cardValidatorCaptured.cardConfiguration)
-
     }
 
     @Test
     fun givenAnApiErrorCardShouldNotBeSetWithValidator() {
 
-        captor = argumentCaptor<Callback<CardConfiguration>>()
-
+        callbackCaptor = argumentCaptor<Callback<CardConfiguration>>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
 
-        CardConfigurationFactory.getRemoteCardValidatorConfiguration(card, baseURL, cardConfigurationClient)
+        CardConfigurationFactory.getRemoteCardConfiguration(card, baseURL, cardConfigurationClient)
 
-        verify(cardConfigurationClient).getCardConfiguration(typeSafeEq(baseURL), capture(captor))
-
+        verify(cardConfigurationClient).getCardConfiguration(typeSafeEq(baseURL), capture(callbackCaptor))
         val error = Exception()
-        captor.value.onResponse(error, null)
-
-        captor2 = argumentCaptor()
-
-        verify(card, never()).cardValidator = capture(captor2)
-
+        callbackCaptor.value.onResponse(error, null)
+        cardValidatorCaptor = argumentCaptor()
+        verify(card, never()).cardValidator = capture(cardValidatorCaptor)
     }
 
     @Test
     fun givenTheFactoryReceivesNoExternalClientWillInstantiateOne() {
-        CardConfigurationFactory.getRemoteCardValidatorConfiguration(card, baseURL)
+        CardConfigurationFactory.getRemoteCardConfiguration(card, baseURL)
     }
 
 }

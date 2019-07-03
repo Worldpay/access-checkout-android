@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         card.cardListener = this
         card.cardValidator = AccessCheckoutCardValidator()
 
-        CardConfigurationFactory.getRemoteCardValidatorConfiguration(card, getBaseUrl())
+        CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
         
         panView.cardViewListener = card
         cvvText.cardViewListener = card

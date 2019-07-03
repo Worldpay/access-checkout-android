@@ -23,11 +23,11 @@ internal object CardConfigurationClientFactory {
 object CardConfigurationFactory {
     @JvmStatic
     @JvmOverloads
-    fun getRemoteCardValidatorConfiguration(
+    fun getRemoteCardConfiguration(
         card: Card,
         baseUrl: String,
         client: CardConfigurationClient = CardConfigurationClientFactory.createClient()
-    ): Unit {
+    ) {
         client.getCardConfiguration(baseUrl, object :
             Callback<CardConfiguration> {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {
