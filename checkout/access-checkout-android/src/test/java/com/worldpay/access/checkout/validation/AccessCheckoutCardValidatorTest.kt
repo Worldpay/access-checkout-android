@@ -73,4 +73,17 @@ class AccessCheckoutCardValidatorTest {
     fun `given a validator is constructed then should be able to fetch card configuration`() {
         assertEquals(cardConfiguration, accessCheckoutCardValidator.cardConfiguration)
     }
+
+    @Test
+    fun `given null cardConfiguration Will partially validate a luhn valid card`() {
+
+        val exp = Pair(ValidationResult(partial = true, complete = false), null)
+
+        accessCheckoutCardValidator = AccessCheckoutCardValidator(null)
+
+        val validationResult = accessCheckoutCardValidator.validatePAN("4111111111111112")
+
+        assertEquals(exp, validationResult)
+    }
+
 }
