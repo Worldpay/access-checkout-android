@@ -9,18 +9,7 @@ import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 /**
  * Creates a [CardConfigurationClient] instance
  */
-object CardConfigurationClientFactory {
-
-    @JvmStatic
-    fun getRemoteConfiguration(cardValidator: Card, baseUrl: String) {
-        CardConfigurationClientFactory.createClient().getCardConfiguration(baseUrl, object :
-            Callback<CardConfiguration> {
-            override fun onResponse(error: Exception?, response: CardConfiguration?) {
-                response?.let { cardValidator.cardValidator = AccessCheckoutCardValidator(it) }
-                error?.let { LoggingUtils.debugLog("MainActivity", "Error while fetching card configuration: $it") }
-            }
-        })
-    }
+internal object CardConfigurationClientFactory {
 
     /**
      * @return a [CardConfigurationClient] instance
@@ -28,5 +17,23 @@ object CardConfigurationClientFactory {
     @JvmStatic
     internal fun createClient(): CardConfigurationClient {
         return CardConfigurationClientImpl()
+    }
+}
+
+object CardConfigurationFactory {
+    @JvmStatic
+    @JvmOverloads
+    fun getRemoteCardValidatorConfiguration(
+        card: Card,
+        baseUrl: String,
+        client: CardConfigurationClient = CardConfigurationClientFactory.createClient()
+    ): Unit {
+        client.getCardConfiguration(baseUrl, object :
+            Callback<CardConfiguration> {
+            override fun onResponse(error: Exception?, response: CardConfiguration?) {
+                response?.let { card.cardValidator = AccessCheckoutCardValidator(it) }
+                error?.let { LoggingUtils.debugLog("MainActivity", "Error while fetching card configuration: $it") }
+            }
+        })
     }
 }

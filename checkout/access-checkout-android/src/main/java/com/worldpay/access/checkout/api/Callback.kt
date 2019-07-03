@@ -4,7 +4,7 @@ package com.worldpay.access.checkout.api
  * A callback interface used for returning either an [Exception] or a generic response type [T] to
  * the implementer
  */
-internal interface Callback<T> {
+interface Callback<T> {
 
     /**
      * @param error an exception, if available

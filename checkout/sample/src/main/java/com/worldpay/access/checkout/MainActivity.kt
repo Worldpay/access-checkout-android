@@ -6,7 +6,7 @@ import android.text.InputFilter
 import android.view.View
 import android.widget.Toast
 import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
+import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
@@ -40,7 +40,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         card.cardListener = this
         card.cardValidator = AccessCheckoutCardValidator()
 
-        CardConfigurationClientFactory.getRemoteConfiguration(card, getBaseUrl())
+        CardConfigurationFactory.getRemoteCardValidatorConfiguration(card, getBaseUrl())
         
         panView.cardViewListener = card
         cvvText.cardViewListener = card
