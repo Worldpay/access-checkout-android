@@ -213,6 +213,7 @@ object MockServer {
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
                     .withBody(context.resources.openRawResource(R.raw.card_configuration_file).reader(Charsets.UTF_8).readText())
+                    .withTransformers(ResponseTemplateTransformer.NAME)
             ))
     }
 
@@ -261,7 +262,7 @@ object MockServer {
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
                     .withBody(serviceDiscoveryResponse)
-                    .withTransformers("response-template")
+                    .withTransformers(ResponseTemplateTransformer.NAME)
             )
     }
 
@@ -285,7 +286,7 @@ object MockServer {
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody(topLevelServiceResourceResponse)
-                        .withTransformers("response-template")
+                        .withTransformers(ResponseTemplateTransformer.NAME)
                 )
         )
     }

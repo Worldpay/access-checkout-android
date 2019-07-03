@@ -24,7 +24,16 @@
 	"brands": [
 		{
 			"name": "visa",
-			"image": "card_visa_logo",
+			"images": [
+				{
+					"type": "image/png",
+					"url": "{{request.requestLine.baseUrl}}/visa.png"
+				},
+				{
+					"type": "image/svg+xml",
+					"url": "{{request.requestLine.baseUrl}}/visa.svg"
+				}
+			],
 			"cvv": {
 				"matcher": "^\\d{0,3}$",
 				"validLength": 3
@@ -44,7 +53,16 @@
 		},
 		{
 			"name": "mastercard",
-			"image": "card_mastercard_logo",
+			"images": [
+				{
+					"type": "image/png",
+					"url": "{{request.requestLine.baseUrl}}/mastercard.png"
+				},
+				{
+					"type": "image/svg+xml",
+					"url": "{{request.requestLine.baseUrl}}/mastercard.svg"
+				}
+			],
 			"cvv": {
 				"matcher": "^\\d{0,3}$",
 				"validLength": 3
@@ -66,7 +84,16 @@
 		},
 		{
 			"name": "amex",
-			"image": "card_amex_logo",
+			"images": [
+				{
+					"type": "image/png",
+					"url": "{{request.requestLine.baseUrl}}/amex.png"
+				},
+				{
+					"type": "image/svg+xml",
+					"url": "{{request.requestLine.baseUrl}}/amex.svg"
+				}
+			],
 			"cvv": {
 				"matcher": "^\\d{0,4}$",
 				"validLength": 4
