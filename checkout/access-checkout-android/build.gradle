@@ -130,9 +130,15 @@ android {
 
 }
 
-android.libraryVariants.all { variant ->
-    variant.outputs.all {
-        outputFileName = "${archivesBaseName}-${version}.aar"
+afterEvaluate {
+    def filePrefix = "$buildDir/outputs/aar/$archivesBaseName"
+    def fileSuffix = "aar"
+    def originalFile = file("$filePrefix-release.$fileSuffix")
+    def renamedFile = "$filePrefix-$version.$fileSuffix"
+    tasks.named("assembleRelease").configure {
+        doLast {
+            originalFile.renameTo(renamedFile)
+        }
     }
 }
 
