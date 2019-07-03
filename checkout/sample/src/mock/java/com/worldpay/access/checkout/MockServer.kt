@@ -12,10 +12,10 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import com.github.tomakehurst.wiremock.matching.AnythingPattern
 import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
 import com.github.tomakehurst.wiremock.stubbing.Scenario
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
 import com.worldpay.access.checkout.model.CardConfiguration
+import java.io.IOException
 
 object MockServer {
 
@@ -25,6 +25,7 @@ object MockServer {
 
     private const val verifiedTokensSessionResourcePath = "verifiedTokens/sessions"
     private const val cardConfigurationResourcePath = "access-checkout/cardConfiguration.json"
+    private const val cardLogosPath = "access-checkout/assets"
 
     private fun verifiedTokensResponse(context: Context) =
         """{
@@ -122,6 +123,7 @@ object MockServer {
                 .willReturn(validSessionResponseWithDelay(context, 2000))
         )
         stubCardConfiguration(context)
+        stubLogos(context)
     }
 
     fun simulateDelayedResponse(context: Context) {
@@ -226,6 +228,19 @@ object MockServer {
             ))
     }
 
+    private fun stubLogos(context: Context) {
+        val images = listOf("visa.svg", "mastercard.svg", "amex.svg")
+        images.forEach {
+            wireMockServer.stubFor(get("/$cardLogosPath/$it")
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "image/svg+xml")
+                        .withBody(getAsset(context, it))))
+        }
+
+    }
+
     fun simulateCardConfigurationServerError() {
         wireMockServer.stubFor(get("/$cardConfigurationResourcePath")
             .willReturn(
@@ -282,6 +297,15 @@ object MockServer {
         } while (!hasStarted)
         debugLog("MockServer", "Started wiremock!!")
 
+    }
+
+    private fun getAsset(context: Context, assetPath: String): String {
+        try {
+            val inputStream = context.assets.open(assetPath)
+            return inputStream.reader().readText()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
     }
 
 }
