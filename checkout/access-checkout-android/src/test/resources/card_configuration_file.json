@@ -25,6 +25,16 @@
 		{
 			"name": "visa",
 			"image": "card_visa_logo",
+			"images": [
+				{
+					"type": "image/png",
+					"url": "http://localhost/visa.png"
+				},
+				{
+					"type": "image/svg+xml",
+					"url": "http://localhost/visa.svg"
+				}
+			],
 			"cvv": {
 				"matcher": "^\\d{0,3}$",
 				"validLength": 3
@@ -45,6 +55,16 @@
 		{
 			"name": "mastercard",
 			"image": "card_mastercard_logo",
+			"images": [
+				{
+					"type": "image/png",
+					"url": "http://localhost/mastercard.png"
+				},
+				{
+					"type": "image/svg+xml",
+					"url": "http://localhost/mastercard.svg"
+				}
+			],
 			"cvv": {
 				"matcher": "^\\d{0,3}$",
 				"validLength": 3
@@ -67,6 +87,16 @@
 		{
 			"name": "amex",
 			"image": "card_amex_logo",
+			"images": [
+				{
+					"type": "image/png",
+					"url": "http://localhost/amex.png"
+				},
+				{
+					"type": "image/svg+xml",
+					"url": "http://localhost/amex.svg"
+				}
+			],
 			"cvv": {
 				"matcher": "^\\d{0,4}$",
 				"validLength": 4

@@ -11,6 +11,7 @@ package com.worldpay.access.checkout.model
 data class CardBrand(
 	val name: String,
 	val image: String? = null,
+	val images: List<CardBrandImage> = emptyList(),
 	val cvv: CardValidationRule? = null,
 	val pans: List<CardValidationRule>
 )

@@ -102,7 +102,7 @@ class CVVValidatorImplTest {
     fun `given a pan that matches a brand rule and a cvv with valid length then should be completely valid`() {
         val cvvRule = CardValidationRule(null, null, null, 4)
         val panRule = CardValidationRule("^\\d{0,19}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val cvvValidatorImpl = CVVValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -113,7 +113,7 @@ class CVVValidatorImplTest {
     fun `given a pan that matches a brand rule and a cvv with less than valid length then should be partially valid`() {
         val cvvRule = CardValidationRule(null, null, null, 4)
         val panRule = CardValidationRule("^\\d{0,19}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val cvvValidatorImpl = CVVValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -124,7 +124,7 @@ class CVVValidatorImplTest {
     fun `given a pan that matches a brand rule and a cvv with more than valid length then should be completely and partially invalid`() {
         val cvvRule = CardValidationRule(null, null, null, 4)
         val panRule = CardValidationRule("^\\d{0,19}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val cvvValidatorImpl = CVVValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -135,7 +135,7 @@ class CVVValidatorImplTest {
     fun `given empty cvv defaults and pan doesn't match against any card brand pan rules then should return completely valid`() {
         val cvvRule = CardValidationRule(null, null, null, 4)
         val panRule = CardValidationRule("^4\\d{0,15}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val defaults = CardDefaults(null, null, null, null)
 
@@ -148,7 +148,7 @@ class CVVValidatorImplTest {
     fun `given no default configuration and non-empty brand configuration and pan doesn't match against any card brand pan rules then should return completely valid`() {
         val cvvRule = CardValidationRule(null, null, null, 4)
         val panRule = CardValidationRule("^4\\d{0,15}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val cvvValidator = CVVValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -199,7 +199,7 @@ class CVVValidatorImplTest {
     fun `given a pan that matches a brand rule and a cvv with length on lower bounds in brands cvv rule then should be completely valid`() {
         val cvvRule = CardValidationRule(null, 5, 6, null)
         val panRule = CardValidationRule("^\\d{0,19}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val cvvValidatorImpl = CVVValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -210,7 +210,7 @@ class CVVValidatorImplTest {
     fun `given a pan that matches a brand rule and a cvv with length on upper bounds in brands cvv rule then should be completely valid`() {
         val cvvRule = CardValidationRule(null, 5, 6, null)
         val panRule = CardValidationRule("^\\d{0,19}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val cvvValidatorImpl = CVVValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -221,7 +221,7 @@ class CVVValidatorImplTest {
     fun `given a pan that matches a brand rule and a cvv with length less than lower bounds in brands cvv rule then should be partially valid`() {
         val cvvRule = CardValidationRule(null, 5, 6, null)
         val panRule = CardValidationRule("^\\d{0,19}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val cvvValidatorImpl = CVVValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -232,7 +232,7 @@ class CVVValidatorImplTest {
     fun `given a pan that matches a brand rule and a cvv with length more than upper bounds in brands cvv rule then should not be valid`() {
         val cvvRule = CardValidationRule(null, 5, 6, null)
         val panRule = CardValidationRule("^\\d{0,19}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val cvvValidatorImpl = CVVValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -243,7 +243,7 @@ class CVVValidatorImplTest {
     fun `given a pan that doesn't match a brand rule and a cvv with valid length against the default rule then should be completely valid`() {
         val cvvRule = CardValidationRule(null, null, null, 5)
         val panRule = CardValidationRule("^4\\d{0,15}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val defaultCvvRule = CardValidationRule(null, null, null, 4)
         val defaults = CardDefaults(null, defaultCvvRule, null, null)
@@ -256,7 +256,7 @@ class CVVValidatorImplTest {
     fun `given a pan that doesn't match a brand rule and a cvv with less than valid length against the default rule then should be partially valid`() {
         val cvvRule = CardValidationRule(null, null, null, 5)
         val panRule = CardValidationRule("^4\\d{0,15}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val defaultCvvRule = CardValidationRule(null, null, null, 4)
         val defaults = CardDefaults(null, defaultCvvRule, null, null)
@@ -269,7 +269,7 @@ class CVVValidatorImplTest {
     fun `given a pan that doesn't match a brand rule and a cvv with more than valid length against the default rule then should not be valid`() {
         val cvvRule = CardValidationRule(null, null, null, 5)
         val panRule = CardValidationRule("^4\\d{0,15}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val defaultCvvRule = CardValidationRule(null, null, null, 4)
         val defaults = CardDefaults(null, defaultCvvRule, null, null)
@@ -282,7 +282,7 @@ class CVVValidatorImplTest {
     fun `given a pan that doesn't match a brand rule and a cvv with length equal to lower bounds of default cvv rule then should be completely valid`() {
         val cvvRule = CardValidationRule(null, null, null, 5)
         val panRule = CardValidationRule("^4\\d{0,15}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val defaultCvvRule = CardValidationRule(null, 7, 8, null)
         val defaults = CardDefaults(null, defaultCvvRule, null, null)
@@ -295,7 +295,7 @@ class CVVValidatorImplTest {
     fun `given a pan that doesn't match a brand rule and a cvv with length equal to upper bounds of default cvv rule then should be completely valid`() {
         val cvvRule = CardValidationRule(null, null, null, 5)
         val panRule = CardValidationRule("^4\\d{0,15}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val defaultCvvRule = CardValidationRule(null, 7, 8, null)
         val defaults = CardDefaults(null, defaultCvvRule, null, null)
@@ -308,7 +308,7 @@ class CVVValidatorImplTest {
     fun `given a pan that doesn't match a brand rule and a cvv with length less than lower bounds of default cvv rule then should be partially valid`() {
         val cvvRule = CardValidationRule(null, null, null, 5)
         val panRule = CardValidationRule("^4\\d{0,15}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val defaultCvvRule = CardValidationRule(null, 7, 8, null)
         val defaults = CardDefaults(null, defaultCvvRule, null, null)
@@ -321,7 +321,7 @@ class CVVValidatorImplTest {
     fun `given a pan that doesn't match a brand rule and a cvv with length more than upper bounds of default cvv rule then should be invalid`() {
         val cvvRule = CardValidationRule(null, null, null, 5)
         val panRule = CardValidationRule("^4\\d{0,15}$", null, null, null)
-        val cardBrand = CardBrand("visa", "", cvvRule, listOf(panRule))
+        val cardBrand = CardBrand("visa", "", emptyList(), cvvRule, listOf(panRule))
 
         val defaultCvvRule = CardValidationRule(null, 7, 8, null)
         val defaults = CardDefaults(null, defaultCvvRule, null, null)
