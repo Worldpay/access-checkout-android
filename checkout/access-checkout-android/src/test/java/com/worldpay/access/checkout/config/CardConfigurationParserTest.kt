@@ -32,10 +32,8 @@ class CardConfigurationParserTest {
     }
 
     @Test
-    fun givenAnEmptyFileShouldReturnAnEmptyCardConfiguration() {
-        val emptyFile = getTestFile("emptyFile.json")
-
-        assertEquals(CardConfiguration(), cardConfigurationParser.parse(emptyFile))
+    fun givenAnEmptyConfigShouldReturnAnEmptyCardConfiguration() {
+        assertEquals(CardConfiguration(), cardConfigurationParser.parse("".byteInputStream()))
     }
 
     @Test
@@ -48,8 +46,28 @@ class CardConfigurationParserTest {
 
     @Test
     fun givenJsonWithMissingOptionalPropertiesShouldNotThrowAccessCheckoutDeserializationError() {
+        val jsonWithMissingOptionalBrandProps = """
+            {
+                "defaults": {},
+                "brands": [
+                    {
+                        "name": "brand",
+                        "image": "brand_logo",
+                        "cvv": {
+                            "matcher": "some_matcher",
+                            "validLength": 3
+                        },
+                        "pans": [
+                            {
+                            }
+                        ]
+                    }
+                ]
+            }
+        """.trimIndent()
+
         val cardConfiguration =
-            cardConfigurationParser.parse(getTestFile("card_configuration_with_optional_fields_missing.json"))
+            cardConfigurationParser.parse(jsonWithMissingOptionalBrandProps.byteInputStream())
 
         assertEquals(1, cardConfiguration.brands!!.size)
         assertEquals(1, cardConfiguration.brands!![0].pans.size)
@@ -65,7 +83,24 @@ class CardConfigurationParserTest {
         expectedException.expect(AccessCheckoutDeserializationException::class.java)
         expectedException.expectMessage("Missing property: 'name'")
 
-        cardConfigurationParser.parse(getTestFile("card_configuration_with_required_fields_missing.json"))
+        val requiredPropsMissing = """
+            {
+                "defaults": {},
+                "brands": [
+                    {
+                        "image": "brand_logo",
+                        "cvv": {
+                            "matcher": "some_matcher",
+                            "validLength": 3
+                        },
+                        "pans": [
+                        ]
+                    }
+                ]
+            }
+        """.trimIndent()
+
+        cardConfigurationParser.parse(requiredPropsMissing.byteInputStream())
     }
 
     @Test
@@ -73,7 +108,28 @@ class CardConfigurationParserTest {
         expectedException.expect(AccessCheckoutDeserializationException::class.java)
         expectedException.expectMessage("Invalid property type: 'matcher', expected 'String'")
 
-        cardConfigurationParser.parse(getTestFile("card_configuration_with_wrong_property_type_for_string.json"))
+        val wrongPropertyType = """
+            {
+                "defaults": {},
+                "brands": [
+                    {
+                        "name": "brand",
+                        "image": "brand_logo",
+                        "cvv": {
+                            "matcher": "some_matcher",
+                            "validLength": 3
+                        },
+                        "pans": [
+                            {
+                                "matcher": 123
+                            }
+                        ]
+                    }
+                ]
+            }
+        """.trimIndent()
+
+        cardConfigurationParser.parse(wrongPropertyType.byteInputStream())
     }
 
     @Test
@@ -81,7 +137,28 @@ class CardConfigurationParserTest {
         expectedException.expect(AccessCheckoutDeserializationException::class.java)
         expectedException.expectMessage("Invalid property type: 'maxLength', expected 'Int'")
 
-        cardConfigurationParser.parse(getTestFile("card_configuration_with_wrong_property_type_for_int.json"))
+        val wrongPropertyType = """
+            {
+                "defaults": {},
+                "brands": [
+                    {
+                        "name": "brand",
+                        "image": "brand_logo",
+                        "cvv": {
+                            "matcher": "some_matcher",
+                            "validLength": 3
+                        },
+                        "pans": [
+                            {
+                                "maxLength": "123"
+                            }
+                        ]
+                    }
+                ]
+            }
+        """.trimIndent()
+
+        cardConfigurationParser.parse(wrongPropertyType.byteInputStream())
     }
 
     @Test
@@ -176,9 +253,124 @@ class CardConfigurationParserTest {
     }
 
     @Test
-    fun givenANonEmptyConfigFileShouldReturnACompleteCardConfiguration() {
+    fun givenAValidConfigShouldReturnACompleteCardConfiguration() {
+        val validCardConfiguration = """
+            {
+                "defaults": {
+                    "pan": {
+                        "matcher": "^\\d{0,19}${'$'}",
+                        "minLength": 13,
+                        "maxLength": 19
+                    },
+                    "cvv": {
+                        "matcher": "^\\d{0,4}${'$'}",
+                        "minLength": 3,
+                        "maxLength": 4
+                    },
+                    "month": {
+                        "matcher": "^0[1-9]{0,1}${'$'}|^1[0-2]{0,1}${'$'}",
+                        "minLength": 2,
+                        "maxLength": 2
+                    },
+                    "year": {
+                        "matcher": "^\\d{0,2}${'$'}",
+                        "minLength": 2,
+                        "maxLength": 2
+                    }
+                },
+                "brands": [
+                    {
+                        "name": "visa",
+                        "image": "card_visa_logo",
+                        "images": [
+                            {
+                                "type": "image/png",
+                                "url": "http://localhost/visa.png"
+                            },
+                            {
+                                "type": "image/svg+xml",
+                                "url": "http://localhost/visa.svg"
+                            }
+                        ],
+                        "cvv": {
+                            "matcher": "^\\d{0,3}${'$'}",
+                            "validLength": 3
+                        },
+                        "pans": [
+                            {
+                                "matcher": "^4\\d{0,15}",
+                                "validLength": 16,
+                                "subRules": [
+                                    {
+                                        "matcher": "^(413600|444509|444550|450603|450617|450628|450636|450640|450662|463100|476142|476143|492901|492920|492923|492928|492937|492939|492960)\\d{0,7}",
+                                        "validLength": 13
+                                    }
+                                ]
+                            }
+                        ]
+                    },
+                    {
+                        "name": "mastercard",
+                        "image": "card_mastercard_logo",
+                        "images": [
+                            {
+                                "type": "image/png",
+                                "url": "http://localhost/mastercard.png"
+                            },
+                            {
+                                "type": "image/svg+xml",
+                                "url": "http://localhost/mastercard.svg"
+                            }
+                        ],
+                        "cvv": {
+                            "matcher": "^\\d{0,3}${'$'}",
+                            "validLength": 3
+                        },
+                        "pans": [
+                            {
+                                "matcher": "^2[27]\\d{0,14}${'$'}",
+                                "validLength": 16
+                            },
+                            {
+                                "matcher": "^5\\d{0,15}${'$'}",
+                                "validLength": 16
+                            },
+                            {
+                                "matcher": "^67\\d{0,14}${'$'}",
+                                "validLength": 16
+                            }
+                        ]
+                    },
+                    {
+                        "name": "amex",
+                        "image": "card_amex_logo",
+                        "images": [
+                            {
+                                "type": "image/png",
+                                "url": "http://localhost/amex.png"
+                            },
+                            {
+                                "type": "image/svg+xml",
+                                "url": "http://localhost/amex.svg"
+                            }
+                        ],
+                        "cvv": {
+                            "matcher": "^\\d{0,4}${'$'}",
+                            "validLength": 4
+                        },
+                        "pans": [
+                            {
+                                "matcher": "^3[47]\\d{0,13}${'$'}",
+                                "validLength": 15
+                            }
+                        ]
+                    }
+                ]
+            }
+        """.trimIndent()
+
         val cardConfiguration =
-            cardConfigurationParser.parse(getTestFile("card_configuration_file.json"))
+            cardConfigurationParser.parse(validCardConfiguration.byteInputStream())
 
         assertNotNull(cardConfiguration.defaults?.pan)
         assertNotNull(cardConfiguration.defaults?.cvv)
@@ -206,11 +398,11 @@ class CardConfigurationParserTest {
         assertEquals("visa", visa!!.name)
         assertEquals("card_visa_logo", visa.image)
 
-        assertEquals(2, visa.images.size)
-        val visaCardBrandImage1 = visa.images[0]
+        assertEquals(2, visa.images?.size)
+        val visaCardBrandImage1 = visa.images!![0]
         assertEquals("image/png", visaCardBrandImage1.type)
         assertEquals("http://localhost/visa.png", visaCardBrandImage1.url)
-        val visaCardBrandImage2 = visa.images[1]
+        val visaCardBrandImage2 = visa.images!![1]
         assertEquals("image/svg+xml", visaCardBrandImage2.type)
         assertEquals("http://localhost/visa.svg", visaCardBrandImage2.url)
 
@@ -234,11 +426,11 @@ class CardConfigurationParserTest {
         assertEquals("mastercard", mastercard!!.name)
         assertEquals("card_mastercard_logo", mastercard.image)
 
-        assertEquals(2, mastercard.images.size)
-        val mastercardCardBrandImage1 = mastercard.images[0]
+        assertEquals(2, mastercard.images?.size)
+        val mastercardCardBrandImage1 = mastercard.images!![0]
         assertEquals("image/png", mastercardCardBrandImage1.type)
         assertEquals("http://localhost/mastercard.png", mastercardCardBrandImage1.url)
-        val mastercardCardBrandImage2 = mastercard.images[1]
+        val mastercardCardBrandImage2 = mastercard.images!![1]
         assertEquals("image/svg+xml", mastercardCardBrandImage2.type)
         assertEquals("http://localhost/mastercard.svg", mastercardCardBrandImage2.url)
 
@@ -262,11 +454,11 @@ class CardConfigurationParserTest {
         assertEquals("amex", amex!!.name)
         assertEquals("card_amex_logo", amex.image)
 
-        assertEquals(2, amex.images.size)
-        val amexCardBrandImage1 = amex.images[0]
+        assertEquals(2, amex.images?.size)
+        val amexCardBrandImage1 = amex.images!![0]
         assertEquals("image/png", amexCardBrandImage1.type)
         assertEquals("http://localhost/amex.png", amexCardBrandImage1.url)
-        val amexCardBrandImage2 = amex.images[1]
+        val amexCardBrandImage2 = amex.images!![1]
         assertEquals("image/svg+xml", amexCardBrandImage2.type)
         assertEquals("http://localhost/amex.svg", amexCardBrandImage2.url)
 
@@ -278,7 +470,4 @@ class CardConfigurationParserTest {
         assertEquals("^3[47]\\d{0,13}$", amexPan.matcher)
         assertEquals(15, amexPan.validLength)
     }
-
-    @Suppress("RECEIVER_NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
-    private fun getTestFile(fileName: String) = javaClass.classLoader.getResourceAsStream(fileName)
 }

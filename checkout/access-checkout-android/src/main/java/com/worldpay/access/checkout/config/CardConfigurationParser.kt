@@ -58,11 +58,11 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
             for (i in 0 until it.length()) {
                 val brandRoot = it.getJSONObject(i)
                 val name = toStringProperty(brandRoot, NAME_FIELD)
-                val image = toStringProperty(brandRoot, IMAGE_FIELD)
-                val images = fetchArray(brandRoot, IMAGES_FIELD)
+                val image = toOptionalStringProperty(brandRoot, IMAGE_FIELD)
+                val images = fetchOptionalArray(brandRoot, IMAGES_FIELD)
                 val brandImages = parseBrandImages(images)
-                val cvv = fetchObject(brandRoot, BRANDED_CVV_FIELD)
-                val cvvConfig = parseCardValidationRule(cvv)
+                val cvv = fetchOptionalObject(brandRoot, BRANDED_CVV_FIELD)
+                val cvvConfig = cvv?.let { cvvRule -> parseCardValidationRule(cvvRule) }
                 val pans = fetchArray(brandRoot, PANS_FIELD)
                 val panList = mutableListOf<CardValidationRule>()
                 for (panRuleIndex in 0 until pans.length()) {
@@ -75,15 +75,17 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         }
     }
 
-    private fun parseBrandImages(images: JSONArray): List<CardBrandImage> {
-        val brandImageList = mutableListOf<CardBrandImage>()
-        for (brandImageIndex in 0 until images.length()) {
-            val brandImage = images.getJSONObject(brandImageIndex)
-            val type = toStringProperty(brandImage, CARD_IMAGE_TYPE_FIELD)
-            val url = toStringProperty(brandImage, CARD_IMAGE_URL_FIELD)
-            brandImageList.add(CardBrandImage(type, url))
-        }
-        return brandImageList
+    private fun parseBrandImages(images: JSONArray?): List<CardBrandImage> {
+        return images?.let {
+            val brandImageList = mutableListOf<CardBrandImage>()
+            for (brandImageIndex in 0 until images.length()) {
+                val brandImage = images.getJSONObject(brandImageIndex)
+                val type = toStringProperty(brandImage, CARD_IMAGE_TYPE_FIELD)
+                val url = toStringProperty(brandImage, CARD_IMAGE_URL_FIELD)
+                brandImageList.add(CardBrandImage(type, url))
+            }
+            brandImageList
+        } ?: emptyList()
     }
 
     private fun parseDefaultConfig(jsonObject: JSONObject): CardDefaults? {
