@@ -230,7 +230,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenPANHasBeenUpdatedToCompletelyValidThenCardListenerIsNotifiedOfResult() {
         val updatedPan = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val panValidationResult = ValidationResult(partial = false, complete = true)
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
@@ -247,7 +247,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenPANHasBeenUpdatedToPartiallyValidThenCardListenerIsNotifiedOfResult() {
         val updatedPan = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val panValidationResult = ValidationResult(partial = true, complete = false)
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
@@ -264,7 +264,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenPANHasBeenUpdatedToInvalidThenCardListenerIsNotifiedOfResult() {
         val updatedPan = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val panValidationResult = ValidationResult(partial = false, complete = false)
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
@@ -281,7 +281,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenPANHasBeenUpdatedToPartiallyAndCompletelyValidThenCardListenerIsNotifiedOfResult() {
         val updatedPan = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val panValidationResult = ValidationResult(partial = true, complete = true)
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
@@ -301,7 +301,7 @@ class AccessCheckoutCardTest {
         card.cardValidator = cardValidator
 
         val updatedPan = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val panValidationResult = ValidationResult(partial = true, complete = true)
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
@@ -351,7 +351,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenPANHasEndedUpdateThenCardListenerIsNotifiedOfResult() {
         val updatedPan = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val panValidationResult = ValidationResult(partial = false, complete = true)
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validatePAN(updatedPan)).willReturn(Pair(panValidationResult, cardBrand))
@@ -394,7 +394,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenCVVHasBeenUpdatedToCompletelyValidThenCardListenerIsNotifiedOfResult() {
         val updatedCVV = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val cvvValidationResult = ValidationResult(partial = false, complete = true)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 
@@ -407,7 +407,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenCVVHasBeenUpdatedToPartiallyValidThenCardListenerIsNotifiedOfResult() {
         val updatedCVV = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val cvvValidationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 
@@ -420,7 +420,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenCVVHasBeenUpdatedToInvalidThenCardListenerIsNotifiedOfResult() {
         val updatedCVV = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 
@@ -433,7 +433,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenCVVHasBeenUpdatedToPartiallyAndCompletelyValidThenCardListenerIsNotifiedOfResult() {
         val updatedCVV = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val cvvValidationResult = ValidationResult(partial = true, complete = true)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 
@@ -449,7 +449,7 @@ class AccessCheckoutCardTest {
         card.cardValidator = cardValidator
 
         val updatedCVV = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val cvvValidationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 
@@ -488,7 +488,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenCVVHasEndedUpdateThenCardListenerIsNotifiedOfResult() {
         val updatedCVV = "1234"
-        val cardBrand = CardBrand("test", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         val cvvValidationResult = ValidationResult(partial = false, complete = false)
         given(cardValidator.validateCVV(updatedCVV, pan)).willReturn(Pair(cvvValidationResult, cardBrand))
 

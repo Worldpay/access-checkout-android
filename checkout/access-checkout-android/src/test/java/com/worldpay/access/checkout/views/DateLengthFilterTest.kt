@@ -110,6 +110,6 @@ class DateLengthFilterTest {
 
     @Test
     fun shouldNotSelectRuleFromCardBrand() {
-        assertNull(dateLengthFilter.ruleSelectorForCardBrand(CardBrand("test", "test", emptyList(), null, emptyList()), SpannableStringBuilder("01")))
+        assertNull(dateLengthFilter.ruleSelectorForCardBrand(CardBrand("test", emptyList(), null, emptyList()), SpannableStringBuilder("01")))
     }
 }

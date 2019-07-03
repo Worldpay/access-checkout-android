@@ -21,7 +21,6 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
 
         // Brand fields
         private const val NAME_FIELD = "name"
-        private const val IMAGE_FIELD = "image"
         private const val IMAGES_FIELD = "images"
         private const val CARD_IMAGE_TYPE_FIELD = "type"
         private const val CARD_IMAGE_URL_FIELD = "url"
@@ -58,7 +57,6 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
             for (i in 0 until it.length()) {
                 val brandRoot = it.getJSONObject(i)
                 val name = toStringProperty(brandRoot, NAME_FIELD)
-                val image = toOptionalStringProperty(brandRoot, IMAGE_FIELD)
                 val images = fetchOptionalArray(brandRoot, IMAGES_FIELD)
                 val brandImages = parseBrandImages(images)
                 val cvv = fetchOptionalObject(brandRoot, BRANDED_CVV_FIELD)
@@ -69,7 +67,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
                     val panValidationRule = parseCardValidationRule(pans.getJSONObject(panRuleIndex))
                     panList.add(panValidationRule)
                 }
-                brandsList.add(CardBrand(name, image, brandImages, cvvConfig, panList))
+                brandsList.add(CardBrand(name, brandImages, cvvConfig, panList))
             }
             brandsList
         }

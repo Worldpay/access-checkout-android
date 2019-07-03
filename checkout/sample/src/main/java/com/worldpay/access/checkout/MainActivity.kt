@@ -103,7 +103,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
     }
 
     override fun onUpdateCardBrand(cardBrand: CardBrand?) {
-        panView.applyCardLogo(cardBrand?.image ?: "card_unknown_logo")
+//        panView.applyCardLogo(cardBrand?.image ?: "card_unknown_logo")
     }
 
     private fun fieldsToggle(enableFields: Boolean) {

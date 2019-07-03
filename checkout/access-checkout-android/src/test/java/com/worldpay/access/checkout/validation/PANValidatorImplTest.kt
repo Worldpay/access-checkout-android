@@ -109,7 +109,7 @@ class PANValidatorImplTest {
     @Test
     fun `given no card number entered and only brand rules present then should be partially valid`() {
         val brandRule = CardValidationRule("^4\\d{0,15}$", null, null, 16)
-        val cardBrand = CardBrand("some brand", "", emptyList(), null, listOf(brandRule))
+        val cardBrand = CardBrand("some brand", emptyList(), null, listOf(brandRule))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -122,7 +122,7 @@ class PANValidatorImplTest {
     fun `given no card number entered and both card defaults and brand rules present then should be partially valid`() {
         val defaults = CardDefaults(panDefaults, null, null, null)
         val brandRule = CardValidationRule("^4\\d{0,15}$", null, null, 16)
-        val cardBrand = CardBrand("some brand", "", emptyList(), null, listOf(brandRule))
+        val cardBrand = CardBrand("some brand", emptyList(), null, listOf(brandRule))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand), defaults))
 
@@ -214,7 +214,7 @@ class PANValidatorImplTest {
 
     @Test
     fun `given card brand with no pan rule then should be completely valid`() {
-        val cardBrand = CardBrand("some brand", "", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("some brand", emptyList(), null, emptyList())
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -226,7 +226,7 @@ class PANValidatorImplTest {
     @Test
     fun `given a luhn-invalid identified card and single brand rules config then should only be partially valid`() {
         val brandRule = CardValidationRule("^\\d{0,4}$", null, null, null)
-        val cardBrand = CardBrand("some brand", "", emptyList(), null, listOf(brandRule))
+        val cardBrand = CardBrand("some brand", emptyList(), null, listOf(brandRule))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -239,8 +239,8 @@ class PANValidatorImplTest {
     fun `given luhn-invalid identified cards and multiple brand rules config then should only be partially valid`() {
         val brandRule1 = CardValidationRule("^4\\d{0,4}$", null, null, null)
         val brandRule2 = CardValidationRule("^5\\d{0,4}$", null, null, null)
-        val cardBrand1 = CardBrand("some brand 1", "", emptyList(), null, listOf(brandRule1))
-        val cardBrand2 = CardBrand("some brand 2", "", emptyList(), null, listOf(brandRule2))
+        val cardBrand1 = CardBrand("some brand 1", emptyList(), null, listOf(brandRule1))
+        val cardBrand2 = CardBrand("some brand 2", emptyList(), null, listOf(brandRule2))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand1, cardBrand2)))
 
@@ -257,8 +257,8 @@ class PANValidatorImplTest {
     fun `given luhn-valid identified cards and multiple brand rules config then should be completely valid`() {
         val brandRule1 = CardValidationRule("^9\\d{0,3}$", null, null, null)
         val brandRule2 = CardValidationRule("^8\\d{0,3}$", null, null, null)
-        val cardBrand1 = CardBrand("some brand 1", "", emptyList(), null, listOf(brandRule1))
-        val cardBrand2 = CardBrand("some brand 2", "", emptyList(), null, listOf(brandRule2))
+        val cardBrand1 = CardBrand("some brand 1", emptyList(), null, listOf(brandRule1))
+        val cardBrand2 = CardBrand("some brand 2", emptyList(), null, listOf(brandRule2))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand1, cardBrand2)))
 
@@ -275,8 +275,8 @@ class PANValidatorImplTest {
     fun `given luhn-invalid unidentified card should only be partially valid`() {
         val brandRule1 = CardValidationRule("^4\\d{0,4}$", null, null, null)
         val brandRule2 = CardValidationRule("^5\\d{0,4}$", null, null, null)
-        val cardBrand1 = CardBrand("some brand 1", "", emptyList(), null, listOf(brandRule1))
-        val cardBrand2 = CardBrand("some brand 2", "", emptyList(), null, listOf(brandRule2))
+        val cardBrand1 = CardBrand("some brand 1", emptyList(), null, listOf(brandRule1))
+        val cardBrand2 = CardBrand("some brand 2", emptyList(), null, listOf(brandRule2))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand1, cardBrand2)))
 
@@ -289,8 +289,8 @@ class PANValidatorImplTest {
     fun `given luhn-valid unidentified card should only be completely valid`() {
         val brandRule1 = CardValidationRule("^4\\d{0,4}$", null, null, null)
         val brandRule2 = CardValidationRule("^5\\d{0,4}$", null, null, null)
-        val cardBrand1 = CardBrand("some brand 1", "", emptyList(), null, listOf(brandRule1))
-        val cardBrand2 = CardBrand("some brand 2", "", emptyList(), null, listOf(brandRule2))
+        val cardBrand1 = CardBrand("some brand 1", emptyList(), null, listOf(brandRule1))
+        val cardBrand2 = CardBrand("some brand 2", emptyList(), null, listOf(brandRule2))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand1, cardBrand2)))
 
@@ -302,7 +302,7 @@ class PANValidatorImplTest {
     @Test
     fun `given amex card then should be completely valid`() {
         val amexRule = CardValidationRule("^3[47]\\d{0,13}$", null, null, null)
-        val amex = CardBrand("amex", "", emptyList(), null, listOf(amexRule))
+        val amex = CardBrand("amex", emptyList(), null, listOf(amexRule))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(amex)))
 
@@ -314,7 +314,7 @@ class PANValidatorImplTest {
     @Test
     fun `given amex card too long to match for brand validation rule and no defaults then should be completely valid`() {
         val amexRule = CardValidationRule("^3[47]\\d{0,13}$", null, null, 15)
-        val amex = CardBrand("amex", "", emptyList(), null, listOf(amexRule))
+        val amex = CardBrand("amex", emptyList(), null, listOf(amexRule))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(amex)))
 
@@ -356,7 +356,7 @@ class PANValidatorImplTest {
     fun `given a luhn-invalid identified card with correct size should be completely invalid`() {
         val defaults = CardDefaults(panDefaults, null, null, null)
         val brandRule = CardValidationRule("^4\\d{0,15}", null, null, 16)
-        val cardBrand = CardBrand("some brand", "", emptyList(), null, listOf(brandRule))
+        val cardBrand = CardBrand("some brand", emptyList(), null, listOf(brandRule))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand), defaults))
 
@@ -370,7 +370,7 @@ class PANValidatorImplTest {
         val defaults = CardDefaults(null, null, null, null)
         val subRule = CardValidationRule("^413600\\d{0,7}", null, null, 13)
         val brandRule = CardValidationRule("^4\\d{0,15}", null, null, 16, listOf(subRule))
-        val cardBrand = CardBrand("some brand", "", emptyList(), null, listOf(brandRule))
+        val cardBrand = CardBrand("some brand", emptyList(), null, listOf(brandRule))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand), defaults))
 
@@ -405,8 +405,8 @@ class PANValidatorImplTest {
         val brandRule1 = CardValidationRule("^2\\d{0,4}$", null, null, null)
         val brandRule2 = CardValidationRule("^4\\d{0,4}$", null, null, null)
         val defaultRule = CardValidationRule(null, null, null, 5)
-        val cardBrand1 = CardBrand("some brand 1", "", emptyList(), null, listOf(brandRule1))
-        val cardBrand2 = CardBrand("some brand 2", "", emptyList(), null, listOf(brandRule2))
+        val cardBrand1 = CardBrand("some brand 1", emptyList(), null, listOf(brandRule1))
+        val cardBrand2 = CardBrand("some brand 2", emptyList(), null, listOf(brandRule2))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand1, cardBrand2), CardDefaults(defaultRule, null, null, null)))
 
@@ -428,8 +428,8 @@ class PANValidatorImplTest {
         val brandRule1 = CardValidationRule("^2\\d{0,4}$", null, null, null)
         val brandRule2 = CardValidationRule("^4\\d{0,4}$", null, null, null)
         val defaultRule = CardValidationRule(null, 3, 5, null)
-        val cardBrand1 = CardBrand("some brand 1", "", emptyList(), null, listOf(brandRule1))
-        val cardBrand2 = CardBrand("some brand 2", "", emptyList(), null, listOf(brandRule2))
+        val cardBrand1 = CardBrand("some brand 1", emptyList(), null, listOf(brandRule1))
+        val cardBrand2 = CardBrand("some brand 2", emptyList(), null, listOf(brandRule2))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand1, cardBrand2), CardDefaults(defaultRule, null, null, null)))
 
@@ -459,8 +459,8 @@ class PANValidatorImplTest {
         val brandRule1 = CardValidationRule("^2\\d{0,4}$", null, null, null)
         val brandRule2 = CardValidationRule("^4\\d{0,4}$", null, null, null)
         val defaultRule = CardValidationRule(null, 3, null, null)
-        val cardBrand1 = CardBrand("some brand 1", "", emptyList(), null, listOf(brandRule1))
-        val cardBrand2 = CardBrand("some brand 2", "", emptyList(), null, listOf(brandRule2))
+        val cardBrand1 = CardBrand("some brand 1", emptyList(), null, listOf(brandRule1))
+        val cardBrand2 = CardBrand("some brand 2", emptyList(), null, listOf(brandRule2))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand1, cardBrand2), CardDefaults(defaultRule, null, null, null)))
 
@@ -482,8 +482,8 @@ class PANValidatorImplTest {
         val brandRule1 = CardValidationRule("^2\\d{0,4}$", null, null, null)
         val brandRule2 = CardValidationRule("^4\\d{0,4}$", null, null, null)
         val defaultRule = CardValidationRule(null, null, 3, null)
-        val cardBrand1 = CardBrand("some brand 1", "", emptyList(), null, listOf(brandRule1))
-        val cardBrand2 = CardBrand("some brand 2", "", emptyList(), null, listOf(brandRule2))
+        val cardBrand1 = CardBrand("some brand 1", emptyList(), null, listOf(brandRule1))
+        val cardBrand2 = CardBrand("some brand 2", emptyList(), null, listOf(brandRule2))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand1, cardBrand2), CardDefaults(defaultRule, null, null, null)))
 
@@ -505,8 +505,8 @@ class PANValidatorImplTest {
         val brandRule1 = CardValidationRule("^2\\d{0,4}$", null, null, null)
         val brandRule2 = CardValidationRule("^4\\d{0,4}$", null, null, null)
         val defaultRule = CardValidationRule("^0\\d{0,5}$", null, null, null)
-        val cardBrand1 = CardBrand("some brand 1", "", emptyList(), null, listOf(brandRule1))
-        val cardBrand2 = CardBrand("some brand 2", "", emptyList(), null, listOf(brandRule2))
+        val cardBrand1 = CardBrand("some brand 1", emptyList(), null, listOf(brandRule1))
+        val cardBrand2 = CardBrand("some brand 2", emptyList(), null, listOf(brandRule2))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand1, cardBrand2), CardDefaults(defaultRule, null, null, null)))
 
@@ -518,7 +518,7 @@ class PANValidatorImplTest {
     @Test
     fun `given a luhn-valid identified card with less than valid length then should be partially valid`() {
         val brandRule = CardValidationRule("^4\\d{0,15}", null, null, 17)
-        val cardBrand = CardBrand("some brand", "", emptyList(), null, listOf(brandRule))
+        val cardBrand = CardBrand("some brand", emptyList(), null, listOf(brandRule))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand)))
 
@@ -531,7 +531,7 @@ class PANValidatorImplTest {
     fun `given a luhn-valid unidentified card with min length size should be completely valid`() {
         val defaults = CardDefaults(panDefaults, null, null, null)
         val brandRule = CardValidationRule("^4\\d{0,15}", null, null, 16)
-        val cardBrand = CardBrand("some brand", "", emptyList(), null, listOf(brandRule))
+        val cardBrand = CardBrand("some brand", emptyList(), null, listOf(brandRule))
 
         val panValidator = PANValidatorImpl(CardConfiguration(listOf(cardBrand), defaults))
 

@@ -52,11 +52,6 @@ class CardConfigurationParserTest {
                 "brands": [
                     {
                         "name": "brand",
-                        "image": "brand_logo",
-                        "cvv": {
-                            "matcher": "some_matcher",
-                            "validLength": 3
-                        },
                         "pans": [
                             {
                             }
@@ -71,6 +66,7 @@ class CardConfigurationParserTest {
 
         assertEquals(1, cardConfiguration.brands!!.size)
         assertEquals(1, cardConfiguration.brands!![0].pans.size)
+        assertNull(cardConfiguration.brands!![0].cvv)
         assertNull(cardConfiguration.brands!![0].pans[0].matcher)
         assertNull(cardConfiguration.brands!![0].pans[0].maxLength)
         assertNull(cardConfiguration.brands!![0].pans[0].minLength)
@@ -281,7 +277,6 @@ class CardConfigurationParserTest {
                 "brands": [
                     {
                         "name": "visa",
-                        "image": "card_visa_logo",
                         "images": [
                             {
                                 "type": "image/png",
@@ -311,7 +306,6 @@ class CardConfigurationParserTest {
                     },
                     {
                         "name": "mastercard",
-                        "image": "card_mastercard_logo",
                         "images": [
                             {
                                 "type": "image/png",
@@ -343,7 +337,6 @@ class CardConfigurationParserTest {
                     },
                     {
                         "name": "amex",
-                        "image": "card_amex_logo",
                         "images": [
                             {
                                 "type": "image/png",
@@ -396,7 +389,6 @@ class CardConfigurationParserTest {
 
         val visa = cardConfiguration.brands?.get(0)
         assertEquals("visa", visa!!.name)
-        assertEquals("card_visa_logo", visa.image)
 
         assertEquals(2, visa.images?.size)
         val visaCardBrandImage1 = visa.images!![0]
@@ -424,7 +416,6 @@ class CardConfigurationParserTest {
 
         val mastercard = cardConfiguration.brands?.get(1)
         assertEquals("mastercard", mastercard!!.name)
-        assertEquals("card_mastercard_logo", mastercard.image)
 
         assertEquals(2, mastercard.images?.size)
         val mastercardCardBrandImage1 = mastercard.images!![0]
@@ -452,7 +443,6 @@ class CardConfigurationParserTest {
 
         val amex = cardConfiguration.brands?.get(2)
         assertEquals("amex", amex!!.name)
-        assertEquals("card_amex_logo", amex.image)
 
         assertEquals(2, amex.images?.size)
         val amexCardBrandImage1 = amex.images!![0]

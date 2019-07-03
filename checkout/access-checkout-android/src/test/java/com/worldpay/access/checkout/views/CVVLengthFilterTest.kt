@@ -40,7 +40,7 @@ class CVVLengthFilterTest {
     fun givenAnIdentifiedCardAndMaximumCvvLengthIsEnteredThenShouldNotFilterBasedOnInput() {
         val currentCVV = "12"
         val cvvRule = CardValidationRule(null, null, null, 3)
-        val cardBrand = CardBrand("visa", "test", emptyList(), cvvRule, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), cvvRule, emptyList())
         given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), cardBrand))
 
         val filtered = cvvLengthFilter.filter("3", 0, 1, SpannableStringBuilder(currentCVV), 2, 2)
@@ -52,7 +52,7 @@ class CVVLengthFilterTest {
     fun givenAnIdentifiedCardAndCvvLengthIsStillUnderMaximumThenShouldNotFilter() {
         val currentCVV = "1"
         val cvvRule = CardValidationRule(null, null, null, 3)
-        val cardBrand = CardBrand("visa", "test", emptyList(), cvvRule, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), cvvRule, emptyList())
         given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), cardBrand))
 
         val filtered = cvvLengthFilter.filter("2", 0, 1, SpannableStringBuilder(currentCVV), 1, 1)
@@ -64,7 +64,7 @@ class CVVLengthFilterTest {
     fun givenAnIdentifiedCardAndMaximumCvvLengthIsExceededThenShouldFilterBasedOnInput() {
         val currentCVV = "123"
         val cvvRule = CardValidationRule(null, null, null, 3)
-        val cardBrand = CardBrand("visa", "test", emptyList(), cvvRule, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), cvvRule, emptyList())
         given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), cardBrand))
 
         val filtered = cvvLengthFilter.filter("4", 0, 1, SpannableStringBuilder(currentCVV), 3, 3)
@@ -75,7 +75,7 @@ class CVVLengthFilterTest {
     @Test
     fun givenAnIdentifiedCardButNoCvvRuleAndMaximumCvvLengthIsEnteredForDefaultCVVRuleThenShouldNotFilterBasedOnInput() {
         val currentCVV = "12"
-        val cardBrand = CardBrand("visa", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), null, emptyList())
         val cvvRule = CardValidationRule(null, null, 3, null)
         given(cardConfiguration.defaults).willReturn(CardDefaults(null, cvvRule, null, null))
         given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), cardBrand))
@@ -88,7 +88,7 @@ class CVVLengthFilterTest {
     @Test
     fun givenAnIdentifiedCardButNoCvvRuleAndCvvLengthIsStillUnderMaximumForDefaultCVVRuleThenShouldNotFilterBasedOnInput() {
         val currentCVV = "1"
-        val cardBrand = CardBrand("visa", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), null, emptyList())
         val cvvRule = CardValidationRule(null, null, 3, null)
         given(cardConfiguration.defaults).willReturn(CardDefaults(null, cvvRule, null, null))
         given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), cardBrand))
@@ -101,7 +101,7 @@ class CVVLengthFilterTest {
     @Test
     fun givenAnIdentifiedCardButNoCvvRuleAndMaximumCvvLengthIsExceededForDefaultCVVRuleThenShouldNotFilterBasedOnInput() {
         val currentCVV = "123"
-        val cardBrand = CardBrand("visa", "test", emptyList(), null, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), null, emptyList())
         val cvvRule = CardValidationRule(null, null, 3, null)
         given(cardConfiguration.defaults).willReturn(CardDefaults(null, cvvRule, null, null))
         given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), cardBrand))
@@ -166,7 +166,7 @@ class CVVLengthFilterTest {
     fun givenAnIdentifiedCardAndInputDoesNotExceedMaximumCVVThenShouldNotFilterAndUseCachedLengthInputToValidate() {
         val currentCVV = "12"
         val cvvRule = CardValidationRule(null, null, null, 3)
-        val cardBrand = CardBrand("visa", "test", emptyList(), cvvRule, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), cvvRule, emptyList())
         given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), cardBrand))
 
         // Add a '0' to existing string
