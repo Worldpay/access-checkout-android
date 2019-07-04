@@ -27,11 +27,11 @@
 			"images": [
 				{
 					"type": "image/png",
-					"url": "{{request.requestLine.baseUrl}}/visa.png"
+					"url": "{{request.requestLine.baseUrl}}/access-checkout/assets/visa.png"
 				},
 				{
 					"type": "image/svg+xml",
-					"url": "{{request.requestLine.baseUrl}}/visa.svg"
+					"url": "{{request.requestLine.baseUrl}}/access-checkout/assets/visa.svg"
 				}
 			],
 			"cvv": {
@@ -56,11 +56,11 @@
 			"images": [
 				{
 					"type": "image/png",
-					"url": "{{request.requestLine.baseUrl}}/mastercard.png"
+					"url": "{{request.requestLine.baseUrl}}/access-checkout/assets/mastercard.png"
 				},
 				{
 					"type": "image/svg+xml",
-					"url": "{{request.requestLine.baseUrl}}/mastercard.svg"
+					"url": "{{request.requestLine.baseUrl}}/access-checkout/assets/mastercard.svg"
 				}
 			],
 			"cvv": {
@@ -87,11 +87,11 @@
 			"images": [
 				{
 					"type": "image/png",
-					"url": "{{request.requestLine.baseUrl}}/amex.png"
+					"url": "{{request.requestLine.baseUrl}}/access-checkout/assets/amex.png"
 				},
 				{
 					"type": "image/svg+xml",
-					"url": "{{request.requestLine.baseUrl}}/amex.svg"
+					"url": "{{request.requestLine.baseUrl}}/access-checkout/assets/amex.svg"
 				}
 			],
 			"cvv": {
