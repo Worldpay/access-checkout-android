@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout
 
-import android.content.Context
 import android.graphics.drawable.PictureDrawable
 import android.view.View
 import android.widget.ImageView
@@ -9,8 +8,6 @@ import com.caverock.androidsvg.SVGParseException
 import com.worldpay.access.checkout.model.CardBrand
 import okhttp3.*
 import java.io.IOException
-
-
 
 
 object ImageUtils {
@@ -39,7 +36,8 @@ object ImageUtils {
 
                         try {
                             val svg = SVG.getFromInputStream(stream)
-                            val drawable = PictureDrawable(svg.renderToPicture())
+                            val drawable =
+                                PictureDrawable(svg.renderToPicture(target.measuredWidth, target.measuredHeight))
                             activity.runOnUiThread {
                                 target.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                                 target.setImageDrawable(drawable)
