@@ -29,6 +29,11 @@ internal object CardConfigurationClientFactory {
 object CardConfigurationFactory {
     @JvmStatic
     @JvmOverloads
+    /**
+     * @param card the `Card` instance to apply the `CardConfiguration` to
+     * @param baseUrl the base URL for the hosted card configuration
+     * @param client (optional) the `CardConfigurationClient`
+     */
     fun getRemoteCardConfiguration(
         card: Card,
         baseUrl: String,
