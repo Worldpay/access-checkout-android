@@ -125,7 +125,6 @@ android {
                 includeNoLocationClasses = true
             }
         }
-
     }
 
 }

@@ -237,6 +237,7 @@ object MockServer {
                     aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "image/svg+xml")
+                        .withHeader("Cache-Control", "max-age=300")
                         .withBody(getAsset(context, it))))
         }
 

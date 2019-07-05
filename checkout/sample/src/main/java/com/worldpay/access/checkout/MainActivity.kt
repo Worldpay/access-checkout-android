@@ -105,7 +105,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
     override fun onUpdateCardBrand(cardBrand: CardBrand?) {
         val logoImageView = panView.mImageView
 
-        ImageUtils.applyCardLogo(this, cardBrand, logoImageView)
+        SVGImageLoader.fetchAndApplyCardLogo(this, cardBrand, logoImageView)
     }
 
     private fun fieldsToggle(enableFields: Boolean) {
