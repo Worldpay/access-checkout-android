@@ -1,31 +1,31 @@
 package com.worldpay.access.checkout
 
-import android.app.Activity
 import android.graphics.drawable.PictureDrawable
 import android.view.View
 import android.widget.ImageView
-import com.caverock.androidsvg.SVG
-import com.caverock.androidsvg.SVGParseException
-import com.worldpay.access.checkout.logging.LoggingUtils
+import com.worldpay.access.checkout.logging.AccessCheckoutLogger
+import com.worldpay.access.checkout.logging.Logger
 import java.io.InputStream
+import java.lang.Exception
 
 interface SVGImageRenderer {
-    fun renderImage(inputStream: InputStream)
+    fun renderImage(inputStream: InputStream, targetView: ImageView)
 }
 
-internal class SVGImageRendererImpl(private val activity: Activity, private val targetView: ImageView): SVGImageRenderer {
+class SVGImageRendererImpl(private val runOnUiThreadFunc: (Runnable) -> Unit,
+                           private val logger: Logger = AccessCheckoutLogger(),
+                           private val svgWrapper: SVGWrapper = SVGWrapper.svgWrapper): SVGImageRenderer {
 
-    override fun renderImage(inputStream: InputStream) {
+    override fun renderImage(inputStream: InputStream, targetView: ImageView) {
         try {
-            val svg = SVG.getFromInputStream(inputStream)
+            val svg = svgWrapper.getSVGFromInputStream(inputStream)
             val drawable = PictureDrawable(svg.renderToPicture(targetView.measuredWidth, targetView.measuredHeight))
-            activity.runOnUiThread {
+            runOnUiThreadFunc(Runnable {
                 targetView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 targetView.setImageDrawable(drawable)
-            }
-            inputStream.close()
-        } catch (e: SVGParseException) {
-            LoggingUtils.debugLog("SVGImageLoader", "Failed to parse SVG image: ${e.message}")
+            })
+        } catch (e: Exception) {
+            logger.errorLog("SVGImageRendererImpl", "Failed to parse SVG image: ${e.message}")
         }
     }
 }

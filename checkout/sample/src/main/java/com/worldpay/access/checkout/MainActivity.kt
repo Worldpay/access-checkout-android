@@ -8,7 +8,7 @@ import android.widget.Toast
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
-import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
+import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
@@ -104,8 +104,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
 
     override fun onUpdateCardBrand(cardBrand: CardBrand?) {
         val logoImageView = panView.mImageView
-
-        SVGImageLoader.fetchAndApplyCardLogo(this, cardBrand, logoImageView)
+        SVGImageLoader.getInstance(this::runOnUiThread, cacheDir).fetchAndApplyCardLogo(cardBrand, logoImageView)
     }
 
     private fun fieldsToggle(enableFields: Boolean) {

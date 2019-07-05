@@ -1,35 +1,68 @@
 package com.worldpay.access.checkout
 
 import android.app.Activity
+import android.graphics.Picture
+import android.graphics.drawable.PictureDrawable
+import android.view.View
 import android.widget.ImageView
-import org.junit.Assert.*
+import com.caverock.androidsvg.SVG
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.worldpay.access.checkout.logging.Logger
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
+import org.mockito.ArgumentMatchers
+import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.mock
 import org.mockito.Mockito
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
+import java.io.InputStream
 
-@RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class SVGImageRendererImplTest {
 
     private lateinit var svgImageRenderer: SVGImageRenderer
     private lateinit var activity: Activity
     private lateinit var target: ImageView
+    private lateinit var logger: Logger
+    private lateinit var svgWrapper: SVGWrapper
+    private lateinit var runOnUiThreadFun: (Runnable) -> Unit
 
     @Before
     fun setup() {
         activity = Mockito.mock(Activity::class.java)
         target = Mockito.mock(ImageView::class.java)
-        svgImageRenderer = SVGImageRendererImpl(activity, target)
+        logger = Mockito.mock(Logger::class.java)
+        svgWrapper = Mockito.mock(SVGWrapper::class.java)
+        runOnUiThreadFun = Mockito.mock(Function1::class.java as Class<Function1<Runnable, Unit>>)
+        svgImageRenderer = SVGImageRendererImpl(runOnUiThreadFun, logger, svgWrapper)
     }
 
     @Test
     fun shouldRenderImageIntoTargetView() {
-        val inputStream = javaClass.classLoader.getResourceAsStream("test_logo.svg")
+        val inputStream = Mockito.mock(InputStream::class.java)
+        val svg = Mockito.mock(SVG::class.java)
 
-        svgImageRenderer.renderImage(inputStream)
+        given(target.measuredWidth).willReturn(1)
+        given(target.measuredHeight).willReturn(1)
+        given(svgWrapper.getSVGFromInputStream(inputStream)).willReturn(svg)
+        given(svg.renderToPicture(1, 1)).willReturn(Mockito.mock(Picture::class.java))
+
+        svgImageRenderer.renderImage(inputStream!!, target)
+
+        val argumentCaptor = argumentCaptor<Runnable>()
+        Mockito.verify(runOnUiThreadFun).invoke(argumentCaptor.capture())
+
+        argumentCaptor.firstValue.run()
+
+        Mockito.verify(target).setImageDrawable(ArgumentMatchers.any(PictureDrawable::class.java))
+        Mockito.verify(target).setLayerType(View.LAYER_TYPE_SOFTWARE, null)
     }
 
+    @Test
+    fun shouldLogExceptionWhenFailsToRenderSVG() {
+        val mockInputStream = mock(InputStream::class.java)
+        given(svgWrapper.getSVGFromInputStream(mockInputStream)).willThrow(RuntimeException("some exception"))
+
+        svgImageRenderer.renderImage(mockInputStream, target)
+
+        Mockito.verify(logger).errorLog("SVGImageRendererImpl", "Failed to parse SVG image: some exception")
+    }
 }

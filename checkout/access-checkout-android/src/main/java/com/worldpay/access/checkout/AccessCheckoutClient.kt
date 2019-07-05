@@ -14,7 +14,7 @@ import com.worldpay.access.checkout.api.SessionReceiver
 import com.worldpay.access.checkout.api.SessionRequest
 import com.worldpay.access.checkout.api.SessionRequestService
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
-import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
+import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.*
 
 /**

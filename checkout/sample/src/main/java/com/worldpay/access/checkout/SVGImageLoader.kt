@@ -1,38 +1,56 @@
 package com.worldpay.access.checkout
 
-import android.app.Activity
-import android.content.Context
 import android.widget.ImageView
 import com.worldpay.access.checkout.model.CardBrand
 import okhttp3.*
+import java.io.File
 import java.io.IOException
 
 
-object SVGImageLoader {
+class SVGImageLoader(
+    private val runOnUiThreadFunc: (Runnable) -> Unit,
+    private val cacheDir: File?,
+    private val client: OkHttpClient = buildDefaultClient(cacheDir),
+    private val svgImageRenderer: SVGImageRenderer = buildSvgImageRenderer(runOnUiThreadFunc)) {
 
-    private const val IMAGE_TYPE = "image/svg+xml"
+    companion object {
 
-    private var httpClient: OkHttpClient? = null
+        @Volatile private var INSTANCE: SVGImageLoader? = null
 
-    fun fetchAndApplyCardLogo(activity: Activity, cardBrand: CardBrand?, target: ImageView,
-                              client: OkHttpClient = buildDefaultClient(activity),
-                              svgImageRenderer: SVGImageRenderer = buildSvgImageRenderer(activity, target)) {
-        if (httpClient == null) {
-            httpClient = client
+        fun getInstance(runOnUiThreadFunc: (Runnable) -> Unit, cacheDir: File? = null): SVGImageLoader =
+            INSTANCE ?: synchronized(this) {
+                INSTANCE ?: SVGImageLoader(runOnUiThreadFunc, cacheDir).also { INSTANCE = it }
+            }
+
+        private const val IMAGE_TYPE = "image/svg+xml"
+
+        private fun buildDefaultClient(cacheDir: File?): OkHttpClient {
+            val builder = OkHttpClient.Builder()
+            cacheDir?.let { builder.cache(Cache(cacheDir, 5 * 1024 * 1014)) }
+            return builder
+                .build()
         }
+
+        private fun buildSvgImageRenderer(uiRunner: (Runnable) -> Unit): SVGImageRenderer {
+            return SVGImageRendererImpl(uiRunner)
+        }
+    }
+
+    fun fetchAndApplyCardLogo(cardBrand: CardBrand?, target: ImageView) {
 
         cardBrand?.let {
             val url = it.images?.find { image -> image.type == IMAGE_TYPE }?.url
 
             url?.let {
                 val request = Request.Builder().url(url).build()
-                httpClient?.newCall(request)?.enqueue(object : Callback {
+                val newCall = client.newCall(request)
+                newCall.enqueue(object : Callback {
                     override fun onFailure(call: Call, e: IOException) {}
 
                     @Throws(IOException::class)
                     override fun onResponse(call: Call, response: Response) {
                         response.body()?.let { responseBody ->
-                            svgImageRenderer.renderImage(responseBody.byteStream())
+                            svgImageRenderer.renderImage(responseBody.byteStream(), target)
                         }
                     }
                 })
@@ -41,15 +59,5 @@ object SVGImageLoader {
     }
 
     private fun setUnknownCardBrand(target: ImageView) = target.setImageResource(R.drawable.card_unknown_logo)
-
-    private fun buildDefaultClient(context: Context): OkHttpClient {
-        return OkHttpClient.Builder()
-            .cache(Cache(context.cacheDir, 5 * 1024 * 1014))
-            .build()
-    }
-
-    private fun buildSvgImageRenderer(activity: Activity, target: ImageView): SVGImageRenderer {
-        return SVGImageRendererImpl(activity, target)
-    }
 
 }
