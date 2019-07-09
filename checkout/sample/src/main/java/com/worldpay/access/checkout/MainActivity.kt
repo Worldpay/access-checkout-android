@@ -6,11 +6,9 @@ import android.text.InputFilter
 import android.view.View
 import android.widget.Toast
 import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
+import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.views.*
 import kotlinx.android.synthetic.main.activity_main.*
@@ -42,12 +40,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         card.cardListener = this
         card.cardValidator = AccessCheckoutCardValidator()
 
-        CardConfigurationClientFactory.createClient().getCardConfiguration(getBaseUrl(), object : Callback<CardConfiguration> {
-            override fun onResponse(error: Exception?, response: CardConfiguration?) {
-                response?.let { card.cardValidator = AccessCheckoutCardValidator(it) }
-                error?.let { debugLog("MainActivity", "Error while fetching card configuration: $it")  }
-            }
-        })
+        CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
         
         panView.cardViewListener = card
         cvvText.cardViewListener = card
