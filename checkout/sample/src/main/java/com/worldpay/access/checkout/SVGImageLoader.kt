@@ -1,7 +1,9 @@
 package com.worldpay.access.checkout
 
+import android.app.Activity
 import android.widget.ImageView
 import com.worldpay.access.checkout.model.CardBrand
+import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
 import java.io.File
 import java.io.IOException
@@ -11,16 +13,19 @@ class SVGImageLoader(
     private val runOnUiThreadFunc: (Runnable) -> Unit,
     private val cacheDir: File?,
     private val client: OkHttpClient = buildDefaultClient(cacheDir),
-    private val svgImageRenderer: SVGImageRenderer = buildSvgImageRenderer(runOnUiThreadFunc)) {
+    private val svgImageRenderer: SVGImageRenderer = buildSvgImageRenderer(runOnUiThreadFunc)
+) {
 
     companion object {
 
-        @Volatile private var INSTANCE: SVGImageLoader? = null
+        @Volatile
+        private var INSTANCE: SVGImageLoader? = null
 
-        fun getInstance(runOnUiThreadFunc: (Runnable) -> Unit, cacheDir: File? = null): SVGImageLoader =
-            INSTANCE ?: synchronized(this) {
-                INSTANCE ?: SVGImageLoader(runOnUiThreadFunc, cacheDir).also { INSTANCE = it }
+        fun getInstance(activity: Activity): SVGImageLoader {
+            return INSTANCE ?: synchronized(this) {
+                INSTANCE ?: SVGImageLoader(activity::runOnUiThread, activity.cacheDir).also { INSTANCE = it }
             }
+        }
 
         private const val IMAGE_TYPE = "image/svg+xml"
 
@@ -50,7 +55,7 @@ class SVGImageLoader(
                     @Throws(IOException::class)
                     override fun onResponse(call: Call, response: Response) {
                         response.body()?.let { responseBody ->
-                            svgImageRenderer.renderImage(responseBody.byteStream(), target)
+                            svgImageRenderer.renderImage(responseBody.byteStream(), target, cardBrand.name)
                         }
                     }
                 })
@@ -58,6 +63,10 @@ class SVGImageLoader(
         } ?: setUnknownCardBrand(target)
     }
 
-    private fun setUnknownCardBrand(target: ImageView) = target.setImageResource(R.drawable.card_unknown_logo)
+    private fun setUnknownCardBrand(target: ImageView) {
+        target.setImageResource(R.drawable.card_unknown_logo)
+        val resourceEntryName = target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
+        target.setTag(PANLayout.CARD_TAG, resourceEntryName)
+    }
 
 }

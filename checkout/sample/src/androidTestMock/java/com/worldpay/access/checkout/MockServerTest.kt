@@ -211,9 +211,10 @@ class MockServerTest {
 
         val cardConfigurationInputStream = activityRule.activity.resources.openRawResource(R.raw.card_configuration_file)
         val cardConfigurationAsString = cardConfigurationInputStream.reader(Charsets.UTF_8).readText()
+        val substitutedResponseTemplateString = cardConfigurationAsString.replace("{{request.requestLine.baseUrl}}", MockServer.baseUrl)
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.body()?.string(), CoreMatchers.equalTo(cardConfigurationAsString))
+            assertThat(response.body()?.string(), CoreMatchers.equalTo(substitutedResponseTemplateString))
         }
     }
 

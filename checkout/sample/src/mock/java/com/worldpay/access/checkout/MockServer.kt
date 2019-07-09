@@ -27,6 +27,8 @@ object MockServer {
     private const val cardConfigurationResourcePath = "access-checkout/cardConfiguration.json"
     private const val cardLogosPath = "access-checkout/assets"
 
+    lateinit var baseUrl: String
+
     private fun verifiedTokensResponse(context: Context) =
         """{
                   "_links": {
@@ -298,7 +300,7 @@ object MockServer {
             debugLog("MockServer", "Waiting for wiremock to start!")
         } while (!hasStarted)
         debugLog("MockServer", "Started wiremock!!")
-
+        baseUrl = wireMockServer.baseUrl()
     }
 
     private fun getAsset(context: Context, assetPath: String): String {

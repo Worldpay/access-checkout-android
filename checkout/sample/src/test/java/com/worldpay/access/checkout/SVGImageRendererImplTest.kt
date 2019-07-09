@@ -8,6 +8,7 @@ import android.widget.ImageView
 import com.caverock.androidsvg.SVG
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.worldpay.access.checkout.logging.Logger
+import com.worldpay.access.checkout.views.PANLayout
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers
@@ -45,7 +46,7 @@ class SVGImageRendererImplTest {
         given(svgWrapper.getSVGFromInputStream(inputStream)).willReturn(svg)
         given(svg.renderToPicture(1, 1)).willReturn(Mockito.mock(Picture::class.java))
 
-        svgImageRenderer.renderImage(inputStream!!, target)
+        svgImageRenderer.renderImage(inputStream!!, target, "someName")
 
         val argumentCaptor = argumentCaptor<Runnable>()
         Mockito.verify(runOnUiThreadFun).invoke(argumentCaptor.capture())
@@ -54,6 +55,7 @@ class SVGImageRendererImplTest {
 
         Mockito.verify(target).setImageDrawable(ArgumentMatchers.any(PictureDrawable::class.java))
         Mockito.verify(target).setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        Mockito.verify(target).setTag(PANLayout.CARD_TAG, "someName")
     }
 
     @Test
@@ -61,7 +63,7 @@ class SVGImageRendererImplTest {
         val mockInputStream = mock(InputStream::class.java)
         given(svgWrapper.getSVGFromInputStream(mockInputStream)).willThrow(RuntimeException("some exception"))
 
-        svgImageRenderer.renderImage(mockInputStream, target)
+        svgImageRenderer.renderImage(mockInputStream, target, "someName")
 
         Mockito.verify(logger).errorLog("SVGImageRendererImpl", "Failed to parse SVG image: some exception")
     }

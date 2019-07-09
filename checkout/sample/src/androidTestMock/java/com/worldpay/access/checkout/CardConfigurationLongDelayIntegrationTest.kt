@@ -4,6 +4,7 @@ import android.support.test.rule.ActivityTestRule
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import com.worldpay.access.checkout.AbstractUITest.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.MockServer.stubCardConfiguration
 import com.worldpay.access.checkout.MockServer.stubCardConfigurationWithDelay
 import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
@@ -15,18 +16,14 @@ import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.UITestUtils.updateCVVDetails
 import com.worldpay.access.checkout.UITestUtils.updateMonthDetails
 import com.worldpay.access.checkout.UITestUtils.updatePANDetails
-import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.model.CardDefaults
-import com.worldpay.access.checkout.model.CardValidationRule
-import com.worldpay.access.checkout.views.resIdByName
+import com.worldpay.access.checkout.model.*
+import com.worldpay.access.checkout.views.PANLayout
 import org.awaitility.Awaitility
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.TimeUnit.*
+import java.util.concurrent.TimeUnit.MILLISECONDS
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -46,7 +43,7 @@ class CardConfigurationLongDelayIntegrationTest {
     private val brands = listOf(
         CardBrand(
             "mastercard",
-            "card_mastercard_logo",
+            listOf(CardBrandImage("image/svg+xml", "${MockServer.baseUrl}/access-checkout/assets/mastercard.svg")),
             mastercardCvvValidationRule,
             listOf(mastercardPANValidationRule)
         )
@@ -86,7 +83,7 @@ class CardConfigurationLongDelayIntegrationTest {
         val yearEditText: EditText = activity.findViewById(R.id.year_edit_text)
         val submit: Button = activity.findViewById(R.id.submit)
 
-        assertExpectedLogo("card_unknown_logo")
+        assertExpectedLogo(R.drawable.card_unknown_logo)
 
         cardText.text = luhnInvalidMastercardCard
         cvvText.click()
@@ -108,12 +105,12 @@ class CardConfigurationLongDelayIntegrationTest {
         assertFalse(submit.isEnabled)
 
         // Re-verify that the card still cannot be identified (as no card configuration yet)
-        assertExpectedLogo("card_unknown_logo")
+        assertExpectedLogo(R.drawable.card_unknown_logo)
 
         // Wait until the server replies so we can successfully identify the card as mastercard based on current input
         Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
             try {
-                assertExpectedLogo("card_mastercard_logo")
+                assertExpectedLogo(MASTERCARD.cardBrandName)
                 true
             } catch (ex: AssertionError) {
                 // trigger an action on the UI
@@ -159,8 +156,13 @@ class CardConfigurationLongDelayIntegrationTest {
     
     private fun assertExpectedLogo(logoResName: String) {
         val logoView = activity.findViewById<ImageView>(R.id.logo_view)
-        val expectedLogoResourceId = activity.resIdByName(logoResName, "drawable")
-        assertTrue { BrandVectorImageMatcher.equalsBrandVectorImage(logoView, expectedLogoResourceId) }
+        assertEquals(logoResName, logoView.getTag(PANLayout.CARD_TAG))
+    }
+
+    private fun assertExpectedLogo(logoResId: Int) {
+        val logoView = activity.findViewById<ImageView>(R.id.logo_view)
+        val logoResName = activity.resources.getResourceEntryName(logoResId)
+        assertEquals(logoResName, logoView.getTag(PANLayout.CARD_TAG))
     }
 }
 

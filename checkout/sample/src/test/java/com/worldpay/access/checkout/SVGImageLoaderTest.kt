@@ -1,12 +1,14 @@
 package com.worldpay.access.checkout
 
 import android.app.Activity
+import android.content.res.Resources
 import android.widget.ImageView
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.given
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardBrandImage
+import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
 import org.junit.Before
 import org.junit.Test
@@ -56,15 +58,21 @@ class SVGImageLoaderTest {
 
         // Trigger onResponse callback function
         captor.firstValue.onResponse(mockHttpCall, response)
-        verify(svgImageRenderer).renderImage(inputStream, targetImageView)
+        verify(svgImageRenderer).renderImage(inputStream, targetImageView, "test")
     }
 
     @Test
     fun shouldNotAttemptToFetchRemoteCardLogoForUnidentifiedBrandAndShouldSetUnknownCardLogo() {
+        val resources = mock(Resources::class.java)
+        given(resources.getResourceEntryName(R.drawable.card_unknown_logo)).willReturn("card_unknown_logo")
+        given(targetImageView.resources).willReturn(resources)
+
         svgImageLoader.fetchAndApplyCardLogo(null, targetImageView)
 
         verifyZeroInteractions(client)
+
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
+        verify(targetImageView).setTag(PANLayout.CARD_TAG, "card_unknown_logo")
     }
 
     @Test
@@ -72,6 +80,10 @@ class SVGImageLoaderTest {
         val cardBrand = CardBrand("test", listOf(CardBrandImage("image/png", "http://localhost/test.png")), null, emptyList())
         val mockHttpCall = mock(Call::class.java)
         given(client.newCall(any())).willReturn(mockHttpCall)
+
+        val resources = mock(Resources::class.java)
+        given(resources.getResourceEntryName(R.drawable.card_unknown_logo)).willReturn("card_unknown_logo")
+        given(targetImageView.resources).willReturn(resources)
 
         val response = mock(Response::class.java)
         val responseBody = mock(ResponseBody::class.java)
@@ -83,6 +95,7 @@ class SVGImageLoaderTest {
 
         verifyZeroInteractions(client)
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
+        verify(targetImageView).setTag(PANLayout.CARD_TAG, "card_unknown_logo")
     }
 
     @Test

@@ -2,21 +2,22 @@ package com.worldpay.access.checkout
 
 import android.content.Context
 import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso.*
+import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.*
+import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
-import android.support.test.uiautomator.UiDevice
-import android.support.test.uiautomator.UiDevice.*
+import android.support.test.uiautomator.UiDevice.getInstance
 import android.support.test.uiautomator.UiObject
 import android.support.test.uiautomator.UiSelector
 import android.support.v4.content.res.ResourcesCompat.getColor
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
+import com.worldpay.access.checkout.AbstractUITest.CardBrand
 import com.worldpay.access.checkout.matchers.AlphaMatcher
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
+import com.worldpay.access.checkout.matchers.BrandVectorImageNameMatcher
 import com.worldpay.access.checkout.matchers.EditTextColorMatcher
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
@@ -153,6 +154,12 @@ object UITestUtils {
         onView(brandImageMatcher)
             .check(matches(isDisplayed()))
             .check(matches(BrandVectorImageMatcher.withBrandVectorImageId(expectedImage)))
+    }
+
+    fun assertBrandImage(cardBrand: CardBrand) {
+        onView(brandImageMatcher)
+            .check(matches(isDisplayed()))
+            .check(matches(BrandVectorImageNameMatcher.withBrandVectorImageName(cardBrand)))
     }
 
     fun getSuccessColor(context: Context) = getColor(context.resources, R.color.SUCCESS, context.theme)
