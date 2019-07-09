@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout
 
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.testutils.mock
-import com.worldpay.access.checkout.testutils.typeSafeAny
-import com.worldpay.access.checkout.testutils.typeSafeEq
 import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.views.*
@@ -12,7 +12,6 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
 import org.mockito.Mockito.*
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertFalse
@@ -311,7 +310,7 @@ class AccessCheckoutCardTest {
 
         verify(cardListener).onUpdate(panView, true)
         verify(cardListener).onUpdateCardBrand(cardBrand)
-        verify(cardListener, times(0)).onUpdateLengthFilter(typeSafeEq(panView), typeSafeAny())
+        verify(cardListener, times(0)).onUpdateLengthFilter(eq(panView), any())
         verify(cardListener).onUpdate(cvvView, false)
     }
 
@@ -456,7 +455,7 @@ class AccessCheckoutCardTest {
         card.onUpdateCVV(updatedCVV)
 
         verify(cardListener).onUpdate(cvvView, true)
-        verify(cardListener, times(0)).onUpdateLengthFilter(typeSafeEq(cvvView), typeSafeAny())
+        verify(cardListener, times(0)).onUpdateLengthFilter(eq(cvvView), any())
     }
 
     @Test
@@ -530,7 +529,7 @@ class AccessCheckoutCardTest {
         card.onUpdateDate(month, year)
 
         verify(cardListener).onUpdate(dateView, false)
-        verify(cardListener, times(0)).onUpdateLengthFilter(typeSafeEq(dateView), typeSafeAny())
+        verify(cardListener, times(0)).onUpdateLengthFilter(eq(dateView), any())
     }
 
     @Test

@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.api.configuration
 
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.testutils.mock
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given

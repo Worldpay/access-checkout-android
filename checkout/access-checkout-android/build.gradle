@@ -151,7 +151,6 @@ dependencies {
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'
     androidTestImplementation 'org.mockito:mockito-android:2.24.5'
-
     androidTestImplementation("com.github.tomakehurst:wiremock:2.22.0") {
         //Allows us to use the Android version of Apache httpclient instead
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
@@ -167,13 +166,11 @@ dependencies {
 
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
+
     testImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
-
     testImplementation 'junit:junit:4.12'
-    testImplementation 'org.mockito:mockito-core:2.24.5'
+    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
     testImplementation "org.robolectric:robolectric:4.0"
-
-    testImplementation 'org.mockito:mockito-android:2.24.5'
     testImplementation 'au.com.dius:pact-jvm-consumer-junit_2.12:3.6.2'
 }
 repositories {

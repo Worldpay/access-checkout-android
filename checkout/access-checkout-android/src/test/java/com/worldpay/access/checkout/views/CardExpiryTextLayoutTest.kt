@@ -2,8 +2,9 @@ package com.worldpay.access.checkout.views
 
 import android.text.InputFilter
 import android.view.View.FOCUSABLE
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.testutils.typeSafeAny
 import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Test
@@ -113,7 +114,7 @@ class CardExpiryTextLayoutTest {
 
         cardExpiryTextLayout.monthEditTextOnFocusChange().onFocusChange(null, false)
 
-        verify(cardViewListener, times(0)).onEndUpdateDate(typeSafeAny(), typeSafeAny())
+        verify(cardViewListener, times(0)).onEndUpdateDate(any(), any())
     }
 
     @Test
@@ -133,7 +134,7 @@ class CardExpiryTextLayoutTest {
 
         cardExpiryTextLayout.yearEditTextOnFocusChange().onFocusChange(null, false)
 
-        verify(cardViewListener, times(0)).onEndUpdateDate(typeSafeAny(), typeSafeAny())
+        verify(cardViewListener, times(0)).onEndUpdateDate(any(), any())
     }
 
     @Test

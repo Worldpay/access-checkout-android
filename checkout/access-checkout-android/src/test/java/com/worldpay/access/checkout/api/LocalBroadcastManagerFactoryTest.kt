@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.api
 
 import android.content.Context
-import com.worldpay.access.checkout.testutils.mock
+import com.nhaarman.mockitokotlin2.mock
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 import org.mockito.BDDMockito.given
