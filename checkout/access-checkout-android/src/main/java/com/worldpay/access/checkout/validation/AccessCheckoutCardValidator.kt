@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
+import java.io.Serializable
 import java.util.*
 
 /**
@@ -12,7 +13,7 @@ class AccessCheckoutCardValidator @JvmOverloads constructor(override val cardCon
                                   private val panValidator: PANValidator = PANValidatorImpl(cardConfiguration),
                                   private val cvvValidator: CVVValidator = CVVValidatorImpl(cardConfiguration),
                                   private val dateValidator: DateValidator = DateValidatorImpl(Calendar.getInstance(),
-                                      cardConfiguration)) : CardValidator {
+                                      cardConfiguration)) : CardValidator, Serializable {
 
     override fun validatePAN(pan: PAN): Pair<ValidationResult, CardBrand?> = panValidator.validate(pan)
 
