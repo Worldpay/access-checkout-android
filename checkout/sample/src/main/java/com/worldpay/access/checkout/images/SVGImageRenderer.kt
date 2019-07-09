@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.images
 
 import android.graphics.drawable.PictureDrawable
 import android.view.View
@@ -15,13 +15,15 @@ interface SVGImageRenderer {
 
 class SVGImageRendererImpl(private val runOnUiThreadFunc: (Runnable) -> Unit,
                            private val logger: Logger = AccessCheckoutLogger(),
-                           private val svgWrapper: SVGWrapper = SVGWrapper.svgWrapper): SVGImageRenderer {
+                           private val svgWrapper: SVGWrapper = SVGWrapper.svgWrapper
+): SVGImageRenderer {
 
     override fun renderImage(inputStream: InputStream, targetView: ImageView, brandName: String) {
         try {
             val svg = svgWrapper.getSVGFromInputStream(inputStream)
             val drawable = PictureDrawable(svg.renderToPicture(targetView.measuredWidth, targetView.measuredHeight))
             runOnUiThreadFunc(Runnable {
+                logger.debugLog("SVGImageRendererImpl", "Applying $brandName logo to target view")
                 targetView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 targetView.setImageDrawable(drawable)
                 targetView.setTag(PANLayout.CARD_TAG, brandName)

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.images
 
 import com.caverock.androidsvg.SVG
 import java.io.InputStream

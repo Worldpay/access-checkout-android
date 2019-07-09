@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.images
 
 import android.app.Activity
 import android.content.res.Resources
@@ -6,6 +6,7 @@ import android.widget.ImageView
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.given
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardBrandImage
 import com.worldpay.access.checkout.views.PANLayout
@@ -36,7 +37,8 @@ class SVGImageLoaderTest {
         svgImageRenderer = mock(SVGImageRenderer::class.java)
         cacheDir = mock(File::class.java)
         uiRunner = mock(Function1::class.java as Class<Function1<Runnable, Unit>>)
-        svgImageLoader = SVGImageLoader(uiRunner, cacheDir, client, svgImageRenderer)
+        svgImageLoader =
+            SVGImageLoader(uiRunner, cacheDir, client, svgImageRenderer)
     }
 
     @Test

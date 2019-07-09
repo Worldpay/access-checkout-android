@@ -1,7 +1,10 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.images
 
 import android.app.Activity
 import android.widget.ImageView
+import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.logging.AccessCheckoutLogger
+import com.worldpay.access.checkout.logging.Logger
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
@@ -9,11 +12,16 @@ import java.io.File
 import java.io.IOException
 
 
-class SVGImageLoader(
+class SVGImageLoader @JvmOverloads constructor(
     private val runOnUiThreadFunc: (Runnable) -> Unit,
     private val cacheDir: File?,
-    private val client: OkHttpClient = buildDefaultClient(cacheDir),
-    private val svgImageRenderer: SVGImageRenderer = buildSvgImageRenderer(runOnUiThreadFunc)
+    private val client: OkHttpClient = buildDefaultClient(
+        cacheDir
+    ),
+    private val svgImageRenderer: SVGImageRenderer = buildSvgImageRenderer(
+        runOnUiThreadFunc
+    ),
+    private val logger: Logger = AccessCheckoutLogger()
 ) {
 
     companion object {
@@ -23,7 +31,11 @@ class SVGImageLoader(
 
         fun getInstance(activity: Activity): SVGImageLoader {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: SVGImageLoader(activity::runOnUiThread, activity.cacheDir).also { INSTANCE = it }
+                INSTANCE
+                    ?: SVGImageLoader(
+                        activity::runOnUiThread,
+                        activity.cacheDir
+                    ).also { INSTANCE = it }
             }
         }
 
@@ -64,6 +76,7 @@ class SVGImageLoader(
     }
 
     private fun setUnknownCardBrand(target: ImageView) {
+        logger.debugLog("SVGImageLoader", "Applying card unknown logo to target view")
         target.setImageResource(R.drawable.card_unknown_logo)
         val resourceEntryName = target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
         target.setTag(PANLayout.CARD_TAG, resourceEntryName)

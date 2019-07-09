@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Toast
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
+import com.worldpay.access.checkout.images.SVGImageLoader
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.images
 
 import android.app.Activity
 import android.graphics.Picture
@@ -34,7 +34,8 @@ class SVGImageRendererImplTest {
         logger = Mockito.mock(Logger::class.java)
         svgWrapper = Mockito.mock(SVGWrapper::class.java)
         runOnUiThreadFun = Mockito.mock(Function1::class.java as Class<Function1<Runnable, Unit>>)
-        svgImageRenderer = SVGImageRendererImpl(runOnUiThreadFun, logger, svgWrapper)
+        svgImageRenderer =
+            SVGImageRendererImpl(runOnUiThreadFun, logger, svgWrapper)
     }
 
     @Test
