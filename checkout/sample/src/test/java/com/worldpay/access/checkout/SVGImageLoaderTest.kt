@@ -28,6 +28,7 @@ class SVGImageLoaderTest {
     private lateinit var uiRunner: (Runnable) -> Unit
 
     @Before
+    @Suppress("UNCHECKED_CAST")
     fun setup() {
         activity = mock(Activity::class.java)
         targetImageView = mock(ImageView::class.java)

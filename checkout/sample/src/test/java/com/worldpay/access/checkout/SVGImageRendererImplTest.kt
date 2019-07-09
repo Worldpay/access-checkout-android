@@ -27,6 +27,7 @@ class SVGImageRendererImplTest {
     private lateinit var runOnUiThreadFun: (Runnable) -> Unit
 
     @Before
+    @Suppress("UNCHECKED_CAST")
     fun setup() {
         activity = Mockito.mock(Activity::class.java)
         target = Mockito.mock(ImageView::class.java)
