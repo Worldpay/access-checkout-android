@@ -1,6 +1,8 @@
 package com.worldpay.access.checkout.api.configuration
 
-import org.junit.Assert.*
+import org.hamcrest.Matchers.instanceOf
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThat
 import org.junit.Test
 
 class CardConfigurationClientFactoryTest {
@@ -10,5 +12,6 @@ class CardConfigurationClientFactoryTest {
         val client = CardConfigurationClientFactory.createClient()
 
         assertNotNull(client)
+        assertThat(client, instanceOf(CardConfigurationClient::class.java))
     }
 }

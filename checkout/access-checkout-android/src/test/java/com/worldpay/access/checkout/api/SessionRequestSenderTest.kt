@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.api
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.*
+import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.testutils.argumentCaptor
 import com.worldpay.access.checkout.testutils.capture
