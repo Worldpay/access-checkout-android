@@ -73,4 +73,27 @@ class AccessCheckoutCardValidatorTest {
     fun `given a validator is constructed then should be able to fetch card configuration`() {
         assertEquals(cardConfiguration, accessCheckoutCardValidator.cardConfiguration)
     }
+
+    @Test
+    fun `given null cardConfiguration Will partially validate a luhn invalid card`() {
+
+        val expected = Pair(ValidationResult(partial = true, complete = false), null)
+
+        accessCheckoutCardValidator = AccessCheckoutCardValidator(null)
+
+        val validationResult = accessCheckoutCardValidator.validatePAN("4111111111111112")
+        assertEquals(expected, validationResult)
+    }
+
+    @Test
+    fun `given null cardConfiguration Will completely validate a luhn valid card`() {
+
+        val expected = Pair(ValidationResult(partial = true, complete = true), null)
+
+        accessCheckoutCardValidator = AccessCheckoutCardValidator(null)
+
+        val validationResult = accessCheckoutCardValidator.validatePAN("5555555555554444")
+        assertEquals(expected, validationResult)
+    }
+
 }
