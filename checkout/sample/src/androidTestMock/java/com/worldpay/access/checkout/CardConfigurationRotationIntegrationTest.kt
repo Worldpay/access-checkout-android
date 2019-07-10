@@ -1,11 +1,6 @@
 package com.worldpay.access.checkout
 
-import android.app.Activity
-import android.content.pm.ActivityInfo
-import android.support.test.InstrumentationRegistry
 import android.support.test.rule.ActivityTestRule
-import android.support.test.uiautomator.UiDevice
-import android.view.Surface
 import android.widget.EditText
 import android.widget.ImageView
 import com.worldpay.access.checkout.MockServer.stubCardConfiguration
@@ -13,6 +8,8 @@ import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsDisable
 import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsEnabled
 import com.worldpay.access.checkout.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.UITestUtils.getSuccessColor
+import com.worldpay.access.checkout.UITestUtils.rotateToLandscapeAndWait
+import com.worldpay.access.checkout.UITestUtils.rotateToPortraitAndWait
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.UITestUtils.updateCVVDetails
 import com.worldpay.access.checkout.UITestUtils.updateMonthDetails
@@ -23,11 +20,9 @@ import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.model.CardDefaults
 import com.worldpay.access.checkout.model.CardValidationRule
 import com.worldpay.access.checkout.views.resIdByName
-import org.awaitility.Awaitility
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.TimeUnit.MILLISECONDS
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -127,30 +122,6 @@ class CardConfigurationRotationIntegrationTest {
         rotateToLandscapeAndWait(activity(), timeoutInMillis)
 
         assertUiObjectExistsAndIsDisabled(R.id.submit)
-    }
-
-    private fun rotateToPortraitAndWait(activity: Activity, timeoutInMillis: Long) {
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
-            when (UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).displayRotation) {
-                Surface.ROTATION_0 -> true
-                Surface.ROTATION_180 -> true
-                else -> false
-            }
-        }
-    }
-
-    private fun rotateToLandscapeAndWait(activity: Activity, timeoutInMillis: Long) {
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-        Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
-            when (UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).displayRotation) {
-                Surface.ROTATION_90 -> true
-                Surface.ROTATION_270 -> true
-                else -> false
-            }
-        }
     }
 
     private fun assertViewState(
