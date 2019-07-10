@@ -10,7 +10,6 @@ import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
-import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.views.*
 import kotlinx.android.synthetic.main.activity_main.*
 import kotlinx.android.synthetic.main.content_main.*
@@ -40,8 +39,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         card = AccessCheckoutCard(panView, cvvText, dateText)
         card.cardListener = this
 
-        if(card.cardValidator == null)
-            card.cardValidator = AccessCheckoutCardValidator()
+        card.cardValidator = AccessCheckoutCardValidator()
 
         CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
         
@@ -132,7 +130,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.let {
             it.putBoolean("loading", loading)
-            card.cardValidator?.let { outState.putSerializable("validator", card.cardValidator as AccessCheckoutCardValidator) }
+//            card.cardValidator?.let { outState.putSerializable("validator", card.cardValidator as AccessCheckoutCardValidator) }
         }
 
         super.onSaveInstanceState(outState)
@@ -145,8 +143,8 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
             if (loading)
                 toggleLoading(false)
 
-            val bundledValidator = savedInstanceState.getSerializable("validator")
-            bundledValidator?.let { card.cardValidator = bundledValidator as CardValidator}
+//            val bundledValidator = savedInstanceState.getSerializable("validator")
+//            bundledValidator?.let { card.cardValidator = bundledValidator as CardValidator}
         }
         super.onRestoreInstanceState(savedInstanceState)
     }

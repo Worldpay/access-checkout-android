@@ -36,7 +36,37 @@ class AccessCheckoutCard @JvmOverloads constructor(
             panLengthFilter?.let { cardListener?.onUpdateLengthFilter(panView, it) }
             cvvLengthFilter?.let { cardListener?.onUpdateLengthFilter(cvvView, it) }
             dateLengthFilter?.let { cardListener?.onUpdateLengthFilter(dateView, it) }
+
+            //find focus holder and partial validate
+            //others complete validate
+            value?.let { revalidate(it) }
         }
+
+    private fun revalidate(cardValidator: CardValidator) {
+        if (panView.hasFocus())
+            partialPANValidate(cardValidator, panView.getInsertedText())
+        else
+            completePANValidate(cardValidator, panView.getInsertedText())
+
+        if (cvvView.hasFocus())
+            partialCVVValidate(cardValidator, cvvView.getInsertedText())
+        else
+            completeCVVValidate(cardValidator, cvvView.getInsertedText())
+
+        if (dateView.hasFocus()) {
+            val month = dateView.getInsertedMonth()
+            val nullableMonth = if (month.isBlank()) null else month
+
+            val year = dateView.getInsertedYear()
+            val nullableYear = if (year.isBlank()) null else year
+
+            partialDateValidate(nullableMonth, nullableYear, cardValidator)
+        } else {
+            completeDateValidate(dateView.getInsertedMonth(), dateView.getInsertedYear(), cardValidator)
+
+        }
+    }
+
 
     override fun isValid(): Boolean {
         val pan = panView.getInsertedText()
@@ -55,67 +85,94 @@ class AccessCheckoutCard @JvmOverloads constructor(
     }
 
     override fun onUpdatePAN(pan: String) {
-        cardValidator?.let {
-            val (panValidationResult, panCardBrand) = it.validatePAN(pan)
+        cardValidator?.let { partialPANValidate(it, pan) }
+    }
 
-            cardListener?.onUpdate(panView, panValidationResult.partial || panValidationResult.complete)
-            cardListener?.onUpdateCardBrand(panCardBrand)
-            panLengthFilter?.let { filter -> cardListener?.onUpdateLengthFilter(panView, filter) }
+    private fun partialPANValidate(
+        it: CardValidator,
+        pan: String
+    ): Unit? {
+        val (panValidationResult, panCardBrand) = it.validatePAN(pan)
 
-            val (cvvValidationResult) = it.validateCVV(cvvView.getInsertedText(), pan)
-            cardListener?.onUpdate(cvvView, cvvValidationResult.complete)
-        }
+        cardListener?.onUpdate(panView, panValidationResult.partial || panValidationResult.complete)
+        cardListener?.onUpdateCardBrand(panCardBrand)
+        panLengthFilter?.let { filter -> cardListener?.onUpdateLengthFilter(panView, filter) }
+
+        val (cvvValidationResult) = it.validateCVV(cvvView.getInsertedText(), pan)
+        return cardListener?.onUpdate(cvvView, cvvValidationResult.complete)
     }
 
     override fun onEndUpdatePAN(pan: String) {
-        cardValidator?.let {
-            val (panValidationResult, cardBrand) = it.validatePAN(pan)
+        cardValidator?.let { completePANValidate(it, pan) }
+    }
 
-            cardListener?.onUpdate(panView, panValidationResult.complete)
-            cardListener?.onUpdateCardBrand(cardBrand)
+    private fun completePANValidate(
+        it: CardValidator,
+        pan: String
+    ): Unit? {
+        val (panValidationResult, cardBrand) = it.validatePAN(pan)
 
-            val (cvvValidationResult) = it.validateCVV(cvvView.getInsertedText(), pan)
-            cardListener?.onUpdate(cvvView, cvvValidationResult.complete)
-        }
+        cardListener?.onUpdate(panView, panValidationResult.complete)
+        cardListener?.onUpdateCardBrand(cardBrand)
+
+        val (cvvValidationResult) = it.validateCVV(cvvView.getInsertedText(), pan)
+        return cardListener?.onUpdate(cvvView, cvvValidationResult.complete)
     }
 
     override fun onUpdateCVV(cvv: String) {
-        cardValidator?.let {
-            val (cvvValidationResult) = it.validateCVV(cvv, panView.getInsertedText())
+        cardValidator?.let { partialCVVValidate(it, cvv) }
+    }
 
-            cardListener?.onUpdate(cvvView, cvvValidationResult.partial || cvvValidationResult.complete)
-            cvvLengthFilter?.let { filter -> cardListener?.onUpdateLengthFilter(cvvView, filter) }
-        }
+    private fun partialCVVValidate(it: CardValidator, cvv: String) {
+        val (cvvValidationResult) = it.validateCVV(cvv, panView.getInsertedText())
+
+        cardListener?.onUpdate(cvvView, cvvValidationResult.partial || cvvValidationResult.complete)
+        cvvLengthFilter?.let { filter -> cardListener?.onUpdateLengthFilter(cvvView, filter) }
     }
 
     override fun onEndUpdateCVV(cvv: String) {
         cardValidator?.let {
-            val (cvvValidationResult) = it.validateCVV(cvv, panView.getInsertedText())
-
-            cardListener?.onUpdate(cvvView, cvvValidationResult.complete)
+            completeCVVValidate(it, cvv)
         }
+    }
+
+    private fun completeCVVValidate(
+        it: CardValidator,
+        cvv: String
+    ): Unit? {
+        val (cvvValidationResult) = it.validateCVV(cvv, panView.getInsertedText())
+
+        return cardListener?.onUpdate(cvvView, cvvValidationResult.complete)
     }
 
     override fun onUpdateDate(month: String?, year: String?) {
         cardValidator?.let { validator ->
-            cardListener?.let { listener ->
-                val monthField = month ?: dateView.getInsertedMonth()
-                val yearField = year ?: dateView.getInsertedYear()
+            partialDateValidate(month, year, validator)
+        }
+    }
 
-                dateLengthFilter?.let { filter -> listener.onUpdateLengthFilter(dateView, filter) }
+    private fun partialDateValidate(
+        month: String?,
+        year: String?,
+        validator: CardValidator
+    ) {
+        cardListener?.let { listener ->
+            val monthField = month ?: dateView.getInsertedMonth()
+            val yearField = year ?: dateView.getInsertedYear()
 
-                if (!validator.canUpdate(monthField, yearField)) {
-                    val validationResult = validator.validateDate(monthField, yearField)
-                    listener.onUpdate(dateView, validationResult.complete)
-                } else {
-                    month?.let {
-                      val monthValidationResult = validator.validateDate(it, null)
-                      listener.onUpdate(dateView, monthValidationResult.partial || monthValidationResult.complete)
-                    }
-                    year?.let {
-                      val yearValidationResult = validator.validateDate(null, it)
-                      listener.onUpdate(dateView, yearValidationResult.partial || yearValidationResult.complete)
-                    }
+            dateLengthFilter?.let { filter -> listener.onUpdateLengthFilter(dateView, filter) }
+
+            if (!validator.canUpdate(monthField, yearField)) {
+                val validationResult = validator.validateDate(monthField, yearField)
+                listener.onUpdate(dateView, validationResult.complete)
+            } else {
+                month?.let {
+                    val monthValidationResult = validator.validateDate(it, null)
+                    listener.onUpdate(dateView, monthValidationResult.partial || monthValidationResult.complete)
+                }
+                year?.let {
+                    val yearValidationResult = validator.validateDate(null, it)
+                    listener.onUpdate(dateView, yearValidationResult.partial || yearValidationResult.complete)
                 }
             }
         }
@@ -123,10 +180,18 @@ class AccessCheckoutCard @JvmOverloads constructor(
 
     override fun onEndUpdateDate(month: String?, year: String?) {
         cardValidator?.let {
-            val validationResult =
-                it.validateDate(month ?: dateView.getInsertedMonth(), year ?: dateView.getInsertedYear())
-            cardListener?.onUpdate(dateView, validationResult.complete)
+            completeDateValidate(month, year, it)
         }
+    }
+
+    private fun completeDateValidate(
+        month: String?,
+        year: String?,
+        it: CardValidator
+    ): Unit? {
+        val validationResult =
+            it.validateDate(month ?: dateView.getInsertedMonth(), year ?: dateView.getInsertedYear())
+        return cardListener?.onUpdate(dateView, validationResult.complete)
     }
 
 }
