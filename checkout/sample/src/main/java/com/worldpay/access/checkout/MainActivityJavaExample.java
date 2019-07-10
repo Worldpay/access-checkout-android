@@ -9,10 +9,8 @@ import android.widget.Button;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.worldpay.access.checkout.api.AccessCheckoutException;
-import com.worldpay.access.checkout.api.Callback;
-import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory;
+import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
 import com.worldpay.access.checkout.model.CardBrand;
-import com.worldpay.access.checkout.model.CardConfiguration;
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator;
 import com.worldpay.access.checkout.views.*;
 import org.jetbrains.annotations.NotNull;
@@ -53,14 +51,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
         card.setCardListener(this);
         card.setCardValidator(new AccessCheckoutCardValidator());
 
-        CardConfigurationClientFactory.createClient().getCardConfiguration(getBaseUrl(), new Callback<CardConfiguration>() {
-            @Override
-            public void onResponse(@Nullable Exception error, @Nullable CardConfiguration response) {
-                if (response != null) {
-                    card.setCardValidator(new AccessCheckoutCardValidator(response));
-                }
-            }
-        });
+        CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl());
 
         panView.setCardViewListener(card);
         cardCVVText.setCardViewListener(card);
