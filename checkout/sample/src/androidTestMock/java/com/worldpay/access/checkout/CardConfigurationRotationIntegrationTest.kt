@@ -16,8 +16,6 @@ import com.worldpay.access.checkout.UITestUtils.updateMonthDetails
 import com.worldpay.access.checkout.UITestUtils.updatePANDetails
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
 import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.model.CardDefaults
 import com.worldpay.access.checkout.model.CardValidationRule
 import com.worldpay.access.checkout.views.resIdByName
 import org.junit.After
@@ -28,7 +26,7 @@ import kotlin.test.assertTrue
 
 class CardConfigurationRotationIntegrationTest {
 
-    private val timeoutInMillis = 10000L
+    private val timeoutInMillis = 3000L
 
     private val luhnValidMastercardCard = "5555555555554444"
     private val luhnInvalidMastercardCard = "55555555555111"
@@ -46,8 +44,6 @@ class CardConfigurationRotationIntegrationTest {
             listOf(mastercardPANValidationRule)
         )
     )
-    private val defaults = CardDefaults(null, null, null, null)
-    private val cardConfiguration = CardConfiguration(brands, defaults)
 
     @get:Rule
     var cardConfigurationRule = ActivityTestRule(MainActivity::class.java)

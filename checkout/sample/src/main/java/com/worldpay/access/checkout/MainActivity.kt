@@ -128,10 +128,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
     }
 
     override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.let {
-            it.putBoolean("loading", loading)
-//            card.cardValidator?.let { outState.putSerializable("validator", card.cardValidator as AccessCheckoutCardValidator) }
-        }
+        outState?.putBoolean("loading", loading)
 
         super.onSaveInstanceState(outState)
     }
@@ -142,9 +139,6 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
 
             if (loading)
                 toggleLoading(false)
-
-//            val bundledValidator = savedInstanceState.getSerializable("validator")
-//            bundledValidator?.let { card.cardValidator = bundledValidator as CardValidator}
         }
         super.onRestoreInstanceState(savedInstanceState)
     }
