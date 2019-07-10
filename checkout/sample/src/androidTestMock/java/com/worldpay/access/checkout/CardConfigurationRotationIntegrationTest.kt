@@ -5,10 +5,11 @@ import android.support.test.InstrumentationRegistry
 import android.support.test.rule.ActivityTestRule
 import android.support.test.uiautomator.UiDevice
 import android.view.Surface
-import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import com.worldpay.access.checkout.MockServer.stubCardConfiguration
+import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsDisabled
+import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsEnabled
 import com.worldpay.access.checkout.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
@@ -69,13 +70,11 @@ class CardConfigurationRotationIntegrationTest {
         val cvvText = uiObjectWithId(R.id.cardCVVText)
         val monthText = uiObjectWithId(R.id.month_edit_text)
         val yearText = uiObjectWithId(R.id.year_edit_text)
-        val submitButton = uiObjectWithId(R.id.submit)
 
         fun cardEditText(): EditText = activity().findViewById(R.id.card_number_edit_text)
         fun cvvEditText(): EditText = activity().findViewById(R.id.cardCVVText)
         fun monthEditText(): EditText = activity().findViewById(R.id.month_edit_text)
         fun yearEditText(): EditText = activity().findViewById(R.id.year_edit_text)
-        val submit: Button = activity().findViewById(R.id.submit)
 
         assertExpectedLogo("card_unknown_logo")
 
@@ -91,6 +90,7 @@ class CardConfigurationRotationIntegrationTest {
         val successColor = activity().getColor(R.color.SUCCESS)
 
         assertViewState(failColor, cardEditText(), monthEditText(), yearEditText(), cvvEditText())
+        assertUiObjectExistsAndIsDisabled(R.id.submit)
 
         //rotate and assert state is the same
         activity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
@@ -104,6 +104,7 @@ class CardConfigurationRotationIntegrationTest {
         }
 
         assertViewState(failColor, cardEditText(), monthEditText(), yearEditText(), cvvEditText())
+        assertUiObjectExistsAndIsDisabled(R.id.submit)
 
         // verify that the card is now mastercard
         assertExpectedLogo("card_mastercard_logo")
@@ -115,7 +116,7 @@ class CardConfigurationRotationIntegrationTest {
         assertExpectedLogo("card_mastercard_logo")
 
 
-        assertViewState(getSuccessColor(activity()), cardEditText(), monthEditText(), yearEditText(), cvvEditText())
+        assertViewState(successColor, cardEditText(), monthEditText(), yearEditText(), cvvEditText())
 
         activity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
@@ -132,6 +133,7 @@ class CardConfigurationRotationIntegrationTest {
         // Verify that all the fields are now in a success state and can be submitted
         closeKeyboard()
         assertViewState(getSuccessColor(activity()), cardEditText(), monthEditText(), yearEditText(), cvvEditText())
+        assertUiObjectExistsAndIsEnabled(R.id.submit)
     }
 
     private fun assertViewState(

@@ -2,14 +2,13 @@ package com.worldpay.access.checkout
 
 import android.content.Context
 import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso.*
+import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.*
+import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
-import android.support.test.uiautomator.UiDevice
-import android.support.test.uiautomator.UiDevice.*
+import android.support.test.uiautomator.UiDevice.getInstance
 import android.support.test.uiautomator.UiObject
 import android.support.test.uiautomator.UiSelector
 import android.support.v4.content.res.ResourcesCompat.getColor
@@ -200,9 +199,15 @@ object UITestUtils {
     private fun progressBar(): UiObject =
         uiObjectWithId(R.id.loading_bar)
 
-    private fun assertUiObjectExistsAndIsDisabled(resId: Int) {
+    fun assertUiObjectExistsAndIsDisabled(resId: Int) {
         val uiObject = uiObjectWithId(resId)
         uiObject.exists()
         Assert.assertFalse(uiObject.isEnabled)
+    }
+
+    fun assertUiObjectExistsAndIsEnabled(resId: Int) {
+        val uiObject = uiObjectWithId(resId)
+        uiObject.exists()
+        assertTrue(uiObject.isEnabled)
     }
 }
