@@ -10,7 +10,7 @@ class CardConfigurationSchemaTest {
 
     @Test
     fun `given local card configuration file in repo then should be valid against remote card configuration JSON schema`() {
-        val url = "https://access.worldpay.com/access-checkout/cardConfigurationSchema.json"
+        val url = "https://preprod.access.worldpay.com/access-checkout/cardConfigurationSchema.json"
 
         val schema = JsonLoader.fromURL(URL(url))
         val cardConfiguration = JsonLoader.fromPath("src/mock/res/raw/card_configuration_file.json")
