@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout
 
+import android.app.Activity
 import android.content.pm.ActivityInfo
 import android.support.test.InstrumentationRegistry
 import android.support.test.rule.ActivityTestRule
@@ -93,15 +94,7 @@ class CardConfigurationRotationIntegrationTest {
         assertUiObjectExistsAndIsDisabled(R.id.submit)
 
         //rotate and assert state is the same
-        activity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-        Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
-            when (UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).displayRotation) {
-                Surface.ROTATION_90 -> true
-                Surface.ROTATION_270 -> true
-                else -> false
-            }
-        }
+        rotateToLandscapeAndWait(activity(), timeoutInMillis)
 
         assertViewState(failColor, cardEditText(), monthEditText(), yearEditText(), cvvEditText())
         assertUiObjectExistsAndIsDisabled(R.id.submit)
@@ -118,7 +111,26 @@ class CardConfigurationRotationIntegrationTest {
 
         assertViewState(successColor, cardEditText(), monthEditText(), yearEditText(), cvvEditText())
 
-        activity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+        rotateToPortraitAndWait(activity(), timeoutInMillis)
+
+        assertExpectedLogo("card_mastercard_logo")
+
+        // Verify that all the fields are now in a success state and can be submitted
+        closeKeyboard()
+        assertViewState(getSuccessColor(activity()), cardEditText(), monthEditText(), yearEditText(), cvvEditText())
+        assertUiObjectExistsAndIsEnabled(R.id.submit)
+
+        cvvText.text = "12"
+        assertUiObjectExistsAndIsDisabled(R.id.submit)
+
+        //rotate and assert state is the same
+        rotateToLandscapeAndWait(activity(), timeoutInMillis)
+
+        assertUiObjectExistsAndIsDisabled(R.id.submit)
+    }
+
+    private fun rotateToPortraitAndWait(activity: Activity, timeoutInMillis: Long) {
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
             when (UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).displayRotation) {
@@ -127,13 +139,18 @@ class CardConfigurationRotationIntegrationTest {
                 else -> false
             }
         }
+    }
 
-        assertExpectedLogo("card_mastercard_logo")
+    private fun rotateToLandscapeAndWait(activity: Activity, timeoutInMillis: Long) {
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-        // Verify that all the fields are now in a success state and can be submitted
-        closeKeyboard()
-        assertViewState(getSuccessColor(activity()), cardEditText(), monthEditText(), yearEditText(), cvvEditText())
-        assertUiObjectExistsAndIsEnabled(R.id.submit)
+        Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
+            when (UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).displayRotation) {
+                Surface.ROTATION_90 -> true
+                Surface.ROTATION_270 -> true
+                else -> false
+            }
+        }
     }
 
     private fun assertViewState(
