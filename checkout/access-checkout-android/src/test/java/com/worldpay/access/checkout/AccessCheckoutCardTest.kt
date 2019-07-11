@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout
 
-import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.validation.CardValidator
@@ -764,7 +764,7 @@ class AccessCheckoutCardTest {
     fun givenCardValidatorIsSetThenACardShouldRevalidatePartialPANFieldIfOnFocus() {
         given(panView.hasFocus()).willReturn(true)
         val validationResult = ValidationResult(partial = true, complete = false)
-        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, cardBrand))
         given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, cardBrand))
         given(cardValidator.validateDate(month, year)).willReturn(validationResult)
@@ -781,7 +781,7 @@ class AccessCheckoutCardTest {
     fun givenCardValidatorIsSetThenACardShouldRevalidateCompletePANFieldIfOnFocus() {
         given(panView.hasFocus()).willReturn(false)
         val validationResult = ValidationResult(partial = true, complete = false)
-        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, cardBrand))
         given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, cardBrand))
         given(cardValidator.validateDate(month, year)).willReturn(validationResult)
@@ -797,7 +797,7 @@ class AccessCheckoutCardTest {
     fun givenCardValidatorIsSetThenACardShouldRevalidatePartialCVVFieldIfOnFocus() {
         given(cvvView.hasFocus()).willReturn(true)
         val validationResult = ValidationResult(partial = true, complete = false)
-        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, cardBrand))
         given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, cardBrand))
         given(cardValidator.validateDate(month, year)).willReturn(validationResult)
@@ -813,7 +813,7 @@ class AccessCheckoutCardTest {
     fun givenCardValidatorIsSetThenACardShouldRevalidateCompleteCVVFieldIfOnFocus() {
         given(cvvView.hasFocus()).willReturn(false)
         val validationResult = ValidationResult(partial = true, complete = false)
-        val cardBrand = CardBrand("test", "test", null, emptyList())
+        val cardBrand = CardBrand("test", emptyList(), null, emptyList())
         given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, cardBrand))
         given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, cardBrand))
         given(cardValidator.validateDate(month, year)).willReturn(validationResult)
