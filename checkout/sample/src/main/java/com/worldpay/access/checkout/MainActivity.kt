@@ -38,7 +38,6 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
 
         card = AccessCheckoutCard(panView, cvvText, dateText)
         card.cardListener = this
-
         card.cardValidator = AccessCheckoutCardValidator()
 
         CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
@@ -129,7 +128,6 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
 
     override fun onSaveInstanceState(outState: Bundle?) {
         outState?.putBoolean("loading", loading)
-
         super.onSaveInstanceState(outState)
     }
 

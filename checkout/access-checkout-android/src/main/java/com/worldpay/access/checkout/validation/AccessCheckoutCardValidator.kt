@@ -13,7 +13,7 @@ class AccessCheckoutCardValidator @JvmOverloads constructor(override val cardCon
                                   private val panValidator: PANValidator = PANValidatorImpl(cardConfiguration),
                                   private val cvvValidator: CVVValidator = CVVValidatorImpl(cardConfiguration),
                                   private val dateValidator: DateValidator = DateValidatorImpl(Calendar.getInstance(),
-                                      cardConfiguration)) : CardValidator, Serializable {
+                                      cardConfiguration)) : CardValidator {
 
     override fun validatePAN(pan: PAN): Pair<ValidationResult, CardBrand?> = panValidator.validate(pan)
 
