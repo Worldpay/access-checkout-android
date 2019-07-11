@@ -75,7 +75,7 @@ class AccessCheckoutCardValidatorTest {
     }
 
     @Test
-    fun `given null cardConfiguration Will partially validate a luhn invalid card`() {
+    fun `given null card configuration will partially validate a luhn invalid card`() {
 
         val expected = Pair(ValidationResult(partial = true, complete = false), null)
 
@@ -86,8 +86,7 @@ class AccessCheckoutCardValidatorTest {
     }
 
     @Test
-    fun `given null cardConfiguration Will completely validate a luhn valid card`() {
-
+    fun `given null card configuration will completely validate a luhn valid card`() {
         val expected = Pair(ValidationResult(partial = true, complete = true), null)
 
         accessCheckoutCardValidator = AccessCheckoutCardValidator(null)

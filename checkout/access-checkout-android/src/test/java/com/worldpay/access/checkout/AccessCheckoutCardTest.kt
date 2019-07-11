@@ -61,9 +61,8 @@ class AccessCheckoutCardTest {
         given(cardValidator.cardConfiguration).willReturn(cardConfiguration)
         card = AccessCheckoutCard(panView, cvvView, dateView, factory)
         card.cardListener = cardListener
-        card.cardValidator = cardValidator
 
-        reset(cardListener)
+        setCardValidator(card, cardValidator)
     }
 
     @Test
@@ -297,7 +296,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenCardValidatorIsUpdatedWithNoLengthFilterAndThenPANHasBeenUpdatedThenCardListenerIsOnlyNotifiedOfDefaultLengthFilterUpdate() {
         given(factory.getPANLengthFilter(cardValidator)).willReturn(null)
-        card.cardValidator = cardValidator
+        setCardValidator(card, cardValidator)
 
         val updatedPan = "1234"
         val cardBrand = CardBrand("test", emptyList(), null, emptyList())
@@ -445,7 +444,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenCardValidatorIsUpdatedWithNoLengthFilterAndThenCVVHasBeenUpdatedThenCardListenerIsOnlyNotifiedOfDefaultLengthFilterUpdate() {
         given(factory.getCVVLengthFilter(cardValidator, panView)).willReturn(null)
-        card.cardValidator = cardValidator
+        setCardValidator(card, cardValidator)
 
         val updatedCVV = "1234"
         val cardBrand = CardBrand("test", emptyList(), null, emptyList())
@@ -520,7 +519,7 @@ class AccessCheckoutCardTest {
     @Test
     fun givenCardValidatorIsUpdatedWithNoLengthFilterAndThenDateHasBeenUpdatedThenCardListenerIsOnlyNotifiedOfDefaultLengthFilterUpdate() {
         given(factory.getDateLengthFilter(cardConfiguration)).willReturn(null)
-        card.cardValidator = cardValidator
+        setCardValidator(card, cardValidator)
 
         val month = "01"
         val year = "19"
@@ -738,7 +737,7 @@ class AccessCheckoutCardTest {
         given(factory.getCVVLengthFilter(validator, panView)).willReturn(cvvLengthFilter)
         given(factory.getDateLengthFilter(cardConfiguration)).willReturn(dateLengthFilter)
 
-        card.cardValidator = validator
+        setCardValidator(card, validator)
 
         verifyZeroInteractions(cardListener)
     }
@@ -759,6 +758,112 @@ class AccessCheckoutCardTest {
         assertNull(accessCheckoutCardDefaultFactory.getPANLengthFilter(null))
         assertNull(accessCheckoutCardDefaultFactory.getCVVLengthFilter(null, panView))
         assertNull(accessCheckoutCardDefaultFactory.getDateLengthFilter(null))
+    }
+
+    @Test
+    fun givenCardValidatorIsSetThenACardShouldRevalidatePartialPANFieldIfOnFocus() {
+        given(panView.hasFocus()).willReturn(true)
+        val validationResult = ValidationResult(partial = true, complete = false)
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, cardBrand))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, cardBrand))
+        given(cardValidator.validateDate(month, year)).willReturn(validationResult)
+
+        card = AccessCheckoutCard(panView, cvvView, dateView, factory)
+        card.cardListener = cardListener
+        card.cardValidator = cardValidator
+
+        verify(cardListener).onUpdate(panView, true)
+        verify(cardListener).onUpdateCardBrand(cardBrand)
+    }
+
+    @Test
+    fun givenCardValidatorIsSetThenACardShouldRevalidateCompletePANFieldIfOnFocus() {
+        given(panView.hasFocus()).willReturn(false)
+        val validationResult = ValidationResult(partial = true, complete = false)
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, cardBrand))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, cardBrand))
+        given(cardValidator.validateDate(month, year)).willReturn(validationResult)
+
+        card = AccessCheckoutCard(panView, cvvView, dateView, factory)
+        card.cardListener = cardListener
+        card.cardValidator = cardValidator
+
+        verify(cardListener).onUpdate(panView, false)
+    }
+
+    @Test
+    fun givenCardValidatorIsSetThenACardShouldRevalidatePartialCVVFieldIfOnFocus() {
+        given(cvvView.hasFocus()).willReturn(true)
+        val validationResult = ValidationResult(partial = true, complete = false)
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, cardBrand))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, cardBrand))
+        given(cardValidator.validateDate(month, year)).willReturn(validationResult)
+
+        card = AccessCheckoutCard(panView, cvvView, dateView, factory)
+        card.cardListener = cardListener
+        card.cardValidator = cardValidator
+
+        verify(cardListener).onUpdate(cvvView, true)
+    }
+
+    @Test
+    fun givenCardValidatorIsSetThenACardShouldRevalidateCompleteCVVFieldIfOnFocus() {
+        given(cvvView.hasFocus()).willReturn(false)
+        val validationResult = ValidationResult(partial = true, complete = false)
+        val cardBrand = CardBrand("test", "test", null, emptyList())
+        given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, cardBrand))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, cardBrand))
+        given(cardValidator.validateDate(month, year)).willReturn(validationResult)
+
+        card = AccessCheckoutCard(panView, cvvView, dateView, factory)
+        card.cardListener = cardListener
+        card.cardValidator = cardValidator
+
+        verify(cardListener, times(2)).onUpdate(cvvView, false)
+    }
+
+    @Test
+    fun givenCardValidatorIsSetThenACardShouldRevalidatePartialDateFieldIfOnFocus() {
+        given(dateView.hasFocus()).willReturn(true)
+        val validationResult = ValidationResult(partial = true, complete = false)
+        given(dateView.getInsertedMonth()).willReturn("")
+        given(cardValidator.canUpdate("", year)).willReturn(true)
+        given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, null))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, null))
+        given(cardValidator.validateDate(null, year)).willReturn(validationResult)
+
+        card = AccessCheckoutCard(panView, cvvView, dateView, factory)
+        card.cardListener = cardListener
+        card.cardValidator = cardValidator
+
+        verify(cardListener).onUpdate(dateView, true)
+    }
+
+    @Test
+    fun givenCardValidatorIsSetThenACardShouldRevalidateCompleteDateFieldIfOnFocus() {
+        given(cvvView.hasFocus()).willReturn(false)
+        val validationResult = ValidationResult(partial = true, complete = false)
+        given(cardValidator.validatePAN(pan)).willReturn(Pair(validationResult, null))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(validationResult, null))
+        given(cardValidator.validateDate(month, year)).willReturn(validationResult)
+
+        card = AccessCheckoutCard(panView, cvvView, dateView, factory)
+        card.cardListener = cardListener
+        card.cardValidator = cardValidator
+
+        verify(cardListener).onUpdate(dateView, false)
+    }
+
+    private fun setCardValidator(card: Card, cardValidator: CardValidator) {
+        given(cardValidator.validatePAN(pan)).willReturn(Pair(ValidationResult(partial = false, complete = false), null))
+        given(cardValidator.validateCVV(cvv, pan)).willReturn(Pair(ValidationResult(partial = false, complete = false), null))
+        given(cardValidator.validateDate(month, year)).willReturn(ValidationResult(partial = false, complete = false))
+        card.cardValidator = cardValidator
+        reset(cardValidator)
+        reset(cardListener)
     }
 
 }
