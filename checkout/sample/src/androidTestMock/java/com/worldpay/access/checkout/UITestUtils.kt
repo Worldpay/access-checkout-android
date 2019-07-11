@@ -1,27 +1,32 @@
 package com.worldpay.access.checkout
 
+import android.app.Activity
 import android.content.Context
+import android.content.pm.ActivityInfo
 import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso.*
+import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions
 import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.*
+import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.RootMatchers
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.uiautomator.UiDevice
-import android.support.test.uiautomator.UiDevice.*
+import android.support.test.uiautomator.UiDevice.getInstance
 import android.support.test.uiautomator.UiObject
 import android.support.test.uiautomator.UiSelector
 import android.support.v4.content.res.ResourcesCompat.getColor
+import android.view.Surface
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
 import com.worldpay.access.checkout.matchers.AlphaMatcher
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
 import com.worldpay.access.checkout.matchers.EditTextColorMatcher
+import org.awaitility.Awaitility
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import org.junit.Assert
 import org.junit.Assert.assertTrue
+import java.util.concurrent.TimeUnit
 
 object UITestUtils {
 
@@ -80,6 +85,11 @@ object UITestUtils {
     fun updateMonthDetails(month: String) {
         onView(monthMatcher)
             .perform(click(), ViewActions.replaceText(month), ViewActions.closeSoftKeyboard())
+    }
+
+    fun updateYearDetails(year: String) {
+        onView(yearMatcher)
+            .perform(click(), ViewActions.replaceText(year), ViewActions.closeSoftKeyboard())
     }
 
     fun checkSubmitInState(enabled: Boolean) {
@@ -200,9 +210,39 @@ object UITestUtils {
     private fun progressBar(): UiObject =
         uiObjectWithId(R.id.loading_bar)
 
-    private fun assertUiObjectExistsAndIsDisabled(resId: Int) {
+    fun assertUiObjectExistsAndIsDisabled(resId: Int) {
         val uiObject = uiObjectWithId(resId)
         uiObject.exists()
         Assert.assertFalse(uiObject.isEnabled)
+    }
+
+    fun assertUiObjectExistsAndIsEnabled(resId: Int) {
+        val uiObject = uiObjectWithId(resId)
+        uiObject.exists()
+        assertTrue(uiObject.isEnabled)
+    }
+
+    fun rotateToPortraitAndWait(activity: Activity, timeoutInMillis: Long, assertionCondition: () -> Boolean) {
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        Awaitility.await().atMost(timeoutInMillis, TimeUnit.MILLISECONDS).until {
+            when (UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).displayRotation) {
+                Surface.ROTATION_0 -> true
+                Surface.ROTATION_180 -> true
+                else -> false
+            } && assertionCondition()
+        }
+    }
+
+    fun rotateToLandscapeAndWait(activity: Activity, timeoutInMillis: Long, assertionCondition: () -> Boolean) {
+        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
+        Awaitility.await().atMost(timeoutInMillis, TimeUnit.MILLISECONDS).until {
+            when (UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).displayRotation) {
+                Surface.ROTATION_90 -> true
+                Surface.ROTATION_270 -> true
+                else -> false
+            } && assertionCondition()
+        }
     }
 }
