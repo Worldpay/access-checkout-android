@@ -87,6 +87,11 @@ object UITestUtils {
             .perform(click(), ViewActions.replaceText(month), ViewActions.closeSoftKeyboard())
     }
 
+    fun updateYearDetails(year: String) {
+        onView(yearMatcher)
+            .perform(click(), ViewActions.replaceText(year), ViewActions.closeSoftKeyboard())
+    }
+
     fun checkSubmitInState(enabled: Boolean) {
         val enabledMatcher: Matcher<View> =
             if (enabled) isEnabled() else CoreMatchers.not(isEnabled())
@@ -217,7 +222,7 @@ object UITestUtils {
         assertTrue(uiObject.isEnabled)
     }
 
-    fun rotateToPortraitAndWait(activity: Activity, timeoutInMillis: Long) {
+    fun rotateToPortraitAndWait(activity: Activity, timeoutInMillis: Long, assertionCondition: () -> Boolean) {
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         Awaitility.await().atMost(timeoutInMillis, TimeUnit.MILLISECONDS).until {
@@ -225,11 +230,11 @@ object UITestUtils {
                 Surface.ROTATION_0 -> true
                 Surface.ROTATION_180 -> true
                 else -> false
-            }
+            } && assertionCondition()
         }
     }
 
-    fun rotateToLandscapeAndWait(activity: Activity, timeoutInMillis: Long) {
+    fun rotateToLandscapeAndWait(activity: Activity, timeoutInMillis: Long, assertionCondition: () -> Boolean) {
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
         Awaitility.await().atMost(timeoutInMillis, TimeUnit.MILLISECONDS).until {
@@ -237,7 +242,7 @@ object UITestUtils {
                 Surface.ROTATION_90 -> true
                 Surface.ROTATION_270 -> true
                 else -> false
-            }
+            } && assertionCondition()
         }
     }
 }
