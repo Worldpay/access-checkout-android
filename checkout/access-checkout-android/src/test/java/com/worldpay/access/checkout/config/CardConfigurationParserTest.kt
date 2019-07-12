@@ -277,6 +277,7 @@ class CardConfigurationParserTest {
                 "brands": [
                     {
                         "name": "visa",
+                        "image": "card_visa_logo",
                         "images": [
                             {
                                 "type": "image/png",
@@ -306,6 +307,7 @@ class CardConfigurationParserTest {
                     },
                     {
                         "name": "mastercard",
+                        "image": "card_mastercard_logo",
                         "images": [
                             {
                                 "type": "image/png",
@@ -337,6 +339,7 @@ class CardConfigurationParserTest {
                     },
                     {
                         "name": "amex",
+                        "image": "card_amex_logo",
                         "images": [
                             {
                                 "type": "image/png",
