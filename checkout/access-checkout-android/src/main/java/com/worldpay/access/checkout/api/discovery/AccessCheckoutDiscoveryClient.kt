@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
+import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import java.util.concurrent.atomic.AtomicInteger
 
 internal class AccessCheckoutDiscoveryClient(

@@ -7,8 +7,8 @@ import android.support.v4.content.LocalBroadcastManager
 import com.google.common.base.CaseFormat
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.testutils.typeSafeAny
 import com.worldpay.access.checkout.views.SessionResponseListener
+import com.nhaarman.mockitokotlin2.any
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
@@ -58,7 +58,7 @@ class AccessCheckoutClientTest {
 
         then(context)
             .should()
-            .startService(typeSafeAny())
+            .startService(any())
     }
 
     @Test
@@ -100,7 +100,7 @@ class AccessCheckoutClientTest {
 
         accessCheckoutClient.startListener()
 
-        verify(localBroadcastManager).registerReceiver(typeSafeAny(), typeSafeAny())
+        verify(localBroadcastManager).registerReceiver(any(), any())
     }
 
     @Test
@@ -110,7 +110,7 @@ class AccessCheckoutClientTest {
 
         accessCheckoutClient.disconnectListener()
 
-        verify(localBroadcastManager).unregisterReceiver(typeSafeAny())
+        verify(localBroadcastManager).unregisterReceiver(any())
     }
 
     @Test

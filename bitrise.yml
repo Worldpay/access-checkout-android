@@ -14,6 +14,18 @@ workflows:
         inputs:
         - gradlew_path: "$PROJECT_LOCATION/gradlew"
     - android-lint@0.9.5:
+        title: "Lint check on app module"
+        inputs:
+          - project_location: "$PROJECT_LOCATION"
+          - module: "$APP_MODULE"
+          - variant: "$APP_PROD_VARIANT"
+    - android-unit-test@0.9.5:
+        title: "Unit tests on app module"
+        inputs:
+          - project_location: "$PROJECT_LOCATION"
+          - module: "$APP_MODULE"
+          - variant: "$APP_PROD_VARIANT"
+    - android-lint@0.9.5:
         title: "Lint check on Library module"
         inputs:
         - project_location: "$PROJECT_LOCATION"
@@ -123,6 +135,18 @@ workflows:
     - install-missing-android-tools@2.3.4:
         inputs:
         - gradlew_path: "$PROJECT_LOCATION/gradlew"
+    - android-lint@0.9.5:
+        title: "Lint check on app module"
+        inputs:
+          - project_location: "$PROJECT_LOCATION"
+          - module: "$APP_MODULE"
+          - variant: "$APP_PROD_VARIANT"
+    - android-unit-test@0.9.5:
+        title: "Unit tests on app module"
+        inputs:
+          - project_location: "$PROJECT_LOCATION"
+          - module: "$APP_MODULE"
+          - variant: "$APP_PROD_VARIANT"
     - android-lint@0.9.5:
         title: "Lint check on Library module"
         inputs:

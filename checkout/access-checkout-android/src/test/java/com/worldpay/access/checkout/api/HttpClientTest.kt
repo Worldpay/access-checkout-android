@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.api
 
 import com.google.common.collect.Maps.newHashMap
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
-import com.worldpay.access.checkout.testutils.mock
 import com.worldpay.access.checkout.testutils.removeWhitespace
 import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Assert.assertEquals

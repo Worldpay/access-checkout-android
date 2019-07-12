@@ -1,16 +1,17 @@
 package com.worldpay.access.checkout
 
 
-import android.os.Build
 import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.filters.LargeTest
 import android.support.test.runner.AndroidJUnit4
-import android.support.v4.content.ContextCompat
-import com.worldpay.access.checkout.matchers.EditTextColorMatcher.Companion.withEditTextColor
+import com.worldpay.access.checkout.UITestUtils.getFailColor
+import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher.Companion.withBrandVectorImageId
+import com.worldpay.access.checkout.matchers.BrandVectorImageNameMatcher.Companion.withBrandVectorImageName
+import com.worldpay.access.checkout.matchers.EditTextColorMatcher.Companion.withEditTextColor
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -44,14 +45,14 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("12"))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
 
         onView(withId(R.id.card_number_edit_text))
             .perform(click())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
+            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
     }
 
     @Test
@@ -70,7 +71,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), pressImeActionButton())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -81,7 +82,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), pressImeActionButton())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
     @Test
@@ -98,7 +99,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), typeText("77"), closeSoftKeyboard())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -107,7 +108,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.cardCVVText))
             .check(matches(withText("1234")))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
     @Test
@@ -120,7 +121,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -128,7 +129,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), typeText("1234"), closeSoftKeyboard())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
     @Test
@@ -141,7 +142,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -162,19 +163,19 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("123"), closeSoftKeyboard())
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), closeSoftKeyboard())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
+            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
     }
 
     @Test
@@ -186,19 +187,19 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_amex_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("123"), pressImeActionButton())
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), pressImeActionButton())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
+            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -207,7 +208,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.cardCVVText))
             .check(matches(withText("123")))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
     @Test
@@ -219,7 +220,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.VISA)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -227,7 +228,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), typeText("123"), pressImeActionButton())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
     @Test
@@ -240,7 +241,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.VISA)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -249,7 +250,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.cardCVVText))
             .check(matches(withText("123")))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         closeSoftKeyboard()
     }
@@ -266,7 +267,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), closeSoftKeyboard())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -275,10 +276,10 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_visa_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.VISA)))
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
+            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -286,7 +287,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), replaceText(""), replaceText("123"), pressImeActionButton())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
     }
 
@@ -300,7 +301,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.MASTERCARD)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -308,7 +309,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), typeText("123"), closeSoftKeyboard())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
     @Test
@@ -321,7 +322,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.MASTERCARD)))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -330,7 +331,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.cardCVVText))
             .check(matches(withText("123")))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
     }
 
@@ -347,7 +348,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), closeSoftKeyboard())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -356,10 +357,10 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_mastercard_logo)))
+            .check(matches(withBrandVectorImageName(CardBrand.MASTERCARD)))
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
+            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -367,7 +368,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), replaceText(""), replaceText("123"), closeSoftKeyboard())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
     @Test
@@ -390,7 +391,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), pressImeActionButton())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.FAIL))))
+            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -401,7 +402,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), pressImeActionButton())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.cardCVVText))
             .check(matches(isDisplayed()))
@@ -412,7 +413,7 @@ class CVVUITests: AbstractUITest() {
             .perform(click(), pressImeActionButton())
 
         onView(withId(R.id.cardCVVText))
-            .check(matches(withEditTextColor(platformCompatGetColor(R.color.SUCCESS))))
+            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
     @Test
@@ -426,10 +427,4 @@ class CVVUITests: AbstractUITest() {
             .perform(replaceText(pastedText))
             .check(matches(withText(pastedText.substring(0, 4))))
     }
-
-    private fun platformCompatGetColor(colorRef: Int) =
-        if (Build.VERSION.SDK_INT >= 23)
-            activityRule.activity.getColor(colorRef)
-        else
-            ContextCompat.getColor(activityRule.activity, colorRef)
 }

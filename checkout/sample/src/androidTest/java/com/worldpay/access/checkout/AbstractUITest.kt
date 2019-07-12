@@ -7,6 +7,12 @@ import org.junit.Rule
 
 abstract class AbstractUITest {
 
+    enum class CardBrand(val cardBrandName: String) {
+        AMEX("amex"),
+        VISA("visa"),
+        MASTERCARD("mastercard")
+    }
+
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 

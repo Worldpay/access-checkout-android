@@ -211,9 +211,35 @@ class MockServerTest {
 
         val cardConfigurationInputStream = activityRule.activity.resources.openRawResource(R.raw.card_configuration_file)
         val cardConfigurationAsString = cardConfigurationInputStream.reader(Charsets.UTF_8).readText()
+        val substitutedResponseTemplateString = cardConfigurationAsString.replace("{{request.requestLine.baseUrl}}", MockServer.baseUrl)
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.body()?.string(), CoreMatchers.equalTo(cardConfigurationAsString))
+            assertThat(response.body()?.string(), CoreMatchers.equalTo(substitutedResponseTemplateString))
         }
+    }
+
+    @Test
+    fun givenLogosAreHosted_ThenShouldBeAbleToFetchLogosExternally() {
+        val client = OkHttpClient()
+
+        val baseURL = "http://localhost:$port"
+
+        val logos = listOf("visa", "amex", "mastercard")
+
+        logos.forEach {
+            val request = Request.Builder()
+                .url("$baseURL/access-checkout/assets/$it.svg")
+                .build()
+
+
+            val logoInputStream = activityRule.activity.assets.open("$it.svg")
+            val logoAsString = logoInputStream.reader(Charsets.UTF_8).readText()
+
+            client.newCall(request).execute().use { response ->
+                assertThat(response.header("Content-Type"), equalTo("image/svg+xml"))
+                assertThat("Logo did not match expected for $it", response.body()?.string(), CoreMatchers.equalTo(logoAsString))
+            }
+        }
+
     }
 }
