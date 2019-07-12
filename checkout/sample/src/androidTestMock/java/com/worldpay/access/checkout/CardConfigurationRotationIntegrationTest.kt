@@ -7,6 +7,8 @@ import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsDisable
 import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsEnabled
 import com.worldpay.access.checkout.UITestUtils.cardNumberMatcher
 import com.worldpay.access.checkout.UITestUtils.closeKeyboard
+import com.worldpay.access.checkout.UITestUtils.getFailColor
+import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.UITestUtils.moveToField
 import com.worldpay.access.checkout.UITestUtils.rotateToLandscapeAndWait
 import com.worldpay.access.checkout.UITestUtils.rotateToPortraitAndWait
@@ -87,8 +89,8 @@ class CardConfigurationRotationIntegrationTest: AbstractUITest() {
     private fun cvvEditText(): EditText = activity().findViewById(R.id.cardCVVText)
     private fun monthEditText(): EditText = activity().findViewById(R.id.month_edit_text)
     private fun yearEditText(): EditText = activity().findViewById(R.id.year_edit_text)
-    private fun failColor() = activity().getColor(R.color.FAIL)
-    private fun successColor() = activity().getColor(R.color.SUCCESS)
+    private fun failColor() = getFailColor(activity())
+    private fun successColor() = getSuccessColor(activity())
 
     private fun assertFieldConditions(expectedPANColor: Int, expectedCVVColor: Int, expectedMonthColor: Int,
                                       expectedYearColor: Int, cardBrand: CardBrand): Boolean {
