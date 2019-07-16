@@ -79,8 +79,7 @@ uploadArchives {
 }
 
 nexusStaging {
-    packageGroup = "com.worldpay.access"
-    stagingProfileId = "com.worldpay"
+    packageGroup = "com.worldpay"
 }
 
 artifacts {
