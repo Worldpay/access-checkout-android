@@ -6,6 +6,7 @@ import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.filters.LargeTest
 import android.support.test.runner.AndroidJUnit4
+import com.worldpay.access.checkout.AbstractUITest.CardBrand.*
 import com.worldpay.access.checkout.UITestUtils.assertBrandImage
 import com.worldpay.access.checkout.UITestUtils.cardNumberMatcher
 import com.worldpay.access.checkout.UITestUtils.checkFieldInState
@@ -52,7 +53,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa_logo)
+        assertBrandImage(VISA)
     }
 
     @Test
@@ -79,7 +80,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa_logo)
+        assertBrandImage(VISA)
     }
 
     @Test
@@ -93,7 +94,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard_logo)
+        assertBrandImage(MASTERCARD)
     }
 
     @Test
@@ -109,7 +110,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard_logo)
+        assertBrandImage(MASTERCARD)
     }
 
     @Test
@@ -126,7 +127,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_amex_logo)
+        assertBrandImage(AMEX)
     }
 
     @Test
@@ -140,7 +141,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_amex_logo)
+        assertBrandImage(AMEX)
     }
 
     @Test
@@ -185,7 +186,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa_logo)
+        assertBrandImage(VISA)
 
     }
 
@@ -203,7 +204,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard_logo)
+        assertBrandImage(MASTERCARD)
     }
 
     @Test
@@ -218,7 +219,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_amex_logo)
+        assertBrandImage(AMEX)
     }
 
     @Test
@@ -234,7 +235,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa_logo)
+        assertBrandImage(VISA)
 
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
@@ -250,7 +251,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard_logo)
+        assertBrandImage(MASTERCARD)
     }
 
     @Test
@@ -266,7 +267,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa_logo)
+        assertBrandImage(VISA)
 
         onView(withId(R.id.month_edit_text))
             .check(matches(isDisplayed()))
@@ -275,7 +276,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(false, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa_logo)
+        assertBrandImage(VISA)
     }
 
 
@@ -292,7 +293,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa_logo)
+        assertBrandImage(VISA)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), typeTextIntoFocusedView("1"), closeSoftKeyboard())
@@ -317,7 +318,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_visa_logo)
+        assertBrandImage(VISA)
 
         closeSoftKeyboard()
     }
@@ -336,7 +337,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_mastercard_logo)
+        assertBrandImage(MASTERCARD)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(typeTextIntoFocusedView("4"), pressImeActionButton())
@@ -357,7 +358,7 @@ class PANUITest: AbstractUITest() {
 
         checkFieldInState(true, cardNumberMatcher, activityRule.activity)
 
-        assertBrandImage(R.drawable.card_amex_logo)
+        assertBrandImage(AMEX)
 
         onView(withId(R.id.card_number_edit_text))
             .perform(typeTextIntoFocusedView("4"), closeSoftKeyboard())

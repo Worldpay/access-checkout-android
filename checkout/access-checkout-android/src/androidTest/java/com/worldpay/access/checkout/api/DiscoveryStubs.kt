@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.api
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 
 object DiscoveryStubs {
 
@@ -69,7 +70,7 @@ object DiscoveryStubs {
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
                     .withBody(serviceDiscoveryResponse)
-                    .withTransformers("response-template")
+                    .withTransformers(ResponseTemplateTransformer.NAME)
             )
     }
 
@@ -80,7 +81,7 @@ object DiscoveryStubs {
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
                     .withBody(topLevelServiceResourceResponse)
-                    .withTransformers("response-template")
+                    .withTransformers(ResponseTemplateTransformer.NAME)
             )
     }
 }

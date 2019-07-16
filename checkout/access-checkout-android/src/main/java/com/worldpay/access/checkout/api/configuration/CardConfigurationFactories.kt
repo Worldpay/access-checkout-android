@@ -23,17 +23,18 @@ internal object CardConfigurationClientFactory {
 /**
  * Responsible for loading the remote card configuration file that is hosted by Access Worldpay
  * and used for driving the card validation logic. When the card configuration has been
- * returned, it will then be set on the `CardValidator` assigned to the `Card` so that the
+ * returned, it will then be set on the [CardValidator] assigned to the `Card` so that the
  * fields will start validating.
  */
 object CardConfigurationFactory {
+
+    /**
+     * @param card the [Card] instance to apply the [CardConfiguration] to
+     * @param baseUrl the base URL for the hosted card configuration
+     * @param client (optional) the [CardConfigurationClient]
+     */
     @JvmStatic
     @JvmOverloads
-    /**
-     * @param card the `Card` instance to apply the `CardConfiguration` to
-     * @param baseUrl the base URL for the hosted card configuration
-     * @param client (optional) the `CardConfigurationClient`
-     */
     fun getRemoteCardConfiguration(
         card: Card,
         baseUrl: String,

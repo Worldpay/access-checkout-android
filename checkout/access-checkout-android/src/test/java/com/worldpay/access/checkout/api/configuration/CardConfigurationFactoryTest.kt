@@ -1,20 +1,17 @@
 package com.worldpay.access.checkout.api.configuration
 
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.Card
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.testutils.argumentCaptor
-import com.worldpay.access.checkout.testutils.capture
-import com.worldpay.access.checkout.testutils.mock
-import com.worldpay.access.checkout.testutils.typeSafeEq
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.validation.CardValidator
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
-import org.mockito.ArgumentCaptor
-import org.mockito.Captor
 import org.mockito.Mockito.*
 
 
@@ -26,11 +23,8 @@ class CardConfigurationFactoryTest {
     private lateinit var client: CardConfigurationClient
     private lateinit var callbackObject: Callback<CardConfiguration>
     private lateinit var cardConfiguration: CardConfiguration
-    val baseURL = "http://localhost"
-    @Captor
-    private lateinit var callbackCaptor: ArgumentCaptor<Callback<CardConfiguration>>
-    @Captor
-    private lateinit var cardValidatorCaptor: ArgumentCaptor<CardValidator>
+
+    private val baseURL = "http://localhost"
 
     @Before
     fun setup() {
@@ -44,33 +38,33 @@ class CardConfigurationFactoryTest {
     @Test
     fun givenACardShouldFetchRemoteConfiguration() {
 
-        callbackCaptor = argumentCaptor<Callback<CardConfiguration>>()
+        val callbackCaptor = argumentCaptor<Callback<CardConfiguration>>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
 
         CardConfigurationFactory.getRemoteCardConfiguration(card, baseURL, cardConfigurationClient)
-        verify(cardConfigurationClient).getCardConfiguration(typeSafeEq(baseURL), capture(callbackCaptor))
-        val configuration = CardConfiguration(brands = listOf(CardBrand("test", "test", null, listOf())))
-        callbackCaptor.value.onResponse(null, configuration)
-        cardValidatorCaptor = argumentCaptor()
+        verify(cardConfigurationClient).getCardConfiguration(com.nhaarman.mockitokotlin2.eq(baseURL), callbackCaptor.capture())
+        val configuration = CardConfiguration(brands = listOf(CardBrand("test", listOf(), null, listOf())))
+        callbackCaptor.firstValue.onResponse(null, configuration)
+        val cardValidatorCaptor = argumentCaptor<CardValidator>()
 
-        verify(card, atLeastOnce()).cardValidator = capture(cardValidatorCaptor)
-        val cardValidatorCaptured = cardValidatorCaptor.value
-        assertEquals(configuration, cardValidatorCaptured.cardConfiguration)
+        verify(card, atLeastOnce()).cardValidator = cardValidatorCaptor.capture()
+        assertEquals(configuration, cardValidatorCaptor.firstValue.cardConfiguration)
     }
 
     @Test
     fun givenAnApiErrorCardShouldNotBeSetWithValidator() {
 
-        callbackCaptor = argumentCaptor<Callback<CardConfiguration>>()
+        val callbackCaptor = argumentCaptor<Callback<CardConfiguration>>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
 
         CardConfigurationFactory.getRemoteCardConfiguration(card, baseURL, cardConfigurationClient)
 
-        verify(cardConfigurationClient).getCardConfiguration(typeSafeEq(baseURL), capture(callbackCaptor))
+        verify(cardConfigurationClient).getCardConfiguration(eq(baseURL), callbackCaptor.capture())
         val error = Exception()
-        callbackCaptor.value.onResponse(error, null)
-        cardValidatorCaptor = argumentCaptor()
-        verify(card, never()).cardValidator = capture(cardValidatorCaptor)
+        callbackCaptor.firstValue.onResponse(error, null)
+
+        val cardValidatorCaptor = argumentCaptor<CardValidator>()
+        verify(card, never()).cardValidator = cardValidatorCaptor.capture()
     }
 
     @Test

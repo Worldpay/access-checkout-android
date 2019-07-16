@@ -1,16 +1,13 @@
 package com.worldpay.access.checkout.api.discovery
 
-import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.api.AccessCheckoutException.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.mock
+import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.testutils.argumentCaptor
-import com.worldpay.access.checkout.testutils.capture
-import com.worldpay.access.checkout.testutils.mock
-import com.worldpay.access.checkout.testutils.typeSafeAny
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.mockito.ArgumentCaptor
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.*
 import kotlin.test.assertEquals
@@ -41,7 +38,7 @@ class AccessCheckoutDiscoveryClientTest {
     @Test
     fun givenValidBaseURLAndFirstTimeDiscoveryWithoutCallback_ThenShouldExecuteAsyncTask() {
         val accessCheckoutDiscoveryAsyncTask = mock<AccessCheckoutDiscoveryAsyncTask>()
-        given(mockedAsyncTaskFactory.getAsyncTask(typeSafeAny())).willReturn(accessCheckoutDiscoveryAsyncTask)
+        given(mockedAsyncTaskFactory.getAsyncTask(any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory).discover("http://localhost")
 
@@ -57,14 +54,14 @@ class AccessCheckoutDiscoveryClientTest {
                 assertEquals(sessionResponse, response)
             }
         }
-        val argumentCaptor: ArgumentCaptor<Callback<String>> = argumentCaptor()
+        val argumentCaptor = argumentCaptor<Callback<String>>()
 
         val accessCheckoutDiscoveryAsyncTask = mock<AccessCheckoutDiscoveryAsyncTask>()
-        given(mockedAsyncTaskFactory.getAsyncTask(typeSafeAny())).willReturn(accessCheckoutDiscoveryAsyncTask)
+        given(mockedAsyncTaskFactory.getAsyncTask(any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory).discover("http://localhost", callback)
-        verify(mockedAsyncTaskFactory).getAsyncTask(capture(argumentCaptor))
-        argumentCaptor.value.onResponse(null, sessionResponse)
+        verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(null, sessionResponse)
 
         verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("http://localhost")
 
@@ -80,14 +77,14 @@ class AccessCheckoutDiscoveryClientTest {
                 assertEquals(exceptionMessage, error.message)
             }
         }
-        val argumentCaptor: ArgumentCaptor<Callback<String>> = argumentCaptor()
+        val argumentCaptor = argumentCaptor<Callback<String>>()
 
         val accessCheckoutDiscoveryAsyncTask = mock<AccessCheckoutDiscoveryAsyncTask>()
-        given(mockedAsyncTaskFactory.getAsyncTask(typeSafeAny())).willReturn(accessCheckoutDiscoveryAsyncTask)
+        given(mockedAsyncTaskFactory.getAsyncTask(any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory).discover("http://localhost", callback)
-        verify(mockedAsyncTaskFactory).getAsyncTask(capture(argumentCaptor))
-        argumentCaptor.value.onResponse(RuntimeException(exceptionMessage), null)
+        verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
         verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("http://localhost")
     }
@@ -105,14 +102,14 @@ class AccessCheckoutDiscoveryClientTest {
         }
 
         val accessCheckoutDiscoveryAsyncTask = mock(AccessCheckoutDiscoveryAsyncTask::class.java)
-        val argumentCaptor: ArgumentCaptor<Callback<String>> = argumentCaptor()
-        given(mockedAsyncTaskFactory.getAsyncTask(typeSafeAny())).willReturn(accessCheckoutDiscoveryAsyncTask)
+        val argumentCaptor = argumentCaptor<Callback<String>>()
+        given(mockedAsyncTaskFactory.getAsyncTask(any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
         accessCheckoutDiscoveryClient.discover("http://localhost")
-        verify(mockedAsyncTaskFactory).getAsyncTask(capture(argumentCaptor))
+        verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture())
 
-        argumentCaptor.value.onResponse(null, sessionResponse)
+        argumentCaptor.firstValue.onResponse(null, sessionResponse)
         accessCheckoutDiscoveryClient.discover("http://localhost", secondCallback)
 
         verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("http://localhost")
@@ -132,21 +129,21 @@ class AccessCheckoutDiscoveryClientTest {
         }
 
         val accessCheckoutDiscoveryAsyncTask = mock<AccessCheckoutDiscoveryAsyncTask>()
-        val argumentCaptor: ArgumentCaptor<Callback<String>> = argumentCaptor()
-        given(mockedAsyncTaskFactory.getAsyncTask(typeSafeAny())).willReturn(accessCheckoutDiscoveryAsyncTask)
+        val argumentCaptor = argumentCaptor<Callback<String>>()
+        given(mockedAsyncTaskFactory.getAsyncTask(any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
         accessCheckoutDiscoveryClient.discover("http://localhost")
-        verify(mockedAsyncTaskFactory).getAsyncTask(capture(argumentCaptor))
-        argumentCaptor.value.onResponse(RuntimeException(exceptionMessage), null)
+        verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
         accessCheckoutDiscoveryClient.discover("http://localhost")
-        verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(capture(argumentCaptor))
-        argumentCaptor.value.onResponse(RuntimeException(exceptionMessage), null)
+        verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
         accessCheckoutDiscoveryClient.discover("http://localhost", callback)
-        verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(capture(argumentCaptor))
-        argumentCaptor.value.onResponse(RuntimeException(exceptionMessage), null)
+        verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
         verify(accessCheckoutDiscoveryAsyncTask, times(2)).execute("http://localhost")
     }
@@ -156,21 +153,21 @@ class AccessCheckoutDiscoveryClientTest {
         val exceptionMessage = "Some exception message"
 
         val accessCheckoutDiscoveryAsyncTask = mock<AccessCheckoutDiscoveryAsyncTask>()
-        val argumentCaptor: ArgumentCaptor<Callback<String>> = argumentCaptor()
-        given(mockedAsyncTaskFactory.getAsyncTask(typeSafeAny())).willReturn(accessCheckoutDiscoveryAsyncTask)
+        val argumentCaptor = argumentCaptor<Callback<String>>()
+        given(mockedAsyncTaskFactory.getAsyncTask(any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
         accessCheckoutDiscoveryClient.discover("http://localhost")
-        verify(mockedAsyncTaskFactory).getAsyncTask(capture(argumentCaptor))
-        argumentCaptor.value.onResponse(RuntimeException(exceptionMessage), null)
+        verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
         accessCheckoutDiscoveryClient.discover("http://localhost")
-        verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(capture(argumentCaptor))
-        argumentCaptor.value.onResponse(RuntimeException(exceptionMessage), null)
+        verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
         accessCheckoutDiscoveryClient.discover("http://localhost")
-        verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(capture(argumentCaptor))
-        argumentCaptor.value.onResponse(RuntimeException(exceptionMessage), null)
+        verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
         verify(accessCheckoutDiscoveryAsyncTask, times(2)).execute("http://localhost")
     }
@@ -180,14 +177,14 @@ class AccessCheckoutDiscoveryClientTest {
         val sessionResponse = "session_response"
 
         val accessCheckoutDiscoveryAsyncTask = mock(AccessCheckoutDiscoveryAsyncTask::class.java)
-        val argumentCaptor: ArgumentCaptor<Callback<String>> = argumentCaptor()
-        given(mockedAsyncTaskFactory.getAsyncTask(typeSafeAny())).willReturn(accessCheckoutDiscoveryAsyncTask)
+        val argumentCaptor = argumentCaptor<Callback<String>>()
+        given(mockedAsyncTaskFactory.getAsyncTask(any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
         accessCheckoutDiscoveryClient.discover("http://localhost")
-        verify(mockedAsyncTaskFactory).getAsyncTask(capture(argumentCaptor))
+        verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture())
 
-        argumentCaptor.value.onResponse(null, sessionResponse)
+        argumentCaptor.firstValue.onResponse(null, sessionResponse)
         accessCheckoutDiscoveryClient.discover("http://localhost")
 
         verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("http://localhost")

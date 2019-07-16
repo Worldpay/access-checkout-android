@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.views
 
 import android.content.Context
 import android.content.res.Resources
-import com.worldpay.access.checkout.testutils.mock
+import com.nhaarman.mockitokotlin2.mock
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import kotlin.test.assertEquals

@@ -37,7 +37,7 @@ open class PANLayout @JvmOverloads constructor(
     @JvmField
     val mEditText: EditText
 
-    internal var mImageView: ImageView; private set
+    var mImageView: ImageView; private set
 
     override var cardViewListener: CardViewListener? = null
 

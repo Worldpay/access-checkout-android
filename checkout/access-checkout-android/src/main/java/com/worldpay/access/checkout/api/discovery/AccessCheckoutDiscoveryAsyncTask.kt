@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
-import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
+import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import java.lang.Exception
 import java.net.MalformedURLException
 import java.net.URL

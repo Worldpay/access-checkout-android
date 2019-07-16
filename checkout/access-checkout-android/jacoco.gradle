@@ -4,7 +4,7 @@ jacoco {
     toolVersion = "0.8.3"
 }
 
-def loggingClasses = ['**/logging/LoggingUtils*']
+def loggingClasses = ['**/logging/LoggingUtils*', '**/logging/AccessCheckoutLogger*']
 def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*'] + loggingClasses
 def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
 def mainSrc = "${project.projectDir}/src/main/java"

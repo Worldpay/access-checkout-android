@@ -1,23 +1,17 @@
 package com.worldpay.access.checkout.logging
 
-import android.util.Log
-import com.worldpay.access.checkout.BuildConfig
-
 /**
  * Static utility methods for logging
  */
-class LoggingUtils {
-    companion object {
-        @JvmStatic
-        fun debugLog(tag: String, msg: String) {
-            if (BuildConfig.DEBUG)
-                Log.d(tag, msg)
-        }
+object LoggingUtils {
 
-        @JvmStatic
-        fun errorLog(tag: String, msg: String) {
-            if (BuildConfig.DEBUG)
-                Log.e(tag, msg)
-        }
+    private val accessCheckoutLogger = AccessCheckoutLogger()
+
+    fun debugLog(tag: String, msg: String) {
+        accessCheckoutLogger.debugLog(tag, msg)
+    }
+
+    fun errorLog(tag: String, msg: String) {
+        accessCheckoutLogger.errorLog(tag, msg)
     }
 }

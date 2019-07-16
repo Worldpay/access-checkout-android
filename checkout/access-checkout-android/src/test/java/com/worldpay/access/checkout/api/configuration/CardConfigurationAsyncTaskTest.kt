@@ -1,12 +1,12 @@
 package com.worldpay.access.checkout.api.configuration
 
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.config.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.testutils.mock
 import org.awaitility.Awaitility
 import org.junit.Test
 import org.junit.runner.RunWith
