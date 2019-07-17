@@ -7,17 +7,30 @@ import com.worldpay.access.checkout.logging.AccessCheckoutLogger
 import com.worldpay.access.checkout.logging.Logger
 import com.worldpay.access.checkout.views.PANLayout
 import java.io.InputStream
-import java.lang.Exception
 
 interface SVGImageRenderer {
     fun renderImage(inputStream: InputStream, targetView: ImageView, brandName: String)
 }
 
+/**
+ * This class is responsible for rendering an SVG image into a target view
+ *
+ * @param runOnUiThreadFunc the reference to a runOnUiThread function
+ * @param logger the logging instance
+ * @param svgWrapper the [SVGWrapper]
+ */
 class SVGImageRendererImpl(private val runOnUiThreadFunc: (Runnable) -> Unit,
                            private val logger: Logger = AccessCheckoutLogger(),
                            private val svgWrapper: SVGWrapper = SVGWrapper.svgWrapper
 ): SVGImageRenderer {
 
+    /**
+     * Renders a stream of SVG data into a target view
+     *
+     * @param inputStream the svg data
+     * @param targetView the target [ImageView]
+     * @param brandName the brand associated with this image
+     */
     override fun renderImage(inputStream: InputStream, targetView: ImageView, brandName: String) {
         try {
             val svg = svgWrapper.getSVGFromInputStream(inputStream)
