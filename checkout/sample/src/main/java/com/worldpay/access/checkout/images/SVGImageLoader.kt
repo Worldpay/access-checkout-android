@@ -11,7 +11,9 @@ import okhttp3.*
 import java.io.File
 import java.io.IOException
 
-
+/**
+ * This class is responsible for fetching a remote SVG file and applying it to a target view
+ */
 class SVGImageLoader @JvmOverloads constructor(
     private val runOnUiThreadFunc: (Runnable) -> Unit,
     private val cacheDir: File?,
@@ -29,6 +31,10 @@ class SVGImageLoader @JvmOverloads constructor(
         @Volatile
         private var INSTANCE: SVGImageLoader? = null
 
+        /**
+         * @param activity the current activity
+         * @return an [SVGImageLoader] instance
+         */
         fun getInstance(activity: Activity): SVGImageLoader {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE
@@ -53,6 +59,13 @@ class SVGImageLoader @JvmOverloads constructor(
         }
     }
 
+    /**
+     * Fetches the appropriate SVG image for a [CardBrand] from a remotely hosted endpoint over HTTP,
+     * and applies it to a target [ImageView]
+     *
+     * @param cardBrand the [CardBrand] to which to fetch the image for
+     * @param target the target [ImageView] to apply the image to
+     */
     fun fetchAndApplyCardLogo(cardBrand: CardBrand?, target: ImageView) {
 
         cardBrand?.let {

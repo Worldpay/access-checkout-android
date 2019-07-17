@@ -12,7 +12,7 @@ It includes, optionally, custom Android views that identifies card brands and va
 
 Download the latest AAR from [Maven Central](https://search.maven.org/search?q=g:com.worldpay.access%20AND%20a:access-checkout-android) or include in your project's build dependencies via Gradle:
 
-`implementation 'com.worldpay.access:access-checkout-android:1.1.0`
+`implementation 'com.worldpay.access:access-checkout-android:1.2.0`
 
 
 or Maven:
@@ -21,7 +21,7 @@ or Maven:
 <dependency>
   <groupId>com.worldpay.access</groupId>
   <artifactId>access-checkout-android</artifactId>
-  <version>1.1.0</version>
+  <version>1.2.0</version>
 </dependency>
 ```
 
@@ -44,7 +44,7 @@ allprojects {
 Add the following lines to the app level dependency list (kotlin version can be changed):
 
 ``` 
-implementation (name:'access-checkout-android-1.0.0', ext:'aar')
+implementation (name:'access-checkout-android-1.2.0', ext:'aar')
 implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 ```
 
@@ -152,7 +152,9 @@ override fun onUpdateLengthFilter(cardView: CardView, inputFilter: InputFilter) 
 }
 
 override fun onUpdateCardBrand(cardBrand: CardBrand?) {
-    panView.applyCardLogo(cardBrand?.image ?: "card_unknown_logo")
+    // CardBrand contains a reference to a list of images which you can
+    // use to fetch the remotely hosted image for the identified card brand.
+    // See an example of how to do this in MainActivity.kt in the sample app
 }
 ```
 
@@ -163,7 +165,11 @@ alongside a property `valid` indicating whether that field is in a valid or inva
 input length for that card view.
 
 `onUpdateCardBrand` is the method which will be invoked when there has been an update to the identity of the card. A non-null reference to the particular `CardBrand`
-will be returned if it an identified card brand, otherwise null if we have been unable to identify the card. 
+will be returned if it an identified card brand, otherwise null if we have been unable to identify the card.
+
+The card brand will contain a list of images which you may then use, if you wish, to display an icon for the identified card brand. Access Worldpay hosts both a PNG and an SVG
+version of the supported card brands, which you can use right away and apply to your views. The sample application demonstrates usage of this and an example of how
+to render an SVG image to our custom `PANLayout` class.
 
 #### 3) Set the references
 
@@ -184,17 +190,13 @@ You will also need to set the reference to the `CardViewListener` on each of the
 If you wish to use our implementation of a `CardValidator` then you can do so by specifying an `AccessCheckoutCardValidator` instance as the `cardValidator` on the `AccessCheckoutCard`, or provide your own implementation by implementing the `CardValidator` interface
 and plug that in instead.
 
-#### 4) Plug in the card configuration
+#### 4) Fetch the remote card configuration
 
 The validation logic, especially the PAN and the CVV fields, inside `AccessCheckoutCard` is based off of a `CardConfiguration`. Access Worldpay hosts a JSON based version of the card configuration file which 
-is available to consume via a `CardConfigurationClientImpl`, and all that is required to set that up is as follows:
+is available to consume via a `CardConfigurationFactory`, and all that is required to set that up is as follows:
 
 ```
-CardConfigurationClientFactory.createClient().getCardConfiguration(getBaseUrl(), object : Callback<CardConfiguration> {
-    override fun onResponse(error: Exception?, response: CardConfiguration?) {
-        response?.let { card.cardValidator = AccessCheckoutCardValidator(it) }
-    }
-})
+CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
 ```
 Of course, you can build and provide your own `CardConfiguration` if you'd prefer:
 ```
