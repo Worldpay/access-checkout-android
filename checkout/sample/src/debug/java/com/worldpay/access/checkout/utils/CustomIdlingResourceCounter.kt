@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.utils
 import android.support.test.espresso.IdlingRegistry
 import android.support.test.espresso.idling.CountingIdlingResource
 
-class CustomIdlingResourceCounter(idlingResName: String) {
+class CustomIdlingResourceCounter(idlingResName: String) : IdleResourceCounter {
     private val counter: CountingIdlingResource
 
     init {
@@ -11,11 +11,11 @@ class CustomIdlingResourceCounter(idlingResName: String) {
         IdlingRegistry.getInstance().register(counter)
     }
 
-    fun increment() = counter.increment()
+    override fun increment() = counter.increment()
 
-    fun decrement() = counter.decrement()
+    override fun decrement() = counter.decrement()
 
-    fun unregisterIdleResCounter() = IdlingRegistry.getInstance().unregister(counter)
+    override fun unregisterIdleResCounter() {
+        IdlingRegistry.getInstance().unregister(counter)
+    }
 }
-
-

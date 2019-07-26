@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.logging.AccessCheckoutLogger
 import com.worldpay.access.checkout.logging.Logger
 import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.utils.CustomIdlingResourceCounter
+import com.worldpay.access.checkout.utils.IdleResourceCounterFactory
 import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
 import java.io.File
@@ -26,7 +26,7 @@ class SVGImageLoader @JvmOverloads constructor(
     ),
     private val logger: Logger = AccessCheckoutLogger()
 ) {
-    private val idleResCounter = CustomIdlingResourceCounter("SvgImageLoader")
+    private val idleResCounter = IdleResourceCounterFactory.getResCounter("SvgImageLoader")
 
     companion object {
 
