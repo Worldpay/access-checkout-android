@@ -6,6 +6,7 @@ import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.logging.AccessCheckoutLogger
 import com.worldpay.access.checkout.logging.Logger
 import com.worldpay.access.checkout.model.CardBrand
+import com.worldpay.access.checkout.utils.IdleResourceCounterFactory
 import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
 import java.io.File
@@ -25,6 +26,7 @@ class SVGImageLoader @JvmOverloads constructor(
     ),
     private val logger: Logger = AccessCheckoutLogger()
 ) {
+    private val idleResCounter = IdleResourceCounterFactory.getResCounter("SvgImageLoader")
 
     companion object {
 
@@ -72,6 +74,7 @@ class SVGImageLoader @JvmOverloads constructor(
             val url = it.images?.find { image -> image.type == IMAGE_TYPE }?.url
 
             url?.let {
+                idleResCounter.increment()
                 val request = Request.Builder().url(url).build()
                 val newCall = client.newCall(request)
                 newCall.enqueue(object : Callback {
@@ -79,8 +82,13 @@ class SVGImageLoader @JvmOverloads constructor(
 
                     @Throws(IOException::class)
                     override fun onResponse(call: Call, response: Response) {
+
                         response.body()?.let { responseBody ->
-                            svgImageRenderer.renderImage(responseBody.byteStream(), target, cardBrand.name)
+                            run {
+                                svgImageRenderer.renderImage(responseBody.byteStream(), target, cardBrand.name)
+                                idleResCounter.decrement()
+                                idleResCounter.unregisterIdleResCounter()
+                            }
                         }
                     }
                 })
