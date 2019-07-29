@@ -3,8 +3,8 @@ package com.worldpay.access.checkout.api
 import android.content.Context
 import android.content.Intent
 import android.support.v4.content.LocalBroadcastManager
+import com.nhaarman.mockitokotlin2.any
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
-import com.worldpay.access.checkout.testutils.typeSafeAny
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -74,7 +74,7 @@ class SessionRequestServiceTest {
 
         sessionRequestService.onResponse(null, sessionResponse)
 
-        Mockito.verify(localBroadcastManager).sendBroadcast(typeSafeAny())
+        Mockito.verify(localBroadcastManager).sendBroadcast(any())
     }
 
     internal inner class MockedFactory: Factory {

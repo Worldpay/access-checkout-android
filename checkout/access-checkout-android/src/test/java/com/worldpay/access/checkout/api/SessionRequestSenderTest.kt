@@ -1,11 +1,10 @@
 package com.worldpay.access.checkout.api
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
-import com.worldpay.access.checkout.testutils.argumentCaptor
-import com.worldpay.access.checkout.testutils.capture
-import com.worldpay.access.checkout.testutils.mock
-import com.worldpay.access.checkout.testutils.typeSafeEq
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -46,8 +45,8 @@ class SessionRequestSenderTest {
 
         sessionRequestSender.sendSessionRequest(expectedSessionRequest, baseURL, sessionResponseCallback)
         val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(accessCheckoutDiscoveryClient).discover(typeSafeEq(baseURL), capture(argumentCaptor))
-        argumentCaptor.value.onResponse(null, path)
+        verify(accessCheckoutDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(null, path)
 
         Mockito.verify(requestDispatcher).execute(expectedSessionRequest)
     }
@@ -76,8 +75,8 @@ class SessionRequestSenderTest {
 
         sessionRequestSender.sendSessionRequest(expectedSessionRequest, baseURL, sessionResponseCallback)
         val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(accessCheckoutDiscoveryClient).discover(typeSafeEq(baseURL), capture(argumentCaptor))
-        argumentCaptor.value.onResponse(RuntimeException("Some exception"), null)
+        verify(accessCheckoutDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture())
+        argumentCaptor.firstValue.onResponse(RuntimeException("Some exception"), null)
 
         Mockito.verifyZeroInteractions(requestDispatcher)
         assertTrue(assertResponse)

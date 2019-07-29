@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.api.discovery
 
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
-import com.worldpay.access.checkout.testutils.mock
 import org.awaitility.Awaitility
 import org.junit.Test
 import org.junit.runner.RunWith

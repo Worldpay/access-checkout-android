@@ -33,6 +33,19 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Fix issue with fields allowing more than max length being inserted on copy and paste
 - Fix for expiry field standalone validation checks
 
+## [1.2.0] - 2019-07-18
+### Added
+- Card logos can now be fetched from external endpoint
+
+### Changed
+- Remote card configuration loading has been simplified by using a `CardConfigurationFactory`
+
+### Removed
+- Local card brand logo resources for visa, amex and mastercard
+
+### Fixed
+- Fix for issue when screen is rotated and field validation state is lost
+
 
 
 

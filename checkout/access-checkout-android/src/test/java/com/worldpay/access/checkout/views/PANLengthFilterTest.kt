@@ -36,7 +36,7 @@ class PANLengthFilterTest {
         val fifteenDigitCardInput = "400000000000000"
 
         val cardValidationRule = CardValidationRule(null, null, 16, null)
-        val cardBrand = CardBrand("visa", null, null, listOf(cardValidationRule))
+        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule))
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validatePAN(fifteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
 
@@ -53,7 +53,7 @@ class PANLengthFilterTest {
 
         val cardValidationRule1 = CardValidationRule(null, null, null, 16)
         val cardValidationRule2 = CardValidationRule(null, null, 20, null)
-        val cardBrand = CardBrand("visa", null, null, listOf(cardValidationRule1, cardValidationRule2))
+        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule1, cardValidationRule2))
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validatePAN(nineteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
 
@@ -69,7 +69,7 @@ class PANLengthFilterTest {
         val fifteenDigitCardInput = "400000000000000"
 
         val defaultValidationRule = CardValidationRule(null, null, 16, null)
-        val cardBrand = CardBrand("visa", null, null, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), null, emptyList())
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardConfiguration.defaults).willReturn(CardDefaults(defaultValidationRule, null, null, null))
         given(cardValidator.validatePAN(fifteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
@@ -102,7 +102,7 @@ class PANLengthFilterTest {
         val sixteenDigitCardInput = "4000000000000000"
 
         val cardValidationRule = CardValidationRule("^40\\d{0,14}$", null, 16, null)
-        val cardBrand = CardBrand("visa", null, null, listOf(cardValidationRule))
+        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule))
         val validationResult = ValidationResult(partial = false, complete = true)
         given(cardValidator.validatePAN(sixteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
 
@@ -119,7 +119,7 @@ class PANLengthFilterTest {
 
         val cardValidationRule1 = CardValidationRule("^41\\d{0,14}$", 16, null, null)
         val cardValidationRule2 = CardValidationRule("^40\\d{0,18}$", null, 20, null)
-        val cardBrand = CardBrand("visa", null, null, listOf(cardValidationRule1, cardValidationRule2))
+        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule1, cardValidationRule2))
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validatePAN(twentyDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
 
@@ -136,7 +136,7 @@ class PANLengthFilterTest {
 
         val cardValidationRule1SubRule = CardValidationRule("^40\\d{0,14}$", null, 16, null)
         val cardValidationRule1 = CardValidationRule("^4\\d{0,19}$", null, 20, null, listOf(cardValidationRule1SubRule))
-        val cardBrand = CardBrand("visa", null, null, listOf(cardValidationRule1))
+        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule1))
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validatePAN(sixteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
 
@@ -151,7 +151,7 @@ class PANLengthFilterTest {
     fun givenAnIdentifiedCardWithNoValidationRulesAndMaximumCardLengthIsExceededBasedOnDefaultsThenShouldFilterBasedOnInput() {
         val sixteenDigitCardInput = "4000000000000000"
 
-        val cardBrand = CardBrand("visa", null, null, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), null, emptyList())
         val defaultValidationRule = CardValidationRule(null, null, 16, null)
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardConfiguration.defaults).willReturn(CardDefaults(defaultValidationRule, null, null, null))
@@ -169,7 +169,7 @@ class PANLengthFilterTest {
         val sixteenDigitCardInput = "4000000000000000"
 
         val cardValidationRule = CardValidationRule("^4\\d{0,19}$", null, null, null)
-        val cardBrand = CardBrand("visa", null, null, listOf(cardValidationRule))
+        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule))
         val defaultValidationRule = CardValidationRule(null, null, 16, null)
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardConfiguration.defaults).willReturn(CardDefaults(defaultValidationRule, null, null, null))
@@ -203,7 +203,7 @@ class PANLengthFilterTest {
         val fourteenDigitCardInput = "40000000000000"
 
         val cardValidationRule = CardValidationRule(null, null, 16, null)
-        val cardBrand = CardBrand("visa", null, null, listOf(cardValidationRule))
+        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule))
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validatePAN(fourteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
 
@@ -220,7 +220,7 @@ class PANLengthFilterTest {
 
         val cardValidationRule1 = CardValidationRule(null, null, 16, null)
         val cardValidationRule2 = CardValidationRule(null, null, 15, null)
-        val cardBrand = CardBrand("visa", null, null, listOf(cardValidationRule1, cardValidationRule2))
+        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule1, cardValidationRule2))
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validatePAN(fourteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
 
@@ -237,7 +237,7 @@ class PANLengthFilterTest {
 
         val defaultValidationRule = CardValidationRule(null, null, 16, null)
         val validationResult = ValidationResult(partial = true, complete = false)
-        val cardBrand = CardBrand("visa", null, null, emptyList())
+        val cardBrand = CardBrand("visa", emptyList(), null, emptyList())
         given(cardConfiguration.defaults).willReturn(CardDefaults(defaultValidationRule, null, null, null))
         given(cardValidator.validatePAN(fourteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
 
@@ -301,7 +301,7 @@ class PANLengthFilterTest {
         val fourteenDigitCardInput = "40000000000000"
 
         val cardValidationRule = CardValidationRule(null, null, 16, null)
-        val cardBrand = CardBrand("visa", null, null, listOf(cardValidationRule))
+        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule))
         val validationResult = ValidationResult(partial = true, complete = false)
         given(cardValidator.validatePAN(fourteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
 

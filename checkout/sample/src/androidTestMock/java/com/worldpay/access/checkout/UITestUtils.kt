@@ -18,8 +18,10 @@ import android.support.v4.content.res.ResourcesCompat.getColor
 import android.view.Surface
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
+import com.worldpay.access.checkout.AbstractUITest.CardBrand
 import com.worldpay.access.checkout.matchers.AlphaMatcher
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
+import com.worldpay.access.checkout.matchers.BrandVectorImageNameMatcher
 import com.worldpay.access.checkout.matchers.EditTextColorMatcher
 import org.awaitility.Awaitility
 import org.hamcrest.CoreMatchers
@@ -163,6 +165,12 @@ object UITestUtils {
         onView(brandImageMatcher)
             .check(matches(isDisplayed()))
             .check(matches(BrandVectorImageMatcher.withBrandVectorImageId(expectedImage)))
+    }
+
+    fun assertBrandImage(cardBrand: CardBrand) {
+        onView(brandImageMatcher)
+            .check(matches(isDisplayed()))
+            .check(matches(BrandVectorImageNameMatcher.withBrandVectorImageName(cardBrand)))
     }
 
     fun getSuccessColor(context: Context) = getColor(context.resources, R.color.SUCCESS, context.theme)

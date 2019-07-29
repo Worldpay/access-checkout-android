@@ -12,10 +12,10 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import com.github.tomakehurst.wiremock.matching.AnythingPattern
 import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
 import com.github.tomakehurst.wiremock.stubbing.Scenario
-import com.google.gson.Gson
 import com.google.gson.GsonBuilder
-import com.worldpay.access.checkout.logging.LoggingUtils.Companion.debugLog
+import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.model.CardConfiguration
+import java.io.IOException
 
 object MockServer {
 
@@ -25,6 +25,9 @@ object MockServer {
 
     private const val verifiedTokensSessionResourcePath = "verifiedTokens/sessions"
     private const val cardConfigurationResourcePath = "access-checkout/cardConfiguration.json"
+    private const val cardLogosPath = "access-checkout/assets"
+
+    lateinit var baseUrl: String
 
     private fun verifiedTokensResponse(context: Context) =
         """{
@@ -122,6 +125,7 @@ object MockServer {
                 .willReturn(validSessionResponseWithDelay(context, 2000))
         )
         stubCardConfiguration(context)
+        stubLogos(context)
     }
 
     fun simulateDelayedResponse(context: Context) {
@@ -211,6 +215,7 @@ object MockServer {
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
                     .withBody(context.resources.openRawResource(R.raw.card_configuration_file).reader(Charsets.UTF_8).readText())
+                    .withTransformers(ResponseTemplateTransformer.NAME)
             ))
     }
 
@@ -224,6 +229,20 @@ object MockServer {
                     .withHeader("Content-Type", "application/json")
                     .withBody(json)
             ))
+    }
+
+    private fun stubLogos(context: Context) {
+        val images = listOf("visa.svg", "mastercard.svg", "amex.svg")
+        images.forEach {
+            wireMockServer.stubFor(get("/$cardLogosPath/$it")
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "image/svg+xml")
+                        .withHeader("Cache-Control", "max-age=300")
+                        .withBody(getAsset(context, it))))
+        }
+
     }
 
     fun simulateCardConfigurationServerError() {
@@ -246,7 +265,7 @@ object MockServer {
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
                     .withBody(serviceDiscoveryResponse)
-                    .withTransformers("response-template")
+                    .withTransformers(ResponseTemplateTransformer.NAME)
             )
     }
 
@@ -270,7 +289,7 @@ object MockServer {
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
                         .withBody(topLevelServiceResourceResponse)
-                        .withTransformers("response-template")
+                        .withTransformers(ResponseTemplateTransformer.NAME)
                 )
         )
     }
@@ -281,7 +300,16 @@ object MockServer {
             debugLog("MockServer", "Waiting for wiremock to start!")
         } while (!hasStarted)
         debugLog("MockServer", "Started wiremock!!")
+        baseUrl = wireMockServer.baseUrl()
+    }
 
+    private fun getAsset(context: Context, assetPath: String): String {
+        try {
+            val inputStream = context.assets.open(assetPath)
+            return inputStream.reader().readText()
+        } catch (e: IOException) {
+            throw RuntimeException(e)
+        }
     }
 
 }

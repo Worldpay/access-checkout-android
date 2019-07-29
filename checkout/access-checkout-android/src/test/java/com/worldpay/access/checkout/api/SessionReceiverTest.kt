@@ -2,8 +2,8 @@ package com.worldpay.access.checkout.api
 
 import android.content.Context
 import android.content.Intent
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
-import com.worldpay.access.checkout.testutils.mock
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
