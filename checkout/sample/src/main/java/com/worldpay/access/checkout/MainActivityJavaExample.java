@@ -6,10 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.text.InputFilter;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Toast;
 import com.worldpay.access.checkout.api.AccessCheckoutException;
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
+import com.worldpay.access.checkout.images.SVGImageLoader;
 import com.worldpay.access.checkout.model.CardBrand;
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator;
 import com.worldpay.access.checkout.views.*;
@@ -17,7 +19,6 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.worldpay.access.checkout.logging.LoggingUtils.debugLog;
-import static java.util.Objects.requireNonNull;
 
 public class MainActivityJavaExample extends AppCompatActivity implements CardListener, SessionResponseListener {
 
@@ -25,11 +26,12 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
     private PANLayout panView;
     private CardCVVText cardCVVText;
     private CardExpiryTextLayout cardExpiryText;
+
+    private Boolean loading = false;
+
     private Button submit;
     private ConstraintLayout contentLayout;
     private ProgressBar loadingBar;
-
-    private Boolean loading = false;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -114,11 +116,8 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
 
     @Override
     public void onUpdateCardBrand(@Nullable CardBrand cardBrand) {
-        if (cardBrand != null) {
-            panView.applyCardLogo(requireNonNull(cardBrand.getImage()));
-        } else {
-            panView.applyCardLogo("card_unknown_logo");
-        }
+        ImageView logoImageView = panView.getMImageView();
+        SVGImageLoader.getInstance(this).fetchAndApplyCardLogo(cardBrand, logoImageView);
     }
 
     @Override
