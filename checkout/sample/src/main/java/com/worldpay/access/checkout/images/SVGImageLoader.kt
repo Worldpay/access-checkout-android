@@ -30,6 +30,7 @@ class SVGImageLoader @JvmOverloads constructor(
 
     companion object {
 
+        @JvmStatic
         @Volatile
         private var INSTANCE: SVGImageLoader? = null
 
@@ -37,6 +38,7 @@ class SVGImageLoader @JvmOverloads constructor(
          * @param activity the current activity
          * @return an [SVGImageLoader] instance
          */
+        @JvmStatic
         fun getInstance(activity: Activity): SVGImageLoader {
             return INSTANCE ?: synchronized(this) {
                 INSTANCE
