@@ -5,7 +5,7 @@ A lightweight library and sample app that generates a Worldpay session reference
 It includes, optionally, custom Android views that identifies card brands and validates payment cards and card expiry dates.
 
 
-<img width="300" alt="app02" src=https://github.com/com-worldpay-gateway/checkout-android/blob/master/images/sample.png>
+<img width="300" alt="app02" src=https://github.com/Worldpay/access-checkout-android/blob/master/images/sample.png>
 
 
 ## Download
