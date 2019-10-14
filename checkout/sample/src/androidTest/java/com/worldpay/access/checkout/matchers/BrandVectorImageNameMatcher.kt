@@ -6,9 +6,7 @@ import android.widget.ImageView
 import com.worldpay.access.checkout.AbstractUITest.CardBrand
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.PANLayout
-import org.awaitility.Awaitility
 import org.hamcrest.Description
-import java.util.concurrent.TimeUnit
 
 internal class BrandVectorImageNameMatcher private constructor(private val expectedBrand: CardBrand) :
     BoundedMatcher<View, ImageView>(ImageView::class.java) {
@@ -16,14 +14,15 @@ internal class BrandVectorImageNameMatcher private constructor(private val expec
 
         var actualTag = ""
         return try {
-            Awaitility.await().atMost(5, TimeUnit.SECONDS).until {
-                actualTag = getActualTag(actualItem)
-                debugLog("BrandVectorImageNameMatcher", "Checking actual image tag: $actualTag matches expected: $expectedBrand")
-                actualTag == expectedBrand.cardBrandName
-            }
-            true
+            actualTag = getActualTag(actualItem)
+            debugLog("BrandVectorImageNameMatcher",
+                "Checking actual image tag: $actualTag matches expected: $expectedBrand")
+            actualTag == expectedBrand.cardBrandName
         } catch (ex: Exception) {
-            debugLog("BrandVectorImageNameMatcher", "Actual image tag: $actualTag does not match expected: $expectedBrand")
+            debugLog(
+                "BrandVectorImageNameMatcher",
+                "Actual image tag: $actualTag does not match expected: $expectedBrand"
+            )
             false
         }
     }
