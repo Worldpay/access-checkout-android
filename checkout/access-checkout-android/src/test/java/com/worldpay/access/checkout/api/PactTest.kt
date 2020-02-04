@@ -90,7 +90,7 @@ class PactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
                     )
                 )
             )
@@ -114,7 +114,7 @@ class PactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
                     )
                 )
             )
@@ -137,7 +137,7 @@ class PactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
                     )
                 )
             )
@@ -166,7 +166,7 @@ class PactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
                     )
                 )
             )
@@ -195,7 +195,7 @@ class PactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
                     )
                 )
             )
@@ -224,7 +224,7 @@ class PactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
                     )
                 )
             )
@@ -253,7 +253,7 @@ class PactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
                     )
                 )
             )
@@ -282,7 +282,7 @@ class PactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
                     )
                 )
             )
@@ -311,7 +311,7 @@ class PactTest {
                 mapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json;charset=UTF-8"
+                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
                     )
                 )
             )
