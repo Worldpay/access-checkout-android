@@ -124,11 +124,39 @@ class CVVLengthFilterTest {
     }
 
     @Test
+    fun givenANullPanAndMaximumCvvLengthIsEnteredForDefaultCVVRuleThenShouldNotFilterBasedOnInput() {
+        cvvLengthFilter = CVVLengthFilter(cardValidator, null)
+
+        val currentCVV = "12"
+        val cvvRule = CardValidationRule(null, null, 3, null)
+        given(cardConfiguration.defaults).willReturn(CardDefaults(null, cvvRule, null, null))
+        given(cardValidator.validateCVV(currentCVV, null)).willReturn(Pair(mock(ValidationResult::class.java), null))
+
+        val filtered = cvvLengthFilter.filter("3", 0, 1, SpannableStringBuilder(currentCVV), 2, 2)
+
+        assertNull(filtered)
+    }
+
+    @Test
     fun givenANonIdentifiedCardAndCvvLengthIsStillUnderMaximumForDefaultCVVRuleThenShouldNotFilter() {
         val currentCVV = "1"
         val cvvRule = CardValidationRule(null, null, 3, null)
         given(cardConfiguration.defaults).willReturn(CardDefaults(null, cvvRule, null, null))
         given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), null))
+
+        val filtered = cvvLengthFilter.filter("2", 0, 1, SpannableStringBuilder(currentCVV), 1, 1)
+
+        assertNull(filtered)
+    }
+
+    @Test
+    fun givenANullPanAndCvvLengthIsStillUnderMaximumForDefaultCVVRuleThenShouldNotFilter() {
+        cvvLengthFilter = CVVLengthFilter(cardValidator, null)
+
+        val currentCVV = "1"
+        val cvvRule = CardValidationRule(null, null, 3, null)
+        given(cardConfiguration.defaults).willReturn(CardDefaults(null, cvvRule, null, null))
+        given(cardValidator.validateCVV(currentCVV, null)).willReturn(Pair(mock(ValidationResult::class.java), null))
 
         val filtered = cvvLengthFilter.filter("2", 0, 1, SpannableStringBuilder(currentCVV), 1, 1)
 
@@ -148,9 +176,35 @@ class CVVLengthFilterTest {
     }
 
     @Test
+    fun givenNullPanIsPassedAndMaximumCvvLengthIsExceededForDefaultCVVRuleThenShouldFilterBasedOnInput() {
+        cvvLengthFilter = CVVLengthFilter(cardValidator, null)
+
+        val currentCVV = "123"
+        val cvvRule = CardValidationRule(null, null, 3, null)
+        given(cardConfiguration.defaults).willReturn(CardDefaults(null, cvvRule, null, null))
+        given(cardValidator.validateCVV(currentCVV, null)).willReturn(Pair(mock(ValidationResult::class.java), null))
+
+        val filtered = cvvLengthFilter.filter("4", 0, 1, SpannableStringBuilder(currentCVV), 3, 3)
+
+        assertEquals("", filtered)
+    }
+
+    @Test
     fun givenANonIdentifiedCardAndNoDefaultConfigurationThenShouldNotFilterBasedOnInput() {
         val currentCVV = "123"
         given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), null))
+
+        val filtered = cvvLengthFilter.filter("4", 0, 1, SpannableStringBuilder(currentCVV), 3, 3)
+
+        assertNull(filtered)
+    }
+
+    @Test
+    fun givenANullPanAndNoDefaultConfigurationThenShouldNotFilterBasedOnInput() {
+        cvvLengthFilter = CVVLengthFilter(cardValidator, null)
+
+        val currentCVV = "123"
+        given(cardValidator.validateCVV(currentCVV, null)).willReturn(Pair(mock(ValidationResult::class.java), null))
 
         val filtered = cvvLengthFilter.filter("4", 0, 1, SpannableStringBuilder(currentCVV), 3, 3)
 

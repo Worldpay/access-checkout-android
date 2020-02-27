@@ -66,11 +66,11 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
  */
 class CVVLengthFilter(
     private val cardValidator: CardValidator,
-    private val panView: CardTextView
+    private val panView: CardTextView?
 ) : AbstractCardFieldLengthFilter(cardValidator.cardConfiguration) {
 
     override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
-        cardValidator.validateCVV(field.toString(), panView.getInsertedText())
+        cardValidator.validateCVV(field.toString(), panView?.getInsertedText())
 
     override fun ruleSelectorForCardBrand(cardBrand: CardBrand, field: Spanned): CardValidationRule? = cardBrand.cvv
 
