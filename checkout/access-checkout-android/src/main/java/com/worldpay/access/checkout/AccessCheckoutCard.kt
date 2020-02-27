@@ -195,7 +195,7 @@ interface CardFactory {
      */
     fun getCVVLengthFilter(
         cardValidator: CardValidator?,
-        panView: CardTextView
+        panView: CardTextView?
     ): CVVLengthFilter?
 
     /**
@@ -215,7 +215,7 @@ class AccessCheckoutCardDefaultFactory : CardFactory {
         return cardValidator?.let { PANLengthFilter(it) }
     }
 
-    override fun getCVVLengthFilter(cardValidator: CardValidator?, panView: CardTextView): CVVLengthFilter? {
+    override fun getCVVLengthFilter(cardValidator: CardValidator?, panView: CardTextView?): CVVLengthFilter? {
         return cardValidator?.let { CVVLengthFilter(it, panView) }
     }
 
