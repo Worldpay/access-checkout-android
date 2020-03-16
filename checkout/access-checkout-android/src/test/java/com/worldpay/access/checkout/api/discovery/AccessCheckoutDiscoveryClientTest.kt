@@ -93,6 +93,14 @@ class AccessCheckoutDiscoveryClientTest {
     fun givenValidBaseURLAndDiscoveryAttemptedAlreadyAndSessionsURLIsAvailable_ThenShouldReturnURLToSessions() {
         val sessionResponse = "session_response"
 
+        val callback = object : Callback<String> {
+            override fun onResponse(error: Exception?, response: String?) {
+                assertNotNull(response)
+                assertEquals(sessionResponse, response)
+            }
+        }
+
+
         val secondCallback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
                 assertNull(error)
@@ -106,7 +114,7 @@ class AccessCheckoutDiscoveryClientTest {
         given(mockedAsyncTaskFactory.getAsyncTask(any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
-        accessCheckoutDiscoveryClient.discover("http://localhost")
+        accessCheckoutDiscoveryClient.discover("http://localhost", callback)
         verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture())
 
         argumentCaptor.firstValue.onResponse(null, sessionResponse)
@@ -133,17 +141,18 @@ class AccessCheckoutDiscoveryClientTest {
         given(mockedAsyncTaskFactory.getAsyncTask(any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
-        accessCheckoutDiscoveryClient.discover("http://localhost")
+        accessCheckoutDiscoveryClient.discover("http://localhost", callback)
         verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
-        accessCheckoutDiscoveryClient.discover("http://localhost")
+        accessCheckoutDiscoveryClient.discover("http://localhost", callback)
         verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
         accessCheckoutDiscoveryClient.discover("http://localhost", callback)
         verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
+
 
         verify(accessCheckoutDiscoveryAsyncTask, times(2)).execute("http://localhost")
     }

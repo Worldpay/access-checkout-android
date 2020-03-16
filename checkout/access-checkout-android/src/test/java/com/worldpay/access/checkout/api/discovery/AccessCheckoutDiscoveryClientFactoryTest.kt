@@ -12,4 +12,12 @@ class AccessCheckoutDiscoveryClientFactoryTest {
 
         assertEquals(client1, client2)
     }
+
+    @Test
+    fun shouldConstructAccessCheckoutCVVOnlyDiscoveryClientAsSingleton() {
+        val client1 = AccessCheckoutDiscoveryClientFactory.getCVVOnlyClient()
+        val client2 = AccessCheckoutDiscoveryClientFactory.getCVVOnlyClient()
+
+        assertEquals(client1, client2)
+    }
 }
