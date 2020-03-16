@@ -153,4 +153,5 @@ class AccessCheckoutCVVOnlyDiscoveryClientTest {
 
         verify(accessCheckoutDiscoveryAsyncTask, times(2)).execute("http://localhost")
     }
+
 }
