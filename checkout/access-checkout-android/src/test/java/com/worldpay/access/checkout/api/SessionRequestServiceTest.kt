@@ -42,7 +42,7 @@ class SessionRequestServiceTest {
 
     @Test
     fun `assert service is instantiated with default factory`() {
-        assertNotNull(sessionRequestService)
+        assertNotNull(SessionRequestService(accessCheckoutDiscoveryClient = accessCheckoutDiscoveryClient))
     }
 
     @Test

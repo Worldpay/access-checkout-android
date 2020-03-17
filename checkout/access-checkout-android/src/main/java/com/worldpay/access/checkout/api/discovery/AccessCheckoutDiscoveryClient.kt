@@ -47,7 +47,6 @@ internal class AccessCheckoutDiscoveryClient(
                     discover(baseUrl, callback)
                 } else {
                     callback?.onResponse(it, null)
-
                 }
             }
         }
