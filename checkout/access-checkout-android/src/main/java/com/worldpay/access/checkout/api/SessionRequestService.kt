@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.api
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(), Callback<SessionResponse> {

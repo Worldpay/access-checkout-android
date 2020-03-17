@@ -30,7 +30,6 @@ class AccessCheckoutClient private constructor(
     LifecycleObserver, SessionResponseListener {
 
     private lateinit var localBroadcastManager: LocalBroadcastManager
-    private lateinit var sessionRequestService: SessionRequestService
     private val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context)
     private val sessionReceiver: SessionReceiver = SessionReceiver(this)
     init {
