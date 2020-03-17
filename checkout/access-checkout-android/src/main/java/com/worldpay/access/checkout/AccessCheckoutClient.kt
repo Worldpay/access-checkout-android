@@ -60,7 +60,7 @@ class AccessCheckoutClient private constructor(
             lifecycleOwner: LifecycleOwner
         ): AccessCheckoutClient {
             debugLog(TAG, "Making request to discover endpoint")
-            val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
+            val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient(DiscoverLinks.verifiedTokens)
             accessCheckoutDiscoveryClient.discover(baseUrl)
 
             return AccessCheckoutClient(

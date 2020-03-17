@@ -8,7 +8,8 @@ import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import java.util.concurrent.atomic.AtomicInteger
 
 internal class AccessCheckoutDiscoveryClient(
-    private val accessCheckoutDiscoveryAsyncTaskFactory: AccessCheckoutDiscoveryAsyncTaskFactory
+    private val discoverLinks: DiscoverLinks,
+    private val accessCheckoutDiscoveryAsyncTaskFactory: AccessCheckoutDiscoveryAsyncTaskFactory = AccessCheckoutDiscoveryAsyncTaskFactory()
 ) {
 
     private var asyncTaskResult: AsyncTaskResult<String>? = null
@@ -32,7 +33,7 @@ internal class AccessCheckoutDiscoveryClient(
             val asyncTaskResultCallback = object : Callback<String> {
                 override fun onResponse(error: Exception?, response: String?) = handleAsyncTaskResponse(callback, response, error)
             }
-            val accessCheckoutDiscoveryAsyncTask = accessCheckoutDiscoveryAsyncTaskFactory.getAsyncTask(asyncTaskResultCallback)
+            val accessCheckoutDiscoveryAsyncTask = accessCheckoutDiscoveryAsyncTaskFactory.getAsyncTask(asyncTaskResultCallback, discoverLinks)
             accessCheckoutDiscoveryAsyncTask.execute(baseUrl)
         } else {
             debugLog(TAG, "Task result was already present. Num of currentAttempts: ${currentAttempts.get()}")

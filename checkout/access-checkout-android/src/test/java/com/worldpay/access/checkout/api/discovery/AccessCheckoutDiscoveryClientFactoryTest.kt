@@ -2,22 +2,14 @@ package com.worldpay.access.checkout.api.discovery
 
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 
 class AccessCheckoutDiscoveryClientFactoryTest {
 
     @Test
-    fun shouldConstructAccessCheckoutDiscoveryClientAsSingleton() {
-        val client1 = AccessCheckoutDiscoveryClientFactory.getClient()
-        val client2 = AccessCheckoutDiscoveryClientFactory.getClient()
-
-        assertEquals(client1, client2)
+    fun shouldConstructAccessCheckoutDiscoveryClient() {
+        val client1 = AccessCheckoutDiscoveryClientFactory.getClient(DiscoverLinks.verifiedTokens)
+        assertNotNull(client1)
     }
 
-    @Test
-    fun shouldConstructAccessCheckoutCVVOnlyDiscoveryClientAsSingleton() {
-        val client1 = AccessCheckoutDiscoveryClientFactory.getClient()
-        val client2 = AccessCheckoutDiscoveryClientFactory.getClient()
-
-        assertEquals(client1, client2)
-    }
 }

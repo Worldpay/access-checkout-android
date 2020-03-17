@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -18,6 +19,7 @@ class SessionRequestSenderTest {
     private lateinit var requestDispatcherFactory: RequestDispatcherFactory
     private lateinit var accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient
     private lateinit var sessionRequestSender: SessionRequestSender
+    private lateinit var discoverLinks: DiscoverLinks
 
     private val baseURL = "http://localhost"
 
