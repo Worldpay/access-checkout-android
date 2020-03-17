@@ -7,9 +7,10 @@ import kotlin.test.assertNotNull
 class AccessCheckoutDiscoveryClientFactoryTest {
 
     @Test
-    fun shouldConstructAccessCheckoutDiscoveryClient() {
-        val client1 = AccessCheckoutDiscoveryClientFactory.getClient(DiscoverLinks.verifiedTokens)
-        assertNotNull(client1)
+    fun shouldConstructAccessCheckoutDiscoveryClientAsASingleton() {
+        val client1 = AccessCheckoutDiscoveryClientFactory.getClient()
+        val client2 = AccessCheckoutDiscoveryClientFactory.getClient()
+        assertEquals(client1, client2)
     }
 
 }

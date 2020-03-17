@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.api
 
+import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
@@ -47,7 +48,7 @@ class SessionRequestSenderTest {
 
         sessionRequestSender.sendSessionRequest(expectedSessionRequest, baseURL, sessionResponseCallback)
         val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(accessCheckoutDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture())
+        verify(accessCheckoutDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(null, path)
 
         Mockito.verify(requestDispatcher).execute(expectedSessionRequest)
@@ -77,7 +78,7 @@ class SessionRequestSenderTest {
 
         sessionRequestSender.sendSessionRequest(expectedSessionRequest, baseURL, sessionResponseCallback)
         val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(accessCheckoutDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture())
+        verify(accessCheckoutDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(RuntimeException("Some exception"), null)
 
         Mockito.verifyZeroInteractions(requestDispatcher)

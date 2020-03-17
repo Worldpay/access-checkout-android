@@ -36,7 +36,7 @@ class AccessCheckoutDiscoveryClientTest {
             }
         }
 
-        AccessCheckoutDiscoveryClient(discoverLinks).discover("", callback)
+        AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory).discover("", callback, discoverLinks)
     }
 
     @Test
@@ -45,9 +45,9 @@ class AccessCheckoutDiscoveryClientTest {
 
         given(mockedAsyncTaskFactory.getAsyncTask(any(),any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
-        val client =  AccessCheckoutDiscoveryClient(discoverLinks, mockedAsyncTaskFactory)
+        val client =  AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
 
-        client.discover("http://localhost")
+        client.discover("http://localhost", discoverLinks = discoverLinks)
 
         verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("http://localhost")
     }
@@ -64,10 +64,10 @@ class AccessCheckoutDiscoveryClientTest {
         }
 
 
-        val client = AccessCheckoutDiscoveryClient(discoverLinks, mockedAsyncTaskFactory)
+        val client = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
         given(mockedAsyncTaskFactory.getAsyncTask(any(), any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
-        client.discover("http://localhost", callback)
+        client.discover("http://localhost", callback, discoverLinks)
 
         val argumentCaptor = argumentCaptor<Callback<String>>()
         verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture(), any())
@@ -92,7 +92,7 @@ class AccessCheckoutDiscoveryClientTest {
 
         given(mockedAsyncTaskFactory.getAsyncTask(any(),any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
-        AccessCheckoutDiscoveryClient(discoverLinks, mockedAsyncTaskFactory).discover("http://localhost", callback)
+        AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory).discover("http://localhost", callback, discoverLinks)
         verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
@@ -121,14 +121,14 @@ class AccessCheckoutDiscoveryClientTest {
 
         val argumentCaptor = argumentCaptor<Callback<String>>()
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(discoverLinks, mockedAsyncTaskFactory)
+        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
         given(mockedAsyncTaskFactory.getAsyncTask(any(), any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
-        accessCheckoutDiscoveryClient.discover("http://localhost", callback)
+        accessCheckoutDiscoveryClient.discover("http://localhost", callback, discoverLinks)
         verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture(), any())
 
         argumentCaptor.firstValue.onResponse(null, sessionResponse)
-        accessCheckoutDiscoveryClient.discover("http://localhost", secondCallback)
+        accessCheckoutDiscoveryClient.discover("http://localhost", secondCallback, discoverLinks)
 
         verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("http://localhost")
     }
@@ -149,16 +149,16 @@ class AccessCheckoutDiscoveryClientTest {
         val argumentCaptor = argumentCaptor<Callback<String>>()
         given(mockedAsyncTaskFactory.getAsyncTask(any(),any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(discoverLinks, mockedAsyncTaskFactory)
-        accessCheckoutDiscoveryClient.discover("http://localhost", callback)
+        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
+        accessCheckoutDiscoveryClient.discover("http://localhost", callback, discoverLinks)
         verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
-        accessCheckoutDiscoveryClient.discover("http://localhost", callback)
+        accessCheckoutDiscoveryClient.discover("http://localhost", callback, discoverLinks)
         verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture(),any())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
-        accessCheckoutDiscoveryClient.discover("http://localhost", callback)
+        accessCheckoutDiscoveryClient.discover("http://localhost", callback, discoverLinks)
         verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture(),any())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
@@ -174,16 +174,16 @@ class AccessCheckoutDiscoveryClientTest {
         val argumentCaptor = argumentCaptor<Callback<String>>()
         given(mockedAsyncTaskFactory.getAsyncTask(any(),any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(discoverLinks, mockedAsyncTaskFactory)
-        accessCheckoutDiscoveryClient.discover("http://localhost")
+        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
+        accessCheckoutDiscoveryClient.discover("http://localhost", discoverLinks = discoverLinks)
         verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture(),any())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
-        accessCheckoutDiscoveryClient.discover("http://localhost")
+        accessCheckoutDiscoveryClient.discover("http://localhost", discoverLinks = discoverLinks)
         verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture(),any())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
-        accessCheckoutDiscoveryClient.discover("http://localhost")
+        accessCheckoutDiscoveryClient.discover("http://localhost", discoverLinks = discoverLinks)
         verify(mockedAsyncTaskFactory, times(2)).getAsyncTask(argumentCaptor.capture(),any())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
@@ -198,12 +198,12 @@ class AccessCheckoutDiscoveryClientTest {
         val argumentCaptor = argumentCaptor<Callback<String>>()
         given(mockedAsyncTaskFactory.getAsyncTask(any(),any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(discoverLinks, mockedAsyncTaskFactory)
-        accessCheckoutDiscoveryClient.discover("http://localhost")
+        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
+        accessCheckoutDiscoveryClient.discover("http://localhost", discoverLinks = discoverLinks)
         verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture(),any())
 
         argumentCaptor.firstValue.onResponse(null, sessionResponse)
-        accessCheckoutDiscoveryClient.discover("http://localhost")
+        accessCheckoutDiscoveryClient.discover("http://localhost", discoverLinks = discoverLinks)
 
         verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("http://localhost")
     }

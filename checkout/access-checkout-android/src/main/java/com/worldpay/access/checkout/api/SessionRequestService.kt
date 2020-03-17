@@ -4,10 +4,9 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
-import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 
-internal class SessionRequestService(factory: Factory = DefaultFactory(), accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient) : Service(), Callback<SessionResponse> {
+internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(), Callback<SessionResponse> {
 
     companion object {
 
@@ -20,7 +19,7 @@ internal class SessionRequestService(factory: Factory = DefaultFactory(), access
         const val BASE_URL_KEY = "base_url"
     }
 
-    private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender(this, accessCheckoutDiscoveryClient)
+    private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender(this)
     private val localBroadcastManagerFactory: LocalBroadcastManagerFactory = factory.getLocalBroadcastManagerFactory(this)
 
     override fun onResponse(error: Exception?, response: SessionResponse?) {
@@ -55,12 +54,12 @@ internal class SessionRequestService(factory: Factory = DefaultFactory(), access
 
 internal interface Factory {
     fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory
-    fun getSessionRequestSender(context: Context, accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient): SessionRequestSender
+    fun getSessionRequestSender(context: Context): SessionRequestSender
 }
 
 internal class DefaultFactory : Factory {
 
     override fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory = LocalBroadcastManagerFactory(context)
 
-    override fun getSessionRequestSender(context: Context, accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient) = SessionRequestSender(RequestDispatcherFactory(), accessCheckoutDiscoveryClient)
+    override fun getSessionRequestSender(context: Context) = SessionRequestSender(RequestDispatcherFactory())
 }

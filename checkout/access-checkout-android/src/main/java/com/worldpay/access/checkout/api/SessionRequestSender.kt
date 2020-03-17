@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 
 internal class SessionRequestSender(
     private val requestDispatcherFactory: RequestDispatcherFactory,
-    private val accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient
+    private val accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
 ) {
 
     fun sendSessionRequest(
@@ -29,6 +29,6 @@ internal class SessionRequestSender(
                 }
             }
         }
-        accessCheckoutDiscoveryClient.discover(baseUrl, callback)
+        accessCheckoutDiscoveryClient.discover(baseUrl, callback, DiscoverLinks.verifiedTokens)
     }
 }

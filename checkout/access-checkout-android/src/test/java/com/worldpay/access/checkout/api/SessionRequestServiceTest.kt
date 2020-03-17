@@ -37,12 +37,12 @@ class SessionRequestServiceTest {
         localBroadcastManager = mock(LocalBroadcastManager::class.java)
         discoverLinks = mock()
         given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
-        sessionRequestService = SessionRequestService(MockedFactory(), accessCheckoutDiscoveryClient)
+        sessionRequestService = SessionRequestService(MockedFactory())
     }
 
     @Test
     fun `assert service is instantiated with default factory`() {
-        assertNotNull(SessionRequestService(accessCheckoutDiscoveryClient = accessCheckoutDiscoveryClient))
+        assertNotNull(SessionRequestService())
     }
 
     @Test
@@ -87,7 +87,7 @@ class SessionRequestServiceTest {
     internal inner class MockedFactory: Factory {
         override fun getLocalBroadcastManagerFactory(context: Context) = localBroadcastManagerFactory
 
-        override fun getSessionRequestSender(context: Context, accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient) = sessionRequestSender
+        override fun getSessionRequestSender(context: Context) = sessionRequestSender
     }
 }
 

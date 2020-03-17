@@ -30,10 +30,9 @@ class AccessCheckoutClient private constructor(
     LifecycleObserver, SessionResponseListener {
 
     private lateinit var localBroadcastManager: LocalBroadcastManager
-
+    private lateinit var sessionRequestService: SessionRequestService
     private val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context)
     private val sessionReceiver: SessionReceiver = SessionReceiver(this)
-
     init {
         onCreateHostRegistration()
     }
@@ -60,9 +59,9 @@ class AccessCheckoutClient private constructor(
             lifecycleOwner: LifecycleOwner
         ): AccessCheckoutClient {
             debugLog(TAG, "Making request to discover endpoint")
-            val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient(DiscoverLinks.verifiedTokens)
-            accessCheckoutDiscoveryClient.discover(baseUrl)
+            val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
 
+            accessCheckoutDiscoveryClient.discover(baseUrl = baseUrl, discoverLinks = DiscoverLinks.verifiedTokens)
             return AccessCheckoutClient(
                 baseUrl,
                 merchantID,
@@ -82,6 +81,7 @@ class AccessCheckoutClient private constructor(
      * @param year the year to submit
      * @param cvv the cvv to submit
      */
+
     fun generateSessionState(pan: String, month: Int, year: Int, cvv: String) {
         mListener.onRequestStarted()
         val cardExpiryDate = SessionRequest.CardExpiryDate(month, year)

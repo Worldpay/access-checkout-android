@@ -8,7 +8,6 @@ import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import java.util.concurrent.atomic.AtomicInteger
 
 internal class AccessCheckoutDiscoveryClient(
-    private val discoverLinks: DiscoverLinks,
     private val accessCheckoutDiscoveryAsyncTaskFactory: AccessCheckoutDiscoveryAsyncTaskFactory = AccessCheckoutDiscoveryAsyncTaskFactory()
 ) {
 
@@ -20,7 +19,7 @@ internal class AccessCheckoutDiscoveryClient(
         private const val TAG = "AccessCheckoutDiscoveryClient"
     }
 
-    fun discover(baseUrl: String, callback: Callback<String>? = null) {
+    fun discover(baseUrl: String, callback: Callback<String>? = null, discoverLinks: DiscoverLinks) {
         if (baseUrl.isBlank()) {
             throw AccessCheckoutDiscoveryException("No URL supplied")
         }
@@ -44,7 +43,7 @@ internal class AccessCheckoutDiscoveryClient(
             asyncTaskResult.error?.let {
                 if (currentAttempts.get() < maxAttempts) {
                     this.asyncTaskResult = null
-                    discover(baseUrl, callback)
+                    discover(baseUrl, callback, discoverLinks)
                 } else {
                     callback?.onResponse(it, null)
                 }
