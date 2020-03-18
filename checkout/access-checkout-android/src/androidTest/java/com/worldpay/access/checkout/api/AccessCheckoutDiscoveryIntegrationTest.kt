@@ -15,6 +15,7 @@ import com.worldpay.access.checkout.api.DiscoveryStubs.stubServiceDiscoveryRespo
 import com.worldpay.access.checkout.api.DiscoveryStubs.verifiedTokensMapping
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import org.awaitility.Awaitility.await
 import org.junit.Rule
 import org.junit.Test
@@ -47,7 +48,7 @@ class AccessCheckoutDiscoveryIntegrationTest {
 
         val client = AccessCheckoutDiscoveryClient(AccessCheckoutDiscoveryAsyncTaskFactory())
 
-        client.discover(wireMockRule.baseUrl(), callback)
+        client.discover(wireMockRule.baseUrl(), callback, DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             Log.d("AccessCheckoutDiscoveryIntegrationTest", "Discovered endpoint: $url")
@@ -75,7 +76,7 @@ class AccessCheckoutDiscoveryIntegrationTest {
 
         val client = AccessCheckoutDiscoveryClient(AccessCheckoutDiscoveryAsyncTaskFactory())
 
-        client.discover(wireMockRule.baseUrl(), callback)
+        client.discover(wireMockRule.baseUrl(), callback, DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             Log.d("AccessCheckoutDiscoveryIntegrationTest", "Error received: $exception")
@@ -117,7 +118,7 @@ class AccessCheckoutDiscoveryIntegrationTest {
 
         val client = AccessCheckoutDiscoveryClient(AccessCheckoutDiscoveryAsyncTaskFactory())
 
-        client.discover(wireMockRule.baseUrl(), firstCallback)
+        client.discover(wireMockRule.baseUrl(), firstCallback, DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             Log.d("AccessCheckoutDiscoveryIntegrationTest", "Error received: $exception")
@@ -133,7 +134,7 @@ class AccessCheckoutDiscoveryIntegrationTest {
             }
         }
 
-        client.discover(wireMockRule.baseUrl(), secondCallback)
+        client.discover(wireMockRule.baseUrl(), secondCallback, DiscoverLinks.verifiedTokens)
 
 
         await().atMost(5, TimeUnit.SECONDS).until {
