@@ -19,7 +19,7 @@ internal class AccessCheckoutDiscoveryClient(
         private const val TAG = "AccessCheckoutDiscoveryClient"
     }
 
-    fun discover(baseUrl: String, callback: Callback<String>? = null) {
+    fun discover(baseUrl: String, callback: Callback<String>? = null, discoverLinks: DiscoverLinks) {
         if (baseUrl.isBlank()) {
             throw AccessCheckoutDiscoveryException("No URL supplied")
         }
@@ -32,7 +32,7 @@ internal class AccessCheckoutDiscoveryClient(
             val asyncTaskResultCallback = object : Callback<String> {
                 override fun onResponse(error: Exception?, response: String?) = handleAsyncTaskResponse(callback, response, error)
             }
-            val accessCheckoutDiscoveryAsyncTask = accessCheckoutDiscoveryAsyncTaskFactory.getAsyncTask(asyncTaskResultCallback)
+            val accessCheckoutDiscoveryAsyncTask = accessCheckoutDiscoveryAsyncTaskFactory.getAsyncTask(asyncTaskResultCallback, discoverLinks)
             accessCheckoutDiscoveryAsyncTask.execute(baseUrl)
         } else {
             debugLog(TAG, "Task result was already present. Num of currentAttempts: ${currentAttempts.get()}")
@@ -43,7 +43,7 @@ internal class AccessCheckoutDiscoveryClient(
             asyncTaskResult.error?.let {
                 if (currentAttempts.get() < maxAttempts) {
                     this.asyncTaskResult = null
-                    discover(baseUrl, callback)
+                    discover(baseUrl, callback, discoverLinks)
                 } else {
                     callback?.onResponse(it, null)
                 }

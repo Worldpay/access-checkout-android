@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.api
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 
 internal class SessionRequestSender(
@@ -28,6 +29,6 @@ internal class SessionRequestSender(
                 }
             }
         }
-        accessCheckoutDiscoveryClient.discover(baseUrl, callback)
+        accessCheckoutDiscoveryClient.discover(baseUrl, callback, DiscoverLinks.verifiedTokens)
     }
 }

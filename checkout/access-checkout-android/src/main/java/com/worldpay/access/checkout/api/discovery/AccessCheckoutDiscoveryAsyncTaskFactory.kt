@@ -6,12 +6,11 @@ import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializer
 
 internal class AccessCheckoutDiscoveryAsyncTaskFactory {
 
-    fun getAsyncTask(callback: Callback<String>): AccessCheckoutDiscoveryAsyncTask {
+    fun getAsyncTask(callback: Callback<String>, discoverLinks: DiscoverLinks): AccessCheckoutDiscoveryAsyncTask {
         return AccessCheckoutDiscoveryAsyncTask(
             callback,
-            LinkDiscoveryDeserializer("service:verifiedTokens"),
-            LinkDiscoveryDeserializer("verifiedTokens:sessions"),
+            LinkDiscoveryDeserializer(discoverLinks.service),
+            LinkDiscoveryDeserializer(discoverLinks.endpoint),
             HttpClient())
     }
-
 }

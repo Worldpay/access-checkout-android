@@ -14,6 +14,7 @@ import com.worldpay.access.checkout.api.SessionReceiver
 import com.worldpay.access.checkout.api.SessionRequest
 import com.worldpay.access.checkout.api.SessionRequestService
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.*
 
@@ -29,10 +30,8 @@ class AccessCheckoutClient private constructor(
     LifecycleObserver, SessionResponseListener {
 
     private lateinit var localBroadcastManager: LocalBroadcastManager
-
     private val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context)
     private val sessionReceiver: SessionReceiver = SessionReceiver(this)
-
     init {
         onCreateHostRegistration()
     }
@@ -60,8 +59,8 @@ class AccessCheckoutClient private constructor(
         ): AccessCheckoutClient {
             debugLog(TAG, "Making request to discover endpoint")
             val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
-            accessCheckoutDiscoveryClient.discover(baseUrl)
 
+            accessCheckoutDiscoveryClient.discover(baseUrl = baseUrl, discoverLinks = DiscoverLinks.verifiedTokens)
             return AccessCheckoutClient(
                 baseUrl,
                 merchantID,
@@ -81,6 +80,7 @@ class AccessCheckoutClient private constructor(
      * @param year the year to submit
      * @param cvv the cvv to submit
      */
+
     fun generateSessionState(pan: String, month: Int, year: Int, cvv: String) {
         mListener.onRequestStarted()
         val cardExpiryDate = SessionRequest.CardExpiryDate(month, year)

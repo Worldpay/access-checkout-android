@@ -4,7 +4,10 @@ import android.content.Context
 import android.content.Intent
 import android.support.v4.content.LocalBroadcastManager
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.mock
+import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -21,14 +24,18 @@ class SessionRequestServiceTest {
     private lateinit var localBroadcastManagerFactory: LocalBroadcastManagerFactory
     private lateinit var sessionRequestSender: SessionRequestSender
     private lateinit var localBroadcastManager: LocalBroadcastManager
+    private lateinit var accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient
+    private lateinit var discoverLinks: DiscoverLinks
 
     @Before
     fun setup() {
         sessionRequestSender = mock(SessionRequestSender::class.java)
         requestDispatcherFactory = mock(RequestDispatcherFactory::class.java)
         accessCheckoutDiscoveryClientFactory = mock(AccessCheckoutDiscoveryClientFactory::class.java)
+        accessCheckoutDiscoveryClient = mock()
         localBroadcastManagerFactory = mock(LocalBroadcastManagerFactory::class.java)
         localBroadcastManager = mock(LocalBroadcastManager::class.java)
+        discoverLinks = mock()
         given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
         sessionRequestService = SessionRequestService(MockedFactory())
     }
