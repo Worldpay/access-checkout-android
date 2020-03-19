@@ -29,10 +29,13 @@ class RequestDispatcherTest {
 
 
     private lateinit var sessionClient: SessionClient
+    private lateinit var sessionClientFactory: SessionClientFactory
 
     @Before
     fun setup() {
         sessionClient = Mockito.mock(SessionClient::class.java)
+        sessionClientFactory = Mockito.mock(SessionClientFactory::class.java)
+        given(sessionClientFactory.createClient()).willReturn(sessionClient)
     }
 
     private val baseUrl = "http://localhost"
