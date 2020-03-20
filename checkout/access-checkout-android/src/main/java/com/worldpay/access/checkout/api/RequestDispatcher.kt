@@ -1,12 +1,9 @@
 package com.worldpay.access.checkout.api
 
 import android.os.AsyncTask
-import android.se.omapi.Session
 import android.util.Log
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHttpException
-import com.worldpay.access.checkout.api.serialization.SessionRequestSerializer
-import com.worldpay.access.checkout.api.serialization.SessionResponseDeserializer
 import java.net.URL
 
 
@@ -14,11 +11,11 @@ internal class RequestDispatcher constructor(
     private val path: String,
     private val callback: Callback<SessionResponse>,
     private val sessionClient: SessionClient
-) : AsyncTask<SessionRequest, Any, SessionResponse>() {
+) : AsyncTask<CardSessionRequest, Any, SessionResponse>() {
 
     private var exception: Exception? = null
 
-    override fun doInBackground(vararg params: SessionRequest): SessionResponse? {
+    override fun doInBackground(vararg params: CardSessionRequest): SessionResponse? {
         return try {
             val sessionRequest = getSessionRequest(params)
             sessionClient.getSessionResponse(URL(path), sessionRequest)
@@ -40,7 +37,7 @@ internal class RequestDispatcher constructor(
         }
     }
 
-    private fun getSessionRequest(params: Array<out SessionRequest>): SessionRequest {
+    private fun getSessionRequest(params: Array<out CardSessionRequest>): CardSessionRequest {
         if (params.isEmpty()) {
             throw AccessCheckoutHttpException("No request was supplied for sending", null)
         }

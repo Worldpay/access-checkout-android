@@ -16,7 +16,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import kotlin.test.assertNotNull
 
-class SessionRequestServiceTest {
+class CardSessionRequestServiceTest {
 
     private lateinit var sessionRequestService: SessionRequestService
     private lateinit var requestDispatcherFactory: RequestDispatcherFactory
@@ -60,7 +60,7 @@ class SessionRequestServiceTest {
     @Test
     fun `given an intent with the request information is sent, then service can extract information and send request`() {
         val intent = mock(Intent::class.java)
-        val sessionRequest = SessionRequest("111111", SessionRequest.CardExpiryDate(12, 21), "123", "merchant-id")
+        val sessionRequest = CardSessionRequest("111111", CardSessionRequest.CardExpiryDate(12, 21), "123", "merchant-id")
         given(intent.getSerializableExtra("request")).willReturn(sessionRequest)
         val baseUrl = "http://localhost"
         given(intent.getStringExtra("base_url")).willReturn(baseUrl)

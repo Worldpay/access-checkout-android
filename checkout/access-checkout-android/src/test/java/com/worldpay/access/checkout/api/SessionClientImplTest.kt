@@ -28,10 +28,10 @@ class SessionClientImplTest {
     private lateinit var sessionDeserializer: Deserializer<SessionResponse>
 
     @Mock
-    private lateinit var sessionSerializer: Serializer<SessionRequest>
+    private lateinit var sessionSerializer: Serializer<CardSessionRequest>
 
     private val sessionRequest =
-        SessionRequest("1111222233334444", SessionRequest.CardExpiryDate(12, 2020), "123", "MERCHANT-123")
+        CardSessionRequest("1111222233334444", CardSessionRequest.CardExpiryDate(12, 2020), "123", "MERCHANT-123")
 
     @get:Rule
     val expectedException: ExpectedException = ExpectedException.none()

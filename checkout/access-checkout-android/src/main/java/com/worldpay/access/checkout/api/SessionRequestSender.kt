@@ -12,7 +12,7 @@ internal class SessionRequestSender(
 ) {
 
     fun sendSessionRequest(
-        sessionRequest: SessionRequest,
+        cardSessionRequest: CardSessionRequest,
         baseUrl: String,
         sessionResponseCallback: Callback<SessionResponse>
     ) {
@@ -21,7 +21,7 @@ internal class SessionRequestSender(
             override fun onResponse(error: Exception?, response: String?) {
                 if (response != null) {
                     val requestDispatcher = requestDispatcherFactory.getInstance(response, sessionResponseCallback)
-                    requestDispatcher.execute(sessionRequest)
+                    requestDispatcher.execute(cardSessionRequest)
                 } else {
                     sessionResponseCallback.onResponse(
                         AccessCheckoutDiscoveryException("Could not discover URL", error), null

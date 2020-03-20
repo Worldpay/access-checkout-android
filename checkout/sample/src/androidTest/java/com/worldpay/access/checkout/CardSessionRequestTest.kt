@@ -6,7 +6,6 @@ import android.support.test.espresso.action.ViewActions.*
 import android.support.test.espresso.assertion.ViewAssertions.matches
 import android.support.test.espresso.matcher.ViewMatchers.*
 import android.support.test.filters.LargeTest
-import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
 import android.support.test.uiautomator.UiDevice
 import android.support.test.uiautomator.UiObject
@@ -18,13 +17,12 @@ import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.Assert
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class SessionRequestTest: AbstractUITest() {
+class CardSessionRequestTest: AbstractUITest() {
 
     private lateinit var cardNumberMatcher: Matcher<View>
     private lateinit var cvvMatcher: Matcher<View>
@@ -274,15 +272,15 @@ class SessionRequestTest: AbstractUITest() {
 
     private fun getSuccessColor() =
         ResourcesCompat.getColor(
-            this@SessionRequestTest.activityRule.activity.resources,
+            this@CardSessionRequestTest.activityRule.activity.resources,
             R.color.SUCCESS,
-            this@SessionRequestTest.activityRule.activity.theme
+            this@CardSessionRequestTest.activityRule.activity.theme
         )
 
     private fun getFailColor() =
         ResourcesCompat.getColor(
-            this@SessionRequestTest.activityRule.activity.resources,
+            this@CardSessionRequestTest.activityRule.activity.resources,
             R.color.FAIL,
-            this@SessionRequestTest.activityRule.activity.theme
+            this@CardSessionRequestTest.activityRule.activity.theme
         )
 }

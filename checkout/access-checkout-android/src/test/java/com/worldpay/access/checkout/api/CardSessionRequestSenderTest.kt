@@ -4,7 +4,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.api.AccessCheckoutException.*
+import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import org.junit.Assert.assertEquals
@@ -15,7 +15,7 @@ import org.mockito.BDDMockito
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 
-class SessionRequestSenderTest {
+class CardSessionRequestSenderTest {
 
     private lateinit var requestDispatcherFactory: RequestDispatcherFactory
     private lateinit var accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient
@@ -34,7 +34,7 @@ class SessionRequestSenderTest {
     @Test
     fun givenLinkDiscoveryReturnsValidResponse_ThenShouldDispatchRequestToEndpoint() {
         val expectedSessionRequest =
-            SessionRequest("00001111222233334444", SessionRequest.CardExpiryDate(1, 2020), "123", "")
+            CardSessionRequest("00001111222233334444", CardSessionRequest.CardExpiryDate(1, 2020), "123", "")
 
         val sessionResponseCallback = object : Callback<SessionResponse> {
             override fun onResponse(error: Exception?, response: SessionResponse?) {
@@ -57,7 +57,7 @@ class SessionRequestSenderTest {
     @Test
     fun givenLinkDiscoveryReturnsError_ThenCallbackWithErrorIfNotSuccessful() {
         val expectedSessionRequest =
-            SessionRequest("00001111222233334444", SessionRequest.CardExpiryDate(1, 2020), "123", "")
+            CardSessionRequest("00001111222233334444", CardSessionRequest.CardExpiryDate(1, 2020), "123", "")
 
         var assertResponse = false
 

@@ -8,15 +8,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
 import android.support.v4.content.LocalBroadcastManager
-import com.worldpay.access.checkout.api.*
+import com.worldpay.access.checkout.api.AccessCheckoutException
+import com.worldpay.access.checkout.api.CardSessionRequest
 import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.api.SessionReceiver
-import com.worldpay.access.checkout.api.SessionRequest
 import com.worldpay.access.checkout.api.SessionRequestService
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
-import com.worldpay.access.checkout.views.*
+import com.worldpay.access.checkout.views.SessionResponseListener
 
 /**
  * [AccessCheckoutClient] is responsible for handling the request for a session state from the Access Worldpay services.
@@ -83,8 +83,8 @@ class AccessCheckoutClient private constructor(
 
     fun generateSessionState(pan: String, month: Int, year: Int, cvv: String) {
         mListener.onRequestStarted()
-        val cardExpiryDate = SessionRequest.CardExpiryDate(month, year)
-        val sessionRequest = SessionRequest(pan, cardExpiryDate, cvv, merchantID)
+        val cardExpiryDate = CardSessionRequest.CardExpiryDate(month, year)
+        val sessionRequest = CardSessionRequest(pan, cardExpiryDate, cvv, merchantID)
         val serviceIntent = Intent(context, SessionRequestService::class.java)
 
         serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, sessionRequest)

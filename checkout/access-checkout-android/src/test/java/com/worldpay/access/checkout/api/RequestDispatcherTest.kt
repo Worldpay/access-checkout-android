@@ -9,7 +9,6 @@ import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
-import java.lang.IllegalStateException
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertNull
@@ -20,9 +19,9 @@ class RequestDispatcherTest {
 
     private val verifiedTokensEndpoint = "verifiedTokens"
 
-    private val sessionRequest = SessionRequest(
+    private val sessionRequest = CardSessionRequest(
         "1111222233334444",
-        SessionRequest.CardExpiryDate(12, 2020),
+        CardSessionRequest.CardExpiryDate(12, 2020),
         "123",
         "MERCHANT-123"
     )

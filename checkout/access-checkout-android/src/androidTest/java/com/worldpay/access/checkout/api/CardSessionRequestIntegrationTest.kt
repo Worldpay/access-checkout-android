@@ -28,7 +28,7 @@ import kotlin.test.assertTrue
 import kotlin.test.fail
 
 @RunWith(AndroidJUnit4::class)
-class SessionRequestIntegrationTest {
+class CardSessionRequestIntegrationTest {
 
     private val verifiedTokensEndpoint = "verifiedTokens/sessions"
     private val cvv = "123"
@@ -39,7 +39,7 @@ class SessionRequestIntegrationTest {
     private val applicationContext = getInstrumentation().context.applicationContext
     private val lifecycleOwner = mock(LifecycleOwner::class.java)
 
-    private val sessionRequest = SessionRequest(cardNumber, SessionRequest.CardExpiryDate(month, year), cvv, identity)
+    private val sessionRequest = CardSessionRequest(cardNumber, CardSessionRequest.CardExpiryDate(month, year), cvv, identity)
 
     @get:Rule
     var wireMockRule = WireMockRule(

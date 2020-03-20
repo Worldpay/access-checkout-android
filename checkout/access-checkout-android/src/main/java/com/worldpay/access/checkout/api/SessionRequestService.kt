@@ -34,7 +34,7 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
             val sessionRequest = intent.getSerializableExtra(REQUEST_KEY)
             val baseUrl = intent.getStringExtra(BASE_URL_KEY)
 
-            sessionRequestSender.sendSessionRequest(sessionRequest as SessionRequest, baseUrl, this)
+            sessionRequestSender.sendSessionRequest(sessionRequest as CardSessionRequest, baseUrl, this)
         }
         return super.onStartCommand(intent, flags, startId)
     }
