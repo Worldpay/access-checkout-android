@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
+import com.worldpay.access.checkout.api.session.SessionReceiver
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +25,10 @@ class SessionReceiverTest {
         intent = mock()
         context = mock()
 
-        sessionReceiver = SessionReceiver(sessionResponseListener)
+        sessionReceiver =
+            SessionReceiver(
+                sessionResponseListener
+            )
     }
 
     @Test

@@ -7,6 +7,10 @@ import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.api.session.RequestDispatcher
+import com.worldpay.access.checkout.api.session.RequestDispatcherFactory
+import com.worldpay.access.checkout.api.session.SessionRequestSender
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -28,13 +32,25 @@ class CardSessionRequestSenderTest {
     fun setup() {
         requestDispatcherFactory = mock()
         accessCheckoutDiscoveryClient = mock()
-        sessionRequestSender = SessionRequestSender(requestDispatcherFactory, accessCheckoutDiscoveryClient)
+        sessionRequestSender =
+            SessionRequestSender(
+                requestDispatcherFactory,
+                accessCheckoutDiscoveryClient
+            )
     }
 
     @Test
     fun givenLinkDiscoveryReturnsValidResponse_ThenShouldDispatchRequestToEndpoint() {
         val expectedSessionRequest =
-            CardSessionRequest("00001111222233334444", CardSessionRequest.CardExpiryDate(1, 2020), "123", "")
+            CardSessionRequest(
+                "00001111222233334444",
+                CardSessionRequest.CardExpiryDate(
+                    1,
+                    2020
+                ),
+                "123",
+                ""
+            )
 
         val sessionResponseCallback = object : Callback<SessionResponse> {
             override fun onResponse(error: Exception?, response: SessionResponse?) {
@@ -57,7 +73,15 @@ class CardSessionRequestSenderTest {
     @Test
     fun givenLinkDiscoveryReturnsError_ThenCallbackWithErrorIfNotSuccessful() {
         val expectedSessionRequest =
-            CardSessionRequest("00001111222233334444", CardSessionRequest.CardExpiryDate(1, 2020), "123", "")
+            CardSessionRequest(
+                "00001111222233334444",
+                CardSessionRequest.CardExpiryDate(
+                    1,
+                    2020
+                ),
+                "123",
+                ""
+            )
 
         var assertResponse = false
 

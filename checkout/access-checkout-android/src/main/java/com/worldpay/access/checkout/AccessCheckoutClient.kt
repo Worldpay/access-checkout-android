@@ -9,12 +9,12 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.support.v4.content.LocalBroadcastManager
 import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.api.CardSessionRequest
 import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.api.SessionReceiver
-import com.worldpay.access.checkout.api.SessionRequestService
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.api.session.SessionReceiver
+import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.SessionResponseListener
 
@@ -31,7 +31,8 @@ class AccessCheckoutClient private constructor(
 
     private lateinit var localBroadcastManager: LocalBroadcastManager
     private val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context)
-    private val sessionReceiver: SessionReceiver = SessionReceiver(this)
+    private val sessionReceiver: SessionReceiver =
+        SessionReceiver(this)
     init {
         onCreateHostRegistration()
     }
@@ -84,10 +85,10 @@ class AccessCheckoutClient private constructor(
     fun generateSessionState(pan: String, month: Int, year: Int, cvv: String) {
         mListener.onRequestStarted()
         val cardExpiryDate = CardSessionRequest.CardExpiryDate(month, year)
-        val sessionRequest = CardSessionRequest(pan, cardExpiryDate, cvv, merchantID)
+        val cardSessionRequest = CardSessionRequest(pan, cardExpiryDate, cvv, merchantID)
         val serviceIntent = Intent(context, SessionRequestService::class.java)
 
-        serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, sessionRequest)
+        serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, cardSessionRequest)
         serviceIntent.putExtra(SessionRequestService.BASE_URL_KEY, baseURL)
         context.startService(serviceIntent)
     }

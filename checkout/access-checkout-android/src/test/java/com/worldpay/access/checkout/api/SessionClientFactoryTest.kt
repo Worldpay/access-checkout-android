@@ -1,12 +1,14 @@
 package com.worldpay.access.checkout.api
 
+import com.worldpay.access.checkout.api.session.SessionClientFactory
 import org.junit.Test
 import kotlin.test.assertNotNull
 
 class SessionClientFactoryTest {
     @Test
     fun `should be able to create a session client`() {
-        val sessionClientFactory = SessionClientFactory()
+        val sessionClientFactory =
+            SessionClientFactory()
         val sessionClient = sessionClientFactory.createClient()
         assertNotNull(sessionClient)
     }

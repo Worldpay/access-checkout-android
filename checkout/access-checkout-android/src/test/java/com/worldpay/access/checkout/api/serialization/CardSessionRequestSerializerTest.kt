@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.api.serialization
 
-import com.worldpay.access.checkout.api.CardSessionRequest
-import com.worldpay.access.checkout.api.CardSessionRequest.CardExpiryDate
+import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.api.session.CardSessionRequest.CardExpiryDate
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,7 +16,13 @@ class CardSessionRequestSerializerTest {
 
     @Test
     fun givenSessionRequestInstanceThenShouldSerializeToJson() {
-        val sessionRequest = CardSessionRequest("0000111122223333", CardExpiryDate(12, 2020), "123", "MERCHANT-123")
+        val sessionRequest =
+            CardSessionRequest(
+                "0000111122223333",
+                CardExpiryDate(12, 2020),
+                "123",
+                "MERCHANT-123"
+            )
         val expectedRequest = """
                 {
                     "cardNumber": "0000111122223333",

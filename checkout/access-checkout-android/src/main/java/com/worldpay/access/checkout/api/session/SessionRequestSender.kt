@@ -1,6 +1,8 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
+import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.api.SessionResponse
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
@@ -17,7 +19,8 @@ internal class SessionRequestSender(
         sessionResponseCallback: Callback<SessionResponse>
     ) {
         debugLog("SessionRequestSender", "Making session request")
-        val callback = object : Callback<String> {
+        val callback = object :
+            Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
                 if (response != null) {
                     val requestDispatcher = requestDispatcherFactory.getInstance(response, sessionResponseCallback)

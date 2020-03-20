@@ -1,4 +1,7 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
+
+import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.api.SessionResponse
 
 internal class RequestDispatcherFactory {
     fun getInstance(

@@ -3,6 +3,8 @@ package com.worldpay.access.checkout.api
 import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
+import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.api.session.SessionClientImpl
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -31,7 +33,15 @@ class SessionClientImplTest {
     private lateinit var sessionSerializer: Serializer<CardSessionRequest>
 
     private val sessionRequest =
-        CardSessionRequest("1111222233334444", CardSessionRequest.CardExpiryDate(12, 2020), "123", "MERCHANT-123")
+        CardSessionRequest(
+            "1111222233334444",
+            CardSessionRequest.CardExpiryDate(
+                12,
+                2020
+            ),
+            "123",
+            "MERCHANT-123"
+        )
 
     @get:Rule
     val expectedException: ExpectedException = ExpectedException.none()

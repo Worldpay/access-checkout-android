@@ -15,6 +15,7 @@ import com.worldpay.access.checkout.AccessCheckoutClient
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.AccessCheckoutException.Error.BODY_DOES_NOT_MATCH_SCHEMA
 import com.worldpay.access.checkout.api.DiscoveryStubs.stubServiceDiscoveryResponses
+import com.worldpay.access.checkout.api.session.CardSessionRequest
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.awaitility.Awaitility.await
 import org.junit.Before
@@ -39,7 +40,16 @@ class CardSessionRequestIntegrationTest {
     private val applicationContext = getInstrumentation().context.applicationContext
     private val lifecycleOwner = mock(LifecycleOwner::class.java)
 
-    private val sessionRequest = CardSessionRequest(cardNumber, CardSessionRequest.CardExpiryDate(month, year), cvv, identity)
+    private val sessionRequest =
+        CardSessionRequest(
+            cardNumber,
+            CardSessionRequest.CardExpiryDate(
+                month,
+                year
+            ),
+            cvv,
+            identity
+        )
 
     @get:Rule
     var wireMockRule = WireMockRule(

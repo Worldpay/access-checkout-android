@@ -8,6 +8,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.api.session.*
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -37,7 +38,10 @@ class CardSessionRequestServiceTest {
         localBroadcastManager = mock(LocalBroadcastManager::class.java)
         discoverLinks = mock()
         given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
-        sessionRequestService = SessionRequestService(MockedFactory())
+        sessionRequestService =
+            SessionRequestService(
+                MockedFactory()
+            )
     }
 
     @Test
@@ -60,7 +64,16 @@ class CardSessionRequestServiceTest {
     @Test
     fun `given an intent with the request information is sent, then service can extract information and send request`() {
         val intent = mock(Intent::class.java)
-        val sessionRequest = CardSessionRequest("111111", CardSessionRequest.CardExpiryDate(12, 21), "123", "merchant-id")
+        val sessionRequest =
+            CardSessionRequest(
+                "111111",
+                CardSessionRequest.CardExpiryDate(
+                    12,
+                    21
+                ),
+                "123",
+                "merchant-id"
+            )
         given(intent.getSerializableExtra("request")).willReturn(sessionRequest)
         val baseUrl = "http://localhost"
         given(intent.getStringExtra("base_url")).willReturn(baseUrl)
@@ -84,7 +97,8 @@ class CardSessionRequestServiceTest {
         Mockito.verify(localBroadcastManager).sendBroadcast(any())
     }
 
-    internal inner class MockedFactory: Factory {
+    internal inner class MockedFactory:
+        Factory {
         override fun getLocalBroadcastManagerFactory(context: Context) = localBroadcastManagerFactory
 
         override fun getSessionRequestSender(context: Context) = sessionRequestSender

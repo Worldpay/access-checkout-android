@@ -9,6 +9,8 @@ import au.com.dius.pact.model.RequestResponsePact
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.serialization.CardSessionRequestSerializer
 import com.worldpay.access.checkout.api.serialization.SessionResponseDeserializer
+import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.api.session.SessionClientImpl
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -30,7 +32,12 @@ class PactTest {
 
     @Before
     fun setup() {
-        sessionClient = SessionClientImpl(SessionResponseDeserializer(), CardSessionRequestSerializer(), HttpClient())
+        sessionClient =
+            SessionClientImpl(
+                SessionResponseDeserializer(),
+                CardSessionRequestSerializer(),
+                HttpClient()
+            )
     }
 
     @get:Rule
@@ -329,7 +336,15 @@ class PactTest {
     @PactVerification("verified-tokens", fragment = "createSuccessfulRequestInteraction")
     fun givenValidRequestThenShouldReceiveValidResponse() {
         val sessionRequest =
-            CardSessionRequest(cardNumber, CardSessionRequest.CardExpiryDate(expiryMonth, expiryYear), cvv, identity)
+            CardSessionRequest(
+                cardNumber,
+                CardSessionRequest.CardExpiryDate(
+                    expiryMonth,
+                    expiryYear
+                ),
+                cvv,
+                identity
+            )
 
         val expectedCuries = arrayOf(
             SessionResponse.Links.Curies(
@@ -354,7 +369,15 @@ class PactTest {
     @PactVerification("verified-tokens", fragment = "createInvalidIdentityRequestInteraction")
     fun givenInvalidIdentityInTheRequestThenShouldReceiveA400ResponseWithIdentityAsReason() {
         val sessionRequest =
-            CardSessionRequest(cardNumber, CardSessionRequest.CardExpiryDate(expiryMonth, expiryYear), cvv, invalidIdentity)
+            CardSessionRequest(
+                cardNumber,
+                CardSessionRequest.CardExpiryDate(
+                    expiryMonth,
+                    expiryYear
+                ),
+                cvv,
+                invalidIdentity
+            )
 
         try {
             sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
@@ -377,7 +400,15 @@ class PactTest {
     @PactVerification("verified-tokens", fragment = "createInvalidLuhnRequestInteraction")
     fun givenLuhnInvalidCardInTheRequestThenShouldReceiveA400ResponseWithPANFailedLuhnError() {
         val sessionRequest =
-            CardSessionRequest(invalidLuhn, CardSessionRequest.CardExpiryDate(expiryMonth, expiryYear), cvv, identity)
+            CardSessionRequest(
+                invalidLuhn,
+                CardSessionRequest.CardExpiryDate(
+                    expiryMonth,
+                    expiryYear
+                ),
+                cvv,
+                identity
+            )
 
         try {
             sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
@@ -403,7 +434,15 @@ class PactTest {
     @PactVerification("verified-tokens", fragment = "createStringTooShortRequestInteraction")
     fun givenStringTooShortCardInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
         val sessionRequest =
-            CardSessionRequest(cardStringTooShort, CardSessionRequest.CardExpiryDate(expiryMonth, expiryYear), cvv, identity)
+            CardSessionRequest(
+                cardStringTooShort,
+                CardSessionRequest.CardExpiryDate(
+                    expiryMonth,
+                    expiryYear
+                ),
+                cvv,
+                identity
+            )
 
         try {
             sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
@@ -429,7 +468,15 @@ class PactTest {
     @PactVerification("verified-tokens", fragment = "createStringTooLongRequestInteraction")
     fun givenStringTooLongCardInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
         val sessionRequest =
-            CardSessionRequest(cardStringTooLong, CardSessionRequest.CardExpiryDate(expiryMonth, expiryYear), cvv, identity)
+            CardSessionRequest(
+                cardStringTooLong,
+                CardSessionRequest.CardExpiryDate(
+                    expiryMonth,
+                    expiryYear
+                ),
+                cvv,
+                identity
+            )
 
         try {
             sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
@@ -455,7 +502,15 @@ class PactTest {
     @PactVerification("verified-tokens", fragment = "createIntegerMonthTooSmallRequestInteraction")
     fun givenIntegerMonthTooSmallInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
         val sessionRequest =
-            CardSessionRequest(cardNumber, CardSessionRequest.CardExpiryDate(integerMonthTooSmall, expiryYear), cvv, identity)
+            CardSessionRequest(
+                cardNumber,
+                CardSessionRequest.CardExpiryDate(
+                    integerMonthTooSmall,
+                    expiryYear
+                ),
+                cvv,
+                identity
+            )
 
         try {
             sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
@@ -481,7 +536,15 @@ class PactTest {
     @PactVerification("verified-tokens", fragment = "createIntegerMonthTooLargeRequestInteraction")
     fun givenIntegerMonthTooLargeInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
         val sessionRequest =
-            CardSessionRequest(cardNumber, CardSessionRequest.CardExpiryDate(integerMonthTooLarge, expiryYear), cvv, identity)
+            CardSessionRequest(
+                cardNumber,
+                CardSessionRequest.CardExpiryDate(
+                    integerMonthTooLarge,
+                    expiryYear
+                ),
+                cvv,
+                identity
+            )
 
         try {
             sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
@@ -509,7 +572,10 @@ class PactTest {
         val sessionRequest =
             CardSessionRequest(
                 cardNumber,
-                CardSessionRequest.CardExpiryDate(expiryMonth, expiryYear),
+                CardSessionRequest.CardExpiryDate(
+                    expiryMonth,
+                    expiryYear
+                ),
                 cvvNonNumerical,
                 identity
             )
@@ -542,13 +608,26 @@ class PactTest {
 
         val emptyString = ""
         val sessionRequest =
-            CardSessionRequest(emptyString, CardSessionRequest.CardExpiryDate(1, 99), emptyString, emptyString)
+            CardSessionRequest(
+                emptyString,
+                CardSessionRequest.CardExpiryDate(
+                    1,
+                    99
+                ),
+                emptyString,
+                emptyString
+            )
 
 
         given(mockEmptySerializer.serialize(sessionRequest))
             .willReturn(emptyString)
 
-        sessionClient = SessionClientImpl(SessionResponseDeserializer(), mockEmptySerializer, HttpClient())
+        sessionClient =
+            SessionClientImpl(
+                SessionResponseDeserializer(),
+                mockEmptySerializer,
+                HttpClient()
+            )
 
         try {
             sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)

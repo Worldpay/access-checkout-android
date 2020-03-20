@@ -1,11 +1,15 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.api.SessionResponse
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 
-internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(), Callback<SessionResponse> {
+internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),
+    Callback<SessionResponse> {
 
     companion object {
 
@@ -45,7 +49,8 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
         val broadcastIntent = Intent()
         broadcastIntent.putExtra(SessionReceiver.RESPONSE_KEY, response)
         broadcastIntent.putExtra(SessionReceiver.ERROR_KEY, error)
-        broadcastIntent.action = ACTION_GET_SESSION
+        broadcastIntent.action =
+            ACTION_GET_SESSION
 
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
     }
@@ -56,9 +61,14 @@ internal interface Factory {
     fun getSessionRequestSender(context: Context): SessionRequestSender
 }
 
-internal class DefaultFactory : Factory {
+internal class DefaultFactory :
+    Factory {
 
-    override fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory = LocalBroadcastManagerFactory(context)
+    override fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory =
+        LocalBroadcastManagerFactory(context)
 
-    override fun getSessionRequestSender(context: Context) = SessionRequestSender(RequestDispatcherFactory())
+    override fun getSessionRequestSender(context: Context) =
+        SessionRequestSender(
+            RequestDispatcherFactory()
+        )
 }

@@ -2,6 +2,10 @@ package com.worldpay.access.checkout.api
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHttpException
+import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.api.session.RequestDispatcher
+import com.worldpay.access.checkout.api.session.SessionClient
+import com.worldpay.access.checkout.api.session.SessionClientFactory
 import org.awaitility.Awaitility.await
 import org.junit.Before
 import org.junit.Test
@@ -19,12 +23,16 @@ class RequestDispatcherTest {
 
     private val verifiedTokensEndpoint = "verifiedTokens"
 
-    private val sessionRequest = CardSessionRequest(
-        "1111222233334444",
-        CardSessionRequest.CardExpiryDate(12, 2020),
-        "123",
-        "MERCHANT-123"
-    )
+    private val sessionRequest =
+        CardSessionRequest(
+            "1111222233334444",
+            CardSessionRequest.CardExpiryDate(
+                12,
+                2020
+            ),
+            "123",
+            "MERCHANT-123"
+        )
 
 
     private lateinit var sessionClient: SessionClient
