@@ -1,11 +1,16 @@
 package com.worldpay.access.checkout.api.serialization
 
 import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.api.session.SessionRequest
 import org.json.JSONObject
 
-internal class CardSessionRequestSerializer : Serializer<CardSessionRequest> {
+internal class CardSessionRequestSerializer : Serializer<SessionRequest> {
 
-    override fun serialize(instance: CardSessionRequest): String {
+    override fun serialize(instance: SessionRequest): String {
+        if (instance !is CardSessionRequest) {
+            throw IllegalArgumentException("could not serialize session request")
+        }
+
         val root = JSONObject()
 
         val expiryDate = JSONObject()

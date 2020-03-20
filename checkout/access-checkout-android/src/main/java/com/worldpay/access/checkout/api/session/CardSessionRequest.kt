@@ -9,3 +9,5 @@ internal data class CardSessionRequest(val cardNumber: String, val cardExpiryDat
     internal data class CardExpiryDate(val month: Int, val year: Int): Serializable
 
 }
+
+internal data class CVVSessionRequest(val cvv: String, val identity: String): SessionRequest
