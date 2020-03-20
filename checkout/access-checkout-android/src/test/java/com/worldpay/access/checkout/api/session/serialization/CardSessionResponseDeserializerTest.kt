@@ -15,10 +15,10 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
-class SessionResponseDeserializerTest {
+class CardSessionResponseDeserializerTest {
 
     private val sessionResponseDeserializer =
-        SessionResponseDeserializer()
+        CardSessionResponseDeserializer()
 
     @get:Rule
     val expectedException: ExpectedException = ExpectedException.none()

@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.api.session.SessionResponse.Links.Curies
 import com.worldpay.access.checkout.api.session.SessionResponse.Links.VerifiedTokensSession
 import org.json.JSONObject
 
-internal class SessionResponseDeserializer: Deserializer<SessionResponse>() {
+internal class CardSessionResponseDeserializer: Deserializer<SessionResponse>() {
 
     override fun deserialize(json: String): SessionResponse {
         return super.deserialize(json) {

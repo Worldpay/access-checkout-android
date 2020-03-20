@@ -90,6 +90,7 @@ class AccessCheckoutClient private constructor(
 
         serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, cardSessionRequest)
         serviceIntent.putExtra(SessionRequestService.BASE_URL_KEY, baseURL)
+        serviceIntent.putExtra(SessionRequestService.DISCOVER_LINKS, DiscoverLinks.verifiedTokens)
         context.startService(serviceIntent)
     }
 

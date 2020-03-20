@@ -1,10 +1,13 @@
-package com.worldpay.access.checkout.api.session
+package com.worldpay.access.checkout.api.session.request
 
 import android.os.AsyncTask
 import android.util.Log
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHttpException
 import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.api.session.SessionRequest
+import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.client.SessionClient
 import java.net.URL
 
 
@@ -55,12 +58,4 @@ internal class RequestDispatcher constructor(
         }
     }
 
-    companion object {
-        @JvmStatic
-        fun buildDispatcher(path: String, callback: Callback<SessionResponse>): RequestDispatcher {
-            val sessionClientFactory = SessionClientFactory()
-            val client = sessionClientFactory.createClient()
-            return RequestDispatcher(path, callback, client)
-        }
-    }
 }

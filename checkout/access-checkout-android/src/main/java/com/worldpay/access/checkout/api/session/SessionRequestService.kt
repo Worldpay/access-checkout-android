@@ -5,6 +5,9 @@ import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.api.session.client.SessionClientFactory
+import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),
@@ -17,6 +20,7 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
         @JvmStatic
         val ACTION_GET_SESSION = "com.worldpay.access.checkout.api.action.GET_SESSION"
 
+        const val DISCOVER_LINKS = "discover"
         const val REQUEST_KEY = "request"
         const val BASE_URL_KEY = "base_url"
     }
@@ -34,10 +38,10 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
-            val cardSessionRequest = intent.getSerializableExtra(REQUEST_KEY)
+            val sessionRequest = intent.getSerializableExtra(REQUEST_KEY) as SessionRequest
             val baseUrl = intent.getStringExtra(BASE_URL_KEY)
-
-            sessionRequestSender.sendSessionRequest(cardSessionRequest as CardSessionRequest, baseUrl, this)
+            val discoverLinks = intent.getSerializableExtra(DISCOVER_LINKS) as DiscoverLinks
+            sessionRequestSender.sendSessionRequest(sessionRequest, baseUrl, this, discoverLinks)
         }
         return super.onStartCommand(intent, flags, startId)
     }
@@ -48,8 +52,7 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
         val broadcastIntent = Intent()
         broadcastIntent.putExtra(SessionReceiver.RESPONSE_KEY, response)
         broadcastIntent.putExtra(SessionReceiver.ERROR_KEY, error)
-        broadcastIntent.action =
-            ACTION_GET_SESSION
+        broadcastIntent.action = ACTION_GET_SESSION
 
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
     }
@@ -60,14 +63,12 @@ internal interface Factory {
     fun getSessionRequestSender(context: Context): SessionRequestSender
 }
 
-internal class DefaultFactory :
-    Factory {
+internal class DefaultFactory: Factory {
 
     override fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory =
         LocalBroadcastManagerFactory(context)
 
     override fun getSessionRequestSender(context: Context) =
-        SessionRequestSender(
-            RequestDispatcherFactory()
-        )
+        SessionRequestSender(SessionClientFactory(), RequestDispatcherFactory())
+
 }

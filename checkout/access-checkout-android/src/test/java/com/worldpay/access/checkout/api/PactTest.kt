@@ -8,10 +8,10 @@ import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.session.CardSessionRequest
-import com.worldpay.access.checkout.api.session.SessionClientImpl
 import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.client.CardSessionClient
 import com.worldpay.access.checkout.api.session.serialization.CardSessionRequestSerializer
-import com.worldpay.access.checkout.api.session.serialization.SessionResponseDeserializer
+import com.worldpay.access.checkout.api.session.serialization.CardSessionResponseDeserializer
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -29,13 +29,13 @@ class PactTest {
         private const val provider = "verified-tokens"
     }
 
-    private lateinit var sessionClient: SessionClientImpl
+    private lateinit var cardSessionClient: CardSessionClient
 
     @Before
     fun setup() {
-        sessionClient =
-            SessionClientImpl(
-                SessionResponseDeserializer(),
+        cardSessionClient =
+            CardSessionClient(
+                CardSessionResponseDeserializer(),
                 CardSessionRequestSerializer(),
                 HttpClient()
             )
@@ -365,7 +365,7 @@ class PactTest {
 
         assertEquals(
             expectedSessionResponse,
-            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
         )
     }
 
@@ -384,7 +384,7 @@ class PactTest {
             )
 
         try {
-            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule =
@@ -415,7 +415,7 @@ class PactTest {
             )
 
         try {
-            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -449,7 +449,7 @@ class PactTest {
             )
 
         try {
-            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -483,7 +483,7 @@ class PactTest {
             )
 
         try {
-            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -517,7 +517,7 @@ class PactTest {
             )
 
         try {
-            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -551,7 +551,7 @@ class PactTest {
             )
 
         try {
-            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -585,7 +585,7 @@ class PactTest {
             )
 
         try {
-            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -626,15 +626,15 @@ class PactTest {
         given(mockEmptySerializer.serialize(sessionRequest))
             .willReturn(emptyString)
 
-        sessionClient =
-            SessionClientImpl(
-                SessionResponseDeserializer(),
+        cardSessionClient =
+            CardSessionClient(
+                CardSessionResponseDeserializer(),
                 mockEmptySerializer,
                 HttpClient()
             )
 
         try {
-            sessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
 
