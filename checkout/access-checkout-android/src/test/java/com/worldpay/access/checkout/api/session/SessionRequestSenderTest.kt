@@ -1,16 +1,12 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
+import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
-import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.api.session.CardSessionRequest
-import com.worldpay.access.checkout.api.session.RequestDispatcher
-import com.worldpay.access.checkout.api.session.RequestDispatcherFactory
-import com.worldpay.access.checkout.api.session.SessionRequestSender
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -19,12 +15,11 @@ import org.mockito.BDDMockito
 import org.mockito.Mockito
 import org.mockito.Mockito.verify
 
-class CardSessionRequestSenderTest {
+class SessionRequestSenderTest {
 
     private lateinit var requestDispatcherFactory: RequestDispatcherFactory
     private lateinit var accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient
     private lateinit var sessionRequestSender: SessionRequestSender
-    private lateinit var discoverLinks: DiscoverLinks
 
     private val baseURL = "http://localhost"
 

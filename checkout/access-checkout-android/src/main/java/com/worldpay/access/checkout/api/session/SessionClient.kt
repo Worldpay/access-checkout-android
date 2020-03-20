@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.api.session
 
 import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.api.HttpClient
-import com.worldpay.access.checkout.api.SessionResponse
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import java.net.URL

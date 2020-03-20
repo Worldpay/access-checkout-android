@@ -1,6 +1,6 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
-import com.worldpay.access.checkout.api.session.RequestDispatcherFactory
+import com.worldpay.access.checkout.api.Callback
 import org.junit.Assert.assertNotNull
 import org.junit.Test
 
@@ -8,7 +8,8 @@ class RequestDispatcherFactoryTest {
 
     @Test
     fun shouldCreateRequestDispatcherInstance() {
-        val sessionResponseCallback = object : Callback<SessionResponse> {
+        val sessionResponseCallback = object :
+            Callback<SessionResponse> {
             override fun onResponse(error: Exception?, response: SessionResponse?) { }
         }
 

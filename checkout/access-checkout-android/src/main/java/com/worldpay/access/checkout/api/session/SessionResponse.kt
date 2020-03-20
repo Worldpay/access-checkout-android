@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
 import java.io.Serializable
 

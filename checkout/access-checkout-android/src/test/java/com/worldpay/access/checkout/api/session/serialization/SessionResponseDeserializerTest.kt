@@ -1,10 +1,10 @@
-package com.worldpay.access.checkout.api.serialization
+package com.worldpay.access.checkout.api.session.serialization
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
-import com.worldpay.access.checkout.api.SessionResponse
-import com.worldpay.access.checkout.api.SessionResponse.Links
-import com.worldpay.access.checkout.api.SessionResponse.Links.Curies
-import com.worldpay.access.checkout.api.SessionResponse.Links.VerifiedTokensSession
+import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.SessionResponse.Links
+import com.worldpay.access.checkout.api.session.SessionResponse.Links.Curies
+import com.worldpay.access.checkout.api.session.SessionResponse.Links.VerifiedTokensSession
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -17,7 +17,8 @@ import org.robolectric.annotation.Config
 @Config(manifest = Config.NONE)
 class SessionResponseDeserializerTest {
 
-    private val sessionResponseDeserializer = SessionResponseDeserializer()
+    private val sessionResponseDeserializer =
+        SessionResponseDeserializer()
 
     @get:Rule
     val expectedException: ExpectedException = ExpectedException.none()
@@ -116,7 +117,10 @@ class SessionResponseDeserializerTest {
             VerifiedTokensSession("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
             expectedCuries
         )
-        val expectedResponse = SessionResponse(expectedLinks)
+        val expectedResponse =
+            SessionResponse(
+                expectedLinks
+            )
 
         assertEquals(expectedResponse, deserializedResponse)
     }

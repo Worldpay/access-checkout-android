@@ -1,9 +1,10 @@
-package com.worldpay.access.checkout.api.serialization
+package com.worldpay.access.checkout.api.session.serialization
 
-import com.worldpay.access.checkout.api.SessionResponse
-import com.worldpay.access.checkout.api.SessionResponse.Links
-import com.worldpay.access.checkout.api.SessionResponse.Links.Curies
-import com.worldpay.access.checkout.api.SessionResponse.Links.VerifiedTokensSession
+import com.worldpay.access.checkout.api.serialization.Deserializer
+import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.SessionResponse.Links
+import com.worldpay.access.checkout.api.session.SessionResponse.Links.Curies
+import com.worldpay.access.checkout.api.session.SessionResponse.Links.VerifiedTokensSession
 import org.json.JSONObject
 
 internal class SessionResponseDeserializer: Deserializer<SessionResponse>() {

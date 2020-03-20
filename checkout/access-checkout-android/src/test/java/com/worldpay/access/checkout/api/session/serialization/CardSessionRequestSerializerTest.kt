@@ -1,5 +1,6 @@
-package com.worldpay.access.checkout.api.serialization
+package com.worldpay.access.checkout.api.session.serialization
 
+import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.api.session.CVVSessionRequest
 import com.worldpay.access.checkout.api.session.CardSessionRequest
 import com.worldpay.access.checkout.api.session.CardSessionRequest.CardExpiryDate

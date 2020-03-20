@@ -1,10 +1,9 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
 import com.worldpay.access.checkout.BuildConfig
+import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
-import com.worldpay.access.checkout.api.session.CardSessionRequest
-import com.worldpay.access.checkout.api.session.SessionClientImpl
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

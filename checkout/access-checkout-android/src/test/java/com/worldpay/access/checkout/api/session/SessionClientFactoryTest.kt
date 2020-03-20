@@ -1,6 +1,5 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
-import com.worldpay.access.checkout.api.session.SessionClientFactory
 import org.junit.Test
 import kotlin.test.assertNotNull
 

@@ -1,10 +1,9 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
 import android.content.Context
 import android.content.Intent
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
-import com.worldpay.access.checkout.api.session.SessionReceiver
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
@@ -92,7 +91,11 @@ class SessionReceiverTest {
 
         val expectedEx: AccessCheckoutError = mock()
         given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
-        given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
+        given(intent.getSerializableExtra("response")).willReturn(
+            TestObject(
+                "something"
+            )
+        )
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
 
         sessionReceiver.onReceive(context, intent)
@@ -108,7 +111,11 @@ class SessionReceiverTest {
         val expectedEx: AccessCheckoutError? = null
 
         given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
-        given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
+        given(intent.getSerializableExtra("response")).willReturn(
+            TestObject(
+                "something"
+            )
+        )
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         sessionReceiver.onReceive(context, intent)

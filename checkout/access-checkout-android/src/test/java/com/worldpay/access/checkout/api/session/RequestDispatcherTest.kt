@@ -1,11 +1,9 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
+import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHttpException
-import com.worldpay.access.checkout.api.session.CardSessionRequest
-import com.worldpay.access.checkout.api.session.RequestDispatcher
-import com.worldpay.access.checkout.api.session.SessionClient
-import com.worldpay.access.checkout.api.session.SessionClientFactory
+import com.worldpay.access.checkout.api.Callback
 import org.awaitility.Awaitility.await
 import org.junit.Before
 import org.junit.Test
@@ -61,7 +59,10 @@ class RequestDispatcherTest {
             SessionResponse.Links.VerifiedTokensSession("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
             expectedCuries
         )
-        val expectedSessionResponse = SessionResponse(expectedLinks)
+        val expectedSessionResponse =
+            SessionResponse(
+                expectedLinks
+            )
 
         given(sessionClient.getSessionResponse(URL("$baseUrl/$verifiedTokensEndpoint"), sessionRequest)).willReturn(
             expectedSessionResponse

@@ -7,10 +7,11 @@ import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
-import com.worldpay.access.checkout.api.serialization.CardSessionRequestSerializer
-import com.worldpay.access.checkout.api.serialization.SessionResponseDeserializer
 import com.worldpay.access.checkout.api.session.CardSessionRequest
 import com.worldpay.access.checkout.api.session.SessionClientImpl
+import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.serialization.CardSessionRequestSerializer
+import com.worldpay.access.checkout.api.session.serialization.SessionResponseDeserializer
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -357,7 +358,10 @@ class PactTest {
             SessionResponse.Links.VerifiedTokensSession(sessionReferenceExample),
             expectedCuries
         )
-        val expectedSessionResponse = SessionResponse(expectedLinks)
+        val expectedSessionResponse =
+            SessionResponse(
+                expectedLinks
+            )
 
         assertEquals(
             expectedSessionResponse,

@@ -1,14 +1,14 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
 import android.content.Context
 import android.content.Intent
 import android.support.v4.content.LocalBroadcastManager
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
+import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.api.session.*
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +17,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import kotlin.test.assertNotNull
 
-class CardSessionRequestServiceTest {
+class SessionRequestServiceTest {
 
     private lateinit var sessionRequestService: SessionRequestService
     private lateinit var requestDispatcherFactory: RequestDispatcherFactory
@@ -85,12 +85,15 @@ class CardSessionRequestServiceTest {
 
     @Test
     fun `given a response is received, then response is broad casted to receivers`() {
-        val sessionResponse = SessionResponse(
-            SessionResponse.Links(
-                SessionResponse.Links.VerifiedTokensSession("some link"),
-                emptyArray()
+        val sessionResponse =
+            SessionResponse(
+                SessionResponse.Links(
+                    SessionResponse.Links.VerifiedTokensSession(
+                        "some link"
+                    ),
+                    emptyArray()
+                )
             )
-        )
 
         sessionRequestService.onResponse(null, sessionResponse)
 

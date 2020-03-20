@@ -5,7 +5,6 @@ import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.api.SessionResponse
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),

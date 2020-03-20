@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.api.session
 
 import com.worldpay.access.checkout.api.HttpClient
-import com.worldpay.access.checkout.api.serialization.CardSessionRequestSerializer
-import com.worldpay.access.checkout.api.serialization.SessionResponseDeserializer
+import com.worldpay.access.checkout.api.session.serialization.CardSessionRequestSerializer
+import com.worldpay.access.checkout.api.session.serialization.SessionResponseDeserializer
 
 class SessionClientFactory {
 
