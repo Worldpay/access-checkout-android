@@ -8,16 +8,16 @@ import com.worldpay.access.checkout.api.serialization.Serializer
 import java.net.URL
 
 internal interface SessionClient {
-    fun getSessionResponse(url: URL, request: CardSessionRequest): SessionResponse?
+    fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse?
 }
 
 internal class SessionClientImpl(
     private val deserializer: Deserializer<SessionResponse>,
-    private val serializer: Serializer<CardSessionRequest>,
+    private val serializer: Serializer<SessionRequest>,
     private val httpClient: HttpClient
 ) : SessionClient {
 
-    override fun getSessionResponse(url: URL, request: CardSessionRequest): SessionResponse? {
+    override fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse? {
         val headers = HashMap<String, String>()
         headers[CONTENT_TYPE_HEADER] =
             VERIFIED_TOKENS_MEDIA_TYPE

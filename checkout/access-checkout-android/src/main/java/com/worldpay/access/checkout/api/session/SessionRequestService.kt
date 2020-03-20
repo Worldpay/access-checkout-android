@@ -35,10 +35,10 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
-            val sessionRequest = intent.getSerializableExtra(REQUEST_KEY)
+            val cardSessionRequest = intent.getSerializableExtra(REQUEST_KEY)
             val baseUrl = intent.getStringExtra(BASE_URL_KEY)
 
-            sessionRequestSender.sendSessionRequest(sessionRequest as CardSessionRequest, baseUrl, this)
+            sessionRequestSender.sendSessionRequest(cardSessionRequest as CardSessionRequest, baseUrl, this)
         }
         return super.onStartCommand(intent, flags, startId)
     }

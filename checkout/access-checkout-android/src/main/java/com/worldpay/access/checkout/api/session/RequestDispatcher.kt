@@ -13,11 +13,11 @@ internal class RequestDispatcher constructor(
     private val path: String,
     private val callback: Callback<SessionResponse>,
     private val sessionClient: SessionClient
-) : AsyncTask<CardSessionRequest, Any, SessionResponse>() {
+) : AsyncTask<SessionRequest, Any, SessionResponse>() {
 
     private var exception: Exception? = null
 
-    override fun doInBackground(vararg params: CardSessionRequest): SessionResponse? {
+    override fun doInBackground(vararg params: SessionRequest): SessionResponse? {
         return try {
             val sessionRequest = getSessionRequest(params)
             sessionClient.getSessionResponse(URL(path), sessionRequest)
@@ -39,7 +39,7 @@ internal class RequestDispatcher constructor(
         }
     }
 
-    private fun getSessionRequest(params: Array<out CardSessionRequest>): CardSessionRequest {
+    private fun getSessionRequest(params: Array<out SessionRequest>): SessionRequest {
         if (params.isEmpty()) {
             throw AccessCheckoutHttpException("No request was supplied for sending", null)
         }
