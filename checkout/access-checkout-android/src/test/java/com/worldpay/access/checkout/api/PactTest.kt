@@ -7,7 +7,7 @@ import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
-import com.worldpay.access.checkout.api.serialization.SessionRequestSerializer
+import com.worldpay.access.checkout.api.serialization.CardSessionRequestSerializer
 import com.worldpay.access.checkout.api.serialization.SessionResponseDeserializer
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -30,7 +30,7 @@ class PactTest {
 
     @Before
     fun setup() {
-        sessionClient = SessionClientImpl(SessionResponseDeserializer(), SessionRequestSerializer(), HttpClient())
+        sessionClient = SessionClientImpl(SessionResponseDeserializer(), CardSessionRequestSerializer(), HttpClient())
     }
 
     @get:Rule
@@ -538,7 +538,7 @@ class PactTest {
     @PactVerification("verified-tokens", fragment = "createEmptyBodyErrorInteractionRequestInteraction")
     fun givenEmptyBodyInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
 
-        val mockEmptySerializer = mock(SessionRequestSerializer::class.java)
+        val mockEmptySerializer = mock(CardSessionRequestSerializer::class.java)
 
         val emptyString = ""
         val sessionRequest =

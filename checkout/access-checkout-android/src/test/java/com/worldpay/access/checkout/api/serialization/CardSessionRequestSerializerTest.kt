@@ -10,9 +10,9 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
-class SessionRequestSerializerTest {
+class CardSessionRequestSerializerTest {
 
-    private val sessionRequestSerializer: Serializer<CardSessionRequest> = SessionRequestSerializer()
+    private val sessionRequestSerializer: Serializer<CardSessionRequest> = CardSessionRequestSerializer()
 
     @Test
     fun givenSessionRequestInstanceThenShouldSerializeToJson() {

@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.api.serialization
 import com.worldpay.access.checkout.api.CardSessionRequest
 import org.json.JSONObject
 
-internal class SessionRequestSerializer : Serializer<CardSessionRequest> {
+internal class CardSessionRequestSerializer : Serializer<CardSessionRequest> {
 
     override fun serialize(instance: CardSessionRequest): String {
         val root = JSONObject()
