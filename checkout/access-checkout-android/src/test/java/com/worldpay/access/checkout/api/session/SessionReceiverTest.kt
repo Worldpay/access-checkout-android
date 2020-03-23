@@ -61,7 +61,7 @@ class SessionReceiverTest {
         given(intent.getSerializableExtra("response")).willReturn(
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "some reference"
                     ), emptyArray()
                 )

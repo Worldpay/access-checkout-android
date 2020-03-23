@@ -33,7 +33,7 @@ internal class SessionReceiver() : BroadcastReceiver() {
 
             when (response) {
                 is SessionResponse -> {
-                    mListener.onRequestFinished(response.links.verifiedTokensSession.href, null)
+                    mListener.onRequestFinished(response.links.endpoints.href, null)
                 }
                 else -> {
                     try {

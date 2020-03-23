@@ -10,7 +10,7 @@ class SessionResponseTest {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -22,7 +22,7 @@ class SessionResponseTest {
                 )
             )
 
-        assertEquals(sessionResponse.links.verifiedTokensSession, SessionResponse.Links.VerifiedTokensSession("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"))
+        assertEquals(sessionResponse.links.endpoints, SessionResponse.Links.Endpoints("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"))
         assertArrayEquals(sessionResponse.links.curies, arrayOf(SessionResponse.Links.Curies("https://access.worldpay.com/rels/verifiedTokens{rel}.json", "verifiedTokens", true)))
         assertEquals(sessionResponse.links.curies[0].href, "https://access.worldpay.com/rels/verifiedTokens{rel}.json")
         assertEquals(sessionResponse.links.curies[0].name, "verifiedTokens")
@@ -34,7 +34,7 @@ class SessionResponseTest {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -49,7 +49,7 @@ class SessionResponseTest {
         val sessionResponse2 =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -69,7 +69,7 @@ class SessionResponseTest {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://try.access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -84,7 +84,7 @@ class SessionResponseTest {
         val sessionResponse2 =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -104,7 +104,7 @@ class SessionResponseTest {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -119,7 +119,7 @@ class SessionResponseTest {
         val sessionResponse2 =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -139,7 +139,7 @@ class SessionResponseTest {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ),
                     arrayOf(
@@ -159,7 +159,7 @@ class SessionResponseTest {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -178,7 +178,7 @@ class SessionResponseTest {
     @Test
     fun givenSameLinksObject_ThenShouldBeEqual() {
         val links = SessionResponse.Links(
-                SessionResponse.Links.VerifiedTokensSession("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
+                SessionResponse.Links.Endpoints("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
                 arrayOf(
                     SessionResponse.Links.Curies(
                         "https://access.worldpay.com/rels/verifiedTokens{rel}.json",
@@ -193,7 +193,7 @@ class SessionResponseTest {
     @Test
     fun givenDifferentLinksObject_ThenShouldNotBeEqual() {
         val links = SessionResponse.Links(
-            SessionResponse.Links.VerifiedTokensSession("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
+            SessionResponse.Links.Endpoints("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
             arrayOf(
                 SessionResponse.Links.Curies(
                     "https://access.worldpay.com/rels/verifiedTokens{rel}.json",
@@ -208,7 +208,7 @@ class SessionResponseTest {
     @Test
     fun givenNullLinksObject_ThenShouldNotBeEqual() {
         val links = SessionResponse.Links(
-            SessionResponse.Links.VerifiedTokensSession("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
+            SessionResponse.Links.Endpoints("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
             arrayOf(
                 SessionResponse.Links.Curies(
                     "https://access.worldpay.com/rels/verifiedTokens{rel}.json",
@@ -225,7 +225,7 @@ class SessionResponseTest {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -240,7 +240,7 @@ class SessionResponseTest {
         val sessionResponse2 =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -260,7 +260,7 @@ class SessionResponseTest {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://try.access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(
@@ -275,7 +275,7 @@ class SessionResponseTest {
         val sessionResponse2 =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ), arrayOf(
                         SessionResponse.Links.Curies(

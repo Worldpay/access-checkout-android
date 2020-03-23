@@ -355,7 +355,7 @@ class PactTest {
             )
         )
         val expectedLinks = SessionResponse.Links(
-            SessionResponse.Links.VerifiedTokensSession(sessionReferenceExample),
+            SessionResponse.Links.Endpoints(sessionReferenceExample),
             expectedCuries
         )
         val expectedSessionResponse =

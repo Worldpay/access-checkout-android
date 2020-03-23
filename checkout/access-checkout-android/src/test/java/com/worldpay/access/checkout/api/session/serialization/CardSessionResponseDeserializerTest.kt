@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDe
 import com.worldpay.access.checkout.api.session.SessionResponse
 import com.worldpay.access.checkout.api.session.SessionResponse.Links
 import com.worldpay.access.checkout.api.session.SessionResponse.Links.Curies
-import com.worldpay.access.checkout.api.session.SessionResponse.Links.VerifiedTokensSession
+import com.worldpay.access.checkout.api.session.SessionResponse.Links.Endpoints
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -114,7 +114,7 @@ class CardSessionResponseDeserializerTest {
         val expectedCuries =
             arrayOf(Curies("https://access.worldpay.com/rels/verifiedTokens{rel}.json", "verifiedTokens", true))
         val expectedLinks = Links(
-            VerifiedTokensSession("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
+            Endpoints("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
             expectedCuries
         )
         val expectedResponse =

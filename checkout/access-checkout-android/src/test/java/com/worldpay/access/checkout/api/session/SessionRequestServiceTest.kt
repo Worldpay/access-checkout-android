@@ -96,7 +96,7 @@ class SessionRequestServiceTest {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "some link"
                     ),
                     emptyArray()

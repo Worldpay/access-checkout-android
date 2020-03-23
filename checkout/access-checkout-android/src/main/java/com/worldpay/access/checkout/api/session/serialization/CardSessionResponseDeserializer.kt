@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.session.SessionResponse
 import com.worldpay.access.checkout.api.session.SessionResponse.Links
 import com.worldpay.access.checkout.api.session.SessionResponse.Links.Curies
-import com.worldpay.access.checkout.api.session.SessionResponse.Links.VerifiedTokensSession
+import com.worldpay.access.checkout.api.session.SessionResponse.Links.Endpoints
 import org.json.JSONObject
 
 internal class CardSessionResponseDeserializer: Deserializer<SessionResponse>() {
@@ -26,7 +26,7 @@ internal class CardSessionResponseDeserializer: Deserializer<SessionResponse>() 
 
             SessionResponse(
                 Links(
-                    VerifiedTokensSession(href),
+                    Endpoints(href),
                     arrayOf(
                         Curies(curiesHref, curiesName, curiesTemplated)
                     )

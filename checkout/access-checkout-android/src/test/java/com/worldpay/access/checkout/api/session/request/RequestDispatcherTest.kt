@@ -61,7 +61,7 @@ class RequestDispatcherTest {
         )
         val expectedLinks =
             SessionResponse.Links(
-                SessionResponse.Links.VerifiedTokensSession(
+                SessionResponse.Links.Endpoints(
                     "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                 ),
                 expectedCuries

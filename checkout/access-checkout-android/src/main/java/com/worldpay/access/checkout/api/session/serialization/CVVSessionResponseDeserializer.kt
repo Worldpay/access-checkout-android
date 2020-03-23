@@ -24,7 +24,7 @@ internal class CVVSessionResponseDeserializer : Deserializer<SessionResponse>() 
 
             SessionResponse(
                 Links(
-                    Links.VerifiedTokensSession(href),
+                    Links.Endpoints(href),
                     arrayOf(
                         Links.Curies(curiesHref, curiesName, curiesTemplated)
                     )
