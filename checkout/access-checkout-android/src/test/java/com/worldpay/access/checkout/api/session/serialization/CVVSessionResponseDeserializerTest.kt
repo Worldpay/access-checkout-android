@@ -67,22 +67,60 @@ class CVVSessionResponseDeserializerTest {
     }
 
     @Test
+    fun givenJsonStringWithInvalidBooleanTypeThenShouldThrowDeserializationException() {
+        val badJson =
+            """{
+                  "_links": {
+                    "sessions:session": {
+                      "href": "http://access.worldpay.com/sessions/<encrypted-data>"
+                    },
+                    "curies": [
+                      {
+                        "href": "https://access.worldpay.com/rels/sessions{rel}.json",
+                        "name": "sessions",
+                        "templated": "true"
+                      }
+                    ]
+                  }
+                }"""
+        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expectMessage("Invalid property type: 'templated'")
+
+        sessionResponseDeserializer.deserialize(badJson)
+    }
+
+    @Test
     fun givenValidSessionResponseStringThenShouldSuccessfullyDeserializeToSessionResponse() {
         val jsonResponse =
             """{
                   "_links": {
                     "sessions:session": {
                       "href": "http://access.worldpay.com/sessions/<encrypted-data>"
-                    }
+                    },
+                    "curies": [
+                      {
+                        "href": "https://access.worldpay.com/rels/sessions{rel}.json",
+                        "name": "sessions",
+                        "templated": true
+                      }
+                    ]
                   }
                 }"""
 
         val deserializedResponse = sessionResponseDeserializer.deserialize(jsonResponse)
 
 
+        val expectedCuries =
+            arrayOf(
+                Links.Curies(
+                    "https://access.worldpay.com/rels/sessions{rel}.json",
+                    "sessions",
+                    true
+                )
+            )
         val expectedLinks = Links(
             VerifiedTokensSession("http://access.worldpay.com/sessions/<encrypted-data>"),
-            emptyArray()
+            expectedCuries
         )
         val expectedResponse =
             SessionResponse(

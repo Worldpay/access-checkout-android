@@ -13,13 +13,21 @@ internal class CVVSessionResponseDeserializer : Deserializer<SessionResponse>() 
 
             val links = fetchObject(root, "_links")
 
-            val sessions = fetchObject(links, "sessions:session")
-            val href = toStringProperty(sessions, "href")
+            val verifiedTokenSession = fetchObject(links, "sessions:session")
+            val href = toStringProperty(verifiedTokenSession, "href")
+
+            val curiesRoot = fetchArray(links, "curies")
+            val curies = curiesRoot.getJSONObject(0)
+            val curiesHref = toStringProperty(curies, "href")
+            val curiesName = toStringProperty(curies, "name")
+            val curiesTemplated = toBooleanProperty(curies, "templated")
 
             SessionResponse(
                 Links(
                     Links.VerifiedTokensSession(href),
-                    emptyArray()
+                    arrayOf(
+                        Links.Curies(curiesHref, curiesName, curiesTemplated)
+                    )
                 )
             )
         }
