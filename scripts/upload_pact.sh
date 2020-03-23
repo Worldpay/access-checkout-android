@@ -9,4 +9,4 @@ curl --fail --show-error -v -XPUT \-H "Content-Type: application/json" \
 curl --fail --show-error -v -XPUT \-H "Content-Type: application/json" \
   -d@$PROJECT_LOCATION/$LIBRARY_MODULE/target/pacts/access-checkout-android-sdk-sessions.json \
   -u $PACTBROKER_USERNAME:$PACTBROKER_PASSWORD \
-  https://$PACTBROKER_URL/pacts/provider/verified-tokens/consumer/access-checkout-android-sdk/version/$PROJECT_VERSION
+  https://$PACTBROKER_URL/pacts/provider/sessions/consumer/access-checkout-android-sdk/version/$PROJECT_VERSION
