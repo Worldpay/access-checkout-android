@@ -49,8 +49,8 @@ class SessionsPactTest {
     private val identity = "identity"
     private val invalidIdentity = "ABC"
 
-    private val sessionReferenceRegex = "https?://[^/]+/sessions/payments/cvc[^/]+"
-    private val sessionReferenceExample = "http://access.worldpay.com/sessions/payments/cvc<encrypted-data>"
+    private val sessionReferenceRegex = "https?://[^/]+/sessions/[^/]+"
+    private val sessionReferenceExample = "http://access.worldpay.com/sessions/<encrypted-data>"
 
     private val curiesRegex = "https?://[^/]+/rels/sessions/\\{rel\\}.json"
     private val curiesExample = "http://access.worldpay.com/rels/sessions/{rel}.json"
