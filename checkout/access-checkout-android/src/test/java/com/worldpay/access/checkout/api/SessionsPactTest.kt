@@ -42,7 +42,7 @@ class SessionsPactTest {
     var mockProvider = PactProviderRuleMk2(provider, "localhost", 8080, this)
 
 
-    private val path = "/sessions/session"
+    private val path = "/sessions/payments/cvc"
     private val cvv = "123"
     private val cvvNonNumerical = "aaa"
 
