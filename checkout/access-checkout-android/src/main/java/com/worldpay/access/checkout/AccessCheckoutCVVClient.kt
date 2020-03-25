@@ -38,7 +38,7 @@ class AccessCheckoutCVVClient private constructor(
     }
 
     companion object {
-        private const val TAG = "AccessCheckoutClient"
+        private const val TAG = "AccessCheckoutCVVClient"
 
         /**
          * Initialises the Access Checkout Android SDK
@@ -61,7 +61,7 @@ class AccessCheckoutCVVClient private constructor(
             debugLog(TAG, "Making request to discover endpoint")
             val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
 
-            accessCheckoutDiscoveryClient.discover(baseUrl = baseUrl, discoverLinks = DiscoverLinks.verifiedTokens)
+            accessCheckoutDiscoveryClient.discover(baseUrl = baseUrl, discoverLinks = DiscoverLinks.sessions)
             return AccessCheckoutCVVClient(
                 baseUrl,
                 merchantID,
