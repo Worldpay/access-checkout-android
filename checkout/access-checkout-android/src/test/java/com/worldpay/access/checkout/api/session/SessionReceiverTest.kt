@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
 import android.content.Context
 import android.content.Intent
@@ -24,7 +24,10 @@ class SessionReceiverTest {
         intent = mock()
         context = mock()
 
-        sessionReceiver = SessionReceiver(sessionResponseListener)
+        sessionReceiver =
+            SessionReceiver(
+                sessionResponseListener
+            )
     }
 
     @Test
@@ -58,7 +61,7 @@ class SessionReceiverTest {
         given(intent.getSerializableExtra("response")).willReturn(
             SessionResponse(
                 SessionResponse.Links(
-                    SessionResponse.Links.VerifiedTokensSession(
+                    SessionResponse.Links.Endpoints(
                         "some reference"
                     ), emptyArray()
                 )
@@ -88,7 +91,11 @@ class SessionReceiverTest {
 
         val expectedEx: AccessCheckoutError = mock()
         given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
-        given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
+        given(intent.getSerializableExtra("response")).willReturn(
+            TestObject(
+                "something"
+            )
+        )
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
 
         sessionReceiver.onReceive(context, intent)
@@ -104,7 +111,11 @@ class SessionReceiverTest {
         val expectedEx: AccessCheckoutError? = null
 
         given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
-        given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
+        given(intent.getSerializableExtra("response")).willReturn(
+            TestObject(
+                "something"
+            )
+        )
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         sessionReceiver.onReceive(context, intent)

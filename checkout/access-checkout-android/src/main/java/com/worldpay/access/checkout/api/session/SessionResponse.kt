@@ -1,10 +1,10 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session
 
 import java.io.Serializable
 
 internal data class SessionResponse(val links: Links): Serializable {
-    internal data class Links(val verifiedTokensSession: VerifiedTokensSession, val curies: Array<Curies>): Serializable {
-        internal data class VerifiedTokensSession(val href: String): Serializable
+    internal data class Links(val endpoints: Endpoints, val curies: Array<Curies>): Serializable {
+        internal data class Endpoints(val href: String): Serializable
         internal data class Curies(val href: String, val name: String, val templated: Boolean): Serializable
 
         override fun equals(other: Any?): Boolean {
@@ -13,14 +13,14 @@ internal data class SessionResponse(val links: Links): Serializable {
 
             other as Links
 
-            if (verifiedTokensSession != other.verifiedTokensSession) return false
+            if (endpoints != other.endpoints) return false
             if (!curies.contentEquals(other.curies)) return false
 
             return true
         }
 
         override fun hashCode(): Int {
-            var result = verifiedTokensSession.hashCode()
+            var result = endpoints.hashCode()
             result = 31 * result + curies.contentHashCode()
             return result
         }

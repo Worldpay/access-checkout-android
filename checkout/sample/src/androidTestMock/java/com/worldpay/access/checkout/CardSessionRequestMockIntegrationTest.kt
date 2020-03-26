@@ -5,9 +5,7 @@ import android.support.test.espresso.Espresso.onView
 import android.support.test.espresso.assertion.ViewAssertions
 import android.support.test.espresso.matcher.ViewMatchers.withText
 import android.support.test.filters.LargeTest
-import android.support.test.rule.ActivityTestRule
 import android.support.test.runner.AndroidJUnit4
-import com.worldpay.access.checkout.MockServer.defaultStubMappings
 import com.worldpay.access.checkout.MockServer.simulateDelayedResponse
 import com.worldpay.access.checkout.MockServer.simulateErrorResponse
 import com.worldpay.access.checkout.MockServer.simulateHttpRedirect
@@ -24,15 +22,13 @@ import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.UITestUtils.updateCVVDetails
 import com.worldpay.access.checkout.UITestUtils.yearMatcher
 import org.junit.Assert.assertTrue
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class SessionRequestMockIntegrationTest: AbstractUITest() {
+class CardSessionRequestMockIntegrationTest: AbstractUITest() {
 
     private val amexCard = "343434343434343"
     private val amexCvv = "1234"

@@ -1,7 +1,13 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.session.request
 
+import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHttpException
+import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.client.SessionClient
+import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import org.awaitility.Awaitility.await
 import org.junit.Before
 import org.junit.Test
@@ -9,7 +15,6 @@ import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
-import java.lang.IllegalStateException
 import java.net.URL
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertNull
@@ -20,19 +25,26 @@ class RequestDispatcherTest {
 
     private val verifiedTokensEndpoint = "verifiedTokens"
 
-    private val sessionRequest = SessionRequest(
-        "1111222233334444",
-        SessionRequest.CardExpiryDate(12, 2020),
-        "123",
-        "MERCHANT-123"
-    )
+    private val sessionRequest =
+        CardSessionRequest(
+            "1111222233334444",
+            CardSessionRequest.CardExpiryDate(
+                12,
+                2020
+            ),
+            "123",
+            "MERCHANT-123"
+        )
 
 
     private lateinit var sessionClient: SessionClient
+    private lateinit var sessionClientFactory: SessionClientFactory
 
     @Before
     fun setup() {
         sessionClient = Mockito.mock(SessionClient::class.java)
+        sessionClientFactory = Mockito.mock(SessionClientFactory::class.java)
+        given(sessionClientFactory.createClient(sessionRequest)).willReturn(sessionClient)
     }
 
     private val baseUrl = "http://localhost"
@@ -47,11 +59,17 @@ class RequestDispatcherTest {
                 true
             )
         )
-        val expectedLinks = SessionResponse.Links(
-            SessionResponse.Links.VerifiedTokensSession("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
-            expectedCuries
-        )
-        val expectedSessionResponse = SessionResponse(expectedLinks)
+        val expectedLinks =
+            SessionResponse.Links(
+                SessionResponse.Links.Endpoints(
+                    "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                ),
+                expectedCuries
+            )
+        val expectedSessionResponse =
+            SessionResponse(
+                expectedLinks
+            )
 
         given(sessionClient.getSessionResponse(URL("$baseUrl/$verifiedTokensEndpoint"), sessionRequest)).willReturn(
             expectedSessionResponse

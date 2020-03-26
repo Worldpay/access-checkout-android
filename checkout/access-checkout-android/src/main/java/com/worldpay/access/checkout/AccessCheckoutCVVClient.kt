@@ -12,16 +12,16 @@ import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.api.session.CVVSessionRequest
 import com.worldpay.access.checkout.api.session.SessionReceiver
 import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.SessionResponseListener
 
 /**
- * [AccessCheckoutClient] is responsible for handling the request for a session state from the Access Worldpay services.
+ * [AccessCheckoutCVVClient] is responsible for handling the request for a session state from the Access Worldpay services.
  */
-class AccessCheckoutClient private constructor(
+class AccessCheckoutCVVClient private constructor(
     private val baseURL: String,
     private val merchantID: String,
     private val context: Context,
@@ -38,7 +38,7 @@ class AccessCheckoutClient private constructor(
     }
 
     companion object {
-        private const val TAG = "AccessCheckoutClient"
+        private const val TAG = "AccessCheckoutCVVClient"
 
         /**
          * Initialises the Access Checkout Android SDK
@@ -57,12 +57,12 @@ class AccessCheckoutClient private constructor(
             sessionResponseListener: SessionResponseListener,
             context: Context,
             lifecycleOwner: LifecycleOwner
-        ): AccessCheckoutClient {
+        ): AccessCheckoutCVVClient {
             debugLog(TAG, "Making request to discover endpoint")
             val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
 
-            accessCheckoutDiscoveryClient.discover(baseUrl = baseUrl, discoverLinks = DiscoverLinks.verifiedTokens)
-            return AccessCheckoutClient(
+            accessCheckoutDiscoveryClient.discover(baseUrl = baseUrl, discoverLinks = DiscoverLinks.sessions)
+            return AccessCheckoutCVVClient(
                 baseUrl,
                 merchantID,
                 context,
@@ -76,21 +76,16 @@ class AccessCheckoutClient private constructor(
      * Method which triggers a generate session state request to the Access Worldpay sessions API. The response will come back through the
      * [SessionResponseListener]
      *
-     * @param pan the pan to submit
-     * @param month the month to submit
-     * @param year the year to submit
      * @param cvv the cvv to submit
      */
-
-    fun generateSessionState(pan: String, month: Int, year: Int, cvv: String) {
+    fun generateSessionState(cvv: String) {
         mListener.onRequestStarted()
-        val cardExpiryDate = CardSessionRequest.CardExpiryDate(month, year)
-        val cardSessionRequest = CardSessionRequest(pan, cardExpiryDate, cvv, merchantID)
+        val cvvSessionRequest = CVVSessionRequest(cvv, merchantID)
         val serviceIntent = Intent(context, SessionRequestService::class.java)
 
-        serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, cardSessionRequest)
+        serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, cvvSessionRequest)
         serviceIntent.putExtra(SessionRequestService.BASE_URL_KEY, baseURL)
-        serviceIntent.putExtra(SessionRequestService.DISCOVER_LINKS, DiscoverLinks.verifiedTokens)
+        serviceIntent.putExtra(SessionRequestService.DISCOVER_LINKS, DiscoverLinks.sessions)
         context.startService(serviceIntent)
     }
 

@@ -29,6 +29,8 @@ class MockServerTest {
 
     @Before
     fun setup() {
+        MockServer.stopWiremock()
+        MockServer.startWiremock(activityRule.activity)
         defaultStubMappings(activityRule.activity)
     }
 

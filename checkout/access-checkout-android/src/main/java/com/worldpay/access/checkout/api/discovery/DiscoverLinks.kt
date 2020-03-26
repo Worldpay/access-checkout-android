@@ -1,6 +1,8 @@
 package com.worldpay.access.checkout.api.discovery
 
-class DiscoverLinks ( val service: String, val endpoint: String) {
+import java.io.Serializable
+
+class DiscoverLinks ( val service: String, val endpoint: String): Serializable {
 
     companion object {
         val verifiedTokens = DiscoverLinks( "service:verifiedTokens", "verifiedTokens:sessions")

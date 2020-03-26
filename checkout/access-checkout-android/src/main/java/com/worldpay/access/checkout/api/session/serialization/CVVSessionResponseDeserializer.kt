@@ -1,12 +1,11 @@
-package com.worldpay.access.checkout.api.serialization
+package com.worldpay.access.checkout.api.session.serialization
 
-import com.worldpay.access.checkout.api.SessionResponse
-import com.worldpay.access.checkout.api.SessionResponse.Links
-import com.worldpay.access.checkout.api.SessionResponse.Links.Curies
-import com.worldpay.access.checkout.api.SessionResponse.Links.VerifiedTokensSession
+import com.worldpay.access.checkout.api.serialization.Deserializer
+import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.SessionResponse.Links
 import org.json.JSONObject
 
-internal class SessionResponseDeserializer: Deserializer<SessionResponse>() {
+internal class CVVSessionResponseDeserializer : Deserializer<SessionResponse>() {
 
     override fun deserialize(json: String): SessionResponse {
         return super.deserialize(json) {
@@ -14,7 +13,7 @@ internal class SessionResponseDeserializer: Deserializer<SessionResponse>() {
 
             val links = fetchObject(root, "_links")
 
-            val verifiedTokenSession = fetchObject(links, "verifiedTokens:session")
+            val verifiedTokenSession = fetchObject(links, "sessions:session")
             val href = toStringProperty(verifiedTokenSession, "href")
 
             val curiesRoot = fetchArray(links, "curies")
@@ -25,9 +24,9 @@ internal class SessionResponseDeserializer: Deserializer<SessionResponse>() {
 
             SessionResponse(
                 Links(
-                    VerifiedTokensSession(href),
+                    Links.Endpoints(href),
                     arrayOf(
-                        Curies(curiesHref, curiesName, curiesTemplated)
+                        Links.Curies(curiesHref, curiesName, curiesTemplated)
                     )
                 )
             )

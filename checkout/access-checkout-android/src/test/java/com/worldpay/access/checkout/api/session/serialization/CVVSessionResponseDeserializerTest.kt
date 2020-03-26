@@ -1,10 +1,9 @@
-package com.worldpay.access.checkout.api.serialization
+package com.worldpay.access.checkout.api.session.serialization
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
-import com.worldpay.access.checkout.api.SessionResponse
-import com.worldpay.access.checkout.api.SessionResponse.Links
-import com.worldpay.access.checkout.api.SessionResponse.Links.Curies
-import com.worldpay.access.checkout.api.SessionResponse.Links.VerifiedTokensSession
+import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.SessionResponse.Links
+import com.worldpay.access.checkout.api.session.SessionResponse.Links.Endpoints
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -15,9 +14,10 @@ import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
-class SessionResponseDeserializerTest {
+class CVVSessionResponseDeserializerTest {
 
-    private val sessionResponseDeserializer = SessionResponseDeserializer()
+    private val sessionResponseDeserializer =
+        CVVSessionResponseDeserializer()
 
     @get:Rule
     val expectedException: ExpectedException = ExpectedException.none()
@@ -50,7 +50,7 @@ class SessionResponseDeserializerTest {
 
     @Test
     fun givenJsonStringWithMissingPropertyThenShouldThrowDeserializationException() {
-        val json = "{ \"_links\": { \"verifiedTokens:session\": { } } }"
+        val json = "{ \"_links\": { \"sessions:session\": { } } }"
         expectedException.expect(AccessCheckoutDeserializationException::class.java)
         expectedException.expectMessage("Missing property: 'href'")
 
@@ -59,7 +59,7 @@ class SessionResponseDeserializerTest {
 
     @Test
     fun givenJsonStringWithInvalidStringTypeThenShouldThrowDeserializationException() {
-        val json = "{ \"_links\": { \"verifiedTokens:session\": { \"href\": true } } }"
+        val json = "{ \"_links\": { \"sessions:session\": { \"href\": true } } }"
         expectedException.expect(AccessCheckoutDeserializationException::class.java)
         expectedException.expectMessage("Invalid property type: 'href', expected 'String'")
 
@@ -71,13 +71,13 @@ class SessionResponseDeserializerTest {
         val badJson =
             """{
                   "_links": {
-                    "verifiedTokens:session": {
-                      "href": "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                    "sessions:session": {
+                      "href": "http://access.worldpay.com/sessions/<encrypted-data>"
                     },
                     "curies": [
                       {
-                        "href": "https://access.worldpay.com/rels/verifiedTokens{rel}.json",
-                        "name": "verifiedTokens",
+                        "href": "https://access.worldpay.com/rels/sessions{rel}.json",
+                        "name": "sessions",
                         "templated": "true"
                       }
                     ]
@@ -94,13 +94,13 @@ class SessionResponseDeserializerTest {
         val jsonResponse =
             """{
                   "_links": {
-                    "verifiedTokens:session": {
-                      "href": "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                    "sessions:session": {
+                      "href": "http://access.worldpay.com/sessions/<encrypted-data>"
                     },
                     "curies": [
                       {
-                        "href": "https://access.worldpay.com/rels/verifiedTokens{rel}.json",
-                        "name": "verifiedTokens",
+                        "href": "https://access.worldpay.com/rels/sessions{rel}.json",
+                        "name": "sessions",
                         "templated": true
                       }
                     ]
@@ -111,12 +111,21 @@ class SessionResponseDeserializerTest {
 
 
         val expectedCuries =
-            arrayOf(Curies("https://access.worldpay.com/rels/verifiedTokens{rel}.json", "verifiedTokens", true))
+            arrayOf(
+                Links.Curies(
+                    "https://access.worldpay.com/rels/sessions{rel}.json",
+                    "sessions",
+                    true
+                )
+            )
         val expectedLinks = Links(
-            VerifiedTokensSession("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
+            Endpoints("http://access.worldpay.com/sessions/<encrypted-data>"),
             expectedCuries
         )
-        val expectedResponse = SessionResponse(expectedLinks)
+        val expectedResponse =
+            SessionResponse(
+                expectedLinks
+            )
 
         assertEquals(expectedResponse, deserializedResponse)
     }
