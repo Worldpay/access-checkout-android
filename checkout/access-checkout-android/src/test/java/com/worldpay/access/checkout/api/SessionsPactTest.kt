@@ -6,11 +6,16 @@ import au.com.dius.pact.consumer.PactVerification
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
+import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryAsyncTaskFactory
+import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.CVVSessionRequest
 import com.worldpay.access.checkout.api.session.SessionResponse
 import com.worldpay.access.checkout.api.session.client.CVVSessionClient
 import com.worldpay.access.checkout.api.session.serialization.CVVSessionRequestSerializer
 import com.worldpay.access.checkout.api.session.serialization.CVVSessionResponseDeserializer
+import org.awaitility.kotlin.await
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -18,6 +23,9 @@ import org.junit.Test
 import org.mockito.BDDMockito
 import org.mockito.Mockito
 import java.net.URL
+import kotlin.test.assertEquals
+import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 import kotlin.test.fail
 
 class SessionsPactTest {
@@ -69,6 +77,35 @@ class SessionsPactTest {
         .closeArray()
         .closeObject()
 
+    private val getResponseBody = PactDslJsonBody()
+        .`object`("_links")
+        .`object`("sessions:session")
+        .stringMatcher("href", sessionReferenceRegex, sessionReferenceExample)
+        .closeObject()
+        .closeObject()
+
+    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
+    fun createSuccessfulGetRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
+        return builder
+            .uponReceiving("A service discovery request")
+            .path("/sessions")
+            .method("GET")
+            .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
+            .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
+            .willRespondWith()
+            .status(200)
+            .headers(
+                mutableMapOf(
+                    Pair(
+                        "Content-Type",
+                        "application/vnd.worldpay.sessions-v1.hal+json"
+                    )
+                )
+            )
+            .matchHeader("Location", sessionReferenceRegex, sessionReferenceExample)
+            .body(getResponseBody)
+            .toPact()
+    }
 
     @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
     fun createSuccessfulRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
@@ -172,6 +209,35 @@ class SessionsPactTest {
                 )
             )
             .toPact()
+    }
+
+    @Test
+    @PactVerification("sessions", fragment = "createSuccessfulGetRequestInteraction")
+    fun `should receive a valid response when a valid get request is sent`() {
+
+        val expectedResponse =
+           "{\n" +
+           "  \"status\": 200,\n" +
+           "  \"headers\": {\n" +
+           "    \"content-type\": \"application/vnd.worldpay.sessions-v1.hal+json\"\n" +
+           "  },\n" +
+           "  \"body\": {\n" +
+           "    \"_links\": {\n" +
+           "      \"sessions:paymentsCvc\": {\n" +
+           "        \"href\": \"http://${mockProvider.url}/sessions/payments/cvc\"\n" +
+           "      }\n" +
+           "    }\n" +
+           "  }\n" +
+           "}"
+
+        val callback = object : Callback<String> {
+            override fun onResponse(error: Exception?, response: String?) {
+                Assert.assertEquals(expectedResponse, response)
+            }
+        }
+
+        val accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
+        accessCheckoutDiscoveryClient.discover("${mockProvider.url}", callback, DiscoverLinks.sessions)
     }
 
 
