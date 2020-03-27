@@ -20,7 +20,7 @@ import kotlin.test.assertTrue
 class AccessCheckoutDiscoveryClientTest {
 
     private val mockedAsyncTaskFactory: AccessCheckoutDiscoveryAsyncTaskFactory = mock()
-    private val discoverLinks: DiscoverLinks = DiscoverLinks("some-service", "some-endpoint")
+    private var discoverLinks: DiscoverLinks = DiscoverLinks(listOf("some-service", "some-endpoint"))
     private val accessCheckoutDiscoveryAsyncTask: AccessCheckoutDiscoveryAsyncTask = mock()
 
     @get:Rule
@@ -63,6 +63,32 @@ class AccessCheckoutDiscoveryClientTest {
             }
         }
 
+
+        val client = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
+        given(mockedAsyncTaskFactory.getAsyncTask(any(), any())).willReturn(accessCheckoutDiscoveryAsyncTask)
+
+        client.discover("http://localhost", callback, discoverLinks)
+
+        val argumentCaptor = argumentCaptor<Callback<String>>()
+        verify(mockedAsyncTaskFactory).getAsyncTask(argumentCaptor.capture(), any())
+        argumentCaptor.firstValue.onResponse(null, sessionResponse)
+
+        verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("http://localhost")
+
+    }
+
+    @Test
+    fun `should execute async task and receive success callback when valid url and callback provided and three levels of discovery required`() {
+        val sessionResponse = "session_response"
+
+        val callback = object : Callback<String> {
+            override fun onResponse(error: Exception?, response: String?) {
+                assertNotNull(response)
+                assertEquals(sessionResponse, response)
+            }
+        }
+
+        discoverLinks = DiscoverLinks(listOf("one", "two", "three"))
 
         val client = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
         given(mockedAsyncTaskFactory.getAsyncTask(any(), any())).willReturn(accessCheckoutDiscoveryAsyncTask)

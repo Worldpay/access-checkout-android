@@ -1,11 +1,15 @@
 package com.worldpay.access.checkout.api.discovery
 
+import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
+import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializer
+import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializerFactory
 import org.awaitility.Awaitility
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito
@@ -23,9 +27,17 @@ import kotlin.test.assertTrue
 @Config(manifest = Config.NONE)
 class AccessCheckoutDiscoveryAsyncTaskTest {
 
-    private val mockedRootDeserializer: Deserializer<String> = mock()
-    private val mockedSessionsResourceDeserializer: Deserializer<String> = mock()
+    private val mockedResources = listOf<String>("some","endpoint")
     private val mockedHttpClient: HttpClient = mock()
+    private val mockedLinkDiscoveryDeserializerFactory: LinkDiscoveryDeserializerFactory = mock()
+    private val mockedLinkDiscoveryDeserializer: LinkDiscoveryDeserializer = mock()
+    private val mockedSecondLinkDiscoveryDeserializer: LinkDiscoveryDeserializer = mock()
+
+    @Before
+    fun setUp() {
+        given(mockedLinkDiscoveryDeserializerFactory.getDeserializer(mockedResources[0])).willReturn(mockedLinkDiscoveryDeserializer)
+        given(mockedLinkDiscoveryDeserializerFactory.getDeserializer(mockedResources[1])).willReturn(mockedSecondLinkDiscoveryDeserializer)
+    }
 
     @Test
     fun givenBadBaseURL_ThenShouldThrowAnException() {
@@ -41,9 +53,9 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
 
         val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
             callback,
-            mockedRootDeserializer,
-            mockedSessionsResourceDeserializer,
-            mockedHttpClient
+            mockedResources,
+            mockedHttpClient,
+            mockedLinkDiscoveryDeserializerFactory
         )
 
         accessCheckoutDiscoveryAsyncTask.execute("abcd")
@@ -65,21 +77,21 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         }
 
         val rootURL = URL("http://localhost")
-        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedRootDeserializer)).willThrow(
+        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedLinkDiscoveryDeserializer)).willThrow(
             AccessCheckoutHttpException(
                 "Some message",
                 AccessCheckoutDeserializationException("deserialization")
             )
         )
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
             callback,
-            mockedRootDeserializer,
-            mockedSessionsResourceDeserializer,
-            mockedHttpClient
+            mockedResources,
+            mockedHttpClient,
+            mockedLinkDiscoveryDeserializerFactory
         )
 
-        accessCheckoutDiscoveryClient.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -98,18 +110,18 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         }
 
         val rootURL = URL("http://localhost")
-        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedRootDeserializer)).willThrow(
+        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedLinkDiscoveryDeserializer)).willThrow(
             AccessCheckoutError("Some message")
         )
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
             callback,
-            mockedRootDeserializer,
-            mockedSessionsResourceDeserializer,
-            mockedHttpClient
+            mockedResources,
+            mockedHttpClient,
+            mockedLinkDiscoveryDeserializerFactory
         )
 
-        accessCheckoutDiscoveryClient.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -129,22 +141,22 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
 
         val serviceUrl = "http://localhost/verifiedTokens"
         val rootURL = URL("http://localhost")
-        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedRootDeserializer)).willReturn(serviceUrl)
-        BDDMockito.given(mockedHttpClient.doGet(URL(serviceUrl), mockedSessionsResourceDeserializer)).willThrow(
+        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedLinkDiscoveryDeserializer)).willReturn(serviceUrl)
+        BDDMockito.given(mockedHttpClient.doGet(URL(serviceUrl), mockedSecondLinkDiscoveryDeserializer)).willThrow(
             AccessCheckoutHttpException(
                 "Some message",
                 AccessCheckoutDeserializationException("deserialization")
             )
         )
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
             callback,
-            mockedRootDeserializer,
-            mockedSessionsResourceDeserializer,
-            mockedHttpClient
+            mockedResources,
+            mockedHttpClient,
+            mockedLinkDiscoveryDeserializerFactory
         )
 
-        accessCheckoutDiscoveryClient.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -162,17 +174,17 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         }
 
         val rootURL = URL("http://localhost")
-        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedRootDeserializer))
+        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedLinkDiscoveryDeserializer))
             .willThrow(IllegalStateException("Some message"))
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
             callback,
-            mockedRootDeserializer,
-            mockedSessionsResourceDeserializer,
-            mockedHttpClient
+            mockedResources,
+            mockedHttpClient,
+            mockedLinkDiscoveryDeserializerFactory
         )
 
-        accessCheckoutDiscoveryClient.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -190,16 +202,16 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         }
 
         val rootURL = URL("http://localhost")
-        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedRootDeserializer)).willThrow(IllegalStateException())
+        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedLinkDiscoveryDeserializer)).willThrow(IllegalStateException())
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
             callback,
-            mockedRootDeserializer,
-            mockedSessionsResourceDeserializer,
-            mockedHttpClient
+            mockedResources,
+            mockedHttpClient,
+            mockedLinkDiscoveryDeserializerFactory
         )
 
-        accessCheckoutDiscoveryClient.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -221,16 +233,17 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         }
 
         val rootURL = URL("http://localhost")
-        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedRootDeserializer)).willReturn(rubbishResponse)
 
-        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryAsyncTask(
+        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedLinkDiscoveryDeserializer)).willReturn(rubbishResponse)
+
+        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
             callback,
-            mockedRootDeserializer,
-            mockedSessionsResourceDeserializer,
-            mockedHttpClient
+            mockedResources,
+            mockedHttpClient,
+            mockedLinkDiscoveryDeserializerFactory
         )
 
-        accessCheckoutDiscoveryClient.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -238,6 +251,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
 
     @Test
     fun givenValidBaseURL_ThenShouldDiscoverVTSResource() {
+
         val baseURL = "http://localhost"
 
         var asserted = false
@@ -251,21 +265,19 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         }
 
         val rootURL = URL(baseURL)
-
         val serviceUrl = URL("$baseURL/verifiedTokens")
 
-        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedRootDeserializer)).willReturn("$baseURL/verifiedTokens")
-        BDDMockito.given(mockedHttpClient.doGet(serviceUrl, mockedSessionsResourceDeserializer))
-            .willReturn("$baseURL/verifiedTokens/sessions")
+        BDDMockito.given(mockedHttpClient.doGet(rootURL, mockedLinkDiscoveryDeserializer)).willReturn("$baseURL/verifiedTokens")
+        BDDMockito.given(mockedHttpClient.doGet(serviceUrl, mockedSecondLinkDiscoveryDeserializer)).willReturn("$baseURL/verifiedTokens/sessions")
 
-        val accessCheckoutDiscovery = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
             callback,
-            mockedRootDeserializer,
-            mockedSessionsResourceDeserializer,
-            mockedHttpClient
+            mockedResources,
+            mockedHttpClient,
+            mockedLinkDiscoveryDeserializerFactory
         )
 
-        accessCheckoutDiscovery.execute(baseURL)
+        accessCheckoutDiscoveryAsyncTask.execute(baseURL)
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
