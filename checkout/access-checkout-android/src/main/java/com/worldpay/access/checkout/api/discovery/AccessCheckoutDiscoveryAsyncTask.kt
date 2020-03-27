@@ -7,6 +7,8 @@ import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
+import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializer
+import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializerFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import java.lang.Exception
 import java.net.MalformedURLException
@@ -14,9 +16,9 @@ import java.net.URL
 
 internal class AccessCheckoutDiscoveryAsyncTask(
     private val callback: Callback<String>,
-    private val serviceRootDeserializer: Deserializer<String>,
-    private val sessionsResourceDeserializer: Deserializer<String>,
-    private val httpClient: HttpClient
+    private val endpoints: List<String>,
+    private val httpClient: HttpClient,
+    private val linkDiscoveryDeserializerFactory: LinkDiscoveryDeserializerFactory
 ) : AsyncTask<String, Any, AsyncTaskResult<String>>() {
 
     companion object {
@@ -26,10 +28,16 @@ internal class AccessCheckoutDiscoveryAsyncTask(
     override fun doInBackground(vararg params: String?): AsyncTaskResult<String> {
         return try {
             debugLog(TAG, "Sending request to service discovery endpoint")
-            val vtsServiceUrl = fetchLinkFromUrl(params[0], serviceRootDeserializer)
-            val url = fetchLinkFromUrl(vtsServiceUrl, sessionsResourceDeserializer)
+            var deserializer = linkDiscoveryDeserializerFactory.getDeserializer(endpoints[0])
+            var resource = fetchLinkFromUrl(params[0], deserializer)
+
+            for (e in endpoints.drop(1)) {
+                deserializer = linkDiscoveryDeserializerFactory.getDeserializer(e)
+                resource = fetchLinkFromUrl(resource, deserializer)
+            }
+
             debugLog(TAG, "Received response from service discovery endpoint")
-            AsyncTaskResult(url)
+            AsyncTaskResult(resource)
         } catch (ex: Exception) {
             val errorMessage = "An error was thrown when trying to make a connection to the service"
             when (ex) {
