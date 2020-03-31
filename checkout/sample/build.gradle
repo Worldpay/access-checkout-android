@@ -86,6 +86,8 @@ dependencies {
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
 
     androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
+    implementation 'android.arch.navigation:navigation-fragment-ktx:1.0.0'
+    implementation 'android.arch.navigation:navigation-ui-ktx:1.0.0'
 }
 
 repositories {

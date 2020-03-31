@@ -13,7 +13,7 @@ import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.views.*
 import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import kotlinx.android.synthetic.main.content_card_main.*
 
 
 class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener {
@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        setSupportActionBar(findViewById(R.id.toolbar_main))
     }
 
     override fun onStart() {
