@@ -52,8 +52,8 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
         panView = findViewById(R.id.panView);
         cardCVVText = findViewById(R.id.cardCVVText);
         cardExpiryText = findViewById(R.id.cardExpiryText);
-        submit = findViewById(R.id.submit);
-        contentLayout = findViewById(R.id.content_layout);
+        submit = findViewById(R.id.submit_card_flow);
+        contentLayout = findViewById(R.id.fragment_card_flow);
         loadingBar = findViewById(R.id.loading_bar);
 
         card = new AccessCheckoutCard(panView, cardCVVText, cardExpiryText);

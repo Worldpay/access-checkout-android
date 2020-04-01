@@ -2,9 +2,19 @@ package com.worldpay.access.checkout
 
 import android.os.Bundle
 import android.text.InputFilter
+import android.view.Menu
 import android.view.View
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.images.SVGImageLoader
@@ -12,9 +22,8 @@ import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.views.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_card_main.*
-
+import kotlinx.android.synthetic.main.fragment_card_flow.*
+import kotlinx.android.synthetic.main.progress_bar.*
 
 class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener {
 
@@ -28,7 +37,27 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        setSupportActionBar(findViewById(R.id.toolbar_main))
+
+        val toolbar = findViewById<Toolbar>(R.id.toolbar_main)
+        val navController = getNavController()
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
+
+        setSupportActionBar(toolbar)
+
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.nav_card_flow, R.id.nav_cvv_flow), drawerLayout
+        )
+
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
+    }
+
+    private fun getNavController(): NavController {
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        return navHostFragment.navController
     }
 
     override fun onStart() {
@@ -56,13 +85,23 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
             this
         )
 
-        submit.setOnClickListener {
+        submit_card_flow.setOnClickListener {
             val pan = panView.getInsertedText()
             val month = dateText.getMonth()
             val year = dateText.getYear()
             val cvv = cvvText.getInsertedText()
             accessCheckoutClient.generateSessionState(pan, month, year, cvv)
         }
+    }
+
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        return false
+    }
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     override fun onRequestStarted() {
@@ -90,7 +129,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
 
     override fun onUpdate(cardView: CardView, valid: Boolean) {
         cardView.isValid(valid)
-        submit.isEnabled = card.isValid() && !loading
+        submit_card_flow.isEnabled = card.isValid() && !loading
     }
 
     override fun onUpdateLengthFilter(cardView: CardView, inputFilter: InputFilter) {
@@ -104,11 +143,11 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
 
     private fun fieldsToggle(enableFields: Boolean) {
         if (!enableFields) {
-            content_layout.alpha = 0.5f
+            fragment_card_flow.alpha = 0.5f
             loading_bar.visibility = View.VISIBLE
         } else {
             loading_bar.visibility = View.INVISIBLE
-            content_layout.alpha = 1.0f
+            fragment_card_flow.alpha = 1.0f
         }
     }
 
@@ -117,7 +156,7 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         cardCVVText.isEnabled = enableFields
         cardExpiryText.monthEditText.isEnabled = enableFields
         cardExpiryText.yearEditText.isEnabled = enableFields
-        submit.isEnabled = enableFields
+        submit_card_flow.isEnabled = enableFields
 
         fieldsToggle(enableFields)
     }
@@ -134,17 +173,16 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            loading = savedInstanceState.getBoolean("loading")
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        loading = savedInstanceState.getBoolean("loading")
 
-            if (loading)
-                toggleLoading(false)
-        }
+        if (loading)
+            toggleLoading(false)
         super.onRestoreInstanceState(savedInstanceState)
     }
 
     private fun getMerchantID() = BuildConfig.MERCHANT_ID
 
     private fun getBaseUrl() = getString(R.string.endpoint)
+
 }

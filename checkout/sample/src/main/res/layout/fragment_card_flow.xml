@@ -2,20 +2,21 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/content_layout"
+    android:id="@+id/fragment_card_flow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".ui.CardFlowFragment">
 
     <com.worldpay.access.checkout.views.PANLayout
         android:id="@+id/panView"
-        android:layout_width="300dp"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
         android:layout_marginTop="30dp"
+        android:layout_marginEnd="8dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent" />
 
     <com.worldpay.access.checkout.views.CardExpiryTextLayout
         android:id="@+id/cardExpiryText"
@@ -42,13 +43,17 @@
         app:layout_constraintTop_toBottomOf="@+id/panView" />
 
     <Button
-        android:id="@+id/submit"
-        android:layout_width="wrap_content"
+        android:id="@+id/submit_card_flow"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:background="@color/colorPrimary"
         android:enabled="false"
         android:text="@string/submit_text"
-        app:layout_constraintStart_toStartOf="@id/panView"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@id/panView"
+        app:layout_constraintStart_toStartOf="@+id/panView"
         app:layout_constraintTop_toBottomOf="@id/cardExpiryText" />
 
 

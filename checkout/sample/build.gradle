@@ -5,12 +5,20 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId "com.worldpay.access.checkout"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -60,6 +68,11 @@ dependencies {
     implementation 'com.caverock:androidsvg-aar:1.4'
     implementation project(':access-checkout-android')
 
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.navigation:navigation-fragment:2.2.1'
+    implementation 'androidx.navigation:navigation-ui:2.2.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
     mockImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     mockImplementation 'com.google.code.gson:gson:2.8.5'
     mockImplementation("com.github.tomakehurst:wiremock:2.22.0") {
@@ -93,4 +106,3 @@ dependencies {
 repositories {
     mavenCentral()
 }
-
