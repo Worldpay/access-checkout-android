@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout
 
-import android.support.test.rule.ActivityTestRule
+import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.UITestUtils.assertFieldsAlpha
 import com.worldpay.access.checkout.UITestUtils.assertInProgressState

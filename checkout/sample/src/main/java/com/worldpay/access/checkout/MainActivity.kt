@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout
 
 import android.os.Bundle
-import android.support.v7.app.AppCompatActivity
 import android.text.InputFilter
 import android.view.View
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.images.SVGImageLoader
@@ -128,8 +128,8 @@ class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener 
         cardExpiryText.yearEditText.text.clear()
     }
 
-    override fun onSaveInstanceState(outState: Bundle?) {
-        outState?.putBoolean("loading", loading)
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putBoolean("loading", loading)
         super.onSaveInstanceState(outState)
     }
 

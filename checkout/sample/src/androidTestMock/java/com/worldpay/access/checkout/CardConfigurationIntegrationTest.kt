@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout
 
-import android.support.test.rule.ActivityTestRule
+import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.MockServer.simulateCardConfigurationServerError
 import com.worldpay.access.checkout.MockServer.stubCardConfiguration
 import com.worldpay.access.checkout.UITestUtils.assertBrandImage

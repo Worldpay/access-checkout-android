@@ -2,11 +2,11 @@ package com.worldpay.access.checkout.views
 
 import android.annotation.SuppressLint
 import android.content.Context
-import android.support.v4.content.res.ResourcesCompat.getColor
 import android.text.InputFilter
 import android.util.AttributeSet
 import android.view.View.OnFocusChangeListener
 import android.widget.EditText
+import androidx.core.content.res.ResourcesCompat.getColor
 import com.worldpay.access.checkout.R
 
 /**

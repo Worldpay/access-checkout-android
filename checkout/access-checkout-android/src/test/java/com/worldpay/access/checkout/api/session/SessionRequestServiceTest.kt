@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.api.session
 
 import android.content.Intent
-import android.support.v4.content.LocalBroadcastManager
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions

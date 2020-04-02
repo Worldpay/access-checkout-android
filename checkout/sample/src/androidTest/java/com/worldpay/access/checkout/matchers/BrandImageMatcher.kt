@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.matchers
 
 import android.graphics.drawable.BitmapDrawable
-import android.support.test.espresso.matcher.BoundedMatcher
 import android.view.View
 import android.widget.ImageView
+import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 
 internal class BrandImageMatcher private constructor(private val id: Int) :

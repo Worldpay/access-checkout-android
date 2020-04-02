@@ -1,20 +1,19 @@
 package com.worldpay.access.checkout
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleOwner
 import android.content.Context
-import android.support.v4.content.LocalBroadcastManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.common.base.CaseFormat
+import com.nhaarman.mockitokotlin2.any
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.views.SessionResponseListener
-import com.nhaarman.mockitokotlin2.any
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
 import org.mockito.internal.util.reflection.FieldSetter.setField
-
 
 class AccessCheckoutClientTest {
 

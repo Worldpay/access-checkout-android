@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout
 
-import android.support.test.rule.ActivityTestRule
+import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.MockServer.defaultStubMappings
 import org.junit.Before
 import org.junit.Rule
