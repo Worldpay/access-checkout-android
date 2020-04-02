@@ -7,7 +7,7 @@
     tools:context=".ui.CvvFlowFragment">
 
     <com.worldpay.access.checkout.views.CardCVVText
-        android:id="@+id/cardCVVText"
+        android:id="@+id/cvv_flow_text_cvv"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -22,7 +22,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/submit_cvv_flow"
+        android:id="@+id/cvv_flow_btn_submit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -34,7 +34,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cardCVVText" />
+        app:layout_constraintTop_toBottomOf="@+id/cvv_flow_text_cvv" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

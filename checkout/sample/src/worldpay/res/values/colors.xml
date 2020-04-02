@@ -2,7 +2,7 @@
 <resources>
 
     <!-- Global refs -->
-    <color name="colorPrimary">@color/worldPayRed</color>
+<!--    <color name="colorPrimary">@color/worldPayRed</color>-->
     <color name="colorPrimaryDark">@color/worldPayRedDark</color>
     <color name="colorAccent">@android:color/darker_gray</color>
     <color name="bannerBackground">@color/worldPayRed</color>
