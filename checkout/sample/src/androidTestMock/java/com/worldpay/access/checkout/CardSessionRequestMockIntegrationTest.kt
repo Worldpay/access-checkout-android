@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout
 
 import android.content.pm.ActivityInfo
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.assertion.ViewAssertions
-import android.support.test.espresso.matcher.ViewMatchers.withText
-import android.support.test.filters.LargeTest
-import android.support.test.runner.AndroidJUnit4
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.MockServer.simulateDelayedResponse
 import com.worldpay.access.checkout.MockServer.simulateErrorResponse
 import com.worldpay.access.checkout.MockServer.simulateHttpRedirect

@@ -3,21 +3,21 @@ package com.worldpay.access.checkout
 import android.app.Activity
 import android.content.Context
 import android.content.pm.ActivityInfo
-import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions
-import android.support.test.espresso.action.ViewActions.click
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.RootMatchers
-import android.support.test.espresso.matcher.ViewMatchers.*
-import android.support.test.uiautomator.UiDevice
-import android.support.test.uiautomator.UiDevice.getInstance
-import android.support.test.uiautomator.UiObject
-import android.support.test.uiautomator.UiSelector
-import android.support.v4.content.res.ResourcesCompat.getColor
 import android.view.Surface
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
+import androidx.core.content.res.ResourcesCompat.getColor
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiDevice.getInstance
+import androidx.test.uiautomator.UiObject
+import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.AbstractUITest.CardBrand
 import com.worldpay.access.checkout.matchers.AlphaMatcher
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
@@ -128,7 +128,7 @@ object UITestUtils {
     }
 
     fun uiObjectWithId(resId: Int): UiObject {
-        val resName = InstrumentationRegistry.getTargetContext().resources.getResourceName(resId)
+        val resName = InstrumentationRegistry.getInstrumentation().targetContext.resources.getResourceName(resId)
         val selector = UiSelector().resourceId(resName)
         return getInstance(InstrumentationRegistry.getInstrumentation()).findObject(selector)
     }

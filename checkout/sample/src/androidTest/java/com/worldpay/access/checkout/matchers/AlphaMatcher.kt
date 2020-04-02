@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.matchers
 
-import android.support.test.espresso.matcher.BoundedMatcher
 import android.view.View
+import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 
 class AlphaMatcher private constructor(private val alpha: Float): BoundedMatcher<View, View>(View::class.java){

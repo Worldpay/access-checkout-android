@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.api
 
-import android.support.test.runner.AndroidJUnit4
 import android.util.Log
+import androidx.test.runner.AndroidJUnit4
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier

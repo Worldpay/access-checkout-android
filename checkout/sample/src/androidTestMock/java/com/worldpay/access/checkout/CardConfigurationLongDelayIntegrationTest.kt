@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout
 
-import android.support.test.rule.ActivityTestRule
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
+import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.AbstractUITest.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.MockServer.stubCardConfiguration
 import com.worldpay.access.checkout.MockServer.stubCardConfigurationWithDelay

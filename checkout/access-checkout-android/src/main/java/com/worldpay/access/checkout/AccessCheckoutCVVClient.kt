@@ -1,13 +1,13 @@
 package com.worldpay.access.checkout
 
-import android.arch.lifecycle.Lifecycle
-import android.arch.lifecycle.LifecycleObserver
-import android.arch.lifecycle.LifecycleOwner
-import android.arch.lifecycle.OnLifecycleEvent
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.support.v4.content.LocalBroadcastManager
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory

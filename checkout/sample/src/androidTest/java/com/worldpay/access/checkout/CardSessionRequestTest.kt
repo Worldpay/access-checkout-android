@@ -1,17 +1,17 @@
 package com.worldpay.access.checkout
 
-import android.support.test.InstrumentationRegistry
-import android.support.test.espresso.Espresso.onView
-import android.support.test.espresso.action.ViewActions.*
-import android.support.test.espresso.assertion.ViewAssertions.matches
-import android.support.test.espresso.matcher.ViewMatchers.*
-import android.support.test.filters.LargeTest
-import android.support.test.runner.AndroidJUnit4
-import android.support.test.uiautomator.UiDevice
-import android.support.test.uiautomator.UiObject
-import android.support.test.uiautomator.UiSelector
-import android.support.v4.content.res.ResourcesCompat
 import android.view.View
+import androidx.core.content.res.ResourcesCompat
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.filters.LargeTest
+import androidx.test.platform.app.InstrumentationRegistry
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.UiObject
+import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.matchers.EditTextColorMatcher
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
@@ -253,11 +253,10 @@ class CardSessionRequestTest: AbstractUITest() {
     }
 
     companion object {
-        private fun progressBar(): UiObject =
-            uiObjectWithId(R.id.loading_bar)
+        private fun progressBar(): UiObject = uiObjectWithId(R.id.loading_bar)
 
         private fun uiObjectWithId(resId: Int): UiObject {
-            val resName = InstrumentationRegistry.getTargetContext().resources.getResourceName(resId)
+            val resName = InstrumentationRegistry.getInstrumentation().targetContext.resources.getResourceName(resId)
             val selector = UiSelector().resourceId(resName)
             return UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).findObject(selector)
         }
@@ -268,7 +267,6 @@ class CardSessionRequestTest: AbstractUITest() {
         uiObject.exists()
         Assert.assertFalse(uiObject.isEnabled)
     }
-
 
     private fun getSuccessColor() =
         ResourcesCompat.getColor(

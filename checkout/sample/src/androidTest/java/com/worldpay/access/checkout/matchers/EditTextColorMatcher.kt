@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.matchers
 
-import android.support.test.espresso.matcher.BoundedMatcher
 import android.view.View
 import android.widget.EditText
+import androidx.test.espresso.matcher.BoundedMatcher
 import org.hamcrest.Description
 
 class EditTextColorMatcher private constructor(private val color: Int) : BoundedMatcher<View, EditText>(
