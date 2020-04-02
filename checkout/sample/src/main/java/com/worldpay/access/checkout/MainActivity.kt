@@ -12,21 +12,9 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.material.navigation.NavigationView
-import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
-import com.worldpay.access.checkout.card.CardListenerImpl
-import com.worldpay.access.checkout.card.SessionResponseListenerImpl
-import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
-import com.worldpay.access.checkout.views.CardCVVText
-import com.worldpay.access.checkout.views.CardExpiryTextLayout
-import com.worldpay.access.checkout.views.PANLayout
-import kotlinx.android.synthetic.main.fragment_card_flow.*
+import com.worldpay.access.checkout.ui.ProgressBar
 
 class MainActivity : AppCompatActivity() {
-
-    private lateinit var card: Card
-    private lateinit var panView: PANLayout
-    private lateinit var cvvText: CardCVVText
-    private lateinit var dateText: CardExpiryTextLayout
 
     private lateinit var progressBar: ProgressBar
 
@@ -48,42 +36,6 @@ class MainActivity : AppCompatActivity() {
         toolbar.setupWithNavController(navController, appBarConfiguration)
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        progressBar = ProgressBar(this)
-
-        panView = findViewById(R.id.card_flow_text_pan)
-        cvvText = findViewById(R.id.card_flow_text_cvv)
-        dateText = findViewById(R.id.card_flow_text_exp)
-
-        card = AccessCheckoutCard(panView, cvvText, dateText)
-        card.cardListener = CardListenerImpl(this, card)
-        card.cardValidator = AccessCheckoutCardValidator()
-
-        CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
-
-        panView.cardViewListener = card
-        cvvText.cardViewListener = card
-        dateText.cardViewListener = card
-
-        val accessCheckoutClient = AccessCheckoutClient.init(
-            getBaseUrl(),
-            getMerchantID(),
-            SessionResponseListenerImpl(this, progressBar),
-            applicationContext,
-            this
-        )
-
-        card_flow_btn_submit.setOnClickListener {
-            val pan = panView.getInsertedText()
-            val month = dateText.getMonth()
-            val year = dateText.getYear()
-            val cvv = cvvText.getInsertedText()
-            accessCheckoutClient.generateSessionState(pan, month, year, cvv)
-        }
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
@@ -116,9 +68,5 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         return navHostFragment.navController
     }
-
-    private fun getMerchantID() = BuildConfig.MERCHANT_ID
-
-    private fun getBaseUrl() = getString(R.string.endpoint)
 
 }
