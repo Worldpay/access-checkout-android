@@ -2,8 +2,6 @@ package com.worldpay.access.checkout.api.discovery
 
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
-import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializer
-import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializerFactory
 
 internal class AccessCheckoutDiscoveryAsyncTaskFactory {
 
@@ -12,8 +10,7 @@ internal class AccessCheckoutDiscoveryAsyncTaskFactory {
         return AccessCheckoutDiscoveryAsyncTask(
             callback,
             discoverLinks.endpoints,
-            HttpClient(),
-            LinkDiscoveryDeserializerFactory()
+            HttpClient()
         )
     }
 }

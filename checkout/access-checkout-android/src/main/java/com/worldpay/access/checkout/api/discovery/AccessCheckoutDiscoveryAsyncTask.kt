@@ -7,8 +7,6 @@ import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
-import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializer
-import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializerFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import java.lang.Exception
 import java.net.MalformedURLException
@@ -16,9 +14,8 @@ import java.net.URL
 
 internal class AccessCheckoutDiscoveryAsyncTask(
     private val callback: Callback<String>,
-    private val endpoints: List<String>,
-    private val httpClient: HttpClient,
-    private val linkDiscoveryDeserializerFactory: LinkDiscoveryDeserializerFactory
+    private val endpoints: List<Endpoint>,
+    private val httpClient: HttpClient
 ) : AsyncTask<String, Any, AsyncTaskResult<String>>() {
 
     companion object {
@@ -28,16 +25,15 @@ internal class AccessCheckoutDiscoveryAsyncTask(
     override fun doInBackground(vararg params: String?): AsyncTaskResult<String> {
         return try {
             debugLog(TAG, "Sending request to service discovery endpoint")
-            var deserializer = linkDiscoveryDeserializerFactory.getDeserializer(endpoints[0])
-            var resource = fetchLinkFromUrl(params[0], deserializer)
 
-            for (e in endpoints.drop(1)) {
-                deserializer = linkDiscoveryDeserializerFactory.getDeserializer(e)
-                resource = fetchLinkFromUrl(resource, deserializer)
+            var resourceUrl = params[0]
+
+            for (e in endpoints) {
+                resourceUrl = fetchLinkFromUrl(resourceUrl, e.getDeserializer())
             }
 
             debugLog(TAG, "Received response from service discovery endpoint")
-            AsyncTaskResult(resource)
+            AsyncTaskResult(resourceUrl as String)
         } catch (ex: Exception) {
             val errorMessage = "An error was thrown when trying to make a connection to the service"
             when (ex) {

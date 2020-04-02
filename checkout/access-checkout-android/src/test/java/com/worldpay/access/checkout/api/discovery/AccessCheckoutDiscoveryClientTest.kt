@@ -20,7 +20,7 @@ import kotlin.test.assertTrue
 class AccessCheckoutDiscoveryClientTest {
 
     private val mockedAsyncTaskFactory: AccessCheckoutDiscoveryAsyncTaskFactory = mock()
-    private var discoverLinks: DiscoverLinks = DiscoverLinks(listOf("some-service", "some-endpoint"))
+    private var discoverLinks: DiscoverLinks = DiscoverLinks(listOf(Endpoint("some-service"), Endpoint("some-endpoint")))
     private val accessCheckoutDiscoveryAsyncTask: AccessCheckoutDiscoveryAsyncTask = mock()
 
     @get:Rule
@@ -88,7 +88,7 @@ class AccessCheckoutDiscoveryClientTest {
             }
         }
 
-        discoverLinks = DiscoverLinks(listOf("one", "two", "three"))
+        discoverLinks = DiscoverLinks(listOf(Endpoint("one"), Endpoint("two"), Endpoint("three")))
 
         val client = AccessCheckoutDiscoveryClient(mockedAsyncTaskFactory)
         given(mockedAsyncTaskFactory.getAsyncTask(any(), any())).willReturn(accessCheckoutDiscoveryAsyncTask)
