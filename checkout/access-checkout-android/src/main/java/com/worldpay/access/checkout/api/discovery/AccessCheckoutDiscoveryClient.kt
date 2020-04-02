@@ -8,7 +8,8 @@ import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import java.util.concurrent.atomic.AtomicInteger
 
 internal class AccessCheckoutDiscoveryClient(
-    private val accessCheckoutDiscoveryAsyncTaskFactory: AccessCheckoutDiscoveryAsyncTaskFactory
+    private val accessCheckoutDiscoveryAsyncTaskFactory: AccessCheckoutDiscoveryAsyncTaskFactory,
+    private val discoveryCache: DiscoveryCache = DiscoveryCacheFactory.getCache()
 ) {
 
     private var asyncTaskResult: AsyncTaskResult<String>? = null
