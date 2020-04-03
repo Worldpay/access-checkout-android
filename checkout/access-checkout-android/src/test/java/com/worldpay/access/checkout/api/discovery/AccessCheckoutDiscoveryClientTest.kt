@@ -26,6 +26,11 @@ class AccessCheckoutDiscoveryClientTest {
     @get:Rule
     var expectedException: ExpectedException = ExpectedException.none()
 
+    @Before
+    fun setUp() {
+        DiscoveryCache.results.clear()
+    }
+
     @Test
     fun `should throw an exception when base url is empty`() {
         expectedException.expect(AccessCheckoutDiscoveryException::class.java)
