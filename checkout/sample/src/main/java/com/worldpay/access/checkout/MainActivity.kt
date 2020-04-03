@@ -16,8 +16,6 @@ import com.worldpay.access.checkout.ui.ProgressBar
 
 class MainActivity : AppCompatActivity() {
 
-    private lateinit var progressBar: ProgressBar
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -49,15 +47,16 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
-        outState.putBoolean("loading", progressBar.isLoading())
+        val loading = ProgressBar(this).isLoading()
+        outState.putBoolean("loading", loading)
         super.onSaveInstanceState(outState)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         if (savedInstanceState.getBoolean("loading")) {
-            progressBar.beginLoading()
+            ProgressBar(this).beginLoading()
         } else {
-            progressBar.stopLoading()
+            ProgressBar(this).stopLoading()
         }
 
         super.onRestoreInstanceState(savedInstanceState)

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.card
 
 import android.view.View
 import androidx.core.content.res.ResourcesCompat
@@ -12,6 +12,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
+import com.worldpay.access.checkout.AbstractUITest
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.matchers.EditTextColorMatcher
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
@@ -35,9 +37,9 @@ class CardSessionRequestTest: AbstractUITest() {
     @Before
     fun setupMatchers() {
         cardNumberMatcher = withId(R.id.card_number_edit_text)
-        cvvMatcher = withId(R.id.cardCVVText)
-        cardExpiryMatcher = withId(R.id.cardExpiryText)
-        buttonMatcher = withId(R.id.submit)
+        cvvMatcher = withId(R.id.card_flow_text_cvv)
+        cardExpiryMatcher = withId(R.id.card_flow_text_exp)
+        buttonMatcher = withId(R.id.card_flow_btn_submit)
         monthMatcher = withId(R.id.month_edit_text)
         yearMatcher = withId(R.id.year_edit_text)
         progressMatcher = withId(R.id.loading_bar)
@@ -253,7 +255,10 @@ class CardSessionRequestTest: AbstractUITest() {
     }
 
     companion object {
-        private fun progressBar(): UiObject = uiObjectWithId(R.id.loading_bar)
+        private fun progressBar(): UiObject =
+            uiObjectWithId(
+                R.id.loading_bar
+            )
 
         private fun uiObjectWithId(resId: Int): UiObject {
             val resName = InstrumentationRegistry.getInstrumentation().targetContext.resources.getResourceName(resId)
@@ -263,7 +268,10 @@ class CardSessionRequestTest: AbstractUITest() {
     }
 
     private fun assertUiObjectExistsAndIsDisabled(resId: Int) {
-        val uiObject = uiObjectWithId(resId)
+        val uiObject =
+            uiObjectWithId(
+                resId
+            )
         uiObject.exists()
         Assert.assertFalse(uiObject.isEnabled)
     }

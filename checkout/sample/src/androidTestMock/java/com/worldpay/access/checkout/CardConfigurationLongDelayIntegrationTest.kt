@@ -8,14 +8,14 @@ import com.worldpay.access.checkout.AbstractUITest.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.MockServer.stubCardConfiguration
 import com.worldpay.access.checkout.MockServer.stubCardConfigurationWithDelay
 import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
-import com.worldpay.access.checkout.UITestUtils.assertInProgressState
 import com.worldpay.access.checkout.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.UITestUtils.getFailColor
 import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.UITestUtils.updateCVVDetails
-import com.worldpay.access.checkout.UITestUtils.updateMonthDetails
-import com.worldpay.access.checkout.UITestUtils.updatePANDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertInProgressState
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateCVVDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateMonthDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updatePANDetails
 import com.worldpay.access.checkout.model.*
 import com.worldpay.access.checkout.views.PANLayout
 import org.awaitility.Awaitility
@@ -72,16 +72,16 @@ class CardConfigurationLongDelayIntegrationTest {
     fun givenCardConfigurationCallIsDelayed_AndValidKnownCardDataIsInsertedAndUserPressesSubmit_ThenSuccessfulResponseIsReceived() {
 
         val cardText = uiObjectWithId(R.id.card_number_edit_text)
-        val cvvText = uiObjectWithId(R.id.cardCVVText)
+        val cvvText = uiObjectWithId(R.id.card_flow_text_cvv)
         val monthText = uiObjectWithId(R.id.month_edit_text)
         val yearText = uiObjectWithId(R.id.year_edit_text)
-        val submitButton = uiObjectWithId(R.id.submit)
+        val submitButton = uiObjectWithId(R.id.card_flow_btn_submit)
 
         val cardEditText: EditText = activity.findViewById(R.id.card_number_edit_text)
-        val cvvEditText: EditText = activity.findViewById(R.id.cardCVVText)
+        val cvvEditText: EditText = activity.findViewById(R.id.card_flow_text_cvv)
         val monthEditText: EditText = activity.findViewById(R.id.month_edit_text)
         val yearEditText: EditText = activity.findViewById(R.id.year_edit_text)
-        val submit: Button = activity.findViewById(R.id.submit)
+        val submit: Button = activity.findViewById(R.id.card_flow_btn_submit)
 
         assertExpectedLogo(R.drawable.card_unknown_logo)
 

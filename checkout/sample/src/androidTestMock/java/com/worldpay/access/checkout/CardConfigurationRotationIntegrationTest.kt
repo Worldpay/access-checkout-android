@@ -2,21 +2,21 @@ package com.worldpay.access.checkout
 
 import android.widget.EditText
 import com.worldpay.access.checkout.AbstractUITest.CardBrand.MASTERCARD
-import com.worldpay.access.checkout.UITestUtils.assertBrandImage
 import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsDisabled
 import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsEnabled
-import com.worldpay.access.checkout.UITestUtils.cardNumberMatcher
 import com.worldpay.access.checkout.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.UITestUtils.getFailColor
 import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.UITestUtils.moveToField
 import com.worldpay.access.checkout.UITestUtils.rotateToLandscapeAndWait
 import com.worldpay.access.checkout.UITestUtils.rotateToPortraitAndWait
-import com.worldpay.access.checkout.UITestUtils.updateCVVDetails
-import com.worldpay.access.checkout.UITestUtils.updateMonthDetails
-import com.worldpay.access.checkout.UITestUtils.updatePANDetails
-import com.worldpay.access.checkout.UITestUtils.updateYearDetails
-import com.worldpay.access.checkout.UITestUtils.yearMatcher
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertBrandImage
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.cardNumberMatcher
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateCVVDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateMonthDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updatePANDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateYearDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.yearMatcher
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -46,20 +46,20 @@ class CardConfigurationRotationIntegrationTest: AbstractUITest() {
         moveToField(yearMatcher)
 
         assertViewState(failColor(), failColor(), failColor(), failColor())
-        assertUiObjectExistsAndIsDisabled(R.id.submit)
+        assertUiObjectExistsAndIsDisabled(R.id.card_flow_btn_submit)
 
         //rotate and assert state is the same
         fun assertionCondition1() = assertFieldConditions(failColor(), failColor(), failColor(), failColor(), MASTERCARD)
         rotateToLandscapeAndWait(activity(), timeoutInMillis, ::assertionCondition1)
 
-        assertUiObjectExistsAndIsDisabled(R.id.submit)
+        assertUiObjectExistsAndIsDisabled(R.id.card_flow_btn_submit)
 
         // Re-enter a luhn valid, mastercard identified card and valid date
         updatePANDetails(luhnValidMastercardCard)
         updateMonthDetails(month)
         updateCVVDetails("123")
         assertBrandImage(MASTERCARD)
-        assertUiObjectExistsAndIsEnabled(R.id.submit)
+        assertUiObjectExistsAndIsEnabled(R.id.card_flow_btn_submit)
 
         assertViewState(successColor(), successColor(), successColor(), successColor())
 
@@ -69,24 +69,24 @@ class CardConfigurationRotationIntegrationTest: AbstractUITest() {
         // Verify that all the fields are now in a success state and can be submitted
         closeKeyboard()
         assertViewState(successColor(), successColor(), successColor(), successColor())
-        assertUiObjectExistsAndIsEnabled(R.id.submit)
+        assertUiObjectExistsAndIsEnabled(R.id.card_flow_btn_submit)
 
         updateCVVDetails("12")
         moveToField(cardNumberMatcher)
-        assertUiObjectExistsAndIsDisabled(R.id.submit)
+        assertUiObjectExistsAndIsDisabled(R.id.card_flow_btn_submit)
 
         //rotate and assert state is the same
         fun assertionCondition3() = assertFieldConditions(successColor(), failColor(), successColor(), successColor(), MASTERCARD)
         rotateToLandscapeAndWait(activity(), timeoutInMillis, ::assertionCondition3)
 
-        assertUiObjectExistsAndIsDisabled(R.id.submit)
+        assertUiObjectExistsAndIsDisabled(R.id.card_flow_btn_submit)
 
         updateCVVDetails("123")
-        assertUiObjectExistsAndIsEnabled(R.id.submit)
+        assertUiObjectExistsAndIsEnabled(R.id.card_flow_btn_submit)
     }
 
     private fun cardEditText(): EditText = activity().findViewById(R.id.card_number_edit_text)
-    private fun cvvEditText(): EditText = activity().findViewById(R.id.cardCVVText)
+    private fun cvvEditText(): EditText = activity().findViewById(R.id.card_flow_text_cvv)
     private fun monthEditText(): EditText = activity().findViewById(R.id.month_edit_text)
     private fun yearEditText(): EditText = activity().findViewById(R.id.year_edit_text)
     private fun failColor() = getFailColor(activity())

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.card
 
 import androidx.core.content.res.ResourcesCompat
 import androidx.test.espresso.Espresso.onView
@@ -7,6 +7,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.worldpay.access.checkout.AbstractUITest
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.matchers.EditTextColorMatcher.Companion.withEditTextColor
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,7 +20,7 @@ class ExpiryDateUITests: AbstractUITest() {
 
     @Test
     fun givenAppLaunches_ThenExpiryDateExists() {
-        onView(withId(R.id.cardExpiryText))
+        onView(withId(R.id.card_flow_text_exp))
             .check(matches(isDisplayed()))
 
         onView(withId(R.id.month_edit_text))

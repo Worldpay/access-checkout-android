@@ -3,20 +3,20 @@ package com.worldpay.access.checkout
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.MockServer.simulateCardConfigurationServerError
 import com.worldpay.access.checkout.MockServer.stubCardConfiguration
-import com.worldpay.access.checkout.UITestUtils.assertBrandImage
 import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
-import com.worldpay.access.checkout.UITestUtils.assertFieldsAlpha
-import com.worldpay.access.checkout.UITestUtils.assertInProgressState
-import com.worldpay.access.checkout.UITestUtils.assertValidInitialUIFields
-import com.worldpay.access.checkout.UITestUtils.cardNumberMatcher
 import com.worldpay.access.checkout.UITestUtils.checkFieldInState
-import com.worldpay.access.checkout.UITestUtils.checkSubmitInState
-import com.worldpay.access.checkout.UITestUtils.monthMatcher
-import com.worldpay.access.checkout.UITestUtils.typeFormInputs
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.UITestUtils.updateMonthDetails
-import com.worldpay.access.checkout.UITestUtils.updatePANDetails
-import com.worldpay.access.checkout.UITestUtils.yearMatcher
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertBrandImage
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertFieldsAlpha
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertInProgressState
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertValidInitialUIFields
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.cardNumberMatcher
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.checkSubmitInState
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.monthMatcher
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.typeFormInputs
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateMonthDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updatePANDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.yearMatcher
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -68,8 +68,8 @@ class CardConfigurationIntegrationTest {
         checkSubmitInState(true)
 
         assertFieldsAlpha(1.0f)
-        assertTrue(uiObjectWithId(R.id.submit).exists())
-        uiObjectWithId(R.id.submit).click()
+        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
+        uiObjectWithId(R.id.card_flow_btn_submit).click()
 
         assertInProgressState()
 

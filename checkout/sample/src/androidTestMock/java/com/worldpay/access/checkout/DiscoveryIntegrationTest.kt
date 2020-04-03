@@ -2,11 +2,11 @@ package com.worldpay.access.checkout
 
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
-import com.worldpay.access.checkout.UITestUtils.assertFieldsAlpha
-import com.worldpay.access.checkout.UITestUtils.assertInProgressState
-import com.worldpay.access.checkout.UITestUtils.assertValidInitialUIFields
-import com.worldpay.access.checkout.UITestUtils.typeFormInputs
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertFieldsAlpha
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertInProgressState
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertValidInitialUIFields
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.typeFormInputs
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -27,8 +27,8 @@ class DiscoveryIntegrationTest {
         assertValidInitialUIFields()
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
-        assertTrue(uiObjectWithId(R.id.submit).exists())
-        uiObjectWithId(R.id.submit).click()
+        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
+        uiObjectWithId(R.id.card_flow_btn_submit).click()
 
         assertInProgressState()
 

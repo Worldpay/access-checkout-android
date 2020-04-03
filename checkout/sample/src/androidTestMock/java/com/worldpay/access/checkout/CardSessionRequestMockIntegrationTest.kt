@@ -10,25 +10,24 @@ import com.worldpay.access.checkout.MockServer.simulateDelayedResponse
 import com.worldpay.access.checkout.MockServer.simulateErrorResponse
 import com.worldpay.access.checkout.MockServer.simulateHttpRedirect
 import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
-import com.worldpay.access.checkout.UITestUtils.assertFieldsAlpha
-import com.worldpay.access.checkout.UITestUtils.assertInProgressState
-import com.worldpay.access.checkout.UITestUtils.assertValidInitialUIFields
-import com.worldpay.access.checkout.UITestUtils.cardNumberMatcher
-import com.worldpay.access.checkout.UITestUtils.checkSubmitInState
-import com.worldpay.access.checkout.UITestUtils.cvvMatcher
-import com.worldpay.access.checkout.UITestUtils.monthMatcher
-import com.worldpay.access.checkout.UITestUtils.typeFormInputs
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.UITestUtils.updateCVVDetails
-import com.worldpay.access.checkout.UITestUtils.yearMatcher
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertFieldsAlpha
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertInProgressState
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertValidInitialUIFields
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.cardNumberMatcher
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.checkSubmitInState
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.cvvMatcher
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.monthMatcher
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.typeFormInputs
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateCVVDetails
+import com.worldpay.access.checkout.card.CardFragmentTestUtils.yearMatcher
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
 
-
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class CardSessionRequestMockIntegrationTest: AbstractUITest() {
+class CardSessionRequestMockIntegrationTest : AbstractUITest() {
 
     private val amexCard = "343434343434343"
     private val amexCvv = "1234"
@@ -40,12 +39,15 @@ class CardSessionRequestMockIntegrationTest: AbstractUITest() {
         assertValidInitialUIFields()
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
-        assertTrue(uiObjectWithId(R.id.submit).exists())
-        uiObjectWithId(R.id.submit).click()
+        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
+        uiObjectWithId(R.id.card_flow_btn_submit).click()
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(activityRule.activity.getString(R.string.session_reference), activityRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(
+            activityRule.activity.getString(R.string.session_reference),
+            activityRule.activity.window.decorView
+        )
     }
 
     @Test
@@ -55,12 +57,15 @@ class CardSessionRequestMockIntegrationTest: AbstractUITest() {
         assertValidInitialUIFields()
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
-        assertTrue(uiObjectWithId(R.id.submit).exists())
-        uiObjectWithId(R.id.submit).click()
+        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
+        uiObjectWithId(R.id.card_flow_btn_submit).click()
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(activityRule.activity.getString(R.string.session_reference), activityRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(
+            activityRule.activity.getString(R.string.session_reference),
+            activityRule.activity.window.decorView
+        )
     }
 
     @Test
@@ -69,8 +74,8 @@ class CardSessionRequestMockIntegrationTest: AbstractUITest() {
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
 
-        assertTrue(uiObjectWithId(R.id.submit).exists())
-        uiObjectWithId(R.id.submit).click()
+        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
+        uiObjectWithId(R.id.card_flow_btn_submit).click()
         assertInProgressState()
 
         assertFieldsAlpha(1.0f)
@@ -82,8 +87,8 @@ class CardSessionRequestMockIntegrationTest: AbstractUITest() {
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
 
-        assertTrue(uiObjectWithId(R.id.submit).exists())
-        uiObjectWithId(R.id.submit).click()
+        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
+        uiObjectWithId(R.id.card_flow_btn_submit).click()
         assertInProgressState()
 
         assertFieldsAlpha(1.0f)
@@ -106,13 +111,14 @@ class CardSessionRequestMockIntegrationTest: AbstractUITest() {
         simulateErrorResponse(activityRule.activity)
 
         val unknownCardError = getResourceString(R.string.error_response_card_number)
-        val expectedToastErrorMessage = "Error: The json body provided does not match the expected schema"
+        val expectedToastErrorMessage =
+            "Error: The json body provided does not match the expected schema"
         assertValidInitialUIFields()
         typeFormInputs(unknownCardError, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
 
-        assertTrue(uiObjectWithId(R.id.submit).exists())
-        uiObjectWithId(R.id.submit).click()
+        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
+        uiObjectWithId(R.id.card_flow_btn_submit).click()
         assertInProgressState()
 
         assertFieldsAlpha(1.0f)
@@ -126,7 +132,10 @@ class CardSessionRequestMockIntegrationTest: AbstractUITest() {
         onView(yearMatcher)
             .check(ViewAssertions.matches(withText(year)))
 
-        assertDisplaysResponseFromServer(expectedToastErrorMessage, activityRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(
+            expectedToastErrorMessage,
+            activityRule.activity.window.decorView
+        )
 
         checkSubmitInState(enabled = true)
         updateCVVDetails("123")
@@ -141,13 +150,17 @@ class CardSessionRequestMockIntegrationTest: AbstractUITest() {
         assertValidInitialUIFields()
         typeFormInputs(cardNumber, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
-        assertTrue(uiObjectWithId(R.id.submit).exists())
-        uiObjectWithId(R.id.submit).click()
+        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
+        uiObjectWithId(R.id.card_flow_btn_submit).click()
+
         activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(activityRule.activity.getString(R.string.session_reference), activityRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(
+            activityRule.activity.getString(R.string.session_reference),
+            activityRule.activity.window.decorView
+        )
     }
 
     private fun getResourceString(resId: Int): String =

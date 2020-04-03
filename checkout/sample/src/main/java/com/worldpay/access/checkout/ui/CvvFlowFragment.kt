@@ -48,9 +48,9 @@ class CvvFlowFragment : Fragment() {
 
     }
 
-    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+    override fun onResume() {
         toggleFields(!progressBar.isLoading())
-        super.onViewStateRestored(savedInstanceState)
+        super.onResume()
     }
 
     private fun initialisePaymentFlow(activity: FragmentActivity) {
@@ -80,7 +80,7 @@ class CvvFlowFragment : Fragment() {
 
     private fun toggleFields(enableFields: Boolean) {
         cvvText.isEnabled = enableFields
-        submitBtn.isEnabled = enableFields
+        submitBtn.isEnabled = false
     }
 
     private fun getMerchantID() = BuildConfig.MERCHANT_ID

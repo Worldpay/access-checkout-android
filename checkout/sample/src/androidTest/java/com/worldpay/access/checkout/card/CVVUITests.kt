@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.card
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -6,6 +6,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.worldpay.access.checkout.AbstractUITest
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.UITestUtils.getFailColor
 import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher.Companion.withBrandVectorImageId
@@ -23,24 +25,24 @@ class CVVUITests: AbstractUITest() {
 
     @Test
     fun cardCVVExists() {
-        onView(withId(R.id.cardCVVText)).check(matches(isDisplayed()))
+        onView(withId(R.id.card_flow_text_cvv)).check(matches(isDisplayed()))
     }
 
     @Test
     fun givenUserAttemptsToTypeMoreThanMaxAllowedCVVLength_ThenFieldRestrictsToMaxLength() {
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("12345"))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withText("1234")))
     }
 
     @Test
     fun givenUserAttemptsToTypeLessThanMinAllowedCVVLength_ThenFieldDisplaysErrorWhenUserMovesAway() {
         closeSoftKeyboard()
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("12"))
@@ -50,7 +52,7 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
     }
 
@@ -60,7 +62,7 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageId(R.drawable.card_unknown_logo)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .perform(pressImeActionButton())
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -69,10 +71,10 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), pressImeActionButton())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), replaceText(""), replaceText("123"), pressImeActionButton())
@@ -80,14 +82,14 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), pressImeActionButton())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
     @Test
     fun givenCardDataEnteredThenRemovedAgainCVVFieldShouldBeValidUpTo4Digits() {
         closeSoftKeyboard()
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("1234"), closeSoftKeyboard())
@@ -97,7 +99,7 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isEnabled()))
             .perform(click(), typeText("77"), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
@@ -105,7 +107,7 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isEnabled()))
             .perform(click(), replaceText(""), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withText("1234")))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
@@ -122,12 +124,12 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("1234"), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
@@ -143,12 +145,12 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("12345"), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withText("1234")))
     }
 
@@ -164,7 +166,7 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("123"), closeSoftKeyboard())
@@ -173,7 +175,7 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
     }
 
@@ -188,7 +190,7 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("123"), pressImeActionButton())
@@ -197,7 +199,7 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), pressImeActionButton())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
@@ -205,7 +207,7 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isEnabled()))
             .perform(click(), replaceText(masterCard), pressImeActionButton())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withText("123")))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
@@ -221,12 +223,12 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.VISA)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("123"), pressImeActionButton())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
@@ -242,12 +244,12 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.VISA)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("1234"), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withText("123")))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
@@ -257,7 +259,7 @@ class CVVUITests: AbstractUITest() {
     @Test
     fun givenCVVEnteredFirst_AndVisaIdentifiedAfter_ThenCVVFieldShouldBeReValidated() {
         closeSoftKeyboard()
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("1234"), closeSoftKeyboard())
@@ -265,7 +267,7 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
@@ -277,15 +279,15 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.VISA)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), replaceText(""), replaceText("123"), pressImeActionButton())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
     }
@@ -302,12 +304,12 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.MASTERCARD)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("123"), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
@@ -323,12 +325,12 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.MASTERCARD)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("1234"), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withText("123")))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
@@ -337,7 +339,7 @@ class CVVUITests: AbstractUITest() {
     @Test
     fun givenCVVEnteredFirst_AndMastercardIdentifiedAfter_ThenCVVFieldShouldBeReValidated() {
         closeSoftKeyboard()
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .perform(closeSoftKeyboard())
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -346,7 +348,7 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
         onView(withId(R.id.card_number_edit_text))
@@ -358,15 +360,15 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageName(CardBrand.MASTERCARD)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), replaceText(""), replaceText("123"), closeSoftKeyboard())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
@@ -381,7 +383,7 @@ class CVVUITests: AbstractUITest() {
             .check(matches(isDisplayed()))
             .check(matches(withBrandVectorImageId(R.drawable.card_unknown_logo)))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), typeText("12"), pressImeActionButton())
@@ -389,10 +391,10 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), pressImeActionButton())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), replaceText("123"), pressImeActionButton())
@@ -400,10 +402,10 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), pressImeActionButton())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(click(), replaceText("1234"), pressImeActionButton())
@@ -411,7 +413,7 @@ class CVVUITests: AbstractUITest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), pressImeActionButton())
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
     }
 
@@ -420,7 +422,7 @@ class CVVUITests: AbstractUITest() {
         closeSoftKeyboard()
         val pastedText = "12345678"
 
-        onView(withId(R.id.cardCVVText))
+        onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
             .perform(replaceText(pastedText))
