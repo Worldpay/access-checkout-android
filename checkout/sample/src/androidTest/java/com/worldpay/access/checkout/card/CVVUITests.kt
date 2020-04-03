@@ -10,6 +10,8 @@ import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.UITestUtils.getFailColor
 import com.worldpay.access.checkout.UITestUtils.getSuccessColor
+import com.worldpay.access.checkout.card.testutil.CardBrand
+import com.worldpay.access.checkout.card.testutil.CardBrand.AMEX
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher.Companion.withBrandVectorImageId
 import com.worldpay.access.checkout.matchers.BrandVectorImageNameMatcher.Companion.withBrandVectorImageName
 import com.worldpay.access.checkout.matchers.EditTextColorMatcher.Companion.withEditTextColor
@@ -20,8 +22,8 @@ import org.junit.runner.RunWith
 @RunWith(AndroidJUnit4::class)
 class CVVUITests: AbstractUITest() {
 
-    val amexCard = "343434343434343"
-    val masterCard = "5555555555554444"
+    private val amexCard = "343434343434343"
+    private val masterCard = "5555555555554444"
 
     @Test
     fun cardCVVExists() {
@@ -122,7 +124,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
+            .check(matches(withBrandVectorImageName(AMEX)))
 
         onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
@@ -143,7 +145,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
+            .check(matches(withBrandVectorImageName(AMEX)))
 
         onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
@@ -164,7 +166,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
+            .check(matches(withBrandVectorImageName(AMEX)))
 
         onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
@@ -188,7 +190,7 @@ class CVVUITests: AbstractUITest() {
 
         onView(withId(R.id.logo_view))
             .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.AMEX)))
+            .check(matches(withBrandVectorImageName(AMEX)))
 
         onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))

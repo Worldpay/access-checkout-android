@@ -7,14 +7,11 @@ import android.view.Surface
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.core.content.res.ResourcesCompat.getColor
-import androidx.test.espresso.Espresso
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry
@@ -43,13 +40,13 @@ object UITestUtils {
             context
         )
 
-        Espresso.onView(viewMatcher)
-            .check(ViewAssertions.matches(EditTextColorMatcher.withEditTextColor(expectedColor)))
+        onView(viewMatcher)
+            .check(matches(EditTextColorMatcher.withEditTextColor(expectedColor)))
     }
 
     fun checkFieldText(viewMatcher: Matcher<View>, expectedText: String) {
-        Espresso.onView(viewMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.withText(expectedText)))
+        onView(viewMatcher)
+            .check(matches(withText(expectedText)))
     }
 
     fun assertDisplaysResponseFromServer(responseString: String, view: View) {

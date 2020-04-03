@@ -3,10 +3,10 @@ package com.worldpay.access.checkout
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertFieldsAlpha
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertInProgressState
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertValidInitialUIFields
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.typeFormInputs
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFieldsAlpha
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertValidInitialUIFields
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.typeFormInputs
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test

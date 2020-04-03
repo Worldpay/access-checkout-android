@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.matchers
 import android.view.View
 import android.widget.ImageView
 import androidx.test.espresso.matcher.BoundedMatcher
-import com.worldpay.access.checkout.AbstractUITest.CardBrand
+import com.worldpay.access.checkout.card.testutil.CardBrand
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.PANLayout
 import org.awaitility.Awaitility

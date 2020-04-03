@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout
 
 import android.widget.EditText
-import com.worldpay.access.checkout.AbstractUITest.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsDisabled
 import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsEnabled
 import com.worldpay.access.checkout.UITestUtils.closeKeyboard
@@ -10,13 +9,15 @@ import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.UITestUtils.moveToField
 import com.worldpay.access.checkout.UITestUtils.rotateToLandscapeAndWait
 import com.worldpay.access.checkout.UITestUtils.rotateToPortraitAndWait
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertBrandImage
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.cardNumberMatcher
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateCVVDetails
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateMonthDetails
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.updatePANDetails
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateYearDetails
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.yearMatcher
+import com.worldpay.access.checkout.card.testutil.CardBrand
+import com.worldpay.access.checkout.card.testutil.CardBrand.MASTERCARD
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertBrandImage
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.cardNumberMatcher
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateCVVDetails
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateMonthDetails
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updatePANDetails
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateYearDetails
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.yearMatcher
 import org.junit.Test
 import kotlin.test.assertEquals
 

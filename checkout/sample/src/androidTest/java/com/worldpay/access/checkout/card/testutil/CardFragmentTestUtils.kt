@@ -1,12 +1,13 @@
-package com.worldpay.access.checkout.card
+package com.worldpay.access.checkout.card.testutil
 
 import android.view.View
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.uiautomator.UiObject
-import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.UITestUtils
 import com.worldpay.access.checkout.UITestUtils.assertUiObjectExistsAndIsDisabled
@@ -14,7 +15,7 @@ import com.worldpay.access.checkout.UITestUtils.checkFieldText
 import com.worldpay.access.checkout.matchers.AlphaMatcher
 import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher
 import com.worldpay.access.checkout.matchers.BrandVectorImageNameMatcher
-import org.hamcrest.CoreMatchers
+import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.Assert
 
@@ -39,23 +40,23 @@ object CardFragmentTestUtils {
 
     fun assertValidInitialUIFields() {
         Espresso.onView(cardNumberMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(ViewMatchers.isEnabled()))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
 
         Espresso.onView(cvvMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(ViewMatchers.isEnabled()))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
 
         Espresso.onView(cardExpiryMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(ViewMatchers.isEnabled()))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
 
         checkSubmitInState(
             enabled = false
         )
 
         Espresso.onView(progressMatcher)
-            .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
+            .check(matches(not(isDisplayed())))
     }
 
     fun typeFormInputs(card: String, cvv: String, month: String, year: String, assertInsertedCompleteText: Boolean = false) {
@@ -98,30 +99,30 @@ object CardFragmentTestUtils {
 
     fun checkSubmitInState(enabled: Boolean) {
         val enabledMatcher: Matcher<View> =
-            if (enabled) ViewMatchers.isEnabled() else CoreMatchers.not(ViewMatchers.isEnabled())
+            if (enabled) isEnabled() else not(isEnabled())
         Espresso.onView(buttonMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-            .check(ViewAssertions.matches(enabledMatcher))
+            .check(matches(isDisplayed()))
+            .check(matches(enabledMatcher))
     }
 
     fun assertFieldsAlpha(alpha: Float) {
         Espresso.onView(cardNumberMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
         Espresso.onView(cvvMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
         Espresso.onView(monthMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
         Espresso.onView(yearMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
         Espresso.onView(buttonMatcher)
-            .check(ViewAssertions.matches(AlphaMatcher.withAlpha(alpha)))
+            .check(matches(AlphaMatcher.withAlpha(alpha)))
     }
 
     fun assertBrandImage(expectedImage: Int) {
         Espresso.onView(brandImageMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
             .check(
-                ViewAssertions.matches(
+                matches(
                     BrandVectorImageMatcher.withBrandVectorImageId(
                         expectedImage
                     )
@@ -129,11 +130,11 @@ object CardFragmentTestUtils {
             )
     }
 
-    fun assertBrandImage(cardBrand: AbstractUITest.CardBrand) {
+    fun assertBrandImage(cardBrand: CardBrand) {
         Espresso.onView(brandImageMatcher)
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
+            .check(matches(isDisplayed()))
             .check(
-                ViewAssertions.matches(
+                matches(
                     BrandVectorImageNameMatcher.withBrandVectorImageName(
                         cardBrand
                     )

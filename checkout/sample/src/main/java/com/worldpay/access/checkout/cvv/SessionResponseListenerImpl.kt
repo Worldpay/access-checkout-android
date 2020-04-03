@@ -34,7 +34,7 @@ class SessionResponseListenerImpl(
     }
 
     private fun resetField() {
-        activity.findViewById<CardCVVText>(R.id.card_flow_text_cvv).text.clear()
+        activity.findViewById<CardCVVText>(R.id.cvv_flow_text_cvv).text.clear()
     }
 
 }

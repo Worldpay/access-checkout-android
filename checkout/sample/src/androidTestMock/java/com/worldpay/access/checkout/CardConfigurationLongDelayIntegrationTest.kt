@@ -4,7 +4,6 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.AbstractUITest.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.MockServer.stubCardConfiguration
 import com.worldpay.access.checkout.MockServer.stubCardConfigurationWithDelay
 import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
@@ -12,10 +11,11 @@ import com.worldpay.access.checkout.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.UITestUtils.getFailColor
 import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.assertInProgressState
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateCVVDetails
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.updateMonthDetails
-import com.worldpay.access.checkout.card.CardFragmentTestUtils.updatePANDetails
+import com.worldpay.access.checkout.card.testutil.CardBrand.MASTERCARD
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateCVVDetails
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateMonthDetails
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updatePANDetails
 import com.worldpay.access.checkout.model.*
 import com.worldpay.access.checkout.views.PANLayout
 import org.awaitility.Awaitility
