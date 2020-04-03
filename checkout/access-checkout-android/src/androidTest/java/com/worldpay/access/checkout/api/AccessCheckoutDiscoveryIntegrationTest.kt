@@ -16,7 +16,9 @@ import com.worldpay.access.checkout.api.DiscoveryStubs.verifiedTokensMapping
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.api.discovery.DiscoveryCache
 import org.awaitility.Awaitility.await
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -33,6 +35,11 @@ class AccessCheckoutDiscoveryIntegrationTest {
             .extensions(ResponseTemplateTransformer(false))
             .notifier(ConsoleNotifier(true))
     )
+
+    @Before
+    fun setUp() {
+        DiscoveryCache.results.clear()
+    }
 
     @Test
     fun givenRootResourceURL_ThenServiceDiscoveryCanDiscoverSessionsResourceEndpoint() {
