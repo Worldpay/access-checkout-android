@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.api.discovery
 
-import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.Callback
@@ -42,7 +41,7 @@ internal class AccessCheckoutDiscoveryClient(
 
             asyncTaskResult.error?.let {
                 if (currentAttempts.get() < maxAttempts) {
-                    discoveryCache.setResult(null, discoverLinks)
+                    discoveryCache.clearResult(discoverLinks)
                     discover(baseUrl, callback, discoverLinks)
                 } else {
                     callback?.onResponse(it, null)
@@ -53,11 +52,11 @@ internal class AccessCheckoutDiscoveryClient(
 
     private fun handleAsyncTaskResponse(callback: Callback<String>?, response: String?, error: Exception?, discoverLinks: DiscoverLinks) {
         response?.let { sessionResponse ->
-            discoveryCache.setResult(AsyncTaskResult(sessionResponse), discoverLinks)
+            discoveryCache.saveResult(discoverLinks, AsyncTaskResult(sessionResponse))
             callback?.onResponse(null, sessionResponse)
         }
         error?.let { sessionError ->
-            discoveryCache.setResult(AsyncTaskResult(sessionError), discoverLinks)
+            discoveryCache.saveResult(discoverLinks, AsyncTaskResult(sessionError))
             callback?.onResponse(sessionError, null)
         }
     }

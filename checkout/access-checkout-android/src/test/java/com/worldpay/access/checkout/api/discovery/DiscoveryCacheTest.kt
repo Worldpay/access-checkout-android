@@ -4,6 +4,7 @@ import com.worldpay.access.checkout.api.AsyncTaskResult
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
 class DiscoveryCacheTest {
@@ -25,7 +26,7 @@ class DiscoveryCacheTest {
         val expectedResult = AsyncTaskResult("some href")
         assertNull(DiscoveryCache.results["service:verifiedTokens"])
 
-        DiscoveryCache.setResult(expectedResult, DiscoverLinks.verifiedTokens)
+        DiscoveryCache.saveResult(DiscoverLinks.verifiedTokens, expectedResult)
 
         assertEquals(expectedResult, DiscoveryCache.results["service:verifiedTokens"])
     }
@@ -36,5 +37,15 @@ class DiscoveryCacheTest {
         DiscoveryCache.results["service:verifiedTokens"] = expectedResult
 
         assertEquals(expectedResult, DiscoveryCache.getResult(DiscoverLinks.verifiedTokens))
+    }
+
+    @Test
+    fun `should remove entry from results when clearResultis called`() {
+        val service = "service:verifiedTokens"
+        DiscoveryCache.results[service] = AsyncTaskResult("some href")
+        assertNotNull(DiscoveryCache.results[service])
+
+        DiscoveryCache.clearResult(DiscoverLinks.verifiedTokens)
+        assertNull(DiscoveryCache.results[service])
     }
 }
