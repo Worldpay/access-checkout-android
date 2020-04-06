@@ -1,12 +1,14 @@
 package com.worldpay.access.checkout.api.discovery
 
+import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializer
 import java.io.Serializable
 
-class DiscoverLinks ( val service: String, val endpoint: String): Serializable {
+internal class DiscoverLinks ( val endpoints: List<Endpoint>): Serializable {
 
     companion object {
-        val verifiedTokens = DiscoverLinks( "service:verifiedTokens", "verifiedTokens:sessions")
-        val sessions =  DiscoverLinks("service:sessions", "sessions:paymentsCvc")
+        val verifiedTokens = DiscoverLinks( listOf(Endpoint("service:verifiedTokens"), Endpoint("verifiedTokens:sessions")))
+        val sessions =  DiscoverLinks(listOf(Endpoint("service:sessions"), Endpoint("sessions:paymentsCvc")))
     }
 
 }
+

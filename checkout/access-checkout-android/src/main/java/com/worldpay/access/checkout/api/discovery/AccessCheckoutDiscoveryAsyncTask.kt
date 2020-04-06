@@ -14,8 +14,7 @@ import java.net.URL
 
 internal class AccessCheckoutDiscoveryAsyncTask(
     private val callback: Callback<String>,
-    private val serviceRootDeserializer: Deserializer<String>,
-    private val sessionsResourceDeserializer: Deserializer<String>,
+    private val endpoints: List<Endpoint>,
     private val httpClient: HttpClient
 ) : AsyncTask<String, Any, AsyncTaskResult<String>>() {
 
@@ -26,10 +25,15 @@ internal class AccessCheckoutDiscoveryAsyncTask(
     override fun doInBackground(vararg params: String?): AsyncTaskResult<String> {
         return try {
             debugLog(TAG, "Sending request to service discovery endpoint")
-            val vtsServiceUrl = fetchLinkFromUrl(params[0], serviceRootDeserializer)
-            val url = fetchLinkFromUrl(vtsServiceUrl, sessionsResourceDeserializer)
+
+            var resourceUrl = params[0]
+
+            for (e in endpoints) {
+                resourceUrl = fetchLinkFromUrl(resourceUrl, e.getDeserializer())
+            }
+
             debugLog(TAG, "Received response from service discovery endpoint")
-            AsyncTaskResult(url)
+            AsyncTaskResult(resourceUrl as String)
         } catch (ex: Exception) {
             val errorMessage = "An error was thrown when trying to make a connection to the service"
             when (ex) {
