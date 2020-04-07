@@ -35,7 +35,7 @@ class DiscoveryIntegrationTest {
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(discoveryRule.activity.getString(R.string.session_reference), discoveryRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(discoveryRule.activity.getString(R.string.verified_token_session_reference), discoveryRule.activity.window.decorView)
     }
 }
 

@@ -91,7 +91,7 @@ class MockCardFlowTest {
             assertThat(
                 response.body()?.string(), containsString(
                     activityRule.activity.resources.getString(
-                        R.string.session_reference
+                        R.string.verified_token_session_reference
                     )
                 )
             )
@@ -115,7 +115,7 @@ class MockCardFlowTest {
             assertThat(
                 response.body()?.string(), containsString(
                     activityRule.activity.resources.getString(
-                        R.string.session_reference
+                        R.string.verified_token_session_reference
                     )
                 )
             )
@@ -202,7 +202,7 @@ class MockCardFlowTest {
 
         client.newCall(relocatedRequest).execute().use { response ->
             assertThat(response.body()?.string(), containsString(activityRule.activity.resources.getString(
-                R.string.session_reference
+                R.string.verified_token_session_reference
             ))
             )
         }

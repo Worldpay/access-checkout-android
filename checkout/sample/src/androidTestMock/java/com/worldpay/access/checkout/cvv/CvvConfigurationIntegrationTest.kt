@@ -44,7 +44,7 @@ class CvvConfigurationIntegrationTest {
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(cardConfigurationErrorRule.activity.getString(R.string.session_reference), cardConfigurationErrorRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference), cardConfigurationErrorRule.activity.window.decorView)
     }
 }
 

@@ -9,8 +9,10 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import com.worldpay.access.checkout.BrandLogoMockStub.stubLogos
 import com.worldpay.access.checkout.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.RootResourseMockStub.rootResourceMapping
-import com.worldpay.access.checkout.VerifiedTokenMockStub.stubVerifiedToken
-import com.worldpay.access.checkout.VerifiedTokenMockStub.stubVerifiedTokenResourceRequest
+import com.worldpay.access.checkout.SessionsMockStub.stubSessionsPaymentCvcRequest
+import com.worldpay.access.checkout.SessionsMockStub.stubSessionsTokenRootRequest
+import com.worldpay.access.checkout.VerifiedTokenMockStub.stubVerifiedTokenRootRequest
+import com.worldpay.access.checkout.VerifiedTokenMockStub.stubVerifiedTokenSessionRequest
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 
 object MockServer {
@@ -22,7 +24,12 @@ object MockServer {
     private var hasStarted = false
 
     object Paths {
+        const val SESSIONS_ROOT_PATH = "sessions"
+        const val SESSIONS_PAYMENTS_CVC_PATH = "sessions/payments/cvc"
+
+        const val VERIFIED_TOKENS_ROOT_PATH = "verifiedTokens"
         const val VERIFIED_TOKENS_SESSIONS_PATH = "verifiedTokens/sessions"
+
         const val CARD_LOGO_PATH = "verifiedTokens/sessions"
         const val CARD_CONFIGURATION_PATH = "access-checkout/cardConfiguration.json"
     }
@@ -67,8 +74,14 @@ object MockServer {
         debugLog("MockServer", "Stubbing root endpoint with 200 response")
         wireMockServer.stubFor(rootResourceMapping())
 
-        stubVerifiedTokenResourceRequest(wireMockServer)
-        stubVerifiedToken(wireMockServer, context)
+        // verified token
+        stubVerifiedTokenRootRequest()
+        stubVerifiedTokenSessionRequest(context)
+
+        // sessions token
+        stubSessionsTokenRootRequest()
+        stubSessionsPaymentCvcRequest(context)
+
         stubCardConfiguration(context)
         stubLogos(context)
     }

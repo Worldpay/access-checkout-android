@@ -78,7 +78,7 @@ class CardConfigurationIntegrationTest {
         assertInProgressState()
 
         assertDisplaysResponseFromServer(cardConfigurationErrorRule.activity.getString(
-            R.string.session_reference
+            R.string.verified_token_session_reference
         ), cardConfigurationErrorRule.activity.window.decorView)
     }
 }

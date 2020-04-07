@@ -3,6 +3,7 @@ package com.worldpay.access.checkout
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.MockServer.defaultStubMappings
+import com.worldpay.access.checkout.MockServer.getBaseUrl
 import com.worldpay.access.checkout.MockServer.startWiremock
 import com.worldpay.access.checkout.MockServer.stopWiremock
 import com.worldpay.access.checkout.RootResourseMockStub.simulateRootResourceTemporaryServerError
@@ -21,8 +22,6 @@ class MockServerTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
-
-    private val sessionsContentType = "application/vnd.worldpay.sessions-v1.hal+json"
 
     private val baseURL = "http://localhost:8080"
 
@@ -88,7 +87,7 @@ class MockServerTest {
 
         val cardConfigurationInputStream = activityRule.activity.resources.openRawResource(R.raw.card_configuration_file)
         val cardConfigurationAsString = cardConfigurationInputStream.reader(Charsets.UTF_8).readText()
-        val substitutedResponseTemplateString = cardConfigurationAsString.replace("{{request.requestLine.baseUrl}}", MockServer.baseUrl)
+        val substitutedResponseTemplateString = cardConfigurationAsString.replace("{{request.requestLine.baseUrl}}", getBaseUrl())
 
         client.newCall(request).execute().use { response ->
             assertThat(response.body()?.string(), CoreMatchers.equalTo(substitutedResponseTemplateString))

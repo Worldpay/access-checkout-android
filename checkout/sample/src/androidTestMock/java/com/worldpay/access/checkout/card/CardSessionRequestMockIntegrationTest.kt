@@ -52,7 +52,7 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
         assertInProgressState()
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.session_reference),
+            activityRule.activity.getString(R.string.verified_token_session_reference),
             activityRule.activity.window.decorView
         )
     }
@@ -70,7 +70,7 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
         assertInProgressState()
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.session_reference),
+            activityRule.activity.getString(R.string.verified_token_session_reference),
             activityRule.activity.window.decorView
         )
     }
@@ -165,7 +165,7 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
         assertInProgressState()
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.session_reference),
+            activityRule.activity.getString(R.string.verified_token_session_reference),
             activityRule.activity.window.decorView
         )
     }

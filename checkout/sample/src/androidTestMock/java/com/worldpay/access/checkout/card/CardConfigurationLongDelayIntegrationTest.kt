@@ -158,7 +158,7 @@ class CardConfigurationLongDelayIntegrationTest {
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(activity.getString(R.string.session_reference), activity.window.decorView)
+        assertDisplaysResponseFromServer(activity.getString(R.string.verified_token_session_reference), activity.window.decorView)
     }
     
     private fun assertExpectedLogo(logoResName: String) {
