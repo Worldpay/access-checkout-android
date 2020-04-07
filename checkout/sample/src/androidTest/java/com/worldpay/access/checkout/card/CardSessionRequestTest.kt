@@ -12,8 +12,8 @@ import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
-import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.card.testutil.AbstractCardFlowUITest
 import com.worldpay.access.checkout.testutil.matchers.EditTextColorMatcher
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
@@ -24,7 +24,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class CardSessionRequestTest: AbstractUITest() {
+class CardSessionRequestTest: AbstractCardFlowUITest() {
 
     private lateinit var cardNumberMatcher: Matcher<View>
     private lateinit var cvvMatcher: Matcher<View>

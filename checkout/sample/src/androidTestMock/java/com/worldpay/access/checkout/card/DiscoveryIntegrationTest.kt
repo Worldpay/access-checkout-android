@@ -1,6 +1,9 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.card
 
 import androidx.test.rule.ActivityTestRule
+import com.worldpay.access.checkout.MainActivity
+import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.RootResourseMockStub.simulateRootResourceTemporaryServerError
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFieldsAlpha
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertValidInitialUIFields
@@ -44,6 +47,6 @@ class DiscoveryRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainA
         // On initialisation of our SDK, the SDK will trigger a discovery call which will get back this error
         // response. On the next call to the same endpoint (when making the payment request), a successful stubbed response will then be
         // returned by mockserver
-        MockServer.simulateRootResourceTemporaryServerError()
+        simulateRootResourceTemporaryServerError()
     }
 }

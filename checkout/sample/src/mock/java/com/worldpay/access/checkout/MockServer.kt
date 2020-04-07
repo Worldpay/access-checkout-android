@@ -3,97 +3,35 @@ package com.worldpay.access.checkout
 import android.content.Context
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import com.github.tomakehurst.wiremock.client.WireMock
-import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-import com.github.tomakehurst.wiremock.matching.AnythingPattern
-import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
-import com.github.tomakehurst.wiremock.stubbing.Scenario
-import com.google.gson.GsonBuilder
+import com.worldpay.access.checkout.BrandLogoMockStub.stubLogos
+import com.worldpay.access.checkout.CardConfigurationMockStub.stubCardConfiguration
+import com.worldpay.access.checkout.RootResourseMockStub.rootResourceMapping
+import com.worldpay.access.checkout.VerifiedTokenMockStub.stubVerifiedToken
+import com.worldpay.access.checkout.VerifiedTokenMockStub.stubVerifiedTokenResourceRequest
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
-import com.worldpay.access.checkout.model.CardConfiguration
-import java.io.IOException
 
 object MockServer {
 
+    private lateinit var context: Context
     private lateinit var wireMockServer: WireMockServer
+    private lateinit var baseUrl: String
 
     private var hasStarted = false
 
-    private const val verifiedTokensSessionResourcePath = "verifiedTokens/sessions"
-    private const val cardConfigurationResourcePath = "access-checkout/cardConfiguration.json"
-    private const val cardLogosPath = "access-checkout/assets"
-
-    lateinit var baseUrl: String
-
-    private fun verifiedTokensResponse(context: Context) =
-        """{
-                  "_links": {
-                    "verifiedTokens:session": {
-                      "href": "${context.getString(R.string.session_reference)}"
-                    },
-                    "curies": [
-                      {
-                        "href": "https://access.worldpay.com/rels/verifiedTokens{rel}.json",
-                        "name": "verifiedTokens",
-                        "templated": true
-                      }
-                    ]
-                  }
-                }"""
-
-    private const val serviceDiscoveryResponse =
-        """{
-                    "_links": {
-                        "payments:authorize": {
-                            "href": "{{request.requestLine.baseUrl}}/payments/authorizations"
-                        },
-                        "service:payments": {
-                            "href": "{{request.requestLine.baseUrl}}/payments"
-                        },
-                        "service:tokens": {
-                            "href": "{{request.requestLine.baseUrl}}/tokens"
-                        },
-                        "service:verifiedTokens": {
-                            "href": "{{request.requestLine.baseUrl}}/verifiedTokens"
-                        },
-                        "curies": [
-                            {
-                                "href": "{{request.requestLine.baseUrl}}/rels/payments/{rel}",
-                                "name": "payments",
-                                "templated": true
-                            }
-                        ]
-                    }
-                }"""
-
-    private const val topLevelServiceResourceResponse = """{
-                "_links": {
-                    "verifiedTokens:recurring": {
-                        "href": "{{request.requestLine.baseUrl}}/verifiedTokens/recurring"
-                    },
-                    "verifiedTokens:cardOnFile": {
-                        "href": "{{request.requestLine.baseUrl}}/verifiedTokens/cardOnFile"
-                    },
-                    "verifiedTokens:sessions": {
-                        "href": "{{request.requestLine.baseUrl}}/$verifiedTokensSessionResourcePath"
-                    },
-                "resourceTree": {
-                    "href": "{{request.requestLine.baseUrl}}/rels/verifiedTokens/resourceTree.json"
-                },
-                "curies": [{
-                    "href": "{{request.requestLine.baseUrl}}/rels/verifiedTokens/{rel}.json",
-                    "name": "verifiedTokens",
-                    "templated": true
-                }]
-            }
-        }"""
+    object Paths {
+        const val VERIFIED_TOKENS_SESSIONS_PATH = "verifiedTokens/sessions"
+        const val CARD_LOGO_PATH = "verifiedTokens/sessions"
+        const val CARD_CONFIGURATION_PATH = "access-checkout/cardConfiguration.json"
+    }
 
     fun startWiremock(context: Context, port: Int = 8080) {
         debugLog("MockServer", "Starting WireMock server!")
+
+        this.context = context
+
         wireMockServer = WireMockServer(WireMockConfiguration
             .options()
             .notifier(ConsoleNotifier(true))
@@ -113,185 +51,26 @@ object MockServer {
         wireMockServer.stop()
     }
 
+    fun stubFor(mappingBuilder: MappingBuilder) {
+        wireMockServer.stubFor(mappingBuilder)
+    }
+
+    fun getCurrentContext(): Context {
+        return context
+    }
+
+    fun getBaseUrl(): String {
+        return baseUrl
+    }
+
     fun defaultStubMappings(context: Context) {
-        stubRootResource()
-        stubServiceRootResource()
-        wireMockServer.stubFor(
-            post(urlEqualTo("/$verifiedTokensSessionResourcePath"))
-                .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("X-WP-SDK", matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$"))
-                .withRequestBody(AnythingPattern())
-                .willReturn(validSessionResponseWithDelay(context, 2000))
-        )
-        stubCardConfiguration(context)
-        stubLogos(context)
-    }
-
-    fun simulateDelayedResponse(context: Context) {
-        wireMockServer.stubFor(
-            post(urlEqualTo("/$verifiedTokensSessionResourcePath"))
-                .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${context.getString(R.string.long_delay_card_number)}')]"))
-                .willReturn(validSessionResponseWithDelay(context, 7000))
-        )
-    }
-
-    fun simulateErrorResponse(context: Context) {
-        wireMockServer.stubFor(
-            post(urlEqualTo("/$verifiedTokensSessionResourcePath"))
-                .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${context.getString(R.string.error_response_card_number)}')]"))
-                .willReturn(
-                    aResponse()
-                        .withFixedDelay(2000)
-                        .withStatus(400)
-                        .withBody(
-                            """{
-                                "errorName": "bodyDoesNotMatchSchema",
-                                "message": "The json body provided does not match the expected schema",
-                                "validationErrors": [
-                                    {
-                                        "errorName": "panFailedLuhnCheck",
-                                        "message": "The identified field contains a PAN that has failed the Luhn check.",
-                                        "jsonPath": "$.cardNumber"
-                                    }
-                                ]
-                            }""".trimIndent()
-                        )
-                )
-        )
-    }
-
-    fun simulateRootResourceTemporaryServerError() {
-        debugLog("MockServer", "Stubbing root endpoint with 500 error")
-        val serviceAvailableState = "SERVICE_AVAILABLE"
-        wireMockServer.stubFor(
-            WireMock.get("/")
-                .inScenario("service re-discovery")
-                .whenScenarioStateIs(Scenario.STARTED)
-                .willSetStateTo(serviceAvailableState)
-                .willReturn(
-                    WireMock.aResponse()
-                        .withStatus(500)
-                )
-        )
-
-        wireMockServer.stubFor(
-            rootResourceMapping()
-                .inScenario("service re-discovery")
-                .whenScenarioStateIs(serviceAvailableState)
-        )
-    }
-
-    fun simulateHttpRedirect(context: Context) {
-        val newLocation = "newVerifiedTokensLocation/sessions"
-        wireMockServer.stubFor(
-            post(urlEqualTo("/$verifiedTokensSessionResourcePath"))
-                .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .willReturn(
-                    aResponse()
-                        .withFixedDelay(2000)
-                        .withStatus(308)
-                        .withHeader("Location", "${wireMockServer.baseUrl()}/$newLocation")))
-
-        wireMockServer.stubFor(
-            post(urlEqualTo("/$newLocation"))
-                .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("X-WP-SDK", matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$"))
-                .withRequestBody(AnythingPattern())
-                .willReturn(validSessionResponseWithDelay(context, 2000))
-        )
-    }
-
-    fun stubCardConfiguration(context: Context) {
-        wireMockServer.stubFor(get("/$cardConfigurationResourcePath")
-            .willReturn(
-                aResponse()
-                    .withStatus(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(context.resources.openRawResource(R.raw.card_configuration_file).reader(Charsets.UTF_8).readText())
-                    .withTransformers(ResponseTemplateTransformer.NAME)
-            ))
-    }
-
-    fun stubCardConfigurationWithDelay(cardConfiguration: CardConfiguration, delay: Int = 0) {
-        val json = GsonBuilder().create().toJson(cardConfiguration)
-        wireMockServer.stubFor(get("/$cardConfigurationResourcePath")
-            .willReturn(
-                aResponse()
-                    .withFixedDelay(delay)
-                    .withStatus(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(json)
-            ))
-    }
-
-    private fun stubLogos(context: Context) {
-        val images = listOf("visa.svg", "mastercard.svg", "amex.svg")
-        images.forEach {
-            wireMockServer.stubFor(get("/$cardLogosPath/$it")
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "image/svg+xml")
-                        .withHeader("Cache-Control", "max-age=300")
-                        .withBody(getAsset(context, it))))
-        }
-
-    }
-
-    fun simulateCardConfigurationServerError() {
-        wireMockServer.stubFor(get("/$cardConfigurationResourcePath")
-            .willReturn(
-                aResponse()
-                    .withStatus(500)
-            ))
-    }
-
-    private fun stubRootResource() {
         debugLog("MockServer", "Stubbing root endpoint with 200 response")
         wireMockServer.stubFor(rootResourceMapping())
-    }
 
-    private fun rootResourceMapping(): MappingBuilder {
-        return get("/")
-            .willReturn(
-                aResponse()
-                    .withStatus(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(serviceDiscoveryResponse)
-                    .withTransformers(ResponseTemplateTransformer.NAME)
-            )
-    }
-
-    private fun validSessionResponseWithDelay(context: Context, delay: Int): ResponseDefinitionBuilder? {
-        return aResponse()
-            .withFixedDelay(delay)
-            .withStatus(201)
-            .withHeader("Content-Type", "application/json")
-            .withHeader(
-                "Location",
-                context.getString(R.string.session_reference)
-            )
-            .withBody(verifiedTokensResponse(context))
-    }
-
-    private fun stubServiceRootResource() {
-        wireMockServer.stubFor(
-            get("/verifiedTokens")
-                .willReturn(
-                    aResponse()
-                        .withStatus(200)
-                        .withHeader("Content-Type", "application/json")
-                        .withBody(topLevelServiceResourceResponse)
-                        .withTransformers(ResponseTemplateTransformer.NAME)
-                )
-        )
+        stubVerifiedTokenResourceRequest(wireMockServer)
+        stubVerifiedToken(wireMockServer, context)
+        stubCardConfiguration(context)
+        stubLogos(context)
     }
 
     private fun waitForWiremock() {
@@ -301,15 +80,6 @@ object MockServer {
         } while (!hasStarted)
         debugLog("MockServer", "Started wiremock!!")
         baseUrl = wireMockServer.baseUrl()
-    }
-
-    private fun getAsset(context: Context, assetPath: String): String {
-        try {
-            val inputStream = context.assets.open(assetPath)
-            return inputStream.reader().readText()
-        } catch (e: IOException) {
-            throw RuntimeException(e)
-        }
     }
 
 }

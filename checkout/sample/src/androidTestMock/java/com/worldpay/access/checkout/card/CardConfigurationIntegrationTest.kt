@@ -1,8 +1,10 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.card
 
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.MockServer.simulateCardConfigurationServerError
-import com.worldpay.access.checkout.MockServer.stubCardConfiguration
+import com.worldpay.access.checkout.CardConfigurationMockStub.simulateCardConfigurationServerError
+import com.worldpay.access.checkout.CardConfigurationMockStub.stubCardConfiguration
+import com.worldpay.access.checkout.MainActivity
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertBrandImage
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFieldsAlpha
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
@@ -33,7 +35,9 @@ class CardConfigurationIntegrationTest {
 
     @get:Rule
     var cardConfigurationErrorRule: CardConfigurationErrorRule =
-        CardConfigurationErrorRule(MainActivity::class.java)
+        CardConfigurationErrorRule(
+            MainActivity::class.java
+        )
 
     @After
     fun tearDown() {
@@ -73,7 +77,9 @@ class CardConfigurationIntegrationTest {
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(cardConfigurationErrorRule.activity.getString(R.string.session_reference), cardConfigurationErrorRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(cardConfigurationErrorRule.activity.getString(
+            R.string.session_reference
+        ), cardConfigurationErrorRule.activity.window.decorView)
     }
 }
 

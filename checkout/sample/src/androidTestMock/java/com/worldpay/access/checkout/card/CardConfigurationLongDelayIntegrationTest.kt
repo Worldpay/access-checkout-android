@@ -1,11 +1,14 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.card
 
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.MockServer.stubCardConfiguration
-import com.worldpay.access.checkout.MockServer.stubCardConfigurationWithDelay
+import com.worldpay.access.checkout.CardConfigurationMockStub.stubCardConfiguration
+import com.worldpay.access.checkout.CardConfigurationMockStub.stubCardConfigurationWithDelay
+import com.worldpay.access.checkout.MainActivity
+import com.worldpay.access.checkout.MockServer
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.card.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateCVVDetails
@@ -43,7 +46,7 @@ class CardConfigurationLongDelayIntegrationTest {
     private val brands = listOf(
         CardBrand(
             "mastercard",
-            listOf(CardBrandImage("image/svg+xml", "${MockServer.baseUrl}/access-checkout/assets/mastercard.svg")),
+            listOf(CardBrandImage("image/svg+xml", "${MockServer.getBaseUrl()}/access-checkout/assets/mastercard.svg")),
             mastercardCvvValidationRule,
             listOf(mastercardPANValidationRule)
         )
@@ -53,7 +56,11 @@ class CardConfigurationLongDelayIntegrationTest {
 
     @get:Rule
     var cardConfigurationRule: CardConfigurationLongDelayRule =
-        CardConfigurationLongDelayRule(cardConfiguration, timeoutInMillis, MainActivity::class.java)
+        CardConfigurationLongDelayRule(
+            cardConfiguration,
+            timeoutInMillis,
+            MainActivity::class.java
+        )
 
 
     private lateinit var activity: MainActivity

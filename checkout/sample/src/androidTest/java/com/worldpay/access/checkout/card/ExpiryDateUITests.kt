@@ -7,8 +7,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.card.testutil.AbstractCardFlowUITest
 import com.worldpay.access.checkout.testutil.matchers.EditTextColorMatcher.Companion.withEditTextColor
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -16,7 +16,7 @@ import java.util.*
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class ExpiryDateUITests: AbstractUITest() {
+class ExpiryDateUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenAppLaunches_ThenExpiryDateExists() {

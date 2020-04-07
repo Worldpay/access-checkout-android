@@ -6,8 +6,8 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.card.testutil.AbstractCardFlowUITest
 import com.worldpay.access.checkout.card.testutil.CardBrand
 import com.worldpay.access.checkout.card.testutil.CardBrand.AMEX
 import com.worldpay.access.checkout.testutil.UITestUtils.getFailColor
@@ -20,7 +20,7 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class CVVUITests: AbstractUITest() {
+class CVVUITests: AbstractCardFlowUITest() {
 
     private val amexCard = "343434343434343"
     private val masterCard = "5555555555554444"

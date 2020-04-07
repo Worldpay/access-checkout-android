@@ -6,8 +6,8 @@ import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.cvv.testutil.AbstractCvvFlowUITest
 import com.worldpay.access.checkout.testutil.UITestUtils.checkFieldText
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
@@ -15,7 +15,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class CVVUITest: AbstractUITest() {
+class CVVUITest: AbstractCvvFlowUITest() {
 
     @Before
     fun before() {

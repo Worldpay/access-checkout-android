@@ -1,14 +1,21 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.card
 
+import android.content.Context
 import android.content.pm.ActivityInfo
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.worldpay.access.checkout.MockServer.simulateDelayedResponse
-import com.worldpay.access.checkout.MockServer.simulateErrorResponse
-import com.worldpay.access.checkout.MockServer.simulateHttpRedirect
+import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
+import com.worldpay.access.checkout.MockServer.Paths.VERIFIED_TOKENS_SESSIONS_PATH
+import com.worldpay.access.checkout.MockServer.getCurrentContext
+import com.worldpay.access.checkout.MockServer.stubFor
+import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.VerifiedTokenMockStub.VerifiedTokenResponses.validResponseWithDelay
+import com.worldpay.access.checkout.VerifiedTokenMockStub.simulateHttpRedirect
+import com.worldpay.access.checkout.card.testutil.AbstractCardFlowUITest
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFieldsAlpha
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertValidInitialUIFields
@@ -27,7 +34,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class CardSessionRequestMockIntegrationTest : AbstractUITest() {
+class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
 
     private val amexCard = "343434343434343"
     private val amexCvv = "1234"
@@ -166,5 +173,45 @@ class CardSessionRequestMockIntegrationTest : AbstractUITest() {
     private fun getResourceString(resId: Int): String =
         activityRule.activity.applicationContext.resources.getString(resId)
 
+    private fun simulateDelayedResponse(context: Context) {
+        stubFor(
+            post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
+                .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
+                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
+                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${getCurrentContext().getString(
+                    R.string.long_delay_card_number
+                )}')]"))
+                .willReturn(validResponseWithDelay(context, 7000))
+        )
+    }
+
+    private fun simulateErrorResponse(context: Context) {
+        stubFor(
+            post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
+                .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
+                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
+                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${context.getString(
+                    R.string.error_response_card_number
+                )}')]"))
+                .willReturn(
+                    aResponse()
+                        .withFixedDelay(2000)
+                        .withStatus(400)
+                        .withBody(
+                            """{
+                                "errorName": "bodyDoesNotMatchSchema",
+                                "message": "The json body provided does not match the expected schema",
+                                "validationErrors": [
+                                    {
+                                        "errorName": "panFailedLuhnCheck",
+                                        "message": "The identified field contains a PAN that has failed the Luhn check.",
+                                        "jsonPath": "$.cardNumber"
+                                    }
+                                ]
+                            }""".trimIndent()
+                        )
+                )
+        )
+    }
 
 }

@@ -1,6 +1,9 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.card
 
 import android.widget.EditText
+import com.worldpay.access.checkout.MainActivity
+import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.card.testutil.AbstractCardFlowUITest
 import com.worldpay.access.checkout.card.testutil.CardBrand
 import com.worldpay.access.checkout.card.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertBrandImage
@@ -21,7 +24,7 @@ import com.worldpay.access.checkout.testutil.UITestUtils.rotateToPortraitAndWait
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class CardConfigurationRotationIntegrationTest: AbstractUITest() {
+class CardConfigurationRotationIntegrationTest: AbstractCardFlowUITest() {
 
     private val timeoutInMillis = 3000L
 
