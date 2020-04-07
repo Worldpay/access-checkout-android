@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.matchers
+package com.worldpay.access.checkout.testutil.matchers
 
 import android.view.View
 import android.widget.ImageView
@@ -17,7 +17,10 @@ internal class BrandVectorImageNameMatcher private constructor(private val expec
         var actualTag = ""
         return try {
             Awaitility.await().atMost(5, TimeUnit.SECONDS).until {
-                actualTag = getActualTag(actualItem)
+                actualTag =
+                    getActualTag(
+                        actualItem
+                    )
                 debugLog("BrandVectorImageNameMatcher", "Checking actual image tag: $actualTag matches expected: $expectedBrand")
                 actualTag == expectedBrand.cardBrandName
             }
@@ -40,7 +43,9 @@ internal class BrandVectorImageNameMatcher private constructor(private val expec
         }
 
         fun withBrandVectorImageName(brand: CardBrand): BrandVectorImageNameMatcher {
-            return BrandVectorImageNameMatcher(brand)
+            return BrandVectorImageNameMatcher(
+                brand
+            )
         }
     }
 }

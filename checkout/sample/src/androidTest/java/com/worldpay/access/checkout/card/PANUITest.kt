@@ -8,10 +8,10 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.UITestUtils.checkFieldInState
 import com.worldpay.access.checkout.card.testutil.CardBrand.*
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertBrandImage
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.cardNumberMatcher
+import com.worldpay.access.checkout.testutil.UITestUtils.checkFieldInState
 import org.junit.Test
 import org.junit.runner.RunWith
 

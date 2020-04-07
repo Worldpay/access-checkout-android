@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.matchers
+package com.worldpay.access.checkout.testutil.matchers
 
 import android.view.View
 import android.widget.EditText
@@ -16,7 +16,10 @@ class EditTextColorMatcher private constructor(private val color: Int) : Bounded
 
     companion object {
         @JvmStatic
-        fun withEditTextColor(color: Int) = EditTextColorMatcher(color)
+        fun withEditTextColor(color: Int) =
+            EditTextColorMatcher(
+                color
+            )
     }
 }
 

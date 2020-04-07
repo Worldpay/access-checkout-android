@@ -8,14 +8,14 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.UITestUtils.checkFieldText
+import com.worldpay.access.checkout.testutil.UITestUtils.checkFieldText
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class CVVUITests: AbstractUITest() {
+class CVVUITest: AbstractUITest() {
 
     @Before
     fun before() {

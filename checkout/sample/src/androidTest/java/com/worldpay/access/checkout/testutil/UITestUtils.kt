@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.testutil
 
 import android.app.Activity
 import android.content.Context
@@ -19,7 +19,8 @@ import androidx.test.uiautomator.UiDevice
 import androidx.test.uiautomator.UiDevice.getInstance
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
-import com.worldpay.access.checkout.matchers.EditTextColorMatcher
+import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.testutil.matchers.EditTextColorMatcher
 import org.awaitility.Awaitility
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
@@ -36,7 +37,9 @@ object UITestUtils {
     }
 
     fun checkFieldInState(shouldBeValid: Boolean, viewMatcher: Matcher<View>, context: Context) {
-        val expectedColor = if (shouldBeValid) getSuccessColor(context) else getFailColor(
+        val expectedColor = if (shouldBeValid) getSuccessColor(
+            context
+        ) else getFailColor(
             context
         )
 
@@ -65,9 +68,11 @@ object UITestUtils {
             .perform(click(), ViewActions.closeSoftKeyboard())
     }
 
-    fun getSuccessColor(context: Context) = getColor(context.resources, R.color.SUCCESS, context.theme)
+    fun getSuccessColor(context: Context) = getColor(context.resources,
+        R.color.SUCCESS, context.theme)
 
-    fun getFailColor(context: Context) = getColor(context.resources, R.color.FAIL, context.theme)
+    fun getFailColor(context: Context) = getColor(context.resources,
+        R.color.FAIL, context.theme)
 
     private fun isKeyboardOpened(): Boolean {
         for (window in InstrumentationRegistry.getInstrumentation().uiAutomation.windows) {
@@ -79,13 +84,19 @@ object UITestUtils {
     }
 
     fun assertUiObjectExistsAndIsDisabled(resId: Int) {
-        val uiObject = uiObjectWithId(resId)
+        val uiObject =
+            uiObjectWithId(
+                resId
+            )
         uiObject.exists()
         Assert.assertFalse(uiObject.isEnabled)
     }
 
     fun assertUiObjectExistsAndIsEnabled(resId: Int) {
-        val uiObject = uiObjectWithId(resId)
+        val uiObject =
+            uiObjectWithId(
+                resId
+            )
         uiObject.exists()
         assertTrue(uiObject.isEnabled)
     }

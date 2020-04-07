@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.matchers
+package com.worldpay.access.checkout.testutil.matchers
 
 import android.view.View
 import androidx.test.espresso.matcher.BoundedMatcher
@@ -13,6 +13,7 @@ class AlphaMatcher private constructor(private val alpha: Float): BoundedMatcher
 
     companion object {
         @JvmStatic
-        fun withAlpha(alpha: Float) = AlphaMatcher(alpha)
+        fun withAlpha(alpha: Float) =
+            AlphaMatcher(alpha)
     }
 }

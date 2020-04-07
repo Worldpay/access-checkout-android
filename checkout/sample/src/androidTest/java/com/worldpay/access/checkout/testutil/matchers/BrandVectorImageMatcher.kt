@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.matchers
+package com.worldpay.access.checkout.testutil.matchers
 
 import android.view.View
 import android.widget.ImageView
@@ -9,7 +9,10 @@ import org.hamcrest.Description
 internal class BrandVectorImageMatcher private constructor(private val expectedId: Int) :
     BoundedMatcher<View, ImageView>(ImageView::class.java) {
     override fun matchesSafely(actualItem: ImageView): Boolean {
-        return equalsBrandVectorImage(actualItem, expectedId)
+        return equalsBrandVectorImage(
+            actualItem,
+            expectedId
+        )
     }
 
     override fun describeTo(description: Description) {
@@ -20,7 +23,9 @@ internal class BrandVectorImageMatcher private constructor(private val expectedI
     companion object {
 
         fun withBrandVectorImageId(id: Int): BrandVectorImageMatcher {
-            return BrandVectorImageMatcher(id)
+            return BrandVectorImageMatcher(
+                id
+            )
         }
 
         fun equalsBrandVectorImage(actualItem: ImageView, expectedId: Int): Boolean {

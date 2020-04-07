@@ -3,9 +3,6 @@ package com.worldpay.access.checkout
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.MockServer.simulateCardConfigurationServerError
 import com.worldpay.access.checkout.MockServer.stubCardConfiguration
-import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
-import com.worldpay.access.checkout.UITestUtils.checkFieldInState
-import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertBrandImage
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFieldsAlpha
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
@@ -17,6 +14,9 @@ import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.typeForm
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateMonthDetails
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updatePANDetails
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.yearMatcher
+import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
+import com.worldpay.access.checkout.testutil.UITestUtils.checkFieldInState
+import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test

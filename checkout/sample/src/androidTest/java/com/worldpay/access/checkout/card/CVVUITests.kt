@@ -8,13 +8,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.UITestUtils.getFailColor
-import com.worldpay.access.checkout.UITestUtils.getSuccessColor
 import com.worldpay.access.checkout.card.testutil.CardBrand
 import com.worldpay.access.checkout.card.testutil.CardBrand.AMEX
-import com.worldpay.access.checkout.matchers.BrandVectorImageMatcher.Companion.withBrandVectorImageId
-import com.worldpay.access.checkout.matchers.BrandVectorImageNameMatcher.Companion.withBrandVectorImageName
-import com.worldpay.access.checkout.matchers.EditTextColorMatcher.Companion.withEditTextColor
+import com.worldpay.access.checkout.testutil.UITestUtils.getFailColor
+import com.worldpay.access.checkout.testutil.UITestUtils.getSuccessColor
+import com.worldpay.access.checkout.testutil.matchers.BrandVectorImageMatcher.Companion.withBrandVectorImageId
+import com.worldpay.access.checkout.testutil.matchers.BrandVectorImageNameMatcher.Companion.withBrandVectorImageName
+import com.worldpay.access.checkout.testutil.matchers.EditTextColorMatcher.Companion.withEditTextColor
 import org.junit.Test
 import org.junit.runner.RunWith
 

@@ -9,8 +9,6 @@ import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.MockServer.simulateDelayedResponse
 import com.worldpay.access.checkout.MockServer.simulateErrorResponse
 import com.worldpay.access.checkout.MockServer.simulateHttpRedirect
-import com.worldpay.access.checkout.UITestUtils.assertDisplaysResponseFromServer
-import com.worldpay.access.checkout.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFieldsAlpha
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertValidInitialUIFields
@@ -21,6 +19,8 @@ import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.monthMat
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.typeFormInputs
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateCVVDetails
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.yearMatcher
+import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
+import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith

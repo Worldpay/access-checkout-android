@@ -14,7 +14,7 @@ import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.AbstractUITest
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.matchers.EditTextColorMatcher
+import com.worldpay.access.checkout.testutil.matchers.EditTextColorMatcher
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
 import org.junit.Assert
