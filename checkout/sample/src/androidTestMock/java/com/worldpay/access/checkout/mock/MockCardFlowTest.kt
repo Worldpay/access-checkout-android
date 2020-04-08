@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.card
+package com.worldpay.access.checkout.mock
 
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4

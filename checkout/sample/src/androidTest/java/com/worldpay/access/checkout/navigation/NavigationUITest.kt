@@ -9,15 +9,24 @@ import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.worldpay.access.checkout.AbstractUITest
+import androidx.test.rule.ActivityTestRule
+import com.worldpay.access.checkout.MainActivity
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.testutil.matchers.EspressoTestMatchers.withDrawable
 import org.hamcrest.CoreMatchers.*
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class NavigationUITest : AbstractUITest() {
+class NavigationUITest {
+
+    @get:Rule
+    val activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
+
+//    @get:Rule
+//    val disableAnimationsRule = DisableAnimationsRule()
 
     private val cardFlowTitle = "Card Flow"
     private val cvvFlowTitle = "CVV Flow"
@@ -42,7 +51,7 @@ class NavigationUITest : AbstractUITest() {
 
     @Test
     fun shouldBeAbleToNavigateToCVVFlow() {
-        navigateToCVVFlow(R.id.nav_cvv_flow)
+        navigateTo(R.id.nav_cvv_flow)
 
         onView(withId(R.id.fragment_cvv_flow))
             .check(matches(isDisplayed()))
@@ -52,14 +61,14 @@ class NavigationUITest : AbstractUITest() {
 
     @Test
     fun shouldBeAbleToNavigateBackToCardFlow_fromCvvFlow() {
-        navigateToCVVFlow(R.id.nav_cvv_flow)
+        navigateTo(R.id.nav_cvv_flow)
 
         onView(withId(R.id.fragment_cvv_flow))
             .check(matches(isDisplayed()))
 
         assertToolbarTitle(cvvFlowTitle)
 
-        navigateToCVVFlow(R.id.nav_card_flow)
+        navigateTo(R.id.nav_card_flow)
 
         onView(withId(R.id.fragment_card_flow))
             .check(matches(isDisplayed()))

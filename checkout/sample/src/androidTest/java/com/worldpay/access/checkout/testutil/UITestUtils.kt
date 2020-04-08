@@ -11,11 +11,12 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.contrib.DrawerActions.open
+import androidx.test.espresso.contrib.DrawerMatchers.isOpen
+import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withText
-import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.UiDevice
+import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice.getInstance
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
@@ -31,9 +32,9 @@ import java.util.concurrent.TimeUnit
 object UITestUtils {
 
     fun uiObjectWithId(resId: Int): UiObject {
-        val resName = InstrumentationRegistry.getInstrumentation().targetContext.resources.getResourceName(resId)
+        val resName = getInstrumentation().targetContext.resources.getResourceName(resId)
         val selector = UiSelector().resourceId(resName)
-        return getInstance(InstrumentationRegistry.getInstrumentation()).findObject(selector)
+        return getInstance(getInstrumentation()).findObject(selector)
     }
 
     fun checkFieldInState(shouldBeValid: Boolean, viewMatcher: Matcher<View>, context: Context) {
@@ -75,7 +76,7 @@ object UITestUtils {
         R.color.FAIL, context.theme)
 
     private fun isKeyboardOpened(): Boolean {
-        for (window in InstrumentationRegistry.getInstrumentation().uiAutomation.windows) {
+        for (window in getInstrumentation().uiAutomation.windows) {
             if (window.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD) {
                 return true
             }
@@ -84,26 +85,20 @@ object UITestUtils {
     }
 
     fun assertUiObjectExistsAndIsDisabled(resId: Int) {
-        val uiObject =
-            uiObjectWithId(
-                resId
-            )
+        val uiObject = uiObjectWithId(resId)
         uiObject.exists()
         Assert.assertFalse(uiObject.isEnabled)
     }
 
     fun assertUiObjectExistsAndIsEnabled(resId: Int) {
-        val uiObject =
-            uiObjectWithId(
-                resId
-            )
+        val uiObject = uiObjectWithId(resId)
         uiObject.exists()
         assertTrue(uiObject.isEnabled)
     }
 
     fun closeKeyboard() {
         if (isKeyboardOpened()) {
-            getInstance(InstrumentationRegistry.getInstrumentation()).pressBack()
+            getInstance(getInstrumentation()).pressBack()
         }
     }
 
@@ -111,7 +106,7 @@ object UITestUtils {
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
         Awaitility.await().atMost(timeoutInMillis, TimeUnit.MILLISECONDS).until {
-            when (UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).displayRotation) {
+            when (getInstance(getInstrumentation()).displayRotation) {
                 Surface.ROTATION_0 -> true
                 Surface.ROTATION_180 -> true
                 else -> false
@@ -123,11 +118,22 @@ object UITestUtils {
         activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
         Awaitility.await().atMost(timeoutInMillis, TimeUnit.MILLISECONDS).until {
-            when (UiDevice.getInstance(InstrumentationRegistry.getInstrumentation()).displayRotation) {
+            when (getInstance(getInstrumentation()).displayRotation) {
                 Surface.ROTATION_90 -> true
                 Surface.ROTATION_270 -> true
                 else -> false
             } && assertionCondition()
         }
     }
+
+    fun navigateTo(fragmentId: Int) {
+        onView(withId(R.id.drawer_layout))
+            .check(matches(isDisplayed()))
+            .perform(open())
+            .check(matches(isOpen()))
+        onView(withId(R.id.nav_view))
+            .check(matches(isDisplayed()))
+            .perform(NavigationViewActions.navigateTo(fragmentId))
+    }
+
 }

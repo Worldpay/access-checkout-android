@@ -1,14 +1,18 @@
-package com.worldpay.access.checkout.card
+package com.worldpay.access.checkout
 
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.MainActivity
-import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.RootResourseMockStub.simulateRootResourceTemporaryServerError
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFieldsAlpha
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertValidInitialUIFields
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.typeFormInputs
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
+import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -26,7 +30,9 @@ class DiscoveryIntegrationTest {
         DiscoveryRule(MainActivity::class.java)
 
     @Test
-    fun givenInitialDiscoveryFails_AndValidDataIsInsertedAndUserPressesSubmit_ThenDiscoveryIsReattempted_AndSuccessfulResponseIsReceived() {
+    fun shouldRetryDiscoveryAndReturnSuccessfulResponse_whenDiscoveryFailsFirstTime_cardFlow() {
+        navigateTo(R.id.nav_card_flow)
+
         assertValidInitialUIFields()
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
@@ -35,8 +41,33 @@ class DiscoveryIntegrationTest {
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(discoveryRule.activity.getString(R.string.verified_token_session_reference), discoveryRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(
+            discoveryRule.activity.getString(R.string.verified_token_session_reference),
+            discoveryRule.activity.window.decorView
+        )
     }
+
+    @Test
+    fun shouldRetryDiscoveryAndReturnSuccessfulResponse_whenDiscoveryFailsFirstTime_cvvFlow() {
+        navigateTo(R.id.nav_cvv_flow)
+
+        onView(withId(R.id.cvv_flow_text_cvv))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
+            .check(matches(withAlpha(1.0f)))
+            .perform(click(), typeText("123"))
+
+        onView(withId(R.id.cvv_flow_btn_submit))
+            .check(matches(isDisplayed()))
+            .check(matches(isEnabled()))
+            .perform(click())
+
+        assertDisplaysResponseFromServer(
+            discoveryRule.activity.getString(R.string.sessions_session_reference),
+            discoveryRule.activity.window.decorView
+        )
+    }
+
 }
 
 class DiscoveryRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {

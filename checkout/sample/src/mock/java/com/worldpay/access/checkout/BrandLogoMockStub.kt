@@ -3,6 +3,7 @@ package com.worldpay.access.checkout
 import android.content.Context
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
+import com.worldpay.access.checkout.MockServer.Paths.CARD_LOGO_PATH
 import java.io.IOException
 
 object BrandLogoMockStub {
@@ -11,7 +12,7 @@ object BrandLogoMockStub {
         val images = listOf("visa.svg", "mastercard.svg", "amex.svg")
         images.forEach {
             stubFor(
-                WireMock.get("/${MockServer.Paths.CARD_LOGO_PATH}/$it")
+                WireMock.get("/$CARD_LOGO_PATH/$it")
                     .willReturn(
                         WireMock.aResponse()
                             .withStatus(200)

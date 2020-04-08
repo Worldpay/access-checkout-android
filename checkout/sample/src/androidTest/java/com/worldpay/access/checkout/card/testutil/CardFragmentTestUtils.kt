@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.card.testutil
 
 import android.view.View
-import androidx.test.espresso.Espresso
+import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers
@@ -9,15 +9,16 @@ import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.uiautomator.UiObject
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.testutil.UITestUtils
 import com.worldpay.access.checkout.testutil.UITestUtils.assertUiObjectExistsAndIsDisabled
 import com.worldpay.access.checkout.testutil.UITestUtils.checkFieldText
+import com.worldpay.access.checkout.testutil.UITestUtils.closeKeyboard
+import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.testutil.matchers.AlphaMatcher
 import com.worldpay.access.checkout.testutil.matchers.BrandVectorImageMatcher
 import com.worldpay.access.checkout.testutil.matchers.BrandVectorImageNameMatcher
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.Matcher
-import org.junit.Assert
+import org.junit.Assert.assertTrue
 
 object CardFragmentTestUtils {
 
@@ -31,23 +32,21 @@ object CardFragmentTestUtils {
     private val progressMatcher: Matcher<View> = ViewMatchers.withId(R.id.loading_bar)
 
     fun assertInProgressState() {
-        Assert.assertTrue(
-            progressBar()
-                .exists())
-        UITestUtils.closeKeyboard()
+        assertTrue(progressBar().exists())
+        closeKeyboard()
         assertFieldsAndSubmitButtonIsDisabled()
     }
 
     fun assertValidInitialUIFields() {
-        Espresso.onView(cardNumberMatcher)
+        onView(cardNumberMatcher)
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
 
-        Espresso.onView(cvvMatcher)
+        onView(cvvMatcher)
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
 
-        Espresso.onView(cardExpiryMatcher)
+        onView(cardExpiryMatcher)
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
 
@@ -55,7 +54,7 @@ object CardFragmentTestUtils {
             enabled = false
         )
 
-        Espresso.onView(progressMatcher)
+        onView(progressMatcher)
             .check(matches(not(isDisplayed())))
     }
 
@@ -78,48 +77,48 @@ object CardFragmentTestUtils {
     }
 
     fun updatePANDetails(pan: String) {
-        Espresso.onView(cardNumberMatcher)
+        onView(cardNumberMatcher)
             .perform(ViewActions.click(), ViewActions.replaceText(pan), ViewActions.closeSoftKeyboard())
     }
 
     fun updateCVVDetails(cvv: String) {
-        Espresso.onView(cvvMatcher)
+        onView(cvvMatcher)
             .perform(ViewActions.click(), ViewActions.replaceText(cvv), ViewActions.closeSoftKeyboard())
     }
 
     fun updateMonthDetails(month: String) {
-        Espresso.onView(monthMatcher)
+        onView(monthMatcher)
             .perform(ViewActions.click(), ViewActions.replaceText(month), ViewActions.closeSoftKeyboard())
     }
 
     fun updateYearDetails(year: String) {
-        Espresso.onView(yearMatcher)
+        onView(yearMatcher)
             .perform(ViewActions.click(), ViewActions.replaceText(year), ViewActions.closeSoftKeyboard())
     }
 
     fun checkSubmitInState(enabled: Boolean) {
         val enabledMatcher: Matcher<View> =
             if (enabled) isEnabled() else not(isEnabled())
-        Espresso.onView(buttonMatcher)
+        onView(buttonMatcher)
             .check(matches(isDisplayed()))
             .check(matches(enabledMatcher))
     }
 
     fun assertFieldsAlpha(alpha: Float) {
-        Espresso.onView(cardNumberMatcher)
+        onView(cardNumberMatcher)
             .check(matches(AlphaMatcher.withAlpha(alpha)))
-        Espresso.onView(cvvMatcher)
+        onView(cvvMatcher)
             .check(matches(AlphaMatcher.withAlpha(alpha)))
-        Espresso.onView(monthMatcher)
+        onView(monthMatcher)
             .check(matches(AlphaMatcher.withAlpha(alpha)))
-        Espresso.onView(yearMatcher)
+        onView(yearMatcher)
             .check(matches(AlphaMatcher.withAlpha(alpha)))
-        Espresso.onView(buttonMatcher)
+        onView(buttonMatcher)
             .check(matches(AlphaMatcher.withAlpha(alpha)))
     }
 
     fun assertBrandImage(expectedImage: Int) {
-        Espresso.onView(brandImageMatcher)
+        onView(brandImageMatcher)
             .check(matches(isDisplayed()))
             .check(
                 matches(
@@ -131,7 +130,7 @@ object CardFragmentTestUtils {
     }
 
     fun assertBrandImage(cardBrand: CardBrand) {
-        Espresso.onView(brandImageMatcher)
+        onView(brandImageMatcher)
             .check(matches(isDisplayed()))
             .check(
                 matches(
@@ -143,29 +142,26 @@ object CardFragmentTestUtils {
     }
 
     private fun typeYear(year: String) {
-        Espresso.onView(yearMatcher)
+        onView(yearMatcher)
             .perform(ViewActions.typeText(year), ViewActions.closeSoftKeyboard())
     }
 
     private fun typeMonth(month: String) {
-        Espresso.onView(monthMatcher)
+        onView(monthMatcher)
             .perform(ViewActions.typeText(month), ViewActions.closeSoftKeyboard())
     }
 
     private fun typeCVVDetails(cvv: String) {
-        Espresso.onView(cvvMatcher)
+        onView(cvvMatcher)
             .perform(ViewActions.typeText(cvv), ViewActions.closeSoftKeyboard())
     }
 
     private fun typeCardDetails(card: String) {
-        Espresso.onView(cardNumberMatcher)
+        onView(cardNumberMatcher)
             .perform(ViewActions.typeText(card), ViewActions.closeSoftKeyboard())
     }
 
-    private fun progressBar(): UiObject =
-        UITestUtils.uiObjectWithId(
-            R.id.loading_bar
-        )
+    private fun progressBar(): UiObject = uiObjectWithId(R.id.loading_bar)
 
     private fun assertFieldsAndSubmitButtonIsDisabled() {
         assertUiObjectExistsAndIsDisabled(R.id.card_number_edit_text)

@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.cvv.testutil.AbstractCvvFlowUITest
 import com.worldpay.access.checkout.testutil.UITestUtils.checkFieldText
+import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
 import org.hamcrest.CoreMatchers.not
 import org.junit.Before
 import org.junit.Test
@@ -19,7 +20,7 @@ class CVVUITest: AbstractCvvFlowUITest() {
 
     @Before
     fun before() {
-        navigateToCVVFlow(R.id.nav_cvv_flow)
+        navigateTo(R.id.nav_cvv_flow)
     }
 
     @Test

@@ -30,7 +30,7 @@ object MockServer {
         const val VERIFIED_TOKENS_ROOT_PATH = "verifiedTokens"
         const val VERIFIED_TOKENS_SESSIONS_PATH = "verifiedTokens/sessions"
 
-        const val CARD_LOGO_PATH = "verifiedTokens/sessions"
+        const val CARD_LOGO_PATH = "access-checkout/assets"
         const val CARD_CONFIGURATION_PATH = "access-checkout/cardConfiguration.json"
     }
 

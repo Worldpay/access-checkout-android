@@ -1,11 +1,13 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.mock
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
+import com.worldpay.access.checkout.MainActivity
 import com.worldpay.access.checkout.MockServer.defaultStubMappings
 import com.worldpay.access.checkout.MockServer.getBaseUrl
 import com.worldpay.access.checkout.MockServer.startWiremock
 import com.worldpay.access.checkout.MockServer.stopWiremock
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.RootResourseMockStub.simulateRootResourceTemporaryServerError
 import okhttp3.OkHttpClient
 import okhttp3.Request.Builder
@@ -21,7 +23,8 @@ import org.junit.runner.RunWith
 class MockServerTest {
 
     @get:Rule
-    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
+    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(
+        MainActivity::class.java)
 
     private val baseURL = "http://localhost:8080"
 
@@ -85,7 +88,9 @@ class MockServerTest {
             .url("$baseURL/access-checkout/cardConfiguration.json")
             .build()
 
-        val cardConfigurationInputStream = activityRule.activity.resources.openRawResource(R.raw.card_configuration_file)
+        val cardConfigurationInputStream = activityRule.activity.resources.openRawResource(
+            R.raw.card_configuration_file
+        )
         val cardConfigurationAsString = cardConfigurationInputStream.reader(Charsets.UTF_8).readText()
         val substitutedResponseTemplateString = cardConfigurationAsString.replace("{{request.requestLine.baseUrl}}", getBaseUrl())
 
