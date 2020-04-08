@@ -23,14 +23,14 @@ class ProgressBar(private val activity: Activity) {
 
     private fun toggleProgressBar(enableFields: Boolean) {
         val progressBar = activity.findViewById<ProgressBar>(R.id.loading_bar)
-        val fragmentCardFlow = activity.findViewById<ConstraintLayout>(R.id.root_layout)
+        val rootLayout = activity.findViewById<ConstraintLayout>(R.id.root_layout)
 
         if (!enableFields) {
-            fragmentCardFlow.alpha = 0.5f
+            rootLayout.alpha = 0.5f
             progressBar.visibility = View.VISIBLE
         } else {
             progressBar.visibility = View.INVISIBLE
-            fragmentCardFlow.alpha = 1.0f
+            rootLayout.alpha = 1.0f
         }
     }
 

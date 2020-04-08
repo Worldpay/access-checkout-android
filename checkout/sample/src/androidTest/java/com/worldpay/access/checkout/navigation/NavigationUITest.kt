@@ -25,9 +25,6 @@ class NavigationUITest {
     @get:Rule
     val activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
-//    @get:Rule
-//    val disableAnimationsRule = DisableAnimationsRule()
-
     private val cardFlowTitle = "Card Flow"
     private val cvvFlowTitle = "CVV Flow"
 

@@ -22,7 +22,7 @@ object SessionsMockStub {
         )
     }
 
-    fun stubSessionsPaymentCvcRequest(context: Context, delay: Int = 2000) {
+    fun stubSessionsPaymentCvcRequest(context: Context) {
         stubFor(
             post(urlEqualTo("/$SESSIONS_PAYMENTS_CVC_PATH"))
                 .withHeader("Accept", equalTo(DEFAULT_MEDIA_TYPE))
