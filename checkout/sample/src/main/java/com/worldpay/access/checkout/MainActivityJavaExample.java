@@ -49,11 +49,11 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
     protected void onStart() {
         super.onStart();
 
-        panView = findViewById(R.id.panView);
-        cardCVVText = findViewById(R.id.cardCVVText);
-        cardExpiryText = findViewById(R.id.cardExpiryText);
-        submit = findViewById(R.id.submit);
-        contentLayout = findViewById(R.id.content_layout);
+        panView = findViewById(R.id.card_flow_text_pan);
+        cardCVVText = findViewById(R.id.cvv_flow_text_cvv);
+        cardExpiryText = findViewById(R.id.card_flow_text_exp);
+        submit = findViewById(R.id.card_flow_btn_submit);
+        contentLayout = findViewById(R.id.fragment_card_flow);
         loadingBar = findViewById(R.id.loading_bar);
 
         card = new AccessCheckoutCard(panView, cardCVVText, cardExpiryText);
@@ -73,15 +73,12 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
                 getApplicationContext(),
                 this);
 
-        submit.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String pan = panView.getInsertedText();
-                String cvv = cardCVVText.getInsertedText();
-                int month = cardExpiryText.getMonth();
-                int year = cardExpiryText.getYear();
-                accessCheckoutClient.generateSessionState(pan, month, year, cvv);
-            }
+        submit.setOnClickListener(view -> {
+            String pan = panView.getInsertedText();
+            String cvv = cardCVVText.getInsertedText();
+            int month = cardExpiryText.getMonth();
+            int year = cardExpiryText.getYear();
+            accessCheckoutClient.generateSessionState(pan, month, year, cvv);
         });
 
     }

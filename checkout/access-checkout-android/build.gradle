@@ -1,17 +1,19 @@
 buildscript {
-    ext.dokka_version = '0.9.18'
     repositories {
         google()
         jcenter()
-
     }
+
     dependencies {
-        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:$dokka_version"
+        classpath "org.jetbrains.dokka:dokka-android-gradle-plugin:0.9.18"
         classpath "org.jacoco:org.jacoco.core:0.8.3"
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.0"
     }
 }
 
+repositories {
+    mavenCentral()
+}
 
 apply plugin: 'com.android.library'
 apply plugin: 'kotlin-android-extensions'
@@ -86,7 +88,6 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
-
 android {
     compileSdkVersion 28
 
@@ -95,9 +96,7 @@ android {
         targetSdkVersion 28
         versionCode 1
         versionName version
-
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-
     }
 
     buildTypes {
@@ -107,7 +106,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
-
         debug {
             testCoverageEnabled = true
         }
@@ -172,7 +170,4 @@ dependencies {
     testImplementation "org.robolectric:robolectric:4.0"
     testImplementation 'au.com.dius:pact-jvm-consumer-junit_2.12:3.6.2'
     implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
-}
-repositories {
-    mavenCentral()
 }

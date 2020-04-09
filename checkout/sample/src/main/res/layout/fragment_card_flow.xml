@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_card_flow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.CardFlowFragment">
+
+    <com.worldpay.access.checkout.views.PANLayout
+        android:id="@+id/card_flow_text_pan"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.worldpay.access.checkout.views.CardExpiryTextLayout
+        android:id="@+id/card_flow_text_exp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:ems="10"
+        android:hint="@string/card_expiry_hint"
+        android:inputType="number"
+        app:layout_constraintStart_toStartOf="@+id/card_flow_text_pan"
+        app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan" />
+
+    <com.worldpay.access.checkout.views.CardCVVText
+        android:id="@+id/card_flow_text_cvv"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="30dp"
+        android:layout_marginTop="32dp"
+        android:ems="4"
+        android:hint="@string/card_cvv_hint"
+        android:imeOptions="actionDone|flagNoFullscreen"
+        android:inputType="number"
+        app:layout_constraintStart_toEndOf="@+id/card_flow_text_exp"
+        app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan" />
+
+    <Button
+        android:id="@+id/card_flow_btn_submit"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="32dp"
+        android:layout_marginEnd="24dp"
+        android:background="@android:color/darker_gray"
+        android:enabled="false"
+        android:text="@string/submit_text"
+        android:textColor="@android:color/white"
+        app:layout_constraintEnd_toEndOf="@id/card_flow_text_pan"
+        app:layout_constraintStart_toStartOf="@+id/card_flow_text_pan"
+        app:layout_constraintTop_toBottomOf="@id/card_flow_text_exp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>

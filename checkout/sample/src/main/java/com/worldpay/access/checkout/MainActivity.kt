@@ -1,149 +1,71 @@
 package com.worldpay.access.checkout
 
 import android.os.Bundle
-import android.text.InputFilter
-import android.view.View
-import android.widget.Toast
+import android.view.Menu
 import androidx.appcompat.app.AppCompatActivity
-import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
-import com.worldpay.access.checkout.images.SVGImageLoader
-import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
-import com.worldpay.access.checkout.views.*
-import kotlinx.android.synthetic.main.activity_main.*
-import kotlinx.android.synthetic.main.content_main.*
+import androidx.appcompat.widget.Toolbar
+import androidx.drawerlayout.widget.DrawerLayout
+import androidx.navigation.NavController
+import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.navigation.NavigationView
+import com.worldpay.access.checkout.ui.ProgressBar
 
-
-class MainActivity : AppCompatActivity(), CardListener, SessionResponseListener {
-
-    private lateinit var card: Card
-    private lateinit var panView: PANLayout
-    private lateinit var cvvText: CardCVVText
-    private lateinit var dateText: CardExpiryTextLayout
-
-    private var loading: Boolean = false
+class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-    }
 
-    override fun onStart() {
-        super.onStart()
+        val toolbar = findViewById<Toolbar>(R.id.toolbar_main)
+        val navController = getNavController()
+        val navView: NavigationView = findViewById(R.id.nav_view)
+        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 
-        panView = findViewById(R.id.panView)
-        cvvText = findViewById(R.id.cardCVVText)
-        dateText = findViewById(R.id.cardExpiryText)
+        setSupportActionBar(toolbar)
 
-        card = AccessCheckoutCard(panView, cvvText, dateText)
-        card.cardListener = this
-        card.cardValidator = AccessCheckoutCardValidator()
-
-        CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
-        
-        panView.cardViewListener = card
-        cvvText.cardViewListener = card
-        dateText.cardViewListener = card
-
-        val accessCheckoutClient = AccessCheckoutClient.init(
-            getBaseUrl(),
-            getMerchantID(),
-            this,
-            applicationContext,
-            this
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(R.id.nav_card_flow, R.id.nav_cvv_flow), drawerLayout
         )
 
-        submit.setOnClickListener {
-            val pan = panView.getInsertedText()
-            val month = dateText.getMonth()
-            val year = dateText.getYear()
-            val cvv = cvvText.getInsertedText()
-            accessCheckoutClient.generateSessionState(pan, month, year, cvv)
-        }
+        toolbar.setupWithNavController(navController, appBarConfiguration)
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        navView.setupWithNavController(navController)
     }
 
-    override fun onRequestStarted() {
-        debugLog("MainActivity", "Started request")
-        loading = true
-        toggleLoading(false)
+    override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
+        super.onPrepareOptionsMenu(menu)
+        return false
     }
 
-    override fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?) {
-        debugLog("MainActivity", "Received session reference: $sessionState")
-        loading = false
-        toggleLoading(true)
-        val toastMessage : String
-        if (!sessionState.isNullOrBlank()){
-            toastMessage = "Ref: $sessionState"
-            resetFields()
-        }
-        else {
-            toastMessage = "Error: " + error?.message
-        }
-
-
-        Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show()
-    }
-
-    override fun onUpdate(cardView: CardView, valid: Boolean) {
-        cardView.isValid(valid)
-        submit.isEnabled = card.isValid() && !loading
-    }
-
-    override fun onUpdateLengthFilter(cardView: CardView, inputFilter: InputFilter) {
-        cardView.applyLengthFilter(inputFilter)
-    }
-
-    override fun onUpdateCardBrand(cardBrand: CardBrand?) {
-        val logoImageView = panView.mImageView
-        SVGImageLoader.getInstance(this).fetchAndApplyCardLogo(cardBrand, logoImageView)
-    }
-
-    private fun fieldsToggle(enableFields: Boolean) {
-        if (!enableFields) {
-            content_layout.alpha = 0.5f
-            loading_bar.visibility = View.VISIBLE
-        } else {
-            loading_bar.visibility = View.INVISIBLE
-            content_layout.alpha = 1.0f
-        }
-    }
-
-    private fun toggleLoading(enableFields: Boolean) {
-        panView.mEditText.isEnabled = enableFields
-        cardCVVText.isEnabled = enableFields
-        cardExpiryText.monthEditText.isEnabled = enableFields
-        cardExpiryText.yearEditText.isEnabled = enableFields
-        submit.isEnabled = enableFields
-
-        fieldsToggle(enableFields)
-    }
-
-    private fun resetFields() {
-        panView.mEditText.text.clear()
-        cardCVVText.text.clear()
-        cardExpiryText.monthEditText.text.clear()
-        cardExpiryText.yearEditText.text.clear()
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = findNavController(R.id.nav_host_fragment)
+        return navController.navigateUp() || super.onSupportNavigateUp()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
+        val loading = ProgressBar(this).isLoading()
         outState.putBoolean("loading", loading)
         super.onSaveInstanceState(outState)
     }
 
-    override fun onRestoreInstanceState(savedInstanceState: Bundle?) {
-        if (savedInstanceState != null) {
-            loading = savedInstanceState.getBoolean("loading")
-
-            if (loading)
-                toggleLoading(false)
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        if (savedInstanceState.getBoolean("loading")) {
+            ProgressBar(this).beginLoading()
+        } else {
+            ProgressBar(this).stopLoading()
         }
+
         super.onRestoreInstanceState(savedInstanceState)
     }
 
-    private fun getMerchantID() = BuildConfig.MERCHANT_ID
+    private fun getNavController(): NavController {
+        val navHostFragment = supportFragmentManager
+            .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        return navHostFragment.navController
+    }
 
-    private fun getBaseUrl() = getString(R.string.endpoint)
 }

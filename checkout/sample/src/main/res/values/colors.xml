@@ -2,7 +2,5 @@
 <resources>
     <color name="colorPrimary">@color/worldPayRed</color>
     <color name="colorPrimaryDark">@android:color/holo_red_dark</color>
-    <color name="colorAccent">@android:color/darker_gray</color>
-
     <color name="worldPayRed">#f01e14</color>
 </resources>
