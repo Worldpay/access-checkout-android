@@ -72,36 +72,6 @@ class SessionsPactTest {
         .closeArray()
         .closeObject()
 
-    private val getResponseBody = PactDslJsonBody()
-        .`object`("_links")
-        .`object`("sessions:session")
-        .stringMatcher("href", sessionReferenceRegex, sessionReferenceExample)
-        .closeObject()
-        .closeObject()
-
-    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
-    fun createSuccessfulGetRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
-        return builder
-            .uponReceiving("A service discovery request")
-            .path("/sessions")
-            .method("GET")
-            .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
-            .willRespondWith()
-            .status(200)
-            .headers(
-                mutableMapOf(
-                    Pair(
-                        "Content-Type",
-                        "application/vnd.worldpay.sessions-v1.hal+json"
-                    )
-                )
-            )
-            .matchHeader("Location", sessionReferenceRegex, sessionReferenceExample)
-            .body(getResponseBody)
-            .toPact()
-    }
-
     @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
     fun createSuccessfulRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
@@ -205,36 +175,6 @@ class SessionsPactTest {
             )
             .toPact()
     }
-
-    @Test
-    @PactVerification("sessions", fragment = "createSuccessfulGetRequestInteraction")
-    fun `should receive a valid response when a valid get request is sent`() {
-
-        val expectedResponse =
-           "{\n" +
-           "  \"status\": 200,\n" +
-           "  \"headers\": {\n" +
-           "    \"content-type\": \"application/vnd.worldpay.sessions-v1.hal+json\"\n" +
-           "  },\n" +
-           "  \"body\": {\n" +
-           "    \"_links\": {\n" +
-           "      \"sessions:paymentsCvc\": {\n" +
-           "        \"href\": \"http://${mockProvider.url}/sessions/payments/cvc\"\n" +
-           "      }\n" +
-           "    }\n" +
-           "  }\n" +
-           "}"
-
-        val callback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                Assert.assertEquals(expectedResponse, response)
-            }
-        }
-
-        val accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
-        accessCheckoutDiscoveryClient.discover("${mockProvider.url}", callback, DiscoverLinks.sessions)
-    }
-
 
     @Test
     @PactVerification("sessions", fragment = "createSuccessfulRequestInteraction")
