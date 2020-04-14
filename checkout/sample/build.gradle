@@ -1,20 +1,32 @@
+repositories {
+    mavenCentral()
+}
+
 apply plugin: 'com.android.application'
-
 apply plugin: 'kotlin-android'
-
 apply plugin: 'kotlin-android-extensions'
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_1_8
+    }
 
     defaultConfig {
         applicationId "com.worldpay.access.checkout"
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
+
     buildTypes {
         release {
             zipAlignEnabled true
@@ -34,6 +46,7 @@ android {
             dimension = "api"
         }
 
+        //TODO: Remove this flavour
         worldpay {
             dimension = "merchant"
         }
@@ -52,13 +65,22 @@ android {
 }
 
 dependencies {
+    implementation project(':access-checkout-android')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
+
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
     implementation 'androidx.appcompat:appcompat:1.1.0'
     implementation 'androidx.constraintlayout:constraintlayout:1.1.3'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.2.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.2.1'
     implementation 'com.squareup.okhttp3:okhttp:3.12.0'
     implementation 'com.caverock:androidsvg-aar:1.4'
-    implementation project(':access-checkout-android')
+
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+    implementation 'com.google.android.material:material:1.1.0'
+    implementation 'androidx.navigation:navigation-fragment:2.2.1'
+    implementation 'androidx.navigation:navigation-ui:2.2.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
 
     mockImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     mockImplementation 'com.google.code.gson:gson:2.8.5'
@@ -82,13 +104,9 @@ dependencies {
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.2.0'
-    debugImplementation 'androidx.test.espresso:espresso-core:3.2.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
     androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-
     androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
-}
 
-repositories {
-    mavenCentral()
+    debugImplementation 'androidx.test.espresso:espresso-core:3.2.0'
 }
-
