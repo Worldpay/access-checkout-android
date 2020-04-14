@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.api.discovery
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.AccessCheckoutClient
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.Callback
 import org.junit.Before

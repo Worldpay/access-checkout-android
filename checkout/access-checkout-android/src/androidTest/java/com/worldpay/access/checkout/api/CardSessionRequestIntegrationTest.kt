@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.api
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.LifecycleRegistry
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -11,13 +12,14 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
-import com.worldpay.access.checkout.AccessCheckoutClient
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.AccessCheckoutException.Error.BODY_DOES_NOT_MATCH_SCHEMA
 import com.worldpay.access.checkout.api.DiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.api.session.CardSessionRequest
+import com.worldpay.access.checkout.client.checkout.AccessCheckoutClient
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.awaitility.Awaitility.await
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -62,10 +64,20 @@ class CardSessionRequestIntegrationTest {
 
     private lateinit var accessCheckoutClient: AccessCheckoutClient
 
+    private lateinit var lifecycleRegistry: LifecycleRegistry
+
     @Before
     fun setup() {
-        given(lifecycleOwner.lifecycle).willReturn(mock(Lifecycle::class.java))
+        lifecycleRegistry = LifecycleRegistry(lifecycleOwner)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
+        given(lifecycleOwner.lifecycle).willReturn(lifecycleRegistry)
         stubServiceDiscoveryResponses()
+    }
+
+    @After
+    fun tearDown() {
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
     }
 
     @Test
@@ -136,15 +148,11 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
-
-        accessCheckoutClient.disconnectListener()
     }
-
 
     @Test
     fun givenServerError_shouldReturnUnsuccessfulResponse() {
@@ -203,13 +211,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -268,7 +273,7 @@ class CardSessionRequestIntegrationTest {
 
                 error as AccessCheckoutClientError
                 assertExpectedErrorRaised = sessionState == null &&
-                        matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
+                        matchesExpectedType(error, BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.PAN_FAILED_LUHN_CHECK)
 
 
@@ -283,13 +288,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(luhnInvalidCard, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -370,13 +372,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -432,7 +431,7 @@ class CardSessionRequestIntegrationTest {
 
                 error as AccessCheckoutClientError
                 assertExpectedErrorRaised = sessionState == null &&
-                        matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
+                        matchesExpectedType(error, BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.FIELD_IS_MISSING)
 
 
@@ -447,13 +446,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState("", month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
 
 
     }
@@ -514,7 +510,7 @@ class CardSessionRequestIntegrationTest {
 
                 error as AccessCheckoutClientError
                 assertExpectedErrorRaised = sessionState == null &&
-                        matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
+                        matchesExpectedType(error, BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.STRING_IS_TOO_SHORT)
 
 
@@ -529,13 +525,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardTooShort, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -594,7 +587,7 @@ class CardSessionRequestIntegrationTest {
 
                 error as AccessCheckoutClientError
                 assertExpectedErrorRaised = sessionState == null &&
-                        matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
+                        matchesExpectedType(error, BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.STRING_IS_TOO_LONG)
 
 
@@ -609,13 +602,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardTooLong, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -672,7 +662,7 @@ class CardSessionRequestIntegrationTest {
 
                 error as AccessCheckoutClientError
                 assertExpectedErrorRaised = sessionState == null &&
-                        matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
+                        matchesExpectedType(error, BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.FIELD_MUST_BE_INTEGER)
 
 
@@ -687,13 +677,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -750,7 +737,7 @@ class CardSessionRequestIntegrationTest {
 
                 error as AccessCheckoutClientError
                 assertExpectedErrorRaised = sessionState == null &&
-                        matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
+                        matchesExpectedType(error, BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.INTEGER_IS_TOO_SMALL)
 
 
@@ -765,13 +752,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -828,7 +812,7 @@ class CardSessionRequestIntegrationTest {
 
                 error as AccessCheckoutClientError
                 assertExpectedErrorRaised = sessionState == null &&
-                        matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
+                        matchesExpectedType(error, BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.INTEGER_IS_TOO_LARGE)
 
 
@@ -843,13 +827,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -906,7 +887,7 @@ class CardSessionRequestIntegrationTest {
 
                 error as AccessCheckoutClientError
                 assertExpectedErrorRaised = sessionState == null &&
-                        matchesExpectedType(error, Error.BODY_DOES_NOT_MATCH_SCHEMA) &&
+                        matchesExpectedType(error, BODY_DOES_NOT_MATCH_SCHEMA) &&
                         hasDetectedBrokenRule(error, ValidationRuleName.FIELD_MUST_BE_NUMBER)
 
 
@@ -921,13 +902,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -991,13 +969,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -1061,13 +1036,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     @Test
@@ -1123,13 +1095,10 @@ class CardSessionRequestIntegrationTest {
             applicationContext,
             lifecycleOwner
         )
-        accessCheckoutClient.startListener()
 
         accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
-
-        accessCheckoutClient.disconnectListener()
     }
 
     private fun <T> assertActualExceptionIsExpected(ex: Exception, expected: T): Boolean where T : Exception =

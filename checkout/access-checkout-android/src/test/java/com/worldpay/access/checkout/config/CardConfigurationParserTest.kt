@@ -8,12 +8,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 
-@RunWith(RobolectricTestRunner::class)
 class CardConfigurationParserTest {
 
     private lateinit var cardConfigurationParser: CardConfigurationParser

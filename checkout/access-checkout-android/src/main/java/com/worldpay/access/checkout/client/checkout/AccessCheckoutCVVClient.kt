@@ -1,14 +1,8 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.client.checkout
 
 import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.OnLifecycleEvent
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
@@ -22,19 +16,36 @@ import com.worldpay.access.checkout.views.SessionResponseListener
  * [AccessCheckoutCVVClient] is responsible for handling the request for a session state from the Access Worldpay services.
  */
 class AccessCheckoutCVVClient private constructor(
-    private val baseURL: String,
-    private val merchantID: String,
+    private val baseUrl: String,
+    private val merchantId: String,
     private val context: Context,
-    private val mListener: SessionResponseListener,
-    private val lifecycleOwner: LifecycleOwner):
-    LifecycleObserver, SessionResponseListener {
+    private val externalSessionResponseListener: SessionResponseListener,
+    private val lifecycleOwner: LifecycleOwner
+) {
 
-    private lateinit var localBroadcastManager: LocalBroadcastManager
-    private val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context)
-    private val sessionReceiver: SessionReceiver =
-        SessionReceiver(this)
+    private val tag = "AccessCheckoutCVVClient"
+
     init {
-        onCreateHostRegistration()
+        val checkoutSessionResponseListener =
+            CheckoutSessionResponseListener(tag, externalSessionResponseListener)
+        val sessionReceiver = SessionReceiver(checkoutSessionResponseListener)
+        val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context)
+
+        debugLog(tag, "Making request to discover endpoint")
+
+        val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
+
+        accessCheckoutDiscoveryClient.discover(
+            baseUrl = baseUrl,
+            discoverLinks = DiscoverLinks.sessions
+        )
+
+        ActivityLifecycleEventHandler(
+            tag,
+            sessionReceiver,
+            lifecycleOwner,
+            localBroadcastManagerFactory
+        )
     }
 
     companion object {
@@ -61,7 +72,11 @@ class AccessCheckoutCVVClient private constructor(
             debugLog(TAG, "Making request to discover endpoint")
             val accessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
 
-            accessCheckoutDiscoveryClient.discover(baseUrl = baseUrl, discoverLinks = DiscoverLinks.sessions)
+            accessCheckoutDiscoveryClient.discover(
+                baseUrl = baseUrl,
+                discoverLinks = DiscoverLinks.sessions
+            )
+
             return AccessCheckoutCVVClient(
                 baseUrl,
                 merchantID,
@@ -79,45 +94,15 @@ class AccessCheckoutCVVClient private constructor(
      * @param cvv the cvv to submit
      */
     fun generateSessionState(cvv: String) {
-        mListener.onRequestStarted()
-        val cvvSessionRequest = CVVSessionRequest(cvv, merchantID)
+        externalSessionResponseListener.onRequestStarted()
+        val cvvSessionRequest = CVVSessionRequest(cvv, merchantId)
         val serviceIntent = Intent(context, SessionRequestService::class.java)
 
         serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, cvvSessionRequest)
-        serviceIntent.putExtra(SessionRequestService.BASE_URL_KEY, baseURL)
+        serviceIntent.putExtra(SessionRequestService.BASE_URL_KEY, baseUrl)
         serviceIntent.putExtra(SessionRequestService.DISCOVER_LINKS, DiscoverLinks.sessions)
         context.startService(serviceIntent)
     }
 
-    override fun onRequestStarted() {}
-
-    override fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?) {
-        debugLog(TAG, "Received session reference")
-        mListener.onRequestFinished(sessionState, error)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private fun onCreateHostRegistration() {
-        debugLog(TAG, "On Create")
-        lifecycleOwner.lifecycle.addObserver(this)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    internal fun startListener() {
-        debugLog(TAG, "On Resume")
-        localBroadcastManager = localBroadcastManagerFactory.createInstance()
-        localBroadcastManager.registerReceiver(sessionReceiver, IntentFilter(SessionRequestService.ACTION_GET_SESSION))
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun disconnectListener() {
-        debugLog(TAG, "On Stop")
-        localBroadcastManager.unregisterReceiver(sessionReceiver)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun removeObserver() {
-        lifecycleOwner.lifecycle.removeObserver(this)
-    }
 }
 
