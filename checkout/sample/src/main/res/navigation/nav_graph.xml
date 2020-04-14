@@ -1,0 +1,28 @@
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_graph"
+    app:startDestination="@+id/nav_card_flow">
+
+    <fragment
+        android:id="@+id/nav_card_flow"
+        android:label="Card Flow"
+        android:name="com.worldpay.access.checkout.ui.CardFlowFragment"
+        tools:layout="@layout/fragment_card_flow">
+
+        <action
+            android:id="@+id/action_card_flow_to_cvv_flow"
+            app:destination="@id/nav_cvv_flow" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_cvv_flow"
+        android:label="CVV Flow"
+        android:name="com.worldpay.access.checkout.ui.CvvFlowFragment"
+        tools:layout="@layout/fragment_cvv_flow" >
+        <action
+            android:id="@+id/action_cvv_flow_to_card_flow"
+            app:destination="@id/nav_card_flow" />
+    </fragment>
+
+</navigation>
