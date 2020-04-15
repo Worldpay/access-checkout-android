@@ -10,16 +10,13 @@ import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.views.*
 import org.junit.Before
 import org.junit.Test
-import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.*
-import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-@RunWith(RobolectricTestRunner::class)
 class AccessCheckoutCardTest {
 
     private lateinit var card: Card

@@ -8,10 +8,10 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.AccessCheckoutCVV
-import com.worldpay.access.checkout.AccessCheckoutCVVClient
 import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
+import com.worldpay.access.checkout.client.checkout.AccessCheckoutCVVClient
 import com.worldpay.access.checkout.cvv.CvvListenerImpl
 import com.worldpay.access.checkout.cvv.SessionResponseListenerImpl
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator

@@ -9,12 +9,12 @@ import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.AccessCheckoutCard
-import com.worldpay.access.checkout.AccessCheckoutClient
 import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.card.CardListenerImpl
 import com.worldpay.access.checkout.card.SessionResponseListenerImpl
+import com.worldpay.access.checkout.client.checkout.AccessCheckoutClient
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
