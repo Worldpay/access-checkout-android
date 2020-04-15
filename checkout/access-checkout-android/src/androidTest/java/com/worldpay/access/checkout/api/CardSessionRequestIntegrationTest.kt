@@ -16,7 +16,10 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.AccessCheckoutException.Error.BODY_DOES_NOT_MATCH_SCHEMA
 import com.worldpay.access.checkout.api.DiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.api.session.CardSessionRequest
-import com.worldpay.access.checkout.client.checkout.AccessCheckoutClient
+import com.worldpay.access.checkout.client.card.CardDetails
+import com.worldpay.access.checkout.client.card.CardDetailsBuilder
+import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.checkout.CheckoutClient
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.awaitility.Awaitility.await
 import org.junit.After
@@ -38,9 +41,10 @@ class CardSessionRequestIntegrationTest {
     private val cardNumber = "1111222233334444"
     private val month = 12
     private val year = 2020
-    private val identity = "identity"
+    private val merchantId = "identity"
     private val applicationContext = getInstrumentation().context.applicationContext
     private val lifecycleOwner = mock(LifecycleOwner::class.java)
+    private lateinit var cardDetails: CardDetails
 
     private val sessionRequest =
         CardSessionRequest(
@@ -50,7 +54,7 @@ class CardSessionRequestIntegrationTest {
                 year
             ),
             cvv,
-            identity
+            merchantId
         )
 
     @get:Rule
@@ -62,7 +66,7 @@ class CardSessionRequestIntegrationTest {
             .extensions(ResponseTemplateTransformer(false))
     )
 
-    private lateinit var accessCheckoutClient: AccessCheckoutClient
+    private lateinit var accessCheckoutClient: CheckoutClient
 
     private lateinit var lifecycleRegistry: LifecycleRegistry
 
@@ -72,6 +76,12 @@ class CardSessionRequestIntegrationTest {
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_RESUME)
         given(lifecycleOwner.lifecycle).willReturn(lifecycleRegistry)
         stubServiceDiscoveryResponses()
+        
+        cardDetails = CardDetailsBuilder()
+            .pan(cardNumber)
+            .expiryDate(month, year)
+            .cvv(cvv)
+            .build()
     }
 
     @After
@@ -141,15 +151,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            responseListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(responseListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
     }
@@ -204,15 +214,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            responseListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(responseListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
     }
@@ -230,7 +240,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithLuhnFail = """{
@@ -281,15 +291,21 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(luhnInvalidCard, month, year, cvv)
+        val cardDetails = CardDetailsBuilder()
+            .pan(luhnInvalidCard)
+            .expiryDate(month, year)
+            .cvv(cvv)
+            .build()
+
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -365,15 +381,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            invalidIdentity,
-            responseListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(invalidIdentity)
+            .sessionResponseListener(responseListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
     }
@@ -388,7 +404,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithMissingField = """{
@@ -439,15 +455,21 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState("", month, year, cvv)
+        val cardDetails = CardDetailsBuilder()
+            .pan("")
+            .expiryDate(month, year)
+            .cvv(cvv)
+            .build()
+
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
 
@@ -467,7 +489,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithStringShortError = """{
@@ -518,15 +540,21 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardTooShort, month, year, cvv)
+        val cardDetails = CardDetailsBuilder()
+            .pan(cardTooShort)
+            .expiryDate(month, year)
+            .cvv(cvv)
+            .build()
+
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -544,7 +572,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithStringLongError = """{
@@ -595,15 +623,21 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardTooLong, month, year, cvv)
+        val cardDetails = CardDetailsBuilder()
+            .pan(cardTooLong)
+            .expiryDate(month, year)
+            .cvv(cvv)
+            .build()
+
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -619,7 +653,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithBrokenMonth = """{
@@ -670,15 +704,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -694,7 +728,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithBrokenMonth = """{
@@ -745,15 +779,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -769,7 +803,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithBrokenMonth = """{
@@ -820,15 +854,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -844,7 +878,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithBrokenCvc = """{
@@ -895,15 +929,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -919,7 +953,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithNotJsonError = """{
@@ -962,15 +996,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -986,7 +1020,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
         val jsonResponseWithMethodNotAllowed = """{
@@ -1029,15 +1063,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -1053,7 +1087,7 @@ class CardSessionRequestIntegrationTest {
                         "year": $year
                     },
                     "cvc": "$cvv",
-                    "identity": "$identity"
+                    "identity": "$merchantId"
                 }"""
 
 
@@ -1088,15 +1122,15 @@ class CardSessionRequestIntegrationTest {
             }
         }
 
-        accessCheckoutClient = AccessCheckoutClient.init(
-            wireMockRule.baseUrl(),
-            identity,
-            errorListener,
-            applicationContext,
-            lifecycleOwner
-        )
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(wireMockRule.baseUrl())
+            .merchantId(merchantId)
+            .sessionResponseListener(errorListener)
+            .context(applicationContext)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
 
-        accessCheckoutClient.generateSessionState(cardNumber, month, year, cvv)
+        accessCheckoutClient.generateSessionState(cardDetails)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }

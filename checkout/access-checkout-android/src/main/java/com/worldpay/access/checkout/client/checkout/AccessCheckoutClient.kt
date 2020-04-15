@@ -9,19 +9,20 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.CardSessionRequest
 import com.worldpay.access.checkout.api.session.SessionReceiver
 import com.worldpay.access.checkout.api.session.SessionRequestService
+import com.worldpay.access.checkout.client.card.CardDetails
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.SessionResponseListener
 
 /**
  * [AccessCheckoutClient] is responsible for handling the request for a session state from the Access Worldpay services.
  */
-class AccessCheckoutClient private constructor(
+class AccessCheckoutClient(
     private val baseUrl: String,
     private val merchantId: String,
     private val context: Context,
     private val externalSessionResponseListener: SessionResponseListener,
     private val lifecycleOwner: LifecycleOwner
-) {
+) : CheckoutClient {
 
     private val tag = "AccessCheckoutClient"
 
@@ -48,50 +49,28 @@ class AccessCheckoutClient private constructor(
         )
     }
 
-    companion object {
-
-        /**
-         * Initialises the Access Checkout Android SDK
-         *
-         * @param baseUrl The URL of the root of Access Worldpay
-         * @param merchantID The merchant identifier for using Access Worldpay services
-         * @param sessionResponseListener The listener which will be notified when a session state is available
-         * @param context The android [Context] object
-         * @param lifecycleOwner The android [LifecycleOwner] object
-         * @return an instance of AccessCheckoutClient
-         */
-        @JvmStatic
-        fun init(
-            baseUrl: String,
-            merchantID: String,
-            sessionResponseListener: SessionResponseListener,
-            context: Context,
-            lifecycleOwner: LifecycleOwner
-        ): AccessCheckoutClient {
-            return AccessCheckoutClient(
-                baseUrl,
-                merchantID,
-                context,
-                sessionResponseListener,
-                lifecycleOwner
-            )
-        }
-    }
-
     /**
      * Method which triggers a generate session state request to the Access Worldpay sessions API. The response will come back through the
      * [SessionResponseListener]
      *
-     * @param pan the pan to submit
-     * @param month the month to submit
-     * @param year the year to submit
-     * @param cvv the cvv to submit
+     * @param cardDetails the cardDetails to submit - see [CardDetailsBuilder]
      */
+    override fun generateSessionState(cardDetails: CardDetails) {
+        if (cardDetails.pan == null) {
+            throw IllegalArgumentException("Expected pan but none provided")
+        }
 
-    fun generateSessionState(pan: String, month: Int, year: Int, cvv: String) {
+        if (cardDetails.expiryDate == null) {
+            throw IllegalArgumentException("Expected expiry date but none provided")
+        }
+
+        if (cardDetails.cvv == null) {
+            throw IllegalArgumentException("Expected cvv but none provided")
+        }
+
         externalSessionResponseListener.onRequestStarted()
-        val cardExpiryDate = CardSessionRequest.CardExpiryDate(month, year)
-        val cardSessionRequest = CardSessionRequest(pan, cardExpiryDate, cvv, merchantId)
+        val cardExpiryDate = CardSessionRequest.CardExpiryDate(cardDetails.expiryDate.month, cardDetails.expiryDate.year)
+        val cardSessionRequest = CardSessionRequest(cardDetails.pan, cardExpiryDate, cardDetails.cvv, merchantId)
         val serviceIntent = Intent(context, SessionRequestService::class.java)
 
         serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, cardSessionRequest)
