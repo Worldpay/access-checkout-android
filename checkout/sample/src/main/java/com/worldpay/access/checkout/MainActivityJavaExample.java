@@ -13,10 +13,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.worldpay.access.checkout.api.AccessCheckoutException;
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
-import com.worldpay.access.checkout.client.card.CardDetails;
-import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder;
-import com.worldpay.access.checkout.client.checkout.CheckoutClient;
-import com.worldpay.access.checkout.client.token.TokenRequest;
+import com.worldpay.access.checkout.client.AccessCheckoutClient;
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder;
+import com.worldpay.access.checkout.client.CardDetails;
+import com.worldpay.access.checkout.client.SessionType;
 import com.worldpay.access.checkout.images.SVGImageLoader;
 import com.worldpay.access.checkout.model.CardBrand;
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator;
@@ -71,7 +71,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
         cardCVVText.setCardViewListener(card);
         cardExpiryText.setCardViewListener(card);
 
-        final CheckoutClient checkoutClient = new AccessCheckoutClientBuilder()
+        final AccessCheckoutClient accessCheckoutClient = new AccessCheckoutClientBuilder()
                 .baseUrl(getBaseUrl())
                 .merchantId(getMerchantID())
                 .sessionResponseListener(this)
@@ -85,7 +85,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
                     .expiryDate(cardExpiryText.getMonth(), cardExpiryText.getYear())
                     .cvv(cardCVVText.getInsertedText())
                     .build();
-            checkoutClient.generateSession(cardDetails, singletonList(TokenRequest.VERIFIED_TOKEN));
+            accessCheckoutClient.generateSession(cardDetails, singletonList(SessionType.VERIFIED_TOKEN_SESSION));
         });
 
     }

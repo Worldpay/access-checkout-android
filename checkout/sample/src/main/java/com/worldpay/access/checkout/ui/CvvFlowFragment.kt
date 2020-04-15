@@ -11,9 +11,9 @@ import com.worldpay.access.checkout.AccessCheckoutCVV
 import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
-import com.worldpay.access.checkout.client.card.CardDetails
-import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder
-import com.worldpay.access.checkout.client.token.TokenRequest
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.CardDetails
+import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.cvv.CvvListenerImpl
 import com.worldpay.access.checkout.cvv.SessionResponseListenerImpl
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
@@ -66,7 +66,7 @@ class CvvFlowFragment : Fragment() {
 
         submitBtn.setOnClickListener {
             val cardDetails = CardDetails.Builder().cvv(cvvText.getInsertedText()).build()
-            accessCheckoutClient.generateSession(cardDetails, listOf(TokenRequest.SESSION_TOKEN))
+            accessCheckoutClient.generateSession(cardDetails, listOf(SessionType.PAYMENTS_CVC_SESSION))
         }
     }
 
