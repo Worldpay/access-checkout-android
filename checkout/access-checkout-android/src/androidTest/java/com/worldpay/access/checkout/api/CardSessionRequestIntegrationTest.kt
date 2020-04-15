@@ -20,6 +20,7 @@ import com.worldpay.access.checkout.client.card.CardDetails
 import com.worldpay.access.checkout.client.card.CardDetailsBuilder
 import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.checkout.CheckoutClient
+import com.worldpay.access.checkout.client.token.TokenRequest.VERIFIED_TOKEN
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.awaitility.Awaitility.await
 import org.junit.After
@@ -159,7 +160,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
     }
@@ -222,7 +223,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
     }
@@ -305,7 +306,7 @@ class CardSessionRequestIntegrationTest {
             .cvv(cvv)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -389,7 +390,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
     }
@@ -469,7 +470,7 @@ class CardSessionRequestIntegrationTest {
             .cvv(cvv)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
 
@@ -554,7 +555,7 @@ class CardSessionRequestIntegrationTest {
             .cvv(cvv)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -637,7 +638,7 @@ class CardSessionRequestIntegrationTest {
             .cvv(cvv)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -712,7 +713,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -787,7 +788,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -862,7 +863,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -937,7 +938,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -1004,7 +1005,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -1071,7 +1072,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }
@@ -1130,7 +1131,7 @@ class CardSessionRequestIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSessionState(cardDetails)
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertExpectedErrorRaised }
     }

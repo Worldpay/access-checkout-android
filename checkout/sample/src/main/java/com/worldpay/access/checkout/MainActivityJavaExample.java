@@ -17,6 +17,7 @@ import com.worldpay.access.checkout.client.card.CardDetails;
 import com.worldpay.access.checkout.client.card.CardDetailsBuilder;
 import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder;
 import com.worldpay.access.checkout.client.checkout.CheckoutClient;
+import com.worldpay.access.checkout.client.token.TokenRequest;
 import com.worldpay.access.checkout.images.SVGImageLoader;
 import com.worldpay.access.checkout.model.CardBrand;
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator;
@@ -30,6 +31,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.worldpay.access.checkout.logging.LoggingUtils.debugLog;
+import static java.util.Collections.singletonList;
 
 public class MainActivityJavaExample extends AppCompatActivity implements CardListener, SessionResponseListener {
 
@@ -84,7 +86,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
                     .expiryDate(cardExpiryText.getMonth(), cardExpiryText.getYear())
                     .cvv(cardCVVText.getInsertedText())
                     .build();
-            checkoutClient.generateSessionState(cardDetails);
+            checkoutClient.generateSession(cardDetails, singletonList(TokenRequest.VERIFIED_TOKEN));
         });
 
     }

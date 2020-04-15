@@ -16,6 +16,7 @@ import com.worldpay.access.checkout.card.CardListenerImpl
 import com.worldpay.access.checkout.card.SessionResponseListenerImpl
 import com.worldpay.access.checkout.client.card.CardDetailsBuilder
 import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.token.TokenRequest.VERIFIED_TOKEN
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
@@ -85,7 +86,7 @@ class CardFlowFragment : Fragment() {
                 .expiryDate(expiryText.getMonth(), expiryText.getYear())
                 .cvv(cvvText.getInsertedText())
                 .build()
-            accessCheckoutClient.generateSessionState(cardDetails)
+            accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN))
         }
     }
 
