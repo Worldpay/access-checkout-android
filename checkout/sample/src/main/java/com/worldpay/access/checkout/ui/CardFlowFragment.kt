@@ -14,7 +14,7 @@ import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.card.CardListenerImpl
 import com.worldpay.access.checkout.card.SessionResponseListenerImpl
-import com.worldpay.access.checkout.client.card.CardDetailsBuilder
+import com.worldpay.access.checkout.client.card.CardDetails
 import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.token.TokenRequest.VERIFIED_TOKEN
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
@@ -81,7 +81,7 @@ class CardFlowFragment : Fragment() {
             .build()
 
         submitBtn.setOnClickListener {
-            val cardDetails = CardDetailsBuilder()
+            val cardDetails = CardDetails.Builder()
                 .pan(panView.getInsertedText())
                 .expiryDate(expiryText.getMonth(), expiryText.getYear())
                 .cvv(cvvText.getInsertedText())

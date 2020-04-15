@@ -14,7 +14,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import com.worldpay.access.checkout.api.AccessCheckoutException;
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
 import com.worldpay.access.checkout.client.card.CardDetails;
-import com.worldpay.access.checkout.client.card.CardDetailsBuilder;
 import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder;
 import com.worldpay.access.checkout.client.checkout.CheckoutClient;
 import com.worldpay.access.checkout.client.token.TokenRequest;
@@ -81,7 +80,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
                 .build();
 
         submit.setOnClickListener(view -> {
-            CardDetails cardDetails = new CardDetailsBuilder()
+            CardDetails cardDetails = new CardDetails.Builder()
                     .pan(panView.getInsertedText())
                     .expiryDate(cardExpiryText.getMonth(), cardExpiryText.getYear())
                     .cvv(cardCVVText.getInsertedText())

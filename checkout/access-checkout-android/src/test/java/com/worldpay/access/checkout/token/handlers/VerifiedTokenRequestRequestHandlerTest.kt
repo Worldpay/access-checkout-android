@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.CardSessionRequest
 import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.api.session.SessionRequestService.Companion.REQUEST_KEY
-import com.worldpay.access.checkout.client.card.CardDetailsBuilder
+import com.worldpay.access.checkout.client.card.CardDetails
 import com.worldpay.access.checkout.client.token.TokenRequest.SESSION_TOKEN
 import com.worldpay.access.checkout.client.token.TokenRequest.VERIFIED_TOKEN
 import com.worldpay.access.checkout.token.TokenRequestHandlerConfig
@@ -56,7 +56,7 @@ class VerifiedTokenRequestRequestHandlerTest {
 
     @Test
     fun `should throw illegal argument exception if pan is not provided in card details`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .expiryDate(12, 2020)
             .cvv("123")
             .build()
@@ -70,7 +70,7 @@ class VerifiedTokenRequestRequestHandlerTest {
 
     @Test
     fun `should throw illegal argument exception if expiry date is not provided in card details`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .pan("1234")
             .cvv("123")
             .build()
@@ -84,7 +84,7 @@ class VerifiedTokenRequestRequestHandlerTest {
 
     @Test
     fun `should throw illegal argument exception if cvv is not provided in card details`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate(12, 2020)
             .build()
@@ -98,7 +98,7 @@ class VerifiedTokenRequestRequestHandlerTest {
 
     @Test
     fun `should notify external session response listener when request has started`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate(12, 2020)
             .cvv("123")
@@ -111,7 +111,7 @@ class VerifiedTokenRequestRequestHandlerTest {
 
     @Test
     fun `should start service via context using the expected intent`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate(12, 2020)
             .cvv("123")

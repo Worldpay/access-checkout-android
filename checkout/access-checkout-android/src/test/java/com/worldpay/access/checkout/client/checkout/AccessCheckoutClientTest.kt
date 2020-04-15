@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.client.checkout
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.client.card.CardDetailsBuilder
+import com.worldpay.access.checkout.client.card.CardDetails
 import com.worldpay.access.checkout.client.token.TokenRequest.SESSION_TOKEN
 import com.worldpay.access.checkout.client.token.TokenRequest.VERIFIED_TOKEN
 import com.worldpay.access.checkout.token.TokenRequestHandlerFactory
@@ -63,7 +63,7 @@ class AccessCheckoutClientTest {
 
     @Test
     fun `should be able to call each handler's canHandle method when calling generate`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate(12, 2020)
             .cvv("123")
@@ -78,14 +78,13 @@ class AccessCheckoutClientTest {
     }
 
     @Test
-    fun `should be able to call each handle method on the sessionTokenRequestHandler when calling generate for session token`() {
-        val cardDetails = CardDetailsBuilder()
-            .pan("1234")
-            .expiryDate(12, 2020)
+    fun `should call handle method on the sessionTokenRequestHandler when calling generate for session token`() {
+        val cardDetails = CardDetails.Builder()
             .cvv("123")
             .build()
 
         val tokenRequests = listOf(SESSION_TOKEN)
+        given(sessionTokenRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
 
         accessCheckoutClient.generateSession(cardDetails, tokenRequests)
 
@@ -95,14 +94,15 @@ class AccessCheckoutClientTest {
     }
 
     @Test
-    fun `should be able to call each handle method on the verifiedTokenRequestHandler when calling generate for verified token`() {
-        val cardDetails = CardDetailsBuilder()
+    fun `should call handle method on the verifiedTokenRequestHandler when calling generate for verified token`() {
+        val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate(12, 2020)
             .cvv("123")
             .build()
 
         val tokenRequests = listOf(VERIFIED_TOKEN)
+        given(verifiedTokenRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
 
         accessCheckoutClient.generateSession(cardDetails, tokenRequests)
 
@@ -113,7 +113,7 @@ class AccessCheckoutClientTest {
 
     @Test
     fun `should not call handle when canHandle returns false`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate(12, 2020)
             .cvv("123")

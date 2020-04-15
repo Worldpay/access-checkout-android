@@ -7,7 +7,7 @@ internal class TokenRequestHandlerFactory(private val tokenRequestHandlerConfig:
 
     private val handlers = listOf(
         VerifiedTokenRequestRequestHandler(tokenRequestHandlerConfig),
-        SessionTokenRequestRequestHandler()
+        SessionTokenRequestRequestHandler(tokenRequestHandlerConfig)
     )
 
     fun getTokenHandlers(): List<TokenRequestHandler> {
