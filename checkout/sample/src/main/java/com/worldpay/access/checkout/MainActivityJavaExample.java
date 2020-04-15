@@ -13,7 +13,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.worldpay.access.checkout.api.AccessCheckoutException;
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
-import com.worldpay.access.checkout.client.checkout.AccessCheckoutClient;
+import com.worldpay.access.checkout.client.card.CardDetails;
+import com.worldpay.access.checkout.client.card.CardDetailsBuilder;
+import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder;
+import com.worldpay.access.checkout.client.checkout.CheckoutClient;
 import com.worldpay.access.checkout.images.SVGImageLoader;
 import com.worldpay.access.checkout.model.CardBrand;
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator;
@@ -67,19 +70,21 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
         cardCVVText.setCardViewListener(card);
         cardExpiryText.setCardViewListener(card);
 
-        final AccessCheckoutClient accessCheckoutClient = AccessCheckoutClient.init(
-                getBaseUrl(),
-                getMerchantID(),
-                this,
-                getApplicationContext(),
-                this);
+        final CheckoutClient checkoutClient = new AccessCheckoutClientBuilder()
+                .baseUrl(getBaseUrl())
+                .merchantId(getMerchantID())
+                .sessionResponseListener(this)
+                .context(getApplicationContext())
+                .lifecycleOwner(this)
+                .build();
 
         submit.setOnClickListener(view -> {
-            String pan = panView.getInsertedText();
-            String cvv = cardCVVText.getInsertedText();
-            int month = cardExpiryText.getMonth();
-            int year = cardExpiryText.getYear();
-            accessCheckoutClient.generateSessionState(pan, month, year, cvv);
+            CardDetails cardDetails = new CardDetailsBuilder()
+                    .pan(panView.getInsertedText())
+                    .expiryDate(cardExpiryText.getMonth(), cardExpiryText.getYear())
+                    .cvv(cardCVVText.getInsertedText())
+                    .build();
+            checkoutClient.generateSessionState(cardDetails);
         });
 
     }
