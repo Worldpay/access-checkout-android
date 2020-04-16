@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.client.checkout
+package com.worldpay.access.checkout.session
 
 import com.nhaarman.mockitokotlin2.then
 import com.worldpay.access.checkout.api.AccessCheckoutException
@@ -10,7 +10,11 @@ class CheckoutSessionResponseListenerTest {
 
     private val externalListener: SessionResponseListener = mock(SessionResponseListener::class.java)
     private val TAG: String = "some-tag"
-    private val checkoutSessionResponseListener: CheckoutSessionResponseListener = CheckoutSessionResponseListener(TAG, externalListener)
+    private val checkoutSessionResponseListener: CheckoutSessionResponseListener =
+        CheckoutSessionResponseListener(
+            TAG,
+            externalListener
+        )
 
     @Test
     fun `given a call back is made with non-empty session response then checkout session response listener should notify external session response listener`() {

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.client.checkout
+package com.worldpay.access.checkout.client
 
 import android.content.Context
 import androidx.lifecycle.Lifecycle

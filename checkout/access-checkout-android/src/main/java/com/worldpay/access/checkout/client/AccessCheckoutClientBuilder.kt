@@ -1,7 +1,11 @@
-package com.worldpay.access.checkout.client.checkout
+package com.worldpay.access.checkout.client
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
+import com.worldpay.access.checkout.session.request.SessionRequestHandlerConfig
+import com.worldpay.access.checkout.session.request.SessionRequestHandlerFactory
+import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 import com.worldpay.access.checkout.views.SessionResponseListener
 
 class AccessCheckoutClientBuilder {
@@ -9,7 +13,7 @@ class AccessCheckoutClientBuilder {
     private var baseUrl: String? = null
     private var merchantId: String? = null
     private var context: Context? = null
-    private var sessionResponseListener: SessionResponseListener? = null
+    private var externalSessionResponseListener: SessionResponseListener? = null
     private var lifecycleOwner: LifecycleOwner? = null
 
     fun baseUrl(baseURL: String): AccessCheckoutClientBuilder {
@@ -28,7 +32,7 @@ class AccessCheckoutClientBuilder {
     }
 
     fun sessionResponseListener(sessionResponseListener: SessionResponseListener): AccessCheckoutClientBuilder {
-        this.sessionResponseListener = sessionResponseListener
+        this.externalSessionResponseListener = sessionResponseListener
         return this
     }
 
@@ -37,26 +41,29 @@ class AccessCheckoutClientBuilder {
         return this
     }
 
-    fun build(): CheckoutClient {
+    fun build(): AccessCheckoutClient {
         validateNotNull(baseUrl, "base url")
         validateNotNull(merchantId, "merchant ID")
         validateNotNull(context, "context")
-        validateNotNull(sessionResponseListener, "session response listener")
+        validateNotNull(externalSessionResponseListener, "session response listener")
         validateNotNull(lifecycleOwner, "lifecycle owner")
 
-        return AccessCheckoutClient(
-            baseUrl as String,
-            merchantId as String,
-            context as Context,
-            sessionResponseListener as SessionResponseListener,
-            lifecycleOwner as LifecycleOwner
-        )
-    }
+        val tokenRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
+            .baseUrl(baseUrl as String)
+            .merchantId(merchantId as String)
+            .context(context as Context)
+            .externalSessionResponseListener(externalSessionResponseListener as SessionResponseListener)
+            .build()
 
-    private fun validateNotNull(property: Any?, propertyKey: String) {
-        if (property == null) {
-            throw IllegalArgumentException("Expected $propertyKey to be provided but was not")
-        }
+        return AccessCheckoutClientImpl(
+            baseUrl as String,
+            context as Context,
+            externalSessionResponseListener as SessionResponseListener,
+            lifecycleOwner as LifecycleOwner,
+            SessionRequestHandlerFactory(
+                tokenRequestHandlerConfig
+            )
+        )
     }
 
 }

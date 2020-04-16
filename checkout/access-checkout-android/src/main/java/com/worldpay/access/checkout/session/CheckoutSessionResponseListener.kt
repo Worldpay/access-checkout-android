@@ -1,10 +1,10 @@
-package com.worldpay.access.checkout.client.checkout
+package com.worldpay.access.checkout.session
 
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.views.SessionResponseListener
 
-class CheckoutSessionResponseListener(
+internal class CheckoutSessionResponseListener(
     private val tag: String,
     private val externalSessionResponseListener: SessionResponseListener
 ) : SessionResponseListener {

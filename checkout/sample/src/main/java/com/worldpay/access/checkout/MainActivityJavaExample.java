@@ -13,10 +13,10 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.worldpay.access.checkout.api.AccessCheckoutException;
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
-import com.worldpay.access.checkout.client.card.CardDetails;
-import com.worldpay.access.checkout.client.card.CardDetailsBuilder;
-import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder;
-import com.worldpay.access.checkout.client.checkout.CheckoutClient;
+import com.worldpay.access.checkout.client.AccessCheckoutClient;
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder;
+import com.worldpay.access.checkout.client.CardDetails;
+import com.worldpay.access.checkout.client.SessionType;
 import com.worldpay.access.checkout.images.SVGImageLoader;
 import com.worldpay.access.checkout.model.CardBrand;
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator;
@@ -30,6 +30,7 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import static com.worldpay.access.checkout.logging.LoggingUtils.debugLog;
+import static java.util.Collections.singletonList;
 
 public class MainActivityJavaExample extends AppCompatActivity implements CardListener, SessionResponseListener {
 
@@ -70,7 +71,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
         cardCVVText.setCardViewListener(card);
         cardExpiryText.setCardViewListener(card);
 
-        final CheckoutClient checkoutClient = new AccessCheckoutClientBuilder()
+        final AccessCheckoutClient accessCheckoutClient = new AccessCheckoutClientBuilder()
                 .baseUrl(getBaseUrl())
                 .merchantId(getMerchantID())
                 .sessionResponseListener(this)
@@ -79,12 +80,12 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
                 .build();
 
         submit.setOnClickListener(view -> {
-            CardDetails cardDetails = new CardDetailsBuilder()
+            CardDetails cardDetails = new CardDetails.Builder()
                     .pan(panView.getInsertedText())
                     .expiryDate(cardExpiryText.getMonth(), cardExpiryText.getYear())
                     .cvv(cardCVVText.getInsertedText())
                     .build();
-            checkoutClient.generateSessionState(cardDetails);
+            accessCheckoutClient.generateSession(cardDetails, singletonList(SessionType.VERIFIED_TOKEN_SESSION));
         });
 
     }

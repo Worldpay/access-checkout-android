@@ -14,8 +14,9 @@ import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.card.CardListenerImpl
 import com.worldpay.access.checkout.card.SessionResponseListenerImpl
-import com.worldpay.access.checkout.client.card.CardDetailsBuilder
-import com.worldpay.access.checkout.client.checkout.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.CardDetails
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
@@ -80,12 +81,12 @@ class CardFlowFragment : Fragment() {
             .build()
 
         submitBtn.setOnClickListener {
-            val cardDetails = CardDetailsBuilder()
+            val cardDetails = CardDetails.Builder()
                 .pan(panView.getInsertedText())
                 .expiryDate(expiryText.getMonth(), expiryText.getYear())
                 .cvv(cvvText.getInsertedText())
                 .build()
-            accessCheckoutClient.generateSessionState(cardDetails)
+            accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
         }
     }
 

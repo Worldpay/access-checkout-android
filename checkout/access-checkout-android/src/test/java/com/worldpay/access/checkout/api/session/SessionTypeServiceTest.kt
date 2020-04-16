@@ -14,7 +14,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import kotlin.test.assertNotNull
 
-class SessionRequestServiceTest {
+class SessionTypeServiceTest {
 
     private lateinit var sessionRequestService: SessionRequestService
     private lateinit var localBroadcastManagerFactory: LocalBroadcastManagerFactory

@@ -14,26 +14,19 @@ import kotlin.test.assertFailsWith
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
-class CardSessionRequestSerializerTest {
+class CVVSessionTypeSerializerTest {
 
-    private val sessionRequestSerializer: Serializer<SessionRequest> = CardSessionRequestSerializer()
+    private val sessionRequestSerializer: Serializer<SessionRequest> = CVVSessionRequestSerializer()
 
     @Test
-    fun `should be able to serialize card session request to json`() {
-        val sessionRequest = CardSessionRequest(
-            cardNumber = "0000111122223333",
-            cardExpiryDate = CardExpiryDate(12, 2020),
+    fun `should be able to serialize cvv session request to json`() {
+        val sessionRequest = CVVSessionRequest(
             cvv = "123",
             identity = "MERCHANT-123"
         )
 
         val expectedRequest = """
                 {
-                    "cardNumber": "0000111122223333",
-                    "cardExpiryDate": {
-                        "month": 12,
-                        "year": 2020
-                    },
                     "cvc": "123",
                     "identity": "MERCHANT-123"
                 }"""
@@ -45,8 +38,18 @@ class CardSessionRequestSerializerTest {
 
     @Test
     fun `should fail when trying to serialise a cvv session request`() {
-        val sessionRequest = CVVSessionRequest("123", "MERCHANT-123")
-        assertFailsWith<IllegalArgumentException> { sessionRequestSerializer.serialize(sessionRequest) }
+        val sessionRequest = CardSessionRequest(
+            cardNumber = "0000111122223333",
+            cardExpiryDate = CardExpiryDate(12, 2020),
+            cvv = "123",
+            identity = "MERCHANT-123"
+        )
+
+        assertFailsWith<IllegalArgumentException> {
+            sessionRequestSerializer.serialize(
+                sessionRequest
+            )
+        }
     }
 
     private fun removeWhitespace(string: String): String {

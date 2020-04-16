@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.client.checkout
+package com.worldpay.access.checkout.session
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -24,12 +24,13 @@ class ActivityLifeCycleEventHandlerTest {
     @Before
     fun setUp() {
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
-        activityLifeCycleEventHandler = ActivityLifecycleEventHandler(
-            tag,
-            sessionReceiver,
-            lifecycleOwner,
-            localBroadcastManagerFactory
-        )
+        activityLifeCycleEventHandler =
+            ActivityLifecycleEventHandler(
+                tag,
+                sessionReceiver,
+                lifecycleOwner,
+                localBroadcastManagerFactory
+            )
     }
 
     @Test

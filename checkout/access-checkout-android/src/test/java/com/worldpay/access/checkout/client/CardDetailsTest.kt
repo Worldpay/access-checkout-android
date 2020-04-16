@@ -1,14 +1,14 @@
-package com.worldpay.access.checkout.client.card
+package com.worldpay.access.checkout.client
 
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
-class CardDetailsBuilderTest {
+class CardDetailsTest {
 
     @Test
     fun `should be able to create a card details instance using the builder`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .pan("120392895018742508243")
             .expiryDate(11, 20)
             .cvv("123")
@@ -23,7 +23,7 @@ class CardDetailsBuilderTest {
 
     @Test
     fun `should be able to create a card details instance without providing pan`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .expiryDate(11, 20)
             .cvv("123")
             .build()
@@ -33,7 +33,7 @@ class CardDetailsBuilderTest {
 
     @Test
     fun `should be able to create a card details instance without providing expiry date`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .pan("120392895018742508243")
             .cvv("123")
             .build()
@@ -43,7 +43,7 @@ class CardDetailsBuilderTest {
 
     @Test
     fun `should be able to create a card details instance without providing cvv`() {
-        val cardDetails = CardDetailsBuilder()
+        val cardDetails = CardDetails.Builder()
             .pan("120392895018742508243")
             .expiryDate(11, 20)
             .build()
