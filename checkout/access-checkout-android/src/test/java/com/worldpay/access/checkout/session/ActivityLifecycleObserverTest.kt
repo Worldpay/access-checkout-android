@@ -12,20 +12,20 @@ import org.junit.Test
 import org.mockito.BDDMockito.*
 import org.mockito.internal.util.reflection.FieldSetter
 
-class ActivityLifeCycleEventHandlerTest {
+class ActivityLifecycleObserverTest {
 
     private val lifecycleOwner = mock(LifecycleOwner::class.java)
     private val lifecycle = mock(Lifecycle::class.java)
     private val tag = "some tag"
     private val sessionReceiver: SessionReceiver = mock(SessionReceiver::class.java)
     private val localBroadcastManagerFactory :LocalBroadcastManagerFactory = mock(LocalBroadcastManagerFactory::class.java)
-    private lateinit var activityLifeCycleEventHandler: ActivityLifecycleEventHandler
+    private lateinit var activityLifeCycleObserver: ActivityLifecycleObserver
 
     @Before
     fun setUp() {
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
-        activityLifeCycleEventHandler =
-            ActivityLifecycleEventHandler(
+        activityLifeCycleObserver =
+            ActivityLifecycleObserver(
                 tag,
                 sessionReceiver,
                 lifecycleOwner,
@@ -41,7 +41,7 @@ class ActivityLifeCycleEventHandlerTest {
         setMock(localBroadcastManagerFactory)
         given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
 
-        activityLifeCycleEventHandler.startListener()
+        activityLifeCycleObserver.startListener()
 
         verify(localBroadcastManager).registerReceiver(any(), any())
     }
@@ -51,22 +51,22 @@ class ActivityLifeCycleEventHandlerTest {
         val localBroadcastManager = mock(LocalBroadcastManager::class.java)
         setMock(localBroadcastManager)
 
-        activityLifeCycleEventHandler.disconnectListener()
+        activityLifeCycleObserver.disconnectListener()
 
         verify(localBroadcastManager).unregisterReceiver(any())
     }
 
     @Test
     fun `given activity lifecycle handler has been triggered on stop, then activity lifecycle handler is removed as an observer of the activity lifecycle`() {
-        activityLifeCycleEventHandler.removeObserver()
+        activityLifeCycleObserver.removeObserver()
 
-        verify(lifecycle).removeObserver(activityLifeCycleEventHandler)
+        verify(lifecycle).removeObserver(activityLifeCycleObserver)
     }
 
     private fun setMock(clazz: Any) {
         FieldSetter.setField(
-            activityLifeCycleEventHandler,
-            activityLifeCycleEventHandler.javaClass.getDeclaredField(
+            activityLifeCycleObserver,
+            activityLifeCycleObserver.javaClass.getDeclaredField(
                 CaseFormat.UPPER_CAMEL.to(
                     CaseFormat.LOWER_CAMEL,
                     clazz::class.simpleName!!

@@ -2,7 +2,11 @@ package com.worldpay.access.checkout.client
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.api.session.SessionReceiver
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
+import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
+import com.worldpay.access.checkout.session.CheckoutSessionResponseListener
 import com.worldpay.access.checkout.session.request.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.session.request.SessionRequestHandlerFactory
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
@@ -10,6 +14,7 @@ import com.worldpay.access.checkout.views.SessionResponseListener
 
 class AccessCheckoutClientBuilder {
 
+    private val tag = "AccessCheckoutClient"
     private var baseUrl: String? = null
     private var merchantId: String? = null
     private var context: Context? = null
@@ -56,13 +61,22 @@ class AccessCheckoutClientBuilder {
             .build()
 
         return AccessCheckoutClientImpl(
-            baseUrl as String,
-            context as Context,
-            externalSessionResponseListener as SessionResponseListener,
+            SessionRequestHandlerFactory(tokenRequestHandlerConfig),
+            createActivityLifecycleEventHandlerFactory()
+        )
+    }
+
+    private fun createActivityLifecycleEventHandlerFactory(): ActivityLifecycleObserverInitialiser {
+        val checkoutSessionResponseListener = CheckoutSessionResponseListener(
+            tag,
+            externalSessionResponseListener as SessionResponseListener
+        )
+
+        return ActivityLifecycleObserverInitialiser(
+            tag,
+            SessionReceiver(checkoutSessionResponseListener),
             lifecycleOwner as LifecycleOwner,
-            SessionRequestHandlerFactory(
-                tokenRequestHandlerConfig
-            )
+            LocalBroadcastManagerFactory(context as Context)
         )
     }
 

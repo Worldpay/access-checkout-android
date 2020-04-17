@@ -11,7 +11,7 @@ import com.worldpay.access.checkout.api.session.SessionReceiver
 import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.logging.LoggingUtils
 
-internal class ActivityLifecycleEventHandler(
+internal class ActivityLifecycleObserver(
     private val tag: String,
     private val sessionReceiver: SessionReceiver,
     private val lifecycleOwner: LifecycleOwner,
