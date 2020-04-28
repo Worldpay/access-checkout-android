@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.session.request
+package com.worldpay.access.checkout.session.request.handlers
 
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType

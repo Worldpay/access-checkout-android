@@ -4,10 +4,10 @@ import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
-import com.worldpay.access.checkout.session.request.SessionRequestHandlerConfig
-import com.worldpay.access.checkout.session.request.SessionRequestHandlerFactory
 import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
+import com.worldpay.access.checkout.session.request.handlers.SessionRequestHandlerConfig
+import com.worldpay.access.checkout.session.request.handlers.SessionRequestHandlerFactory
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 import com.worldpay.access.checkout.views.SessionResponseListener
 

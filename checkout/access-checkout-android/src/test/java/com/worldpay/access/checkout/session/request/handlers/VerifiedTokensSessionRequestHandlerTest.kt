@@ -6,10 +6,10 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.CardSessionRequest
 import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.api.session.SessionRequestService.Companion.REQUEST_KEY
+import com.worldpay.access.checkout.api.session.SessionRequestService.Companion.SESSION_TYPE
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
-import com.worldpay.access.checkout.session.request.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
@@ -24,7 +24,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-class VerifiedTokensSessionTypeHandlerTest {
+class VerifiedTokensSessionRequestHandlerTest {
 
     private val context = mock(Context::class.java)
     private val externalSessionResponseListener = mock(SessionResponseListener::class.java)
@@ -127,6 +127,7 @@ class VerifiedTokensSessionTypeHandlerTest {
         val baseUrl = argument.value.getStringExtra(SessionRequestService.BASE_URL_KEY)
         val discoverLinks =
             argument.value.getSerializableExtra(SessionRequestService.DISCOVER_LINKS) as DiscoverLinks
+        val sessionType = argument.value.getStringExtra(SESSION_TYPE)
 
         assertEquals(cardDetails.pan, cardSessionRequest.cardNumber)
         assertEquals("merchant-id", cardSessionRequest.identity)
@@ -137,6 +138,8 @@ class VerifiedTokensSessionTypeHandlerTest {
         assertEquals("base-url", baseUrl)
 
         assertEquals(DiscoverLinks.verifiedTokens, discoverLinks)
+
+        assertEquals(VERIFIED_TOKEN_SESSION.value, sessionType)
     }
 
 }

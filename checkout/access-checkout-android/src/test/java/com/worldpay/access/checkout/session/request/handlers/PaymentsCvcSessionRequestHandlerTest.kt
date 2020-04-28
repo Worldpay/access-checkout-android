@@ -8,7 +8,6 @@ import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
-import com.worldpay.access.checkout.session.request.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +22,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-class PaymentsCvcSessionTypeHandlerTest {
+class PaymentsCvcSessionRequestHandlerTest {
 
     private val context = Mockito.mock(Context::class.java)
     private val externalSessionResponseListener = Mockito.mock(SessionResponseListener::class.java)

@@ -1,9 +1,11 @@
-package com.worldpay.access.checkout.api.session
+package com.worldpay.access.checkout.session.request.broadcast
 
 import android.content.Context
 import android.content.Intent
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
+import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
@@ -11,10 +13,10 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito.*
 import java.io.Serializable
 
-class SessionReceiverTest {
+class SessionBroadcastReceiverTest {
 
     private lateinit var sessionResponseListener: SessionResponseListener
-    private lateinit var sessionReceiver: SessionReceiver
+    private lateinit var sessionBroadcastReceiver: SessionBroadcastReceiver
     private lateinit var intent: Intent
     private lateinit var context: Context
 
@@ -24,8 +26,8 @@ class SessionReceiverTest {
         intent = mock()
         context = mock()
 
-        sessionReceiver =
-            SessionReceiver(
+        sessionBroadcastReceiver =
+            SessionBroadcastReceiver(
                 sessionResponseListener
             )
     }
@@ -35,7 +37,7 @@ class SessionReceiverTest {
 
         given(intent.action).willReturn("UNKNOWN_INTENT")
 
-        sessionReceiver.onReceive(context, intent)
+        sessionBroadcastReceiver.onReceive(context, intent)
 
         verifyZeroInteractions(sessionResponseListener)
     }
@@ -47,7 +49,7 @@ class SessionReceiverTest {
         given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
         given(intent.getSerializableExtra("error")).willReturn(AccessCheckoutError("some error"))
 
-        sessionReceiver.onReceive(context, intent)
+        sessionBroadcastReceiver.onReceive(context, intent)
 
         verify(sessionResponseListener, atMost(1))
             .onRequestFinished(null, expectedException)
@@ -69,7 +71,7 @@ class SessionReceiverTest {
         )
         given(intent.getSerializableExtra("error")).willReturn(AccessCheckoutError("some error"))
 
-        sessionReceiver.onReceive(context, intent)
+        sessionBroadcastReceiver.onReceive(context, intent)
 
         verify(sessionResponseListener).onRequestFinished("some reference", null)
     }
@@ -81,7 +83,7 @@ class SessionReceiverTest {
         given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
 
-        sessionReceiver.onReceive(context, intent)
+        sessionBroadcastReceiver.onReceive(context, intent)
 
         verify(sessionResponseListener).onRequestFinished(null, expectedEx)
     }
@@ -98,7 +100,7 @@ class SessionReceiverTest {
         )
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
 
-        sessionReceiver.onReceive(context, intent)
+        sessionBroadcastReceiver.onReceive(context, intent)
 
 
         verify(sessionResponseListener, atMost(1))
@@ -118,7 +120,7 @@ class SessionReceiverTest {
         )
         given(intent.getSerializableExtra("error")).willReturn(null)
 
-        sessionReceiver.onReceive(context, intent)
+        sessionBroadcastReceiver.onReceive(context, intent)
 
 
         verify(sessionResponseListener, atMost(1))

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.session.request
+package com.worldpay.access.checkout.session.request.handlers
 
 import android.content.Context
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull

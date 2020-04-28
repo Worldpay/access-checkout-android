@@ -1,7 +1,4 @@
-package com.worldpay.access.checkout.session.request
-
-import com.worldpay.access.checkout.session.request.handlers.PaymentsCvcSessionRequestHandler
-import com.worldpay.access.checkout.session.request.handlers.VerifiedTokensSessionRequestHandler
+package com.worldpay.access.checkout.session.request.handlers
 
 internal class SessionRequestHandlerFactory(sessionRequestHandlerConfig: SessionRequestHandlerConfig) {
 

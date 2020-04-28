@@ -1,8 +1,6 @@
-package com.worldpay.access.checkout.session.request
+package com.worldpay.access.checkout.session.request.handlers
 
 import android.content.Context
-import com.worldpay.access.checkout.session.request.handlers.PaymentsCvcSessionRequestHandler
-import com.worldpay.access.checkout.session.request.handlers.VerifiedTokensSessionRequestHandler
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Test
 import org.mockito.Mockito
