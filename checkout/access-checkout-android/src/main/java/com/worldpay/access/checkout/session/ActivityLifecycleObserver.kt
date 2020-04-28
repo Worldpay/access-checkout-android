@@ -1,53 +1,46 @@
 package com.worldpay.access.checkout.session
 
-import android.content.IntentFilter
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.api.session.SessionReceiver
-import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.logging.LoggingUtils
+import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManager
+import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
 
 internal class ActivityLifecycleObserver(
     private val tag: String,
-    private val sessionReceiver: SessionReceiver,
     private val lifecycleOwner: LifecycleOwner,
-    private val localBroadcastManagerFactory: LocalBroadcastManagerFactory
+    private val sessionBroadcastManagerFactory: SessionBroadcastManagerFactory
 ) : LifecycleObserver {
 
-    private lateinit var localBroadcastManager: LocalBroadcastManager
+    private lateinit var sessionBroadcastManager: SessionBroadcastManager
 
     init {
-        onCreateHostRegistration()
+        onCreateListener()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private fun onCreateHostRegistration() {
+    private fun onCreateListener() {
         LoggingUtils.debugLog(tag, "On Create")
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    internal fun startListener() {
+    internal fun resumeListener() {
         LoggingUtils.debugLog(tag, "On Resume")
-        localBroadcastManager = localBroadcastManagerFactory.createInstance()
-        localBroadcastManager.registerReceiver(
-            sessionReceiver,
-            IntentFilter(SessionRequestService.ACTION_GET_SESSION)
-        )
+        sessionBroadcastManager = sessionBroadcastManagerFactory.createInstance()
+        sessionBroadcastManager.register()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun disconnectListener() {
+    internal fun stopListener() {
         LoggingUtils.debugLog(tag, "On Stop")
-        localBroadcastManager.unregisterReceiver(sessionReceiver)
+        sessionBroadcastManager.unregister()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun removeObserver() {
+    internal fun onStopListener() {
         lifecycleOwner.lifecycle.removeObserver(this)
     }
 

@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.session.request
 import com.worldpay.access.checkout.session.request.handlers.PaymentsCvcSessionRequestHandler
 import com.worldpay.access.checkout.session.request.handlers.VerifiedTokensSessionRequestHandler
 
-internal class SessionRequestHandlerFactory(private val sessionRequestHandlerConfig: SessionRequestHandlerConfig) {
+internal class SessionRequestHandlerFactory(sessionRequestHandlerConfig: SessionRequestHandlerConfig) {
 
     private val handlers = listOf(
         VerifiedTokensSessionRequestHandler(

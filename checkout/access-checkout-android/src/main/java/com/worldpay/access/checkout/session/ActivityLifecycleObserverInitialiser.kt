@@ -1,22 +1,19 @@
 package com.worldpay.access.checkout.session
 
 import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.api.session.SessionReceiver
+import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
 
 internal class ActivityLifecycleObserverInitialiser(
     tag: String,
-    sessionReceiver: SessionReceiver,
     lifecycleOwner: LifecycleOwner,
-    localBroadcastManagerFactory: LocalBroadcastManagerFactory
+    sessionBroadcastManagerFactory: SessionBroadcastManagerFactory
 ) {
 
     private val activityLifecycleObserver: ActivityLifecycleObserver =
         ActivityLifecycleObserver(
             tag,
-            sessionReceiver,
             lifecycleOwner,
-            localBroadcastManagerFactory
+            sessionBroadcastManagerFactory
         )
 
     fun initialise(): ActivityLifecycleObserver {

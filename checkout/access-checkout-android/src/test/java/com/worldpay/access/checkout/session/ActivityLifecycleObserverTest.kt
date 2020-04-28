@@ -2,14 +2,13 @@ package com.worldpay.access.checkout.session
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.google.common.base.CaseFormat
-import com.nhaarman.mockitokotlin2.any
-import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.api.session.SessionReceiver
+import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManager
+import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
+import org.mockito.Mockito
 import org.mockito.internal.util.reflection.FieldSetter
 
 class ActivityLifecycleObserverTest {
@@ -17,8 +16,8 @@ class ActivityLifecycleObserverTest {
     private val lifecycleOwner = mock(LifecycleOwner::class.java)
     private val lifecycle = mock(Lifecycle::class.java)
     private val tag = "some tag"
-    private val sessionReceiver: SessionReceiver = mock(SessionReceiver::class.java)
-    private val localBroadcastManagerFactory :LocalBroadcastManagerFactory = mock(LocalBroadcastManagerFactory::class.java)
+    private val sessionBroadcastManagerFactory : SessionBroadcastManagerFactory = mock(
+        SessionBroadcastManagerFactory::class.java)
     private lateinit var activityLifeCycleObserver: ActivityLifecycleObserver
 
     @Before
@@ -27,38 +26,37 @@ class ActivityLifecycleObserverTest {
         activityLifeCycleObserver =
             ActivityLifecycleObserver(
                 tag,
-                sessionReceiver,
                 lifecycleOwner,
-                localBroadcastManagerFactory
+                sessionBroadcastManagerFactory
             )
     }
 
     @Test
     fun `given activity lifecycle handler has been triggered on resume, then broadcast manager has session request receiver registered`() {
-        val localBroadcastManager = mock(LocalBroadcastManager::class.java)
-        val localBroadcastManagerFactory = mock(LocalBroadcastManagerFactory::class.java)
-        setMock(localBroadcastManager)
-        setMock(localBroadcastManagerFactory)
-        given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
+        val sessionBroadcastManager = Mockito.mock(SessionBroadcastManager::class.java)
 
-        activityLifeCycleObserver.startListener()
+        given(sessionBroadcastManagerFactory.createInstance()).willReturn(sessionBroadcastManager)
 
-        verify(localBroadcastManager).registerReceiver(any(), any())
+        activityLifeCycleObserver.resumeListener()
+
+        verify(sessionBroadcastManager).register()
     }
 
     @Test
     fun `given activity lifecycle handler has been triggered on stop, then broadcast manager has session request receiver unregistered`() {
-        val localBroadcastManager = mock(LocalBroadcastManager::class.java)
-        setMock(localBroadcastManager)
+        val sessionBroadcastManager = Mockito.mock(SessionBroadcastManager::class.java)
+        setMock(sessionBroadcastManager)
 
-        activityLifeCycleObserver.disconnectListener()
+        given(sessionBroadcastManagerFactory.createInstance()).willReturn(sessionBroadcastManager)
 
-        verify(localBroadcastManager).unregisterReceiver(any())
+        activityLifeCycleObserver.stopListener()
+
+        verify(sessionBroadcastManager).unregister()
     }
 
     @Test
     fun `given activity lifecycle handler has been triggered on stop, then activity lifecycle handler is removed as an observer of the activity lifecycle`() {
-        activityLifeCycleObserver.removeObserver()
+        activityLifeCycleObserver.onStopListener()
 
         verify(lifecycle).removeObserver(activityLifeCycleObserver)
     }

@@ -2,13 +2,12 @@ package com.worldpay.access.checkout.client
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.api.session.SessionReceiver
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
-import com.worldpay.access.checkout.session.CheckoutSessionResponseListener
 import com.worldpay.access.checkout.session.request.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.session.request.SessionRequestHandlerFactory
+import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 import com.worldpay.access.checkout.views.SessionResponseListener
 
@@ -60,23 +59,23 @@ class AccessCheckoutClientBuilder {
             .externalSessionResponseListener(externalSessionResponseListener as SessionResponseListener)
             .build()
 
+        val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context as Context)
+
         return AccessCheckoutClientImpl(
             SessionRequestHandlerFactory(tokenRequestHandlerConfig),
-            createActivityLifecycleEventHandlerFactory()
+            createActivityLifecycleObserverInitialiser(localBroadcastManagerFactory),
+            localBroadcastManagerFactory,
+            context as Context
         )
     }
 
-    private fun createActivityLifecycleEventHandlerFactory(): ActivityLifecycleObserverInitialiser {
-        val checkoutSessionResponseListener = CheckoutSessionResponseListener(
-            tag,
-            externalSessionResponseListener as SessionResponseListener
-        )
-
+    private fun createActivityLifecycleObserverInitialiser(
+        localBroadcastManagerFactory: LocalBroadcastManagerFactory
+    ): ActivityLifecycleObserverInitialiser {
         return ActivityLifecycleObserverInitialiser(
             tag,
-            SessionReceiver(checkoutSessionResponseListener),
             lifecycleOwner as LifecycleOwner,
-            LocalBroadcastManagerFactory(context as Context)
+            SessionBroadcastManagerFactory(localBroadcastManagerFactory)
         )
     }
 

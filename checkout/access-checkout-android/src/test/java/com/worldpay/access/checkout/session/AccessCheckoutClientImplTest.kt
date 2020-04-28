@@ -1,53 +1,97 @@
 package com.worldpay.access.checkout.session
 
+import android.content.Context
+import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.request.SessionRequestHandlerFactory
+import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.request.handlers.PaymentsCvcSessionRequestHandler
 import com.worldpay.access.checkout.session.request.handlers.VerifiedTokensSessionRequestHandler
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import org.robolectric.RobolectricTestRunner
+import kotlin.test.assertEquals
 
+@RunWith(RobolectricTestRunner::class)
 class AccessCheckoutClientImplTest {
 
-    private val lifecycleOwner = mock(LifecycleOwner::class.java)
-    private val lifecycle = mock(Lifecycle::class.java)
+    private val lifecycleOwnerMock = mock(LifecycleOwner::class.java)
+    private val lifecycleMock = mock(Lifecycle::class.java)
+    private val contextMock = mock(Context::class.java)
+    private val localBroadcastManagerFactoryMock = mock(LocalBroadcastManagerFactory::class.java)
+    private val localBroadcastManagerMock = mock(LocalBroadcastManager::class.java)
 
     private val sessionTokenRequestHandlerMock = mock(PaymentsCvcSessionRequestHandler::class.java)
-    private val verifiedTokenRequestHandlerMock = mock(VerifiedTokensSessionRequestHandler::class.java)
+    private val verifiedTokenRequestHandlerMock =
+        mock(VerifiedTokensSessionRequestHandler::class.java)
     private val tokenHandlerFactoryMock = mock(SessionRequestHandlerFactory::class.java)
-    private val activityLifecycleEventHandlerFactory = mock(ActivityLifecycleObserverInitialiser::class.java)
+    private val activityLifecycleEventHandlerFactory =
+        mock(ActivityLifecycleObserverInitialiser::class.java)
 
     @Before
     fun setup() {
-        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
+        given(lifecycleOwnerMock.lifecycle).willReturn(lifecycleMock)
         val handlers = listOf(sessionTokenRequestHandlerMock, verifiedTokenRequestHandlerMock)
         given(tokenHandlerFactoryMock.getTokenHandlers()).willReturn(handlers)
+        given(localBroadcastManagerFactoryMock.createInstance()).willReturn(localBroadcastManagerMock)
     }
 
 
     @Test
     fun `given AccessCheckoutClient is initialised with mandatory arguments then an instance of SDK is returned`() {
         val accessCheckoutClient = AccessCheckoutClientImpl(
-                tokenHandlerFactoryMock,
-                activityLifecycleEventHandlerFactory
+            tokenHandlerFactoryMock,
+            activityLifecycleEventHandlerFactory,
+            localBroadcastManagerFactoryMock,
+            contextMock
         )
         assertNotNull(accessCheckoutClient)
+    }
+
+    @Test
+    fun `should send out an initialise broadcast with the request session type information before generating the session`() {
+        val accessCheckoutClient = AccessCheckoutClientImpl(
+            tokenHandlerFactoryMock,
+            activityLifecycleEventHandlerFactory,
+            localBroadcastManagerFactoryMock,
+            contextMock
+        )
+
+        val cardDetails = CardDetails.Builder()
+            .pan("1234")
+            .expiryDate(12, 2020)
+            .cvv("123")
+            .build()
+
+        val argument = ArgumentCaptor.forClass(Intent::class.java)
+
+        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN_SESSION, PAYMENTS_CVC_SESSION))
+
+        verify(localBroadcastManagerMock).sendBroadcast(argument.capture())
+
+        assertEquals("get-number-of-session-types", argument.value.action)
+        assertEquals(2, argument.value.getIntExtra("number-of-session-types", 0))
     }
 
     @Test
     fun `should retrieve activity lifecycle event handler when client is created`() {
         AccessCheckoutClientImpl(
             tokenHandlerFactoryMock,
-            activityLifecycleEventHandlerFactory
+            activityLifecycleEventHandlerFactory,
+            localBroadcastManagerFactoryMock,
+            contextMock
         )
 
         verify(activityLifecycleEventHandlerFactory).initialise()
@@ -65,8 +109,10 @@ class AccessCheckoutClientImplTest {
         val tokenRequests = listOf(VERIFIED_TOKEN_SESSION, PAYMENTS_CVC_SESSION)
 
         val accessCheckoutClient = AccessCheckoutClientImpl(
-                tokenHandlerFactoryMock,
-                activityLifecycleEventHandlerFactory
+            tokenHandlerFactoryMock,
+            activityLifecycleEventHandlerFactory,
+            localBroadcastManagerFactoryMock,
+            contextMock
         )
 
         accessCheckoutClient.generateSession(cardDetails, tokenRequests)
@@ -86,7 +132,9 @@ class AccessCheckoutClientImplTest {
 
         val accessCheckoutClient = AccessCheckoutClientImpl(
             tokenHandlerFactoryMock,
-            activityLifecycleEventHandlerFactory
+            activityLifecycleEventHandlerFactory,
+            localBroadcastManagerFactoryMock,
+            contextMock
         )
 
         accessCheckoutClient.generateSession(cardDetails, tokenRequests)
@@ -109,7 +157,9 @@ class AccessCheckoutClientImplTest {
 
         val accessCheckoutClient = AccessCheckoutClientImpl(
             tokenHandlerFactoryMock,
-            activityLifecycleEventHandlerFactory
+            activityLifecycleEventHandlerFactory,
+            localBroadcastManagerFactoryMock,
+            contextMock
         )
 
         accessCheckoutClient.generateSession(cardDetails, tokenRequests)
@@ -129,7 +179,9 @@ class AccessCheckoutClientImplTest {
 
         val accessCheckoutClient = AccessCheckoutClientImpl(
             tokenHandlerFactoryMock,
-            activityLifecycleEventHandlerFactory
+            activityLifecycleEventHandlerFactory,
+            localBroadcastManagerFactoryMock,
+            contextMock
         )
 
         accessCheckoutClient.generateSession(cardDetails, emptyList())

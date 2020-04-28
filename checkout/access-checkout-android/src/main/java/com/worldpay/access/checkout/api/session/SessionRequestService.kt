@@ -4,11 +4,11 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
+import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),
     Callback<SessionResponse> {
