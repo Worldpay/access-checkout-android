@@ -1,17 +1,17 @@
-package com.worldpay.access.checkout.session.request.broadcast
+package com.worldpay.access.checkout.session.request.broadcast.receivers
 
 import android.content.Context
 import android.content.Intent
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
 import com.worldpay.access.checkout.api.session.SessionResponse
-import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.*
 import java.io.Serializable
+import kotlin.test.assertEquals
 
 class SessionBroadcastReceiverTest {
 
@@ -29,6 +29,14 @@ class SessionBroadcastReceiverTest {
         context = mock()
 
         sessionBroadcastReceiver = SessionBroadcastReceiver(sessionResponseListener)
+    }
+
+    @Test
+    fun `should return expected IntentFilter`() {
+        val intentFilter = sessionBroadcastReceiver.getIntentFilter()
+
+        assertEquals(sessionBroadcastReceiver.javaClass.name, intentFilter.getAction(0))
+        assertEquals(1, intentFilter.countActions())
     }
 
     @Test

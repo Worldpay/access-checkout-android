@@ -5,7 +5,7 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.eq
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.client.CardSessionClient
 import com.worldpay.access.checkout.api.session.client.SessionClientFactory
@@ -24,7 +24,7 @@ class SessionRequestSenderTest {
 
     private lateinit var sessionClientFactory: SessionClientFactory
     private lateinit var requestDispatcherFactory: RequestDispatcherFactory
-    private lateinit var accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient
+    private lateinit var apiDiscoveryClient: ApiDiscoveryClient
     private lateinit var sessionRequestSender: SessionRequestSender
 
     private val baseURL = "http://localhost"
@@ -33,9 +33,9 @@ class SessionRequestSenderTest {
     fun setup() {
         sessionClientFactory = mock(SessionClientFactory::class.java)
         requestDispatcherFactory = mock(RequestDispatcherFactory::class.java)
-        accessCheckoutDiscoveryClient = mock(AccessCheckoutDiscoveryClient::class.java)
+        apiDiscoveryClient = mock(ApiDiscoveryClient::class.java)
         sessionRequestSender = SessionRequestSender(
-            sessionClientFactory, requestDispatcherFactory, accessCheckoutDiscoveryClient
+            sessionClientFactory, requestDispatcherFactory, apiDiscoveryClient
         )
     }
 
@@ -66,7 +66,7 @@ class SessionRequestSenderTest {
         )
 
         val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(accessCheckoutDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
+        verify(apiDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(null, path)
 
         verify(requestDispatcher).execute(expectedSessionRequest)
@@ -108,7 +108,7 @@ class SessionRequestSenderTest {
             DiscoverLinks.verifiedTokens
         )
         val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(accessCheckoutDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
+        verify(apiDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(RuntimeException("Some exception"), null)
 
         Mockito.verifyZeroInteractions(requestDispatcher)

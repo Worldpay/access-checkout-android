@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionTypeBroadcastReceiver
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
@@ -33,11 +34,9 @@ class AccessCheckoutClientImplTest {
     private val localBroadcastManagerMock = mock(LocalBroadcastManager::class.java)
 
     private val sessionTokenRequestHandlerMock = mock(PaymentsCvcSessionRequestHandler::class.java)
-    private val verifiedTokenRequestHandlerMock =
-        mock(VerifiedTokensSessionRequestHandler::class.java)
+    private val verifiedTokenRequestHandlerMock = mock(VerifiedTokensSessionRequestHandler::class.java)
     private val tokenHandlerFactoryMock = mock(SessionRequestHandlerFactory::class.java)
-    private val activityLifecycleEventHandlerFactory =
-        mock(ActivityLifecycleObserverInitialiser::class.java)
+    private val activityLifecycleEventHandlerFactory = mock(ActivityLifecycleObserverInitialiser::class.java)
 
     @Before
     fun setup() {
@@ -82,7 +81,7 @@ class AccessCheckoutClientImplTest {
 
         verify(localBroadcastManagerMock).sendBroadcast(argument.capture())
 
-        assertEquals("get-number-of-session-types", argument.value.action)
+        assertEquals(SessionTypeBroadcastReceiver::class.java.name, argument.value.action as String)
         assertEquals(2, argument.value.getIntExtra("number-of-session-types", 0))
     }
 

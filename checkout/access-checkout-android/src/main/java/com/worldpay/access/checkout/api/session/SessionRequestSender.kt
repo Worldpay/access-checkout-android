@@ -2,8 +2,8 @@ package com.worldpay.access.checkout.api.session
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
-import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClientFactory
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClientFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
@@ -12,7 +12,7 @@ import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 internal class SessionRequestSender(
     private val sessionClientFactory: SessionClientFactory,
     private val requestDispatcherFactory: RequestDispatcherFactory,
-    private val accessCheckoutDiscoveryClient: AccessCheckoutDiscoveryClient = AccessCheckoutDiscoveryClientFactory.getClient()
+    private val apiDiscoveryClient: ApiDiscoveryClient = ApiDiscoveryClientFactory.getClient()
 ) {
 
     fun sendSessionRequest(
@@ -36,6 +36,6 @@ internal class SessionRequestSender(
                 }
             }
         }
-        accessCheckoutDiscoveryClient.discover(baseUrl, callback, discoverLinks)
+        apiDiscoveryClient.discover(baseUrl, callback, discoverLinks)
     }
 }

@@ -15,6 +15,7 @@ import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseF
 import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -25,9 +26,17 @@ class DiscoveryIntegrationTest {
     private val month = "12"
     private val year = "99"
 
+//    @get:Rule
+//    var discoveryRule: DiscoveryRule =
+//        DiscoveryRule(MainActivity::class.java)
+
     @get:Rule
-    var discoveryRule: DiscoveryRule =
-        DiscoveryRule(MainActivity::class.java)
+    var discoveryRule = ActivityTestRule(MainActivity::class.java)
+
+    @Before
+    fun setup() {
+        simulateRootResourceTemporaryServerError()
+    }
 
     @Test
     fun shouldRetryDiscoveryAndReturnSuccessfulResponse_whenDiscoveryFailsFirstTime_cardFlow() {

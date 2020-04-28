@@ -23,7 +23,7 @@ import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 @Config(manifest = Config.NONE)
-class AccessCheckoutDiscoveryAsyncTaskTest {
+class ApiDiscoveryAsyncTaskTest {
 
     private val endpointMock: Endpoint = mock()
     private val secondEndpointMock: Endpoint = mock()
@@ -52,7 +52,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
             }
         }
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
             httpClientMock
@@ -84,7 +84,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
             )
         )
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
             httpClientMock
@@ -113,7 +113,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
             AccessCheckoutError("Some message")
         )
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
             httpClientMock
@@ -147,7 +147,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
             )
         )
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
             httpClientMock
@@ -173,7 +173,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         val rootURL = URL("http://localhost")
         given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(IllegalStateException("Some message"))
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
             httpClientMock
@@ -199,7 +199,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         val rootURL = URL("http://localhost")
         given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(IllegalStateException())
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
             httpClientMock
@@ -228,7 +228,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
 
         BDDMockito.given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willReturn(rubbishResponse)
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
             httpClientMock
@@ -259,7 +259,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         BDDMockito.given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willReturn("$baseURL/verifiedTokens")
         BDDMockito.given(httpClientMock.doGet(serviceUrl, secondLinkDiscoveryDeserializerMock)).willReturn("$baseURL/verifiedTokens/sessions")
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
             httpClientMock
@@ -289,7 +289,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
 
         given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willReturn("$baseURL/verifiedTokens")
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             oneLevelEndpointsMock,
             httpClientMock
@@ -324,7 +324,7 @@ class AccessCheckoutDiscoveryAsyncTaskTest {
         BDDMockito.given(httpClientMock.doGet(rootURL, secondLinkDiscoveryDeserializerMock)).willReturn("$baseURL/first/second")
         BDDMockito.given(httpClientMock.doGet(rootURL, thirdLinkDiscoveryDeserializerMock)).willReturn("$baseURL/first/second/third")
 
-        val accessCheckoutDiscoveryAsyncTask = AccessCheckoutDiscoveryAsyncTask(
+        val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             threeLevelEndpointsMock,
             httpClientMock

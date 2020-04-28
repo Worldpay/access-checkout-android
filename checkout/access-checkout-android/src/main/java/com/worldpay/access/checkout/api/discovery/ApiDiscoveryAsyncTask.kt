@@ -1,18 +1,17 @@
 package com.worldpay.access.checkout.api.discovery
 
 import android.os.AsyncTask
-import com.worldpay.access.checkout.api.*
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
+import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
-import java.lang.Exception
 import java.net.MalformedURLException
 import java.net.URL
 
-internal class AccessCheckoutDiscoveryAsyncTask(
+internal class ApiDiscoveryAsyncTask(
     private val callback: Callback<String>,
     private val endpoints: List<Endpoint>,
     private val httpClient: HttpClient
@@ -62,4 +61,5 @@ internal class AccessCheckoutDiscoveryAsyncTask(
         }
         return httpClient.doGet(httpUrl, deserializer)
     }
+
 }

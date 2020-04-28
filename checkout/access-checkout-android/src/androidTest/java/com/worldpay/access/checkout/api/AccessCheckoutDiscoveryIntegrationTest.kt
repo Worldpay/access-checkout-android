@@ -13,8 +13,8 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDi
 import com.worldpay.access.checkout.api.DiscoveryStubs.rootResponseMapping
 import com.worldpay.access.checkout.api.DiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.api.DiscoveryStubs.verifiedTokensMapping
-import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryAsyncTaskFactory
-import com.worldpay.access.checkout.api.discovery.AccessCheckoutDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
 import org.awaitility.Awaitility.await
@@ -53,7 +53,7 @@ class AccessCheckoutDiscoveryIntegrationTest {
             }
         }
 
-        val client = AccessCheckoutDiscoveryClient(AccessCheckoutDiscoveryAsyncTaskFactory())
+        val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
 
         client.discover(wireMockRule.baseUrl(), callback, DiscoverLinks.verifiedTokens)
 
@@ -81,7 +81,7 @@ class AccessCheckoutDiscoveryIntegrationTest {
             }
         }
 
-        val client = AccessCheckoutDiscoveryClient(AccessCheckoutDiscoveryAsyncTaskFactory())
+        val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
 
         client.discover(wireMockRule.baseUrl(), callback, DiscoverLinks.verifiedTokens)
 
@@ -123,7 +123,7 @@ class AccessCheckoutDiscoveryIntegrationTest {
             }
         }
 
-        val client = AccessCheckoutDiscoveryClient(AccessCheckoutDiscoveryAsyncTaskFactory())
+        val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
 
         client.discover(wireMockRule.baseUrl(), firstCallback, DiscoverLinks.verifiedTokens)
 
