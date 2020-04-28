@@ -19,6 +19,8 @@ class SessionBroadcastReceiverTest {
     private lateinit var sessionBroadcastReceiver: SessionBroadcastReceiver
     private lateinit var intent: Intent
     private lateinit var context: Context
+    
+    private val action = SessionBroadcastReceiver::class.java.name
 
     @Before
     fun setup() {
@@ -26,15 +28,11 @@ class SessionBroadcastReceiverTest {
         intent = mock()
         context = mock()
 
-        sessionBroadcastReceiver =
-            SessionBroadcastReceiver(
-                sessionResponseListener
-            )
+        sessionBroadcastReceiver = SessionBroadcastReceiver(sessionResponseListener)
     }
 
     @Test
-    fun `given an unknown intent, then session response listener is not notified`() {
-
+    fun `should not notify if the intent is not recognised`() {
         given(intent.action).willReturn("UNKNOWN_INTENT")
 
         sessionBroadcastReceiver.onReceive(context, intent)
@@ -43,23 +41,20 @@ class SessionBroadcastReceiverTest {
     }
 
     @Test
-    fun `given empty session response and empty error is received then session response listener is notified with AccessCheckout custom exception`() {
-
-        val expectedException = AccessCheckoutError("some error")
-        given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
+    fun `should return empty session and exception when session response is empty`() {
+        given(intent.action).willReturn(action)
         given(intent.getSerializableExtra("error")).willReturn(AccessCheckoutError("some error"))
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
         verify(sessionResponseListener, atMost(1))
-            .onRequestFinished(null, expectedException)
+            .onRequestFinished(null, AccessCheckoutError("some error"))
     }
 
 
     @Test
-    fun `given a session response is received then session response listener is notified with href`() {
-
-        given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
+    fun `should return href given a session response is received`() {
+        given(intent.action).willReturn(action)
         given(intent.getSerializableExtra("response")).willReturn(
             SessionResponse(
                 SessionResponse.Links(
@@ -77,10 +72,9 @@ class SessionBroadcastReceiverTest {
     }
 
     @Test
-    fun `given an error is received then session response listener is notified with null`() {
-
+    fun `should return null session given an error is received`() {
         val expectedEx: AccessCheckoutError = mock()
-        given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
+        given(intent.action).willReturn(action)
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
 
         sessionBroadcastReceiver.onReceive(context, intent)
@@ -89,10 +83,9 @@ class SessionBroadcastReceiverTest {
     }
 
     @Test
-    fun `given a response that is not a session response is received then session response listener is notified with error once`() {
-
+    fun `should notify with error once when a response that is not a session response is received`() {
         val expectedEx: AccessCheckoutError = mock()
-        given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
+        given(intent.action).willReturn(action)
         given(intent.getSerializableExtra("response")).willReturn(
             TestObject(
                 "something"
@@ -108,11 +101,10 @@ class SessionBroadcastReceiverTest {
     }
 
     @Test
-    fun `given a response that is not a session response and error deserialize failure then session response listener is notified with custom error`() {
-
+    fun `should notify with custom error when a response that is not a session response and error deserialize failure`() {
         val expectedEx: AccessCheckoutError? = null
 
-        given(intent.action).willReturn("com.worldpay.access.checkout.api.action.GET_SESSION")
+        given(intent.action).willReturn(action)
         given(intent.getSerializableExtra("response")).willReturn(
             TestObject(
                 "something"

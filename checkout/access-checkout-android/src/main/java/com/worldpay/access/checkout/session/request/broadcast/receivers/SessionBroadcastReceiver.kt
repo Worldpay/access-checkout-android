@@ -5,17 +5,16 @@ import android.content.Intent
 import android.content.IntentFilter
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
-import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.api.session.SessionResponse
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.SessionResponseListener
 
 internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
 
-    private lateinit var mListener: SessionResponseListener
+    private lateinit var externalSessionResponseListener: SessionResponseListener
 
     constructor(mListener: SessionResponseListener) : this() {
-        this.mListener = mListener
+        this.externalSessionResponseListener = mListener
     }
 
     companion object {
@@ -29,26 +28,39 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
 
     override fun onReceive(context: Context, intent: Intent) {
         debugLog(javaClass.name, "Receiver fired")
-        if (intent.action == SessionRequestService.ACTION_GET_SESSION) {
-            debugLog(javaClass.name, "Receiver action: ${intent.action}")
-            val response = intent.getSerializableExtra(RESPONSE_KEY)
-            val errorSerializable = intent.getSerializableExtra(ERROR_KEY)
 
-            when (response) {
-                is SessionResponse -> {
-                    mListener.onRequestFinished(response.links.endpoints.href, null)
-                }
-                else -> {
-                    try {
-                        errorSerializable.let { mListener.onRequestFinished(null, errorSerializable as AccessCheckoutException) }
-                    } catch (ex: Exception) {
-                        mListener.onRequestFinished(null, AccessCheckoutError("Unknown error", ex))
+        if (intent.action != javaClass.name) {
+            return
+        }
+
+        val response = intent.getSerializableExtra(RESPONSE_KEY)
+        val errorSerializable = intent.getSerializableExtra(ERROR_KEY)
+
+        when (response) {
+            is SessionResponse -> {
+                externalSessionResponseListener.onRequestFinished(
+                    response.links.endpoints.href,
+                    null
+                )
+            }
+            else -> {
+                try {
+                    errorSerializable.let {
+                        externalSessionResponseListener.onRequestFinished(
+                            null,
+                            errorSerializable as AccessCheckoutException
+                        )
                     }
+                } catch (ex: Exception) {
+                    externalSessionResponseListener.onRequestFinished(
+                        null,
+                        AccessCheckoutError("Unknown error", ex)
+                    )
                 }
             }
-
-            debugLog(javaClass.name, "Intent Resp: $response")
-            debugLog(javaClass.name, "Intent Err: $errorSerializable")
         }
+
+        debugLog(javaClass.name, "Intent Resp: $response")
+        debugLog(javaClass.name, "Intent Err: $errorSerializable")
     }
 }

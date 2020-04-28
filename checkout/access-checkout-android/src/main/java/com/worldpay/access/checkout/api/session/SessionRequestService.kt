@@ -18,9 +18,6 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
 
         private const val TAG = "SessionRequestService"
 
-        @JvmStatic
-        val ACTION_GET_SESSION = "com.worldpay.access.checkout.api.action.GET_SESSION"
-
         const val DISCOVER_LINKS = "discover"
         const val REQUEST_KEY = "request"
         const val BASE_URL_KEY = "base_url"
@@ -54,7 +51,7 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
         val broadcastIntent = Intent()
         broadcastIntent.putExtra(SessionBroadcastReceiver.RESPONSE_KEY, response)
         broadcastIntent.putExtra(SessionBroadcastReceiver.ERROR_KEY, error)
-        broadcastIntent.action = ACTION_GET_SESSION
+        broadcastIntent.action = SessionBroadcastReceiver::class.java.name
 
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
     }

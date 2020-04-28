@@ -1,7 +1,12 @@
 package com.worldpay.access.checkout.session.request.broadcast
 
-internal class SessionBroadcastManagerFactory(private val localBroadcastManagerFactory: LocalBroadcastManagerFactory) {
+import com.worldpay.access.checkout.views.SessionResponseListener
 
-    fun createInstance(): SessionBroadcastManager = SessionBroadcastManager(localBroadcastManagerFactory)
+internal class SessionBroadcastManagerFactory(
+    private val localBroadcastManagerFactory: LocalBroadcastManagerFactory,
+    private val externalSessionResponseListener: SessionResponseListener
+) {
+
+    fun createInstance(): SessionBroadcastManager = SessionBroadcastManager(localBroadcastManagerFactory, externalSessionResponseListener)
 
 }

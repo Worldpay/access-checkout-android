@@ -61,21 +61,27 @@ class AccessCheckoutClientBuilder {
 
         val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context as Context)
 
+        val activityLifecycleObserverInitialiser = createActivityLifecycleObserverInitialiser(
+            localBroadcastManagerFactory,
+            externalSessionResponseListener as SessionResponseListener
+        )
+
         return AccessCheckoutClientImpl(
             SessionRequestHandlerFactory(tokenRequestHandlerConfig),
-            createActivityLifecycleObserverInitialiser(localBroadcastManagerFactory),
+            activityLifecycleObserverInitialiser,
             localBroadcastManagerFactory,
             context as Context
         )
     }
 
     private fun createActivityLifecycleObserverInitialiser(
-        localBroadcastManagerFactory: LocalBroadcastManagerFactory
+        localBroadcastManagerFactory: LocalBroadcastManagerFactory,
+        externalSessionResponseListener: SessionResponseListener
     ): ActivityLifecycleObserverInitialiser {
         return ActivityLifecycleObserverInitialiser(
             tag,
             lifecycleOwner as LifecycleOwner,
-            SessionBroadcastManagerFactory(localBroadcastManagerFactory)
+            SessionBroadcastManagerFactory(localBroadcastManagerFactory, externalSessionResponseListener)
         )
     }
 

@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.session.request.broadcast
 import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver
+import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.BDDMockito.any
@@ -16,13 +17,17 @@ class SessionBroadcastManagerTest {
     @Test
     fun `should register expected broadcast receivers when calling register`() {
         val localBroadcastManagerFactoryMock = mock(LocalBroadcastManagerFactory::class.java)
+        val externalSessionResponseListenerMock = mock(SessionResponseListener::class.java)
         val localBroadcastManagerMock = mock(LocalBroadcastManager::class.java)
 
         val argument = ArgumentCaptor.forClass(IntentFilter::class.java)
 
         given(localBroadcastManagerFactoryMock.createInstance()).willReturn(localBroadcastManagerMock)
 
-        val sessionBroadcastManager = SessionBroadcastManager(localBroadcastManagerFactoryMock)
+        val sessionBroadcastManager = SessionBroadcastManager(
+            localBroadcastManagerFactoryMock,
+            externalSessionResponseListenerMock
+        )
 
         sessionBroadcastManager.register()
 
@@ -35,11 +40,15 @@ class SessionBroadcastManagerTest {
     @Test
     fun `should unregister expected broadcast receivers when calling unregister`() {
         val localBroadcastManagerFactoryMock = mock(LocalBroadcastManagerFactory::class.java)
+        val externalSessionResponseListenerMock = mock(SessionResponseListener::class.java)
         val localBroadcastManagerMock = mock(LocalBroadcastManager::class.java)
 
         given(localBroadcastManagerFactoryMock.createInstance()).willReturn(localBroadcastManagerMock)
 
-        val sessionBroadcastManager = SessionBroadcastManager(localBroadcastManagerFactoryMock)
+        val sessionBroadcastManager = SessionBroadcastManager(
+            localBroadcastManagerFactoryMock,
+            externalSessionResponseListenerMock
+        )
 
         sessionBroadcastManager.unregister()
 
