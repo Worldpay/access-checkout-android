@@ -9,7 +9,7 @@ import org.mockito.Mockito
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class SessionTypeHandlerFactoryTest {
+class SessionRequestHandlerFactoryTest {
 
     @Test
     fun `should return expected list of token request handlers`() {

@@ -5,8 +5,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +14,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import kotlin.test.assertNotNull
 
-class SessionTypeServiceTest {
+class SessionRequestServiceTest {
 
     private lateinit var sessionRequestService: SessionRequestService
     private lateinit var localBroadcastManagerFactory: LocalBroadcastManagerFactory

@@ -24,7 +24,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class CardSessionTypeTest: AbstractCardFlowUITest() {
+class CardSessionRequestTest: AbstractCardFlowUITest() {
 
     private lateinit var cardNumberMatcher: Matcher<View>
     private lateinit var cvvMatcher: Matcher<View>
@@ -278,15 +278,15 @@ class CardSessionTypeTest: AbstractCardFlowUITest() {
 
     private fun getSuccessColor() =
         ResourcesCompat.getColor(
-            this@CardSessionTypeTest.activityRule.activity.resources,
+            this@CardSessionRequestTest.activityRule.activity.resources,
             R.color.SUCCESS,
-            this@CardSessionTypeTest.activityRule.activity.theme
+            this@CardSessionRequestTest.activityRule.activity.theme
         )
 
     private fun getFailColor() =
         ResourcesCompat.getColor(
-            this@CardSessionTypeTest.activityRule.activity.resources,
+            this@CardSessionRequestTest.activityRule.activity.resources,
             R.color.FAIL,
-            this@CardSessionTypeTest.activityRule.activity.theme
+            this@CardSessionRequestTest.activityRule.activity.theme
         )
 }

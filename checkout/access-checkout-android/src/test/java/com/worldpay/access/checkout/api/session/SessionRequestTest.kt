@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.api.session
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class SessionTypeTest {
+class SessionRequestTest {
 
     @Test
     fun `should be able to set and get the cvv and merchant identity for a cvv session request`() {

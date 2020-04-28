@@ -20,7 +20,7 @@ import org.mockito.Mockito
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 
-class SessionTypeSenderTest {
+class SessionRequestSenderTest {
 
     private lateinit var sessionClientFactory: SessionClientFactory
     private lateinit var requestDispatcherFactory: RequestDispatcherFactory

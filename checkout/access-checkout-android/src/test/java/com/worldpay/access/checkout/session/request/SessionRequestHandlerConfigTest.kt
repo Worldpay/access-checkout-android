@@ -7,7 +7,7 @@ import org.mockito.Mockito.mock
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class SessionTypeHandlerConfigTest {
+class SessionRequestHandlerConfigTest {
 
     @Test
     fun `should be able to create instance of token config and persist the properties`() {
