@@ -6,6 +6,7 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.CVVSessionRequest
 import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.client.CardDetails
+import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.views.SessionResponseListener
@@ -106,8 +107,8 @@ class PaymentsCvcSessionRequestHandlerTest {
 
         val cvvSessionRequest = argument.value.getSerializableExtra(SessionRequestService.REQUEST_KEY) as CVVSessionRequest
         val baseUrl = argument.value.getStringExtra(SessionRequestService.BASE_URL_KEY)
-        val discoverLinks =
-            argument.value.getSerializableExtra(SessionRequestService.DISCOVER_LINKS) as DiscoverLinks
+        val discoverLinks = argument.value.getSerializableExtra(SessionRequestService.DISCOVER_LINKS) as DiscoverLinks
+        val sessionType = argument.value.getSerializableExtra(SessionRequestService.SESSION_TYPE) as SessionType
 
         assertEquals("merchant-id", cvvSessionRequest.identity)
         assertEquals(cardDetails.cvv, cvvSessionRequest.cvv)
@@ -115,6 +116,9 @@ class PaymentsCvcSessionRequestHandlerTest {
         assertEquals("base-url", baseUrl)
 
         assertEquals(DiscoverLinks.sessions, discoverLinks)
+        assertEquals(PAYMENTS_CVC_SESSION, sessionType)
+
+        assertEquals(4, argument.value.extras?.size())
     }
 
 }

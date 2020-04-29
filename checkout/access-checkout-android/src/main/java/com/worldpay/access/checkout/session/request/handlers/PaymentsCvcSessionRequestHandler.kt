@@ -30,6 +30,7 @@ internal class PaymentsCvcSessionRequestHandler(
         serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, cvvSessionRequest)
         serviceIntent.putExtra(SessionRequestService.BASE_URL_KEY, sessionRequestHandlerConfig.getBaseUrl())
         serviceIntent.putExtra(SessionRequestService.DISCOVER_LINKS, DiscoverLinks.sessions)
+        serviceIntent.putExtra(SessionRequestService.SESSION_TYPE, PAYMENTS_CVC_SESSION)
 
         sessionRequestHandlerConfig.getContext().startService(serviceIntent)
     }

@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.api.session.client.CardSessionClient
 import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import com.worldpay.access.checkout.api.session.request.RequestDispatcher
 import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -62,7 +63,7 @@ class SessionRequestSenderTest {
             .willReturn(requestDispatcher)
 
         sessionRequestSender.sendSessionRequest(
-            expectedSessionRequest, baseURL, sessionResponseCallback, DiscoverLinks.verifiedTokens
+            expectedSessionRequest, VERIFIED_TOKEN_SESSION, baseURL, sessionResponseCallback, DiscoverLinks.verifiedTokens
         )
 
         val argumentCaptor = argumentCaptor<Callback<String>>()
@@ -103,6 +104,7 @@ class SessionRequestSenderTest {
 
         sessionRequestSender.sendSessionRequest(
             expectedSessionRequest,
+            VERIFIED_TOKEN_SESSION,
             baseURL,
             sessionResponseCallback,
             DiscoverLinks.verifiedTokens

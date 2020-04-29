@@ -7,9 +7,10 @@ import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
+import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.session.request.broadcast.receivers.GET_REQUESTED_SESSION
+import com.worldpay.access.checkout.session.request.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),
@@ -28,6 +29,19 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
     private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender(this)
     private val localBroadcastManagerFactory: LocalBroadcastManagerFactory = factory.getLocalBroadcastManagerFactory(this)
 
+    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        if (intent != null) {
+            val sessionRequest = intent.getSerializableExtra(REQUEST_KEY) as SessionRequest
+            val baseUrl = intent.getStringExtra(BASE_URL_KEY)
+            val discoverLinks = intent.getSerializableExtra(DISCOVER_LINKS) as DiscoverLinks
+            val sessionType = intent.getSerializableExtra(SESSION_TYPE) as SessionType
+            sessionRequestSender.sendSessionRequest(sessionRequest, sessionType, baseUrl, this, discoverLinks)
+        }
+        return super.onStartCommand(intent, flags, startId)
+    }
+
+    override fun onBind(intent: Intent) = null
+
     override fun onResponse(error: Exception?, response: SessionResponse?) {
         debugLog(TAG, "onResponse received: resp:$response / error: $error")
         debugLog(TAG, "service stopped self")
@@ -36,23 +50,11 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
         stopSelf()
     }
 
-    override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        if (intent != null) {
-            val sessionRequest = intent.getSerializableExtra(REQUEST_KEY) as SessionRequest
-            val baseUrl = intent.getStringExtra(BASE_URL_KEY)
-            val discoverLinks = intent.getSerializableExtra(DISCOVER_LINKS) as DiscoverLinks
-            sessionRequestSender.sendSessionRequest(sessionRequest, baseUrl, this, discoverLinks)
-        }
-        return super.onStartCommand(intent, flags, startId)
-    }
-
-    override fun onBind(intent: Intent) = null
-
     private fun broadcastResult(response: SessionResponse?, error: Exception?) {
         val broadcastIntent = Intent()
         broadcastIntent.putExtra(SessionBroadcastReceiver.RESPONSE_KEY, response)
         broadcastIntent.putExtra(SessionBroadcastReceiver.ERROR_KEY, error)
-        broadcastIntent.action = GET_REQUESTED_SESSION
+        broadcastIntent.action = COMPLETED_SESSION_REQUEST
 
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
     }

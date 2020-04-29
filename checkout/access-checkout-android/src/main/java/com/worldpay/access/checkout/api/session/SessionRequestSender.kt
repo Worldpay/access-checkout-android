@@ -7,6 +7,7 @@ import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClientFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
+import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 
 internal class SessionRequestSender(
@@ -17,6 +18,7 @@ internal class SessionRequestSender(
 
     fun sendSessionRequest(
         sessionRequest: SessionRequest,
+        sessionType: SessionType,
         baseUrl: String,
         sessionResponseCallback: Callback<SessionResponse>,
         discoverLinks: DiscoverLinks

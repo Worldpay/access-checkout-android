@@ -1,8 +1,10 @@
 package com.worldpay.access.checkout.client
 
-enum class SessionType(val value: String) {
+import java.io.Serializable
 
-    PAYMENTS_CVC_SESSION("payments-cvc-session"),
-    VERIFIED_TOKEN_SESSION("verified-token-session")
+enum class SessionType: Serializable {
+
+    PAYMENTS_CVC_SESSION,
+    VERIFIED_TOKEN_SESSION
 
 }

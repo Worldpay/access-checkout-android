@@ -6,8 +6,9 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.session.request.broadcast.receivers.GET_REQUESTED_SESSION
+import com.worldpay.access.checkout.session.request.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.ERROR_KEY
 import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.RESPONSE_KEY
 import org.junit.Assert.assertNull
@@ -74,10 +75,17 @@ class SessionRequestServiceTest {
         given(intent.getSerializableExtra("request")).willReturn(sessionRequest)
         given(intent.getStringExtra("base_url")).willReturn(baseUrl)
         given(intent.getSerializableExtra("discover")).willReturn(DiscoverLinks.verifiedTokens)
+        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionRequestService.onStartCommand(intent, -1, 0)
 
-        verify(sessionRequestSender).sendSessionRequest(sessionRequest, baseUrl, sessionRequestService, DiscoverLinks.verifiedTokens)
+        verify(sessionRequestSender).sendSessionRequest(
+            sessionRequest,
+            VERIFIED_TOKEN_SESSION,
+            baseUrl,
+            sessionRequestService,
+            DiscoverLinks.verifiedTokens
+        )
     }
 
     @Test
@@ -93,10 +101,17 @@ class SessionRequestServiceTest {
         given(intent.getSerializableExtra("request")).willReturn(sessionRequest)
         given(intent.getStringExtra("base_url")).willReturn(baseUrl)
         given(intent.getSerializableExtra("discover")).willReturn(DiscoverLinks.verifiedTokens)
+        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionRequestService.onStartCommand(intent, -1, 0)
 
-        verify(sessionRequestSender).sendSessionRequest(sessionRequest, baseUrl, sessionRequestService, DiscoverLinks.verifiedTokens)
+        verify(sessionRequestSender).sendSessionRequest(
+            sessionRequest,
+            VERIFIED_TOKEN_SESSION,
+            baseUrl,
+            sessionRequestService,
+            DiscoverLinks.verifiedTokens
+        )
     }
 
     @Test
@@ -122,8 +137,11 @@ class SessionRequestServiceTest {
         verify(localBroadcastManager).sendBroadcast(argument.capture())
 
         assertEquals(sessionResponse, argument.value.getSerializableExtra(RESPONSE_KEY))
+
         assertNull(argument.value.getSerializableExtra(ERROR_KEY))
-        assertEquals(GET_REQUESTED_SESSION, argument.value.action)
+        assertEquals(2, argument.value.extras?.size())
+
+        assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
     }
 
 }

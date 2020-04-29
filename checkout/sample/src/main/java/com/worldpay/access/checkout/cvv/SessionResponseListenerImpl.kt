@@ -5,6 +5,8 @@ import android.widget.TextView
 import android.widget.Toast
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.AccessCheckoutException
+import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.ui.ProgressBar
 import com.worldpay.access.checkout.views.CardCVVText
@@ -21,7 +23,7 @@ class SessionResponseListenerImpl(
         toggleLoading(false)
     }
 
-    override fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?) {
+    override fun onRequestFinished(sessionState: HashMap<SessionType, SessionResponse>, error: AccessCheckoutException?) {
         LoggingUtils.debugLog("CVV Flow", "Received session reference: $sessionState")
         progressBar.stopLoading()
         toggleLoading(true)

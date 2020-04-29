@@ -11,7 +11,7 @@ import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionTypeBroadcastReceiver
+import com.worldpay.access.checkout.session.request.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
@@ -81,8 +81,10 @@ class AccessCheckoutClientImplTest {
 
         verify(localBroadcastManagerMock).sendBroadcast(argument.capture())
 
-        assertEquals(SessionTypeBroadcastReceiver::class.java.name, argument.value.action as String)
-        assertEquals(2, argument.value.getIntExtra("number-of-session-types", 0))
+        assertEquals(NUM_OF_SESSION_TYPES_REQUESTED, argument.value.action as String)
+        assertEquals(2, argument.value.getIntExtra("num_of_session_types", 0))
+
+        assertEquals(1, argument.value.extras?.size())
     }
 
     @Test

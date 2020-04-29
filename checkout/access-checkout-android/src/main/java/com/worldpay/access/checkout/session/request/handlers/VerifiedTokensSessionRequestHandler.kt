@@ -36,7 +36,7 @@ internal class VerifiedTokensSessionRequestHandler(
         serviceIntent.putExtra(REQUEST_KEY, cardSessionRequest)
         serviceIntent.putExtra(BASE_URL_KEY, sessionRequestHandlerConfig.getBaseUrl())
         serviceIntent.putExtra(DISCOVER_LINKS, DiscoverLinks.verifiedTokens)
-        serviceIntent.putExtra(SESSION_TYPE, VERIFIED_TOKEN_SESSION.value)
+        serviceIntent.putExtra(SESSION_TYPE, VERIFIED_TOKEN_SESSION)
 
         sessionRequestHandlerConfig.getContext().startService(serviceIntent)
     }
