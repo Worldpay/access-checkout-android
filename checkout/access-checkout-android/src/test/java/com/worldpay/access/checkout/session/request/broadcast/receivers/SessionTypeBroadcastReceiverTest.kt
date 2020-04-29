@@ -20,7 +20,18 @@ class SessionTypeBroadcastReceiverTest {
     @Test
     fun `should do nothing when calling onReceive`() {
         val contextMock = mock(Context::class.java)
+        val intent = Intent(NUM_OF_SESSION_TYPES_REQUESTED)
+
+        val sessionTypeBroadcastReceiver = SessionTypeBroadcastReceiver()
+
+        sessionTypeBroadcastReceiver.onReceive(contextMock, intent)
+    }
+
+    @Test
+    fun `should do nothing when intent is not recognised`() {
+        val contextMock = mock(Context::class.java)
         val intentMock = mock(Intent::class.java)
+
         val sessionTypeBroadcastReceiver = SessionTypeBroadcastReceiver()
 
         sessionTypeBroadcastReceiver.onReceive(contextMock, intentMock)

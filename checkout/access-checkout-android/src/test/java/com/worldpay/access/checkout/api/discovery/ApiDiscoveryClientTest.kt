@@ -179,6 +179,37 @@ class ApiDiscoveryClientTest {
         assertTrue(assertionsRan, "Did not run callback assertions - callback was never invoked")
     }
 
+    @Test
+    fun `should return error message if maximum number attempts have been made and an error was the last response - on the second discover call`() {
+        var assertionsRan = 0
+        val exceptionMessage = "Some exception message"
+        val callback = object : Callback<String> {
+            override fun onResponse(error: Exception?, response: String?) {
+                assertNull(response)
+                assertNotNull(error)
+                assertTrue(error is RuntimeException)
+                assertEquals(error.message, exceptionMessage)
+                assertionsRan++
+            }
+        }
+
+        val argumentCaptor = argumentCaptor<Callback<String>>()
+        given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(argumentCaptor.capture(), any())).willReturn(apiDiscoveryAsyncTaskMock)
+
+        val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
+
+        serviceDiscoveryClient.discover("http://localhost", callback, discoverLinks)
+
+        verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
+        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
+        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
+
+        serviceDiscoveryClient.discover("http://localhost", callback, discoverLinks)
+
+        verify(apiDiscoveryAsyncTaskMock, times(2)).execute("http://localhost")
+        assertEquals(2, assertionsRan, "Did not run callback assertions - callback was never invoked")
+    }
+
     private fun getEmptyCallback(): Callback<String> {
         return object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
