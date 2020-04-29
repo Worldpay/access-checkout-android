@@ -23,7 +23,7 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
     }
 
     override fun getIntentFilter(): IntentFilter {
-        return IntentFilter(javaClass.name)
+        return IntentFilter(GET_REQUESTED_SESSION)
     }
 
     override fun onReceive(context: Context, intent: Intent) {

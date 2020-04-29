@@ -8,11 +8,14 @@ import com.worldpay.access.checkout.api.session.SessionResponse
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.*
+import org.robolectric.RobolectricTestRunner
 import java.io.Serializable
 import kotlin.test.assertEquals
 
+@RunWith(RobolectricTestRunner::class)
 class SessionBroadcastReceiverTest {
 
     private lateinit var sessionResponseListener: SessionResponseListener
@@ -35,7 +38,7 @@ class SessionBroadcastReceiverTest {
     fun `should return expected IntentFilter`() {
         val intentFilter = sessionBroadcastReceiver.getIntentFilter()
 
-        assertEquals(sessionBroadcastReceiver.javaClass.name, intentFilter.getAction(0))
+        assertEquals(GET_REQUESTED_SESSION, intentFilter.getAction(0))
         assertEquals(1, intentFilter.countActions())
     }
 

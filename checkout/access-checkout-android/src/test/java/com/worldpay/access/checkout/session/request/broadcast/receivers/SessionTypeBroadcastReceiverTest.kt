@@ -31,8 +31,10 @@ class SessionTypeBroadcastReceiverTest {
         val sessionTypeBroadcastReceiver = SessionTypeBroadcastReceiver()
         val intentFilter = sessionTypeBroadcastReceiver.getIntentFilter()
 
-        assertEquals(sessionTypeBroadcastReceiver.javaClass.name, intentFilter.getAction(0))
-        assertEquals(1, intentFilter.countActions())
+        assertEquals(NUM_OF_SESSION_TYPES_REQUESTED, intentFilter.getAction(0))
+        assertEquals(SESSION_TYPE_REQUEST_COMPLETE, intentFilter.getAction(1))
+
+        assertEquals(2, intentFilter.countActions())
     }
 
 }
