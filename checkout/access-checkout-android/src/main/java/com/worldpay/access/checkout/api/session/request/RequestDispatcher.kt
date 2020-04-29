@@ -5,24 +5,30 @@ import android.util.Log
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHttpException
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.session.SessionRequest
-import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.SessionRequestInfo
+import com.worldpay.access.checkout.api.session.SessionResponseInfo
 import com.worldpay.access.checkout.api.session.client.SessionClient
 import java.net.URL
 
 
 internal class RequestDispatcher constructor(
     private val path: String,
-    private val callback: Callback<SessionResponse>,
+    private val callback: Callback<SessionResponseInfo>,
     private val sessionClient: SessionClient
-) : AsyncTask<SessionRequest, Any, SessionResponse>() {
+) : AsyncTask<SessionRequestInfo, Any, SessionResponseInfo>() {
 
     private var exception: Exception? = null
 
-    override fun doInBackground(vararg params: SessionRequest): SessionResponse? {
+    override fun doInBackground(vararg params: SessionRequestInfo): SessionResponseInfo? {
         return try {
-            val sessionRequest = getSessionRequest(params)
-            sessionClient.getSessionResponse(URL(path), sessionRequest)
+            val sessionRequestInfo = getSessionRequestInfo(params)
+            val responseBody = sessionClient.getSessionResponse(URL(path), sessionRequestInfo.requestBody)
+
+            SessionResponseInfo.Builder()
+                .responseBody(responseBody)
+                .sessionType(sessionRequestInfo.sessionType)
+                .build()
+
         } catch (ex: AccessCheckoutClientError) {
             exception = ex
             return null
@@ -41,14 +47,14 @@ internal class RequestDispatcher constructor(
         }
     }
 
-    private fun getSessionRequest(params: Array<out SessionRequest>): SessionRequest {
+    private fun getSessionRequestInfo(params: Array<out SessionRequestInfo>): SessionRequestInfo {
         if (params.isEmpty()) {
             throw AccessCheckoutHttpException("No request was supplied for sending", null)
         }
         return params[0]
     }
 
-    override fun onPostExecute(result: SessionResponse?) {
+    override fun onPostExecute(result: SessionResponseInfo?) {
         result?.let {
             callback.onResponse(null, it)
         }

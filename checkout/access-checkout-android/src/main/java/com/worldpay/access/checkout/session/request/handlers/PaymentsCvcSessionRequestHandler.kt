@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.session.request.handlers
 import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.CVVSessionRequest
+import com.worldpay.access.checkout.api.session.SessionRequestInfo
 import com.worldpay.access.checkout.api.session.SessionRequestService
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType
@@ -27,10 +28,15 @@ internal class PaymentsCvcSessionRequestHandler(
         val cvvSessionRequest = CVVSessionRequest(cardDetails.cvv, sessionRequestHandlerConfig.getMerchantId())
 
         val serviceIntent = Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
-        serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, cvvSessionRequest)
-        serviceIntent.putExtra(SessionRequestService.BASE_URL_KEY, sessionRequestHandlerConfig.getBaseUrl())
-        serviceIntent.putExtra(SessionRequestService.DISCOVER_LINKS, DiscoverLinks.sessions)
-        serviceIntent.putExtra(SessionRequestService.SESSION_TYPE, PAYMENTS_CVC_SESSION)
+
+        val sessionRequestInfo = SessionRequestInfo.Builder()
+            .baseUrl(sessionRequestHandlerConfig.getBaseUrl())
+            .requestBody(cvvSessionRequest)
+            .sessionType(PAYMENTS_CVC_SESSION)
+            .discoverLinks(DiscoverLinks.sessions)
+            .build()
+
+        serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, sessionRequestInfo)
 
         sessionRequestHandlerConfig.getContext().startService(serviceIntent)
     }

@@ -5,6 +5,8 @@ import android.content.Intent
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
 import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.SessionResponseInfo
+import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
@@ -71,9 +73,8 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(1)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("some reference"))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("some reference", VERIFIED_TOKEN_SESSION))
         given(intent.getSerializableExtra("error")).willReturn(null)
-        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -87,14 +88,12 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(2)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url"))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
         given(intent.getSerializableExtra("error")).willReturn(null)
-        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url"))
-        given(intent.getSerializableExtra("session_type")).willReturn(PAYMENTS_CVC_SESSION)
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -112,14 +111,12 @@ class SessionBroadcastReceiverTest {
 
         val expectedEx: AccessCheckoutError = mock()
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url"))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
-        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url"))
-        given(intent.getSerializableExtra("session_type")).willReturn(PAYMENTS_CVC_SESSION)
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -165,12 +162,17 @@ class SessionBroadcastReceiverTest {
         verify(sessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
     }
 
-    private fun createSessionResponse(href: String): SessionResponse {
-        return SessionResponse(
+    private fun createSessionResponse(href: String, sessionType: SessionType): SessionResponseInfo {
+        val response = SessionResponse(
             SessionResponse.Links(
                 SessionResponse.Links.Endpoints(href), emptyArray()
             )
         )
+
+        return SessionResponseInfo.Builder()
+            .responseBody(response)
+            .sessionType(sessionType)
+            .build()
     }
 
     private fun broadcastNumSessionTypesRequested(numSessionTypes: Int) {

@@ -5,7 +5,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
-import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.SessionResponseInfo
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.SessionResponseListener
@@ -30,7 +30,6 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
     companion object {
         const val NUMBER_OF_SESSION_TYPE_KEY = "num_of_session_types"
         const val RESPONSE_KEY = "response"
-        const val SESSION_TYPE_KEY = "session_type"
         const val ERROR_KEY = "error"
     }
 
@@ -42,20 +41,18 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
         }
 
         if (intent.action == COMPLETED_SESSION_REQUEST) {
-            val response = intent.getSerializableExtra(RESPONSE_KEY)
-            val sessionType = intent.getSerializableExtra(SESSION_TYPE_KEY) as SessionType
+            val sessionResponseInfo = intent.getSerializableExtra(RESPONSE_KEY)
             val errorSerializable = intent.getSerializableExtra(ERROR_KEY)
 
-            if (numOfSessionTypes.get() == numOfSessionRequestCompleted.incrementAndGet()) {
-                response as SessionResponse
-                storedResponses[sessionType] = response.links.endpoints.href
+            if (sessionResponseInfo !is SessionResponseInfo) {
+                sendErrorCallback(errorSerializable)
+                return
+            }
+
+            val allRequestsCompleted = numOfSessionTypes.get() == numOfSessionRequestCompleted.incrementAndGet()
+            storedResponses[sessionResponseInfo.sessionType] = sessionResponseInfo.responseBody.links.endpoints.href
+            if (allRequestsCompleted) {
                 sendSuccessCallback()
-            } else {
-                if (response is SessionResponse) {
-                    storedResponses[sessionType] = response.links.endpoints.href
-                } else {
-                    sendErrorCallback(errorSerializable)
-                }
             }
         }
     }

@@ -49,8 +49,8 @@ class SessionRequestSenderTest {
             identity = ""
         )
 
-        val sessionResponseCallback = object : Callback<SessionResponse> {
-            override fun onResponse(error: Exception?, response: SessionResponse?) {
+        val sessionResponseCallback = object : Callback<SessionResponseInfo> {
+            override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
             }
         }
 
@@ -62,15 +62,20 @@ class SessionRequestSenderTest {
         given(requestDispatcherFactory.getInstance(path, sessionClient, sessionResponseCallback))
             .willReturn(requestDispatcher)
 
-        sessionRequestSender.sendSessionRequest(
-            expectedSessionRequest, VERIFIED_TOKEN_SESSION, baseURL, sessionResponseCallback, DiscoverLinks.verifiedTokens
-        )
+        val sessionRequestInfo = SessionRequestInfo.Builder()
+            .baseUrl(baseURL)
+            .requestBody(expectedSessionRequest)
+            .sessionType(VERIFIED_TOKEN_SESSION)
+            .discoverLinks(DiscoverLinks.verifiedTokens)
+            .build()
+
+        sessionRequestSender.sendSessionRequest(sessionRequestInfo, sessionResponseCallback)
 
         val argumentCaptor = argumentCaptor<Callback<String>>()
         verify(apiDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(null, path)
 
-        verify(requestDispatcher).execute(expectedSessionRequest)
+        verify(requestDispatcher).execute(sessionRequestInfo)
     }
 
     @Test
@@ -84,8 +89,8 @@ class SessionRequestSenderTest {
 
         var assertResponse = false
 
-        val sessionResponseCallback = object : Callback<SessionResponse> {
-            override fun onResponse(error: Exception?, response: SessionResponse?) {
+        val sessionResponseCallback = object : Callback<SessionResponseInfo> {
+            override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
                 assertTrue(error is AccessCheckoutDiscoveryException)
                 assertEquals("Could not discover URL", error?.message)
                 assertTrue((error as AccessCheckoutDiscoveryException).cause is RuntimeException)
@@ -102,13 +107,15 @@ class SessionRequestSenderTest {
         given(requestDispatcherFactory.getInstance(path, sessionClient, sessionResponseCallback))
             .willReturn(requestDispatcher)
 
-        sessionRequestSender.sendSessionRequest(
-            expectedSessionRequest,
-            VERIFIED_TOKEN_SESSION,
-            baseURL,
-            sessionResponseCallback,
-            DiscoverLinks.verifiedTokens
-        )
+        val sessionRequestInfo = SessionRequestInfo.Builder()
+            .baseUrl(baseURL)
+            .requestBody(expectedSessionRequest)
+            .sessionType(VERIFIED_TOKEN_SESSION)
+            .discoverLinks(DiscoverLinks.verifiedTokens)
+            .build()
+
+        sessionRequestSender.sendSessionRequest(sessionRequestInfo, sessionResponseCallback)
+
         val argumentCaptor = argumentCaptor<Callback<String>>()
         verify(apiDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(RuntimeException("Some exception"), null)

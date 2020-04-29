@@ -143,7 +143,8 @@ class CardSessionRequestIntegrationTest {
 
         val responseListener = object : SessionResponseListener {
             override fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?) {
-                assertResponse = sessionState!! == expectedSessionReference
+                val expectedResponse = mapOf(VERIFIED_TOKEN_SESSION to expectedSessionReference)
+                assertResponse = sessionState!! == expectedResponse.toString()
                 assertTrue("Actual response is $sessionState") { assertResponse }
             }
 
