@@ -9,6 +9,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.MainActivity
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.testutil.UITestUtils.assertUiObjectExistsAndIsDisabled
 import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
@@ -46,7 +47,7 @@ class CvvFlowIntegrationTest {
             .perform(click())
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.sessions_session_reference),
+            mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
     }
@@ -68,7 +69,7 @@ class CvvFlowIntegrationTest {
         assertUiObjectExistsAndIsDisabled(R.id.cvv_flow_text_cvv)
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.sessions_session_reference),
+            mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
     }
@@ -86,7 +87,7 @@ class CvvFlowIntegrationTest {
             .perform(click())
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.sessions_session_reference),
+            mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
 

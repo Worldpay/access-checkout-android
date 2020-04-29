@@ -13,7 +13,6 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.worldpay.access.checkout.api.AccessCheckoutException;
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
-import com.worldpay.access.checkout.api.session.SessionResponse;
 import com.worldpay.access.checkout.client.AccessCheckoutClient;
 import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder;
 import com.worldpay.access.checkout.client.CardDetails;
@@ -30,7 +29,7 @@ import com.worldpay.access.checkout.views.SessionResponseListener;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.HashMap;
+import java.util.Map;
 
 import static com.worldpay.access.checkout.logging.LoggingUtils.debugLog;
 import static java.util.Collections.singletonList;
@@ -101,13 +100,13 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
     }
 
     @Override
-    public void onRequestFinished(@NotNull HashMap<SessionType, SessionResponse> sessionState, @Nullable AccessCheckoutException error) {
-        debugLog("MainActivityJavaExample", String.format("Received session reference: %s", sessionState));
+    public void onRequestFinished(@NotNull Map<SessionType, String> sessionResponseMap, @Nullable AccessCheckoutException error) {
+        debugLog("MainActivityJavaExample", String.format("Received session reference: %s", sessionResponseMap));
         loading = false;
         toggleLoading(true);
         String toastMessage;
-        if (sessionState != null && !sessionState.isEmpty()) {
-            toastMessage = "Ref: " + sessionState;
+        if (!sessionResponseMap.isEmpty()) {
+            toastMessage = "Ref: " + sessionResponseMap;
             resetFields();
         } else {
             toastMessage = "Error: " + (error != null ? error.getMessage() : null);

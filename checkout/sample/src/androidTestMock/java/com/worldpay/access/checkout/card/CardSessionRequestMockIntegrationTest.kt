@@ -26,6 +26,7 @@ import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.monthMat
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.typeFormInputs
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateCVVDetails
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.yearMatcher
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import org.junit.Assert.assertTrue
@@ -52,7 +53,7 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
         assertInProgressState()
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.verified_token_session_reference),
+            mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
     }
@@ -70,7 +71,7 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
         assertInProgressState()
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.verified_token_session_reference),
+            mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
     }
@@ -165,7 +166,7 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
         assertInProgressState()
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.verified_token_session_reference),
+            mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
     }

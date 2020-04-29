@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.session
 
 import com.nhaarman.mockitokotlin2.then
 import com.worldpay.access.checkout.api.AccessCheckoutException
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -9,22 +10,22 @@ import org.mockito.Mockito.mock
 class CheckoutSessionResponseListenerTest {
 
     private val externalListener: SessionResponseListener = mock(SessionResponseListener::class.java)
-    private val TAG: String = "some-tag"
+    private val tag: String = "some-tag"
     private val checkoutSessionResponseListener: CheckoutSessionResponseListener =
         CheckoutSessionResponseListener(
-            TAG,
+            tag,
             externalListener
         )
 
     @Test
     fun `given a call back is made with non-empty session response then checkout session response listener should notify external session response listener`() {
-        val sessionState = "some reference"
+        val sessionResponseMap = mapOf(VERIFIED_TOKEN_SESSION to "some reference")
 
-        checkoutSessionResponseListener.onRequestFinished(sessionState, null)
+        checkoutSessionResponseListener.onRequestFinished(sessionResponseMap, null)
 
         then(externalListener)
             .should()
-            .onRequestFinished(sessionState, null)
+            .onRequestFinished(sessionResponseMap, null)
     }
 
 

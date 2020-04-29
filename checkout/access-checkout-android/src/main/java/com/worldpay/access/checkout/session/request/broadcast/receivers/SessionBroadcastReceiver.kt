@@ -59,7 +59,7 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
 
     private fun sendSuccessCallback() {
         debugLog(javaClass.simpleName, "Intent Resp: $storedResponses")
-        externalSessionResponseListener.onRequestFinished(storedResponses.toString(),null)
+        externalSessionResponseListener.onRequestFinished(storedResponses,null)
     }
 
     private fun sendErrorCallback(errorSerializable: Serializable?) {

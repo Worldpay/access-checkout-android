@@ -16,6 +16,7 @@ import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.typeForm
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateMonthDetails
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updatePANDetails
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.yearMatcher
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.testutil.UITestUtils.checkFieldInState
 import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
@@ -77,9 +78,10 @@ class CardConfigurationIntegrationTest {
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(cardConfigurationErrorRule.activity.getString(
-            R.string.verified_token_session_reference
-        ), cardConfigurationErrorRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(
+            mapOf(VERIFIED_TOKEN_SESSION to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString(),
+            cardConfigurationErrorRule.activity.window.decorView
+        )
     }
 }
 

@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.CardConfigurationMockStub.stubCardConfigurat
 import com.worldpay.access.checkout.MainActivity
 import com.worldpay.access.checkout.MockServer
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.model.*
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
@@ -65,7 +66,7 @@ class CardConfigurationLongDelayIntegrationTest {
             .perform(click())
 
         assertDisplaysResponseFromServer(
-            cardConfigurationRule.activity.getString(R.string.sessions_session_reference),
+            mapOf(PAYMENTS_CVC_SESSION to cardConfigurationRule.activity.getString(R.string.sessions_session_reference)).toString(),
             cardConfigurationRule.activity.window.decorView
         )
     }

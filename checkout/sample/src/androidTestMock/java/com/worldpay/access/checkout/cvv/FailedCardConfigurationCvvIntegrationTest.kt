@@ -10,6 +10,7 @@ import com.worldpay.access.checkout.CardConfigurationMockStub.simulateCardConfig
 import com.worldpay.access.checkout.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.MainActivity
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
 import org.junit.After
@@ -46,7 +47,10 @@ class FailedCardConfigurationCvvIntegrationTest {
             .check(matches(isEnabled()))
             .perform(click())
 
-        assertDisplaysResponseFromServer(cardConfigurationErrorRule.activity.getString(R.string.sessions_session_reference), cardConfigurationErrorRule.activity.window.decorView)
+        assertDisplaysResponseFromServer(
+            mapOf(PAYMENTS_CVC_SESSION to cardConfigurationErrorRule.activity.getString(R.string.sessions_session_reference)).toString(),
+            cardConfigurationErrorRule.activity.window.decorView
+        )
     }
 }
 

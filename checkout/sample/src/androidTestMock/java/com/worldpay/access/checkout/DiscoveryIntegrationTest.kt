@@ -11,6 +11,8 @@ import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFi
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertValidInitialUIFields
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.typeFormInputs
+import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
@@ -47,7 +49,7 @@ class DiscoveryIntegrationTest {
         assertInProgressState()
 
         assertDisplaysResponseFromServer(
-            activityTestRule.activity.getString(R.string.verified_token_session_reference),
+            mapOf(VERIFIED_TOKEN_SESSION to activityTestRule.activity.getString(R.string.verified_token_session_reference)).toString(),
             activityTestRule.activity.window.decorView
         )
     }
@@ -68,7 +70,7 @@ class DiscoveryIntegrationTest {
             .perform(click())
 
         assertDisplaysResponseFromServer(
-            activityTestRule.activity.getString(R.string.sessions_session_reference),
+            mapOf(PAYMENTS_CVC_SESSION to activityTestRule.activity.getString(R.string.sessions_session_reference)).toString(),
             activityTestRule.activity.window.decorView
         )
     }

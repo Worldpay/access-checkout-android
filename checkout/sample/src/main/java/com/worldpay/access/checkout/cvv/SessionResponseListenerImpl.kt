@@ -5,7 +5,6 @@ import android.widget.TextView
 import android.widget.Toast
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.api.session.SessionResponse
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.ui.ProgressBar
@@ -23,13 +22,13 @@ class SessionResponseListenerImpl(
         toggleLoading(false)
     }
 
-    override fun onRequestFinished(sessionState: HashMap<SessionType, SessionResponse>, error: AccessCheckoutException?) {
-        LoggingUtils.debugLog("CVV Flow", "Received session reference: $sessionState")
+    override fun onRequestFinished(sessionResponseMap: Map<SessionType, String>?, error: AccessCheckoutException?) {
+        LoggingUtils.debugLog("CVV Flow", "Received session reference: $sessionResponseMap")
         progressBar.stopLoading()
         toggleLoading(true)
         val toastMessage: String
-        if (!sessionState.isNullOrBlank()) {
-            toastMessage = "Ref: $sessionState"
+        if (sessionResponseMap?.isNotEmpty()!!) {
+            toastMessage = "Ref: $sessionResponseMap"
             resetField()
         } else {
             toastMessage = "Error: " + error?.message

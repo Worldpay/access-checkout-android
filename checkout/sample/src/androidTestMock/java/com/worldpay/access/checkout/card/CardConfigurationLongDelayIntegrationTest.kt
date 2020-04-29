@@ -14,6 +14,7 @@ import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertIn
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateCVVDetails
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateMonthDetails
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updatePANDetails
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.model.*
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.testutil.UITestUtils.closeKeyboard
@@ -158,7 +159,10 @@ class CardConfigurationLongDelayIntegrationTest {
 
         assertInProgressState()
 
-        assertDisplaysResponseFromServer(activity.getString(R.string.verified_token_session_reference), activity.window.decorView)
+        assertDisplaysResponseFromServer(
+            mapOf(VERIFIED_TOKEN_SESSION to activity.getString(R.string.verified_token_session_reference)).toString(),
+            activity.window.decorView
+        )
     }
     
     private fun assertExpectedLogo(logoResName: String) {

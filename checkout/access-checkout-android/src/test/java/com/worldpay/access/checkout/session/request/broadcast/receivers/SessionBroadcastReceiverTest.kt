@@ -80,7 +80,7 @@ class SessionBroadcastReceiverTest {
 
         val response = mapOf(VERIFIED_TOKEN_SESSION to "some reference")
 
-        verify(sessionResponseListener).onRequestFinished(response.toString(), null)
+        verify(sessionResponseListener).onRequestFinished(response, null)
     }
 
     @Test
@@ -102,7 +102,7 @@ class SessionBroadcastReceiverTest {
             VERIFIED_TOKEN_SESSION to "verified-token-session-url"
         )
 
-        verify(sessionResponseListener, atMost(1)).onRequestFinished(response.toString(), null)
+        verify(sessionResponseListener, atMost(1)).onRequestFinished(response, null)
     }
 
     @Test
