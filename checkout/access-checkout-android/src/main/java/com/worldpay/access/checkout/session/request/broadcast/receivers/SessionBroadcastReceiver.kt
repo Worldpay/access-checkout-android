@@ -27,9 +27,9 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
     }
 
     override fun onReceive(context: Context, intent: Intent) {
-        debugLog(javaClass.name, "Receiver fired")
+        debugLog(javaClass.simpleName, "Receiver fired")
 
-        if (intent.action != javaClass.name) {
+        if (intent.action != GET_REQUESTED_SESSION) {
             return
         }
 
@@ -60,7 +60,7 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
             }
         }
 
-        debugLog(javaClass.name, "Intent Resp: $response")
-        debugLog(javaClass.name, "Intent Err: $errorSerializable")
+        debugLog(javaClass.simpleName, "Intent Resp: $response")
+        debugLog(javaClass.simpleName, "Intent Err: $errorSerializable")
     }
 }

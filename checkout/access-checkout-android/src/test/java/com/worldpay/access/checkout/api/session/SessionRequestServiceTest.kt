@@ -7,13 +7,21 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.session.request.broadcast.receivers.GET_REQUESTED_SESSION
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.ERROR_KEY
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.RESPONSE_KEY
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.ArgumentCaptor
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
+import org.robolectric.RobolectricTestRunner
+import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
+@RunWith(RobolectricTestRunner::class)
 class SessionRequestServiceTest {
 
     private lateinit var sessionRequestService: SessionRequestService
@@ -109,7 +117,13 @@ class SessionRequestServiceTest {
 
         sessionRequestService.onResponse(null, sessionResponse)
 
-        verify(localBroadcastManager).sendBroadcast(any())
+        val argument = ArgumentCaptor.forClass(Intent::class.java)
+
+        verify(localBroadcastManager).sendBroadcast(argument.capture())
+
+        assertEquals(sessionResponse, argument.value.getSerializableExtra(RESPONSE_KEY))
+        assertNull(argument.value.getSerializableExtra(ERROR_KEY))
+        assertEquals(GET_REQUESTED_SESSION, argument.value.action)
     }
 
 }

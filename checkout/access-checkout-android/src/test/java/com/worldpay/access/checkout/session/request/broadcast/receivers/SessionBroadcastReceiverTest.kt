@@ -23,8 +23,6 @@ class SessionBroadcastReceiverTest {
     private lateinit var intent: Intent
     private lateinit var context: Context
     
-    private val action = SessionBroadcastReceiver::class.java.name
-
     @Before
     fun setup() {
         sessionResponseListener = mock()
@@ -53,7 +51,7 @@ class SessionBroadcastReceiverTest {
 
     @Test
     fun `should return empty session and exception when session response is empty`() {
-        given(intent.action).willReturn(action)
+        given(intent.action).willReturn(GET_REQUESTED_SESSION)
         given(intent.getSerializableExtra("error")).willReturn(AccessCheckoutError("some error"))
 
         sessionBroadcastReceiver.onReceive(context, intent)
@@ -65,7 +63,7 @@ class SessionBroadcastReceiverTest {
 
     @Test
     fun `should return href given a session response is received`() {
-        given(intent.action).willReturn(action)
+        given(intent.action).willReturn(GET_REQUESTED_SESSION)
         given(intent.getSerializableExtra("response")).willReturn(
             SessionResponse(
                 SessionResponse.Links(
@@ -85,7 +83,7 @@ class SessionBroadcastReceiverTest {
     @Test
     fun `should return null session given an error is received`() {
         val expectedEx: AccessCheckoutError = mock()
-        given(intent.action).willReturn(action)
+        given(intent.action).willReturn(GET_REQUESTED_SESSION)
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
 
         sessionBroadcastReceiver.onReceive(context, intent)
@@ -96,12 +94,8 @@ class SessionBroadcastReceiverTest {
     @Test
     fun `should notify with error once when a response that is not a session response is received`() {
         val expectedEx: AccessCheckoutError = mock()
-        given(intent.action).willReturn(action)
-        given(intent.getSerializableExtra("response")).willReturn(
-            TestObject(
-                "something"
-            )
-        )
+        given(intent.action).willReturn(GET_REQUESTED_SESSION)
+        given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
 
         sessionBroadcastReceiver.onReceive(context, intent)
@@ -115,12 +109,8 @@ class SessionBroadcastReceiverTest {
     fun `should notify with custom error when a response that is not a session response and error deserialize failure`() {
         val expectedEx: AccessCheckoutError? = null
 
-        given(intent.action).willReturn(action)
-        given(intent.getSerializableExtra("response")).willReturn(
-            TestObject(
-                "something"
-            )
-        )
+        given(intent.action).willReturn(GET_REQUESTED_SESSION)
+        given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         sessionBroadcastReceiver.onReceive(context, intent)

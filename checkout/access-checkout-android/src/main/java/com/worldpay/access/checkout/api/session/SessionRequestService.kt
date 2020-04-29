@@ -9,6 +9,7 @@ import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.session.request.broadcast.receivers.GET_REQUESTED_SESSION
 import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),
@@ -51,7 +52,7 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
         val broadcastIntent = Intent()
         broadcastIntent.putExtra(SessionBroadcastReceiver.RESPONSE_KEY, response)
         broadcastIntent.putExtra(SessionBroadcastReceiver.ERROR_KEY, error)
-        broadcastIntent.action = SessionBroadcastReceiver::class.java.name
+        broadcastIntent.action = GET_REQUESTED_SESSION
 
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
     }
