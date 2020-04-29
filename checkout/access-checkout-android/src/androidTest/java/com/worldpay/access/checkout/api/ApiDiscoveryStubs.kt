@@ -4,7 +4,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 
-object DiscoveryStubs {
+object ApiDiscoveryStubs {
 
     private const val serviceDiscoveryResponse =
         """{

@@ -14,7 +14,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.AccessCheckoutException.Error.BODY_DOES_NOT_MATCH_SCHEMA
-import com.worldpay.access.checkout.api.DiscoveryStubs.stubServiceDiscoveryResponses
+import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.api.session.CardSessionRequest
 import com.worldpay.access.checkout.client.AccessCheckoutClient
 import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
