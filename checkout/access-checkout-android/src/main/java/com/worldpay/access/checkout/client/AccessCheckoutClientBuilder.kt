@@ -3,13 +3,17 @@ package com.worldpay.access.checkout.client
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
-import com.worldpay.access.checkout.session.request.SessionRequestHandlerConfig
-import com.worldpay.access.checkout.session.request.SessionRequestHandlerFactory
+import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
+import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
+import com.worldpay.access.checkout.session.request.handlers.SessionRequestHandlerConfig
+import com.worldpay.access.checkout.session.request.handlers.SessionRequestHandlerFactory
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 import com.worldpay.access.checkout.views.SessionResponseListener
 
 class AccessCheckoutClientBuilder {
 
+    private val tag = "AccessCheckoutClient"
     private var baseUrl: String? = null
     private var merchantId: String? = null
     private var context: Context? = null
@@ -55,14 +59,29 @@ class AccessCheckoutClientBuilder {
             .externalSessionResponseListener(externalSessionResponseListener as SessionResponseListener)
             .build()
 
+        val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context as Context)
+
+        val activityLifecycleObserverInitialiser = createActivityLifecycleObserverInitialiser(
+            localBroadcastManagerFactory,
+            externalSessionResponseListener as SessionResponseListener
+        )
+
         return AccessCheckoutClientImpl(
-            baseUrl as String,
-            context as Context,
-            externalSessionResponseListener as SessionResponseListener,
+            SessionRequestHandlerFactory(tokenRequestHandlerConfig),
+            activityLifecycleObserverInitialiser,
+            localBroadcastManagerFactory,
+            context as Context
+        )
+    }
+
+    private fun createActivityLifecycleObserverInitialiser(
+        localBroadcastManagerFactory: LocalBroadcastManagerFactory,
+        externalSessionResponseListener: SessionResponseListener
+    ): ActivityLifecycleObserverInitialiser {
+        return ActivityLifecycleObserverInitialiser(
+            tag,
             lifecycleOwner as LifecycleOwner,
-            SessionRequestHandlerFactory(
-                tokenRequestHandlerConfig
-            )
+            SessionBroadcastManagerFactory(localBroadcastManagerFactory, externalSessionResponseListener)
         )
     }
 

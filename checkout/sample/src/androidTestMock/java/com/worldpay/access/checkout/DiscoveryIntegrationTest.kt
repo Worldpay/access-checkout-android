@@ -15,6 +15,7 @@ import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseF
 import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -26,8 +27,12 @@ class DiscoveryIntegrationTest {
     private val year = "99"
 
     @get:Rule
-    var discoveryRule: DiscoveryRule =
-        DiscoveryRule(MainActivity::class.java)
+    var activityTestRule = ActivityTestRule(MainActivity::class.java)
+
+    @Before
+    fun setup() {
+        simulateRootResourceTemporaryServerError()
+    }
 
     @Test
     fun shouldRetryDiscoveryAndReturnSuccessfulResponse_whenDiscoveryFailsFirstTime_cardFlow() {
@@ -42,8 +47,8 @@ class DiscoveryIntegrationTest {
         assertInProgressState()
 
         assertDisplaysResponseFromServer(
-            discoveryRule.activity.getString(R.string.verified_token_session_reference),
-            discoveryRule.activity.window.decorView
+            activityTestRule.activity.getString(R.string.verified_token_session_reference),
+            activityTestRule.activity.window.decorView
         )
     }
 
@@ -63,21 +68,9 @@ class DiscoveryIntegrationTest {
             .perform(click())
 
         assertDisplaysResponseFromServer(
-            discoveryRule.activity.getString(R.string.sessions_session_reference),
-            discoveryRule.activity.window.decorView
+            activityTestRule.activity.getString(R.string.sessions_session_reference),
+            activityTestRule.activity.window.decorView
         )
     }
 
-}
-
-class DiscoveryRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
-
-    override fun beforeActivityLaunched() {
-        super.beforeActivityLaunched()
-        // This discovery rule adds stubs to mockserver to simulate a server error condition on the discovery endpoint.
-        // On initialisation of our SDK, the SDK will trigger a discovery call which will get back this error
-        // response. On the next call to the same endpoint (when making the payment request), a successful stubbed response will then be
-        // returned by mockserver
-        simulateRootResourceTemporaryServerError()
-    }
 }

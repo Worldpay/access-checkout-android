@@ -4,11 +4,13 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
+import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.session.request.broadcast.receivers.GET_REQUESTED_SESSION
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),
     Callback<SessionResponse> {
@@ -17,12 +19,10 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
 
         private const val TAG = "SessionRequestService"
 
-        @JvmStatic
-        val ACTION_GET_SESSION = "com.worldpay.access.checkout.api.action.GET_SESSION"
-
         const val DISCOVER_LINKS = "discover"
         const val REQUEST_KEY = "request"
         const val BASE_URL_KEY = "base_url"
+        const val SESSION_TYPE = "session_type"
     }
 
     private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender(this)
@@ -50,9 +50,9 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
 
     private fun broadcastResult(response: SessionResponse?, error: Exception?) {
         val broadcastIntent = Intent()
-        broadcastIntent.putExtra(SessionReceiver.RESPONSE_KEY, response)
-        broadcastIntent.putExtra(SessionReceiver.ERROR_KEY, error)
-        broadcastIntent.action = ACTION_GET_SESSION
+        broadcastIntent.putExtra(SessionBroadcastReceiver.RESPONSE_KEY, response)
+        broadcastIntent.putExtra(SessionBroadcastReceiver.ERROR_KEY, error)
+        broadcastIntent.action = GET_REQUESTED_SESSION
 
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
     }
