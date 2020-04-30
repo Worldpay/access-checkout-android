@@ -10,26 +10,19 @@ import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastMa
 
 internal class ActivityLifecycleObserver(
     private val tag: String,
-    private val lifecycleOwner: LifecycleOwner,
-    private val sessionBroadcastManagerFactory: SessionBroadcastManagerFactory
+    lifecycleOwner: LifecycleOwner,
+    sessionBroadcastManagerFactory: SessionBroadcastManagerFactory
 ) : LifecycleObserver {
 
-    private lateinit var sessionBroadcastManager: SessionBroadcastManager
+    private var sessionBroadcastManager: SessionBroadcastManager = sessionBroadcastManagerFactory.createInstance()
 
     init {
-        onCreateListener()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_CREATE)
-    private fun onCreateListener() {
-        LoggingUtils.debugLog(tag, "On Create")
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
-    internal fun resumeListener() {
-        LoggingUtils.debugLog(tag, "On Resume")
-        sessionBroadcastManager = sessionBroadcastManagerFactory.createInstance()
+    @OnLifecycleEvent(Lifecycle.Event.ON_START)
+    internal fun startListener() {
+        LoggingUtils.debugLog(tag, "On Start")
         sessionBroadcastManager.register()
     }
 
@@ -37,11 +30,6 @@ internal class ActivityLifecycleObserver(
     internal fun stopListener() {
         LoggingUtils.debugLog(tag, "On Stop")
         sessionBroadcastManager.unregister()
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun onStopListener() {
-        lifecycleOwner.lifecycle.removeObserver(this)
     }
 
 }

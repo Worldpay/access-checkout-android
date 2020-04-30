@@ -1,9 +1,12 @@
 package com.worldpay.access.checkout.card
 
 import android.content.Context
-import android.content.pm.ActivityInfo
+import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+import android.widget.Button
+import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.assertion.ViewAssertions
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.ViewMatchers.isEnabled
 import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
@@ -28,10 +31,14 @@ import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateCV
 import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.yearMatcher
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
+import com.worldpay.access.checkout.testutil.UITestUtils.reopenFromRecentApps
 import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
+import com.worldpay.access.checkout.views.CardExpiryTextLayout
+import com.worldpay.access.checkout.views.PANLayout
 import org.junit.Assert.assertTrue
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.assertFalse
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -43,23 +50,7 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
     private val year = "99"
 
     @Test
-    fun givenDiscoveryIsDoneOnStartUp_AndValidDataIsInsertedAndUserPressesSubmit_UiFieldsWillBeDisabledAndUiDisplaysResponse() {
-        assertValidInitialUIFields()
-        typeFormInputs(amexCard, amexCvv, month, year)
-        assertFieldsAlpha(1.0f)
-        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
-        uiObjectWithId(R.id.card_flow_btn_submit).click()
-
-        assertInProgressState()
-
-        assertDisplaysResponseFromServer(
-            mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
-            activityRule.activity.window.decorView
-        )
-    }
-
-    @Test
-    fun givenRequestIsRedirected_AndValidDataIsInsertedAndUserPressesSubmit_UiFieldsWillBeDisabledAndUiDisplaysResponse() {
+    fun shouldDisableAllFieldsUponSubmissionAndDisplayResult() {
         simulateHttpRedirect(activityRule.activity)
 
         assertValidInitialUIFields()
@@ -70,6 +61,12 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
 
         assertInProgressState()
 
+        assertFalse { activityRule.activity.findViewById<PANLayout>(R.id.card_flow_text_pan).mEditText.isEnabled }
+        assertFalse { activityRule.activity.findViewById<TextView>(R.id.card_flow_text_cvv).isEnabled }
+        assertFalse { activityRule.activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).monthEditText.isEnabled }
+        assertFalse { activityRule.activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).yearEditText.isEnabled }
+        assertFalse { activityRule.activity.findViewById<Button>(R.id.card_flow_btn_submit).isEnabled }
+
         assertDisplaysResponseFromServer(
             mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
             activityRule.activity.window.decorView
@@ -77,37 +74,30 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
     }
 
     @Test
-    fun givenValidDataIsInsertedAndUserPressesSubmitAndAnyResponseIsReceived_UiFieldsWillBeReEnabled() {
+    fun shouldClearAndEnableFieldValuesUponCorrectSubmission() {
         assertValidInitialUIFields()
         typeFormInputs(amexCard, amexCvv, month, year)
         assertFieldsAlpha(1.0f)
 
         assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
         uiObjectWithId(R.id.card_flow_btn_submit).click()
+
         assertInProgressState()
 
         assertFieldsAlpha(1.0f)
-    }
 
-    @Test
-    fun givenValidDataIsInsertedAndUserPressesSubmitAndValidResponseIsReceived_UiFieldsWillBeClearedAndFormWillBeRevalidated() {
-        assertValidInitialUIFields()
-        typeFormInputs(amexCard, amexCvv, month, year)
-        assertFieldsAlpha(1.0f)
-
-        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
-        uiObjectWithId(R.id.card_flow_btn_submit).click()
-        assertInProgressState()
-
-        assertFieldsAlpha(1.0f)
         onView(cardNumberMatcher)
-            .check(ViewAssertions.matches(withText("")))
+            .check(matches(withText("")))
+            .check(matches(isEnabled()))
         onView(cvvMatcher)
-            .check(ViewAssertions.matches(withText("")))
+            .check(matches(withText("")))
+            .check(matches(isEnabled()))
         onView(monthMatcher)
-            .check(ViewAssertions.matches(withText("")))
+            .check(matches(withText("")))
+            .check(matches(isEnabled()))
         onView(yearMatcher)
-            .check(ViewAssertions.matches(withText("")))
+            .check(matches(withText("")))
+            .check(matches(isEnabled()))
 
         typeFormInputs(amexCard, "", month, year)
 
@@ -115,7 +105,7 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
     }
 
     @Test
-    fun givenDataIsInsertedAndUserPressesSubmitAndInvalidResponseIsReceived_UiFieldsWillBeKeptAndFormCanBeResubmittedAfterValidChanges() {
+    fun shouldKeepFieldValuesUponIncorrectSubmission() {
         simulateErrorResponse(activityRule.activity)
 
         val unknownCardError = getResourceString(R.string.error_response_card_number)
@@ -132,13 +122,17 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
         assertFieldsAlpha(1.0f)
 
         onView(cardNumberMatcher)
-            .check(ViewAssertions.matches(withText(unknownCardError)))
+            .check(matches(withText(unknownCardError)))
+            .check(matches(isEnabled()))
         onView(cvvMatcher)
-            .check(ViewAssertions.matches(withText(amexCvv)))
+            .check(matches(withText(amexCvv)))
+            .check(matches(isEnabled()))
         onView(monthMatcher)
-            .check(ViewAssertions.matches(withText(month)))
+            .check(matches(withText(month)))
+            .check(matches(isEnabled()))
         onView(yearMatcher)
-            .check(ViewAssertions.matches(withText(year)))
+            .check(matches(withText(year)))
+            .check(matches(isEnabled()))
 
         assertDisplaysResponseFromServer(
             expectedToastErrorMessage,
@@ -151,7 +145,7 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
     }
 
     @Test
-    fun givenValidDataIsInserted_AndUserPressesSubmit_AndScreenRotationPerformed_ThenAppShouldSurviveAndContinueToMakeCallToService() {
+    fun shouldContinueWithServiceCall_whenAppIsRotatedAfterSubmission() {
         simulateDelayedResponse(activityRule.activity)
 
         val cardNumber = getResourceString(R.string.long_delay_card_number)
@@ -161,7 +155,28 @@ class CardSessionRequestMockIntegrationTest : AbstractCardFlowUITest() {
         assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
         uiObjectWithId(R.id.card_flow_btn_submit).click()
 
-        activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+        activityRule.activity.requestedOrientation = SCREEN_ORIENTATION_LANDSCAPE
+
+        assertInProgressState()
+
+        assertDisplaysResponseFromServer(
+            mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
+            activityRule.activity.window.decorView
+        )
+    }
+
+    @Test
+    fun shouldContinueWithServiceCall_whenAppIsReopenedAfterSubmission() {
+        simulateDelayedResponse(activityRule.activity)
+
+        val cardNumber = getResourceString(R.string.long_delay_card_number)
+        assertValidInitialUIFields()
+        typeFormInputs(cardNumber, amexCvv, month, year)
+        assertFieldsAlpha(1.0f)
+        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
+        uiObjectWithId(R.id.card_flow_btn_submit).click()
+
+        reopenFromRecentApps()
 
         assertInProgressState()
 

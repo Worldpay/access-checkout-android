@@ -11,7 +11,6 @@ import com.worldpay.access.checkout.MainActivity
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
-import com.worldpay.access.checkout.testutil.UITestUtils.assertUiObjectExistsAndIsDisabled
 import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.ProgressBar
@@ -66,7 +65,15 @@ class CvvFlowIntegrationTest {
         uiObjectWithId(R.id.cvv_flow_btn_submit).click()
 
         assertTrue(ProgressBar(activityRule.activity).isLoading())
-        assertUiObjectExistsAndIsDisabled(R.id.cvv_flow_text_cvv)
+
+        onView(withId(R.id.cvv_flow_text_cvv))
+            .check(matches(isDisplayed()))
+            .check(matches(not(isEnabled())))
+
+        onView(withId(R.id.cvv_flow_btn_submit))
+            .check(matches(isDisplayed()))
+            .check(matches(not(isEnabled())))
+
 
         assertDisplaysResponseFromServer(
             mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString(),

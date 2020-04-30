@@ -8,6 +8,10 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutEr
 import com.worldpay.access.checkout.api.session.SessionResponseInfo
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastDataStore.addResponse
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastDataStore.allRequestsCompleted
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastDataStore.getResponses
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastDataStore.setNumberOfSessionTypes
 import com.worldpay.access.checkout.views.SessionResponseListener
 import java.io.Serializable
 import java.util.*
@@ -16,15 +20,9 @@ import java.util.concurrent.atomic.AtomicInteger
 internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
 
     private lateinit var externalSessionResponseListener: SessionResponseListener
-    private var numOfSessionTypes = AtomicInteger(0)
-
-    private var numOfSessionRequestCompleted = AtomicInteger(0)
-
-    private lateinit var storedResponses: EnumMap<SessionType, String>
 
     constructor(externalSessionResponseListener: SessionResponseListener) : this() {
         this.externalSessionResponseListener = externalSessionResponseListener
-        this.storedResponses = EnumMap(SessionType::class.java)
     }
 
     companion object {
@@ -37,29 +35,35 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
         debugLog(javaClass.simpleName, "Receiver fired")
 
         if (intent.action == NUM_OF_SESSION_TYPES_REQUESTED) {
-            numOfSessionTypes = AtomicInteger(intent.getIntExtra(NUMBER_OF_SESSION_TYPE_KEY, 0))
+            setNumberOfSessionTypes(intent.getIntExtra(NUMBER_OF_SESSION_TYPE_KEY, 0))
         }
 
         if (intent.action == COMPLETED_SESSION_REQUEST) {
             val sessionResponseInfo = intent.getSerializableExtra(RESPONSE_KEY)
             val errorSerializable = intent.getSerializableExtra(ERROR_KEY)
 
-            if (sessionResponseInfo !is SessionResponseInfo) {
+            if (sessionResponseInfo is SessionResponseInfo) {
+                storeResponse(sessionResponseInfo)
+                if (allRequestsCompleted()) {
+                    sendSuccessCallback(getResponses())
+                    SessionBroadcastDataStore.clear()
+                }
+            } else {
                 sendErrorCallback(errorSerializable)
-                return
-            }
-
-            val allRequestsCompleted = numOfSessionTypes.get() == numOfSessionRequestCompleted.incrementAndGet()
-            storedResponses[sessionResponseInfo.sessionType] = sessionResponseInfo.responseBody.links.endpoints.href
-            if (allRequestsCompleted) {
-                sendSuccessCallback()
             }
         }
     }
 
-    private fun sendSuccessCallback() {
-        debugLog(javaClass.simpleName, "Intent Resp: $storedResponses")
-        externalSessionResponseListener.onRequestFinished(storedResponses,null)
+    private fun storeResponse(sessionResponseInfo: SessionResponseInfo) {
+        addResponse(
+            sessionResponseInfo.sessionType,
+            sessionResponseInfo.responseBody.links.endpoints.href
+        )
+    }
+
+    private fun sendSuccessCallback(responses: Map<SessionType, String>) {
+        debugLog(javaClass.simpleName, "Intent Resp: $responses")
+        externalSessionResponseListener.onRequestFinished(responses,null)
     }
 
     private fun sendErrorCallback(errorSerializable: Serializable?) {
@@ -85,6 +89,32 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
         intentFilter.addAction(SESSION_TYPE_REQUEST_COMPLETE)
         intentFilter.addAction(COMPLETED_SESSION_REQUEST)
         return intentFilter
+    }
+
+}
+
+internal object SessionBroadcastDataStore {
+
+    private var numOfSessionRequestCompleted = AtomicInteger(0)
+    private var numOfSessionTypes = AtomicInteger(0)
+    private var storedResponses: EnumMap<SessionType, String> = EnumMap(SessionType::class.java)
+
+    fun setNumberOfSessionTypes(num: Int) {
+        numOfSessionTypes.set(num)
+    }
+
+    fun allRequestsCompleted() = numOfSessionTypes.get() == numOfSessionRequestCompleted.incrementAndGet()
+
+    fun addResponse(sessionType: SessionType, href: String) {
+        storedResponses[sessionType] = href
+    }
+
+    fun getResponses(): EnumMap<SessionType, String> = storedResponses
+
+    fun clear() {
+        storedResponses.clear()
+        numOfSessionTypes.set(0)
+        numOfSessionRequestCompleted.set(0)
     }
 
 }

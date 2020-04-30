@@ -30,7 +30,7 @@ class SessionResponseListenerImpl(
         progressBar.stopLoading()
         toggleLoading(true)
         val toastMessage: String
-        if (sessionResponseMap?.isNotEmpty()!!) {
+        if (sessionResponseMap != null && sessionResponseMap.isNotEmpty()) {
             toastMessage = "Ref: $sessionResponseMap"
             resetFields()
         } else {

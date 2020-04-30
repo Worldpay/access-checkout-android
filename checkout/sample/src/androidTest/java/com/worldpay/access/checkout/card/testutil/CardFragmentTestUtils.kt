@@ -28,11 +28,11 @@ object CardFragmentTestUtils {
     val yearMatcher: Matcher<View> = ViewMatchers.withId(R.id.year_edit_text)
     private val brandImageMatcher: Matcher<View> = ViewMatchers.withId(R.id.logo_view)
     private val cardExpiryMatcher: Matcher<View> = ViewMatchers.withId(R.id.card_flow_text_exp)
-    private val buttonMatcher: Matcher<View> = ViewMatchers.withId(R.id.card_flow_btn_submit)
+    private val submitButtonMatcher: Matcher<View> = ViewMatchers.withId(R.id.card_flow_btn_submit)
     private val progressMatcher: Matcher<View> = ViewMatchers.withId(R.id.loading_bar)
 
     fun assertInProgressState() {
-        assertTrue(progressBar().exists())
+        assertTrue(progressBar().waitForExists(3000))
         closeKeyboard()
         assertFieldsAndSubmitButtonIsDisabled()
     }
@@ -99,7 +99,7 @@ object CardFragmentTestUtils {
     fun checkSubmitInState(enabled: Boolean) {
         val enabledMatcher: Matcher<View> =
             if (enabled) isEnabled() else not(isEnabled())
-        onView(buttonMatcher)
+        onView(submitButtonMatcher)
             .check(matches(isDisplayed()))
             .check(matches(enabledMatcher))
     }
@@ -113,7 +113,7 @@ object CardFragmentTestUtils {
             .check(matches(AlphaMatcher.withAlpha(alpha)))
         onView(yearMatcher)
             .check(matches(AlphaMatcher.withAlpha(alpha)))
-        onView(buttonMatcher)
+        onView(submitButtonMatcher)
             .check(matches(AlphaMatcher.withAlpha(alpha)))
     }
 

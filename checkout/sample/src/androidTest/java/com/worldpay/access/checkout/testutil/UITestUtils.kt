@@ -126,6 +126,15 @@ object UITestUtils {
         }
     }
 
+    fun reopenFromRecentApps() {
+        val uiDevice = getInstance(getInstrumentation())
+        uiDevice.pressRecentApps()
+
+        val width: Int = uiDevice.displayWidth / 2
+        val height: Int = uiDevice.displayHeight / 2
+        uiDevice.click(width, height)
+    }
+
     fun navigateTo(fragmentId: Int) {
         onView(withId(R.id.drawer_layout))
             .check(matches(isDisplayed()))
