@@ -12,5 +12,5 @@ data class CardBrand(
 	val name: String,
 	val images: List<CardBrandImage>? = emptyList(),
 	val cvv: CardValidationRule? = null,
-	val pans: List<CardValidationRule>
+	val pans: CardValidationRule?  = null
 )
