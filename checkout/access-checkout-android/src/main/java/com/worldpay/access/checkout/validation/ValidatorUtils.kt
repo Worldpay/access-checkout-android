@@ -14,7 +14,7 @@ internal object ValidatorUtils {
                 rule.validLengths != null -> {
                     val validLengths: List<Int> = rule.validLengths
                     ValidationResult(
-                        partial = text.length <= validLengths.max() as Int,
+                        partial = text.length < validLengths.max() as Int,
                         complete = validLengths.contains(text.length)
                     )
                 }
