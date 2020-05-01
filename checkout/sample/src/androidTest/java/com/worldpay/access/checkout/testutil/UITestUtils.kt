@@ -8,8 +8,6 @@ import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
@@ -21,12 +19,9 @@ import androidx.test.uiautomator.UiDevice.getInstance
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.testutil.matchers.EditTextColorMatcher
 import org.awaitility.Awaitility
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
-import org.junit.Assert
-import org.junit.Assert.assertTrue
 import java.util.concurrent.TimeUnit
 
 object UITestUtils {
@@ -35,17 +30,6 @@ object UITestUtils {
         val resName = getInstrumentation().targetContext.resources.getResourceName(resId)
         val selector = UiSelector().resourceId(resName)
         return getInstance(getInstrumentation()).findObject(selector)
-    }
-
-    fun checkFieldInState(shouldBeValid: Boolean, viewMatcher: Matcher<View>, context: Context) {
-        val expectedColor = if (shouldBeValid) getSuccessColor(
-            context
-        ) else getFailColor(
-            context
-        )
-
-        onView(viewMatcher)
-            .check(matches(EditTextColorMatcher.withEditTextColor(expectedColor)))
     }
 
     fun checkFieldText(viewMatcher: Matcher<View>, expectedText: String) {
@@ -64,11 +48,6 @@ object UITestUtils {
             .check(matches(isDisplayed()))
     }
 
-    fun moveToField(viewMatcher: Matcher<View>) {
-        onView(viewMatcher)
-            .perform(click(), ViewActions.closeSoftKeyboard())
-    }
-
     fun getSuccessColor(context: Context) = getColor(context.resources,
         R.color.SUCCESS, context.theme)
 
@@ -82,18 +61,6 @@ object UITestUtils {
             }
         }
         return false
-    }
-
-    fun assertUiObjectExistsAndIsDisabled(resId: Int) {
-        val uiObject = uiObjectWithId(resId)
-        uiObject.exists()
-        Assert.assertFalse(uiObject.isEnabled)
-    }
-
-    fun assertUiObjectExistsAndIsEnabled(resId: Int) {
-        val uiObject = uiObjectWithId(resId)
-        uiObject.exists()
-        assertTrue(uiObject.isEnabled)
     }
 
     fun closeKeyboard() {
@@ -126,13 +93,11 @@ object UITestUtils {
         }
     }
 
-    fun reopenFromRecentApps() {
+    fun reopenApp() {
         val uiDevice = getInstance(getInstrumentation())
         uiDevice.pressRecentApps()
-
-        val width: Int = uiDevice.displayWidth / 2
-        val height: Int = uiDevice.displayHeight / 2
-        uiDevice.click(width, height)
+        Thread.sleep(500)
+        uiDevice.pressBack()
     }
 
     fun navigateTo(fragmentId: Int) {

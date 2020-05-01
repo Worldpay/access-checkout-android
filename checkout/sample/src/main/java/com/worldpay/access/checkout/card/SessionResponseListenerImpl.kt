@@ -7,7 +7,7 @@ import android.widget.Toast
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.client.SessionType
-import com.worldpay.access.checkout.logging.LoggingUtils
+import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.ui.ProgressBar
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
@@ -20,13 +20,13 @@ class SessionResponseListenerImpl(
 ) : SessionResponseListener {
 
     override fun onRequestStarted() {
-        LoggingUtils.debugLog("Card Flow", "Started request")
+        debugLog(javaClass.simpleName, "Started request")
         progressBar.beginLoading()
         toggleLoading(false)
     }
 
     override fun onRequestFinished(sessionResponseMap: Map<SessionType, String>?, error: AccessCheckoutException?) {
-        LoggingUtils.debugLog("Card Flow", "Received session reference map: $sessionResponseMap")
+        debugLog(javaClass.simpleName, "Received session reference map: $sessionResponseMap")
         progressBar.stopLoading()
         toggleLoading(true)
         val toastMessage: String
@@ -41,6 +41,7 @@ class SessionResponseListenerImpl(
     }
 
     private fun resetFields() {
+        debugLog(javaClass.simpleName, "Reset Fields")
         activity.findViewById<PANLayout>(R.id.card_flow_text_pan).mEditText.text.clear()
         activity.findViewById<CardCVVText>(R.id.card_flow_text_cvv).text.clear()
         activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).monthEditText.text.clear()
@@ -48,6 +49,7 @@ class SessionResponseListenerImpl(
     }
 
     private fun toggleLoading(enableFields: Boolean) {
+        debugLog(javaClass.simpleName, "Toggling enabled state on all fields to : $enableFields")
         activity.findViewById<PANLayout>(R.id.card_flow_text_pan).mEditText.isEnabled = enableFields
         activity.findViewById<TextView>(R.id.card_flow_text_cvv).isEnabled = enableFields
         activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).monthEditText.isEnabled = enableFields

@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.cvv
 
+import android.widget.Button
+import android.widget.TextView
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -19,6 +21,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -66,14 +69,11 @@ class CvvFlowIntegrationTest {
 
         assertTrue(ProgressBar(activityRule.activity).isLoading())
 
-        onView(withId(R.id.cvv_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(not(isEnabled())))
+        assertFalse { activityRule.activity.findViewById<TextView>(R.id.cvv_flow_text_cvv).isEnabled }
+        assertFalse { activityRule.activity.findViewById<Button>(R.id.cvv_flow_btn_submit).isEnabled }
 
-        onView(withId(R.id.cvv_flow_btn_submit))
-            .check(matches(isDisplayed()))
-            .check(matches(not(isEnabled())))
-
+        onView(withId(R.id.cvv_flow_text_cvv)).check(matches(isDisplayed()))
+        onView(withId(R.id.cvv_flow_btn_submit)).check(matches(isDisplayed()))
 
         assertDisplaysResponseFromServer(
             mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString(),

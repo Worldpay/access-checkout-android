@@ -7,16 +7,11 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.RootResourseMockStub.simulateRootResourceTemporaryServerError
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFieldsAlpha
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertValidInitialUIFields
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.typeFormInputs
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
-import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
-import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,18 +35,21 @@ class DiscoveryIntegrationTest {
     fun shouldRetryDiscoveryAndReturnSuccessfulResponse_whenDiscoveryFailsFirstTime_cardFlow() {
         navigateTo(R.id.nav_card_flow)
 
-        assertValidInitialUIFields()
-        typeFormInputs(amexCard, amexCvv, month, year)
-        assertFieldsAlpha(1.0f)
-        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
-        uiObjectWithId(R.id.card_flow_btn_submit).click()
+        val cardFragmentTestUtils = CardFragmentTestUtils(activityTestRule.activity)
 
-        assertInProgressState()
+        cardFragmentTestUtils
+            .isInInitialState()
+            .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
+            .enabledStateIs(submitButton = true)
+            .clickSubmitButton()
+            .requestIsInProgress()
 
         assertDisplaysResponseFromServer(
             mapOf(VERIFIED_TOKEN_SESSION to activityTestRule.activity.getString(R.string.verified_token_session_reference)).toString(),
             activityTestRule.activity.window.decorView
         )
+
+        cardFragmentTestUtils.isInInitialState()
     }
 
     @Test

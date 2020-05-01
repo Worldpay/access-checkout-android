@@ -5,25 +5,13 @@ import com.worldpay.access.checkout.CardConfigurationMockStub.simulateCardConfig
 import com.worldpay.access.checkout.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.MainActivity
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertBrandImage
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertFieldsAlpha
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertInProgressState
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertValidInitialUIFields
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.cardNumberMatcher
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.checkSubmitInState
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.monthMatcher
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.typeFormInputs
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateMonthDetails
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updatePANDetails
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.yearMatcher
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
-import com.worldpay.access.checkout.testutil.UITestUtils.checkFieldInState
-import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import kotlin.test.assertTrue
 
 class CardConfigurationIntegrationTest {
 
@@ -35,10 +23,14 @@ class CardConfigurationIntegrationTest {
     private val year = "99"
 
     @get:Rule
-    var cardConfigurationErrorRule: CardConfigurationErrorRule =
-        CardConfigurationErrorRule(
-            MainActivity::class.java
-        )
+    var cardConfigurationErrorRule: CardConfigurationErrorRule = CardConfigurationErrorRule(MainActivity::class.java)
+
+    private lateinit var cardFragmentTestUtils: CardFragmentTestUtils
+
+    @Before
+    fun setup() {
+        cardFragmentTestUtils = CardFragmentTestUtils(cardConfigurationErrorRule.activity)
+    }
 
     @After
     fun tearDown() {
@@ -47,36 +39,27 @@ class CardConfigurationIntegrationTest {
 
     @Test
     fun givenCardConfigurationCallFails_AndValidUnknownCardDataIsInsertedAndUserPressesSubmit_ThenSuccessfulResponseIsReceived() {
-        assertValidInitialUIFields()
+        cardFragmentTestUtils
+            .isInInitialState()
+            .enterCardDetails(pan = luhnInvalidUnknownCard, cvv = unknownCvv, month = "13", year = year)
+            .cardDetailsAre(pan = luhnInvalidUnknownCard, cvv = unknownCvv, month = "13", year = year)
+            .hasNoBrand()
+            .validationStateIs(pan = false, cvv = true, month = false, year = false)
+            .enabledStateIs(submitButton = false)
 
-        typeFormInputs(luhnInvalidUnknownCard, unknownCvv, "13", year, true)
+        cardFragmentTestUtils
+            .enterCardDetails(pan = luhnValidUnknownCard)
+            .hasNoBrand()
+            .validationStateIs(pan = true, cvv = true, month = false, year = false)
+            .enabledStateIs(submitButton = false)
 
-        assertBrandImage(R.drawable.card_unknown_logo)
-        checkFieldInState(false, cardNumberMatcher, cardConfigurationErrorRule.activity)
-        checkFieldInState(false, monthMatcher, cardConfigurationErrorRule.activity)
-        checkFieldInState(false, yearMatcher, cardConfigurationErrorRule.activity)
-        checkSubmitInState(false)
-
-        updatePANDetails(luhnValidUnknownCard)
-        assertBrandImage(R.drawable.card_unknown_logo)
-        checkFieldInState(true, cardNumberMatcher, cardConfigurationErrorRule.activity)
-        updateMonthDetails(month)
-
-        updatePANDetails(luhnValidMastercardCard)
-        assertBrandImage(R.drawable.card_unknown_logo)
-        checkFieldInState(true, cardNumberMatcher, cardConfigurationErrorRule.activity)
-
-        checkFieldInState(true, cardNumberMatcher, cardConfigurationErrorRule.activity)
-        checkFieldInState(true, monthMatcher, cardConfigurationErrorRule.activity)
-        checkFieldInState(true, yearMatcher, cardConfigurationErrorRule.activity)
-
-        checkSubmitInState(true)
-
-        assertFieldsAlpha(1.0f)
-        assertTrue(uiObjectWithId(R.id.card_flow_btn_submit).exists())
-        uiObjectWithId(R.id.card_flow_btn_submit).click()
-
-        assertInProgressState()
+        cardFragmentTestUtils
+            .enterCardDetails(pan = luhnValidMastercardCard, month = month)
+            .hasNoBrand()
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
+            .clickSubmitButton()
+            .requestIsInProgress()
 
         assertDisplaysResponseFromServer(
             mapOf(VERIFIED_TOKEN_SESSION to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString(),
