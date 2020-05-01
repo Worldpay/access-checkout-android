@@ -11,25 +11,13 @@ internal object ValidatorUtils {
     fun getValidationResultFor(text: String, cardValidationRule: CardValidationRule): ValidationResult {
         cardValidationRule.let { rule ->
             return when {
-                rule.validLength != null -> {
-                    val validLength: Int = rule.validLength
+                rule.validLengths != null -> {
+                    val validLengths: List<Int> = rule.validLengths
                     ValidationResult(
-                        partial = text.length < validLength,
-                        complete = text.length == validLength
+                        partial = text.length <= validLengths.max() as Int,
+                        complete = validLengths.contains(text.length)
                     )
                 }
-                rule.minLength != null && rule.maxLength != null -> ValidationResult(
-                    partial = text.length < rule.minLength,
-                    complete = text.length >= rule.minLength && text.length <= rule.maxLength
-                )
-                rule.minLength != null -> ValidationResult(
-                    partial = text.length < rule.minLength,
-                    complete = text.length >= rule.minLength
-                )
-                rule.maxLength != null -> ValidationResult(
-                    partial = text.length <= rule.maxLength,
-                    complete = text.length <= rule.maxLength
-                )
                 else -> ValidationResult(partial = true, complete = true)
             }
         }

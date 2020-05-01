@@ -40,17 +40,17 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
     }
 
     private fun getMaxForDefaultRules(): Int? {
-        return ruleSelectorForDefaults(cardConfiguration?.defaults)?.let { getValueToUseForRule(it) }
+        return ruleSelectorForDefaults(cardConfiguration?.defaults)?.let { getValueToUseForRule(it)?.sorted()?.last() }
     }
 
     private fun getMaxForIdentifiedBrand(result: Pair<ValidationResult, CardBrand?>, spanned: Spanned): Int? {
         return result.second?.let {
-            ruleSelectorForCardBrand(it, spanned)?.let { rule -> getValueToUseForRule(rule) }
+            ruleSelectorForCardBrand(it, spanned)?.let { rule -> getValueToUseForRule(rule)?.sorted()?.last() }
         }
     }
 
-    private fun getValueToUseForRule(cardValidationRule: CardValidationRule): Int? {
-        return cardValidationRule.maxLength ?: cardValidationRule.validLength ?: cardValidationRule.minLength
+    private fun getValueToUseForRule(cardValidationRule: CardValidationRule): List<Int>? {
+        return cardValidationRule.validLengths
     }
 
     open fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> = Pair(ValidationResult(partial = true, complete = true), null)
