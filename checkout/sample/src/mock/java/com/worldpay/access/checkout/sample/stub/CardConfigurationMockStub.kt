@@ -38,7 +38,7 @@ object CardConfigurationMockStub {
                         "images": [
                           {
                             "type": "image/svg+xml",
-                            "url": "${MockServer.getBaseUrl()}"/access-checkout/assets/mastercard.svg"
+                            "url": "${MockServer.getBaseUrl()}/access-checkout/assets/mastercard.svg"
                           }
                         ]
                       }
