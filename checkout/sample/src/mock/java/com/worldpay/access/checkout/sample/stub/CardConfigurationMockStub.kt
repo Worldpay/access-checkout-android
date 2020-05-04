@@ -24,7 +24,28 @@ object CardConfigurationMockStub {
     }
 
     fun stubCardConfigurationWithDelay(cardConfiguration: CardConfiguration, delay: Int = 0) {
-        val json = GsonBuilder().create().toJson(cardConfiguration)
+        val json = """
+              {
+               "brands": 
+                   [
+                      {
+                        "name": "mastercard",
+                        "pattern": "^(5[1-5]|2[2-7])\\d*${'$'}",
+                        "panLengths": [
+                          16
+                        ],
+                        "cvvLength": 3,
+                        "images": [
+                          {
+                            "type": "image/svg+xml",
+                            "url": "${MockServer.getBaseUrl()}"/access-checkout/assets/mastercard.svg"
+                          }
+                        ]
+                      }
+                ]
+              }
+            """.trimIndent()
+
         stubFor(get("/$CARD_CONFIGURATION_PATH")
             .willReturn(
                 aResponse()
