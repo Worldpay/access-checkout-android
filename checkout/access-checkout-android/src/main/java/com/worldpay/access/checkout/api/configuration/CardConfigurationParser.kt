@@ -94,11 +94,6 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         } ?: emptyList()
     }
 
-    private fun parseCardValidationRule(jsonObject: JSONArray): CardValidationRule {
-        val validLengths = parseLengths(jsonObject)
-        return CardValidationRule(null, validLengths)
-    }
-
     private fun parseLengths(jsonArray: JSONArray): List<Int>? {
         val validLengthsList = mutableListOf<Int>()
         jsonArray.let {
@@ -108,9 +103,4 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         }
         return validLengthsList
     }
-
-    private fun parseOptionalCardValidationRule(jsonObject: JSONArray?): CardValidationRule? {
-        return jsonObject?.let { parseCardValidationRule(it) }
-    }
-
 }

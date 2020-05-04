@@ -105,7 +105,7 @@ class CardConfigurationLongDelayRule(private val timeoutMillis: Long,
         super.beforeActivityLaunched()
         // This card configuration rule adds stubs to mock server to simulate a long delay condition on the card configuration endpoint.
         // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this delayed response.
-        stubCardConfigurationWithDelay(cardConfiguration, timeoutMillis.toInt())
+        stubCardConfigurationWithDelay(timeoutMillis.toInt())
     }
 
 }

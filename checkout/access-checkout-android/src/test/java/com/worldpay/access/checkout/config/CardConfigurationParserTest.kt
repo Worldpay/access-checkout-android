@@ -17,14 +17,8 @@ class CardConfigurationParserTest {
     private lateinit var cardConfigurationParser: CardConfigurationParser
     private val panDefaults: CardValidationRule = CardValidationRule(null, listOf(15,16,18,19))
     private val cvvDefaults: CardValidationRule = CardValidationRule(null, listOf(3,4))
-    private val monthDefaults: CardValidationRule = CardValidationRule(null, listOf(2))
-    private val yearDefaults: CardValidationRule = CardValidationRule(null, listOf(2))
-    private val cardDefaults: CardDefaults = CardDefaults(
-        panDefaults,
-        cvvDefaults,
-        monthDefaults,
-        yearDefaults
-    )
+    private val monthDefaults: CardValidationRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", listOf(2))
+    private val yearDefaults: CardValidationRule = CardValidationRule("^\\d{0,2}$", listOf(2))
 
     private val validCardConfigurationJson = """
               {

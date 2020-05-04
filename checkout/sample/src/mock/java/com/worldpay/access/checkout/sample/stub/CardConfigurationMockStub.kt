@@ -23,7 +23,7 @@ object CardConfigurationMockStub {
             ))
     }
 
-    fun stubCardConfigurationWithDelay(cardConfiguration: CardConfiguration, delay: Int = 0) {
+    fun stubCardConfigurationWithDelay(delay: Int = 0) {
         val json = """
               {
                "brands": 
