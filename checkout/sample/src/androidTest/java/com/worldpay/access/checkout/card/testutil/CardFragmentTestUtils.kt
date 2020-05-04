@@ -169,17 +169,22 @@ class CardFragmentTestUtils(private val activity: Activity) {
         inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
     }
 
-    private fun wait(maxSecondsInMillis: Int = 500, assertions: () -> Unit) {
+    private fun wait(maxSecondsInMillis: Int = 1000, assertions: () -> Unit) {
         val pauseInterval = 100
         val maxTimes = maxSecondsInMillis / pauseInterval
+        val maxWaitTime = pauseInterval * maxTimes
 
         for (i in 0..maxTimes) {
             try {
                 assertions()
-            } catch (e: AssertionError) {
-                Thread.sleep(100)
-                LoggingUtils.debugLog(javaClass.simpleName,"Retrying assertion $assertions")
-                continue
+            } catch (exception: AssertionError) {
+                if (i == maxTimes) {
+                    throw AssertionError("Failed assertion after waiting $maxWaitTime ms", exception)
+                } else {
+                    Thread.sleep(pauseInterval.toLong())
+                    LoggingUtils.debugLog(javaClass.simpleName, "Retrying assertion $assertions")
+                    continue
+                }
             }
             break
         }
