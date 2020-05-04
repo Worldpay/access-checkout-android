@@ -96,8 +96,16 @@ object UITestUtils {
     fun reopenApp() {
         val uiDevice = getInstance(getInstrumentation())
         uiDevice.pressRecentApps()
-        Thread.sleep(500)
-        uiDevice.pressBack()
+
+        Awaitility.await().atMost(5, TimeUnit.SECONDS).until {
+            Thread.sleep(500)
+            uiDevice.pressRecentApps()
+
+            onView(withId(R.id.drawer_layout))
+                .check(matches(isDisplayed()))
+
+            true
+        }
     }
 
     fun navigateTo(fragmentId: Int) {
