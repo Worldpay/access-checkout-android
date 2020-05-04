@@ -1,12 +1,15 @@
 package com.worldpay.access.checkout.card.testutil
 
-import android.app.Activity
+import android.app.Activity.INPUT_METHOD_SERVICE
+import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.core.view.isVisible
+import androidx.test.rule.ActivityTestRule
+import com.worldpay.access.checkout.MainActivity
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.testutil.UITestUtils.closeKeyboard
@@ -15,21 +18,17 @@ import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
 import com.worldpay.access.checkout.views.PANLayout
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class CardFragmentTestUtils(private val activity: Activity) {
+class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActivity>) {
 
-    private fun inputMethodManager() = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-
-    private fun panInput() = activity.findViewById<PANLayout>(R.id.card_flow_text_pan)
-    private fun cvvInput() = activity.findViewById<CardCVVText>(R.id.card_flow_text_cvv)
-    private fun expiryDateInput() = activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp)
-    private fun submitButton() = activity.findViewById<Button>(R.id.card_flow_btn_submit)
+    private fun panInput() = findById<PANLayout>(R.id.card_flow_text_pan)
+    private fun cvvInput() = findById<CardCVVText>(R.id.card_flow_text_cvv)
+    private fun expiryDateInput() = findById<CardExpiryTextLayout>(R.id.card_flow_text_exp)
+    private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
     private fun progressBar() = uiObjectWithId(R.id.loading_bar)
-    private fun brandLogo() = activity.findViewById<ImageView>(R.id.logo_view)
-
-    private fun successColor() = getColor(activity.resources, R.color.SUCCESS, activity.theme)
-    private fun failColor() = getColor(activity.resources, R.color.FAIL, activity.theme)
+    private fun brandLogo() = findById<ImageView>(R.id.logo_view)
 
     fun isInInitialState(): CardFragmentTestUtils {
         progressBarNotVisible()
@@ -120,7 +119,7 @@ class CardFragmentTestUtils(private val activity: Activity) {
     }
 
     fun hasNoBrand(): CardFragmentTestUtils {
-        val resourceEntryName = activity.resources.getResourceEntryName(R.drawable.card_unknown_logo)
+        val resourceEntryName = activity().resources.getResourceEntryName(R.drawable.card_unknown_logo)
         wait { assertEquals(resourceEntryName, brandLogo().getTag(PANLayout.CARD_TAG)) }
         return this
     }
@@ -143,9 +142,9 @@ class CardFragmentTestUtils(private val activity: Activity) {
 
     private fun checkValidationState(editText: EditText, isValid: Boolean) {
         if (isValid) {
-            wait { assertEquals(successColor(), editText.currentTextColor) }
+            wait { assertEquals(color(R.color.SUCCESS), editText.currentTextColor) }
         } else {
-            wait { assertEquals(failColor(), editText.currentTextColor) }
+            wait { assertEquals(color(R.color.FAIL), editText.currentTextColor) }
         }
     }
 
@@ -158,7 +157,17 @@ class CardFragmentTestUtils(private val activity: Activity) {
         editTextUI.click()
         editTextUI.text = text
 
-        inputMethodManager().hideSoftInputFromWindow(editText.windowToken, 0)
+        val im = activity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
+        im.hideSoftInputFromWindow(editText.windowToken, 0)
+    }
+
+    private fun activity() = activityRule.activity
+
+    private fun color(colorId: Int) = getColor(activity().resources, colorId, activity().theme)
+
+    private fun <T: View> findById(id: Int): T {
+        wait { assertNotNull(activity().findViewById<T>(id)) }
+        return activity().findViewById(id)
     }
 
     private fun wait(maxWaitTimeInMillis: Int = 1000, assertions: () -> Unit) {

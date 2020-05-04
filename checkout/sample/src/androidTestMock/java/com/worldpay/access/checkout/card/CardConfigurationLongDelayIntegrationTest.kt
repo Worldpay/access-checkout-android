@@ -39,7 +39,7 @@ class CardConfigurationLongDelayIntegrationTest {
 
     @Before
     fun setup() {
-        cardFragmentTestUtils = CardFragmentTestUtils(cardConfigRule.activity)
+        cardFragmentTestUtils = CardFragmentTestUtils(cardConfigRule)
     }
 
     @After

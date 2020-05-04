@@ -1,9 +1,6 @@
 package com.worldpay.access.checkout.testutil
 
-import android.app.Activity
 import android.content.Context
-import android.content.pm.ActivityInfo
-import android.view.Surface
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.core.content.res.ResourcesCompat.getColor
@@ -19,7 +16,7 @@ import androidx.test.uiautomator.UiDevice.getInstance
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.R
-import org.awaitility.Awaitility
+import org.awaitility.Awaitility.await
 import org.hamcrest.CoreMatchers
 import org.hamcrest.Matcher
 import java.util.concurrent.TimeUnit
@@ -69,35 +66,21 @@ object UITestUtils {
         }
     }
 
-    fun rotateToPortraitAndWait(activity: Activity, timeoutInMillis: Long, assertionCondition: () -> Boolean) {
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
-
-        Awaitility.await().atMost(timeoutInMillis, TimeUnit.MILLISECONDS).until {
-            when (getInstance(getInstrumentation()).displayRotation) {
-                Surface.ROTATION_0 -> true
-                Surface.ROTATION_180 -> true
-                else -> false
-            } && assertionCondition()
-        }
+    fun setOrientationLeft() {
+        val uiDevice = getInstance(getInstrumentation())
+        uiDevice.setOrientationLeft()
     }
 
-    fun rotateToLandscapeAndWait(activity: Activity, timeoutInMillis: Long, assertionCondition: () -> Boolean) {
-        activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
-
-        Awaitility.await().atMost(timeoutInMillis, TimeUnit.MILLISECONDS).until {
-            when (getInstance(getInstrumentation()).displayRotation) {
-                Surface.ROTATION_90 -> true
-                Surface.ROTATION_270 -> true
-                else -> false
-            } && assertionCondition()
-        }
+    fun setOrientationNatural() {
+        val uiDevice = getInstance(getInstrumentation())
+        uiDevice.setOrientationNatural()
     }
 
     fun reopenApp() {
         val uiDevice = getInstance(getInstrumentation())
         uiDevice.pressRecentApps()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until {
+        await().atMost(5, TimeUnit.SECONDS).until {
             Thread.sleep(500)
             uiDevice.pressRecentApps()
 

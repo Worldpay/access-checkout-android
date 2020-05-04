@@ -29,7 +29,7 @@ class CardConfigurationIntegrationTest {
 
     @Before
     fun setup() {
-        cardFragmentTestUtils = CardFragmentTestUtils(cardConfigurationErrorRule.activity)
+        cardFragmentTestUtils = CardFragmentTestUtils(cardConfigurationErrorRule)
     }
 
     @After

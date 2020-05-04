@@ -16,7 +16,7 @@ abstract class AbstractCardFlowUITest {
 
     @Before
     fun setup() {
-        cardFragmentTestUtils = CardFragmentTestUtils(activityRule.activity)
+        cardFragmentTestUtils = CardFragmentTestUtils(activityRule)
         defaultStubMappings(activityRule.activity)
         closeSoftKeyboard()
     }

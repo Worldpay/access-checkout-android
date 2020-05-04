@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.card
 
 import android.content.Context
-import android.content.pm.ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.github.tomakehurst.wiremock.client.WireMock.*
@@ -17,6 +16,7 @@ import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.testutil.UITestUtils.reopenApp
+import com.worldpay.access.checkout.testutil.UITestUtils.setOrientationLeft
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -92,17 +92,17 @@ class CardFlowIntegrationTest : AbstractCardFlowUITest() {
             .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
             .clickSubmitButton()
 
-        activityRule.activity.requestedOrientation = SCREEN_ORIENTATION_LANDSCAPE
+        // rotate landscape
+        setOrientationLeft()
 
-        cardFragmentTestUtils.requestIsInProgress()
+        CardFragmentTestUtils(activityRule).requestIsInProgress()
 
         assertDisplaysResponseFromServer(
             mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
 
-        val cardFragmentTestUtils = CardFragmentTestUtils(activityRule.activity)
-        cardFragmentTestUtils.isInInitialState()
+        CardFragmentTestUtils(activityRule).isInInitialState()
     }
 
     @Test
@@ -121,7 +121,7 @@ class CardFlowIntegrationTest : AbstractCardFlowUITest() {
             activityRule.activity.window.decorView
         )
 
-        val cardFragmentTestUtils = CardFragmentTestUtils(activityRule.activity)
+        val cardFragmentTestUtils = CardFragmentTestUtils(activityRule)
         cardFragmentTestUtils.isInInitialState()
     }
 

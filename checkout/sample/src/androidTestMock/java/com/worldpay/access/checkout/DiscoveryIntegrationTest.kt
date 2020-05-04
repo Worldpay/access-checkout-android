@@ -35,7 +35,7 @@ class DiscoveryIntegrationTest {
     fun shouldRetryDiscoveryAndReturnSuccessfulResponse_whenDiscoveryFailsFirstTime_cardFlow() {
         navigateTo(R.id.nav_card_flow)
 
-        val cardFragmentTestUtils = CardFragmentTestUtils(activityTestRule.activity)
+        val cardFragmentTestUtils = CardFragmentTestUtils(activityTestRule)
 
         cardFragmentTestUtils
             .isInInitialState()
