@@ -18,7 +18,7 @@ object CardConfigurationMockStub {
                 aResponse()
                     .withStatus(200)
                     .withHeader("Content-Type", "application/json")
-                    .withBody(context.resources.openRawResource(R.raw.card_configuration_file).reader(Charsets.UTF_8).readText())
+                    .withBody(context.resources.openRawResource(R.raw.card_types).reader(Charsets.UTF_8).readText())
                     .withTransformers(ResponseTemplateTransformer.NAME)
             ))
     }

@@ -1,0 +1,60 @@
+{
+  "brands": [
+    {
+      "name": "visa",
+      "pattern": "^4\\d*$",
+      "panLengths": [
+        16,
+        18,
+        19
+      ],
+      "cvvLength": 3,
+      "images": [
+        {
+          "type": "image/png",
+          "url": "{{request.requestLine.baseUrl}}/access-checkout/assets/visa.png"
+        },
+        {
+          "type": "image/svg+xml",
+          "url": "{{request.requestLine.baseUrl}}/access-checkout/assets/visa.svg"
+        }
+      ]
+    },
+    {
+      "name": "mastercard",
+      "pattern": "^(5[1-5]|2[2-7])\\d*$",
+      "panLengths": [
+        16
+      ],
+      "cvvLength": 3,
+      "images": [
+        {
+          "type": "image/png",
+          "url": "{{request.requestLine.baseUrl}}/access-checkout/assets/mastercard.png"
+        },
+        {
+          "type": "image/svg+xml",
+          "url": "{{request.requestLine.baseUrl}}/access-checkout/assets/mastercard.svg"
+        }
+      ]
+    },
+    {
+      "name": "amex",
+      "pattern": "^3[47]\\d*$",
+      "panLengths": [
+        15
+      ],
+      "cvvLength": 4,
+      "images": [
+        {
+          "type": "image/png",
+          "url": "{{request.requestLine.baseUrl}}/access-checkout/assets/amex.png"
+        },
+        {
+          "type": "image/svg+xml",
+          "url": "{{request.requestLine.baseUrl}}/access-checkout/assets/amex.svg"
+        }
+      ]
+    }
+  ]
+}

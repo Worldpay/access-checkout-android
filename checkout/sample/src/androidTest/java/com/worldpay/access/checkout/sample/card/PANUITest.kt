@@ -183,7 +183,7 @@ class PANUITest: AbstractCardFragmentTest() {
 
     @Test
     fun givenUserClicksCardViewAndInsertsVisaIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
-        val validVisaCardNumber = "4026344341791618"
+        val validVisaCardNumber = "4929867126833626469"
 
         cardFragmentTestUtils
             .isInInitialState()
@@ -195,29 +195,6 @@ class PANUITest: AbstractCardFragmentTest() {
         onView(withId(R.id.card_number_edit_text))
             .perform(click(), typeTextIntoFocusedView("1"), closeSoftKeyboard())
             .check(matches(withText(validVisaCardNumber)))
-    }
-
-    @Test
-    fun givenUserClicksCardViewAndInsertsVisaIdentifiedCardNumberWhichMatchesSubRuleThenTextFieldShouldRestrictBasedOnMaxLength() {
-        // 413600 is a sub rule in the card config file with valid length of 13
-        val validVisaCardNumber = "4136000000008"
-
-        cardFragmentTestUtils
-            .isInInitialState()
-            .hasNoBrand()
-            .enterCardDetails(pan = validVisaCardNumber)
-            .validationStateIs(pan = true)
-            .hasBrand(VISA)
-
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText(validVisaCardNumber + "1"), closeSoftKeyboard())
-
-        cardFragmentTestUtils
-            .cardDetailsAre(pan = validVisaCardNumber)
-            .validationStateIs(pan = true)
-            .hasBrand(VISA)
     }
 
     @Test

@@ -17,15 +17,15 @@ import org.junit.Test
 
 class DelayedCardConfigurationCvvIntegrationTest {
 
-    private val mastercardCvvValidationRule = CardValidationRule("^\\d{0,3}$", null, null, 3)
-    private val mastercardPANValidationRule = CardValidationRule("^5\\d{0,15}$", null, null, 16)
+    private val mastercardCvvValidationRule = CardValidationRule("^\\d{0,3}$", listOf(3))
+    private val mastercardPANValidationRule = CardValidationRule("^5\\d{0,15}$", listOf(16))
 
     private val brands = listOf(
         CardBrand(
             "mastercard",
             listOf(CardBrandImage("image/svg+xml", "${MockServer.getBaseUrl()}/access-checkout/assets/mastercard.svg")),
             mastercardCvvValidationRule,
-            listOf(mastercardPANValidationRule)
+            mastercardPANValidationRule
         )
     )
 

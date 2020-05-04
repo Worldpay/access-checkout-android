@@ -17,7 +17,7 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
 
     companion object {
         private const val TAG = "CardConfigurationAsyncTask"
-        private const val CARD_CONFIGURATION_RESOURCE = "access-checkout/cardConfiguration.json"
+        private const val CARD_CONFIGURATION_RESOURCE = "access-checkout/cardTypes.json"
     }
 
     override fun doInBackground(vararg params: String?): AsyncTaskResult<CardConfiguration> {

@@ -43,7 +43,7 @@ class SVGImageLoaderTest {
 
     @Test
     fun shouldFetchIdentifiedBrandLogoAndSetOnTargetView() {
-        val cardBrand = CardBrand("test", listOf(CardBrandImage("image/svg+xml", "http://localhost/test.svg")), null, emptyList())
+        val cardBrand = CardBrand("test", listOf(CardBrandImage("image/svg+xml", "http://localhost/test.svg")), null, null)
         val mockHttpCall = mock(Call::class.java)
         given(client.newCall(any())).willReturn(mockHttpCall)
 
@@ -80,7 +80,7 @@ class SVGImageLoaderTest {
 
     @Test
     fun shouldNotAttemptToFetchRemoteCardLogoIfNoSvgLogoForUnidentifiedBrandAndShouldSetUnknownCardLogo() {
-        val cardBrand = CardBrand("test", listOf(CardBrandImage("image/png", "http://localhost/test.png")), null, emptyList())
+        val cardBrand = CardBrand("test", listOf(CardBrandImage("image/png", "http://localhost/test.png")), null, null)
         val mockHttpCall = mock(Call::class.java)
         given(client.newCall(any())).willReturn(mockHttpCall)
 
@@ -103,7 +103,7 @@ class SVGImageLoaderTest {
 
     @Test
     fun shouldNotUpdateCardBrandLogoOnFailureToFetchLogo() {
-        val cardBrand = CardBrand("test", listOf(CardBrandImage("image/svg+xml", "http://localhost/test.svg")), null, emptyList())
+        val cardBrand = CardBrand("test", listOf(CardBrandImage("image/svg+xml", "http://localhost/test.svg")), null, null)
         val mockHttpCall = mock(Call::class.java)
         given(client.newCall(any())).willReturn(mockHttpCall)
 

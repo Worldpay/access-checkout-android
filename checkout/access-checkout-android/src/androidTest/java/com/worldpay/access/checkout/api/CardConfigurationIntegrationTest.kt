@@ -20,56 +20,71 @@ import java.util.concurrent.TimeUnit
 @RunWith(AndroidJUnit4::class)
 class CardConfigurationIntegrationTest {
 
-    private val cardConfigurationEndpoint = "/access-checkout/cardConfiguration.json"
+    private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"
 
     private val cardConfigJson = """
-        {
-            "defaults": {
-                "pan": {
-                    "matcher": "^\\d{0,19}${'$'}",
-                    "minLength": 13,
-                    "maxLength": 19
-                },
-                "cvv": {
-                    "matcher": "^\\d{0,4}${'$'}",
-                    "minLength": 3,
-                    "maxLength": 4
-                },
-                "month": {
-                    "matcher": "^0[1-9]{0,1}${'$'}|^1[0-2]{0,1}${'$'}",
-                    "minLength": 2,
-                    "maxLength": 2
-                },
-                "year": {
-                    "matcher": "^\\d{0,2}${'$'}",
-                    "minLength": 2,
-                    "maxLength": 2
-                }
-            },
-            "brands": [
-                {
-                    "name": "test",
-                    "image": "test_logo",
-                    "cvv": {
-                        "matcher": "^\\d{0,3}${'$'}",
-                        "validLength": 3
+              {
+               "brands": 
+                   [
+                    {
+                        "name": "visa",
+                        "pattern": "/^4\\d*$/",
+                        "panLengths": [
+                          16,
+                          18,
+                          19
+                        ],
+                        "cvvLength": 3,
+                        "images": [
+                          {
+                            "type": "image/png",
+                            "url": "<BASE_URL>/visa.png"
+                          },
+                          {
+                            "type": "image/svg+xml",
+                            "url": "<BASE_URL>/visa.svg"
+                          }
+                        ]
                     },
-                    "pans": [
-                        {
-                            "matcher": "^4\\d{0,15}",
-                            "validLength": 16,
-                            "subRules": [
-                                {
-                                    "matcher": "^(413600|444509|444550|450603|450617|450628|450636|450640|450662|463100|476142|476143|492901|492920|492923|492928|492937|492939|492960)\\d{0,7}",
-                                    "validLength": 13
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ]
-        }
-    """.trimIndent()
+                      {
+                        "name": "mastercard",
+                        "pattern": "^(5[1-5]|2[2-7])\\d*${'$'}",
+                        "panLengths": [
+                          16
+                        ],
+                        "cvvLength": 3,
+                        "images": [
+                          {
+                            "type": "image/png",
+                            "url": "<BASE_URL>/mastercard.png"
+                          },
+                          {
+                            "type": "image/svg+xml",
+                            "url": "<BASE_URL>/mastercard.svg"
+                          }
+                        ]
+                      },
+                      {
+                        "name": "amex",
+                        "pattern": "^3[47]\\d*${'$'}",
+                        "panLengths": [
+                          15
+                        ],
+                        "cvvLength": 4,
+                        "images": [
+                          {
+                            "type": "image/png",
+                            "url": "<BASE_URL>/amex.png"
+                          },
+                          {
+                            "type": "image/svg+xml",
+                            "url": "<BASE_URL>/amex.svg"
+                          }
+                        ]
+                      }
+                ]
+              }
+            """.trimIndent()
 
     @get:Rule
     var wireMockRule = WireMockRule(
