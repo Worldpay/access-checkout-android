@@ -13,7 +13,7 @@ class CardConfigurationSchemaTest {
         val url = "https://preprod.access.worldpay.com/access-checkout/cardConfigurationSchema.json"
 
         val schema = JsonLoader.fromURL(URL(url))
-        val cardConfiguration = JsonLoader.fromPath("src/mock/res/raw/card_types.json")
+        val cardConfiguration = JsonLoader.fromPath("src/mock/res/raw/card_configuration_file.json")
 
         val jsonSchemaFactory = JsonSchemaFactory.byDefault()
         val jsonSchema = jsonSchemaFactory.getJsonSchema(schema)
