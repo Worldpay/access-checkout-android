@@ -19,17 +19,17 @@ import kotlin.test.assertTrue
 
 class CardFragmentTestUtils(private val activity: Activity) {
 
-    private val inputMethodManager = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+    private fun inputMethodManager() = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
 
-    private val panInput = activity.findViewById<PANLayout>(R.id.card_flow_text_pan)
-    private val cvvInput = activity.findViewById<CardCVVText>(R.id.card_flow_text_cvv)
-    private val expiryDateInput = activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp)
-    private val submitButton = activity.findViewById<Button>(R.id.card_flow_btn_submit)
-    private val progressBar = uiObjectWithId(R.id.loading_bar)
-    private val brandLogo = activity.findViewById<ImageView>(R.id.logo_view)
+    private fun panInput() = activity.findViewById<PANLayout>(R.id.card_flow_text_pan)
+    private fun cvvInput() = activity.findViewById<CardCVVText>(R.id.card_flow_text_cvv)
+    private fun expiryDateInput() = activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp)
+    private fun submitButton() = activity.findViewById<Button>(R.id.card_flow_btn_submit)
+    private fun progressBar() = uiObjectWithId(R.id.loading_bar)
+    private fun brandLogo() = activity.findViewById<ImageView>(R.id.logo_view)
 
-    private val successColor = getColor(activity.resources, R.color.SUCCESS, activity.theme)
-    private val failColor = getColor(activity.resources, R.color.FAIL, activity.theme)
+    private fun successColor() = getColor(activity.resources, R.color.SUCCESS, activity.theme)
+    private fun failColor() = getColor(activity.resources, R.color.FAIL, activity.theme)
 
     fun isInInitialState(): CardFragmentTestUtils {
         progressBarNotVisible()
@@ -57,28 +57,28 @@ class CardFragmentTestUtils(private val activity: Activity) {
         val enableMsg = "enabled state"
 
         if (pan != null) {
-            wait { assertTrue("PAN Input - $visibleMsg") { panInput.mEditText.isVisible } }
-            wait { assertEquals(pan, panInput.mEditText.isEnabled, "PAN Input - $enableMsg") }
+            wait { assertTrue("PAN Input - $visibleMsg") { panInput().mEditText.isVisible } }
+            wait { assertEquals(pan, panInput().mEditText.isEnabled, "PAN Input - $enableMsg") }
         }
 
         if (cvv != null) {
-            wait { assertTrue("CVV Input - $visibleMsg") { cvvInput.isVisible } }
-            wait { assertEquals(cvv, cvvInput.isEnabled, "CVV Input - $enableMsg") }
+            wait { assertTrue("CVV Input - $visibleMsg") { cvvInput().isVisible } }
+            wait { assertEquals(cvv, cvvInput().isEnabled, "CVV Input - $enableMsg") }
         }
 
         if (expiryMonth != null) {
-            wait { assertTrue("Exp Month Input - $visibleMsg") { expiryDateInput.monthEditText.isVisible } }
-            wait { assertEquals(expiryMonth, expiryDateInput.monthEditText.isEnabled, "Exp Month Input - $enableMsg") }
+            wait { assertTrue("Exp Month Input - $visibleMsg") { expiryDateInput().monthEditText.isVisible } }
+            wait { assertEquals(expiryMonth, expiryDateInput().monthEditText.isEnabled, "Exp Month Input - $enableMsg") }
         }
 
         if (expiryYear != null) {
-            wait { assertTrue("Exp Year Input - $visibleMsg") { expiryDateInput.yearEditText.isVisible } }
-            wait { assertEquals(expiryYear, expiryDateInput.yearEditText.isEnabled, "Exp Year Input - $enableMsg") }
+            wait { assertTrue("Exp Year Input - $visibleMsg") { expiryDateInput().yearEditText.isVisible } }
+            wait { assertEquals(expiryYear, expiryDateInput().yearEditText.isEnabled, "Exp Year Input - $enableMsg") }
         }
 
         if (submitButton != null) {
-            wait { assertTrue("Submit Button - $visibleMsg") { this.submitButton.isVisible } }
-            wait { assertEquals(submitButton, this.submitButton.isEnabled, "Submit Button - $enableMsg") }
+            wait { assertTrue("Submit Button - $visibleMsg") { this.submitButton().isVisible } }
+            wait { assertEquals(submitButton, this.submitButton().isEnabled, "Submit Button - $enableMsg") }
         }
 
         return this
@@ -91,10 +91,10 @@ class CardFragmentTestUtils(private val activity: Activity) {
     }
 
     fun enterCardDetails(pan: String? = null, cvv: String? = null, month: String? = null, year: String? = null, assertText: Boolean = false): CardFragmentTestUtils {
-        if (pan != null) enterText(panInput.mEditText, pan)
-        if (cvv != null) enterText(cvvInput, cvv)
-        if (month != null) enterText(expiryDateInput.monthEditText, month)
-        if (year != null) enterText(expiryDateInput.yearEditText, year)
+        if (pan != null) enterText(panInput().mEditText, pan)
+        if (cvv != null) enterText(cvvInput(), cvv)
+        if (month != null) enterText(expiryDateInput().monthEditText, month)
+        if (year != null) enterText(expiryDateInput().yearEditText, year)
 
         if (assertText) {
             cardDetailsAre(pan, cvv, month, year)
@@ -104,56 +104,48 @@ class CardFragmentTestUtils(private val activity: Activity) {
     }
 
     fun cardDetailsAre(pan: String? = null, cvv: String? = null, month: String? = null, year: String? = null): CardFragmentTestUtils {
-        if (pan != null) wait { assertEquals(pan, panInput.mEditText.text.toString()) }
-        if (cvv != null) wait { assertEquals(cvv, cvvInput.text.toString()) }
-        if (month != null) wait { assertEquals(month, expiryDateInput.monthEditText.text.toString()) }
-        if (year != null) wait { assertEquals(year, expiryDateInput.yearEditText.text.toString()) }
+        if (pan != null) wait { assertEquals(pan, panInput().mEditText.text.toString()) }
+        if (cvv != null) wait { assertEquals(cvv, cvvInput().text.toString()) }
+        if (month != null) wait { assertEquals(month, expiryDateInput().monthEditText.text.toString()) }
+        if (year != null) wait { assertEquals(year, expiryDateInput().yearEditText.text.toString()) }
         return this
     }
 
     fun validationStateIs(pan: Boolean? = null, cvv: Boolean? = null, month: Boolean? = null, year: Boolean? = null): CardFragmentTestUtils {
-        if (pan != null) checkValidationState(panInput.mEditText, pan)
-        if (cvv != null) checkValidationState(cvvInput, cvv)
-        if (month != null) checkValidationState(expiryDateInput.monthEditText, month)
-        if (year != null) checkValidationState(expiryDateInput.yearEditText, year)
+        if (pan != null) checkValidationState(panInput().mEditText, pan)
+        if (cvv != null) checkValidationState(cvvInput(), cvv)
+        if (month != null) checkValidationState(expiryDateInput().monthEditText, month)
+        if (year != null) checkValidationState(expiryDateInput().yearEditText, year)
         return this
     }
 
     fun hasNoBrand(): CardFragmentTestUtils {
         val resourceEntryName = activity.resources.getResourceEntryName(R.drawable.card_unknown_logo)
-        assertEquals(resourceEntryName, brandLogo.getTag(PANLayout.CARD_TAG))
+        wait { assertEquals(resourceEntryName, brandLogo().getTag(PANLayout.CARD_TAG)) }
         return this
     }
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
-        for (i in 0..2) {
-            try {
-                assertEquals(cardBrand.cardBrandName, brandLogo.getTag(PANLayout.CARD_TAG))
-            } catch (e: AssertionError) {
-                Thread.sleep(100)
-                continue
-            }
-            break
-        }
+        wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(PANLayout.CARD_TAG)) }
         return this
     }
 
     private fun progressBarIsVisible(): CardFragmentTestUtils {
-        assertTrue(progressBar.waitForExists(3000))
+        wait { assertTrue(progressBar().waitForExists(3000)) }
         closeKeyboard()
         return this
     }
 
     private fun progressBarNotVisible(): CardFragmentTestUtils {
-        wait { assertTrue(progressBar.waitUntilGone(3000)) }
+        wait { assertTrue(progressBar().waitUntilGone(3000)) }
         return this
     }
 
     private fun checkValidationState(editText: EditText, isValid: Boolean) {
         if (isValid) {
-            wait { assertEquals(successColor, editText.currentTextColor) }
+            wait { assertEquals(successColor(), editText.currentTextColor) }
         } else {
-            wait { assertEquals(failColor, editText.currentTextColor) }
+            wait { assertEquals(failColor(), editText.currentTextColor) }
         }
     }
 
@@ -166,20 +158,20 @@ class CardFragmentTestUtils(private val activity: Activity) {
         editTextUI.click()
         editTextUI.text = text
 
-        inputMethodManager.hideSoftInputFromWindow(editText.windowToken, 0)
+        inputMethodManager().hideSoftInputFromWindow(editText.windowToken, 0)
     }
 
-    private fun wait(maxSecondsInMillis: Int = 1000, assertions: () -> Unit) {
+    private fun wait(maxWaitTimeInMillis: Int = 1000, assertions: () -> Unit) {
         val pauseInterval = 100
-        val maxTimes = maxSecondsInMillis / pauseInterval
-        val maxWaitTime = pauseInterval * maxTimes
+        val maxTimes = maxWaitTimeInMillis / pauseInterval
 
         for (i in 0..maxTimes) {
             try {
                 assertions()
             } catch (exception: AssertionError) {
                 if (i == maxTimes) {
-                    throw AssertionError("Failed assertion after waiting $maxWaitTime ms", exception)
+                    val seconds = maxWaitTimeInMillis / 1000
+                    throw AssertionError("Failed assertion after waiting $seconds seconds: ${exception.message}", exception)
                 } else {
                     Thread.sleep(pauseInterval.toLong())
                     LoggingUtils.debugLog(javaClass.simpleName, "Retrying assertion $assertions")
