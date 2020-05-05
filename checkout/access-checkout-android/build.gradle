@@ -12,8 +12,8 @@ buildscript {
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 apply from: './jacoco.gradle'
 apply from: './javadoc.gradle'
@@ -32,7 +32,7 @@ uploadArchives {
     repositories {
         mavenDeployer {
 
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+            beforeDeployment { MavenDeployment deployment -> signing.sign(deployment) }
 
             repository(url: nexusUrl) {
                 authentication(userName: ossrhUsername, password: ossrhPassword)
@@ -87,11 +87,11 @@ artifacts {
 }
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 'android-R'
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 28
+        targetSdkVersion 'android-R'
         versionCode 1
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
