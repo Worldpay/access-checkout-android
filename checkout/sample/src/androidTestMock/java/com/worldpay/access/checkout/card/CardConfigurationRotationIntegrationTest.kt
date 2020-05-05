@@ -1,32 +1,14 @@
 package com.worldpay.access.checkout.card
 
-import android.widget.EditText
 import com.worldpay.access.checkout.MainActivity
-import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.card.testutil.AbstractCardFlowUITest
-import com.worldpay.access.checkout.card.testutil.CardBrand
 import com.worldpay.access.checkout.card.testutil.CardBrand.MASTERCARD
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.assertBrandImage
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.cardNumberMatcher
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateCVVDetails
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateMonthDetails
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updatePANDetails
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.updateYearDetails
-import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils.yearMatcher
-import com.worldpay.access.checkout.testutil.UITestUtils.assertUiObjectExistsAndIsDisabled
-import com.worldpay.access.checkout.testutil.UITestUtils.assertUiObjectExistsAndIsEnabled
-import com.worldpay.access.checkout.testutil.UITestUtils.closeKeyboard
-import com.worldpay.access.checkout.testutil.UITestUtils.getFailColor
-import com.worldpay.access.checkout.testutil.UITestUtils.getSuccessColor
-import com.worldpay.access.checkout.testutil.UITestUtils.moveToField
-import com.worldpay.access.checkout.testutil.UITestUtils.rotateToLandscapeAndWait
-import com.worldpay.access.checkout.testutil.UITestUtils.rotateToPortraitAndWait
+import com.worldpay.access.checkout.card.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.testutil.UITestUtils.setOrientationLeft
+import com.worldpay.access.checkout.testutil.UITestUtils.setOrientationNatural
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class CardConfigurationRotationIntegrationTest: AbstractCardFlowUITest() {
-
-    private val timeoutInMillis = 3000L
 
     private val luhnValidMastercardCard = "5555555555554444"
     private val luhnInvalidMastercardCard = "55555555555111"
@@ -38,82 +20,49 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFlowUITest() {
 
     @Test
     fun givenScreenIsRotated_ThenFieldsShouldKeepValidationState() {
-        assertBrandImage(R.drawable.card_unknown_logo)
+        // Enter an invalid luhn, mastercard identified card and valid date
+        CardFragmentTestUtils(activityRule)
+            .isInInitialState()
+            .enterCardDetails(pan = luhnInvalidMastercardCard, cvv = unknownCvv, month = "13", year = year)
+            .validationStateIs(pan = false, cvv = false, month = false, year = false)
+            .hasBrand(MASTERCARD)
+            .enabledStateIs(submitButton = false)
+
+        // rotate landscape
+        setOrientationLeft()
 
         // Re-enter a luhn valid, mastercard identified card and valid date
-        updatePANDetails(luhnInvalidMastercardCard)
-        updateMonthDetails("13")
-        updateYearDetails(year)
-        updateCVVDetails(unknownCvv)
-        assertBrandImage(MASTERCARD)
+        CardFragmentTestUtils(activityRule)
+            .validationStateIs(pan = false, cvv = false, month = false, year = false)
+            .hasBrand(MASTERCARD)
+            .enabledStateIs(submitButton = false)
+            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "123", month = month, year = year)
+            .hasBrand(MASTERCARD)
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
 
-        moveToField(yearMatcher)
+        // rotate portrait
+        setOrientationNatural()
 
-        assertViewState(failColor(), failColor(), failColor(), failColor())
-        assertUiObjectExistsAndIsDisabled(R.id.card_flow_btn_submit)
+        CardFragmentTestUtils(activityRule)
+            .hasBrand(MASTERCARD)
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
+            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "12", month = month, year = year)
+            .hasBrand(MASTERCARD)
+            .validationStateIs(pan = true, cvv = false, month = true, year = true)
+            .enabledStateIs(submitButton = false)
 
-        //rotate and assert state is the same
-        fun assertionCondition1() = assertFieldConditions(failColor(), failColor(), failColor(), failColor(), MASTERCARD)
-        rotateToLandscapeAndWait(activity(), timeoutInMillis, ::assertionCondition1)
+        // rotate landscape
+        setOrientationLeft()
 
-        assertUiObjectExistsAndIsDisabled(R.id.card_flow_btn_submit)
-
-        // Re-enter a luhn valid, mastercard identified card and valid date
-        updatePANDetails(luhnValidMastercardCard)
-        updateMonthDetails(month)
-        updateCVVDetails("123")
-        assertBrandImage(MASTERCARD)
-        assertUiObjectExistsAndIsEnabled(R.id.card_flow_btn_submit)
-
-        assertViewState(successColor(), successColor(), successColor(), successColor())
-
-        fun assertionCondition2() = assertFieldConditions(successColor(), successColor(), successColor(), successColor(), MASTERCARD)
-        rotateToPortraitAndWait(activity(), timeoutInMillis, ::assertionCondition2)
-
-        // Verify that all the fields are now in a success state and can be submitted
-        closeKeyboard()
-        assertViewState(successColor(), successColor(), successColor(), successColor())
-        assertUiObjectExistsAndIsEnabled(R.id.card_flow_btn_submit)
-
-        updateCVVDetails("12")
-        moveToField(cardNumberMatcher)
-        assertUiObjectExistsAndIsDisabled(R.id.card_flow_btn_submit)
-
-        //rotate and assert state is the same
-        fun assertionCondition3() = assertFieldConditions(successColor(), failColor(), successColor(), successColor(), MASTERCARD)
-        rotateToLandscapeAndWait(activity(), timeoutInMillis, ::assertionCondition3)
-
-        assertUiObjectExistsAndIsDisabled(R.id.card_flow_btn_submit)
-
-        updateCVVDetails("123")
-        assertUiObjectExistsAndIsEnabled(R.id.card_flow_btn_submit)
+        CardFragmentTestUtils(activityRule)
+            .hasBrand(MASTERCARD)
+            .validationStateIs(pan = true, cvv = false, month = true, year = true)
+            .enabledStateIs(submitButton = false)
+            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "123", month = month, year = year)
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
     }
 
-    private fun cardEditText(): EditText = activity().findViewById(R.id.card_number_edit_text)
-    private fun cvvEditText(): EditText = activity().findViewById(R.id.card_flow_text_cvv)
-    private fun monthEditText(): EditText = activity().findViewById(R.id.month_edit_text)
-    private fun yearEditText(): EditText = activity().findViewById(R.id.year_edit_text)
-    private fun failColor() = getFailColor(activity())
-    private fun successColor() = getSuccessColor(activity())
-
-    private fun assertFieldConditions(expectedPANColor: Int, expectedCVVColor: Int, expectedMonthColor: Int,
-                                      expectedYearColor: Int, cardBrand: CardBrand): Boolean {
-        return try {
-            assertViewState(expectedPANColor, expectedCVVColor, expectedMonthColor, expectedYearColor)
-            assertBrandImage(cardBrand)
-            true
-        } catch (ex: AssertionError) {
-            false
-        } catch (ex: Exception) {
-            false
-        }
-    }
-
-    private fun assertViewState(expectedPANColor: Int, expectedCVVColor: Int, expectedMonthColor: Int,
-                                expectedYearColor: Int) {
-        assertEquals(expectedPANColor, cardEditText().currentTextColor)
-        assertEquals(expectedMonthColor, monthEditText().currentTextColor)
-        assertEquals(expectedYearColor, yearEditText().currentTextColor)
-        assertEquals(expectedCVVColor, cvvEditText().currentTextColor)
-    }
 }

@@ -43,7 +43,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenUserAttemptsToTypeLessThanMinAllowedCVVLength_ThenFieldDisplaysErrorWhenUserMovesAway() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -90,7 +89,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenCardDataEnteredThenRemovedAgainCVVFieldShouldBeValidUpTo4Digits() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -116,7 +114,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenAmex_AndA4DigitCVV_shouldValidateCVV() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -137,7 +134,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenAmex_AndUserAttemptsToTypeMoreThanMaxAllowedCVVLength_ThenFieldRestrictsToMaxLengthForAmex() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -158,7 +154,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenAmex_AndA3DigitCVV_shouldInvalidateCVVOnceOffFocus() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -236,7 +231,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenVisa_AndA4DigitCVV_shouldRestrictLengthTo3() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -254,13 +248,10 @@ class CVVUITests: AbstractCardFlowUITest() {
         onView(withId(R.id.card_flow_text_cvv))
             .check(matches(withText("123")))
             .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-        closeSoftKeyboard()
     }
 
     @Test
     fun givenCVVEnteredFirst_AndVisaIdentifiedAfter_ThenCVVFieldShouldBeReValidated() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_flow_text_cvv))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -296,7 +287,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenMastercard_AndA3DigitCVV_shouldValidateCVV() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -317,7 +307,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenMastercard_AndA4DigitCVV_shouldRestrictLengthTo3() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_number_edit_text))
             .check(matches(isDisplayed()))
             .check(matches(isEnabled()))
@@ -340,7 +329,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenCVVEnteredFirst_AndMastercardIdentifiedAfter_ThenCVVFieldShouldBeReValidated() {
-        closeSoftKeyboard()
         onView(withId(R.id.card_flow_text_cvv))
             .perform(closeSoftKeyboard())
             .check(matches(isDisplayed()))
@@ -421,7 +409,6 @@ class CVVUITests: AbstractCardFlowUITest() {
 
     @Test
     fun givenUserLongClicksAndPastesTooLongStringIntoCvvFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
-        closeSoftKeyboard()
         val pastedText = "12345678"
 
         onView(withId(R.id.card_flow_text_cvv))

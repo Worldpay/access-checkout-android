@@ -1,5 +1,8 @@
 package com.worldpay.access.checkout.cvv
 
+import android.widget.Button
+import android.widget.TextView
+import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
@@ -9,8 +12,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.MainActivity
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
+import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.testutil.UITestUtils.assertDisplaysResponseFromServer
-import com.worldpay.access.checkout.testutil.UITestUtils.assertUiObjectExistsAndIsDisabled
 import com.worldpay.access.checkout.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.ProgressBar
@@ -19,6 +23,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
@@ -46,7 +51,7 @@ class CvvFlowIntegrationTest {
             .perform(click())
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.sessions_session_reference),
+            mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
     }
@@ -65,10 +70,15 @@ class CvvFlowIntegrationTest {
         uiObjectWithId(R.id.cvv_flow_btn_submit).click()
 
         assertTrue(ProgressBar(activityRule.activity).isLoading())
-        assertUiObjectExistsAndIsDisabled(R.id.cvv_flow_text_cvv)
+
+        wait { assertFalse { activityRule.activity.findViewById<TextView>(R.id.cvv_flow_text_cvv).isEnabled } }
+        wait { assertTrue { activityRule.activity.findViewById<TextView>(R.id.cvv_flow_text_cvv).isVisible } }
+
+        wait { assertFalse { activityRule.activity.findViewById<Button>(R.id.cvv_flow_btn_submit).isEnabled } }
+        wait { assertTrue { activityRule.activity.findViewById<Button>(R.id.cvv_flow_btn_submit).isVisible } }
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.sessions_session_reference),
+            mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
     }
@@ -86,7 +96,7 @@ class CvvFlowIntegrationTest {
             .perform(click())
 
         assertDisplaysResponseFromServer(
-            activityRule.activity.getString(R.string.sessions_session_reference),
+            mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString(),
             activityRule.activity.window.decorView
         )
 
@@ -98,6 +108,27 @@ class CvvFlowIntegrationTest {
         onView(withId(R.id.cvv_flow_btn_submit))
             .check(matches(isDisplayed()))
             .check(matches(not(isEnabled())))
+    }
+
+    private fun wait(maxSecondsInMillis: Int = 1000, assertions: () -> Unit) {
+        val pauseInterval = 100
+        val maxTimes = maxSecondsInMillis / pauseInterval
+        val maxWaitTime = pauseInterval * maxTimes
+
+        for (i in 0..maxTimes) {
+            try {
+                assertions()
+            } catch (exception: AssertionError) {
+                if (i == maxTimes) {
+                    throw AssertionError("Failed assertion after waiting $maxWaitTime ms", exception)
+                } else {
+                    Thread.sleep(pauseInterval.toLong())
+                    LoggingUtils.debugLog(javaClass.simpleName, "Retrying assertion $assertions")
+                    continue
+                }
+            }
+            break
+        }
     }
 
 }

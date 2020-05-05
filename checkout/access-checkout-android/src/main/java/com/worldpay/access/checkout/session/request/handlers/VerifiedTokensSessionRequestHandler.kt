@@ -4,11 +4,9 @@ import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.CardSessionRequest
 import com.worldpay.access.checkout.api.session.CardSessionRequest.CardExpiryDate
+import com.worldpay.access.checkout.api.session.SessionRequestInfo
 import com.worldpay.access.checkout.api.session.SessionRequestService
-import com.worldpay.access.checkout.api.session.SessionRequestService.Companion.BASE_URL_KEY
-import com.worldpay.access.checkout.api.session.SessionRequestService.Companion.DISCOVER_LINKS
 import com.worldpay.access.checkout.api.session.SessionRequestService.Companion.REQUEST_KEY
-import com.worldpay.access.checkout.api.session.SessionRequestService.Companion.SESSION_TYPE
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.ExpiryDate
 import com.worldpay.access.checkout.client.SessionType
@@ -30,13 +28,16 @@ internal class VerifiedTokensSessionRequestHandler(
 
         sessionRequestHandlerConfig.getExternalSessionResponseListener().onRequestStarted()
 
-        val cardSessionRequest = createCardSessionRequest(cardDetails)
-
         val serviceIntent = Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
-        serviceIntent.putExtra(REQUEST_KEY, cardSessionRequest)
-        serviceIntent.putExtra(BASE_URL_KEY, sessionRequestHandlerConfig.getBaseUrl())
-        serviceIntent.putExtra(DISCOVER_LINKS, DiscoverLinks.verifiedTokens)
-        serviceIntent.putExtra(SESSION_TYPE, VERIFIED_TOKEN_SESSION.value)
+
+        val sessionRequestInfo = SessionRequestInfo.Builder()
+            .baseUrl(sessionRequestHandlerConfig.getBaseUrl())
+            .requestBody(createCardSessionRequest(cardDetails))
+            .sessionType(VERIFIED_TOKEN_SESSION)
+            .discoverLinks(DiscoverLinks.verifiedTokens)
+            .build()
+
+        serviceIntent.putExtra(REQUEST_KEY, sessionRequestInfo)
 
         sessionRequestHandlerConfig.getContext().startService(serviceIntent)
     }

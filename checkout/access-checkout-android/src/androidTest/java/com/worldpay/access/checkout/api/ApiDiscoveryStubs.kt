@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.api
 
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
+import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 
 object ApiDiscoveryStubs {
@@ -54,13 +55,8 @@ object ApiDiscoveryStubs {
         }"""
 
     fun stubServiceDiscoveryResponses() {
-        WireMock.stubFor(
-            rootResponseMapping()
-        )
-
-        WireMock.stubFor(
-            verifiedTokensMapping()
-        )
+        stubFor(rootResponseMapping())
+        stubFor(verifiedTokensMapping())
     }
 
     fun rootResponseMapping(): MappingBuilder {

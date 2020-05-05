@@ -4,9 +4,8 @@ import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.CardSessionRequest
-import com.worldpay.access.checkout.api.session.SessionRequestService
+import com.worldpay.access.checkout.api.session.SessionRequestInfo
 import com.worldpay.access.checkout.api.session.SessionRequestService.Companion.REQUEST_KEY
-import com.worldpay.access.checkout.api.session.SessionRequestService.Companion.SESSION_TYPE
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
@@ -123,23 +122,21 @@ class VerifiedTokensSessionRequestHandlerTest {
 
         verify(context).startService(argument.capture())
 
-        val cardSessionRequest = argument.value.getSerializableExtra(REQUEST_KEY) as CardSessionRequest
-        val baseUrl = argument.value.getStringExtra(SessionRequestService.BASE_URL_KEY)
-        val discoverLinks =
-            argument.value.getSerializableExtra(SessionRequestService.DISCOVER_LINKS) as DiscoverLinks
-        val sessionType = argument.value.getStringExtra(SESSION_TYPE)
+        val sessionRequestInfo = argument.value.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
+        sessionRequestInfo.requestBody as CardSessionRequest
 
-        assertEquals(cardDetails.pan, cardSessionRequest.cardNumber)
-        assertEquals("merchant-id", cardSessionRequest.identity)
-        assertEquals(cardDetails.cvv, cardSessionRequest.cvv)
-        assertEquals(cardDetails.expiryDate?.month, cardSessionRequest.cardExpiryDate.month)
-        assertEquals(cardDetails.expiryDate?.year, cardSessionRequest.cardExpiryDate.year)
+        assertEquals(cardDetails.pan, sessionRequestInfo.requestBody.cardNumber)
+        assertEquals("merchant-id", sessionRequestInfo.requestBody.identity)
+        assertEquals(cardDetails.cvv, sessionRequestInfo.requestBody.cvv)
+        assertEquals(cardDetails.expiryDate?.month, sessionRequestInfo.requestBody.cardExpiryDate.month)
+        assertEquals(cardDetails.expiryDate?.year, sessionRequestInfo.requestBody.cardExpiryDate.year)
 
-        assertEquals("base-url", baseUrl)
+        assertEquals("base-url", sessionRequestInfo.baseUrl)
 
-        assertEquals(DiscoverLinks.verifiedTokens, discoverLinks)
+        assertEquals(DiscoverLinks.verifiedTokens, sessionRequestInfo.discoverLinks)
+        assertEquals(VERIFIED_TOKEN_SESSION, sessionRequestInfo.sessionType)
 
-        assertEquals(VERIFIED_TOKEN_SESSION.value, sessionType)
+        assertEquals(1, argument.value.extras?.size())
     }
 
 }

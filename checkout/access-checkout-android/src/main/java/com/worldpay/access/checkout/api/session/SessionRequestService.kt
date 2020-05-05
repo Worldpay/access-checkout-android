@@ -4,55 +4,46 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.session.request.broadcast.receivers.GET_REQUESTED_SESSION
+import com.worldpay.access.checkout.session.request.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),
-    Callback<SessionResponse> {
+    Callback<SessionResponseInfo> {
 
     companion object {
-
-        private const val TAG = "SessionRequestService"
-
-        const val DISCOVER_LINKS = "discover"
         const val REQUEST_KEY = "request"
-        const val BASE_URL_KEY = "base_url"
-        const val SESSION_TYPE = "session_type"
     }
 
     private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender(this)
     private val localBroadcastManagerFactory: LocalBroadcastManagerFactory = factory.getLocalBroadcastManagerFactory(this)
 
-    override fun onResponse(error: Exception?, response: SessionResponse?) {
-        debugLog(TAG, "onResponse received: resp:$response / error: $error")
-        debugLog(TAG, "service stopped self")
-        broadcastResult(response, error)
-
-        stopSelf()
-    }
-
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
-            val sessionRequest = intent.getSerializableExtra(REQUEST_KEY) as SessionRequest
-            val baseUrl = intent.getStringExtra(BASE_URL_KEY)
-            val discoverLinks = intent.getSerializableExtra(DISCOVER_LINKS) as DiscoverLinks
-            sessionRequestSender.sendSessionRequest(sessionRequest, baseUrl, this, discoverLinks)
+            val sessionRequestInfo = intent.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
+            sessionRequestSender.sendSessionRequest(sessionRequestInfo, this)
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
     override fun onBind(intent: Intent) = null
 
-    private fun broadcastResult(response: SessionResponse?, error: Exception?) {
+    override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
+        debugLog(javaClass.simpleName, "onResponse received: resp:${response?.responseBody} for session type:${response?.sessionType}/ error: $error")
+        debugLog(javaClass.simpleName, "service stopped self")
+        broadcastResult(response, error)
+
+        stopSelf()
+    }
+
+    private fun broadcastResult(sessionResponseInfo: SessionResponseInfo?, error: Exception?) {
         val broadcastIntent = Intent()
-        broadcastIntent.putExtra(SessionBroadcastReceiver.RESPONSE_KEY, response)
+        broadcastIntent.putExtra(SessionBroadcastReceiver.RESPONSE_KEY, sessionResponseInfo)
         broadcastIntent.putExtra(SessionBroadcastReceiver.ERROR_KEY, error)
-        broadcastIntent.action = GET_REQUESTED_SESSION
+        broadcastIntent.action = COMPLETED_SESSION_REQUEST
 
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
     }

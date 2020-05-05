@@ -7,8 +7,9 @@ import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastMa
 import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.*
-import org.mockito.Mockito
+import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.verify
+import org.mockito.Mockito.mock
 import org.mockito.internal.util.reflection.FieldSetter
 
 class ActivityLifecycleObserverTest {
@@ -32,19 +33,20 @@ class ActivityLifecycleObserverTest {
     }
 
     @Test
-    fun `given activity lifecycle handler has been triggered on resume, then broadcast manager has session request receiver registered`() {
-        val sessionBroadcastManager = Mockito.mock(SessionBroadcastManager::class.java)
+    fun `given activity lifecycle handler has been triggered on start, then broadcast receivers are registered`() {
+        val sessionBroadcastManager = mock(SessionBroadcastManager::class.java)
+        setMock(sessionBroadcastManager)
 
         given(sessionBroadcastManagerFactory.createInstance()).willReturn(sessionBroadcastManager)
 
-        activityLifeCycleObserver.resumeListener()
+        activityLifeCycleObserver.startListener()
 
         verify(sessionBroadcastManager).register()
     }
 
     @Test
-    fun `given activity lifecycle handler has been triggered on stop, then broadcast manager has session request receiver unregistered`() {
-        val sessionBroadcastManager = Mockito.mock(SessionBroadcastManager::class.java)
+    fun `given activity lifecycle handler has been triggered on stop, then broadcast receivers are unregistered`() {
+        val sessionBroadcastManager = mock(SessionBroadcastManager::class.java)
         setMock(sessionBroadcastManager)
 
         given(sessionBroadcastManagerFactory.createInstance()).willReturn(sessionBroadcastManager)
@@ -52,13 +54,6 @@ class ActivityLifecycleObserverTest {
         activityLifeCycleObserver.stopListener()
 
         verify(sessionBroadcastManager).unregister()
-    }
-
-    @Test
-    fun `given activity lifecycle handler has been triggered on stop, then activity lifecycle handler is removed as an observer of the activity lifecycle`() {
-        activityLifeCycleObserver.onStopListener()
-
-        verify(lifecycle).removeObserver(activityLifeCycleObserver)
     }
 
     private fun setMock(clazz: Any) {

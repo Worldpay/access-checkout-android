@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.session
 
 import com.worldpay.access.checkout.api.AccessCheckoutException
+import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.views.SessionResponseListener
 
@@ -11,9 +12,9 @@ internal class CheckoutSessionResponseListener(
 
     override fun onRequestStarted() {}
 
-    override fun onRequestFinished(sessionState: String?, error: AccessCheckoutException?) {
+    override fun onRequestFinished(sessionResponseMap: Map<SessionType, String>?, error: AccessCheckoutException?) {
         LoggingUtils.debugLog(tag, "Received session reference")
-        externalSessionResponseListener.onRequestFinished(sessionState, error)
+        externalSessionResponseListener.onRequestFinished(sessionResponseMap, error)
     }
 
 }

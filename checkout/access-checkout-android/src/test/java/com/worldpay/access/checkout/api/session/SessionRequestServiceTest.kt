@@ -5,9 +5,11 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.session.request.broadcast.receivers.GET_REQUESTED_SESSION
+import com.worldpay.access.checkout.session.request.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.ERROR_KEY
 import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.RESPONSE_KEY
 import org.junit.Assert.assertNull
@@ -69,15 +71,18 @@ class SessionRequestServiceTest {
             identity = "merchant-id"
         )
 
-        val baseUrl = "http://localhost"
+        val sessionRequestInfo = SessionRequestInfo.Builder()
+            .baseUrl("http://localhost")
+            .requestBody(sessionRequest)
+            .sessionType(VERIFIED_TOKEN_SESSION)
+            .discoverLinks(DiscoverLinks.verifiedTokens)
+            .build()
 
-        given(intent.getSerializableExtra("request")).willReturn(sessionRequest)
-        given(intent.getStringExtra("base_url")).willReturn(baseUrl)
-        given(intent.getSerializableExtra("discover")).willReturn(DiscoverLinks.verifiedTokens)
+        given(intent.getSerializableExtra("request")).willReturn(sessionRequestInfo)
 
         sessionRequestService.onStartCommand(intent, -1, 0)
 
-        verify(sessionRequestSender).sendSessionRequest(sessionRequest, baseUrl, sessionRequestService, DiscoverLinks.verifiedTokens)
+        verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo, sessionRequestService)
     }
 
     @Test
@@ -88,15 +93,18 @@ class SessionRequestServiceTest {
             identity = "merchant-id"
         )
 
-        val baseUrl = "http://localhost"
+        val sessionRequestInfo = SessionRequestInfo.Builder()
+            .baseUrl("http://localhost")
+            .requestBody(sessionRequest)
+            .sessionType(VERIFIED_TOKEN_SESSION)
+            .discoverLinks(DiscoverLinks.verifiedTokens)
+            .build()
 
-        given(intent.getSerializableExtra("request")).willReturn(sessionRequest)
-        given(intent.getStringExtra("base_url")).willReturn(baseUrl)
-        given(intent.getSerializableExtra("discover")).willReturn(DiscoverLinks.verifiedTokens)
+        given(intent.getSerializableExtra("request")).willReturn(sessionRequestInfo)
 
         sessionRequestService.onStartCommand(intent, -1, 0)
 
-        verify(sessionRequestSender).sendSessionRequest(sessionRequest, baseUrl, sessionRequestService, DiscoverLinks.verifiedTokens)
+        verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo, sessionRequestService)
     }
 
     @Test
@@ -111,19 +119,46 @@ class SessionRequestServiceTest {
                 )
             )
 
+        val sessionResponseInfo = SessionResponseInfo.Builder()
+            .responseBody(sessionResponse)
+            .sessionType(VERIFIED_TOKEN_SESSION)
+            .build()
+
         val localBroadcastManager = mock(LocalBroadcastManager::class.java)
 
         given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
 
-        sessionRequestService.onResponse(null, sessionResponse)
+        sessionRequestService.onResponse(null, sessionResponseInfo)
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
 
         verify(localBroadcastManager).sendBroadcast(argument.capture())
 
-        assertEquals(sessionResponse, argument.value.getSerializableExtra(RESPONSE_KEY))
+        assertEquals(sessionResponseInfo, argument.value.getSerializableExtra(RESPONSE_KEY))
+
         assertNull(argument.value.getSerializableExtra(ERROR_KEY))
-        assertEquals(GET_REQUESTED_SESSION, argument.value.action)
+        assertEquals(2, argument.value.extras?.size())
+
+        assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
+    }
+
+    @Test
+    fun `should be able to broadcast error to receivers once error is received`() {
+        val localBroadcastManager = mock(LocalBroadcastManager::class.java)
+        given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
+
+        val exception = AccessCheckoutException.AccessCheckoutError("some error")
+        sessionRequestService.onResponse(exception, null)
+
+        val argument = ArgumentCaptor.forClass(Intent::class.java)
+
+        verify(localBroadcastManager).sendBroadcast(argument.capture())
+
+        assertNull(argument.value.getSerializableExtra(RESPONSE_KEY))
+        assertEquals(exception, argument.value.getSerializableExtra(ERROR_KEY))
+        assertEquals(2, argument.value.extras?.size())
+
+        assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
     }
 
 }

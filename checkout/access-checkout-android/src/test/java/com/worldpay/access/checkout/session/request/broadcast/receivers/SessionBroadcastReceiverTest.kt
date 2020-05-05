@@ -5,6 +5,11 @@ import android.content.Intent
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
 import com.worldpay.access.checkout.api.session.SessionResponse
+import com.worldpay.access.checkout.api.session.SessionResponseInfo
+import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
+import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
@@ -14,30 +19,35 @@ import org.mockito.Mockito.*
 import org.robolectric.RobolectricTestRunner
 import java.io.Serializable
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 class SessionBroadcastReceiverTest {
 
-    private lateinit var sessionResponseListener: SessionResponseListener
+    private lateinit var externalSessionResponseListener: SessionResponseListener
     private lateinit var sessionBroadcastReceiver: SessionBroadcastReceiver
     private lateinit var intent: Intent
     private lateinit var context: Context
     
     @Before
     fun setup() {
-        sessionResponseListener = mock()
+        externalSessionResponseListener = mock()
         intent = mock()
         context = mock()
 
-        sessionBroadcastReceiver = SessionBroadcastReceiver(sessionResponseListener)
+        sessionBroadcastReceiver = SessionBroadcastReceiver(externalSessionResponseListener)
+        SessionBroadcastDataStore.clear()
     }
 
     @Test
     fun `should return expected IntentFilter`() {
         val intentFilter = sessionBroadcastReceiver.getIntentFilter()
 
-        assertEquals(GET_REQUESTED_SESSION, intentFilter.getAction(0))
-        assertEquals(1, intentFilter.countActions())
+        assertEquals(NUM_OF_SESSION_TYPES_REQUESTED, intentFilter.getAction(0))
+        assertEquals(SESSION_TYPE_REQUEST_COMPLETE, intentFilter.getAction(1))
+        assertEquals(COMPLETED_SESSION_REQUEST, intentFilter.getAction(2))
+        assertEquals(3, intentFilter.countActions())
     }
 
     @Test
@@ -46,78 +56,189 @@ class SessionBroadcastReceiverTest {
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verifyZeroInteractions(sessionResponseListener)
+        verifyZeroInteractions(externalSessionResponseListener)
     }
 
     @Test
     fun `should return empty session and exception when session response is empty`() {
-        given(intent.action).willReturn(GET_REQUESTED_SESSION)
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("error")).willReturn(AccessCheckoutError("some error"))
+        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verify(sessionResponseListener, atMost(1))
+        verify(externalSessionResponseListener, atMost(1))
             .onRequestFinished(null, AccessCheckoutError("some error"))
     }
 
-
     @Test
     fun `should return href given a session response is received`() {
-        given(intent.action).willReturn(GET_REQUESTED_SESSION)
-        given(intent.getSerializableExtra("response")).willReturn(
-            SessionResponse(
-                SessionResponse.Links(
-                    SessionResponse.Links.Endpoints(
-                        "some reference"
-                    ), emptyArray()
-                )
-            )
-        )
-        given(intent.getSerializableExtra("error")).willReturn(AccessCheckoutError("some error"))
+        broadcastNumSessionTypesRequested(1)
+
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("some reference", VERIFIED_TOKEN_SESSION))
+        given(intent.getSerializableExtra("error")).willReturn(null)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verify(sessionResponseListener).onRequestFinished("some reference", null)
+        val response = mapOf(VERIFIED_TOKEN_SESSION to "some reference")
+
+        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(response, null)
+    }
+
+    @Test
+    fun `should be able to keep request data for new instances of the receiver`() {
+        broadcastNumSessionTypesRequested(2)
+
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
+        given(intent.getSerializableExtra("error")).willReturn(null)
+
+        val sessionBroadcastReceiver = SessionBroadcastReceiver(externalSessionResponseListener)
+        sessionBroadcastReceiver.onReceive(context, intent)
+
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
+
+        val sessionBroadcastReceiver2 = SessionBroadcastReceiver(externalSessionResponseListener)
+        sessionBroadcastReceiver2.onReceive(context, intent)
+
+        val response = mapOf(
+            PAYMENTS_CVC_SESSION to "payments-cvc-session-url",
+            VERIFIED_TOKEN_SESSION to "verified-token-session-url"
+        )
+
+        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(response, null)
+    }
+
+    @Test
+    fun `should return all href given multiple session types are requested`() {
+        broadcastNumSessionTypesRequested(2)
+
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
+        given(intent.getSerializableExtra("error")).willReturn(null)
+
+        sessionBroadcastReceiver.onReceive(context, intent)
+
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
+
+        sessionBroadcastReceiver.onReceive(context, intent)
+
+        val response = mapOf(
+            PAYMENTS_CVC_SESSION to "payments-cvc-session-url",
+            VERIFIED_TOKEN_SESSION to "verified-token-session-url"
+        )
+
+        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(response, null)
+    }
+
+    @Test
+    fun `should return first exception given multiple session types are requested`() {
+        broadcastNumSessionTypesRequested(2)
+
+        val expectedEx: AccessCheckoutError = mock()
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
+        given(intent.getSerializableExtra("error")).willReturn(expectedEx)
+
+        sessionBroadcastReceiver.onReceive(context, intent)
+
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
+
+        sessionBroadcastReceiver.onReceive(context, intent)
+
+        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
     }
 
     @Test
     fun `should return null session given an error is received`() {
         val expectedEx: AccessCheckoutError = mock()
-        given(intent.action).willReturn(GET_REQUESTED_SESSION)
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
+        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verify(sessionResponseListener).onRequestFinished(null, expectedEx)
+        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
     }
 
     @Test
     fun `should notify with error once when a response that is not a session response is received`() {
         val expectedEx: AccessCheckoutError = mock()
-        given(intent.action).willReturn(GET_REQUESTED_SESSION)
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
+        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-
-        verify(sessionResponseListener, atMost(1))
-            .onRequestFinished(null, expectedEx)
+        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
     }
 
     @Test
     fun `should notify with custom error when a response that is not a session response and error deserialize failure`() {
         val expectedEx: AccessCheckoutError? = null
 
-        given(intent.action).willReturn(GET_REQUESTED_SESSION)
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
         given(intent.getSerializableExtra("error")).willReturn(null)
+        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
+        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
+    }
 
-        verify(sessionResponseListener, atMost(1))
-            .onRequestFinished(null, expectedEx)
+    @Test
+    fun `should be able to add and retrieve responses from the data store`() {
+        assertTrue(SessionBroadcastDataStore.getResponses().isEmpty())
+
+        SessionBroadcastDataStore.addResponse(VERIFIED_TOKEN_SESSION, "href")
+
+        assertFalse(SessionBroadcastDataStore.getResponses().isEmpty())
+        assertEquals("href", SessionBroadcastDataStore.getResponses()[VERIFIED_TOKEN_SESSION])
+    }
+
+    @Test
+    fun `should be able to set the number of session types and check if all requests are completed`() {
+        SessionBroadcastDataStore.setNumberOfSessionTypes(2)
+
+        assertFalse(SessionBroadcastDataStore.allRequestsCompleted())
+        assertTrue(SessionBroadcastDataStore.allRequestsCompleted())
+    }
+
+    @Test
+    fun `should be able to clear values in data store`() {
+        SessionBroadcastDataStore.addResponse(VERIFIED_TOKEN_SESSION, "href")
+        SessionBroadcastDataStore.setNumberOfSessionTypes(2)
+        SessionBroadcastDataStore.allRequestsCompleted()
+
+        assertEquals("href", SessionBroadcastDataStore.getResponses()[VERIFIED_TOKEN_SESSION])
+        assertTrue(SessionBroadcastDataStore.allRequestsCompleted())
+
+        SessionBroadcastDataStore.clear()
+
+        assertTrue(SessionBroadcastDataStore.getResponses().isEmpty())
+        assertFalse(SessionBroadcastDataStore.allRequestsCompleted())
+    }
+
+    private fun createSessionResponse(href: String, sessionType: SessionType): SessionResponseInfo {
+        val response = SessionResponse(
+            SessionResponse.Links(
+                SessionResponse.Links.Endpoints(href), emptyArray()
+            )
+        )
+
+        return SessionResponseInfo.Builder()
+            .responseBody(response)
+            .sessionType(sessionType)
+            .build()
+    }
+
+    private fun broadcastNumSessionTypesRequested(numSessionTypes: Int) {
+        given(intent.action).willReturn(NUM_OF_SESSION_TYPES_REQUESTED)
+        given(intent.getIntExtra(NUMBER_OF_SESSION_TYPE_KEY, 0)).willReturn(numSessionTypes)
+        sessionBroadcastReceiver.onReceive(context, intent)
     }
 
 }

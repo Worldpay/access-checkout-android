@@ -4,7 +4,6 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDi
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClientFactory
-import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.session.client.SessionClientFactory
 import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
@@ -16,19 +15,17 @@ internal class SessionRequestSender(
 ) {
 
     fun sendSessionRequest(
-        sessionRequest: SessionRequest,
-        baseUrl: String,
-        sessionResponseCallback: Callback<SessionResponse>,
-        discoverLinks: DiscoverLinks
+        sessionRequestInfo: SessionRequestInfo,
+        sessionResponseCallback: Callback<SessionResponseInfo>
     ) {
         debugLog("SessionRequestSender", "Making session request")
         val callback = object :
             Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
                 if (response != null) {
-                    val sessionClient = sessionClientFactory.createClient(sessionRequest)
+                    val sessionClient = sessionClientFactory.createClient(sessionRequestInfo.requestBody)
                     val requestDispatcher = requestDispatcherFactory.getInstance(response, sessionClient, sessionResponseCallback)
-                    requestDispatcher.execute(sessionRequest)
+                    requestDispatcher.execute(sessionRequestInfo)
                 } else {
                     sessionResponseCallback.onResponse(
                         AccessCheckoutDiscoveryException("Could not discover URL", error), null
@@ -36,6 +33,6 @@ internal class SessionRequestSender(
                 }
             }
         }
-        apiDiscoveryClient.discover(baseUrl, callback, discoverLinks)
+        apiDiscoveryClient.discover(sessionRequestInfo.baseUrl, callback, sessionRequestInfo.discoverLinks)
     }
 }

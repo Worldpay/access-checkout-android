@@ -11,7 +11,7 @@ class IntentTest {
 
         assertEquals("${packageName}.NUM_OF_SESSION_TYPES_REQUESTED", NUM_OF_SESSION_TYPES_REQUESTED)
         assertEquals("${packageName}.SESSION_TYPE_REQUEST_COMPLETE", SESSION_TYPE_REQUEST_COMPLETE)
-        assertEquals("${packageName}.GET_REQUESTED_SESSION", GET_REQUESTED_SESSION)
+        assertEquals("${packageName}.COMPLETED_SESSION_REQUEST", COMPLETED_SESSION_REQUEST)
     }
 
 }
