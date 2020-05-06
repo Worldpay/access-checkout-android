@@ -9,8 +9,6 @@ import java.io.InputStream
 internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
 
     companion object {
-        //CardConfiguration fields
-        private const val BRANDS_FIELD = "brands"
 
         // Brand fields
         private const val NAME_FIELD = "name"

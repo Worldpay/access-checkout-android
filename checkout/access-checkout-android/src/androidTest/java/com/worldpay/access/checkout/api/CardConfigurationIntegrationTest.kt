@@ -23,8 +23,6 @@ class CardConfigurationIntegrationTest {
     private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"
 
     private val cardConfigJson = """
-              {
-               "brands": 
                    [
                     {
                         "name": "visa",
@@ -83,7 +81,6 @@ class CardConfigurationIntegrationTest {
                         ]
                       }
                 ]
-              }
             """.trimIndent()
 
     @get:Rule

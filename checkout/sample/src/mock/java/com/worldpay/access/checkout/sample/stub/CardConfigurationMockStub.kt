@@ -25,8 +25,6 @@ object CardConfigurationMockStub {
 
     fun stubCardConfigurationWithDelay(delay: Int = 0) {
         val json = """
-              {
-               "brands": 
                    [
                       {
                         "name": "mastercard",
@@ -43,7 +41,6 @@ object CardConfigurationMockStub {
                         ]
                       }
                 ]
-              }
             """.trimIndent()
 
         stubFor(get("/$CARD_CONFIGURATION_PATH")
