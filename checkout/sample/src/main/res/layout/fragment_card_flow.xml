@@ -5,7 +5,7 @@
     android:id="@+id/fragment_card_flow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".ui.CardFlowFragment">
+    tools:context=".sample.ui.CardFlowFragment">
 
     <com.worldpay.access.checkout.views.PANLayout
         android:id="@+id/card_flow_text_pan"
