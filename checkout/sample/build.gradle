@@ -31,20 +31,15 @@ android {
         }
     }
 
-    flavorDimensions "api", "merchant"
+    flavorDimensions "environment"
     productFlavors {
         mock {
-            dimension = "api"
+            dimension = "environment"
             applicationIdSuffix = ".mock"
         }
 
         prod {
-            dimension = "api"
-        }
-
-        //TODO: Remove this flavour
-        worldpay {
-            dimension = "merchant"
+            dimension = "environment"
         }
     }
 
