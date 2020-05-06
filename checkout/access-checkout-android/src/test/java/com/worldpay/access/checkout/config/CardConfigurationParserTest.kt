@@ -21,8 +21,6 @@ class CardConfigurationParserTest {
     private val yearDefaults: CardValidationRule = CardValidationRule("^\\d{0,2}$", listOf(2))
 
     private val validCardConfigurationJson = """
-              {
-               "brands": 
                    [
                     {
                         "name": "visa",
@@ -80,8 +78,7 @@ class CardConfigurationParserTest {
                           }
                         ]
                       }
-                ]
-              }
+                    ]
             """.trimIndent()
 
     @get:Rule
@@ -122,17 +119,12 @@ class CardConfigurationParserTest {
     @Test
     fun givenJsonWithMissingOptionalPropertiesShouldNotThrowAccessCheckoutDeserializationError() {
         val jsonWithMissingOptionalBrandProps = """
-            {
-                "defaults": {},
-                "brands": [
+                [
                     {
                         "name": "brand",
-                        "panLengths": [
-                         
-                        ]
+                        "panLengths": []
                     }
                 ]
-            }
         """.trimIndent()
 
         val cardConfiguration =
@@ -150,16 +142,13 @@ class CardConfigurationParserTest {
         expectedException.expectMessage("Missing property: 'name'")
 
         val requiredPropsMissing = """
-            {
-                "defaults": {},
-                "brands": [
+                [
                     {
                         "image": "brand_logo",
                         "panLengths": [
                         ]
                     }
                 ]
-            }
         """.trimIndent()
 
         cardConfigurationParser.parse(requiredPropsMissing.byteInputStream())
@@ -171,21 +160,17 @@ class CardConfigurationParserTest {
         expectedException.expectMessage("Invalid property type: 'pattern', expected 'String'")
 
         val wrongPropertyType = """
-            {
-                "defaults": {},
-                "brands": [
-                    {
-                        "name": "brand",
-                        "image": "brand_logo",
-                        "pattern": 123,
-                        "cvvLength": 3,
-                        "panLengths": [
-                        ]
-                    }
-                ]
-            }
+             [
+                {
+                    "name": "brand",
+                    "image": "brand_logo",
+                    "pattern": 123,
+                    "cvvLength": 3,
+                    "panLengths": [
+                    ]
+                }
+            ]
         """.trimIndent()
-
         cardConfigurationParser.parse(wrongPropertyType.byteInputStream())
     }
 
@@ -195,19 +180,14 @@ class CardConfigurationParserTest {
         expectedException.expectMessage("Invalid property type: 'cvvLength', expected 'Int'")
 
         val wrongPropertyType = """
-            {
-                "defaults": {},
-                "brands": [
-                    {
-                        "name": "brand",
-                        "image": "brand_logo",
-                        "cvvLength": "3",
-                        "panLengths": [
-                            16
-                        ]
-                    }
-                ]
-            }
+           [
+                {
+                    "name": "brand",
+                    "image": "brand_logo",
+                    "cvvLength": "3",
+                    "panLengths": [16]
+                }
+            ]
         """.trimIndent()
 
         cardConfigurationParser.parse(wrongPropertyType.byteInputStream())
@@ -215,7 +195,7 @@ class CardConfigurationParserTest {
 
     @Test
     fun givenEmptyBrandsConfigThenShouldParseSuccessfully() {
-        val missingBrands = """{}""".trimIndent()
+        val missingBrands = """""".trimIndent()
 
         val cardConfiguration = cardConfigurationParser.parse(missingBrands.byteInputStream())
 
@@ -224,11 +204,7 @@ class CardConfigurationParserTest {
 
     @Test
     fun givenBrandsConfigWithEmptyCardValidationRulesThenShouldParseSuccessfully() {
-        val emptyBrands = """
-            {
-                "brands": []
-            }
-        """.trimIndent()
+        val emptyBrands = """[]""".trimIndent()
 
         val cardConfiguration = cardConfigurationParser.parse(emptyBrands.byteInputStream())
 
@@ -300,7 +276,7 @@ class CardConfigurationParserTest {
 
     @Test
     fun `should return a CardConfiguration when JSON is empty`() {
-        val cardConfigurationJson =""""""
+        val cardConfigurationJson = """"""
 
         val cardConfiguration =
             cardConfigurationParser.parse(cardConfigurationJson.byteInputStream())

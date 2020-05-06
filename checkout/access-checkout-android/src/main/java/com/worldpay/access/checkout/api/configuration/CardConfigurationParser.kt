@@ -46,16 +46,13 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
 
     override fun deserialize(json: String): CardConfiguration {
         return super.deserialize(json) {
-            val root = JSONObject(json)
+            val root = JSONArray(json)
             CardConfiguration(parseBrandsConfig(root), cardDefaults)
         }
     }
 
-    private fun parseBrandsConfig(root: JSONObject): List<CardBrand>? {
-        val brandsArray = fetchOptionalArray(root,
-            BRANDS_FIELD
-        )
-        return brandsArray?.let {
+    private fun parseBrandsConfig(root: JSONArray): List<CardBrand>? {
+        return root?.let {
             val brandsList = mutableListOf<CardBrand>()
             for (i in 0 until it.length()) {
                 val brandRoot = it.getJSONObject(i)
