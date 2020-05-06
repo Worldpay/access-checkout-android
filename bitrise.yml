@@ -318,10 +318,10 @@ app:
   - LIBRARY_VARIANT: debug
     opts:
       is_expand: false
-  - APP_MOCK_VARIANT: mockWorldpayDebug
+  - APP_MOCK_VARIANT: mockDebug
     opts:
       is_expand: false
-  - APP_PROD_VARIANT: prodWorldpayDebug
+  - APP_PROD_VARIANT: prodDebug
     opts:
       is_expand: false
   - NEXUS_URL: https://oss.sonatype.org/service/local/staging/deploy/maven2/
