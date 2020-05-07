@@ -4,8 +4,7 @@ import android.content.Context
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-import com.google.gson.GsonBuilder
-import com.worldpay.access.checkout.model.CardConfiguration
+import com.worldpay.access.checkout.sample.MockServer
 import com.worldpay.access.checkout.sample.MockServer.Paths.CARD_CONFIGURATION_PATH
 import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R

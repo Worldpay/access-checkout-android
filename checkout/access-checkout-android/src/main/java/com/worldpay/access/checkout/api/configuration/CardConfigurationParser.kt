@@ -50,7 +50,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
     }
 
     private fun parseBrandsConfig(root: JSONArray): List<CardBrand>? {
-        return root?.let {
+        return root.let {
             val brandsList = mutableListOf<CardBrand>()
             for (i in 0 until it.length()) {
                 val brandRoot = it.getJSONObject(i)
