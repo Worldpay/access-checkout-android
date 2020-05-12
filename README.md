@@ -204,10 +204,35 @@ val cardConfiguration = CardConfiguration(brands = ..., defaults = ...)
 `card.cardValidator = AccessCheckoutCardValidator(cardConfiguration)`
 ```
 
-#### Receiving the Session State 
+#### Requesting the Session State/s
 
+To receive a session state, as shown below, you must call the AccessCheckoutClient.generateSessionState meethod and pass the CardDetails object and a list the type of session state/s (SessionType) you would like to receive back.
 
-When the request for a session state starts, the `SessionResponseListener` is notified via the  `onRequestStarted()` callback method. 
+```
+val cardDetails = CardDetails.Builder()
+                    .pan(pan)
+                    .expiryDate(month, year)
+                    .cvc(cvc)
+                    .build()
+
+generateSessionState(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
+```
+
+##### Verified Token Session (VERIFIED_TOKEN_SESSION)
+
+This is the session required for a standard card payment using a new card that is not saved on file.
+
+##### Payments CVC Session (PAYMENTS_CVC_SESSION)
+
+This session is required when making a subsequent payment using a card with stored details, but the cvc is required to be captured again for additional verification. At present this is only a requirement for mastercard payments if you are a gambling merchant.
+
+##### Receive both session types
+
+Mastercard scheme rules require that gambling merchants need both a Verified Token Session and a Payment CVC Session for first time payments. (Subsequent payments will only require a Payments CVC Session)
+
+#### Receiving the Session State
+
+When the request for a session state starts, the `SessionResponseListener` is notified via the  `onRequestStarted()` callback method.
 
 When a result becomes available, the implementing class of `SessionResponseListener` will receive the callback holding the session state or an exception describing the error.
 
