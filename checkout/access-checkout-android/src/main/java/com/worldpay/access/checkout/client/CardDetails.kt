@@ -1,5 +1,13 @@
 package com.worldpay.access.checkout.client
 
+/**
+ * [CardDetails] is a representation of a combination of card information that can be constructed with a builder.
+ *
+ * @property pan an optional String containing the PAN
+ * @property expiryDate an optional ExpiryDate object containing the expiry month and year
+ * @property cvv an optional String object containing the cvv
+ */
+
 class CardDetails private constructor(
     val pan: String?,
     val expiryDate: ExpiryDate?,

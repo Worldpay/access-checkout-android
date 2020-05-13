@@ -213,7 +213,7 @@ val cardConfiguration = CardConfiguration(brands = ..., defaults = ...)
 
 #### Requesting the Session State/s
 
-To receive a session state, as shown below, you must call the AccessCheckoutClient.generateSessionState method and pass the CardDetails object and a list the type of session state/s (SessionType) you would like to receive back.
+To receive a session state, as shown below, you must call the AccessCheckoutClient.generateSessionState method and pass the CardDetails object and a list the type of session state/s (```SessionType```) you would like to receive back.
 
 ```
 val cardDetails = CardDetails.Builder()
@@ -225,11 +225,11 @@ val cardDetails = CardDetails.Builder()
 generateSessionState(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
 ```
 
-##### Verified Token Session (VERIFIED_TOKEN_SESSION)
+##### Verified Token Session (```VERIFIED_TOKEN_SESSION```)
 
 This is the session required for a standard card payment using a new card that is not saved on file.
 
-##### Payments CVC Session (PAYMENTS_CVC_SESSION)
+##### Payments CVC Session (```PAYMENTS_CVC_SESSION```)
 
  At present this is only a requirement for mastercard payments if you are a gambling merchant. This session is required when making a repeat payment using a card with stored details but the cvc is required to be captured again for additional verification.
 
