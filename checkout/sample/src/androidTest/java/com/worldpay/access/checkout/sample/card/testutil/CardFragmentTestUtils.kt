@@ -12,6 +12,7 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.YEAR
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.views.CardCVVText
@@ -29,6 +30,10 @@ class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActiv
     private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
     private fun progressBar() = uiObjectWithId(R.id.loading_bar)
     private fun brandLogo() = findById<ImageView>(R.id.logo_view)
+
+    enum class Input {
+        PAN, CVV, MONTH, YEAR
+    }
 
     fun isInInitialState(): CardFragmentTestUtils {
         progressBarNotVisible()
@@ -89,6 +94,16 @@ class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActiv
         return this
     }
 
+    fun focusOn(input: Input): CardFragmentTestUtils {
+        when (input) {
+            Input.PAN -> uiObjectWithId(panInput().mEditText.id).click()
+            Input.CVV -> uiObjectWithId(cvvInput().id).click()
+            Input.MONTH -> uiObjectWithId(expiryDateInput().monthEditText.id).click()
+            YEAR -> uiObjectWithId(expiryDateInput().yearEditText.id).click()
+        }
+        return this
+    }
+
     fun enterCardDetails(pan: String? = null, cvv: String? = null, month: String? = null, year: String? = null, assertText: Boolean = false): CardFragmentTestUtils {
         if (pan != null) enterText(panInput().mEditText, pan)
         if (cvv != null) enterText(cvvInput(), cvv)
@@ -111,10 +126,10 @@ class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActiv
     }
 
     fun validationStateIs(pan: Boolean? = null, cvv: Boolean? = null, month: Boolean? = null, year: Boolean? = null): CardFragmentTestUtils {
-        if (pan != null) checkValidationState(panInput().mEditText, pan)
-        if (cvv != null) checkValidationState(cvvInput(), cvv)
-        if (month != null) checkValidationState(expiryDateInput().monthEditText, month)
-        if (year != null) checkValidationState(expiryDateInput().yearEditText, year)
+        if (pan != null) checkValidationState(panInput().mEditText, pan, "pan")
+        if (cvv != null) checkValidationState(cvvInput(), cvv, "cvv")
+        if (month != null) checkValidationState(expiryDateInput().monthEditText, month, "month")
+        if (year != null) checkValidationState(expiryDateInput().yearEditText, year, "year")
         return this
     }
 
@@ -140,11 +155,11 @@ class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActiv
         return this
     }
 
-    private fun checkValidationState(editText: EditText, isValid: Boolean) {
+    private fun checkValidationState(editText: EditText, isValid: Boolean, field: String) {
         if (isValid) {
-            wait { assertEquals(color(R.color.SUCCESS), editText.currentTextColor) }
+            wait { assertEquals(color(R.color.SUCCESS), editText.currentTextColor, "$field field expected to be valid") }
         } else {
-            wait { assertEquals(color(R.color.FAIL), editText.currentTextColor) }
+            wait { assertEquals(color(R.color.FAIL), editText.currentTextColor, "$field field expected to be invalid") }
         }
     }
 
@@ -155,7 +170,9 @@ class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActiv
 
         val editTextUI = uiObjectWithId(editText.id)
         editTextUI.click()
-        editTextUI.text = text
+        if (editTextUI.text != text) {
+            editTextUI.text = text
+        }
 
         val im = activity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(editText.windowToken, 0)

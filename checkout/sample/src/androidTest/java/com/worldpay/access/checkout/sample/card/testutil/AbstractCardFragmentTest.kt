@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
 import org.junit.Before
 import org.junit.Rule
 
-abstract class AbstractCardFlowUITest {
+abstract class AbstractCardFragmentTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(

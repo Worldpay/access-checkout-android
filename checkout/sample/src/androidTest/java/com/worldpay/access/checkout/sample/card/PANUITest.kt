@@ -7,14 +7,14 @@ import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFlowUITest
+import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.*
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class PANUITest: AbstractCardFlowUITest() {
+class PANUITest: AbstractCardFragmentTest() {
 
     @Test
     fun givenUserClicksCardViewAndInsertsUnknownPartiallyValidCardNumberThenTextShouldTurnGreenAndDisplayUnknownCardIcon() {

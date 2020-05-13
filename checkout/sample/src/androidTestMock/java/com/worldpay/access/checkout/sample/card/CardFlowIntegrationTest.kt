@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.sample.MockServer.Paths.VERIFIED_TOKENS_SESS
 import com.worldpay.access.checkout.sample.MockServer.getCurrentContext
 import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFlowUITest
+import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VerifiedTokenResponses.validResponseWithDelay
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.simulateHttpRedirect
@@ -22,7 +22,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class CardFlowIntegrationTest : AbstractCardFlowUITest() {
+class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     private val amexCard = "343434343434343"
     private val amexCvv = "1234"
