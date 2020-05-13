@@ -19,10 +19,18 @@ import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 internal class PaymentsCvcSessionRequestHandler(
     private val sessionRequestHandlerConfig: SessionRequestHandlerConfig
 ): SessionRequestHandler {
-
+    /**
+     * Accepts a list of [SessionType]s and returns True if the list contains a [PAYMENTS_CVC_SESSION]
+     */
     override fun canHandle(sessionTypes: List<SessionType>): Boolean {
         return sessionTypes.contains(PAYMENTS_CVC_SESSION)
     }
+    /**
+     * Accepts in a [CardDetails] object and validates that the mandatory fields for this [SessionType] are present
+     *
+     * Mandatory fields:
+     * @param cardDetails.cvv
+     */
 
     override fun handle(cardDetails: CardDetails) {
         validateNotNull(cardDetails.cvv, "cvv")
@@ -34,6 +42,9 @@ internal class PaymentsCvcSessionRequestHandler(
          */
         sessionRequestHandlerConfig.getExternalSessionResponseListener().onRequestStarted()
 
+        /**
+         * Sets the [Intent], builds a [SessionRequestInfo] object and adds that to the serviceIntent and starts the service
+         */
         val cvvSessionRequest =
             CVVSessionRequest(
                 cardDetails.cvv,
