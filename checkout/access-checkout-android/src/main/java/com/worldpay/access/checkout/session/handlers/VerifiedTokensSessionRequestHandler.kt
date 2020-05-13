@@ -17,17 +17,34 @@ internal class VerifiedTokensSessionRequestHandler(
     private val sessionRequestHandlerConfig: SessionRequestHandlerConfig
 ) : SessionRequestHandler {
 
+    /**
+     * Accepts a list of [SessionType]s and returns True if the list contains a [VERIFIED_TOKEN_SESSION]
+     */
     override fun canHandle(sessionTypes: List<SessionType>): Boolean {
         return sessionTypes.contains(VERIFIED_TOKEN_SESSION)
     }
 
+    /**
+     * Accepts in a [CardDetails] object and validates that the mandatory fields for this [SessionType] are present
+     *
+     * Mandatory fields:
+     * @param cardDetails.pan
+     * @param cardDetails.expiryDate
+     * @param cardDetails.cvv
+     */
     override fun handle(cardDetails: CardDetails) {
         validateNotNull(cardDetails.pan, "pan")
         validateNotNull(cardDetails.expiryDate, "expiry date")
         validateNotNull(cardDetails.cvv, "cvv")
 
+        /**
+         * Retrieves external [SessionResponseListener] and notifies that the request has started
+         */
         sessionRequestHandlerConfig.getExternalSessionResponseListener().onRequestStarted()
 
+        /**
+         * Sets the [Intent], builds a [SessionRequestInfo] object and adds that to the serviceIntent and starts the service
+         */
         val serviceIntent = Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
@@ -42,6 +59,9 @@ internal class VerifiedTokensSessionRequestHandler(
         sessionRequestHandlerConfig.getContext().startService(serviceIntent)
     }
 
+    /**
+     * Takes in [CardDetails] and returns a [CardSessionRequest] object.
+     */
     private fun createCardSessionRequest(cardDetails: CardDetails): CardSessionRequest {
         cardDetails.pan as String
         cardDetails.expiryDate as ExpiryDate
