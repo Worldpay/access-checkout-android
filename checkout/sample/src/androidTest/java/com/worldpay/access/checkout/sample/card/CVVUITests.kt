@@ -1,420 +1,200 @@
 package com.worldpay.access.checkout.sample.card
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFlowUITest
-import com.worldpay.access.checkout.sample.card.testutil.CardBrand
-import com.worldpay.access.checkout.sample.card.testutil.CardBrand.AMEX
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.getFailColor
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.getSuccessColor
-import com.worldpay.access.checkout.sample.testutil.matchers.BrandVectorImageMatcher.Companion.withBrandVectorImageId
-import com.worldpay.access.checkout.sample.testutil.matchers.BrandVectorImageNameMatcher.Companion.withBrandVectorImageName
-import com.worldpay.access.checkout.sample.testutil.matchers.EditTextColorMatcher.Companion.withEditTextColor
+import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
+import com.worldpay.access.checkout.sample.card.testutil.CardBrand.*
+import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.YEAR
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class CVVUITests: AbstractCardFlowUITest() {
+class CVVUITests: AbstractCardFragmentTest() {
 
-    private val amexCard = "343434343434343"
-    private val masterCard = "5555555555554444"
+    private val amex = "343434343434343"
+    private val mastercard = "5555555555554444"
+    private val visa = "4111111111111111"
 
     @Test
-    fun cardCVVExists() {
-        onView(withId(R.id.card_flow_text_cvv)).check(matches(isDisplayed()))
+    fun shouldObserveCvvRules_noBrand() {
+        cardFragmentTestUtils.isInInitialState()
+            .enterCardDetails(pan = "", month = "11", year = "40")
+            .hasNoBrand()
+
+        // max 4 digits - so enter 5 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "12345")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "1234")
+            .validationStateIs(pan = false, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = false)
+
+        // min 3 digits - so enter 2 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "12")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "12")
+            .validationStateIs(pan = false, cvv = false, month = true, year = true)
+            .enabledStateIs(submitButton = false)
+
+        // accept 3 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "123")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "123")
+            .validationStateIs(pan = false, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = false)
+
+        // accept 4 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "1234")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "1234")
+            .validationStateIs(pan = false, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = false)
     }
 
     @Test
-    fun givenUserAttemptsToTypeMoreThanMaxAllowedCVVLength_ThenFieldRestrictsToMaxLength() {
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("12345"))
+    fun shouldObserveCvvRules_amex() {
+        cardFragmentTestUtils.isInInitialState()
+            .enterCardDetails(pan = amex, month = "11", year = "40")
+            .hasBrand(AMEX)
 
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withText("1234")))
+        // max 4 digits - so enter 5 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "12345")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "1234")
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
+
+        // min 4 digits - so enter 3 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "123")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "123")
+            .validationStateIs(pan = true, cvv = false, month = true, year = true)
+            .enabledStateIs(submitButton = false)
+
+        // accept 4 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "1234")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "1234")
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun givenUserAttemptsToTypeLessThanMinAllowedCVVLength_ThenFieldDisplaysErrorWhenUserMovesAway() {
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("12"))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
+    fun shouldObserveCvvRules_mastercard() {
+        cardFragmentTestUtils.isInInitialState()
+            .enterCardDetails(pan = mastercard, month = "11", year = "40")
+            .hasBrand(MASTERCARD)
 
+        // max 3 digits - so enter 4 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "1234")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "123")
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
 
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click())
+        // min 3 digits - so enter 2 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "12")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "12")
+            .validationStateIs(pan = true, cvv = false, month = true, year = true)
+            .enabledStateIs(submitButton = false)
 
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
+        // accept 3 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "123")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "123")
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun givenNoCardDataEnteredThenCVVFieldShouldBeValidUpTo4Digits() {
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown_logo)))
+    fun shouldObserveCvvRules_visa() {
+        cardFragmentTestUtils.isInInitialState()
+            .enterCardDetails(pan = visa, month = "11", year = "40")
+            .hasBrand(VISA)
 
-        onView(withId(R.id.card_flow_text_cvv))
-            .perform(pressImeActionButton())
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("1234"), pressImeActionButton())
+        // max 3 digits - so enter 4 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "1234")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "123")
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
 
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click(), pressImeActionButton())
+        // min 3 digits - so enter 2 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "12")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "12")
+            .validationStateIs(pan = true, cvv = false, month = true, year = true)
+            .enabledStateIs(submitButton = false)
 
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText(""), replaceText("123"), pressImeActionButton())
-
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click(), pressImeActionButton())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
+        // accept 3 digits
+        cardFragmentTestUtils
+            .enterCardDetails(cvv = "123")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "123")
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun givenCardDataEnteredThenRemovedAgainCVVFieldShouldBeValidUpTo4Digits() {
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("1234"), closeSoftKeyboard())
+    fun shouldRevalidateCvv_whenCardBrandChanges() {
+        // enter amex details, cvv is invalid
+        cardFragmentTestUtils
+            .enterCardDetails(pan = amex, cvv = "123", month = "11", year = "40")
+            .cardDetailsAre(cvv = "123")
+            .hasBrand(AMEX)
+            .validationStateIs(pan = true, cvv = false, month = true, year = true)
+            .enabledStateIs(submitButton = false)
 
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("77"), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText(""), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withText("1234")))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
+        // change pan to mastercard, cvv is now valid
+        cardFragmentTestUtils
+            .enterCardDetails(pan = mastercard)
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "123")
+            .hasBrand(MASTERCARD)
+            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun givenAmex_AndA4DigitCVV_shouldValidateCVV() {
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText(amexCard), closeSoftKeyboard())
+    fun shouldRevalidateCvv_whenPanIsEntered() {
+        // enter cvv
+        cardFragmentTestUtils
+            .isInInitialState()
+            .cardDetailsAre(pan = "")
+            .hasNoBrand()
+            .enterCardDetails(cvv = "1234")
+            .focusOn(YEAR)
+            .validationStateIs(cvv = true)
 
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(AMEX)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("1234"), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
+        // enter visa card number - cvv is valid
+        cardFragmentTestUtils
+            .enterCardDetails(pan = visa)
+            .focusOn(YEAR)
+            .hasBrand(VISA)
+            .validationStateIs(cvv = false)
+            .enabledStateIs(submitButton = false)
     }
 
     @Test
-    fun givenAmex_AndUserAttemptsToTypeMoreThanMaxAllowedCVVLength_ThenFieldRestrictsToMaxLengthForAmex() {
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText(amexCard), closeSoftKeyboard())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(AMEX)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("12345"), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withText("1234")))
-    }
-
-    @Test
-    fun givenAmex_AndA3DigitCVV_shouldInvalidateCVVOnceOffFocus() {
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText(amexCard), closeSoftKeyboard())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(AMEX)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("123"), closeSoftKeyboard())
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click(), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
-    }
-
-    @Test
-    fun givenAmex_AndA3DigitCVV_AndACorrectionToCardNumberToMastercard_shouldInvalidateAndRevalidateCVV() {
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText(amexCard), pressImeActionButton())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(AMEX)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("123"), pressImeActionButton())
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click(), pressImeActionButton())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
-
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText(masterCard), pressImeActionButton())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withText("123")))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-    }
-
-    @Test
-    fun givenVisa_AndA3DigitCVV_shouldValidateCVV() {
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText("44"), pressImeActionButton())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.VISA)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("123"), pressImeActionButton())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-    }
-
-    @Test
-    fun givenVisa_AndA4DigitCVV_shouldRestrictLengthTo3() {
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText("44"), closeSoftKeyboard())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.VISA)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("1234"), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withText("123")))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-    }
-
-    @Test
-    fun givenCVVEnteredFirst_AndVisaIdentifiedAfter_ThenCVVFieldShouldBeReValidated() {
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("1234"), closeSoftKeyboard())
-
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click(), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText("44"), pressImeActionButton())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.VISA)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText(""), replaceText("123"), pressImeActionButton())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-    }
-
-    @Test
-    fun givenMastercard_AndA3DigitCVV_shouldValidateCVV() {
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText("55"), closeSoftKeyboard())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.MASTERCARD)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("123"), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-    }
-
-    @Test
-    fun givenMastercard_AndA4DigitCVV_shouldRestrictLengthTo3() {
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText("55"), closeSoftKeyboard())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.MASTERCARD)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("1234"), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withText("123")))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-    }
-
-    @Test
-    fun givenCVVEnteredFirst_AndMastercardIdentifiedAfter_ThenCVVFieldShouldBeReValidated() {
-        onView(withId(R.id.card_flow_text_cvv))
-            .perform(closeSoftKeyboard())
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("1234"), closeSoftKeyboard())
-
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click(), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText("55"), closeSoftKeyboard())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageName(CardBrand.MASTERCARD)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText(""), replaceText("123"), closeSoftKeyboard())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-    }
-
-    @Test
-    fun givenUnidentifiedBrand_ThenCVVFieldShouldBeValidAt3And4Characters() {
-        onView(withId(R.id.card_number_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText("77"), pressImeActionButton())
-
-        onView(withId(R.id.logo_view))
-            .check(matches(isDisplayed()))
-            .check(matches(withBrandVectorImageId(R.drawable.card_unknown_logo)))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), typeText("12"), pressImeActionButton())
-
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click(), pressImeActionButton())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getFailColor(activityRule.activity))))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText("123"), pressImeActionButton())
-
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click(), pressImeActionButton())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click(), replaceText("1234"), pressImeActionButton())
-
-        onView(withId(R.id.card_number_edit_text))
-            .perform(click(), pressImeActionButton())
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(withEditTextColor(getSuccessColor(activityRule.activity))))
-    }
-
-    @Test
-    fun givenUserLongClicksAndPastesTooLongStringIntoCvvFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
-        val pastedText = "12345678"
-
-        onView(withId(R.id.card_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(replaceText(pastedText))
-            .check(matches(withText(pastedText.substring(0, 4))))
+    fun shouldOnlyKeepMaxCvvLength_whenPasting() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .enterCardDetails(cvv = "12345")
+            .focusOn(YEAR)
+            .cardDetailsAre(cvv = "1234")
+            .enabledStateIs(submitButton = false)
     }
 }

@@ -1,14 +1,14 @@
 package com.worldpay.access.checkout.sample.card
 
 import com.worldpay.access.checkout.sample.MainActivity
-import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFlowUITest
+import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationLeft
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationNatural
 import org.junit.Test
 
-class CardConfigurationRotationIntegrationTest: AbstractCardFlowUITest() {
+class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
 
     private val luhnValidMastercardCard = "5555555555554444"
     private val luhnInvalidMastercardCard = "55555555555111"
