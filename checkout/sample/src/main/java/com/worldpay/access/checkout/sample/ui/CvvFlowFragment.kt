@@ -16,7 +16,6 @@ import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvv.CvvListenerImpl
 import com.worldpay.access.checkout.sample.cvv.SessionResponseListenerImpl
-import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.views.CardCVVText
 
 class CvvFlowFragment : Fragment() {
@@ -73,7 +72,6 @@ class CvvFlowFragment : Fragment() {
     private fun initialiseCardValidation(activity: FragmentActivity) {
         val card = AccessCheckoutCVV(cvvText)
         card.cardListener = CvvListenerImpl(activity, card)
-        card.cardValidator = AccessCheckoutCardValidator()
 
         CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
 

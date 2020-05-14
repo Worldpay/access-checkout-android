@@ -17,10 +17,24 @@ class CVVValidatorImplTest {
        cvvValidator = CVVValidatorImpl(null)
     }
 
-    // validateCVV
     @Test
-    fun `given an empty cvv, pan and card configuration then should be completely and partially valid`() {
-        assertEquals(Pair(ValidationResult(partial = true, complete = true), null), cvvValidator.validate("", null))
+    fun `given an empty cvv and null card configuration then should be only partially invalid`() {
+        assertEquals(Pair(ValidationResult(partial = false, complete = false), null), cvvValidator.validate("", null))
+    }
+
+    @Test
+    fun `given a empty cvv and non-null card configuration then should be only partially valid`() {
+        val cvvValidationRule = CardValidationRule(null, 3, null, null)
+        val defaults = CardDefaults(null, cvvValidationRule, null, null)
+
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+
+        assertEquals(Pair(ValidationResult(partial = true, complete = false), null), cvvValidator.validate("", null))
+    }
+
+    @Test
+    fun `given a non-empty pan, empty cvv and null card configuration then should be completely and partially invalid`() {
+        assertEquals(Pair(ValidationResult(partial = false, complete = false), null), cvvValidator.validate("", "44"))
     }
 
     @Test

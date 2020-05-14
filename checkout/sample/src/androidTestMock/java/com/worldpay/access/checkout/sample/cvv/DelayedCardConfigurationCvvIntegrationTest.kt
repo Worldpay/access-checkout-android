@@ -1,16 +1,12 @@
 package com.worldpay.access.checkout.sample.cvv
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.model.*
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.MockServer
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.assertDisplaysResponseFromServer
@@ -22,8 +18,8 @@ import org.junit.Test
 
 class CardConfigurationLongDelayIntegrationTest {
 
-    private val mastercardCvvValidationRule: CardValidationRule = CardValidationRule("^\\d{0,3}$", null, null, 3)
-    private val mastercardPANValidationRule: CardValidationRule = CardValidationRule("^5\\d{0,15}$", null, null, 16)
+    private val mastercardCvvValidationRule = CardValidationRule("^\\d{0,3}$", null, null, 3)
+    private val mastercardPANValidationRule = CardValidationRule("^5\\d{0,15}$", null, null, 16)
 
     private val brands = listOf(
         CardBrand(
@@ -41,9 +37,11 @@ class CardConfigurationLongDelayIntegrationTest {
     var cardConfigurationRule: CardConfigurationLongDelayRule =
         CardConfigurationLongDelayRule(cardConfiguration, 10000L, MainActivity::class.java)
 
+    private lateinit var cvvFragmentTestUtils: CvvFragmentTestUtils
 
     @Before
     fun setup() {
+        cvvFragmentTestUtils = CvvFragmentTestUtils(cardConfigurationRule)
         navigateTo(R.id.nav_cvv_flow)
     }
 
@@ -54,21 +52,20 @@ class CardConfigurationLongDelayIntegrationTest {
 
     @Test
     fun shouldSuccessfullyReturnResponse_whenCardConfigurationIsRetrievalSucceeds() {
-        onView(withId(R.id.cvv_flow_text_cvv))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .check(matches(withAlpha(1.0f)))
-            .perform(click(), typeText("123"))
-
-        onView(withId(R.id.cvv_flow_btn_submit))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(click())
+        cvvFragmentTestUtils
+            .isInInitialState()
+            .enterCardDetails(cvv = "123")
+            .clickSubmitButton()
+            .requestIsInProgress()
 
         assertDisplaysResponseFromServer(
             mapOf(PAYMENTS_CVC_SESSION to cardConfigurationRule.activity.getString(R.string.sessions_session_reference)).toString(),
             cardConfigurationRule.activity.window.decorView
         )
+
+        cvvFragmentTestUtils
+            .cardDetailsAre(cvv = "")
+            .enabledStateIs(submitButton = false)
     }
 
 }
