@@ -18,33 +18,26 @@ internal class VerifiedTokensSessionRequestHandler(
 ) : SessionRequestHandler {
 
     /**
-     * Accepts a list of [SessionType]s and returns True if the list contains a [VERIFIED_TOKEN_SESSION]
+     * Returns True if the list contains a [VERIFIED_TOKEN_SESSION]
+     *
+     * @param sessionTypes - a list of [SessionType] requested
      */
     override fun canHandle(sessionTypes: List<SessionType>): Boolean {
         return sessionTypes.contains(VERIFIED_TOKEN_SESSION)
     }
 
     /**
-     * Accepts in a [CardDetails] object and validates that the mandatory fields for this [SessionType] are present
+     * Validates that the mandatory fields for this [SessionType] are present
      *
-     * Mandatory fields:
-     * @param cardDetails.pan
-     * @param cardDetails.expiryDate
-     * @param cardDetails.cvv
+     * @param cardDetails  - [CardDetails]
      */
     override fun handle(cardDetails: CardDetails) {
         validateNotNull(cardDetails.pan, "pan")
         validateNotNull(cardDetails.expiryDate, "expiry date")
         validateNotNull(cardDetails.cvv, "cvv")
 
-        /**
-         * Retrieves external [SessionResponseListener] and notifies that the request has started
-         */
         sessionRequestHandlerConfig.getExternalSessionResponseListener().onRequestStarted()
 
-        /**
-         * Sets the [Intent], builds a [SessionRequestInfo] object and adds that to the serviceIntent and starts the service
-         */
         val serviceIntent = Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
@@ -60,7 +53,9 @@ internal class VerifiedTokensSessionRequestHandler(
     }
 
     /**
-     * Takes in [CardDetails] and returns a [CardSessionRequest] object.
+     * Returns a [CardSessionRequest] object.
+     *
+     * @param cardDetails- [CardDetails] containing pan, expiryDate and cvv
      */
     private fun createCardSessionRequest(cardDetails: CardDetails): CardSessionRequest {
         cardDetails.pan as String

@@ -6,7 +6,6 @@ import java.util.concurrent.ConcurrentHashMap
 /**
  * [DiscoveryCache] is a cache for storing the results of attempted API discoveries
  */
-
 internal object DiscoveryCache {
 
     val results: ConcurrentHashMap<String, AsyncTaskResult<String>?> = ConcurrentHashMap()

@@ -7,8 +7,8 @@ import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.util.concurrent.atomic.AtomicInteger
 
 /**
- *[ApiDiscoveryClient] is responsible for managing the discovery of the API endpoint for a service
- * and passing the result to a [DiscoveryCache].
+ * [ApiDiscoveryClient] is responsible for managing the discovery of the API endpoint for a service
+ * calls the callback with the discovered API endpoint and utilises caching.
  *
  * @param apiDiscoveryAsyncTaskFactory - a factory for [ApiDiscoveryAsyncTask]
  * @param discoveryCache - a cache for storing the discovered endpoints
@@ -26,7 +26,7 @@ internal class ApiDiscoveryClient(
     }
 
     /**
-     * A method that asynchronously discovers the required API endpoint for the desired service.
+     * Asynchronously discovers the required API endpoint for the desired service.
      * Responds via a callback with either a [URL] or an [AccessCheckoutDiscoveryException]
      *
      * @param baseUrl - the base url for the API

@@ -12,11 +12,11 @@ import java.net.MalformedURLException
 import java.net.URL
 
 /**
- * [ApiDiscoveryAsyncTask] is responsible for carrying out the async discovery of the API endpoint for a service.
- * Returns an [AsyncTaskResult] via callback
+ * [ApiDiscoveryAsyncTask] is responsible for discovering an API given the list of endpoints.
+ * On completion, the given callback will be called with the corresponding error or success response from the Discovery API.
  *
  * @param callback - the callback via which the result is returned
- * @param endpoints - a list of [Endpoint]s that is iterated over to navigate through the API layers
+ * @param endpoints - a list of [Endpoint]s that is iterated over to navigate through the discovery tree
  * @param httpClient - an [HttpClient] that is responsible for sending the HTTP request
  */
 
