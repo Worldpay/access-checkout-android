@@ -9,7 +9,13 @@ import com.worldpay.access.checkout.session.api.client.SessionClient
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import java.net.URL
 
-
+/**
+ * [RequestDispatcher]is responsible for dispatching an asynchronous request for a session and returning the response via a callback
+ *
+ * @param path - the URL for the API
+ * @param callback - callback via which the [SessionResponseInfo] is returned
+ * @param sessionClient - an implementation of [SessionClient] to handle the request
+ */
 internal class RequestDispatcher constructor(
     private val path: String,
     private val callback: Callback<SessionResponseInfo>,

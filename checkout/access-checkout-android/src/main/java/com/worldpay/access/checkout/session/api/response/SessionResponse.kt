@@ -2,6 +2,9 @@ package com.worldpay.access.checkout.session.api.response
 
 import java.io.Serializable
 
+/**
+ * [SessionResponse] is a deserialised response from a Session request
+ */
 internal data class SessionResponse(val links: Links): Serializable {
     internal data class Links(val endpoints: Endpoints, val curies: Array<Curies>): Serializable {
         internal data class Endpoints(val href: String): Serializable
