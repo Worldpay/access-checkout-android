@@ -11,6 +11,15 @@ import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.net.MalformedURLException
 import java.net.URL
 
+/**
+ * [ApiDiscoveryAsyncTask] is responsible for carrying out the async discovery of the API endpoint for a service.
+ * Returns an [AsyncTaskResult] via callback
+ *
+ * @param callback - the callback via which the result is returned
+ * @param endpoints - a list of [Endpoint]s that is iterated over to navigate through the API layers
+ * @param httpClient - an [HttpClient] hat is responsible for sending the HTTP request
+ */
+
 internal class ApiDiscoveryAsyncTask(
     private val callback: Callback<String>,
     private val endpoints: List<Endpoint>,
