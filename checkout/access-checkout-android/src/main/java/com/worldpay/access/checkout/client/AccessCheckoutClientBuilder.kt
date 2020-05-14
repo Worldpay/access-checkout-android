@@ -14,7 +14,6 @@ import com.worldpay.access.checkout.views.SessionResponseListener
 /**
  * A builder that returns an implementation of an [AccessCheckoutClient]
  */
-
 class AccessCheckoutClientBuilder {
 
     private val tag = "AccessCheckoutClient"

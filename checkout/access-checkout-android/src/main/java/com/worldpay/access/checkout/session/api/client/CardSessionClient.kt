@@ -12,8 +12,8 @@ import java.net.URL
  * [CardSessionClient] is the client for a Verified Token Session
  *
  * @param deserializer - [Deserializer] - passed to the [HttpClient] to deserialise [SessionResponse]
- * @param serializer - [Serializer] - passed to the [HttpClient] ro serialise [SessionRequest]
- * @param httpClient - [HttpClient] - responsible for carrying out the post request
+ * @param serializer - [Serializer] - passed to the [HttpClient] to serialise [SessionRequest]
+ * @param httpClient - [HttpClient] - responsible for carrying out the HTTP request
  */
 internal class CardSessionClient(
     private val deserializer: Deserializer<SessionResponse>,
@@ -22,7 +22,7 @@ internal class CardSessionClient(
 ) : SessionClient {
 
     /**
-     * Method that for requesting a session from the VT service, returns a [SessionResponse]
+     * Method for requesting a session from the VT service, returns a [SessionResponse]
      *
      * @param url - the URL for the service
      * @param request - [SessionRequest] containing session request info

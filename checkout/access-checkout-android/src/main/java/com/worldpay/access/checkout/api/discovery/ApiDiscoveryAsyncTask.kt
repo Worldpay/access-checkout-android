@@ -17,7 +17,7 @@ import java.net.URL
  *
  * @param callback - the callback via which the result is returned
  * @param endpoints - a list of [Endpoint]s that is iterated over to navigate through the API layers
- * @param httpClient - an [HttpClient] hat is responsible for sending the HTTP request
+ * @param httpClient - an [HttpClient] that is responsible for sending the HTTP request
  */
 
 internal class ApiDiscoveryAsyncTask(

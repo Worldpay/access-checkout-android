@@ -12,8 +12,8 @@ import java.net.URL
  * [CVVSessionClient] is the client for a Payments CVC Session
  *
  * @param deserializer - [Deserializer] - passed to the [HttpClient] to deserialise [SessionResponse]
- * @param serializer - [Serializer] - passed to the [HttpClient] ro serialise [SessionRequest]
- * @param httpClient - [HttpClient] - responsible for carrying out the post request
+ * @param serializer - [Serializer] - passed to the [HttpClient] to serialise [SessionRequest]
+ * @param httpClient - [HttpClient] - responsible for carrying out the HTTP request
  */
 internal class CVVSessionClient(
     private val deserializer: Deserializer<SessionResponse>,
@@ -22,7 +22,7 @@ internal class CVVSessionClient(
 ) : SessionClient {
 
     /**
-     * Method that for requesting a session from the Payments CVC service, returns a [SessionResponse]
+     * Method for requesting a session from the Payments CVC service, returns a [SessionResponse]
      *
      * @param url - the URL for the service
      * @param request - [SessionRequest] containing session request info
