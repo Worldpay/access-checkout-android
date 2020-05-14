@@ -7,11 +7,11 @@ import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
-import com.worldpay.access.checkout.api.session.CardSessionRequest
-import com.worldpay.access.checkout.api.session.SessionResponse
-import com.worldpay.access.checkout.api.session.client.CardSessionClient
-import com.worldpay.access.checkout.api.session.serialization.CardSessionRequestSerializer
-import com.worldpay.access.checkout.api.session.serialization.CardSessionResponseDeserializer
+import com.worldpay.access.checkout.session.api.CardSessionRequest
+import com.worldpay.access.checkout.session.api.SessionResponse
+import com.worldpay.access.checkout.session.api.client.CardSessionClient
+import com.worldpay.access.checkout.session.api.serialization.CardSessionRequestSerializer
+import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule

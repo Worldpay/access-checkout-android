@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.api.discovery
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
+import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.util.concurrent.atomic.AtomicInteger
 
 internal class ApiDiscoveryClient(

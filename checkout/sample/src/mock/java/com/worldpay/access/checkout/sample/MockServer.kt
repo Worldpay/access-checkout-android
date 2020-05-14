@@ -6,7 +6,6 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.sample.stub.BrandLogoMockStub.stubLogos
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.rootResourceMapping
@@ -14,6 +13,7 @@ import com.worldpay.access.checkout.sample.stub.SessionsMockStub.stubSessionsPay
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.stubSessionsTokenRootRequest
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifiedTokenRootRequest
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifiedTokenSessionRequest
+import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 
 object MockServer {
 

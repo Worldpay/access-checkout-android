@@ -9,12 +9,12 @@ import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.core.view.isVisible
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.YEAR
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
+import com.worldpay.access.checkout.util.logging.LoggingUtils
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
 import com.worldpay.access.checkout.views.PANLayout

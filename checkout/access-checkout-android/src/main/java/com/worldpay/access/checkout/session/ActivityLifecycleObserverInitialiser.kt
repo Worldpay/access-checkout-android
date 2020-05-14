@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session
 
 import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
+import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
 
 internal class ActivityLifecycleObserverInitialiser(
     tag: String,

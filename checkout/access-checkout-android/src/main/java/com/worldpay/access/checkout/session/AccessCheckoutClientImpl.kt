@@ -5,11 +5,11 @@ import android.content.Intent
 import com.worldpay.access.checkout.client.AccessCheckoutClient
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType
-import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.session.request.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
-import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver
-import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
-import com.worldpay.access.checkout.session.request.handlers.SessionRequestHandlerFactory
+import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.session.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
+import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
+import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
+import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactory
 import com.worldpay.access.checkout.views.SessionResponseListener
 
 /**

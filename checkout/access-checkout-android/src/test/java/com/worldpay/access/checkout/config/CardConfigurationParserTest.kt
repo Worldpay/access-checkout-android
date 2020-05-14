@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.config
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
+import com.worldpay.access.checkout.api.configuration.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardConfiguration
 import org.junit.Assert.assertEquals
@@ -20,7 +21,8 @@ class CardConfigurationParserTest {
 
     @Before
     fun setUp() {
-        cardConfigurationParser = CardConfigurationParser()
+        cardConfigurationParser =
+            CardConfigurationParser()
     }
 
     @Test

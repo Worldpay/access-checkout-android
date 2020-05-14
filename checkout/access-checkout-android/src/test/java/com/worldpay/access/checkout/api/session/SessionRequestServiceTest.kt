@@ -8,10 +8,11 @@ import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
-import com.worldpay.access.checkout.session.request.broadcast.LocalBroadcastManagerFactory
-import com.worldpay.access.checkout.session.request.broadcast.receivers.COMPLETED_SESSION_REQUEST
-import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.ERROR_KEY
-import com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver.Companion.RESPONSE_KEY
+import com.worldpay.access.checkout.session.api.*
+import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
+import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSION_REQUEST
+import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.ERROR_KEY
+import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.RESPONSE_KEY
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -41,7 +42,10 @@ class SessionRequestServiceTest {
             localBroadcastManagerFactory
         )
 
-        sessionRequestService = SessionRequestService(mockFactory)
+        sessionRequestService =
+            SessionRequestService(
+                mockFactory
+            )
     }
 
     @Test
@@ -64,12 +68,16 @@ class SessionRequestServiceTest {
     @Test
     fun `should be able to send card session request when the intent has the appropriate information`() {
         val intent = mock(Intent::class.java)
-        val sessionRequest = CardSessionRequest(
-            cardNumber = "111111",
-            cardExpiryDate = CardSessionRequest.CardExpiryDate(12, 21),
-            cvv = "123",
-            identity = "merchant-id"
-        )
+        val sessionRequest =
+            CardSessionRequest(
+                cardNumber = "111111",
+                cardExpiryDate = CardSessionRequest.CardExpiryDate(
+                    12,
+                    21
+                ),
+                cvv = "123",
+                identity = "merchant-id"
+            )
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl("http://localhost")
@@ -88,10 +96,11 @@ class SessionRequestServiceTest {
     @Test
     fun `should be able to send cvv session request when the intent has the appropriate information`() {
         val intent = mock(Intent::class.java)
-        val sessionRequest = CVVSessionRequest(
-            cvv = "123",
-            identity = "merchant-id"
-        )
+        val sessionRequest =
+            CVVSessionRequest(
+                cvv = "123",
+                identity = "merchant-id"
+            )
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl("http://localhost")

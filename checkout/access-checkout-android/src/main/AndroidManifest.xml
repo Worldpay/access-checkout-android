@@ -6,12 +6,12 @@
 
     <application>
         <receiver
-                android:name="com.worldpay.access.checkout.session.request.broadcast.receivers.SessionBroadcastReceiver"
+                android:name="com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver"
                 android:enabled="true"
                 android:exported="false"/>
 
         <service
-                android:name="com.worldpay.access.checkout.api.session.SessionRequestService"
+                android:name="com.worldpay.access.checkout.session.api.SessionRequestService"
                 android:enabled="true"
                 android:exported="false">
         </service>

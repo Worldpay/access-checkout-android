@@ -4,9 +4,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
-import com.worldpay.access.checkout.logging.LoggingUtils
-import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManager
-import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
+import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManager
+import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
+import com.worldpay.access.checkout.util.logging.LoggingUtils
 
 internal class ActivityLifecycleObserver(
     private val tag: String,

@@ -5,9 +5,9 @@ import android.widget.TextView
 import android.widget.Toast
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.client.SessionType
-import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
+import com.worldpay.access.checkout.util.logging.LoggingUtils
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.SessionResponseListener
 

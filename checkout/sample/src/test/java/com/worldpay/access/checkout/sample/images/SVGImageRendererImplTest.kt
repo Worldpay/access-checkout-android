@@ -7,7 +7,7 @@ import android.view.View
 import android.widget.ImageView
 import com.caverock.androidsvg.SVG
 import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.worldpay.access.checkout.logging.Logger
+import com.worldpay.access.checkout.util.logging.Logger
 import com.worldpay.access.checkout.views.PANLayout
 import org.junit.Before
 import org.junit.Test

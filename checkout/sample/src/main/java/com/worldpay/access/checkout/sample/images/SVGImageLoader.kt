@@ -2,11 +2,11 @@ package com.worldpay.access.checkout.sample.images
 
 import android.app.Activity
 import android.widget.ImageView
-import com.worldpay.access.checkout.logging.AccessCheckoutLogger
-import com.worldpay.access.checkout.logging.Logger
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
+import com.worldpay.access.checkout.util.logging.AccessCheckoutLogger
+import com.worldpay.access.checkout.util.logging.Logger
 import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
 import java.io.File

@@ -12,7 +12,7 @@ Classes related to making a request to the Access Worldpay API's
 
 Classes related to discovering the endpoints required for the SDK requests
 
-# Package com.worldpay.access.checkout.logging
+# Package com.worldpay.access.checkout.util.logging
 
 Logging utility classes
 

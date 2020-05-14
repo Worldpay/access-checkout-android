@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.session
 
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.client.SessionType
-import com.worldpay.access.checkout.logging.LoggingUtils
+import com.worldpay.access.checkout.util.logging.LoggingUtils
 import com.worldpay.access.checkout.views.SessionResponseListener
 
 internal class CheckoutSessionResponseListener(
