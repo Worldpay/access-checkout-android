@@ -5,9 +5,17 @@ import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
 import org.json.JSONObject
 
+/**
+ * [CardSessionRequestSerializer] is responsible for serialising the request data for a Verified Token Session
+ */
 internal class CardSessionRequestSerializer :
     Serializer<SessionRequest> {
 
+    /**
+     * Method returns a serialised String containing request data for VT session
+     *
+     * @param instance - [SessionRequest] containing request info for VT session
+     */
     override fun serialize(instance: SessionRequest): String {
         if (instance !is CardSessionRequest) {
             throw IllegalArgumentException("could not serialize session request")

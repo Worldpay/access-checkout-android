@@ -5,9 +5,17 @@ import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
 import org.json.JSONObject
 
+/**
+ * [CVVSessionRequestSerializer] is responsible for serialising the request data for a Payments CVC Session
+ */
 internal class CVVSessionRequestSerializer :
     Serializer<SessionRequest> {
 
+    /**
+     * Method returns a serialised String containing request data for Payments CVC session
+     *
+     * @param instance - [SessionRequest] containing request info for Payments CVC session
+     */
     override fun serialize(instance: SessionRequest): String {
         if (instance !is CVVSessionRequest) {
             throw IllegalArgumentException("could not serialize session request")

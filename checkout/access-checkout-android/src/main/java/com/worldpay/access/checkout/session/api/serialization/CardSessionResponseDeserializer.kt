@@ -7,8 +7,16 @@ import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.C
 import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.Endpoints
 import org.json.JSONObject
 
+/**
+ * [CardSessionRequestDeserializer] is responsible for deserialising the response json from a request for a VT Session
+ */
 internal class CardSessionResponseDeserializer: Deserializer<SessionResponse>() {
 
+    /**
+     * Method returns a [SessionResponse] containing deserialised response data from VT Session request
+     *
+     * @param json - json response from VT Session request
+     */
     override fun deserialize(json: String): SessionResponse {
         return super.deserialize(json) {
             val root = JSONObject(json)
