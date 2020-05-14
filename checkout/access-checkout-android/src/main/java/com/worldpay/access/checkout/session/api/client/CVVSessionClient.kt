@@ -22,7 +22,7 @@ internal class CVVSessionClient(
 ) : SessionClient {
 
     /**
-     * Method for requesting a session from the Payments CVC service, returns a [SessionResponse]
+     * Uses the given httpClient to make a request to the API to retrieve a session response
      *
      * @param url - the URL for the service
      * @param request - [SessionRequest] containing session request info

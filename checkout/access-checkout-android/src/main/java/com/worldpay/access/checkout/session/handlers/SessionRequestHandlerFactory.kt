@@ -3,8 +3,7 @@ package com.worldpay.access.checkout.session.handlers
 import android.content.Intent
 
 /**
- * A factory class that is initialised with a [SessionRequestHandlerConfig]
- * @property getTokenHandlers() returns a list of [SessionRequestHandler]s
+ * [SessionRequestHandlerFactory] is responsible for creating all the [SessionRequestHandler]
  */
 internal class SessionRequestHandlerFactory(sessionRequestHandlerConfig: SessionRequestHandlerConfig) {
 

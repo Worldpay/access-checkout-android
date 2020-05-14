@@ -19,7 +19,6 @@ import java.net.URL
  * @param endpoints - a list of [Endpoint]s that is iterated over to navigate through the discovery tree
  * @param httpClient - an [HttpClient] that is responsible for sending the HTTP request
  */
-
 internal class ApiDiscoveryAsyncTask(
     private val callback: Callback<String>,
     private val endpoints: List<Endpoint>,

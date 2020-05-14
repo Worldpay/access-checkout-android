@@ -4,17 +4,19 @@ import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType
 
 /**
- * An interface for handling requests for sessions
+ * The [SessionRequestHandler] interface provides the contract that all session request handlers
+ * should abide by when deciding whether the handler should be able to handle the given session type.
  */
 internal interface SessionRequestHandler {
 
     /**
-     * Accepts a list of [SessionType]s and returns a Boolean value for whether the list contains a type of session it can handle
+     * @param sessionTypes - a list of requested [SessionType]s
+     * @returns Boolean  - if the list contains a [SessionType] that can be handled
      */
     fun canHandle(sessionTypes: List<SessionType>): Boolean
 
     /**
-     * Takes in [CardDetails] and handles the request
+     * @param cardDetails
      */
     fun handle(cardDetails: CardDetails)
 

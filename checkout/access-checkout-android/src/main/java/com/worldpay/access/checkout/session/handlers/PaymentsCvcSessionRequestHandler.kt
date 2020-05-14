@@ -10,24 +10,20 @@ import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 
+/**
+ * [PaymentsCvcSessionRequestHandler] is responsible for handling requests for a [PAYMENTS_CVC_SESSION]
+ *
+ * @property canHandle - returns true if list of [SessionType] contains a [PAYMENTS_CVC_SESSION]
+ * @property handle - handles the request for a [PAYMENTS_CVC_SESSION]
+ */
 internal class PaymentsCvcSessionRequestHandler(
     private val sessionRequestHandlerConfig: SessionRequestHandlerConfig
 ): SessionRequestHandler {
 
-    /**
-     * Returns True if the list contains a [PAYMENTS_CVC_SESSION]
-     *
-     * @param sessionTypes - a list of [SessionType] requested
-     */
     override fun canHandle(sessionTypes: List<SessionType>): Boolean {
         return sessionTypes.contains(PAYMENTS_CVC_SESSION)
     }
 
-    /**
-     * Validates that the mandatory fields for this [SessionType] are present
-     *
-     * @param cardDetails  - [CardDetails] object containing cvv
-     */
     override fun handle(cardDetails: CardDetails) {
         validateNotNull(cardDetails.cvv, "cvv")
 

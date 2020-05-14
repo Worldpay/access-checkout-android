@@ -27,7 +27,9 @@ internal class ApiDiscoveryClient(
 
     /**
      * Asynchronously discovers the required API endpoint for the desired service.
-     * Responds via a callback with either a [URL] or an [AccessCheckoutDiscoveryException]
+     * Responds via a callback
+     * @return [URL]
+     * @throws [AccessCheckoutDiscoveryException]
      *
      * @param baseUrl - the base url for the API
      * @param callback - the callback via which the response is returned

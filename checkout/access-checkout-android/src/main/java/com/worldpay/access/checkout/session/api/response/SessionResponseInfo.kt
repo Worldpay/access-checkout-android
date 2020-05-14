@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.client.SessionType
 import java.io.Serializable
 
 /**
- * [SessionResponseInfo] class to hold information from the Session Response
+ * [SessionResponseInfo] class to hold the response body and other metadata about the Session Response
  *
  * @param responseBody - [SessionResponse] deserialised session response data
  * @param sessionType - the [SessionType] that was requested
