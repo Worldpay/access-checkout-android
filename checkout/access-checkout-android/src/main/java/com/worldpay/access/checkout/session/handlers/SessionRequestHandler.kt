@@ -4,9 +4,8 @@ import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType
 
 /**
- * An interface for handling requests fro sessions
+ * An interface for handling requests for sessions
  */
-
 internal interface SessionRequestHandler {
 
     /**

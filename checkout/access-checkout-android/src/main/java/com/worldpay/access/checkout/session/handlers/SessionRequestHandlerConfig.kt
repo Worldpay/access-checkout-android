@@ -4,6 +4,14 @@ import android.content.Context
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 import com.worldpay.access.checkout.views.SessionResponseListener
 
+/**
+ * [SessionRequestHandlerConfig] holds the configuration to be passed to [SessionRequestHandlerFactory] for constructing a [SessionRequestHandler]
+ *
+ * @param baseUrl - the base API URL
+ * @param merchantId - the merchant's ID
+ * @param context - the application [Context]
+ * @param externalSessionResponseListener - the external [SessionResponseListener]
+ */
 internal class SessionRequestHandlerConfig private constructor(
     private val baseUrl: String,
     private val merchantId: String,
@@ -16,6 +24,9 @@ internal class SessionRequestHandlerConfig private constructor(
     fun getContext() = context
     fun getExternalSessionResponseListener() = externalSessionResponseListener
 
+    /**
+     * A builder for [SessionRequestHandlerConfig]
+     */
     data class Builder(
         private var baseUrl: String? = null,
         private var merchantId: String? = null,
