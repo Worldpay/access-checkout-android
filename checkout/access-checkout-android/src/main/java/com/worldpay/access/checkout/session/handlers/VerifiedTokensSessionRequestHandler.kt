@@ -24,20 +24,10 @@ internal class VerifiedTokensSessionRequestHandler(
     private val sessionRequestHandlerConfig: SessionRequestHandlerConfig
 ) : SessionRequestHandler {
 
-    /**
-     * Returns True if the list contains a [VERIFIED_TOKEN_SESSION]
-     *
-     * @param sessionTypes - a list of [SessionType] requested
-     */
     override fun canHandle(sessionTypes: List<SessionType>): Boolean {
         return sessionTypes.contains(VERIFIED_TOKEN_SESSION)
     }
 
-    /**
-     * Validates that the mandatory fields for this [SessionType] are present
-     *
-     * @param cardDetails  - [CardDetails]
-     */
     override fun handle(cardDetails: CardDetails) {
         validateNotNull(cardDetails.pan, "pan")
         validateNotNull(cardDetails.expiryDate, "expiry date")
@@ -59,11 +49,6 @@ internal class VerifiedTokensSessionRequestHandler(
         sessionRequestHandlerConfig.getContext().startService(serviceIntent)
     }
 
-    /**
-     * Returns a [CardSessionRequest] object.
-     *
-     * @param cardDetails- [CardDetails] containing pan, expiryDate and cvv
-     */
     private fun createCardSessionRequest(cardDetails: CardDetails): CardSessionRequest {
         cardDetails.pan as String
         cardDetails.expiryDate as ExpiryDate
