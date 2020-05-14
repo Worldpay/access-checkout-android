@@ -9,8 +9,17 @@ import com.worldpay.access.checkout.session.api.serialization.CVVSessionResponse
 import com.worldpay.access.checkout.session.api.serialization.CardSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
 
+/**
+ * [SessionClientFactory] returns the correct implementation of [SessionClient] based on the type of [SessionRequest]
+ */
+
 internal class SessionClientFactory {
 
+    /**
+     * Method that returns a [SessionClient]
+     *
+     * @param sessionRequest - the session request information
+     */
     fun createClient(sessionRequest: SessionRequest): SessionClient {
         when (sessionRequest) {
             is CardSessionRequest -> {
