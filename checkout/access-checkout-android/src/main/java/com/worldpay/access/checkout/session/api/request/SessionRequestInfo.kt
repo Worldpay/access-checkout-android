@@ -4,6 +4,14 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.SessionType
 import java.io.Serializable
 
+/**
+ * [SessionRequestInfo] contains all the necessary information to request a session
+ *
+ * @param baseUrl - the base API URL
+ * @param requestBody - the [SessionRequest] with the card and merchant information
+ * @param sessionType - the [SessionType] that is being requested
+ * @param discoverLinks - [DiscoverLinks] containing the endpoints to be discovered in the API
+ */
 internal class SessionRequestInfo private constructor(
     val baseUrl: String,
     val requestBody: SessionRequest,
@@ -11,6 +19,9 @@ internal class SessionRequestInfo private constructor(
     val discoverLinks: DiscoverLinks
 ): Serializable {
 
+    /**
+     * A builder for constructing a [SessionRequestInfo]
+     */
     internal data class Builder(
         private var baseUrl: String? = null,
         private var requestBody: SessionRequest? = null,
