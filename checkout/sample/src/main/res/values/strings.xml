@@ -1,17 +1,13 @@
 <resources>
     <string name="app_name">Access Checkout</string>
     <string name="submit_text">Submit</string>
-    <string name="worldpay_header">Worldpay header</string>
 
     <string name="card_flow_nav_text">Card Flow</string>
     <string name="cvv_flow_nav_text">CVV Flow</string>
 
-    <string name="navigation_drawer_open">Open Navigation</string>
-    <string name="navigation_drawer_close">Close Navigation</string>
-
-    <string name="nav_header_title">Access Checkout</string>
-    <string name="nav_header_subtitle">support@worldpay.com</string>
     <string name="nav_header_desc">Navigation header</string>
-    <string name="action_settings">Settings</string>
+
+    <string name="enable_multi_token_title">Multi Session</string>
+    <string name="enable_multi_token_desc">Retrieve both verified token and session token</string>
 
 </resources>

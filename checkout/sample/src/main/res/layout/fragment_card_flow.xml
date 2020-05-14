@@ -42,19 +42,49 @@
         app:layout_constraintStart_toEndOf="@+id/card_flow_text_exp"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan" />
 
+    <Switch
+        android:id="@+id/card_flow_multi_token_switch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="24dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_flow_text_exp" />
+
+    <TextView
+        android:id="@+id/card_flow_multi_session_switch_title"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginEnd="24dp"
+        android:text="@string/enable_multi_token_title"
+        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
+        app:layout_constraintEnd_toStartOf="@+id/card_flow_multi_token_switch"
+        app:layout_constraintStart_toStartOf="@+id/card_flow_text_pan"
+        app:layout_constraintTop_toBottomOf="@+id/card_flow_text_cvv" />
+
+    <TextView
+        android:id="@+id/card_flow_multi_session_switch_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:text="@string/enable_multi_token_desc"
+        android:textSize="12sp"
+        app:layout_constraintEnd_toEndOf="@+id/card_flow_multi_session_switch_title"
+        app:layout_constraintStart_toStartOf="@+id/card_flow_multi_session_switch_title"
+        app:layout_constraintTop_toBottomOf="@+id/card_flow_multi_session_switch_title" />
+
     <Button
         android:id="@+id/card_flow_btn_submit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:layout_marginEnd="24dp"
+        android:layout_marginTop="30dp"
         android:background="@android:color/darker_gray"
         android:enabled="false"
         android:text="@string/submit_text"
         android:textColor="@android:color/white"
-        app:layout_constraintEnd_toEndOf="@id/card_flow_text_pan"
+        app:layout_constraintEnd_toEndOf="@+id/card_flow_multi_token_switch"
         app:layout_constraintStart_toStartOf="@+id/card_flow_text_pan"
-        app:layout_constraintTop_toBottomOf="@id/card_flow_text_exp" />
+        app:layout_constraintTop_toBottomOf="@+id/card_flow_multi_session_switch_desc" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
