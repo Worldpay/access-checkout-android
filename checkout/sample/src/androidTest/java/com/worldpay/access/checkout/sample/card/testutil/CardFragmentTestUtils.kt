@@ -9,7 +9,6 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.YEAR
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.util.logging.LoggingUtils
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
 import com.worldpay.access.checkout.views.PANLayout

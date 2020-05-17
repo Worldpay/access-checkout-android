@@ -1,9 +1,7 @@
 package com.worldpay.access.checkout.sample.testutil
 
-import android.content.Context
 import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
-import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.open
@@ -18,7 +16,6 @@ import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.sample.R
 import org.awaitility.Awaitility.await
 import org.hamcrest.CoreMatchers
-import org.hamcrest.Matcher
 import java.util.concurrent.TimeUnit
 
 object UITestUtils {
@@ -27,11 +24,6 @@ object UITestUtils {
         val resName = getInstrumentation().targetContext.resources.getResourceName(resId)
         val selector = UiSelector().resourceId(resName)
         return getInstance(getInstrumentation()).findObject(selector)
-    }
-
-    fun checkFieldText(viewMatcher: Matcher<View>, expectedText: String) {
-        onView(viewMatcher)
-            .check(matches(withText(expectedText)))
     }
 
     fun assertDisplaysResponseFromServer(responseString: String, view: View) {
@@ -44,12 +36,6 @@ object UITestUtils {
             .inRoot(RootMatchers.withDecorView(CoreMatchers.not(view)))
             .check(matches(isDisplayed()))
     }
-
-    fun getSuccessColor(context: Context) = getColor(context.resources,
-        R.color.SUCCESS, context.theme)
-
-    fun getFailColor(context: Context) = getColor(context.resources,
-        R.color.FAIL, context.theme)
 
     private fun isKeyboardOpened(): Boolean {
         for (window in getInstrumentation().uiAutomation.windows) {

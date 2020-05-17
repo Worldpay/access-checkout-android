@@ -111,7 +111,7 @@ class CardConfigurationIntegrationTest {
     @Test
     fun givenAnErrorFetchingCardConfiguration_ThenExceptionIsPassedBackToCallback() {
         stubFor(
-            WireMock.get(cardConfigurationEndpoint)
+            get(cardConfigurationEndpoint)
                 .willReturn(
                     WireMock.aResponse()
                         .withStatus(500)
