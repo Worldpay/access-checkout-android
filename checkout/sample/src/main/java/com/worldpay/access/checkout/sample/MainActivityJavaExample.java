@@ -34,7 +34,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-import static com.worldpay.access.checkout.logging.LoggingUtils.debugLog;
+import static com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog;
 import static java.util.Collections.singletonList;
 
 public class MainActivityJavaExample extends AppCompatActivity implements CardListener, SessionResponseListener {

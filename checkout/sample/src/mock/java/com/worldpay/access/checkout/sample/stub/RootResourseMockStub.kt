@@ -4,8 +4,8 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.github.tomakehurst.wiremock.stubbing.Scenario
-import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.sample.MockServer.stubFor
+import com.worldpay.access.checkout.util.logging.LoggingUtils
 
 object RootResourseMockStub {
 

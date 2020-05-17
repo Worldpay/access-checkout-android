@@ -2,8 +2,8 @@ package com.worldpay.access.checkout.api.configuration
 
 import com.worldpay.access.checkout.Card
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.model.CardConfiguration
+import com.worldpay.access.checkout.util.logging.LoggingUtils
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 
 /**

@@ -3,8 +3,8 @@ package com.worldpay.access.checkout.session
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.google.common.base.CaseFormat
-import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManager
-import com.worldpay.access.checkout.session.request.broadcast.SessionBroadcastManagerFactory
+import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManager
+import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given

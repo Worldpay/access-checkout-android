@@ -7,11 +7,15 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDi
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.api.session.client.CardSessionClient
-import com.worldpay.access.checkout.api.session.client.SessionClientFactory
-import com.worldpay.access.checkout.api.session.request.RequestDispatcher
-import com.worldpay.access.checkout.api.session.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.session.api.CardSessionRequest
+import com.worldpay.access.checkout.session.api.SessionRequestInfo
+import com.worldpay.access.checkout.session.api.SessionRequestSender
+import com.worldpay.access.checkout.session.api.SessionResponseInfo
+import com.worldpay.access.checkout.session.api.client.CardSessionClient
+import com.worldpay.access.checkout.session.api.client.SessionClientFactory
+import com.worldpay.access.checkout.session.api.request.RequestDispatcher
+import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -35,19 +39,24 @@ class SessionRequestSenderTest {
         sessionClientFactory = mock(SessionClientFactory::class.java)
         requestDispatcherFactory = mock(RequestDispatcherFactory::class.java)
         apiDiscoveryClient = mock(ApiDiscoveryClient::class.java)
-        sessionRequestSender = SessionRequestSender(
-            sessionClientFactory, requestDispatcherFactory, apiDiscoveryClient
-        )
+        sessionRequestSender =
+            SessionRequestSender(
+                sessionClientFactory, requestDispatcherFactory, apiDiscoveryClient
+            )
     }
 
     @Test
     fun `should execute request given that the discovery response is valid`() {
-        val expectedSessionRequest = CardSessionRequest(
-            cardNumber = "00001111222233334444",
-            cardExpiryDate = CardSessionRequest.CardExpiryDate(1, 2020),
-            cvv = "123",
-            identity = ""
-        )
+        val expectedSessionRequest =
+            CardSessionRequest(
+                cardNumber = "00001111222233334444",
+                cardExpiryDate = CardSessionRequest.CardExpiryDate(
+                    1,
+                    2020
+                ),
+                cvv = "123",
+                identity = ""
+            )
 
         val sessionResponseCallback = object : Callback<SessionResponseInfo> {
             override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
@@ -80,12 +89,16 @@ class SessionRequestSenderTest {
 
     @Test
     fun `should error with exception given that the discovery response is invalid`() {
-        val expectedSessionRequest = CardSessionRequest(
-            cardNumber = "00001111222233334444",
-            cardExpiryDate = CardSessionRequest.CardExpiryDate(1, 2020),
-            cvv = "123",
-            identity = ""
-        )
+        val expectedSessionRequest =
+            CardSessionRequest(
+                cardNumber = "00001111222233334444",
+                cardExpiryDate = CardSessionRequest.CardExpiryDate(
+                    1,
+                    2020
+                ),
+                cvv = "123",
+                identity = ""
+            )
 
         var assertResponse = false
 

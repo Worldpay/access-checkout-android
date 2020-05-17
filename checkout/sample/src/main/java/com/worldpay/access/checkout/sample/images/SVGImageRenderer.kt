@@ -3,8 +3,8 @@ package com.worldpay.access.checkout.sample.images
 import android.graphics.drawable.PictureDrawable
 import android.view.View
 import android.widget.ImageView
-import com.worldpay.access.checkout.logging.AccessCheckoutLogger
-import com.worldpay.access.checkout.logging.Logger
+import com.worldpay.access.checkout.util.logging.AccessCheckoutLogger
+import com.worldpay.access.checkout.util.logging.Logger
 import com.worldpay.access.checkout.views.PANLayout
 import java.io.InputStream
 

@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.api.session
 
+import com.worldpay.access.checkout.session.api.CVVSessionRequest
+import com.worldpay.access.checkout.session.api.CardSessionRequest
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -10,7 +12,11 @@ class SessionRequestTest {
         val cvv = "123"
         val identity = "MERCHANT-123"
 
-        val cvvSessionRequest = CVVSessionRequest(cvv, identity)
+        val cvvSessionRequest =
+            CVVSessionRequest(
+                cvv,
+                identity
+            )
 
         assertEquals(cvv, cvvSessionRequest.cvv)
         assertEquals(identity, cvvSessionRequest.identity)
@@ -23,7 +29,13 @@ class SessionRequestTest {
         val cvv = "123"
         val identity = "MERCHANT-123"
 
-        val cvvSessionRequest = CardSessionRequest(cardNumber, cardExpiryDate, cvv, identity)
+        val cvvSessionRequest =
+            CardSessionRequest(
+                cardNumber,
+                cardExpiryDate,
+                cvv,
+                identity
+            )
 
         assertEquals(cardNumber, cvvSessionRequest.cardNumber)
         assertEquals(cardExpiryDate, cvvSessionRequest.cardExpiryDate)

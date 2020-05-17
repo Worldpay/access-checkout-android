@@ -3,13 +3,9 @@ package com.worldpay.access.checkout.api.configuration
 import android.os.AsyncTask
 import com.worldpay.access.checkout.api.*
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutConfigurationException
-import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
-import com.worldpay.access.checkout.api.HttpClient
-import com.worldpay.access.checkout.api.URLFactory
-import com.worldpay.access.checkout.config.CardConfigurationParser
-import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.model.CardConfiguration
+import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.net.URL
 
 internal class CardConfigurationAsyncTask(private val callback: Callback<CardConfiguration>,
