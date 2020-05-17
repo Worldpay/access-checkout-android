@@ -16,7 +16,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class CardConfigurationLongDelayIntegrationTest {
+class DelayedCardConfigurationCvvIntegrationTest {
 
     private val mastercardCvvValidationRule = CardValidationRule("^\\d{0,3}$", null, null, 3)
     private val mastercardPANValidationRule = CardValidationRule("^5\\d{0,15}$", null, null, 16)
@@ -34,8 +34,8 @@ class CardConfigurationLongDelayIntegrationTest {
     private val cardConfiguration = CardConfiguration(brands, defaults)
 
     @get:Rule
-    var cardConfigurationRule: CardConfigurationLongDelayRule =
-        CardConfigurationLongDelayRule(cardConfiguration, 10000L, MainActivity::class.java)
+    var cardConfigurationRule: DelayedCardConfigurationRule =
+        DelayedCardConfigurationRule(cardConfiguration, 10000L, MainActivity::class.java)
 
     private lateinit var cvvFragmentTestUtils: CvvFragmentTestUtils
 
@@ -68,17 +68,17 @@ class CardConfigurationLongDelayIntegrationTest {
             .enabledStateIs(submitButton = false)
     }
 
-}
+    class DelayedCardConfigurationRule(private val cardConfiguration: CardConfiguration, private val timeoutMillis: Long,
+                                         activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
 
-class CardConfigurationLongDelayRule(private val cardConfiguration: CardConfiguration, private val timeoutMillis: Long,
-                                     activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            // This card configuration rule adds stubs to mockserver to simulate a long delay condition on the card configuration endpoint.
+            // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this delayed
+            // response.
+            stubCardConfigurationWithDelay(cardConfiguration, timeoutMillis.toInt())
+        }
 
-    override fun beforeActivityLaunched() {
-        super.beforeActivityLaunched()
-        // This card configuration rule adds stubs to mockserver to simulate a long delay condition on the card configuration endpoint.
-        // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this delayed
-        // response.
-        stubCardConfigurationWithDelay(cardConfiguration, timeoutMillis.toInt())
     }
 
 }

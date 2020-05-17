@@ -7,9 +7,9 @@ import android.widget.EditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.logging.LoggingUtils
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -73,7 +73,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
                     throw AssertionError("Failed assertion after waiting $seconds seconds: ${exception.message}", exception)
                 } else {
                     Thread.sleep(pauseInterval.toLong())
-                    LoggingUtils.debugLog(javaClass.simpleName, "Retrying assertion $assertions")
+                    debugLog(javaClass.simpleName, "Retrying assertion $assertions")
                     continue
                 }
             }

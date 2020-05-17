@@ -8,10 +8,10 @@ import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.core.view.isInvisible
 import com.worldpay.access.checkout.Card
 import com.worldpay.access.checkout.CardListener
-import com.worldpay.access.checkout.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.images.SVGImageLoader
+import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.CardView
 import com.worldpay.access.checkout.views.PANLayout
 

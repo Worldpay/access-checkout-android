@@ -49,16 +49,17 @@ class FailedCardConfigurationCvvIntegrationTest {
             .cardDetailsAre(cvv = "")
             .enabledStateIs(submitButton = false)
     }
-}
 
-class CardConfigurationErrorRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
+    class CardConfigurationErrorRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
 
-    override fun beforeActivityLaunched() {
-        super.beforeActivityLaunched()
-        // This card configuration rule adds stubs to mockserver to simulate a server error condition on the card configuration endpoint.
-        // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this error
-        // response.
-        simulateCardConfigurationServerError()
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            // This card configuration rule adds stubs to mockserver to simulate a server error condition on the card configuration endpoint.
+            // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this error
+            // response.
+            simulateCardConfigurationServerError()
+        }
+
     }
 
 }
