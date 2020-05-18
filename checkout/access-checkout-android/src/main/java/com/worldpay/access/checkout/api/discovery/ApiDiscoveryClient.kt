@@ -28,12 +28,12 @@ internal class ApiDiscoveryClient(
     /**
      * Asynchronously discovers the required API endpoint for the desired service.
      * Responds via a callback
-     * @return [URL]
+     * @return [URL] the API url
      * @throws [AccessCheckoutDiscoveryException]
      *
-     * @param baseUrl - the base url for the API
-     * @param callback - the callback via which the response is returned
-     * @param discoverLinks - a [DiscoverLinks] object which contains the information on the service to discover
+     * @param[baseUrl] - the base url for the API
+     * @param[callback] - the callback via which the response is returned
+     * @param[discoverLinks] - a [DiscoverLinks] object which contains the information on the service to discover
      */
     fun discover(baseUrl: String, callback: Callback<String>, discoverLinks: DiscoverLinks) {
         if (baseUrl.isBlank()) {
