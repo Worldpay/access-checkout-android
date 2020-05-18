@@ -7,10 +7,10 @@ import java.io.Serializable
 /**
  * [SessionRequestInfo] contains all the necessary information to request a session
  *
- * @param baseUrl - the base API URL
- * @param requestBody - the [SessionRequest] with the card and merchant information
- * @param sessionType - the [SessionType] that is being requested
- * @param discoverLinks - [DiscoverLinks] containing the endpoints to be discovered in the API
+ * @param[baseUrl] - the base API URL
+ * @param[requestBody] - the [SessionRequest] with the card and merchant information
+ * @param[sessionType] - the [SessionType] that is being requested
+ * @param[discoverLinks] - [DiscoverLinks] containing the endpoints to be discovered in the API
  */
 internal class SessionRequestInfo private constructor(
     val baseUrl: String,

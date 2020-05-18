@@ -12,9 +12,8 @@ internal class CVVSessionRequestSerializer :
     Serializer<SessionRequest> {
 
     /**
-     * Method returns a serialised String containing request data for Payments CVC session
-     *
-     * @param instance - [SessionRequest] containing request info for Payments CVC session
+     * @param[instance] - [SessionRequest] a representation of a request for a Payments CVC session
+     * @return a serialised [String] representation of request for a Payments CVC session
      */
     override fun serialize(instance: SessionRequest): String {
         if (instance !is CVVSessionRequest) {

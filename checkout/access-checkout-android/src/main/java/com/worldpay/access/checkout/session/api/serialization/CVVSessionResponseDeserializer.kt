@@ -11,9 +11,8 @@ import org.json.JSONObject
 internal class CVVSessionResponseDeserializer : Deserializer<SessionResponse>() {
 
     /**
-     * Method returns a [SessionResponse] containing deserialised response data from Payments CVC session request
-     *
-     * @param json - json response from Payments CVC Session request
+     * @param[json] - json response from Payments CVC Session request
+     * @return a [SessionResponse] representatino of a response from Payments CVC Session request
      */
     override fun deserialize(json: String): SessionResponse {
         return super.deserialize(json) {

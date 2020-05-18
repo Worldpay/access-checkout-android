@@ -9,6 +9,12 @@ import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
  */
 internal class RequestDispatcherFactory {
 
+    /**
+     * @param[path] - the URL path for the API
+     * @param[sessionClient] - the [SessionClient] implementation for the requested session
+     * @param[sessionResponseCallback] - the callback via which the response will be returned
+     * @return [RequestDispatcher] that will dispatch the request for a session
+     */
     fun getInstance(
         path: String,
         sessionClient: SessionClient,

@@ -10,15 +10,14 @@ import com.worldpay.access.checkout.session.api.serialization.CardSessionRequest
 import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
 
 /**
- * [SessionClientFactory] returns the correct implementation of [SessionClient] based on the type of [SessionRequest]
+ * [SessionClientFactory] is used to create instances of [SessionClient]
  */
 
 internal class SessionClientFactory {
 
     /**
-     * Method that returns a [SessionClient]
-     *
-     * @param sessionRequest - the session request information
+     * @param[sessionRequest] - the session request information
+     * @return an implementation of [SessionClient]
      */
     fun createClient(sessionRequest: SessionRequest): SessionClient {
         when (sessionRequest) {

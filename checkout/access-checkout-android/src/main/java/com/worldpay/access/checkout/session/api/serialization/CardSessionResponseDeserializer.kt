@@ -13,9 +13,8 @@ import org.json.JSONObject
 internal class CardSessionResponseDeserializer: Deserializer<SessionResponse>() {
 
     /**
-     * Method returns a [SessionResponse] containing deserialised response data from VT Session request
-     *
-     * @param json - json response from VT Session request
+     * @param[json] - json response from VT Session request
+     * @return a [SessionResponse] representatino of a response from VT Session request
      */
     override fun deserialize(json: String): SessionResponse {
         return super.deserialize(json) {

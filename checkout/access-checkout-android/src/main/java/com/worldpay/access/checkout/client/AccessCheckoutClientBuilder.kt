@@ -12,7 +12,7 @@ import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 import com.worldpay.access.checkout.views.SessionResponseListener
 
 /**
- * A builder that returns an implementation of an [AccessCheckoutClient]
+ * A builder that returns an [AccessCheckoutClientImpl]
  */
 class AccessCheckoutClientBuilder {
 

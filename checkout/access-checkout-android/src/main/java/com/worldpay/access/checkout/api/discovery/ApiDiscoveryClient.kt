@@ -10,8 +10,8 @@ import java.util.concurrent.atomic.AtomicInteger
  * [ApiDiscoveryClient] is responsible for managing the discovery of the API endpoint for a service
  * calls the callback with the discovered API endpoint and utilises caching.
  *
- * @param apiDiscoveryAsyncTaskFactory - a factory for [ApiDiscoveryAsyncTask]
- * @param discoveryCache - a cache for storing the discovered endpoints
+ * @param[apiDiscoveryAsyncTaskFactory] - a factory for [ApiDiscoveryAsyncTask]
+ * @param[discoveryCache] - a cache for storing the discovered endpoints
  */
 internal class ApiDiscoveryClient(
     private val apiDiscoveryAsyncTaskFactory: ApiDiscoveryAsyncTaskFactory,

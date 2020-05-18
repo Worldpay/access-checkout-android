@@ -2,6 +2,9 @@ package com.worldpay.access.checkout.session.api.request
 
 import java.io.Serializable
 
+/**
+ * [SessionRequest] is a serializable interface to which specific implementations for a given service adhere.
+ */
 internal interface SessionRequest: Serializable
 
 internal data class CardSessionRequest(val cardNumber: String, val cardExpiryDate: CardExpiryDate, val cvv: String, val identity: String):

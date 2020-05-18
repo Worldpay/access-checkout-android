@@ -12,9 +12,8 @@ internal class CardSessionRequestSerializer :
     Serializer<SessionRequest> {
 
     /**
-     * Method returns a serialised String containing request data for VT session
-     *
-     * @param instance - [SessionRequest] containing request info for VT session
+     * @param[instance] - [SessionRequest] a representation of a request for a VT session
+     * @return a serialised [String] representation of request for a VT session
      */
     override fun serialize(instance: SessionRequest): String {
         if (instance !is CardSessionRequest) {

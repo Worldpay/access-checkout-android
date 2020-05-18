@@ -6,8 +6,8 @@ import java.io.Serializable
 /**
  * [SessionResponseInfo] class to hold the response body and other metadata about the Session Response
  *
- * @param responseBody - [SessionResponse] deserialised session response data
- * @param sessionType - the [SessionType] that was requested
+ * @param[responseBody] - [SessionResponse] representation of session response data
+ * @param[sessionType] - the [SessionType] that was requested
  */
 internal class SessionResponseInfo private constructor(
     val responseBody: SessionResponse,
