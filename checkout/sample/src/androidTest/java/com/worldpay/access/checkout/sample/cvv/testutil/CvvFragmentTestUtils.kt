@@ -2,6 +2,9 @@ package com.worldpay.access.checkout.sample.cvv.testutil
 
 import android.widget.Button
 import androidx.core.view.isVisible
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
@@ -26,6 +29,21 @@ class CvvFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
     fun requestIsInProgress(): CvvFragmentTestUtils {
         progressBarIsVisible()
         enabledStateIs(cvv = false, submitButton = false)
+        return this
+    }
+
+    fun hasResponseDialogWithMessage(response: String): CvvFragmentTestUtils {
+        dialogHasText(response)
+        return this
+    }
+
+    fun hasErrorDialogWithMessage(error: String): CvvFragmentTestUtils {
+        dialogHasText(error)
+        return this
+    }
+
+    fun closeDialog(): CvvFragmentTestUtils {
+        onView(withId(android.R.id.button1)).perform(click())
         return this
     }
 

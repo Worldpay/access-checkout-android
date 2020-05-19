@@ -6,6 +6,11 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
@@ -48,6 +53,12 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
         val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(editText.windowToken, 0)
+    }
+
+    protected fun dialogHasText(text: String) {
+        onView(withText(text))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     protected fun activity() = activityRule.activity

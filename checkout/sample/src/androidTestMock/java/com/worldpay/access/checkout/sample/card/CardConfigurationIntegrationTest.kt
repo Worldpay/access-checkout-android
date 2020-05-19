@@ -7,7 +7,6 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.simulateCardConfigurationServerError
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.assertDisplaysResponseFromServer
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -61,11 +60,9 @@ class CardConfigurationIntegrationTest {
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(VERIFIED_TOKEN_SESSION to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString(),
-            cardConfigurationErrorRule.activity.window.decorView
-        )
+            .hasResponseDialogWithMessage(
+                mapOf(VERIFIED_TOKEN_SESSION to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
+            )
     }
 }
 

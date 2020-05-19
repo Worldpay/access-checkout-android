@@ -3,6 +3,9 @@ package com.worldpay.access.checkout.sample.card.testutil
 import android.widget.Button
 import android.widget.ImageView
 import androidx.core.view.isVisible
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
@@ -38,6 +41,21 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     fun requestIsInProgress(): CardFragmentTestUtils {
         progressBarIsVisible()
         enabledStateIs(pan = false, cvv = false, expiryMonth = false, expiryYear = false, submitButton = false)
+        return this
+    }
+
+    fun hasResponseDialogWithMessage(response: String): CardFragmentTestUtils {
+        dialogHasText(response)
+        return this
+    }
+
+    fun hasErrorDialogWithMessage(error: String): CardFragmentTestUtils {
+        dialogHasText(error)
+        return this
+    }
+
+    fun closeDialog(): CardFragmentTestUtils {
+        onView(withId(android.R.id.button1)).perform(click())
         return this
     }
 

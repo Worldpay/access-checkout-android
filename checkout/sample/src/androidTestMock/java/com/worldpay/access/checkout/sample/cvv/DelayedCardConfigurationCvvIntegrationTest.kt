@@ -9,7 +9,6 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import org.junit.After
 import org.junit.Before
@@ -57,13 +56,10 @@ class DelayedCardConfigurationCvvIntegrationTest {
             .enterCardDetails(cvv = "123")
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(PAYMENTS_CVC_SESSION to cardConfigurationRule.activity.getString(R.string.sessions_session_reference)).toString(),
-            cardConfigurationRule.activity.window.decorView
-        )
-
-        cvvFragmentTestUtils
+            .hasResponseDialogWithMessage(
+                mapOf(PAYMENTS_CVC_SESSION to cardConfigurationRule.activity.getString(R.string.sessions_session_reference)).toString()
+            )
+            .closeDialog()
             .cardDetailsAre(cvv = "")
             .enabledStateIs(submitButton = false)
     }

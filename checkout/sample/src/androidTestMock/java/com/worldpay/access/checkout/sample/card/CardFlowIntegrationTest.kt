@@ -14,7 +14,6 @@ import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTes
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VerifiedTokenResponses.validResponseWithDelay
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.simulateHttpRedirect
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationLeft
 import org.junit.Test
@@ -38,13 +37,11 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
-            activityRule.activity.window.decorView
-        )
-
-        cardFragmentTestUtils.isInInitialState()
+            .hasResponseDialogWithMessage(
+                mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+            )
+            .closeDialog()
+            .isInInitialState()
     }
 
     @Test
@@ -54,13 +51,11 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
-            activityRule.activity.window.decorView
-        )
-
-        cardFragmentTestUtils.isInInitialState()
+            .hasResponseDialogWithMessage(
+                mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+            )
+            .closeDialog()
+            .isInInitialState()
     }
 
     @Test
@@ -74,13 +69,11 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .enterCardDetails(pan = unknownCardError, cvv = amexCvv, month = month, year = year)
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            "Error: The json body provided does not match the expected schema",
-            activityRule.activity.window.decorView
-        )
-
-        cardFragmentTestUtils.isInErrorState(pan = unknownCardError, cvv = amexCvv, month = month, year = year)
+            .hasErrorDialogWithMessage(
+                "The json body provided does not match the expected schema"
+            )
+            .closeDialog()
+            .isInErrorState(pan = unknownCardError, cvv = amexCvv, month = month, year = year)
     }
 
     @Test
@@ -95,34 +88,32 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
         // rotate landscape
         setOrientationLeft()
 
-        CardFragmentTestUtils(activityRule).requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
-            activityRule.activity.window.decorView
-        )
-
-        CardFragmentTestUtils(activityRule).isInInitialState()
+        CardFragmentTestUtils(activityRule)
+            .requestIsInProgress()
+            .hasResponseDialogWithMessage(
+                mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+            )
+            .closeDialog()
+            .isInInitialState()
     }
 
     @Test
     fun shouldContinueWithServiceCall_whenAppIsReopened_afterSubmission() {
         simulateDelayedResponse(activityRule.activity, 10000)
 
-        cardFragmentTestUtils
+        CardFragmentTestUtils(activityRule)
             .isInInitialState()
             .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
             .clickSubmitButton()
 
         reopenApp()
 
-        assertDisplaysResponseFromServer(
-            mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString(),
-            activityRule.activity.window.decorView
-        )
-
-        val cardFragmentTestUtils = CardFragmentTestUtils(activityRule)
-        cardFragmentTestUtils.isInInitialState()
+        CardFragmentTestUtils(activityRule)
+            .hasResponseDialogWithMessage(
+                mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+            )
+            .closeDialog()
+            .isInInitialState()
     }
 
     private fun simulateDelayedResponse(context: Context, delay: Int = 7000) {

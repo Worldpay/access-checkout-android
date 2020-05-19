@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.sample.card
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.sample.R
@@ -30,7 +30,15 @@ class SessionResponseListenerImpl(
 
         progressBar.stopLoading()
 
-        val toastMessage: String = getToastMessage(sessionResponseMap, error)
+        val message = getResponse(sessionResponseMap, error)
+        val title = getTitle(sessionResponseMap)
+
+        AlertDialog.Builder(activity)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok, null)
+            .create()
+            .show()
 
         if (isSuccessful(sessionResponseMap)) {
             resetFields()
@@ -38,20 +46,16 @@ class SessionResponseListenerImpl(
         } else {
             setEnabledState(allFields = true, submitBtn = true)
         }
-
-        Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show()
     }
 
     private fun isSuccessful(sessionResponseMap: Map<SessionType, String>?) =
         sessionResponseMap != null && sessionResponseMap.isNotEmpty()
 
-    private fun getToastMessage(sessionResponseMap: Map<SessionType, String>?, error: AccessCheckoutException?): String {
-        return if (isSuccessful(sessionResponseMap)) {
-            "Ref: $sessionResponseMap"
-        } else {
-            "Error: " + error?.message
-        }
-    }
+    private fun getResponse(sessionResponseMap: Map<SessionType, String>?, error: AccessCheckoutException?) =
+        if (isSuccessful(sessionResponseMap)) sessionResponseMap.toString() else error?.message
+
+    private fun getTitle(sessionResponseMap: Map<SessionType, String>?) =
+        if (isSuccessful(sessionResponseMap)) "Response" else "Error"
 
     private fun setEnabledState(allFields: Boolean, submitBtn: Boolean) {
         debugLog(javaClass.simpleName, "Setting enabled state for all fields to : $allFields")
