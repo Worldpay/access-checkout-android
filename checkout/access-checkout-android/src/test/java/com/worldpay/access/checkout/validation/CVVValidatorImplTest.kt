@@ -18,7 +18,7 @@ class CVVValidatorImplTest {
     }
 
     @Test
-    fun `given an empty cvv and null card configuration then should be only partially invalid`() {
+    fun `given an empty cvv and null card configuration then should be only completely and partially invalid`() {
         assertEquals(Pair(ValidationResult(partial = false, complete = false), null), cvvValidator.validate("", null))
     }
 
