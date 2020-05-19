@@ -7,20 +7,20 @@ class DiscoverLinksTest {
 
     @Test
     fun `discoverLinks sessions should return service and endpoint for sessions service`() {
-        val expected_service = "service:sessions"
-        val expected_endpoint = "sessions:paymentsCvc"
+        val expectedService = "service:sessions"
+        val expectedEndpoint = "sessions:paymentsCvc"
 
-        assertEquals(DiscoverLinks.sessions.endpoints[0].endpoint, expected_service)
-        assertEquals(DiscoverLinks.sessions.endpoints[1].endpoint, expected_endpoint)
+        assertEquals(DiscoverLinks.sessions.endpoints[0].endpoint, expectedService)
+        assertEquals(DiscoverLinks.sessions.endpoints[1].endpoint, expectedEndpoint)
 
     }
 
     @Test
     fun `discoverLinks verified tokens should return service and endpoint for verifiedTokens service`() {
-        val expected_service = "service:verifiedTokens"
-        val expected_endpoint = "verifiedTokens:sessions"
+        val expectedService = "service:verifiedTokens"
+        val expectedEndpoint = "verifiedTokens:sessions"
 
-        assertEquals(DiscoverLinks.verifiedTokens.endpoints[0].endpoint, expected_service)
-        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].endpoint, expected_endpoint)
+        assertEquals(DiscoverLinks.verifiedTokens.endpoints[0].endpoint, expectedService)
+        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].endpoint, expectedEndpoint)
     }
 }

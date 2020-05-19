@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.views
 import android.text.InputFilter
 import android.view.View.FOCUSABLE
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.R
 import org.junit.Assert.*
 import org.junit.Before

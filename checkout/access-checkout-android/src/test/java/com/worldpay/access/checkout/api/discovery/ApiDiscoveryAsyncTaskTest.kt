@@ -28,7 +28,7 @@ class ApiDiscoveryAsyncTaskTest {
     private val endpointMock: Endpoint = mock()
     private val secondEndpointMock: Endpoint = mock()
 
-    private val endpointsMock = listOf<Endpoint>(endpointMock,secondEndpointMock)
+    private val endpointsMock = listOf(endpointMock,secondEndpointMock)
     private val httpClientMock: HttpClient = mock()
     private val linkDiscoveryDeserializerMock: LinkDiscoveryDeserializer = mock()
     private val secondLinkDiscoveryDeserializerMock: LinkDiscoveryDeserializer = mock()

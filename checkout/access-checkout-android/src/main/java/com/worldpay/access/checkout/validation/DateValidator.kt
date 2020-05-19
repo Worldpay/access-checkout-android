@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.model.CardDefaults
 import com.worldpay.access.checkout.model.CardValidationRule
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import java.util.*

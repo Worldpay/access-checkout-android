@@ -40,6 +40,8 @@ object CardConfigurationFactory {
         baseUrl: String,
         client: CardConfigurationClient = CardConfigurationClientFactory.createClient()
     ) {
+        card.cardValidator = AccessCheckoutCardValidator()
+
         client.getCardConfiguration(baseUrl, object :
             Callback<CardConfiguration> {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {

@@ -13,10 +13,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.*
-
+import kotlin.test.assertNull
 
 class CardConfigurationFactoryTest {
-
 
     private lateinit var card: Card
     private lateinit var cardValidator: AccessCheckoutCardValidator
@@ -36,24 +35,27 @@ class CardConfigurationFactoryTest {
     }
 
     @Test
-    fun givenACardShouldFetchRemoteConfiguration() {
-
+    fun shouldBeAbleToSetCardValidatorWithConfigurationOnSuccessfulCall() {
         val callbackCaptor = argumentCaptor<Callback<CardConfiguration>>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
 
         CardConfigurationFactory.getRemoteCardConfiguration(card, baseURL, cardConfigurationClient)
-        verify(cardConfigurationClient).getCardConfiguration(com.nhaarman.mockitokotlin2.eq(baseURL), callbackCaptor.capture())
+
+        verify(cardConfigurationClient).getCardConfiguration(eq(baseURL), callbackCaptor.capture())
+
         val configuration = CardConfiguration(brands = listOf(CardBrand("test", listOf(), null, listOf())))
         callbackCaptor.firstValue.onResponse(null, configuration)
+
         val cardValidatorCaptor = argumentCaptor<CardValidator>()
 
-        verify(card, atLeastOnce()).cardValidator = cardValidatorCaptor.capture()
-        assertEquals(configuration, cardValidatorCaptor.firstValue.cardConfiguration)
+        verify(card, times(2)).cardValidator = cardValidatorCaptor.capture()
+
+        assertNull(cardValidatorCaptor.firstValue.cardConfiguration)
+        assertEquals(configuration, cardValidatorCaptor.secondValue.cardConfiguration)
     }
 
     @Test
     fun givenAnApiErrorCardShouldNotBeSetWithValidator() {
-
         val callbackCaptor = argumentCaptor<Callback<CardConfiguration>>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
 
@@ -64,7 +66,10 @@ class CardConfigurationFactoryTest {
         callbackCaptor.firstValue.onResponse(error, null)
 
         val cardValidatorCaptor = argumentCaptor<CardValidator>()
-        verify(card, never()).cardValidator = cardValidatorCaptor.capture()
+
+        verify(card, atMost(1)).cardValidator = cardValidatorCaptor.capture()
+
+        assertNull(cardValidatorCaptor.firstValue.cardConfiguration)
     }
 
     @Test

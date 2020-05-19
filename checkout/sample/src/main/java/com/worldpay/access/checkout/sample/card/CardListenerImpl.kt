@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.CardListener
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.images.SVGImageLoader
+import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.CardView
 import com.worldpay.access.checkout.views.PANLayout
 
@@ -24,6 +25,11 @@ class CardListenerImpl(
 
         val submitBtn = activity.findViewById<Button>(R.id.card_flow_btn_submit)
         val progressBar = activity.findViewById<ProgressBar>(R.id.loading_bar)
+
+        if (submitBtn == null) {
+            debugLog(javaClass.simpleName, "Could not find submit button")
+            return
+        }
 
         submitBtn.isEnabled = card.isValid() && progressBar.isInvisible
 
@@ -41,7 +47,7 @@ class CardListenerImpl(
     }
 
     override fun onUpdateCardBrand(cardBrand: CardBrand?) {
-        val panView = activity.findViewById<PANLayout>(R.id.card_flow_text_pan)
+        val panView = activity.findViewById<PANLayout>(R.id.card_flow_text_pan) ?: return
         val logoImageView = panView.mImageView
         SVGImageLoader.getInstance(activity).fetchAndApplyCardLogo(cardBrand, logoImageView)
     }
