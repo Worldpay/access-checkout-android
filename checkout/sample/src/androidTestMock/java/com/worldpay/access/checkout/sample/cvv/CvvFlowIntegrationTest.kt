@@ -34,7 +34,7 @@ class CvvFlowIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString()
+                mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
             )
             .closeDialog()
             .cardDetailsAre(cvv = "")

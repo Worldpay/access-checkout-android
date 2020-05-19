@@ -57,7 +57,7 @@ class DiscoveryIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(PAYMENTS_CVC_SESSION to activityTestRule.activity.getString(R.string.sessions_session_reference)).toString()
+                mapOf(PAYMENTS_CVC_SESSION to activityTestRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()

@@ -59,7 +59,7 @@ class CardFlowFragment : Fragment() {
             expiryText = view.findViewById(R.id.card_flow_text_exp)
             cvvText = view.findViewById(R.id.card_flow_text_cvv)
             submitBtn = view.findViewById(R.id.card_flow_btn_submit)
-            multiFlowSwitch = view.findViewById(R.id.card_flow_multi_token_switch)
+            multiFlowSwitch = view.findViewById(R.id.card_flow_payments_cvc_switch)
 
             submitBtnEnabledColor =
                 getColor(activity.resources, R.color.colorPrimary, null)

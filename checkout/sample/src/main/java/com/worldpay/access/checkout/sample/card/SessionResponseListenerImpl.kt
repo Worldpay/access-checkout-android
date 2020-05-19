@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.sample.card
 import android.app.Activity
 import android.app.AlertDialog
 import android.widget.Button
+import android.widget.Switch
 import android.widget.TextView
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.client.SessionType
@@ -63,6 +64,7 @@ class SessionResponseListenerImpl(
         activity.findViewById<TextView>(R.id.card_flow_text_cvv).isEnabled = allFields
         activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).monthEditText.isEnabled = allFields
         activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).yearEditText.isEnabled = allFields
+        activity.findViewById<Switch>(R.id.card_flow_payments_cvc_switch).isEnabled = allFields
 
         debugLog(javaClass.simpleName, "Setting enabled state for submit button to : $submitBtn")
         activity.findViewById<Button>(R.id.card_flow_btn_submit).isEnabled = submitBtn
@@ -74,6 +76,7 @@ class SessionResponseListenerImpl(
         activity.findViewById<CardCVVText>(R.id.card_flow_text_cvv).text.clear()
         activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).monthEditText.text.clear()
         activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).yearEditText.text.clear()
+        activity.findViewById<Switch>(R.id.card_flow_payments_cvc_switch).isChecked = false
     }
 
 }

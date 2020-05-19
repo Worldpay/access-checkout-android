@@ -61,6 +61,8 @@ class SessionBroadcastReceiverTest {
 
     @Test
     fun `should return empty session and exception when session response is empty`() {
+        broadcastNumSessionTypesRequested(1)
+
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("error")).willReturn(AccessCheckoutError("some error"))
         given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
@@ -138,24 +140,28 @@ class SessionBroadcastReceiverTest {
 
         val expectedEx: AccessCheckoutError = mock()
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
+        given(intent.getSerializableExtra("response")).willReturn(null)
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
 
         sessionBroadcastReceiver.onReceive(context, intent)
+
+        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
 
         given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
+        verifyNoMoreInteractions(externalSessionResponseListener)
     }
 
     @Test
     fun `should return null session given an error is received`() {
+        broadcastNumSessionTypesRequested(2)
+
         val expectedEx: AccessCheckoutError = mock()
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
-        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -164,11 +170,12 @@ class SessionBroadcastReceiverTest {
 
     @Test
     fun `should notify with error once when a response that is not a session response is received`() {
+        broadcastNumSessionTypesRequested(2)
+
         val expectedEx: AccessCheckoutError = mock()
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
-        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -177,12 +184,13 @@ class SessionBroadcastReceiverTest {
 
     @Test
     fun `should notify with custom error when a response that is not a session response and error deserialize failure`() {
+        broadcastNumSessionTypesRequested(2)
+
         val expectedEx: AccessCheckoutError? = null
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
         given(intent.getSerializableExtra("error")).willReturn(null)
-        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -202,23 +210,30 @@ class SessionBroadcastReceiverTest {
     @Test
     fun `should be able to set the number of session types and check if all requests are completed`() {
         SessionBroadcastDataStore.setNumberOfSessionTypes(2)
-
         assertFalse(SessionBroadcastDataStore.allRequestsCompleted())
+
+        SessionBroadcastDataStore.addResponse(VERIFIED_TOKEN_SESSION, "href")
+        assertFalse(SessionBroadcastDataStore.allRequestsCompleted())
+
+        SessionBroadcastDataStore.addResponse(PAYMENTS_CVC_SESSION, "href")
         assertTrue(SessionBroadcastDataStore.allRequestsCompleted())
     }
 
     @Test
     fun `should be able to clear values in data store`() {
-        SessionBroadcastDataStore.addResponse(VERIFIED_TOKEN_SESSION, "href")
         SessionBroadcastDataStore.setNumberOfSessionTypes(2)
-        SessionBroadcastDataStore.allRequestsCompleted()
+        SessionBroadcastDataStore.addResponse(VERIFIED_TOKEN_SESSION, "vt-href")
+        SessionBroadcastDataStore.addResponse(PAYMENTS_CVC_SESSION, "payments-cvc-href")
 
-        assertEquals("href", SessionBroadcastDataStore.getResponses()[VERIFIED_TOKEN_SESSION])
+        assertEquals("vt-href", SessionBroadcastDataStore.getResponses()[VERIFIED_TOKEN_SESSION])
+        assertEquals("payments-cvc-href", SessionBroadcastDataStore.getResponses()[PAYMENTS_CVC_SESSION])
         assertTrue(SessionBroadcastDataStore.allRequestsCompleted())
+        assertTrue(SessionBroadcastDataStore.isExpectingResponse())
 
         SessionBroadcastDataStore.clear()
 
         assertTrue(SessionBroadcastDataStore.getResponses().isEmpty())
+        assertFalse(SessionBroadcastDataStore.isExpectingResponse())
         assertFalse(SessionBroadcastDataStore.allRequestsCompleted())
     }
 

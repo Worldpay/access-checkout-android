@@ -14,6 +14,7 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -25,7 +26,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
     protected fun progressBarIsVisible() {
         wait { assertTrue(progressBar().waitForExists(3000)) }
-        UITestUtils.closeKeyboard()
+        closeKeyboard()
     }
 
     protected fun progressBarNotVisible() {
