@@ -1,7 +1,6 @@
-package com.worldpay.access.checkout.config
+package com.worldpay.access.checkout.api.configuration
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
-import com.worldpay.access.checkout.api.configuration.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardBrand
 import com.worldpay.access.checkout.model.CardValidationRule
 import org.junit.Assert.assertEquals

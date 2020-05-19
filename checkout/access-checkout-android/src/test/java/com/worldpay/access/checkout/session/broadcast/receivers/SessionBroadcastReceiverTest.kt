@@ -7,8 +7,8 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutEr
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
-import com.worldpay.access.checkout.session.api.SessionResponse
-import com.worldpay.access.checkout.session.api.SessionResponseInfo
+import com.worldpay.access.checkout.session.api.response.SessionResponse
+import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
 import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
@@ -238,13 +238,14 @@ class SessionBroadcastReceiverTest {
     }
 
     private fun createSessionResponse(href: String, sessionType: SessionType): SessionResponseInfo {
-        val response = SessionResponse(
-            SessionResponse.Links(
-                SessionResponse.Links.Endpoints(
-                    href
-                ), emptyArray()
+        val response =
+            SessionResponse(
+                SessionResponse.Links(
+                    SessionResponse.Links.Endpoints(
+                        href
+                    ), emptyArray()
+                )
             )
-        )
 
         return SessionResponseInfo.Builder()
             .responseBody(response)

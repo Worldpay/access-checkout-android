@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.session.api.client
 
-import com.worldpay.access.checkout.session.api.CVVSessionRequest
-import com.worldpay.access.checkout.session.api.CardSessionRequest
-import com.worldpay.access.checkout.session.api.SessionRequest
+import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
+import com.worldpay.access.checkout.session.api.request.CardSessionRequest
+import com.worldpay.access.checkout.session.api.request.SessionRequest
 import org.junit.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull

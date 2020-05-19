@@ -6,6 +6,8 @@ import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClientFactory
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
+import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
+import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 
 internal class SessionRequestSender(

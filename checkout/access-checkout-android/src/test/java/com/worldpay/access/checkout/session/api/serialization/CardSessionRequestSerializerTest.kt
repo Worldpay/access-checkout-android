@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.session.api.serialization
 
 import com.worldpay.access.checkout.api.serialization.Serializer
-import com.worldpay.access.checkout.session.api.CVVSessionRequest
-import com.worldpay.access.checkout.session.api.CardSessionRequest
-import com.worldpay.access.checkout.session.api.CardSessionRequest.CardExpiryDate
-import com.worldpay.access.checkout.session.api.SessionRequest
+import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
+import com.worldpay.access.checkout.session.api.request.CardSessionRequest
+import com.worldpay.access.checkout.session.api.request.CardSessionRequest.CardExpiryDate
+import com.worldpay.access.checkout.session.api.request.SessionRequest
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith

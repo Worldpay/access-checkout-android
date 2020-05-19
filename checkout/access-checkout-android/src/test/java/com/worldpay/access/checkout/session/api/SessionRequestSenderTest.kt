@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.api.session
+package com.worldpay.access.checkout.session.api
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
@@ -8,14 +8,13 @@ import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
-import com.worldpay.access.checkout.session.api.CardSessionRequest
-import com.worldpay.access.checkout.session.api.SessionRequestInfo
-import com.worldpay.access.checkout.session.api.SessionRequestSender
-import com.worldpay.access.checkout.session.api.SessionResponseInfo
 import com.worldpay.access.checkout.session.api.client.CardSessionClient
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
+import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.RequestDispatcher
 import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
+import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
+import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before

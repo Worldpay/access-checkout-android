@@ -6,6 +6,8 @@ import android.content.Intent
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
+import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
+import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
@@ -54,7 +56,8 @@ internal interface Factory {
     fun getSessionRequestSender(context: Context): SessionRequestSender
 }
 
-internal class DefaultFactory: Factory {
+internal class DefaultFactory:
+    Factory {
 
     override fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory =
         LocalBroadcastManagerFactory(context)

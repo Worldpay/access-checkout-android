@@ -1,6 +1,5 @@
-package com.worldpay.access.checkout.api.session
+package com.worldpay.access.checkout.session.api.response
 
-import com.worldpay.access.checkout.session.api.SessionResponse
 import org.junit.Assert.*
 import org.junit.Test
 

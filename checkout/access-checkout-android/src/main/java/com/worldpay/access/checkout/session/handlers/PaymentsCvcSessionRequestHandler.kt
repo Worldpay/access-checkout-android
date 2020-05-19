@@ -5,9 +5,9 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
-import com.worldpay.access.checkout.session.api.CVVSessionRequest
-import com.worldpay.access.checkout.session.api.SessionRequestInfo
 import com.worldpay.access.checkout.session.api.SessionRequestService
+import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
+import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 
 internal class PaymentsCvcSessionRequestHandler(

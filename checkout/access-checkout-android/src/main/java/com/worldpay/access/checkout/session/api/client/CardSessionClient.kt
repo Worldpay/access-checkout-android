@@ -4,8 +4,8 @@ import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
-import com.worldpay.access.checkout.session.api.SessionRequest
-import com.worldpay.access.checkout.session.api.SessionResponse
+import com.worldpay.access.checkout.session.api.request.SessionRequest
+import com.worldpay.access.checkout.session.api.response.SessionResponse
 import java.net.URL
 
 internal class CardSessionClient(

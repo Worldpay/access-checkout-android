@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session.api.client
 
-import com.worldpay.access.checkout.session.api.SessionRequest
-import com.worldpay.access.checkout.session.api.SessionResponse
+import com.worldpay.access.checkout.session.api.request.SessionRequest
+import com.worldpay.access.checkout.session.api.response.SessionResponse
 import java.net.URL
 
 internal interface SessionClient {
