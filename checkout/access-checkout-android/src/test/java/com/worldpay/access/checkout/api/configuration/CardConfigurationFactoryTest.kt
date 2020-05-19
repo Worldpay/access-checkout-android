@@ -43,7 +43,8 @@ class CardConfigurationFactoryTest {
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseURL), callbackCaptor.capture())
 
-        val configuration = CardConfiguration(brands = listOf(CardBrand("test", listOf(), null, null)))
+        val configuration = CardConfiguration(brands = listOf(CardBrand(name = "test", images = emptyList())
+        ))
         callbackCaptor.firstValue.onResponse(null, configuration)
 
         val cardValidatorCaptor = argumentCaptor<CardValidator>()

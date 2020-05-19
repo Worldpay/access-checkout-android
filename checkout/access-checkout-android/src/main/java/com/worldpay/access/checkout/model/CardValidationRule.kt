@@ -7,6 +7,6 @@ package com.worldpay.access.checkout.model
  * @property validLengths a rule which defines the fields valid lengths
  */
 data class CardValidationRule(
-    val matcher: String?,
+    val matcher: String? = null,
     val validLengths: List<Int>?
 )

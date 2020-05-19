@@ -62,7 +62,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
                 )
                 val brandImages = parseBrandImages(images)
                 val cvv = toOptionalIntProperty(brandRoot, BRANDED_CVV_FIELD)
-                val cvvConfig = cvv?.let { CardValidationRule(null, listOf(it)) }
+                val cvvConfig = cvv?.let { cvvLength -> CardValidationRule(validLengths = listOf(cvvLength)) }
                 val pans = fetchOptionalArray(brandRoot, PANS_FIELD)
                 val matcher = toOptionalStringProperty(brandRoot, MATCHER_FIELD)
                 val panRule = CardValidationRule(matcher, parseLengths(pans as JSONArray))
