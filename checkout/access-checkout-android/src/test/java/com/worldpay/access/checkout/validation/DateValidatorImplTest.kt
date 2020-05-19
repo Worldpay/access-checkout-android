@@ -12,7 +12,6 @@ import kotlin.test.assertTrue
 
 class DateValidatorImplTest {
 
-    private val emptyConfigValidator = DateValidatorImpl(now, null)
     lateinit var validator: DateValidator
     lateinit var now: Calendar
 
@@ -38,11 +37,15 @@ class DateValidatorImplTest {
 
     @Test
     fun `given no card configuration and empty dates then should be partially valid`() {
+        val emptyConfigValidator = DateValidatorImpl(now, null)
+
         assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
     }
 
     @Test
     fun `given no month and year rule and empty dates then should be partially valid`() {
+        val emptyConfigValidator = DateValidatorImpl(now, null)
+
         assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
     }
 
