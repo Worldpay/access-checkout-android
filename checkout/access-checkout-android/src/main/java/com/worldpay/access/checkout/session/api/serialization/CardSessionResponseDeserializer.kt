@@ -22,7 +22,7 @@ internal class CardSessionResponseDeserializer: Deserializer<SessionResponse>() 
             val curies = curiesRoot.getJSONObject(0)
             val curiesHref = toStringProperty(curies, "href")
             val curiesName = toStringProperty(curies, "name")
-            val curiesTemplated = toBooleanProperty(curies, "templated")
+            val curiesTemplated = toProperty(curies, "templated", Boolean::class)
 
             SessionResponse(
                 Links(

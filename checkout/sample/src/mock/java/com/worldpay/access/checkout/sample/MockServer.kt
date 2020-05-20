@@ -31,7 +31,7 @@ object MockServer {
         const val VERIFIED_TOKENS_SESSIONS_PATH = "verifiedTokens/sessions"
 
         const val CARD_LOGO_PATH = "access-checkout/assets"
-        const val CARD_CONFIGURATION_PATH = "access-checkout/cardConfiguration.json"
+        const val CARD_CONFIGURATION_PATH = "access-checkout/cardTypes.json"
     }
 
     fun startWiremock(context: Context, port: Int = 8080) {

@@ -9,8 +9,8 @@ package com.worldpay.access.checkout.model
  * @property year a default year validation rule
  */
 data class CardDefaults(
-	val pan: CardValidationRule?,
-	val cvv: CardValidationRule?,
-	val month: CardValidationRule?,
-	val year: CardValidationRule?
+	val pan: CardValidationRule? = null,
+	val cvv: CardValidationRule? = null,
+	val month: CardValidationRule? = null,
+	val year: CardValidationRule? = null
 )

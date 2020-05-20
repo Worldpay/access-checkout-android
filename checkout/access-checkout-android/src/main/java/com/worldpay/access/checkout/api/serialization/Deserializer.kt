@@ -26,14 +26,6 @@ internal abstract class Deserializer<T> {
 
     protected fun toStringProperty(obj: JSONObject, field: String): String = toProperty(obj, field, String::class)
 
-    protected fun toBooleanProperty(obj: JSONObject, field: String): Boolean = toProperty(obj, field, Boolean::class)
-
-    protected fun toOptionalStringProperty(obj: JSONObject, field: String): String? =
-        toOptionalProperty(obj, field, String::class)
-
-    protected fun toOptionalIntProperty(obj: JSONObject, field: String): Int? =
-        toOptionalProperty(obj, field, Int::class)
-
     protected fun fetchOptionalArray(obj: JSONObject, field: String): JSONArray? {
         return try {
             fetchArray(obj, field)
@@ -50,20 +42,16 @@ internal abstract class Deserializer<T> {
         }
     }
 
-    protected fun fetchOptionalObject(obj: JSONObject, field: String): JSONObject? {
-        return obj.optJSONObject(field)
-    }
-
     protected fun fetchObject(obj: JSONObject, field: String): JSONObject {
         return fetchOrElseThrow(obj.optJSONObject(field), field, "object")
     }
 
-    private fun <T : Any> toProperty(obj: JSONObject, field: String, clazz: KClass<out T>): T {
+    protected fun <T : Any> toProperty(obj: JSONObject, field: String, clazz: KClass<out T>): T {
         return toOptionalProperty(obj, field, clazz)
             ?: throw AccessCheckoutDeserializationException("Missing property: '$field'")
     }
 
-    private fun <T : Any> toOptionalProperty(obj: JSONObject, field: String, clazz: KClass<out T>): T? {
+    protected fun <T : Any> toOptionalProperty(obj: JSONObject, field: String, clazz: KClass<out T>): T? {
         return try {
             val fetchProperty = fetchProperty(obj, field)
             clazz.javaObjectType.cast(fetchProperty)
