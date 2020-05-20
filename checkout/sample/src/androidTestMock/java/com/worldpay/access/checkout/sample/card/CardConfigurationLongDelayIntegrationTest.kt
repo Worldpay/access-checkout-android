@@ -11,7 +11,6 @@ import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.views.PANLayout
 import org.awaitility.Awaitility
@@ -87,11 +86,9 @@ class CardConfigurationLongDelayIntegrationTest {
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(VERIFIED_TOKEN_SESSION to cardConfigRule.activity.getString(R.string.verified_token_session_reference)).toString(),
-            cardConfigRule.activity.window.decorView
-        )
+            .hasResponseDialogWithMessage(
+                mapOf(VERIFIED_TOKEN_SESSION to cardConfigRule.activity.getString(R.string.verified_token_session_reference)).toString()
+            )
     }
     
     private fun assertExpectedLogo(logoResName: String) {

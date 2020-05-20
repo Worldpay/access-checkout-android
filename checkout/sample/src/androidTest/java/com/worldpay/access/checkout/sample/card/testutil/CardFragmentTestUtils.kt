@@ -1,35 +1,32 @@
 package com.worldpay.access.checkout.sample.card.testutil
 
-import android.app.Activity.INPUT_METHOD_SERVICE
-import android.view.View
-import android.view.inputmethod.InputMethodManager
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
-import androidx.core.content.res.ResourcesCompat.getColor
+import android.widget.Switch
 import androidx.core.view.isVisible
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.YEAR
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
+import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.util.logging.LoggingUtils
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
 import com.worldpay.access.checkout.views.PANLayout
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActivity>) {
+class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
     private fun panInput() = findById<PANLayout>(R.id.card_flow_text_pan)
     private fun cvvInput() = findById<CardCVVText>(R.id.card_flow_text_cvv)
     private fun expiryDateInput() = findById<CardExpiryTextLayout>(R.id.card_flow_text_exp)
     private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
-    private fun progressBar() = uiObjectWithId(R.id.loading_bar)
     private fun brandLogo() = findById<ImageView>(R.id.logo_view)
+    private fun paymentsCvcSwitch() = findById<Switch>(R.id.card_flow_payments_cvc_switch)
 
     enum class Input {
         PAN, CVV, MONTH, YEAR
@@ -40,23 +37,55 @@ class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActiv
         enabledStateIs(pan = true, cvv = true, expiryMonth = true, expiryYear = true, submitButton = false)
         cardDetailsAre(pan = "", cvv = "", month = "", year = "")
         hasNoBrand()
+        paymentsCvcSessionCheckedState(checked = false)
+        return this
+    }
+
+    fun setPaymentsCvcSwitchState(checked: Boolean): CardFragmentTestUtils {
+        wait { assertTrue("Payments Cvc Switch visibility") { paymentsCvcSwitch().isVisible } }
+        if (checked != paymentsCvcSwitch().isChecked) {
+            uiObjectWithId(R.id.card_flow_payments_cvc_switch).click()
+        }
+        return this
+    }
+
+    fun paymentsCvcSessionCheckedState(checked: Boolean): CardFragmentTestUtils {
+        wait { assertTrue("Payments Cvc Switch visibility") { paymentsCvcSwitch().isVisible } }
+        wait { assertEquals(checked, paymentsCvcSwitch().isChecked, "Payments Cvc Switch checked") }
         return this
     }
 
     fun requestIsInProgress(): CardFragmentTestUtils {
         progressBarIsVisible()
-        enabledStateIs(pan = false, cvv = false, expiryMonth = false, expiryYear = false, submitButton = false)
+        enabledStateIs(pan = false, cvv = false, expiryMonth = false, expiryYear = false, paymentsCvcSwitch = false, submitButton = false)
+        return this
+    }
+
+    fun hasResponseDialogWithMessage(response: String): CardFragmentTestUtils {
+        dialogHasText(response)
+        return this
+    }
+
+    fun hasErrorDialogWithMessage(error: String): CardFragmentTestUtils {
+        dialogHasText(error)
+        return this
+    }
+
+    fun closeDialog(): CardFragmentTestUtils {
+        onView(withId(android.R.id.button1)).perform(click())
         return this
     }
 
     fun isInErrorState(pan: String? = null, cvv: String? = null, month: String? = null, year: String? = null): CardFragmentTestUtils {
         progressBarNotVisible()
-        enabledStateIs(pan = true, cvv = true, expiryMonth = true, expiryYear = true, submitButton = true)
+        enabledStateIs(pan = true, cvv = true, expiryMonth = true, expiryYear = true, paymentsCvcSwitch = true, submitButton = true)
         cardDetailsAre(pan, cvv, month, year)
         return this
     }
 
-    fun enabledStateIs(pan: Boolean? = null, cvv: Boolean? = null, expiryMonth: Boolean? = null, expiryYear: Boolean? = null, submitButton: Boolean? = null): CardFragmentTestUtils {
+    fun enabledStateIs(pan: Boolean? = null, cvv: Boolean? = null, expiryMonth: Boolean? = null,
+                       expiryYear: Boolean? = null, paymentsCvcSwitch: Boolean? = null,
+                       submitButton: Boolean? = null): CardFragmentTestUtils {
         val visibleMsg = "visibility state"
         val enableMsg = "enabled state"
 
@@ -78,6 +107,11 @@ class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActiv
         if (expiryYear != null) {
             wait { assertTrue("Exp Year Input - $visibleMsg") { expiryDateInput().yearEditText.isVisible } }
             wait { assertEquals(expiryYear, expiryDateInput().yearEditText.isEnabled, "Exp Year Input - $enableMsg") }
+        }
+
+        if (paymentsCvcSwitch != null) {
+            wait { assertTrue("Payments CVC Switch - $visibleMsg") { paymentsCvcSwitch().isVisible } }
+            wait { assertEquals(paymentsCvcSwitch, paymentsCvcSwitch().isEnabled, "Payments CVC Switch - $enableMsg") }
         }
 
         if (submitButton != null) {
@@ -142,70 +176,6 @@ class CardFragmentTestUtils(private val activityRule: ActivityTestRule<MainActiv
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
         wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(PANLayout.CARD_TAG)) }
         return this
-    }
-
-    private fun progressBarIsVisible(): CardFragmentTestUtils {
-        wait { assertTrue(progressBar().waitForExists(3000)) }
-        closeKeyboard()
-        return this
-    }
-
-    private fun progressBarNotVisible(): CardFragmentTestUtils {
-        wait { assertTrue(progressBar().waitUntilGone(3000)) }
-        return this
-    }
-
-    private fun checkValidationState(editText: EditText, isValid: Boolean, field: String) {
-        if (isValid) {
-            wait { assertEquals(color(R.color.SUCCESS), editText.currentTextColor, "$field field expected to be valid") }
-        } else {
-            wait { assertEquals(color(R.color.FAIL), editText.currentTextColor, "$field field expected to be invalid") }
-        }
-    }
-
-    private fun enterText(editText: EditText, text: String) {
-        wait { assertTrue("${editText.id} - visibility state") { editText.isVisible } }
-        wait { assertTrue("${editText.id} - enabled state") { editText.isEnabled } }
-        wait { assertEquals(1.0f, editText.alpha, "${editText.id} - alpha state") }
-
-        val editTextUI = uiObjectWithId(editText.id)
-        editTextUI.click()
-        if (editTextUI.text != text) {
-            editTextUI.text = text
-        }
-
-        val im = activity().getSystemService(INPUT_METHOD_SERVICE) as InputMethodManager
-        im.hideSoftInputFromWindow(editText.windowToken, 0)
-    }
-
-    private fun activity() = activityRule.activity
-
-    private fun color(colorId: Int) = getColor(activity().resources, colorId, activity().theme)
-
-    private fun <T: View> findById(id: Int): T {
-        wait { assertNotNull(activity().findViewById<T>(id)) }
-        return activity().findViewById(id)
-    }
-
-    private fun wait(maxWaitTimeInMillis: Int = 1000, assertions: () -> Unit) {
-        val pauseInterval = 100
-        val maxTimes = maxWaitTimeInMillis / pauseInterval
-
-        for (i in 0..maxTimes) {
-            try {
-                assertions()
-            } catch (exception: AssertionError) {
-                if (i == maxTimes) {
-                    val seconds = maxWaitTimeInMillis / 1000
-                    throw AssertionError("Failed assertion after waiting $seconds seconds: ${exception.message}", exception)
-                } else {
-                    Thread.sleep(pauseInterval.toLong())
-                    LoggingUtils.debugLog(javaClass.simpleName, "Retrying assertion $assertions")
-                    continue
-                }
-            }
-            break
-        }
     }
 
 }

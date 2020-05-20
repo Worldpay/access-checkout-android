@@ -103,7 +103,7 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
             clientException = clientErrorDeserializer.deserialize(errorData)
         }
 
-        return clientException.let { it } ?: AccessCheckoutHttpException(getMessage(conn, errorData))
+        return clientException ?: AccessCheckoutHttpException(getMessage(conn, errorData))
     }
 
     private fun getServerError(conn: HttpURLConnection): AccessCheckoutException {

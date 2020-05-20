@@ -203,6 +203,7 @@ class SessionResponseTest {
                 )
             )
         )
+
         assertTrue(!links.equals(Object()))
     }
 
@@ -218,6 +219,7 @@ class SessionResponseTest {
                 )
             )
         )
+
         assertTrue(!links.equals(null))
     }
 

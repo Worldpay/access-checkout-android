@@ -10,6 +10,7 @@ import com.worldpay.access.checkout.session.api.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.addResponse
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.allRequestsCompleted
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.getResponses
+import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.isExpectingResponse
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.setNumberOfSessionTypes
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.SessionResponseListener
@@ -38,7 +39,7 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
             setNumberOfSessionTypes(intent.getIntExtra(NUMBER_OF_SESSION_TYPE_KEY, 0))
         }
 
-        if (intent.action == COMPLETED_SESSION_REQUEST) {
+        if (intent.action == COMPLETED_SESSION_REQUEST && isExpectingResponse()) {
             val sessionResponseInfo = intent.getSerializableExtra(RESPONSE_KEY)
             val errorSerializable = intent.getSerializableExtra(ERROR_KEY)
 
@@ -50,6 +51,7 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
                 }
             } else {
                 sendErrorCallback(errorSerializable)
+                SessionBroadcastDataStore.clear()
             }
         }
     }
@@ -95,7 +97,6 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
 
 internal object SessionBroadcastDataStore {
 
-    private var numOfSessionRequestCompleted = AtomicInteger(0)
     private var numOfSessionTypes = AtomicInteger(0)
     private var storedResponses: EnumMap<SessionType, String> = EnumMap(SessionType::class.java)
 
@@ -103,7 +104,9 @@ internal object SessionBroadcastDataStore {
         numOfSessionTypes.set(num)
     }
 
-    fun allRequestsCompleted() = numOfSessionTypes.get() == numOfSessionRequestCompleted.incrementAndGet()
+    fun isExpectingResponse() = numOfSessionTypes.get() != 0
+
+    fun allRequestsCompleted() = isExpectingResponse() && numOfSessionTypes.get() == storedResponses.size
 
     fun addResponse(sessionType: SessionType, href: String) {
         storedResponses[sessionType] = href
@@ -114,7 +117,6 @@ internal object SessionBroadcastDataStore {
     fun clear() {
         storedResponses.clear()
         numOfSessionTypes.set(0)
-        numOfSessionRequestCompleted.set(0)
     }
 
 }

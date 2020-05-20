@@ -1,24 +1,21 @@
 package com.worldpay.access.checkout.sample.testutil
 
-import android.content.Context
-import android.view.View
 import android.view.accessibility.AccessibilityWindowInfo
-import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.contrib.NavigationViewActions
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.uiautomator.UiDevice.getInstance
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.sample.R
 import org.awaitility.Awaitility.await
-import org.hamcrest.CoreMatchers
-import org.hamcrest.Matcher
 import java.util.concurrent.TimeUnit
 
 object UITestUtils {
@@ -28,28 +25,6 @@ object UITestUtils {
         val selector = UiSelector().resourceId(resName)
         return getInstance(getInstrumentation()).findObject(selector)
     }
-
-    fun checkFieldText(viewMatcher: Matcher<View>, expectedText: String) {
-        onView(viewMatcher)
-            .check(matches(withText(expectedText)))
-    }
-
-    fun assertDisplaysResponseFromServer(responseString: String, view: View) {
-        val expectedToastText: String = if (responseString.contains("Error")) {
-            responseString
-        } else {
-            "Ref: $responseString"
-        }
-        onView(withText(expectedToastText))
-            .inRoot(RootMatchers.withDecorView(CoreMatchers.not(view)))
-            .check(matches(isDisplayed()))
-    }
-
-    fun getSuccessColor(context: Context) = getColor(context.resources,
-        R.color.SUCCESS, context.theme)
-
-    fun getFailColor(context: Context) = getColor(context.resources,
-        R.color.FAIL, context.theme)
 
     private fun isKeyboardOpened(): Boolean {
         for (window in getInstrumentation().uiAutomation.windows) {
@@ -84,8 +59,14 @@ object UITestUtils {
             Thread.sleep(500)
             uiDevice.pressRecentApps()
 
-            onView(withId(R.id.drawer_layout))
-                .check(matches(isDisplayed()))
+            try {
+                onView(withId(R.id.drawer_layout))
+                    .check(matches(isDisplayed()))
+            } catch (e: NoMatchingViewException) {
+                onView(withId(android.R.id.button1))
+                    .inRoot(isDialog())
+                    .check(matches(isDisplayed()))
+            }
 
             true
         }
