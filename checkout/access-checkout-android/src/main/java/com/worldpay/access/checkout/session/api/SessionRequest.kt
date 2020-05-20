@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.session.api
 
 import java.io.Serializable
 
-interface SessionRequest: Serializable
+internal interface SessionRequest: Serializable
 
 internal data class CardSessionRequest(val cardNumber: String, val cardExpiryDate: CardExpiryDate, val cvv: String, val identity: String):
     SessionRequest {
