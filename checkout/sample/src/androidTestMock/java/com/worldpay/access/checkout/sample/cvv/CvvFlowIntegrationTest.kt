@@ -6,7 +6,6 @@ import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import org.junit.Before
 import org.junit.Rule
@@ -34,13 +33,10 @@ class CvvFlowIntegrationTest {
             .enterCardDetails(cvv = "123")
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.sessions_session_reference)).toString(),
-            activityRule.activity.window.decorView
-        )
-
-        cvvFragmentTestUtils
+            .hasResponseDialogWithMessage(
+                mapOf(PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
+            )
+            .closeDialog()
             .cardDetailsAre(cvv = "")
             .enabledStateIs(submitButton = false)
     }

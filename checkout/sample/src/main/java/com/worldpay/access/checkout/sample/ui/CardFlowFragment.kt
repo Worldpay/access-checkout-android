@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Switch
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
@@ -12,6 +13,8 @@ import com.worldpay.access.checkout.AccessCheckoutCard
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.CardDetails
+import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
@@ -32,8 +35,11 @@ class CardFlowFragment : Fragment() {
     private lateinit var cvvText: CardCVVText
     private lateinit var expiryText: CardExpiryTextLayout
     private lateinit var submitBtn: Button
+    private lateinit var multiFlowSwitch: Switch
 
     private lateinit var progressBar: ProgressBar
+
+    private lateinit var sessionTypes: List<SessionType>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -53,12 +59,15 @@ class CardFlowFragment : Fragment() {
             expiryText = view.findViewById(R.id.card_flow_text_exp)
             cvvText = view.findViewById(R.id.card_flow_text_cvv)
             submitBtn = view.findViewById(R.id.card_flow_btn_submit)
+            multiFlowSwitch = view.findViewById(R.id.card_flow_payments_cvc_switch)
 
             submitBtnEnabledColor =
                 getColor(activity.resources, R.color.colorPrimary, null)
 
             submitBtnDisabledColor =
                 getColor(activity.resources, android.R.color.darker_gray, null)
+
+            handleSwitch()
 
             initialiseCardValidation(activity)
 
@@ -69,6 +78,21 @@ class CardFlowFragment : Fragment() {
     override fun onResume() {
         toggleFields(!progressBar.isLoading())
         super.onResume()
+    }
+
+    private fun handleSwitch() {
+        setSessionTypes(multiFlowSwitch.isChecked)
+        multiFlowSwitch.setOnCheckedChangeListener { _, isChecked ->
+            setSessionTypes(isChecked)
+        }
+    }
+
+    private fun setSessionTypes(isChecked: Boolean) {
+        sessionTypes = if (isChecked) {
+            listOf(VERIFIED_TOKEN_SESSION, PAYMENTS_CVC_SESSION)
+        } else {
+            listOf(VERIFIED_TOKEN_SESSION)
+        }
     }
 
     private fun initialisePaymentFlow(activity: FragmentActivity) {
@@ -86,7 +110,7 @@ class CardFlowFragment : Fragment() {
                 .expiryDate(expiryText.getMonth(), expiryText.getYear())
                 .cvv(cvvText.getInsertedText())
                 .build()
-            accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
+            accessCheckoutClient.generateSession(cardDetails, sessionTypes)
         }
     }
 

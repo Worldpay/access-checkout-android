@@ -6,9 +6,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
+import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers.isDialog
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -20,7 +26,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
     protected fun progressBarIsVisible() {
         wait { assertTrue(progressBar().waitForExists(3000)) }
-        UITestUtils.closeKeyboard()
+        closeKeyboard()
     }
 
     protected fun progressBarNotVisible() {
@@ -48,6 +54,12 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
         val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(editText.windowToken, 0)
+    }
+
+    protected fun dialogHasText(text: String) {
+        onView(withText(text))
+            .inRoot(isDialog())
+            .check(matches(isDisplayed()))
     }
 
     protected fun activity() = activityRule.activity

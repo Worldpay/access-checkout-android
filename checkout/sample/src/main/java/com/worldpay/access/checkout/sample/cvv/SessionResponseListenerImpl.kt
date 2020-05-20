@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.sample.cvv
 
 import android.app.Activity
+import android.app.AlertDialog
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.sample.R
@@ -30,7 +30,15 @@ class SessionResponseListenerImpl(
 
         setEnabledState(cvv = true, submitBtn = false)
 
-        val toastMessage: String = getToastMessage(sessionResponseMap, error)
+        val title = getTitle(sessionResponseMap)
+        val message = getResponse(sessionResponseMap, error)
+
+        AlertDialog.Builder(activity)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok, null)
+            .create()
+            .show()
 
         if (isSuccessful(sessionResponseMap)) {
             activity.findViewById<CardCVVText>(R.id.cvv_flow_text_cvv).text.clear()
@@ -38,8 +46,6 @@ class SessionResponseListenerImpl(
         } else {
             setEnabledState(cvv = true, submitBtn = true)
         }
-
-        Toast.makeText(activity, toastMessage, Toast.LENGTH_LONG).show()
     }
 
     private fun setEnabledState(cvv: Boolean, submitBtn: Boolean) {
@@ -53,12 +59,10 @@ class SessionResponseListenerImpl(
     private fun isSuccessful(sessionResponseMap: Map<SessionType, String>?) =
         sessionResponseMap != null && sessionResponseMap.isNotEmpty()
 
-    private fun getToastMessage(sessionResponseMap: Map<SessionType, String>?, error: AccessCheckoutException?): String {
-        return if (isSuccessful(sessionResponseMap)) {
-            "Ref: $sessionResponseMap"
-        } else {
-            "Error: " + error?.message
-        }
-    }
+    private fun getResponse(sessionResponseMap: Map<SessionType, String>?, error: AccessCheckoutException?) =
+        if (isSuccessful(sessionResponseMap)) sessionResponseMap.toString() else error?.message
+
+    private fun getTitle(sessionResponseMap: Map<SessionType, String>?) =
+        if (isSuccessful(sessionResponseMap)) "Response" else "Error"
 
 }

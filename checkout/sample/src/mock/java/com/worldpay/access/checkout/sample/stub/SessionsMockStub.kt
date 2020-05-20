@@ -40,7 +40,7 @@ object SessionsMockStub {
             """{ 
                   "_links": { 
                     "sessions:session": { 
-                        "href": "${context.getString(R.string.sessions_session_reference)}"                        }, 
+                        "href": "${context.getString(R.string.payments_cvc_session_reference)}"                        }, 
                     "curies": [ 
                       { 
                         "href": "{{request.requestLine.baseUrl}}/rels/sessions/{rel}.json", 
@@ -83,7 +83,7 @@ object SessionsMockStub {
                 .withFixedDelay(delay)
                 .withStatus(201)
                 .withHeader("Content-Type", "application/json")
-                .withHeader("Location", context.getString(R.string.sessions_session_reference))
+                .withHeader("Location", context.getString(R.string.payments_cvc_session_reference))
                 .withBody(
                     sessionsResourceResponse(
                         context

@@ -7,7 +7,6 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.simulateCardConfigurationServerError
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import org.junit.After
 import org.junit.Before
@@ -39,13 +38,10 @@ class FailedCardConfigurationCvvIntegrationTest {
             .enterCardDetails(cvv = "123")
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(PAYMENTS_CVC_SESSION to cardConfigurationErrorRule.activity.getString(R.string.sessions_session_reference)).toString(),
-            cardConfigurationErrorRule.activity.window.decorView
-        )
-
-        cvvFragmentTestUtils
+            .hasResponseDialogWithMessage(
+                mapOf(PAYMENTS_CVC_SESSION to cardConfigurationErrorRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
+            )
+            .closeDialog()
             .cardDetailsAre(cvv = "")
             .enabledStateIs(submitButton = false)
     }

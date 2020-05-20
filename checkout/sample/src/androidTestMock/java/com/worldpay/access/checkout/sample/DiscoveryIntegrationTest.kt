@@ -6,7 +6,6 @@ import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.simulateRootResourceTemporaryServerError
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.assertDisplaysResponseFromServer
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import org.junit.Before
 import org.junit.Rule
@@ -39,13 +38,11 @@ class DiscoveryIntegrationTest {
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(VERIFIED_TOKEN_SESSION to activityTestRule.activity.getString(R.string.verified_token_session_reference)).toString(),
-            activityTestRule.activity.window.decorView
-        )
-
-        cardFragmentTestUtils.isInInitialState()
+            .hasResponseDialogWithMessage(
+                mapOf(VERIFIED_TOKEN_SESSION to activityTestRule.activity.getString(R.string.verified_token_session_reference)).toString()
+            )
+            .closeDialog()
+            .isInInitialState()
     }
 
     @Test
@@ -59,13 +56,11 @@ class DiscoveryIntegrationTest {
             .enterCardDetails(cvv = "123")
             .clickSubmitButton()
             .requestIsInProgress()
-
-        assertDisplaysResponseFromServer(
-            mapOf(PAYMENTS_CVC_SESSION to activityTestRule.activity.getString(R.string.sessions_session_reference)).toString(),
-            activityTestRule.activity.window.decorView
-        )
-
-        cvvFragmentTestUtils.isInInitialState()
+            .hasResponseDialogWithMessage(
+                mapOf(PAYMENTS_CVC_SESSION to activityTestRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
+            )
+            .closeDialog()
+            .isInInitialState()
     }
 
 }
