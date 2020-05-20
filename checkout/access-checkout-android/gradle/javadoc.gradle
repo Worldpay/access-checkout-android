@@ -2,7 +2,7 @@ apply plugin: 'org.jetbrains.dokka'
 
 dokka {
     outputFormat = 'javadoc'
-    outputDirectory = "$buildDir/doc"
+    outputDirectory = "$buildDir/javadoc"
 
     configuration {
         // Use to include or exclude non public members.
@@ -14,7 +14,7 @@ dokka {
 }
 
 task javadocJar(type: Jar, dependsOn: dokka) {
-    from "$buildDir/doc"
+    from "$buildDir/javadoc"
 }
 
 task sourcesJar(type: Jar) {
