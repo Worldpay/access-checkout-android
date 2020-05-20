@@ -24,7 +24,7 @@ class CVVValidatorImplTest {
 
     @Test
     fun `given a empty cvv and non-null card configuration then should be only partially valid`() {
-        val cvvValidationRule = CardValidationRule(null, 3, null, null)
+        val cvvValidationRule = CardValidationRule(null, listOf(3))
         val defaults = CardDefaults(null, cvvValidationRule, null, null)
 
         val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
