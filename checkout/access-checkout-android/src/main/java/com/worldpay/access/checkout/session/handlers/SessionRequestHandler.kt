@@ -10,13 +10,17 @@ import com.worldpay.access.checkout.client.SessionType
 internal interface SessionRequestHandler {
 
     /**
-     * @param sessionTypes - a list of requested [SessionType]s
-     * @returns Boolean  - if the list contains a [SessionType] that can be handled
+     * Checks to see if the given [sessionTypes] can be handled by the implemented handler
+     *
+     * @param sessionTypes A [List] of requested [SessionType]
+     * @returns Boolean True if the given [sessionTypes] contains a [SessionType] that can be handled
      */
     fun canHandle(sessionTypes: List<SessionType>): Boolean
 
     /**
-     * @param cardDetails
+     * Handles the given [cardDetails]
+     *
+     * @param cardDetails the [CardDetails] to be processed
      */
     fun handle(cardDetails: CardDetails)
 

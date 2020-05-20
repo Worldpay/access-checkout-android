@@ -6,14 +6,10 @@ import com.worldpay.access.checkout.session.api.response.SessionResponse.Links
 import org.json.JSONObject
 
 /**
- * [CVVSessionRequestDeserializer] is responsible for deserialising the response json from a request for a Payments CVC Session
+ * This class is responsible for deserialising the response json from a request for a Payments CVC Session
  */
 internal class CVVSessionResponseDeserializer : Deserializer<SessionResponse>() {
 
-    /**
-     * @param[json] - json response from Payments CVC Session request
-     * @return a [SessionResponse] representatino of a response from Payments CVC Session request
-     */
     override fun deserialize(json: String): SessionResponse {
         return super.deserialize(json) {
             val root = JSONObject(json)

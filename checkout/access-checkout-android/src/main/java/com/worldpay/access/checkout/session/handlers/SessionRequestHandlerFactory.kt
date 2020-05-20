@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.session.handlers
 
-import android.content.Intent
-
 /**
- * [SessionRequestHandlerFactory] is responsible for creating all the [SessionRequestHandler]
+ * This class is responsible for creating all the [SessionRequestHandler] implementations
+ *
+ * @property sessionRequestHandlerConfig The [SessionRequestHandlerConfig] that should be used in the handler implementations
  */
 internal class SessionRequestHandlerFactory(sessionRequestHandlerConfig: SessionRequestHandlerConfig) {
 

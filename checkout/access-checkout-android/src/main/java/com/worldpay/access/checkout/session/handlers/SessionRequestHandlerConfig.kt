@@ -5,12 +5,12 @@ import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 import com.worldpay.access.checkout.views.SessionResponseListener
 
 /**
- * [SessionRequestHandlerConfig] holds the configuration to be passed to [SessionRequestHandlerFactory] for constructing a [SessionRequestHandler]
+ * This class holds the configuration to be passed to [SessionRequestHandlerFactory] for constructing a [SessionRequestHandler]
  *
- * @param baseUrl - the base API URL
- * @param merchantId - the merchant's ID
- * @param context - the application [Context]
- * @param externalSessionResponseListener - the external [SessionResponseListener]
+ * @property baseUrl [String] that represents the base url
+ * @property merchantId [String] that represents the id of the merchant given to the client at time of registration
+ * @property context [Context] that represents the application
+ * @property externalSessionResponseListener - An external [SessionResponseListener] that is notified on http requests
  */
 internal class SessionRequestHandlerConfig private constructor(
     private val baseUrl: String,
