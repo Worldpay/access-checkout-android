@@ -12,9 +12,6 @@ import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcast
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactory
 import com.worldpay.access.checkout.views.SessionResponseListener
 
-/**
- * [AccessCheckoutClientImpl] is responsible for handling the request for a session state from the Access Worldpay services.
- */
 internal class AccessCheckoutClientImpl(
     private val sessionHandlerFactory: SessionRequestHandlerFactory,
     activityLifecycleObserverInitialiser: ActivityLifecycleObserverInitialiser,
