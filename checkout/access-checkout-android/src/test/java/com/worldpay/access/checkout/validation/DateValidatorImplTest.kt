@@ -300,7 +300,7 @@ class DateValidatorImplTest {
 
     @Test
     fun `given empty year rule then dates can be updated`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, CardValidationRule(null, null), null)))
+        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, CardValidationRule(null, emptyList()), null)))
 
         assertTrue(emptyConfigValidator.canUpdate("", ""))
         assertTrue(emptyConfigValidator.canUpdate("1", "1"))
@@ -309,7 +309,7 @@ class DateValidatorImplTest {
 
     @Test
     fun `given empty month rule then dates can be updated`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, null, CardValidationRule(null, null))))
+        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, null, CardValidationRule(null, emptyList()))))
 
         assertTrue(emptyConfigValidator.canUpdate("", ""))
         assertTrue(emptyConfigValidator.canUpdate("1", "1"))

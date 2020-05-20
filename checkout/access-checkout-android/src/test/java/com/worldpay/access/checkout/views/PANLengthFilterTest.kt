@@ -47,23 +47,6 @@ class PANLengthFilterTest {
         assertNull(filteredString)
     }
 
-//    @Test
-//    fun givenAnIdentifiedCardWithMultipleValidationRulesAndMaximumCardLengthIsEnteredThenShouldNotFilterBasedOnInput() {
-//        val nineteenDigitCardInput = "4000000000000000000"
-//
-//        val cardValidationRule1 = CardValidationRule(null, null, null, 16)
-//        val cardValidationRule2 = CardValidationRule(null, null, 20, null)
-//        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule1, cardValidationRule2))
-//        val validationResult = ValidationResult(partial = true, complete = false)
-//        given(cardValidator.validatePAN(nineteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
-//
-//        // Add a '0' to existing string
-//        val filteredString = panLengthFilter.filter("0", 0, 1, SpannableStringBuilder(nineteenDigitCardInput), nineteenDigitCardInput.length, nineteenDigitCardInput.length)
-//
-//        // Verify that no filtering has been done
-//        assertNull(filteredString)
-//    }
-
     @Test
     fun givenAnIdentifiedCardWithNoValidationRulesAndMaximumCardLengthIsEnteredThenShouldNotFilterBasedOnInput() {
         val fifteenDigitCardInput = "400000000000000"
@@ -113,40 +96,6 @@ class PANLengthFilterTest {
         assertEquals("", filteredString)
     }
 
-//    @Test
-//    fun givenAnIdentifiedCardWithMultipleValidationRulesAndMaximumCardLengthIsExceededThenShouldFilterBasedOnInput() {
-//        val twentyDigitCardInput = "40000000000000000000"
-//
-//        val cardValidationRule1 = CardValidationRule("^41\\d{0,14}$", 16, null, null)
-//        val cardValidationRule2 = CardValidationRule("^40\\d{0,18}$", null, 20, null)
-//        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule1, cardValidationRule2))
-//        val validationResult = ValidationResult(partial = true, complete = false)
-//        given(cardValidator.validatePAN(twentyDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
-//
-//        // Add a '0' to existing string
-//        val filteredString = panLengthFilter.filter("0", 0, 1, SpannableStringBuilder(twentyDigitCardInput), twentyDigitCardInput.length, twentyDigitCardInput.length)
-//
-//        // Verify that no character is added
-//        assertEquals("", filteredString)
-//    }
-
-//    @Test
-//    fun givenAnIdentifiedCardWithSubRulesAndMaximumCardLengthIsExceededForSubRuleThenShouldFilterBasedOnInput() {
-//        val sixteenDigitCardInput = "4000000000000000"
-//
-//        val cardValidationRule1SubRule = CardValidationRule("^40\\d{0,14}$", null, 16, null)
-//        val cardValidationRule1 = CardValidationRule("^4\\d{0,19}$", null, 20, null, listOf(cardValidationRule1SubRule))
-//        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule1))
-//        val validationResult = ValidationResult(partial = true, complete = false)
-//        given(cardValidator.validatePAN(sixteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
-//
-//        // Add a '0' to existing string
-//        val filteredString = panLengthFilter.filter("0", 0, 1, SpannableStringBuilder(sixteenDigitCardInput), sixteenDigitCardInput.length, sixteenDigitCardInput.length)
-//
-//        // Verify that no character is added
-//        assertEquals("", filteredString)
-//    }
-
     @Test
     fun givenAnIdentifiedCardWithNoValidationRulesAndMaximumCardLengthIsExceededBasedOnDefaultsThenShouldFilterBasedOnInput() {
         val sixteenDigitCardInput = "4000000000000000"
@@ -168,7 +117,7 @@ class PANLengthFilterTest {
     fun givenAnIdentifiedCardWithAValidationRuleWithNoLimitsSetAndMaximumCardLengthIsExceededBasedOnDefaultsThenShouldFilterBasedOnInput() {
         val sixteenDigitCardInput = "4000000000000000"
 
-        val cardValidationRule = CardValidationRule("^4\\d{0,19}$", null)
+        val cardValidationRule = CardValidationRule("^4\\d{0,19}$", emptyList())
         val cardBrand = CardBrand("visa", emptyList(), null, cardValidationRule)
         val defaultValidationRule = CardValidationRule(null, listOf(16))
         val validationResult = ValidationResult(partial = true, complete = false)
@@ -213,23 +162,6 @@ class PANLengthFilterTest {
         // Verify that no filtering has been done
         assertNull(filteredString)
     }
-
-//    @Test
-//    fun givenAnIdentifiedCardWithMultipleValidationRulesAndInputDoesNotExceedMaximumThenShouldNotFilter() {
-//        val fourteenDigitCardInput = "40000000000000"
-//
-//        val cardValidationRule1 = CardValidationRule(null, null, 16, null)
-//        val cardValidationRule2 = CardValidationRule(null, null, 15, null)
-//        val cardBrand = CardBrand("visa", emptyList(), null, listOf(cardValidationRule1, cardValidationRule2))
-//        val validationResult = ValidationResult(partial = true, complete = false)
-//        given(cardValidator.validatePAN(fourteenDigitCardInput)).willReturn(Pair(validationResult, cardBrand))
-//
-//        // Add a '0' to existing string
-//        val filteredString = panLengthFilter.filter("0", 0, 1, SpannableStringBuilder(fourteenDigitCardInput), fourteenDigitCardInput.length, fourteenDigitCardInput.length)
-//
-//        // Verify that no filtering has been done
-//        assertNull(filteredString)
-//    }
 
     @Test
     fun givenAnIdentifiedCardWithNoValidationRulesAndInputDoesNotExceedMaximumBasedOnDefaultsThenShouldNotFilter() {

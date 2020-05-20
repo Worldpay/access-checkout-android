@@ -68,7 +68,7 @@ class DateLengthFilterTest {
 
     @Test
     fun givenNoValidLengthForDateFieldRulesThenShouldNotFilter() {
-        val dateLengthFilter = DateLengthFilter(CardConfiguration(defaults = CardDefaults(null, null, CardValidationRule(null, null), CardValidationRule(null, null))))
+        val dateLengthFilter = DateLengthFilter(CardConfiguration(defaults = CardDefaults(null, null, CardValidationRule(null, emptyList()), CardValidationRule(null, emptyList()))))
 
         assertNull(dateLengthFilter.filter("0", 0, 1, SpannableStringBuilder("01"), 2, 2))
     }

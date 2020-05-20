@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.config
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
 import com.worldpay.access.checkout.api.configuration.CardConfigurationParser
 import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardDefaults
 import com.worldpay.access.checkout.model.CardValidationRule
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -132,8 +131,8 @@ class CardConfigurationParserTest {
 
         assertEquals(1, cardConfiguration.brands!!.size)
         assertNull(cardConfiguration.brands!![0].cvv)
-        assertNull(cardConfiguration.brands!![0].pans?.matcher)
-        assertEquals(emptyList<Int>(), cardConfiguration.brands!![0].pans?.validLengths)
+        assertNull(cardConfiguration.brands!![0].pan?.matcher)
+        assertEquals(emptyList<Int>(), cardConfiguration.brands!![0].pan?.validLengths)
     }
 
     @Test
@@ -217,9 +216,9 @@ class CardConfigurationParserTest {
         val cardConfiguration =
             cardConfigurationParser.parse(validCardConfigurationJson.byteInputStream())
 
-        assertEquals(mutableListOf(16,18,19), cardConfiguration.brands?.get(0)?.pans?.validLengths)
-        assertEquals(mutableListOf(16), cardConfiguration.brands?.get(1)?.pans?.validLengths)
-        assertEquals(mutableListOf(15), cardConfiguration.brands?.get(2)?.pans?.validLengths)
+        assertEquals(mutableListOf(16,18,19), cardConfiguration.brands?.get(0)?.pan?.validLengths)
+        assertEquals(mutableListOf(16), cardConfiguration.brands?.get(1)?.pan?.validLengths)
+        assertEquals(mutableListOf(15), cardConfiguration.brands?.get(2)?.pan?.validLengths)
 
         val visa = cardConfiguration.brands?.get(0)
         assertEquals("visa", visa!!.name)
@@ -246,7 +245,7 @@ class CardConfigurationParserTest {
         assertEquals("<BASE_URL>/mastercard.svg", mastercardCardBrandImage2.url)
 
         assertEquals(listOf(3), mastercard.cvv?.validLengths)
-        assertEquals(listOf(16), mastercard.pans?.validLengths)
+        assertEquals(listOf(16), mastercard.pan?.validLengths)
 
         val amex = cardConfiguration.brands?.get(2)
         assertEquals("amex", amex!!.name)
@@ -260,7 +259,7 @@ class CardConfigurationParserTest {
         assertEquals("<BASE_URL>/amex.svg", amexCardBrandImage2.url)
 
         assertEquals(listOf(4), amex.cvv?.validLengths)
-        assertEquals(listOf(15), amex.pans?.validLengths)
+        assertEquals(listOf(15), amex.pan?.validLengths)
     }
 
     @Test

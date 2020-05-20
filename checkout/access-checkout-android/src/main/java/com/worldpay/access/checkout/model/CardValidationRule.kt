@@ -8,5 +8,5 @@ package com.worldpay.access.checkout.model
  */
 data class CardValidationRule(
     val matcher: String? = null,
-    val validLengths: List<Int>?
+    val validLengths: List<Int>
 )

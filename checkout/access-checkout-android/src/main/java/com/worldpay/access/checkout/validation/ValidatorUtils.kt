@@ -11,7 +11,7 @@ internal object ValidatorUtils {
     fun getValidationResultFor(text: String, cardValidationRule: CardValidationRule): ValidationResult {
         cardValidationRule.let { rule ->
             return when {
-                rule.validLengths != null -> {
+                rule.validLengths.isNotEmpty() -> {
                     val validLengths: List<Int> = rule.validLengths
                     ValidationResult(
                         partial = text.length < validLengths.max() as Int,

@@ -22,11 +22,11 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         private const val MATCHER_FIELD = "pattern"
 
         // Default card rules
-        private val panDefaults:CardValidationRule = CardValidationRule(null, listOf(15,16,18,19))
-        private val cvvDefaults:CardValidationRule = CardValidationRule(null, listOf(3,4))
-        private val monthDefaults:CardValidationRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", listOf(2))
-        private val yearDefaults:CardValidationRule = CardValidationRule("^\\d{0,2}$", listOf(2))
-        private val cardDefaults:CardDefaults = CardDefaults(
+        private val panDefaults = CardValidationRule(null, listOf(15,16,18,19))
+        private val cvvDefaults = CardValidationRule(null, listOf(3,4))
+        private val monthDefaults = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", listOf(2))
+        private val yearDefaults = CardValidationRule("^\\d{0,2}$", listOf(2))
+        private val cardDefaults = CardDefaults(
             panDefaults,
             cvvDefaults,
             monthDefaults,
@@ -54,18 +54,23 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
             val brandsList = mutableListOf<CardBrand>()
             for (i in 0 until it.length()) {
                 val brandRoot = it.getJSONObject(i)
-                val name = toStringProperty(brandRoot,
-                    NAME_FIELD
-                )
-                val images = fetchOptionalArray(brandRoot,
-                    IMAGES_FIELD
-                )
+
+                // Parse brand name
+                val name = toStringProperty(brandRoot, NAME_FIELD)
+
+                // Parse images
+                val images = fetchOptionalArray(brandRoot, IMAGES_FIELD)
                 val brandImages = parseBrandImages(images)
-                val cvv = toOptionalIntProperty(brandRoot, BRANDED_CVV_FIELD)
+
+                // Parse cvv
+                val cvv = toOptionalProperty(brandRoot, BRANDED_CVV_FIELD, Int::class)
                 val cvvConfig = cvv?.let { cvvLength -> CardValidationRule(validLengths = listOf(cvvLength)) }
+
+                // Parse PAN rule
                 val pans = fetchOptionalArray(brandRoot, PANS_FIELD)
-                val matcher = toOptionalStringProperty(brandRoot, MATCHER_FIELD)
+                val matcher = toOptionalProperty(brandRoot, MATCHER_FIELD, String::class)
                 val panRule = CardValidationRule(matcher, parseLengths(pans as JSONArray))
+
                 brandsList.add(CardBrand(name, brandImages, cvvConfig, panRule))
             }
             brandsList
@@ -89,7 +94,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         } ?: emptyList()
     }
 
-    private fun parseLengths(jsonArray: JSONArray): List<Int>? {
+    private fun parseLengths(jsonArray: JSONArray): List<Int> {
         val validLengthsList = mutableListOf<Int>()
         jsonArray.let {
             for (i in 0 until it.length()) {
@@ -98,4 +103,5 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         }
         return validLengthsList
     }
+
 }
