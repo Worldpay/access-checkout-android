@@ -85,11 +85,11 @@ class MockServerTest {
         val client = OkHttpClient()
 
         val request = Builder()
-            .url("$baseURL/access-checkout/cardConfiguration.json")
+            .url("$baseURL/access-checkout/cardTypes.json")
             .build()
 
         val cardConfigurationInputStream = activityRule.activity.resources.openRawResource(
-            R.raw.card_configuration_file
+            R.raw.card_types
         )
         val cardConfigurationAsString = cardConfigurationInputStream.reader(Charsets.UTF_8).readText()
         val substitutedResponseTemplateString = cardConfigurationAsString.replace("{{request.requestLine.baseUrl}}", getBaseUrl())

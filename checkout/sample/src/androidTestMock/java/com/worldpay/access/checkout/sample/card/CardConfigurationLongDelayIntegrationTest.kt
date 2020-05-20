@@ -59,7 +59,7 @@ class CardConfigurationLongDelayIntegrationTest {
             .hasNoBrand()
 
         // Wait until the server replies so we can successfully identify the card as mastercard based on current input
-        Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
+         Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
             try {
                 assertExpectedLogo(MASTERCARD.cardBrandName)
                 true
@@ -101,27 +101,11 @@ class CardConfigurationLongDelayIntegrationTest {
 class CardConfigurationLongDelayRule(private val timeoutMillis: Long,
                                      activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
 
-    private val mastercardCvvValidationRule: CardValidationRule = CardValidationRule("^\\d{0,3}$", null, null, 3)
-    private val mastercardPANValidationRule: CardValidationRule = CardValidationRule("^5\\d{0,15}$", null, null, 16)
-
-    private val brands = listOf(
-        CardBrand(
-            "mastercard",
-            listOf(CardBrandImage("image/svg+xml", "${MockServer.getBaseUrl()}/access-checkout/assets/mastercard.svg")),
-            mastercardCvvValidationRule,
-            listOf(mastercardPANValidationRule)
-        )
-    )
-
-    private val defaults = CardDefaults(null, null, null, null)
-
-    private val cardConfiguration = CardConfiguration(brands, defaults)
-
     override fun beforeActivityLaunched() {
         super.beforeActivityLaunched()
         // This card configuration rule adds stubs to mock server to simulate a long delay condition on the card configuration endpoint.
         // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this delayed response.
-        stubCardConfigurationWithDelay(cardConfiguration, timeoutMillis.toInt())
+        stubCardConfigurationWithDelay(timeoutMillis.toInt())
     }
 
 }

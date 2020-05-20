@@ -18,9 +18,21 @@ class DateValidatorImplTest {
     @Before
     fun setup() {
         now = Calendar.getInstance()
-        val monthRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", 2, 2, null)
-        val yearRule = CardValidationRule("^\\d{0,2}$", 2, 2, null)
-        validator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, monthRule, yearRule)))
+        val monthRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", listOf(2))
+        val yearRule = CardValidationRule("^\\d{0,2}$", listOf(2))
+
+        validator = DateValidatorImpl(
+            now = now,
+            cardConfiguration = CardConfiguration(
+                null,
+                CardDefaults(
+                    null,
+                    null,
+                    monthRule,
+                    yearRule
+                )
+            )
+        )
     }
 
     @Test
@@ -39,15 +51,20 @@ class DateValidatorImplTest {
 
     @Test
     fun `given no month rule only and empty dates then should be partially valid`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, null, CardValidationRule(null, null, null, 2))))
+        val emptyConfigValidator = DateValidatorImpl(
+            now,
+            CardConfiguration(defaults = CardDefaults(year = CardValidationRule(validLengths = listOf(2))))
+        )
 
         assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
     }
 
     @Test
     fun `given no year rule only and empty dates then should be partially valid`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, CardValidationRule(null, null, null, 2), null)))
-
+        val emptyConfigValidator = DateValidatorImpl(
+            now,
+            CardConfiguration(defaults = CardDefaults(month = CardValidationRule(validLengths = listOf(2))))
+        )
         assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
     }
 
@@ -70,9 +87,16 @@ class DateValidatorImplTest {
     fun `given month and year rule without matcher then will validate against only length check`() {
         setCurrentDate(2019, 5 /* May */, 7)
 
-        val monthRule = CardValidationRule(null, null, null, 2)
-        val yearRule = CardValidationRule(null, null, null, 2)
-        val emptyMatcherConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, monthRule, yearRule)))
+        val monthRule = CardValidationRule(null, listOf(2))
+        val yearRule = CardValidationRule(null, listOf(2))
+        val emptyMatcherConfigValidator = DateValidatorImpl(
+            now,
+            CardConfiguration(
+                defaults =  CardDefaults(
+                    month = monthRule,
+                    year = yearRule)
+            )
+        )
 
         assertEquals(ValidationResult(partial = false, complete = true), emptyMatcherConfigValidator.validate("12", "20"))
     }
@@ -83,7 +107,7 @@ class DateValidatorImplTest {
     }
 
     @Test
-    fun `given partially valid single digit month and a completely valid year then should be partially or completely invalid`() {
+    fun `given partially valid single digit month and a completely valid year then should be partially  and completely invalid`() {
         setCurrentDate(2019, 5 /* May */, 7)
 
         assertEquals(ValidationResult(partial = false, complete = false), validator.validate("1", "20"))
@@ -276,7 +300,7 @@ class DateValidatorImplTest {
 
     @Test
     fun `given empty year rule then dates can be updated`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, CardValidationRule(null, null, null, null), null)))
+        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, CardValidationRule(null, emptyList()), null)))
 
         assertTrue(emptyConfigValidator.canUpdate("", ""))
         assertTrue(emptyConfigValidator.canUpdate("1", "1"))
@@ -285,7 +309,7 @@ class DateValidatorImplTest {
 
     @Test
     fun `given empty month rule then dates can be updated`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, null, CardValidationRule(null, null, null, null))))
+        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, null, CardValidationRule(null, emptyList()))))
 
         assertTrue(emptyConfigValidator.canUpdate("", ""))
         assertTrue(emptyConfigValidator.canUpdate("1", "1"))

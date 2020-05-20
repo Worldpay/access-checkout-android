@@ -9,6 +9,7 @@ import com.worldpay.access.checkout.model.CardValidationRule
 import com.worldpay.access.checkout.validation.CardBrandUtils
 import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
+import kotlin.math.absoluteValue
 
 /**
  * [AbstractCardFieldLengthFilter] is a common abstraction class which is used by individual field implementers to restrict the length of a particular card field
@@ -40,17 +41,17 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
     }
 
     private fun getMaxForDefaultRules(): Int? {
-        return ruleSelectorForDefaults(cardConfiguration?.defaults)?.let { getValueToUseForRule(it) }
+        return ruleSelectorForDefaults(cardConfiguration?.defaults)?.let { getMaxValueToUseForRule(it) }
     }
 
     private fun getMaxForIdentifiedBrand(result: Pair<ValidationResult, CardBrand?>, spanned: Spanned): Int? {
         return result.second?.let {
-            ruleSelectorForCardBrand(it, spanned)?.let { rule -> getValueToUseForRule(rule) }
+            ruleSelectorForCardBrand(it, spanned)?.let { rule -> getMaxValueToUseForRule(rule) }
         }
     }
 
-    private fun getValueToUseForRule(cardValidationRule: CardValidationRule): Int? {
-        return cardValidationRule.maxLength ?: cardValidationRule.validLength ?: cardValidationRule.minLength
+    private fun getMaxValueToUseForRule(cardValidationRule: CardValidationRule): Int? {
+        return cardValidationRule.validLengths.max()
     }
 
     open fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> = Pair(ValidationResult(partial = true, complete = true), null)

@@ -6,11 +6,11 @@ package com.worldpay.access.checkout.model
  * @property name of the card brand
  * @property images a list of [CardBrandImage]'s
  * @property cvv validation rule for the cvv field
- * @property pans list of validations rules for the pan field
+ * @property pan list of validations rules for the pan field
  */
 data class CardBrand(
 	val name: String,
 	val images: List<CardBrandImage>? = emptyList(),
 	val cvv: CardValidationRule? = null,
-	val pans: List<CardValidationRule>
+	val pan: CardValidationRule?  = null
 )
