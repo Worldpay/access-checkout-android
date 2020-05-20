@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.session.api.serialization
 
 import com.worldpay.access.checkout.api.serialization.Deserializer
-import com.worldpay.access.checkout.session.api.SessionResponse
-import com.worldpay.access.checkout.session.api.SessionResponse.Links
+import com.worldpay.access.checkout.session.api.response.SessionResponse
+import com.worldpay.access.checkout.session.api.response.SessionResponse.Links
 import org.json.JSONObject
 
 internal class CVVSessionResponseDeserializer : Deserializer<SessionResponse>() {

@@ -6,9 +6,9 @@ import au.com.dius.pact.consumer.PactVerification
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
-import com.worldpay.access.checkout.session.api.CVVSessionRequest
-import com.worldpay.access.checkout.session.api.SessionResponse
 import com.worldpay.access.checkout.session.api.client.CVVSessionClient
+import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
+import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.serialization.CVVSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CVVSessionResponseDeserializer
 import org.junit.Assert

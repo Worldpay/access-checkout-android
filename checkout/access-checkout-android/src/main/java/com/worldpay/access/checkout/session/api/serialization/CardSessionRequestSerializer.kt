@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.session.api.serialization
 
 import com.worldpay.access.checkout.api.serialization.Serializer
-import com.worldpay.access.checkout.session.api.CardSessionRequest
-import com.worldpay.access.checkout.session.api.SessionRequest
+import com.worldpay.access.checkout.session.api.request.CardSessionRequest
+import com.worldpay.access.checkout.session.api.request.SessionRequest
 import org.json.JSONObject
 
 internal class CardSessionRequestSerializer :

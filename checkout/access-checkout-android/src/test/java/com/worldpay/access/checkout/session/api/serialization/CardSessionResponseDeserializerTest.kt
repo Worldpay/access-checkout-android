@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.session.api.serialization
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
-import com.worldpay.access.checkout.session.api.SessionResponse
-import com.worldpay.access.checkout.session.api.SessionResponse.Links
-import com.worldpay.access.checkout.session.api.SessionResponse.Links.Curies
-import com.worldpay.access.checkout.session.api.SessionResponse.Links.Endpoints
+import com.worldpay.access.checkout.session.api.response.SessionResponse
+import com.worldpay.access.checkout.session.api.response.SessionResponse.Links
+import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.Curies
+import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.Endpoints
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test

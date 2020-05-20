@@ -1,7 +1,5 @@
-package com.worldpay.access.checkout.api.session
+package com.worldpay.access.checkout.session.api.request
 
-import com.worldpay.access.checkout.session.api.CVVSessionRequest
-import com.worldpay.access.checkout.session.api.CardSessionRequest
 import org.junit.Test
 import kotlin.test.assertEquals
 

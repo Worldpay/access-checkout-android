@@ -6,12 +6,10 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHt
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
-import com.worldpay.access.checkout.session.api.CardSessionRequest
-import com.worldpay.access.checkout.session.api.SessionRequestInfo
-import com.worldpay.access.checkout.session.api.SessionResponse
-import com.worldpay.access.checkout.session.api.SessionResponseInfo
 import com.worldpay.access.checkout.session.api.client.SessionClient
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
+import com.worldpay.access.checkout.session.api.response.SessionResponse
+import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import org.awaitility.Awaitility.await
 import org.junit.Before
 import org.junit.Test

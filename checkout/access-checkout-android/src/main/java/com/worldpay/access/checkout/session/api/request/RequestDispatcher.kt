@@ -5,9 +5,8 @@ import android.util.Log
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHttpException
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.session.api.SessionRequestInfo
-import com.worldpay.access.checkout.session.api.SessionResponseInfo
 import com.worldpay.access.checkout.session.api.client.SessionClient
+import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import java.net.URL
 
 
