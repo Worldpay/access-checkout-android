@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.client
 
 /**
- * [CardDetails] is a representation of card information that can be constructed with a builder.
+ * This class is a representation of card information that can be constructed with a [CardDetails.Builder]
  *
- * @param[pan] an optional [String] containing the PAN
- * @param[expiryDate] an optional [ExpiryDate] object containing the expiry month and year
- * @param[cvv] an optional [String] containing the cvv
+ * @property [pan] an optional [String] containing the PAN
+ * @property [expiryDate] an optional [ExpiryDate] object containing the expiry month and year
+ * @property [cvv] an optional [String] containing the cvv
  */
 class CardDetails private constructor(
     val pan: String?,
@@ -34,4 +34,10 @@ class CardDetails private constructor(
 
 }
 
+/**
+ * This class represents an expiry date for a [CardDetails]
+ *
+ * @property [month] the expiry month
+ * @property [year] the expiry year
+ */
 class ExpiryDate(val month: Int, val year: Int)

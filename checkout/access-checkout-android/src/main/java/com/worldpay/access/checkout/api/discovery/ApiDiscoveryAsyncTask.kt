@@ -12,12 +12,13 @@ import java.net.MalformedURLException
 import java.net.URL
 
 /**
- * [ApiDiscoveryAsyncTask] is responsible for discovering an API given the list of endpoints.
- * On completion, the given callback will be called with the corresponding error or success response from the Discovery API.
+ * This class is responsible for discovering an API given the list of endpoints. On completion,
+ * the given callback will be called with the corresponding error or success response from the
+ * Discovery API.
  *
- * @param[callback] - the callback via which the result is returned
- * @param[endpoints] - a list of [Endpoint]s that is iterated over to navigate through the discovery tree
- * @param[httpClient] - an [HttpClient] that is responsible for sending the HTTP request
+ * @property [callback] The callback via which the result is returned
+ * @property [endpoints] A [List] of [Endpoint] that is iterated over to navigate through the discovery tree
+ * @property [httpClient] An [HttpClient] that is responsible for sending HTTP requests to the Access Worldpay services
  */
 internal class ApiDiscoveryAsyncTask(
     private val callback: Callback<String>,
@@ -25,13 +26,9 @@ internal class ApiDiscoveryAsyncTask(
     private val httpClient: HttpClient
 ) : AsyncTask<String, Any, AsyncTaskResult<String>>() {
 
-    companion object {
-        private const val TAG = "AccessCheckoutDiscoveryAsyncTask"
-    }
-
     override fun doInBackground(vararg params: String?): AsyncTaskResult<String> {
         return try {
-            debugLog(TAG, "Sending request to service discovery endpoint")
+            debugLog(javaClass.simpleName, "Sending request to service discovery endpoint")
 
             var resourceUrl = params[0]
 
@@ -39,17 +36,17 @@ internal class ApiDiscoveryAsyncTask(
                 resourceUrl = fetchLinkFromUrl(resourceUrl, e.getDeserializer())
             }
 
-            debugLog(TAG, "Received response from service discovery endpoint")
+            debugLog(javaClass.simpleName, "Received response from service discovery endpoint")
             AsyncTaskResult(resourceUrl as String)
         } catch (ex: Exception) {
             val errorMessage = "An error was thrown when trying to make a connection to the service"
             when (ex) {
                 is AccessCheckoutHttpException, is AccessCheckoutError -> {
-                    debugLog(TAG, errorMessage)
+                    debugLog(javaClass.simpleName, errorMessage)
                     AsyncTaskResult(AccessCheckoutDiscoveryException(errorMessage, ex))
                 }
                 else -> {
-                    debugLog(TAG, ex.message ?: errorMessage)
+                    debugLog(javaClass.simpleName, ex.message ?: errorMessage)
                     AsyncTaskResult(ex)
                 }
             }
@@ -64,7 +61,7 @@ internal class ApiDiscoveryAsyncTask(
         val httpUrl = try {
             URL(url)
         } catch (e: MalformedURLException) {
-            debugLog(TAG, "Invalid URL supplied: $url")
+            debugLog(javaClass.simpleName, "Invalid URL supplied: $url")
             throw AccessCheckoutDiscoveryException("Invalid URL supplied: $url", e)
         }
         return httpClient.doGet(httpUrl, deserializer)

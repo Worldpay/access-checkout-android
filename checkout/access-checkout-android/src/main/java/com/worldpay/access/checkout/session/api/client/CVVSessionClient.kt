@@ -9,11 +9,12 @@ import com.worldpay.access.checkout.session.api.response.SessionResponse
 import java.net.URL
 
 /**
- * [CVVSessionClient] is the client for a Payments CVC Session
+ * Client for a Payments CVC Session that retrieves a [SessionResponse] by making a post request
+ * to Access Worldpay services.
  *
- * @param[deserializer] - passed to the [HttpClient] to deserialise [SessionResponse]
- * @param[serializer] - passed to the [HttpClient] to serialise [SessionRequest]
- * @param[httpClient] - responsible for carrying out the HTTP request
+ * @property[deserializer] Used to deserialise the [SessionResponse]
+ * @property[serializer] Used to serialise [SessionRequest]
+ * @property[httpClient] Responsible for carrying out the HTTP request
  */
 internal class CVVSessionClient(
     private val deserializer: Deserializer<SessionResponse>,
@@ -24,8 +25,9 @@ internal class CVVSessionClient(
     /**
      * Uses the given httpClient to make a request to the API to retrieve a session response
      *
-     * @param[url] - the URL for the service
-     * @param[request] - [SessionRequest] containing session request info
+     * @param[url] the [URL] for the service
+     * @param[request] [SessionRequest] containing session request info
+     *
      * @return [SessionResponse] representation of response from the service
      */
     override fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse? {

@@ -5,12 +5,13 @@ import com.worldpay.access.checkout.client.SessionType
 import java.io.Serializable
 
 /**
- * [SessionRequestInfo] contains all the necessary information to request a session
+ * This is a serializable class that contain all the necessary information to request a session.
+ * It should only be created using the [SessionResponseInfo.Builder]
  *
- * @param[baseUrl] - the base API URL
- * @param[requestBody] - the [SessionRequest] with the card and merchant information
- * @param[sessionType] - the [SessionType] that is being requested
- * @param[discoverLinks] - [DiscoverLinks] containing the endpoints to be discovered in the API
+ * @param[baseUrl] [String] representing the base url for Access Worldpay services
+ * @param[requestBody] [SessionRequest] with the card and merchant information
+ * @param[sessionType] [SessionType] that is being requested
+ * @param[discoverLinks] [DiscoverLinks] containing the endpoints to be discovered in the API
  */
 internal class SessionRequestInfo private constructor(
     val baseUrl: String,
