@@ -57,7 +57,7 @@ implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 The main step required in order to use the Access Checkout SDK is the initialisation of an instance of `AccessCheckoutClient`. 
 Interaction with this class will allow developers to obtain a session state from Access Worldpay services. 
 
-This can be achieved by invoking the `init()` method of this class and by providing the required dependencies, more details provided in the following sections.
+This can be achieved by making use of the builder method for this class and by providing the required dependencies, more details provided in the following sections.
 
 `AccessCheckoutCard` is the coordinator class between the view inputs, the (optional) validators of those inputs, and the callback of those validation results to an implementation of `CardListener`
 
@@ -95,23 +95,30 @@ val panView = findViewById<PANLayout>(R.id.panView)
 val cardCVVText = findViewById<CardCVVText>(R.id.cardCVVText)
 val cardExpiryText = findViewById<CardExpiryTextLayout>(R.id.cardExpiryText)
 
-accessCheckoutClient = AccessCheckoutClient.init(
-            getBaseUrl(),           // Base API URL 
-            getMerchantID(),        // Your merchant ID
-            sessionResponseListener,// SessionResponseListener
-            applicationContext,     // Context
-            lifecycleOwner          // LifecycleOwner
-        )
+accessCheckoutClient = AccessCheckoutClientBuilder
+                                .baseUrl(getBaseUrl())                              // Base API URL
+                                .merchantId(getMerchantID())                        // Your merchant ID
+                                .context(applicationContext)                        // Context
+                                .sessionResponseListener(sessionResponseListener)   // SessionResponseListener
+                                .lifecycleOwner(lifecycleOwner)                     // LifecycleOwner
+                                .build()
 ```
 
-When the form data is ready to be submitted, `generateSessionState` may be called in order to create a session state, passing along the data from each of the fields:
+When the form data is ready to be submitted, `generateSessionState` may be called in order to create a session state, passing along the data from each of the fields as CardDetails object and a list of requested SessionType (More detail later on this page)
 
 ```
 val pan = panView.getInsertedText()
 val month = cardExpiryText.getMonth()
 val year = cardExpiryText.getYear()
 val cvv = cardCVVText.getInsertedText()
-accessCheckoutClient.generateSessionState(pan, month, year, cvv)
+
+val cardDetails = CardDetails.Builder()
+                    .pan(pan)
+                    .expiryDate(month, year)
+                    .cvc(cvc)
+                    .build()
+
+generateSessionState(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
 ```
 
 #### Initialisation parameters
@@ -204,14 +211,39 @@ val cardConfiguration = CardConfiguration(brands = ..., defaults = ...)
 `card.cardValidator = AccessCheckoutCardValidator(cardConfiguration)`
 ```
 
-#### Receiving the Session State 
+#### Requesting the Session State/s
 
+To receive a session state, as shown below, you must call the AccessCheckoutClient.generateSessionState method and pass the CardDetails object and a list the type of session state/s (```SessionType```) you would like to receive back.
 
-When the request for a session state starts, the `SessionResponseListener` is notified via the  `onRequestStarted()` callback method. 
+```
+val cardDetails = CardDetails.Builder()
+                    .pan(pan)
+                    .expiryDate(month, year)
+                    .cvc(cvc)
+                    .build()
+
+generateSessionState(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
+```
+
+##### Verified Token Session (```VERIFIED_TOKEN_SESSION```)
+
+This is the session required for a standard card payment using a new card that is not saved on file.
+
+##### Payments CVC Session (```PAYMENTS_CVC_SESSION```)
+
+ At present this is only a requirement for mastercard payments if you are a gambling merchant. This session is required when making a repeat payment using a card with stored details but the cvc is required to be captured again for additional verification.
+
+##### Receive both session types
+
+Mastercard scheme rules require that gambling merchants need both a Verified Token Session and a Payment CVC Session for first time payments. (Subsequent payments will only require a Payments CVC Session)
+
+#### Receiving the Session State
+
+When the request for a session state starts, the `SessionResponseListener` is notified via the  `onRequestStarted()` callback method.
 
 When a result becomes available, the implementing class of `SessionResponseListener` will receive the callback holding the session state or an exception describing the error.
 
-`onRequestFinished(sessionState: String?, error: AccessCheckoutException?)`
+`onRequestFinished(sessionState: List<String>?, error: AccessCheckoutException?)`
 
 #### When things go wrong: `AccessCheckoutException`
 

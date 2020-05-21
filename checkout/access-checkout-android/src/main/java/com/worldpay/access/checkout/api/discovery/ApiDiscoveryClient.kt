@@ -6,6 +6,13 @@ import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.util.concurrent.atomic.AtomicInteger
 
+/**
+ * This class is responsible for managing the discovery of the API endpoint for a service and
+ * calls the callback with the discovered API endpoint and utilises caching using the [DiscoveryCache]
+ *
+ * @property apiDiscoveryAsyncTaskFactory [ApiDiscoveryAsyncTaskFactory] to retrieve an [ApiDiscoveryAsyncTask]
+ * @property discoveryCache A [DiscoveryCache] for storing the discovered endpoints
+ */
 internal class ApiDiscoveryClient(
     private val apiDiscoveryAsyncTaskFactory: ApiDiscoveryAsyncTaskFactory,
     private val discoveryCache: DiscoveryCache = DiscoveryCache
@@ -14,10 +21,16 @@ internal class ApiDiscoveryClient(
     private val currentAttempts = AtomicInteger(0)
     private val maxAttempts = 2
 
-    companion object {
-        private const val TAG = "AccessCheckoutDiscoveryClient"
-    }
-
+    /**
+     * Asynchronously discovers the required API endpoint for the desired service.
+     *
+     * @param[baseUrl] [String] the base url for the API
+     * @param[callback] [Callback] of [String] generic type that will be called with the response or error
+     * @param[discoverLinks] A [DiscoverLinks] object which contains the information on the service to discover
+     *
+     * @return [String] Url of the discovered endpoint
+     * @throws [AccessCheckoutDiscoveryException] This can be thrown in the event where no base url is supplied
+     */
     fun discover(baseUrl: String, callback: Callback<String>, discoverLinks: DiscoverLinks) {
         if (baseUrl.isBlank()) {
             throw AccessCheckoutDiscoveryException("No URL supplied")
@@ -26,7 +39,7 @@ internal class ApiDiscoveryClient(
         val asyncTaskResult = discoveryCache.getResult(discoverLinks)
 
         if (asyncTaskResult == null) {
-            debugLog(TAG, "Discovering endpoint")
+            debugLog(javaClass.simpleName, "Discovering endpoint")
 
             currentAttempts.addAndGet(1)
             val asyncTaskResultCallback = getAsyncTaskResultCallback(callback, discoverLinks, baseUrl)
@@ -34,7 +47,7 @@ internal class ApiDiscoveryClient(
             val accessCheckoutDiscoveryAsyncTask = apiDiscoveryAsyncTaskFactory.getAsyncTask(asyncTaskResultCallback, discoverLinks)
             accessCheckoutDiscoveryAsyncTask.execute(baseUrl)
         } else {
-            debugLog(TAG, "Task result was already present. Num of currentAttempts: ${currentAttempts.get()}")
+            debugLog(javaClass.simpleName, "Task result was already present. Num of currentAttempts: ${currentAttempts.get()}")
             handleResult(
                 asyncTaskResult = asyncTaskResult,
                 callback = callback,

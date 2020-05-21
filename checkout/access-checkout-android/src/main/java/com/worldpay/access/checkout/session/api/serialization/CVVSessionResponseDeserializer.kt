@@ -5,6 +5,9 @@ import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponse.Links
 import org.json.JSONObject
 
+/**
+ * This class is responsible for deserialising the response json from a request for a Payments CVC Session
+ */
 internal class CVVSessionResponseDeserializer : Deserializer<SessionResponse>() {
 
     override fun deserialize(json: String): SessionResponse {

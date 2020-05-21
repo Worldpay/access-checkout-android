@@ -8,10 +8,22 @@ import kotlin.reflect.KClass
 
 internal typealias Parser<T> = (String) -> T
 
+/**
+ * This class is responsible for deserialising a json [String] into a generic type of [T]
+ */
 internal abstract class Deserializer<T> {
 
+    /**
+     * Deserialises [json] [String] into the type of [T]
+     */
     abstract fun deserialize(json: String): T
 
+    /**
+     * Deserialises [json] [String] into the type of [T] using a given [parser]
+     *
+     * @param [json] the json [String] to deserialise
+     * @param [parser] the [Parser] to use for deserialisation
+     */
     protected fun deserialize(json: String, parser: Parser<T>): T {
         if (json.isEmpty()) {
             throw AccessCheckoutDeserializationException("Cannot deserialize empty string")

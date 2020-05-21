@@ -3,6 +3,12 @@ package com.worldpay.access.checkout.session.api.response
 import com.worldpay.access.checkout.client.SessionType
 import java.io.Serializable
 
+/**
+ * This class holds the response body and other metadata about the [SessionResponse] and [SessionType]
+ *
+ * @property[responseBody] [SessionResponse] representation of session response data
+ * @property[sessionType] The [SessionType] that was requested
+ */
 internal class SessionResponseInfo private constructor(
     val responseBody: SessionResponse,
     val sessionType: SessionType

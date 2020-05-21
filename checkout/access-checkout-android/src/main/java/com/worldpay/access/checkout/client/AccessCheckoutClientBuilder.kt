@@ -11,6 +11,11 @@ import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactor
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 import com.worldpay.access.checkout.views.SessionResponseListener
 
+/**
+ * A builder that returns an [AccessCheckoutClient] for the client to use for session generation
+ *
+ * @see AccessCheckoutClient for more information on how to use the client
+ */
 class AccessCheckoutClientBuilder {
 
     private val tag = "AccessCheckoutClient"
@@ -20,31 +25,66 @@ class AccessCheckoutClientBuilder {
     private var externalSessionResponseListener: SessionResponseListener? = null
     private var lifecycleOwner: LifecycleOwner? = null
 
+    /**
+     * Sets the base url for Access Worldpay services
+     *
+     * @param[baseURL] [String] that represents the base url
+     */
     fun baseUrl(baseURL: String): AccessCheckoutClientBuilder {
         this.baseUrl = baseURL
         return this
     }
 
+    /**
+     * Sets the merchant id of the client
+     *
+     * @param[merchantID] [String] that represents the id of the merchant given to the client at time of registration
+     */
     fun merchantId(merchantID: String): AccessCheckoutClientBuilder {
         this.merchantId = merchantID
         return this
     }
 
+    /**
+     * Sets the application context
+     *
+     * @param[context] [Context] that represents the application
+     */
     fun context(context: Context): AccessCheckoutClientBuilder {
         this.context = context
         return this
     }
 
+    /**
+     * Sets the [SessionResponseListener] for the client
+     *
+     * @param[sessionResponseListener] An external session response listener that is notified on http requests
+     *
+     * @see SessionResponseListener
+     */
     fun sessionResponseListener(sessionResponseListener: SessionResponseListener): AccessCheckoutClientBuilder {
         this.externalSessionResponseListener = sessionResponseListener
         return this
     }
 
+    /**
+     * Sets the application lifecycle owner
+     *
+     * @param[lifecycleOwner] [LifecycleOwner] that is required so that broadcast listeners can be registered internally by the SDK
+     *
+     * @see LifecycleOwner
+     */
     fun lifecycleOwner(lifecycleOwner: LifecycleOwner): AccessCheckoutClientBuilder {
         this.lifecycleOwner = lifecycleOwner
         return this
     }
 
+    /**
+     * Builds the [AccessCheckoutClient] given all previous functions were called
+     *
+     * @return [AccessCheckoutClient] interface with a default internal implementation
+     * @throws [IllegalArgumentException] is thrown when a property is missing
+     */
     fun build(): AccessCheckoutClient {
         validateNotNull(baseUrl, "base url")
         validateNotNull(merchantId, "merchant ID")

@@ -5,6 +5,7 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.ExpiryDate
 import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.SessionRequestService
 import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
@@ -13,6 +14,12 @@ import com.worldpay.access.checkout.session.api.request.CardSessionRequest.CardE
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 
+/**
+ * [VerifiedTokensSessionRequestHandler] is responsible for handling requests for a [VERIFIED_TOKEN_SESSION]
+ *
+ * @property canHandle - returns true if list of [SessionType] contains a [VERIFIED_TOKEN_SESSION]
+ * @property handle - handles the request for a [VERIFIED_TOKEN_SESSION]
+ */
 internal class VerifiedTokensSessionRequestHandler(
     private val sessionRequestHandlerConfig: SessionRequestHandlerConfig
 ) : SessionRequestHandler {
