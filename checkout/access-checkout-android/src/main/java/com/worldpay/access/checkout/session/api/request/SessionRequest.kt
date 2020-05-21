@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.session.api.request
 
-import com.worldpay.access.checkout.session.api.CardSessionRequest.CardExpiryDate
 import java.io.Serializable
 
 /**
