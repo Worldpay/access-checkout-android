@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.validation
 
-import com.worldpay.access.checkout.model.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
 
 internal object ValidatorUtils {
 

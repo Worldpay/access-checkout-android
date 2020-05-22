@@ -1,7 +1,9 @@
 package com.worldpay.access.checkout.validation
 
-import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.model.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.MONTH_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.YEAR_DEFAULTS
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import java.util.*
 import java.util.Calendar.*
@@ -89,24 +91,18 @@ internal class DateValidatorImpl(
     }
 
     private fun getRulesForDate(cardConfiguration: CardConfiguration?): Pair<CardValidationRule, CardValidationRule> {
-        val monthDefaultRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", listOf(2))
-        val yearDefaultRule = CardValidationRule("^\\d{0,2}$", listOf(2))
-        val defaults = cardConfiguration?.defaults ?: return Pair(monthDefaultRule, yearDefaultRule)
-        val monthRule = defaults.month ?: monthDefaultRule
-        val yearRule = defaults.year ?: yearDefaultRule
-        return Pair(monthRule, yearRule)
+        if (cardConfiguration == null) {
+            return Pair(MONTH_DEFAULTS, YEAR_DEFAULTS)
+        }
+        return Pair(cardConfiguration.defaults.month, cardConfiguration.defaults.year)
     }
 
     private fun getValidationResult(rule: CardValidationRule, insertedDateField: String): ValidationResult {
-        if (rule.matcher != null) {
-            return when {
-                ValidatorUtils.regexMatches(rule.matcher, insertedDateField) -> getValidationResultFor(insertedDateField, rule)
-                insertedDateField.isBlank() -> ValidationResult(partial = true, complete = false)
-                else -> ValidationResult(partial = false, complete = false)
-            }
+        return when {
+            ValidatorUtils.regexMatches(rule.matcher, insertedDateField) -> getValidationResultFor(insertedDateField, rule)
+            insertedDateField.isBlank() -> ValidationResult(partial = true, complete = false)
+            else -> ValidationResult(partial = false, complete = false)
         }
-
-        return getValidationResultFor(insertedDateField, rule)
     }
 
     private fun isFullDateValid(year: Year, month: Month): Boolean {

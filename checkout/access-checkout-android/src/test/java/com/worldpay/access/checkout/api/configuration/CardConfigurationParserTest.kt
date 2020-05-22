@@ -1,8 +1,11 @@
 package com.worldpay.access.checkout.api.configuration
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardValidationRule
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV_RULE
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_MONTH_RULE
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_YEAR_RULE
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN_RULE
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -13,10 +16,6 @@ import kotlin.test.assertNull
 class CardConfigurationParserTest {
 
     private lateinit var cardConfigurationParser: CardConfigurationParser
-    private val panDefaults: CardValidationRule = CardValidationRule(null, listOf(15,16,18,19))
-    private val cvvDefaults: CardValidationRule = CardValidationRule(null, listOf(3,4))
-    private val monthDefaults: CardValidationRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", listOf(2))
-    private val yearDefaults: CardValidationRule = CardValidationRule("^\\d{0,2}$", listOf(2))
 
     private val validCardConfigurationJson = """
                    [
@@ -90,20 +89,20 @@ class CardConfigurationParserTest {
 
     @Test
     fun givenANullInputShouldReturnADefaultCardConfiguration() {
-        val  cardConfiguration = cardConfigurationParser.parse(null)
-        assertEquals(panDefaults, cardConfiguration.defaults?.pan)
-        assertEquals(cvvDefaults, cardConfiguration.defaults?.cvv)
-        assertEquals(monthDefaults, cardConfiguration.defaults?.month)
-        assertEquals(yearDefaults, cardConfiguration.defaults?.year)
+        val cardConfiguration = cardConfigurationParser.parse(null)
+        assertEquals(PAN_RULE, cardConfiguration.defaults.pan)
+        assertEquals(CVV_RULE, cardConfiguration.defaults.cvv)
+        assertEquals(EXP_MONTH_RULE, cardConfiguration.defaults.month)
+        assertEquals(EXP_YEAR_RULE, cardConfiguration.defaults.year)
     }
 
     @Test
     fun givenAnEmptyConfigShouldReturnADefaultCardConfiguration() {
         val cardConfiguration = cardConfigurationParser.parse("".byteInputStream())
-        assertEquals(panDefaults, cardConfiguration.defaults?.pan)
-        assertEquals(cvvDefaults, cardConfiguration.defaults?.cvv)
-        assertEquals(monthDefaults, cardConfiguration.defaults?.month)
-        assertEquals(yearDefaults, cardConfiguration.defaults?.year)
+        assertEquals(PAN_RULE, cardConfiguration.defaults.pan)
+        assertEquals(CVV_RULE, cardConfiguration.defaults.cvv)
+        assertEquals(EXP_MONTH_RULE, cardConfiguration.defaults.month)
+        assertEquals(EXP_YEAR_RULE, cardConfiguration.defaults.year)
     }
 
     @Test
@@ -130,7 +129,7 @@ class CardConfigurationParserTest {
 
         assertEquals(1, cardConfiguration.brands.size)
         assertNull(cardConfiguration.brands[0].cvv)
-        assertNull(cardConfiguration.brands[0].pan?.matcher)
+        assertEquals(MATCHER, cardConfiguration.brands[0].pan?.matcher)
         assertEquals(emptyList<Int>(), cardConfiguration.brands[0].pan?.validLengths)
     }
 
@@ -266,10 +265,10 @@ class CardConfigurationParserTest {
         val cardConfiguration =
             cardConfigurationParser.parse(validCardConfigurationJson.byteInputStream())
 
-        assertEquals(listOf(15,16,18,19), cardConfiguration.defaults?.pan?.validLengths)
-        assertEquals(listOf(3,4), cardConfiguration.defaults?.cvv?.validLengths)
-        assertEquals(listOf(2), cardConfiguration.defaults?.month?.validLengths)
-        assertEquals(listOf(2), cardConfiguration.defaults?.year?.validLengths)
+        assertEquals(listOf(15,16,18,19), cardConfiguration.defaults.pan.validLengths)
+        assertEquals(listOf(3,4), cardConfiguration.defaults.cvv.validLengths)
+        assertEquals(listOf(2), cardConfiguration.defaults.month.validLengths)
+        assertEquals(listOf(2), cardConfiguration.defaults.year.validLengths)
     }
 
     @Test
@@ -279,9 +278,9 @@ class CardConfigurationParserTest {
         val cardConfiguration =
             cardConfigurationParser.parse(cardConfigurationJson.byteInputStream())
 
-        assertEquals(listOf(15,16,18,19), cardConfiguration.defaults?.pan?.validLengths)
-        assertEquals(listOf(3,4), cardConfiguration.defaults?.cvv?.validLengths)
-        assertEquals(listOf(2), cardConfiguration.defaults?.month?.validLengths)
-        assertEquals(listOf(2), cardConfiguration.defaults?.year?.validLengths)
+        assertEquals(listOf(15,16,18,19), cardConfiguration.defaults.pan.validLengths)
+        assertEquals(listOf(3,4), cardConfiguration.defaults.cvv.validLengths)
+        assertEquals(listOf(2), cardConfiguration.defaults.month.validLengths)
+        assertEquals(listOf(2), cardConfiguration.defaults.year.validLengths)
     }
 }

@@ -6,8 +6,8 @@ import android.widget.ImageView
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.given
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardBrandImage
+import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.CardBrandImage
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
@@ -20,15 +20,16 @@ import java.io.InputStream
 
 class SVGImageLoaderTest {
 
-    private val cardBrand = CardBrand(
-        name = "test",
-        images = listOf(
-            CardBrandImage(
-                "image/svg+xml",
-                "http://localhost/test.svg"
+    private val cardBrand =
+        CardBrand(
+            name = "test",
+            images = listOf(
+                CardBrandImage(
+                    "image/svg+xml",
+                    "http://localhost/test.svg"
+                )
             )
         )
-    )
 
     private lateinit var activity: Activity
     private lateinit var targetImageView: ImageView
@@ -90,15 +91,16 @@ class SVGImageLoaderTest {
 
     @Test
     fun shouldNotAttemptToFetchRemoteCardLogoIfNoSvgLogoForUnidentifiedBrandAndShouldSetUnknownCardLogo() {
-        val cardBrandWithNoSVG = CardBrand(
-            name = "test",
-            images = listOf(
-                CardBrandImage(
-                    "image/png",
-                    "http://localhost/test.png"
+        val cardBrandWithNoSVG =
+            CardBrand(
+                name = "test",
+                images = listOf(
+                    CardBrandImage(
+                        "image/png",
+                        "http://localhost/test.png"
+                    )
                 )
             )
-        )
 
         val mockHttpCall = mock(Call::class.java)
         given(client.newCall(any())).willReturn(mockHttpCall)

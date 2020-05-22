@@ -2,14 +2,14 @@ package com.worldpay.access.checkout.views
 
 import android.text.InputFilter
 import android.text.Spanned
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.model.CardDefaults
-import com.worldpay.access.checkout.model.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.api.configuration.CardDefaults
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.MONTH_DEFAULTS
 import com.worldpay.access.checkout.validation.CardBrandUtils
 import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
-import kotlin.math.absoluteValue
 
 /**
  * [AbstractCardFieldLengthFilter] is a common abstraction class which is used by individual field implementers to restrict the length of a particular card field
@@ -100,6 +100,6 @@ class PANLengthFilter(private val cardValidator: CardValidator) :
  * [DateLengthFilter] applies a length restriction to the date field based on configuration defaults
  */
 class DateLengthFilter(cardConfiguration: CardConfiguration): AbstractCardFieldLengthFilter(cardConfiguration) {
-    override fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule? = cardDefaults?.month ?: cardDefaults?.year
+    override fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule? = MONTH_DEFAULTS
 
 }
