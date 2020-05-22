@@ -87,7 +87,7 @@ class CardConfigurationAsyncTaskTest {
 
     @Test
     fun givenValidURL_ThenShouldReturnCardConfiguration() {
-        val cardConfiguration = CardConfiguration()
+        val cardConfiguration = CardConfiguration(emptyList())
 
         var asserted = false
 

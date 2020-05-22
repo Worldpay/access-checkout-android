@@ -54,21 +54,21 @@ class DateLengthFilterTest {
 
     @Test
     fun givenNoDefaultConfigurationThenShouldNotFilter() {
-        val dateLengthFilter = DateLengthFilter(CardConfiguration())
+        val dateLengthFilter = DateLengthFilter(CardConfiguration(emptyList()))
 
         assertNull(dateLengthFilter.filter("0", 0, 1, SpannableStringBuilder("01"), 2, 2))
     }
 
     @Test
     fun givenNoDateFieldConfigurationThenShouldNotFilter() {
-        val dateLengthFilter = DateLengthFilter(CardConfiguration(defaults = CardDefaults(null, null, null, null)))
+        val dateLengthFilter = DateLengthFilter(CardConfiguration(emptyList(), CardDefaults(null, null, null, null)))
 
         assertNull(dateLengthFilter.filter("0", 0, 1, SpannableStringBuilder("01"), 2, 2))
     }
 
     @Test
     fun givenNoValidLengthForDateFieldRulesThenShouldNotFilter() {
-        val dateLengthFilter = DateLengthFilter(CardConfiguration(defaults = CardDefaults(null, null, CardValidationRule(null, emptyList()), CardValidationRule(null, emptyList()))))
+        val dateLengthFilter = DateLengthFilter(CardConfiguration(emptyList(), CardDefaults(null, null, CardValidationRule(null, emptyList()), CardValidationRule(null, emptyList()))))
 
         assertNull(dateLengthFilter.filter("0", 0, 1, SpannableStringBuilder("01"), 2, 2))
     }

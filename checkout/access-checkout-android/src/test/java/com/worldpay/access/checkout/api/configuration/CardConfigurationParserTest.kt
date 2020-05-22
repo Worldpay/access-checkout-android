@@ -128,10 +128,10 @@ class CardConfigurationParserTest {
         val cardConfiguration =
             cardConfigurationParser.parse(jsonWithMissingOptionalBrandProps.byteInputStream())
 
-        assertEquals(1, cardConfiguration.brands!!.size)
-        assertNull(cardConfiguration.brands!![0].cvv)
-        assertNull(cardConfiguration.brands!![0].pan?.matcher)
-        assertEquals(emptyList<Int>(), cardConfiguration.brands!![0].pan?.validLengths)
+        assertEquals(1, cardConfiguration.brands.size)
+        assertNull(cardConfiguration.brands[0].cvv)
+        assertNull(cardConfiguration.brands[0].pan?.matcher)
+        assertEquals(emptyList<Int>(), cardConfiguration.brands[0].pan?.validLengths)
     }
 
     @Test
@@ -192,12 +192,12 @@ class CardConfigurationParserTest {
     }
 
     @Test
-    fun givenEmptyBrandsConfigThenShouldParseSuccessfully() {
+    fun givenEmptyBrandsConfigThenShouldUseEmptyListInstead() {
         val missingBrands = """""".trimIndent()
 
         val cardConfiguration = cardConfigurationParser.parse(missingBrands.byteInputStream())
 
-        assertNull(cardConfiguration.brands)
+        assertEquals(0, cardConfiguration.brands.size)
     }
 
     @Test
@@ -215,12 +215,12 @@ class CardConfigurationParserTest {
         val cardConfiguration =
             cardConfigurationParser.parse(validCardConfigurationJson.byteInputStream())
 
-        assertEquals(mutableListOf(16,18,19), cardConfiguration.brands?.get(0)?.pan?.validLengths)
-        assertEquals(mutableListOf(16), cardConfiguration.brands?.get(1)?.pan?.validLengths)
-        assertEquals(mutableListOf(15), cardConfiguration.brands?.get(2)?.pan?.validLengths)
+        assertEquals(mutableListOf(16,18,19), cardConfiguration.brands[0].pan?.validLengths)
+        assertEquals(mutableListOf(16), cardConfiguration.brands[1].pan?.validLengths)
+        assertEquals(mutableListOf(15), cardConfiguration.brands[2].pan?.validLengths)
 
-        val visa = cardConfiguration.brands?.get(0)
-        assertEquals("visa", visa!!.name)
+        val visa = cardConfiguration.brands[0]
+        assertEquals("visa", visa.name)
 
         assertEquals(2, visa.images?.size)
         val visaCardBrandImage1 = visa.images!![0]
@@ -232,8 +232,8 @@ class CardConfigurationParserTest {
 
         assertEquals(listOf(3), visa.cvv?.validLengths)
 
-        val mastercard = cardConfiguration.brands?.get(1)
-        assertEquals("mastercard", mastercard!!.name)
+        val mastercard = cardConfiguration.brands[1]
+        assertEquals("mastercard", mastercard.name)
 
         assertEquals(2, mastercard.images?.size)
         val mastercardCardBrandImage1 = mastercard.images!![0]
@@ -246,8 +246,8 @@ class CardConfigurationParserTest {
         assertEquals(listOf(3), mastercard.cvv?.validLengths)
         assertEquals(listOf(16), mastercard.pan?.validLengths)
 
-        val amex = cardConfiguration.brands?.get(2)
-        assertEquals("amex", amex!!.name)
+        val amex = cardConfiguration.brands[2]
+        assertEquals("amex", amex.name)
 
         assertEquals(2, amex.images?.size)
         val amexCardBrandImage1 = amex.images!![0]

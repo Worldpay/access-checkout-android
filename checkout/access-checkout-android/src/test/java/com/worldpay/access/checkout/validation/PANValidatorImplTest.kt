@@ -99,7 +99,7 @@ class PANValidatorImplTest {
     fun `given no card number entered and only card defaults present then should be partially valid`() {
         val defaults = CardDefaults(panDefaults, null, null, null)
 
-        val panValidator = PANValidatorImpl(CardConfiguration(null, defaults))
+        val panValidator = PANValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         val result = panValidator.validate("")
         assertEquals(ValidationResult(partial = true, complete = false), result.first)
@@ -273,8 +273,6 @@ class PANValidatorImplTest {
 
     @Test
     fun `given luhn-invalid unidentified card should only be partially valid`() {
-        val brandRule1 = CardValidationRule("^4\\d{0,4}$", emptyList())
-        val brandRule2 = CardValidationRule("^5\\d{0,4}$", emptyList())
         val cardBrand1 = CardBrand("some brand 1", emptyList(), null)
         val cardBrand2 = CardBrand("some brand 2", emptyList(), null)
 
@@ -287,8 +285,6 @@ class PANValidatorImplTest {
 
     @Test
     fun `given luhn-valid unidentified card should only be completely valid`() {
-        val brandRule1 = CardValidationRule("^4\\d{0,4}$", emptyList())
-        val brandRule2 = CardValidationRule("^5\\d{0,4}$", emptyList())
         val cardBrand1 = CardBrand("some brand 1", emptyList(), null)
         val cardBrand2 = CardBrand("some brand 2", emptyList(), null)
 

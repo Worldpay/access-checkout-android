@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.api.configuration
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.model.*
 import org.json.JSONArray
-import org.json.JSONObject
 import java.io.InputStream
 
 internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
@@ -37,9 +36,9 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
     fun parse(cardConfiguration: InputStream?): CardConfiguration {
         return cardConfiguration?.let {
             val json = it.reader(Charsets.UTF_8).readText()
-            return if (json.isBlank()) CardConfiguration(defaults = cardDefaults)
+            return if (json.isBlank()) CardConfiguration(emptyList(), cardDefaults)
             else deserialize(json)
-        } ?: CardConfiguration(defaults = cardDefaults)
+        } ?: CardConfiguration(emptyList(), cardDefaults)
     }
 
     override fun deserialize(json: String): CardConfiguration {
@@ -49,7 +48,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         }
     }
 
-    private fun parseBrandsConfig(root: JSONArray): List<CardBrand>? {
+    private fun parseBrandsConfig(root: JSONArray): List<CardBrand> {
         return root.let {
             val brandsList = mutableListOf<CardBrand>()
             for (i in 0 until it.length()) {

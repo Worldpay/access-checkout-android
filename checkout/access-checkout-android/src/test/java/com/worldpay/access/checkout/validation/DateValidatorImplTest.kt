@@ -24,7 +24,7 @@ class DateValidatorImplTest {
         validator = DateValidatorImpl(
             now = now,
             cardConfiguration = CardConfiguration(
-                null,
+                emptyList(),
                 CardDefaults(
                     null,
                     null,
@@ -53,7 +53,7 @@ class DateValidatorImplTest {
     fun `given no month rule only and empty dates then should be partially valid`() {
         val emptyConfigValidator = DateValidatorImpl(
             now,
-            CardConfiguration(defaults = CardDefaults(year = CardValidationRule(validLengths = listOf(2))))
+            CardConfiguration(emptyList(), CardDefaults(year = CardValidationRule(validLengths = listOf(2))))
         )
 
         assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
@@ -63,7 +63,7 @@ class DateValidatorImplTest {
     fun `given no year rule only and empty dates then should be partially valid`() {
         val emptyConfigValidator = DateValidatorImpl(
             now,
-            CardConfiguration(defaults = CardDefaults(month = CardValidationRule(validLengths = listOf(2))))
+            CardConfiguration(emptyList(), CardDefaults(month = CardValidationRule(validLengths = listOf(2))))
         )
         assertEquals(ValidationResult(partial = true, complete = false), emptyConfigValidator.validate("", ""))
     }
@@ -92,6 +92,7 @@ class DateValidatorImplTest {
         val emptyMatcherConfigValidator = DateValidatorImpl(
             now,
             CardConfiguration(
+                brands = emptyList(),
                 defaults =  CardDefaults(
                     month = monthRule,
                     year = yearRule)
@@ -291,7 +292,7 @@ class DateValidatorImplTest {
 
     @Test
     fun `given empty configuration then dates can be updated`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration())
+        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(brands = emptyList()))
 
         assertTrue(emptyConfigValidator.canUpdate("", ""))
         assertTrue(emptyConfigValidator.canUpdate("1", "1"))
@@ -300,7 +301,7 @@ class DateValidatorImplTest {
 
     @Test
     fun `given empty year rule then dates can be updated`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, CardValidationRule(null, emptyList()), null)))
+        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(emptyList(), CardDefaults(null, null, CardValidationRule(null, emptyList()), null)))
 
         assertTrue(emptyConfigValidator.canUpdate("", ""))
         assertTrue(emptyConfigValidator.canUpdate("1", "1"))
@@ -309,7 +310,7 @@ class DateValidatorImplTest {
 
     @Test
     fun `given empty month rule then dates can be updated`() {
-        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(null, CardDefaults(null, null, null, CardValidationRule(null, emptyList()))))
+        val emptyConfigValidator = DateValidatorImpl(now, CardConfiguration(emptyList(), CardDefaults(null, null, null, CardValidationRule(null, emptyList()))))
 
         assertTrue(emptyConfigValidator.canUpdate("", ""))
         assertTrue(emptyConfigValidator.canUpdate("1", "1"))

@@ -27,7 +27,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3))
         val defaults = CardDefaults(null, cvvValidationRule, null, null)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = true, complete = false), null), cvvValidator.validate("", null))
     }
@@ -57,7 +57,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = false, complete = false), null), cvvValidator.validate("1234", ""))
     }
@@ -67,7 +67,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = true, complete = false), null), cvvValidator.validate("12", null))
     }
@@ -77,7 +77,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3,4))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = true, complete = true), null), cvvValidator.validate("123", null))
     }
@@ -87,7 +87,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = false, complete = false), null), cvvValidator.validate("12345", null))
     }
@@ -97,7 +97,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(4))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = true, complete = false), null), cvvValidator.validate("123", null))
     }
@@ -107,7 +107,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3,4))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = false, complete = true), null), cvvValidator.validate("1234", null))
     }
@@ -174,7 +174,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3,4))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = true, complete = true), null), cvvValidator.validate("123", null))
     }
@@ -184,7 +184,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3,4))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = false, complete = true), null), cvvValidator.validate("1234", null))
     }
@@ -194,7 +194,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3,4))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = true, complete = false), null), cvvValidator.validate("12", null))
     }
@@ -204,7 +204,7 @@ class CVVValidatorImplTest {
         val cvvValidationRule = CardValidationRule(null, listOf(3,4))
         val defaults = CardDefaults(cvv = cvvValidationRule)
 
-        val cvvValidator = CVVValidatorImpl(CardConfiguration(null, defaults))
+        val cvvValidator = CVVValidatorImpl(CardConfiguration(emptyList(), defaults))
 
         assertEquals(Pair(ValidationResult(partial = false, complete = false), null), cvvValidator.validate("12345", null))
     }

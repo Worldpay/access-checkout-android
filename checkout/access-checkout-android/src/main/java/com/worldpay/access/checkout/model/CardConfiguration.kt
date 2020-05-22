@@ -7,6 +7,6 @@ package com.worldpay.access.checkout.model
  * @property defaults a list of default configuration to use
  */
 data class CardConfiguration(
-    val brands: List<CardBrand>? = null,
+    val brands: List<CardBrand>,
     val defaults: CardDefaults? = null
 )
