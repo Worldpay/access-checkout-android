@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.api.configuration
 
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV_RULE
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_MONTH_RULE
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_YEAR_RULE
@@ -11,7 +12,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import kotlin.test.assertNull
 
 class CardConfigurationParserTest {
 
@@ -128,7 +128,7 @@ class CardConfigurationParserTest {
             cardConfigurationParser.parse(jsonWithMissingOptionalBrandProps.byteInputStream())
 
         assertEquals(1, cardConfiguration.brands.size)
-        assertNull(cardConfiguration.brands[0].cvv)
+        assertEquals(CVV_DEFAULTS, cardConfiguration.brands[0].cvv)
         assertEquals(MATCHER, cardConfiguration.brands[0].pan.matcher)
         assertEquals(emptyList<Int>(), cardConfiguration.brands[0].pan.validLengths)
     }
@@ -229,7 +229,7 @@ class CardConfigurationParserTest {
         assertEquals("image/svg+xml", visaCardBrandImage2.type)
         assertEquals("<BASE_URL>/visa.svg", visaCardBrandImage2.url)
 
-        assertEquals(listOf(3), visa.cvv?.validLengths)
+        assertEquals(listOf(3), visa.cvv.validLengths)
 
         val mastercard = cardConfiguration.brands[1]
         assertEquals("mastercard", mastercard.name)
@@ -242,7 +242,7 @@ class CardConfigurationParserTest {
         assertEquals("image/svg+xml", mastercardCardBrandImage2.type)
         assertEquals("<BASE_URL>/mastercard.svg", mastercardCardBrandImage2.url)
 
-        assertEquals(listOf(3), mastercard.cvv?.validLengths)
+        assertEquals(listOf(3), mastercard.cvv.validLengths)
         assertEquals(listOf(16), mastercard.pan.validLengths)
 
         val amex = cardConfiguration.brands[2]
@@ -256,7 +256,7 @@ class CardConfigurationParserTest {
         assertEquals("image/svg+xml", amexCardBrandImage2.type)
         assertEquals("<BASE_URL>/amex.svg", amexCardBrandImage2.url)
 
-        assertEquals(listOf(4), amex.cvv?.validLengths)
+        assertEquals(listOf(4), amex.cvv.validLengths)
         assertEquals(listOf(15), amex.pan.validLengths)
     }
 

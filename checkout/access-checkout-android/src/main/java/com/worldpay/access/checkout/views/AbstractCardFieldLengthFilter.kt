@@ -63,7 +63,10 @@ class CVVLengthFilter(
     override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
         cardValidator.validateCVV(field.toString(), panView?.getInsertedText())
 
-    override fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults) = cardBrand?.cvv ?: cardDefaults.cvv
+    override fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults): CardValidationRule {
+        if (cardBrand == null) return cardDefaults.cvv
+        return cardBrand.cvv
+    }
 
 }
 

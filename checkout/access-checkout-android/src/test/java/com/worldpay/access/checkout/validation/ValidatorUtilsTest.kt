@@ -1,7 +1,8 @@
 package com.worldpay.access.checkout.validation
 
-import org.junit.Assert.assertFalse
-import org.junit.Assert.assertTrue
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
+import org.junit.Assert.*
 import org.junit.Test
 
 class ValidatorUtilsTest {
@@ -141,4 +142,11 @@ class ValidatorUtilsTest {
 
         assertFalse(ValidatorUtils.regexMatches(regex, "350000000"))
     }
+
+    @Test
+    fun `should return valid result when valid length is empty on getting validation result`() {
+        val result = getValidationResultFor("", CardValidationRule("", emptyList()))
+        assertEquals(ValidationResult(partial = true, complete = true), result)
+    }
+
 }

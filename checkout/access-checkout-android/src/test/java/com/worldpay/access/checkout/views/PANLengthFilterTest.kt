@@ -7,6 +7,7 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV_RULE
 import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
 import org.junit.Assert.assertEquals
@@ -89,7 +90,7 @@ class PANLengthFilterTest {
         val cardBrand = CardBrand(
             "visa",
             emptyList(),
-            null,
+            CVV_RULE,
             cardValidationRule
         )
         val validationResult = ValidationResult(partial = false, complete = true)
@@ -124,7 +125,7 @@ class PANLengthFilterTest {
         val cardBrand = CardBrand(
             name = "visa",
             images = emptyList(),
-            cvv = null,
+            cvv = CVV_RULE,
             pan = CardValidationRule("^4\\d{0,19}$", emptyList())
         )
         val validationResult = ValidationResult(partial = true, complete = false)

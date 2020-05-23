@@ -1,9 +1,7 @@
 package com.worldpay.access.checkout.views
 
 import android.text.SpannableStringBuilder
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
 import com.worldpay.access.checkout.validation.CardValidator
@@ -208,18 +206,6 @@ class CVVLengthFilterTest {
     @Test
     fun `should get default cvv rule if brand is null`() {
         assertEquals(CARD_DEFAULTS.cvv, cvvLengthFilter.getMaxLengthRule(null, CARD_DEFAULTS))
-    }
-
-    @Test
-    fun `should get default cvv rule if brand cvv is null`() {
-        val cardBrand = CardBrand(
-            name = "some-brand",
-            images = emptyList(),
-            cvv = null,
-            pan = CardValidationRule(matcher = "", validLengths = emptyList())
-        )
-
-        assertEquals(CARD_DEFAULTS.cvv, cvvLengthFilter.getMaxLengthRule(cardBrand, CARD_DEFAULTS))
     }
 
 }

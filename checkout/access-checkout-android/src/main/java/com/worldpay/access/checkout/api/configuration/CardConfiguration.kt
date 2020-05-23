@@ -19,7 +19,7 @@ data class CardConfiguration(val brands: List<CardBrand>, val defaults: CardDefa
 data class CardBrand(
     val name: String,
     val images: List<CardBrandImage>? = emptyList(),
-    val cvv: CardValidationRule? = null,
+    val cvv: CardValidationRule,
     val pan: CardValidationRule
 )
 
