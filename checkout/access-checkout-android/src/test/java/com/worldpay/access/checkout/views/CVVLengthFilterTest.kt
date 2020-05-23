@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.views
 import android.text.SpannableStringBuilder
 import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
 import com.worldpay.access.checkout.validation.CardValidator
@@ -23,8 +24,7 @@ class CVVLengthFilterTest {
 
     private val panView: CardTextView = mock(CardTextView::class.java)
     private val cardValidator: CardValidator = mock(CardValidator::class.java)
-    private val cardConfiguration: CardConfiguration = mock(
-        CardConfiguration::class.java)
+    private val cardConfiguration: CardConfiguration = mock(CardConfiguration::class.java)
     private val cardNumber = "444"
 
     private lateinit var cvvLengthFilter: CVVLengthFilter
@@ -97,14 +97,8 @@ class CVVLengthFilterTest {
     @Test
     fun givenAnIdentifiedCardButNoCvvRuleAndMaximumCvvLengthIsExceededForDefaultCVVRuleThenShouldNotFilterBasedOnInput() {
         val currentCVV = "1234"
-        val cardBrand = CardBrand(
-            "visa",
-            emptyList(),
-            null,
-            null
-        )
         given(cardConfiguration.defaults).willReturn(CARD_DEFAULTS)
-        given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), cardBrand))
+        given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), VISA_BRAND))
 
         val filtered = cvvLengthFilter.filter("4", 0, 1, SpannableStringBuilder(currentCVV), 3, 3)
 
@@ -174,35 +168,13 @@ class CVVLengthFilterTest {
     fun givenNullPanIsPassedAndMaximumCvvLengthIsExceededForDefaultCVVRuleThenShouldFilterBasedOnInput() {
         cvvLengthFilter = CVVLengthFilter(cardValidator, null)
 
-        val currentCVV = "1234"
+        val currentCVV = "12345"
         given(cardConfiguration.defaults).willReturn(CARD_DEFAULTS)
         given(cardValidator.validateCVV(currentCVV, null)).willReturn(Pair(mock(ValidationResult::class.java), null))
 
         val filtered = cvvLengthFilter.filter("4", 0, 1, SpannableStringBuilder(currentCVV), 3, 3)
 
         assertEquals("", filtered)
-    }
-
-    @Test
-    fun givenANonIdentifiedCardAndNoDefaultConfigurationThenShouldNotFilterBasedOnInput() {
-        val currentCVV = "123"
-        given(cardValidator.validateCVV(currentCVV, cardNumber)).willReturn(Pair(mock(ValidationResult::class.java), null))
-
-        val filtered = cvvLengthFilter.filter("4", 0, 1, SpannableStringBuilder(currentCVV), 3, 3)
-
-        assertNull(filtered)
-    }
-
-    @Test
-    fun givenANullPanAndNoDefaultConfigurationThenShouldNotFilterBasedOnInput() {
-        cvvLengthFilter = CVVLengthFilter(cardValidator, null)
-
-        val currentCVV = "123"
-        given(cardValidator.validateCVV(currentCVV, null)).willReturn(Pair(mock(ValidationResult::class.java), null))
-
-        val filtered = cvvLengthFilter.filter("4", 0, 1, SpannableStringBuilder(currentCVV), 3, 3)
-
-        assertNull(filtered)
     }
 
     @Test
@@ -228,5 +200,26 @@ class CVVLengthFilterTest {
         assertNull(filteredString2)
     }
 
+    @Test
+    fun `should get brand cvv rule if one is found`() {
+        assertEquals(VISA_BRAND.cvv, cvvLengthFilter.getMaxLengthRule(VISA_BRAND, CARD_DEFAULTS))
+    }
+
+    @Test
+    fun `should get default cvv rule if brand is null`() {
+        assertEquals(CARD_DEFAULTS.cvv, cvvLengthFilter.getMaxLengthRule(null, CARD_DEFAULTS))
+    }
+
+    @Test
+    fun `should get default cvv rule if brand cvv is null`() {
+        val cardBrand = CardBrand(
+            name = "some-brand",
+            images = emptyList(),
+            cvv = null,
+            pan = CardValidationRule(matcher = "", validLengths = emptyList())
+        )
+
+        assertEquals(CARD_DEFAULTS.cvv, cvvLengthFilter.getMaxLengthRule(cardBrand, CARD_DEFAULTS))
+    }
 
 }

@@ -6,8 +6,7 @@ import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardDefaults
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
-import com.worldpay.access.checkout.api.configuration.DefaultCardRules.MONTH_DEFAULTS
-import com.worldpay.access.checkout.validation.CardBrandUtils
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
 import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
 
@@ -28,9 +27,8 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
         dstart: Int,
         dend: Int
     ): CharSequence? {
-        return dest?.let {
-            val result = getValidationResult(it)
-            val maxLength = getMaxForIdentifiedBrand(result, it) ?: getMaxForDefaultRules() ?: Int.MAX_VALUE
+        return dest?.let { spanned ->
+            val maxLength = getMaxLength(spanned)
 
             return lengthFiltersBySizeCache.getOrElse(maxLength) {
                 val lengthFilter = InputFilter.LengthFilter(maxLength)
@@ -40,25 +38,17 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
         }
     }
 
-    private fun getMaxForDefaultRules(): Int? {
-        return ruleSelectorForDefaults(cardConfiguration?.defaults)?.let { getMaxValueToUseForRule(it) }
-    }
-
-    private fun getMaxForIdentifiedBrand(result: Pair<ValidationResult, CardBrand?>, spanned: Spanned): Int? {
-        return result.second?.let {
-            ruleSelectorForCardBrand(it, spanned)?.let { rule -> getMaxValueToUseForRule(rule) }
-        }
-    }
-
-    private fun getMaxValueToUseForRule(cardValidationRule: CardValidationRule): Int? {
-        return cardValidationRule.validLengths.max()
-    }
-
     open fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> = Pair(ValidationResult(partial = true, complete = true), null)
 
-    open fun ruleSelectorForCardBrand(cardBrand: CardBrand, field: Spanned): CardValidationRule? = null
+    abstract fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults): CardValidationRule
 
-    abstract fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule?
+    private fun getMaxLength(spanned: Spanned): Int {
+        val (_, cardBrand) = getValidationResult(spanned)
+        val maxLengthRule = getMaxLengthRule(cardBrand, getCardDefaults())
+        return maxLengthRule.validLengths.max() ?: Int.MAX_VALUE
+    }
+
+    private fun getCardDefaults() = cardConfiguration?.defaults ?: CARD_DEFAULTS
 }
 
 /**
@@ -73,9 +63,7 @@ class CVVLengthFilter(
     override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
         cardValidator.validateCVV(field.toString(), panView?.getInsertedText())
 
-    override fun ruleSelectorForCardBrand(cardBrand: CardBrand, field: Spanned): CardValidationRule? = cardBrand.cvv
-
-    override fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule? = cardDefaults?.cvv
+    override fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults) = cardBrand?.cvv ?: cardDefaults.cvv
 
 }
 
@@ -86,13 +74,12 @@ class CVVLengthFilter(
 class PANLengthFilter(private val cardValidator: CardValidator) :
     AbstractCardFieldLengthFilter(cardValidator.cardConfiguration) {
 
-    override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
-        cardValidator.validatePAN(field.toString())
+    override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> = cardValidator.validatePAN(field.toString())
 
-    override fun ruleSelectorForCardBrand(cardBrand: CardBrand, field: Spanned): CardValidationRule? =
-        CardBrandUtils.cardValidationRule(cardBrand, field.toString())
-
-    override fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule? = cardDefaults?.pan
+    override fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults): CardValidationRule {
+        if (cardBrand == null) return cardDefaults.pan
+        return cardBrand.pan
+    }
 
 }
 
@@ -100,6 +87,7 @@ class PANLengthFilter(private val cardValidator: CardValidator) :
  * [DateLengthFilter] applies a length restriction to the date field based on configuration defaults
  */
 class DateLengthFilter(cardConfiguration: CardConfiguration): AbstractCardFieldLengthFilter(cardConfiguration) {
-    override fun ruleSelectorForDefaults(cardDefaults: CardDefaults?): CardValidationRule? = MONTH_DEFAULTS
+
+    override fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults) = cardDefaults.month
 
 }

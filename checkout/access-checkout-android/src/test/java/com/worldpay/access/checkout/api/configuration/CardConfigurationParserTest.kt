@@ -129,8 +129,8 @@ class CardConfigurationParserTest {
 
         assertEquals(1, cardConfiguration.brands.size)
         assertNull(cardConfiguration.brands[0].cvv)
-        assertEquals(MATCHER, cardConfiguration.brands[0].pan?.matcher)
-        assertEquals(emptyList<Int>(), cardConfiguration.brands[0].pan?.validLengths)
+        assertEquals(MATCHER, cardConfiguration.brands[0].pan.matcher)
+        assertEquals(emptyList<Int>(), cardConfiguration.brands[0].pan.validLengths)
     }
 
     @Test
@@ -214,9 +214,9 @@ class CardConfigurationParserTest {
         val cardConfiguration =
             cardConfigurationParser.parse(validCardConfigurationJson.byteInputStream())
 
-        assertEquals(mutableListOf(16,18,19), cardConfiguration.brands[0].pan?.validLengths)
-        assertEquals(mutableListOf(16), cardConfiguration.brands[1].pan?.validLengths)
-        assertEquals(mutableListOf(15), cardConfiguration.brands[2].pan?.validLengths)
+        assertEquals(mutableListOf(16,18,19), cardConfiguration.brands[0].pan.validLengths)
+        assertEquals(mutableListOf(16), cardConfiguration.brands[1].pan.validLengths)
+        assertEquals(mutableListOf(15), cardConfiguration.brands[2].pan.validLengths)
 
         val visa = cardConfiguration.brands[0]
         assertEquals("visa", visa.name)
@@ -243,7 +243,7 @@ class CardConfigurationParserTest {
         assertEquals("<BASE_URL>/mastercard.svg", mastercardCardBrandImage2.url)
 
         assertEquals(listOf(3), mastercard.cvv?.validLengths)
-        assertEquals(listOf(16), mastercard.pan?.validLengths)
+        assertEquals(listOf(16), mastercard.pan.validLengths)
 
         val amex = cardConfiguration.brands[2]
         assertEquals("amex", amex.name)
@@ -257,7 +257,7 @@ class CardConfigurationParserTest {
         assertEquals("<BASE_URL>/amex.svg", amexCardBrandImage2.url)
 
         assertEquals(listOf(4), amex.cvv?.validLengths)
-        assertEquals(listOf(15), amex.pan?.validLengths)
+        assertEquals(listOf(15), amex.pan.validLengths)
     }
 
     @Test

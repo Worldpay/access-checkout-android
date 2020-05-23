@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.views
 
 import android.text.SpannableStringBuilder
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
 import org.junit.Assert
@@ -83,14 +82,8 @@ class DateLengthFilterTest {
         assertNull(dateLengthFilter.filter("0", 0, 1, null, 0, 0))
     }
 
-    @Test
-    fun shouldNotSelectRuleFromCardBrand() {
-        assertNull(dateLengthFilter.ruleSelectorForCardBrand(
-            CardBrand(
-                "test",
-                emptyList(),
-                null,
-                null
-            ), SpannableStringBuilder("01")))
-    }
+//    @Test
+//    fun shouldNotSelectRuleFromCardBrand() {
+//        assertNull(dateLengthFilter.ruleSelectorForCardBrand(VISA_BRAND, SpannableStringBuilder("01")))
+//    }
 }

@@ -20,9 +20,8 @@ internal object CardBrandUtils {
     }
 
     fun cardValidationRule(cardBrand: CardBrand, pan: PAN): CardValidationRule? {
-        val panRule = cardBrand.pan
-        return if (panRule != null && validateAgainstMatcher(pan, panRule)) {
-            panRule
+        return if (validateAgainstMatcher(pan, cardBrand.pan)) {
+            cardBrand.pan
         } else {
             null
         }

@@ -5,7 +5,7 @@ import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.Card
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.validation.CardValidator
 import org.junit.Assert.assertEquals
@@ -42,23 +42,14 @@ class CardConfigurationFactoryTest {
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseURL), callbackCaptor.capture())
 
-        val configuration =
-            CardConfiguration(
-                brands = listOf(
-                    CardBrand(
-                        name = "test"
-                    )
-                ),
-                defaults = CARD_DEFAULTS
-            )
-        callbackCaptor.firstValue.onResponse(null, configuration)
+        callbackCaptor.firstValue.onResponse(null, CARD_CONFIG_BASIC)
 
         val cardValidatorCaptor = argumentCaptor<CardValidator>()
 
         verify(card, times(2)).cardValidator = cardValidatorCaptor.capture()
 
         assertNull(cardValidatorCaptor.firstValue.cardConfiguration)
-        assertEquals(configuration, cardValidatorCaptor.secondValue.cardConfiguration)
+        assertEquals(CARD_CONFIG_BASIC, cardValidatorCaptor.secondValue.cardConfiguration)
     }
 
     @Test

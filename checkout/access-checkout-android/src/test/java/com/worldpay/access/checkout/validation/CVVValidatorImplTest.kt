@@ -5,7 +5,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
-import com.worldpay.access.checkout.testutils.CardNumberUtil.visa
+import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -120,7 +120,7 @@ class CVVValidatorImplTest {
     fun `given a pan that matches a brand rule and a cvv with valid length then should be completely valid`() {
         val cvvValidatorImpl = CVVValidatorImpl(CARD_CONFIG_BASIC)
 
-        assertEquals(Pair(ValidationResult(partial = false, complete = true), VISA_BRAND), cvvValidatorImpl.validate("123", visa()))
+        assertEquals(Pair(ValidationResult(partial = false, complete = true), VISA_BRAND), cvvValidatorImpl.validate("123", VISA_PAN))
     }
 
     @Test

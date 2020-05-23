@@ -4,6 +4,9 @@ object CardNumberUtil {
 
     const val PARTIAL_VISA = "4111"
 
+    const val AMEX_PAN = "342793178931249"
+    const val VISA_PAN = "4111111111111111"
+
     fun visa(length: Int = 16): String {
         return when (length) {
             16 -> "4111111111111111"
