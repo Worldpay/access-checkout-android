@@ -64,12 +64,8 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         val brandImageList = mutableListOf<CardBrandImage>()
         for (brandImageIndex in 0 until images.length()) {
             val brandImage = images.getJSONObject(brandImageIndex)
-            val type = toStringProperty(brandImage,
-                CARD_IMAGE_TYPE_FIELD
-            )
-            val url = toStringProperty(brandImage,
-                CARD_IMAGE_URL_FIELD
-            )
+            val type = toStringProperty(brandImage, CARD_IMAGE_TYPE_FIELD)
+            val url = toStringProperty(brandImage, CARD_IMAGE_URL_FIELD)
             brandImageList.add(CardBrandImage(type, url))
         }
 

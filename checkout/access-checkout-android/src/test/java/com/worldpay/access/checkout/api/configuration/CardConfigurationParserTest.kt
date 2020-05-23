@@ -221,11 +221,11 @@ class CardConfigurationParserTest {
         val visa = cardConfiguration.brands[0]
         assertEquals("visa", visa.name)
 
-        assertEquals(2, visa.images?.size)
-        val visaCardBrandImage1 = visa.images!![0]
+        assertEquals(2, visa.images.size)
+        val visaCardBrandImage1 = visa.images[0]
         assertEquals("image/png", visaCardBrandImage1.type)
         assertEquals("<BASE_URL>/visa.png", visaCardBrandImage1.url)
-        val visaCardBrandImage2 = visa.images!![1]
+        val visaCardBrandImage2 = visa.images[1]
         assertEquals("image/svg+xml", visaCardBrandImage2.type)
         assertEquals("<BASE_URL>/visa.svg", visaCardBrandImage2.url)
 
@@ -234,11 +234,11 @@ class CardConfigurationParserTest {
         val mastercard = cardConfiguration.brands[1]
         assertEquals("mastercard", mastercard.name)
 
-        assertEquals(2, mastercard.images?.size)
-        val mastercardCardBrandImage1 = mastercard.images!![0]
+        assertEquals(2, mastercard.images.size)
+        val mastercardCardBrandImage1 = mastercard.images[0]
         assertEquals("image/png", mastercardCardBrandImage1.type)
         assertEquals("<BASE_URL>/mastercard.png", mastercardCardBrandImage1.url)
-        val mastercardCardBrandImage2 = mastercard.images!![1]
+        val mastercardCardBrandImage2 = mastercard.images[1]
         assertEquals("image/svg+xml", mastercardCardBrandImage2.type)
         assertEquals("<BASE_URL>/mastercard.svg", mastercardCardBrandImage2.url)
 
@@ -248,11 +248,11 @@ class CardConfigurationParserTest {
         val amex = cardConfiguration.brands[2]
         assertEquals("amex", amex.name)
 
-        assertEquals(2, amex.images?.size)
-        val amexCardBrandImage1 = amex.images!![0]
+        assertEquals(2, amex.images.size)
+        val amexCardBrandImage1 = amex.images[0]
         assertEquals("image/png", amexCardBrandImage1.type)
         assertEquals("<BASE_URL>/amex.png", amexCardBrandImage1.url)
-        val amexCardBrandImage2 = amex.images!![1]
+        val amexCardBrandImage2 = amex.images[1]
         assertEquals("image/svg+xml", amexCardBrandImage2.type)
         assertEquals("<BASE_URL>/amex.svg", amexCardBrandImage2.url)
 
