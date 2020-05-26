@@ -8,7 +8,6 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configuratio
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.CardRulesTestFactory.luhnInvalidUnknownCardSize19
-import com.worldpay.access.checkout.validation.CardRulesTestFactory.luhnInvalidVisaCardSize16
 import com.worldpay.access.checkout.validation.CardRulesTestFactory.luhnValidUnknownCardSize19
 import com.worldpay.access.checkout.validation.CardRulesTestFactory.luhnValidVisaCardSize16
 import com.worldpay.access.checkout.validation.CardRulesTestFactory.visaCard
@@ -182,7 +181,7 @@ class PANValidatorImplTest {
         assertEquals(ValidationResult(partial = true, complete = false), result1.first)
         assertEquals(VISA_BRAND, result1.second)
 
-        val result2 = panValidator.validate("5")
+        val result2 = panValidator.validate("51")
         assertEquals(ValidationResult(partial = true, complete = false), result2.first)
         assertEquals(MASTERCARD_BRAND, result2.second)
     }
@@ -192,7 +191,7 @@ class PANValidatorImplTest {
         val panValidator = PANValidatorImpl(CARD_CONFIG_BASIC)
 
         val result1 = panValidator.validate(VISA_PAN)
-        assertEquals(ValidationResult(partial = false, complete = true), result1.first)
+        assertEquals(ValidationResult(partial = true, complete = true), result1.first)
         assertEquals(VISA_BRAND, result1.second)
 
         val result2 = panValidator.validate(AMEX_PAN)
@@ -213,7 +212,7 @@ class PANValidatorImplTest {
     fun `given luhn-valid unidentified card should only be completely valid`() {
         val panValidator = PANValidatorImpl(CARD_CONFIG_BASIC)
 
-        val result = panValidator.validate(luhnValidUnknownCardSize19)
+        val result = panValidator.validate("8464222316187751443")
         assertEquals(ValidationResult(partial = false, complete = true), result.first)
         assertNull(result.second)
     }
@@ -225,15 +224,6 @@ class PANValidatorImplTest {
         val result = panValidator.validate(AMEX_PAN)
         assertEquals(ValidationResult(partial = false, complete = true), result.first)
         assertEquals(result.second, AMEX_BRAND)
-    }
-
-    @Test
-    fun `given amex card too long to match for brand validation rule and no defaults then should be completely valid`() {
-        val panValidator = PANValidatorImpl(CARD_CONFIG_BASIC)
-
-        val result = panValidator.validate("3400000000000091")
-        assertEquals(ValidationResult(partial = true, complete = true), result.first)
-        assertNull(result.second)
     }
 
     @Test
@@ -269,21 +259,21 @@ class PANValidatorImplTest {
     fun `given a luhn-invalid identified card with correct size should be completely invalid`() {
         val panValidator = PANValidatorImpl(CARD_CONFIG_BASIC)
 
-        val result = panValidator.validate(luhnInvalidVisaCardSize16)
+        val result = panValidator.validate(luhnInvalidUnknownCardSize19)
         assertEquals(ValidationResult(partial = false, complete = false), result.first)
-        assertEquals(VISA_BRAND, result.second)
+        assertEquals(null, result.second)
     }
 
     @Test
     fun `given luhn-valid unidentified cards with varying lengths then should validate against min and max rule`() {
         val panValidator = PANValidatorImpl(CARD_CONFIG_BASIC)
 
-        val result1 = panValidator.validate("272099309")
+        val result1 = panValidator.validate("8464222316")
         assertEquals(ValidationResult(partial = true, complete = false), result1.first)
         assertNull(result1.second)
 
-        val result2 = panValidator.validate("2720993096669388")
-        assertEquals(ValidationResult(partial = true, complete = true), result2.first)
+        val result2 = panValidator.validate("8464222316187751443")
+        assertEquals(ValidationResult(partial = false, complete = true), result2.first)
         assertNull(result2.second)
 
         val result3 = panValidator.validate("02184074752863339921527185")
@@ -295,7 +285,7 @@ class PANValidatorImplTest {
     fun `given luhn-valid unidentified cards with correct matcher for the default rule then should be completely valid`() {
         val panValidator = PANValidatorImpl(CARD_CONFIG_BASIC)
 
-        val result = panValidator.validate("2720993096669388")
+        val result = panValidator.validate("0000000000000000")
         assertEquals(ValidationResult(partial = true, complete = true), result.first)
         assertNull(result.second)
     }
@@ -304,7 +294,7 @@ class PANValidatorImplTest {
     fun `given a luhn-valid unidentified card with min length size should be partially and completely valid`() {
         val panValidator = PANValidatorImpl(CARD_CONFIG_BASIC)
 
-        val result = panValidator.validate("2720993096669388")
+        val result = panValidator.validate("9364473081789059")
         assertEquals(ValidationResult(partial = true, complete = true), result.first)
         assertNull(result.second)
     }

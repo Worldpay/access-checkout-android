@@ -7,5 +7,4 @@ object CardRulesTestFactory {
     const val luhnInvalidUnknownCardSize19 = "6022462496366668012"
 
     const val luhnValidVisaCardSize16 = "4026344341791618"
-    const val luhnInvalidVisaCardSize16 = "4024001728904375"
 }
