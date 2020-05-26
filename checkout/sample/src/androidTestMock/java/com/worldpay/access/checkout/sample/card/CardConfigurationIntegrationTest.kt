@@ -17,7 +17,7 @@ class CardConfigurationIntegrationTest {
     private val luhnValidUnknownCard = "000000"
     private val luhnValidMastercardCard = "5555555555554444"
     private val luhnInvalidUnknownCard = "111234"
-    private val unknownCvv = "123456"
+    private val unknownCvv = "1234"
     private val month = "12"
     private val year = "99"
 
