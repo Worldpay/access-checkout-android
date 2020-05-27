@@ -1,8 +1,7 @@
 package com.worldpay.access.checkout.api.configuration
 
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.model.CardConfiguration
-import org.junit.Assert.*
+import org.junit.Assert.assertNotNull
 import org.junit.Test
 
 class CardConfigurationAsyncTaskFactoryTest {

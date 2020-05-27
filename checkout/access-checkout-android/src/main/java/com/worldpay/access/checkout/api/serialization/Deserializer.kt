@@ -36,7 +36,7 @@ internal abstract class Deserializer<T> {
         }
     }
 
-    protected fun toStringProperty(obj: JSONObject, field: String): String = toProperty(obj, field, String::class)
+    protected open fun toStringProperty(obj: JSONObject, field: String): String = toProperty(obj, field, String::class)
 
     protected fun fetchOptionalArray(obj: JSONObject, field: String): JSONArray? {
         return try {

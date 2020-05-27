@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation
 
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardConfiguration
+import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
@@ -43,12 +43,12 @@ class AccessCheckoutCardValidatorTest {
         val pan = "0000111122223333"
         val cvv = "1234"
         val result = ValidationResult(partial = true, complete = false)
-        val cardBand = CardBrand(name = "test")
-        given(cvvValidator.validate(cvv, pan)).willReturn(Pair(result, cardBand))
+
+        given(cvvValidator.validate(cvv, pan)).willReturn(Pair(result, VISA_BRAND))
 
         val validationResult = accessCheckoutCardValidator.validateCVV(cvv, pan)
 
-        assertEquals(Pair(result, cardBand), validationResult)
+        assertEquals(Pair(result, VISA_BRAND), validationResult)
     }
 
     @Test

@@ -4,7 +4,6 @@ import android.os.AsyncTask
 import com.worldpay.access.checkout.api.*
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutConfigurationException
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
-import com.worldpay.access.checkout.model.CardConfiguration
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.net.URL
 

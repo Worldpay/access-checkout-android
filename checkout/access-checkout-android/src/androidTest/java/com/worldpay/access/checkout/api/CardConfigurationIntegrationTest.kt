@@ -9,8 +9,8 @@ import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.github.tomakehurst.wiremock.junit.WireMockRule
+import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationAsyncTask
-import com.worldpay.access.checkout.model.CardConfiguration
 import org.awaitility.Awaitility.await
 import org.junit.Rule
 import org.junit.Test

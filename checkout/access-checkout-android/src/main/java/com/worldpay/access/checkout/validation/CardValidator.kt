@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation
 
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardConfiguration
+import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.CardConfiguration
 
 typealias PAN = String
 typealias CVV = String

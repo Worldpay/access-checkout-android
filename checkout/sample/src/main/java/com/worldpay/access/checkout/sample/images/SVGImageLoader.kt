@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.sample.images
 
 import android.app.Activity
 import android.widget.ImageView
-import com.worldpay.access.checkout.model.CardBrand
+import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
 import com.worldpay.access.checkout.util.logging.AccessCheckoutLogger

@@ -1,10 +1,8 @@
 package com.worldpay.access.checkout.views
 
 import android.text.SpannableStringBuilder
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardConfiguration
-import com.worldpay.access.checkout.model.CardDefaults
-import com.worldpay.access.checkout.model.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
 import org.junit.Assert
 import org.junit.Assert.assertNull
 import org.junit.Before
@@ -24,9 +22,7 @@ class DateLengthFilterTest {
 
     @Before
     fun setup() {
-        val monthValidationRule = CardValidationRule(null, listOf(2))
-        val yearValidationRule = CardValidationRule(null, listOf(2))
-        given(cardConfiguration.defaults).willReturn(CardDefaults(null, null, monthValidationRule, yearValidationRule))
+        given(cardConfiguration.defaults).willReturn(CARD_DEFAULTS)
         dateLengthFilter = DateLengthFilter(cardConfiguration)
     }
 
@@ -53,27 +49,6 @@ class DateLengthFilterTest {
     }
 
     @Test
-    fun givenNoDefaultConfigurationThenShouldNotFilter() {
-        val dateLengthFilter = DateLengthFilter(CardConfiguration())
-
-        assertNull(dateLengthFilter.filter("0", 0, 1, SpannableStringBuilder("01"), 2, 2))
-    }
-
-    @Test
-    fun givenNoDateFieldConfigurationThenShouldNotFilter() {
-        val dateLengthFilter = DateLengthFilter(CardConfiguration(defaults = CardDefaults(null, null, null, null)))
-
-        assertNull(dateLengthFilter.filter("0", 0, 1, SpannableStringBuilder("01"), 2, 2))
-    }
-
-    @Test
-    fun givenNoValidLengthForDateFieldRulesThenShouldNotFilter() {
-        val dateLengthFilter = DateLengthFilter(CardConfiguration(defaults = CardDefaults(null, null, CardValidationRule(null, emptyList()), CardValidationRule(null, emptyList()))))
-
-        assertNull(dateLengthFilter.filter("0", 0, 1, SpannableStringBuilder("01"), 2, 2))
-    }
-
-    @Test
     fun givenInputDoesNotExceedMaximumThenShouldNotFilterAndUseCachedLengthInputToValidate() {
         val oneDigit = "0"
 
@@ -91,8 +66,7 @@ class DateLengthFilterTest {
 
     @Test
     fun givenEmptyMonthRuleThenShouldUseYearRuleForFiltering() {
-        val yearValidationRule = CardValidationRule(null, listOf(2))
-        given(cardConfiguration.defaults).willReturn(CardDefaults(null, null, null, yearValidationRule))
+        given(cardConfiguration.defaults).willReturn(CARD_DEFAULTS)
 
         val oneDigit = "0"
 
@@ -108,8 +82,8 @@ class DateLengthFilterTest {
         assertNull(dateLengthFilter.filter("0", 0, 1, null, 0, 0))
     }
 
-    @Test
-    fun shouldNotSelectRuleFromCardBrand() {
-        assertNull(dateLengthFilter.ruleSelectorForCardBrand(CardBrand("test", emptyList(), null, null), SpannableStringBuilder("01")))
-    }
+//    @Test
+//    fun shouldNotSelectRuleFromCardBrand() {
+//        assertNull(dateLengthFilter.ruleSelectorForCardBrand(VISA_BRAND, SpannableStringBuilder("01")))
+//    }
 }

@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.api.configuration
 
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.model.CardConfiguration
 
 /**
  * A client to fetch a [CardConfiguration]

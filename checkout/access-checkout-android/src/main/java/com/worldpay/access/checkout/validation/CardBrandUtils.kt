@@ -1,13 +1,13 @@
 package com.worldpay.access.checkout.validation
 
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
 
 internal object CardBrandUtils {
 
-    fun findCardBrandMatchingPAN(cardBrands: List<CardBrand>?, pan: PAN): Pair<CardBrand?, CardValidationRule?> {
+    fun findCardBrandMatchingPAN(cardBrands: List<CardBrand>, pan: PAN): Pair<CardBrand?, CardValidationRule?> {
         var cardBrandValidationRule: CardValidationRule? = null
-        val cardBrand: CardBrand? = cardBrands?.firstOrNull {
+        val cardBrand: CardBrand? = cardBrands.firstOrNull {
             cardBrandValidationRule = cardValidationRule(it, pan)
             cardBrandValidationRule != null
         }
@@ -15,15 +15,13 @@ internal object CardBrandUtils {
         return Pair(cardBrand, cardBrandValidationRule)
     }
 
-    fun validateAgainstMatcher(pan: PAN, cardValidationRule: CardValidationRule, default: Boolean): Boolean {
-        val regex = cardValidationRule.matcher ?: return default
-        return ValidatorUtils.regexMatches(regex, pan)
+    fun validateAgainstMatcher(pan: PAN, cardValidationRule: CardValidationRule): Boolean {
+        return ValidatorUtils.regexMatches(cardValidationRule.matcher, pan)
     }
 
     fun cardValidationRule(cardBrand: CardBrand, pan: PAN): CardValidationRule? {
-        val panRule = cardBrand.pan
-        return if (panRule != null && validateAgainstMatcher(pan, panRule, false)) {
-            panRule
+        return if (validateAgainstMatcher(pan, cardBrand.pan)) {
+            cardBrand.pan
         } else {
             null
         }

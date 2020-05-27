@@ -6,8 +6,9 @@ import android.widget.ImageView
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.given
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardBrandImage
+import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.CardBrandImage
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
@@ -20,15 +21,13 @@ import java.io.InputStream
 
 class SVGImageLoaderTest {
 
-    private val cardBrand = CardBrand(
-        name = "test",
-        images = listOf(
-            CardBrandImage(
-                "image/svg+xml",
-                "http://localhost/test.svg"
-            )
+    private val cardBrand =
+        CardBrand(
+            name = "visa",
+            images = listOf(CardBrandImage(type = "image/svg+xml", url = "http://localhost/test.svg")),
+            cvv = CardValidationRule(matcher = "^[0-9]*\$", validLengths = listOf(3)),
+            pan = CardValidationRule(matcher = "^(?!^493698\\d*\$)4\\d*\$", validLengths = listOf(16, 18, 19))
         )
-    )
 
     private lateinit var activity: Activity
     private lateinit var targetImageView: ImageView
@@ -71,7 +70,7 @@ class SVGImageLoaderTest {
 
         // Trigger onResponse callback function
         captor.firstValue.onResponse(mockHttpCall, response)
-        verify(svgImageRenderer).renderImage(inputStream, targetImageView, "test")
+        verify(svgImageRenderer).renderImage(inputStream, targetImageView, "visa")
     }
 
     @Test
@@ -90,15 +89,13 @@ class SVGImageLoaderTest {
 
     @Test
     fun shouldNotAttemptToFetchRemoteCardLogoIfNoSvgLogoForUnidentifiedBrandAndShouldSetUnknownCardLogo() {
-        val cardBrandWithNoSVG = CardBrand(
-            name = "test",
-            images = listOf(
-                CardBrandImage(
-                    "image/png",
-                    "http://localhost/test.png"
-                )
+        val cardBrandWithNoSVG =
+            CardBrand(
+                name = "visa",
+                images = listOf(CardBrandImage(type = "image/png", url = "http://localhost/test.png")),
+                cvv = CardValidationRule(matcher = "^[0-9]*\$", validLengths = listOf(3)),
+                pan = CardValidationRule(matcher = "^(?!^493698\\d*\$)4\\d*\$", validLengths = listOf(16, 18, 19))
             )
-        )
 
         val mockHttpCall = mock(Call::class.java)
         given(client.newCall(any())).willReturn(mockHttpCall)

@@ -3,9 +3,7 @@ package com.worldpay.access.checkout.sample.card
 import android.widget.ImageView
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
-import com.worldpay.access.checkout.model.*
 import com.worldpay.access.checkout.sample.MainActivity
-import com.worldpay.access.checkout.sample.MockServer
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils

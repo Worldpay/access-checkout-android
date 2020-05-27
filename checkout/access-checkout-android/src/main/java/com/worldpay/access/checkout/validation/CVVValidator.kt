@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation
 
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardConfiguration
+import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.CardBrandUtils.findCardBrandMatchingPAN
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 
@@ -44,7 +44,6 @@ internal class CVVValidatorImpl(
     }
 
     private fun getDefaultValidationResult(cvv: CVV, cardConfiguration: CardConfiguration): ValidationResult {
-        val defaultRule = cardConfiguration.defaults?.cvv ?: return ValidationResult(partial = true, complete = true)
-        return getValidationResultFor(cvv, defaultRule)
+        return getValidationResultFor(cvv, cardConfiguration.defaults.cvv)
     }
 }

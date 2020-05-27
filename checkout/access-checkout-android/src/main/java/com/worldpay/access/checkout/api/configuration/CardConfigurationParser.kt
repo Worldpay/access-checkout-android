@@ -1,104 +1,139 @@
 package com.worldpay.access.checkout.api.configuration
 
+import android.util.Log
+import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.DEFAULT_MATCHER
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.api.serialization.Deserializer
-import com.worldpay.access.checkout.model.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.InputStream
 
 internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
 
     companion object {
 
+        private const val EMPTY_STRING = ""
+
         // Brand fields
-        private const val NAME_FIELD = "name"
-        private const val IMAGES_FIELD = "images"
+        private const val BRAND_NAME_FIELD = "name"
+        private const val BRAND_IMAGES_FIELD = "images"
         private const val CARD_IMAGE_TYPE_FIELD = "type"
         private const val CARD_IMAGE_URL_FIELD = "url"
-        private const val BRANDED_CVV_FIELD = "cvvLength"
-        private const val PANS_FIELD = "panLengths"
+        private const val BRAND_CVV_LENGTH_FIELD = "cvvLength"
+        private const val BRAND_PAN_LENGTHS_FIELD = "panLengths"
 
         // Card validation rule fields
         private const val MATCHER_FIELD = "pattern"
-
-        // Default card rules
-        private val panDefaults = CardValidationRule(null, listOf(15,16,18,19))
-        private val cvvDefaults = CardValidationRule(null, listOf(3,4))
-        private val monthDefaults = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", listOf(2))
-        private val yearDefaults = CardValidationRule("^\\d{0,2}$", listOf(2))
-        private val cardDefaults = CardDefaults(
-            panDefaults,
-            cvvDefaults,
-            monthDefaults,
-            yearDefaults
-        )
-    }
-
-    fun parse(cardConfiguration: InputStream?): CardConfiguration {
-        return cardConfiguration?.let {
-            val json = it.reader(Charsets.UTF_8).readText()
-            return if (json.isBlank()) CardConfiguration(defaults = cardDefaults)
-            else deserialize(json)
-        } ?: CardConfiguration(defaults = cardDefaults)
     }
 
     override fun deserialize(json: String): CardConfiguration {
-        return super.deserialize(json) {
-            val root = JSONArray(json)
-            CardConfiguration(parseBrandsConfig(root), cardDefaults)
+        return try {
+            super.deserialize(json) {
+                val brands = parseBrandsConfig(JSONArray(json))
+                CardConfiguration(brands, CARD_DEFAULTS)
+            }
+        } catch (e: Exception) {
+            Log.w(javaClass.simpleName, e.message, e)
+            CardConfiguration(emptyList(), CARD_DEFAULTS)
         }
     }
 
-    private fun parseBrandsConfig(root: JSONArray): List<CardBrand>? {
-        return root.let {
-            val brandsList = mutableListOf<CardBrand>()
-            for (i in 0 until it.length()) {
-                val brandRoot = it.getJSONObject(i)
+    private fun parseBrandsConfig(root: JSONArray): List<CardBrand> {
+        val brandsList = mutableListOf<CardBrand>()
 
-                // Parse brand name
-                val name = toStringProperty(brandRoot, NAME_FIELD)
+        for (i in 0 until root.length()) {
+            val brand = root.getJSONObject(i)
 
-                // Parse images
-                val images = fetchOptionalArray(brandRoot, IMAGES_FIELD)
-                val brandImages = parseBrandImages(images)
+            val cardBrand = CardBrand(
+                name = this.toStringProperty(brand, BRAND_NAME_FIELD, EMPTY_STRING),
+                images = getBrandImages(brand),
+                cvv = getCvvRule(brand),
+                pan = getPanRule(brand)
+            )
 
-                // Parse cvv
-                val cvv = toOptionalProperty(brandRoot, BRANDED_CVV_FIELD, Int::class)
-                val cvvConfig = cvv?.let { cvvLength -> CardValidationRule(validLengths = listOf(cvvLength)) }
+            brandsList.add(cardBrand)
+        }
 
-                // Parse PAN rule
-                val pans = fetchOptionalArray(brandRoot, PANS_FIELD)
-                val matcher = toOptionalProperty(brandRoot, MATCHER_FIELD, String::class)
-                val panRule = CardValidationRule(matcher, parseLengths(pans as JSONArray))
+        return brandsList
+    }
 
-                brandsList.add(CardBrand(name, brandImages, cvvConfig, panRule))
-            }
-            brandsList
+    private fun getBrandImages(brand: JSONObject): List<CardBrandImage> {
+        val images = fetchOptionalArray(brand, BRAND_IMAGES_FIELD) ?: return emptyList()
+
+        val brandImageList = mutableListOf<CardBrandImage>()
+
+        for (brandImageIndex in 0 until images.length()) {
+            val brandImage = getBrandImageObject(images, brandImageIndex) ?: continue
+
+            val type = this.toStringProperty(brandImage, CARD_IMAGE_TYPE_FIELD, EMPTY_STRING)
+            val url = this.toStringProperty(brandImage, CARD_IMAGE_URL_FIELD, EMPTY_STRING)
+
+            brandImageList.add(CardBrandImage(type, url))
+        }
+
+        return brandImageList
+    }
+
+    private fun getBrandImageObject(images: JSONArray, index: Int): JSONObject? {
+        return try {
+            images.getJSONObject(index)
+        } catch (e: Exception) {
+            Log.w(javaClass.simpleName, e.message, e)
+            null
         }
     }
 
-    private fun parseBrandImages(images: JSONArray?): List<CardBrandImage> {
-        return images?.let {
-            val brandImageList = mutableListOf<CardBrandImage>()
-            for (brandImageIndex in 0 until images.length()) {
-                val brandImage = images.getJSONObject(brandImageIndex)
-                val type = toStringProperty(brandImage,
-                    CARD_IMAGE_TYPE_FIELD
-                )
-                val url = toStringProperty(brandImage,
-                    CARD_IMAGE_URL_FIELD
-                )
-                brandImageList.add(CardBrandImage(type, url))
+    private fun getCvvRule(brand: JSONObject): CardValidationRule {
+        var validLengths = CVV_DEFAULTS.validLengths
+
+        try {
+            val cvvLength = toOptionalProperty(brand, BRAND_CVV_LENGTH_FIELD, Int::class)
+            if (cvvLength != null) {
+                validLengths = listOf(cvvLength)
             }
-            brandImageList
-        } ?: emptyList()
+        } catch (e: Exception) {
+            Log.w(javaClass.simpleName, e.message, e)
+        }
+
+        return CardValidationRule(matcher = DEFAULT_MATCHER, validLengths = validLengths)
+    }
+
+    private fun getPanRule(brand: JSONObject): CardValidationRule {
+        var validLengths = PAN_DEFAULTS.validLengths
+
+        try {
+            val panLengths = fetchOptionalArray(brand, BRAND_PAN_LENGTHS_FIELD)
+            if (panLengths != null) {
+                validLengths = parseLengths(panLengths)
+            }
+        } catch (e: Exception) {
+            Log.w(javaClass.simpleName, e.message, e)
+        }
+
+        val matcher = this.toStringProperty(brand, MATCHER_FIELD, DEFAULT_MATCHER)
+        return CardValidationRule(matcher, validLengths)
+    }
+
+    private fun toStringProperty(obj: JSONObject, field: String, defaultValue: String): String {
+        return try {
+            super.toStringProperty(obj, field)
+        } catch (e: Exception) {
+            Log.w(javaClass.simpleName, e.message, e)
+            defaultValue
+        }
     }
 
     private fun parseLengths(jsonArray: JSONArray): List<Int> {
         val validLengthsList = mutableListOf<Int>()
         jsonArray.let {
             for (i in 0 until it.length()) {
-                validLengthsList.add(it[i] as Int)
+                if (it[i] is Int) {
+                    validLengthsList.add(it[i] as Int)
+                } else {
+                    throw AccessCheckoutDeserializationException("Expected property type int but got something else")
+                }
             }
         }
         return validLengthsList

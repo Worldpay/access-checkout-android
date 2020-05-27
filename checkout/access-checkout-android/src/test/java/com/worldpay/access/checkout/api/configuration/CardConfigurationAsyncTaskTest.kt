@@ -5,7 +5,7 @@ import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.URLFactory
-import com.worldpay.access.checkout.model.CardConfiguration
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import org.awaitility.Awaitility
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -87,14 +87,12 @@ class CardConfigurationAsyncTaskTest {
 
     @Test
     fun givenValidURL_ThenShouldReturnCardConfiguration() {
-        val cardConfiguration = CardConfiguration()
-
         var asserted = false
 
         val callback = object : Callback<CardConfiguration> {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {
                 assertNotNull(response)
-                assertEquals(cardConfiguration, response)
+                assertEquals(CARD_CONFIG_NO_BRAND, response)
                 assertNull(error)
                 asserted = true
             }
@@ -106,7 +104,7 @@ class CardConfigurationAsyncTaskTest {
         given(urlFactory.getURL("$baseURL/access-checkout/cardTypes.json")).willReturn(url)
         val httpClient = mock<HttpClient>()
         val cardConfigurationParser = mock<CardConfigurationParser>()
-        given(httpClient.doGet(url, cardConfigurationParser)).willReturn(cardConfiguration)
+        given(httpClient.doGet(url, cardConfigurationParser)).willReturn(CARD_CONFIG_NO_BRAND)
         val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, urlFactory, httpClient,
             cardConfigurationParser
         )

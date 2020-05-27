@@ -1,287 +1,793 @@
 package com.worldpay.access.checkout.api.configuration
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
-import com.worldpay.access.checkout.model.CardBrand
-import com.worldpay.access.checkout.model.CardValidationRule
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.BASE_PATH
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV_RULE
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN_RULE
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import kotlin.test.assertNull
 
 class CardConfigurationParserTest {
 
     private lateinit var cardConfigurationParser: CardConfigurationParser
-    private val panDefaults: CardValidationRule = CardValidationRule(null, listOf(15,16,18,19))
-    private val cvvDefaults: CardValidationRule = CardValidationRule(null, listOf(3,4))
-    private val monthDefaults: CardValidationRule = CardValidationRule("^0[1-9]{0,1}$|^1[0-2]{0,1}$", listOf(2))
-    private val yearDefaults: CardValidationRule = CardValidationRule("^\\d{0,2}$", listOf(2))
 
-    private val validCardConfigurationJson = """
-                   [
-                    {
-                        "name": "visa",
-                        "pattern": "/^4\\d*$/",
-                        "panLengths": [
-                          16,
-                          18,
-                          19
-                        ],
-                        "cvvLength": 3,
-                        "images": [
-                          {
-                            "type": "image/png",
-                            "url": "<BASE_URL>/visa.png"
-                          },
-                          {
-                            "type": "image/svg+xml",
-                            "url": "<BASE_URL>/visa.svg"
-                          }
-                        ]
-                    },
-                      {
-                        "name": "mastercard",
-                        "pattern": "^(5[1-5]|2[2-7])\\d*${'$'}",
-                        "panLengths": [
-                          16
-                        ],
-                        "cvvLength": 3,
-                        "images": [
-                          {
-                            "type": "image/png",
-                            "url": "<BASE_URL>/mastercard.png"
-                          },
-                          {
-                            "type": "image/svg+xml",
-                            "url": "<BASE_URL>/mastercard.svg"
-                          }
-                        ]
-                      },
-                      {
-                        "name": "amex",
-                        "pattern": "^3[47]\\d*${'$'}",
-                        "panLengths": [
-                          15
-                        ],
-                        "cvvLength": 4,
-                        "images": [
-                          {
-                            "type": "image/png",
-                            "url": "<BASE_URL>/amex.png"
-                          },
-                          {
-                            "type": "image/svg+xml",
-                            "url": "<BASE_URL>/amex.svg"
-                          }
-                        ]
-                      }
-                    ]
-            """.trimIndent()
+    private val validCardConfiguration: String =
+        CardConfigurationParserTest::class.java.getResource("remote_card_config.json")?.readText()!!
 
     @get:Rule
     val expectedException: ExpectedException = ExpectedException.none()
 
     @Before
     fun setUp() {
-        cardConfigurationParser =
-            CardConfigurationParser()
+        cardConfigurationParser = CardConfigurationParser()
     }
 
     @Test
-    fun givenANullInputShouldReturnADefaultCardConfiguration() {
-        val  cardConfiguration = cardConfigurationParser.parse(null)
-        assertEquals(panDefaults, cardConfiguration.defaults?.pan)
-        assertEquals(cvvDefaults, cardConfiguration.defaults?.cvv)
-        assertEquals(monthDefaults, cardConfiguration.defaults?.month)
-        assertEquals(yearDefaults, cardConfiguration.defaults?.year)
+    fun `should return default card configuration where json string is blank`() {
+        val expected = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+        assertEquals(expected, cardConfigurationParser.deserialize(""))
     }
 
     @Test
-    fun givenAnEmptyConfigShouldReturnADefaultCardConfiguration() {
-        val cardConfiguration = cardConfigurationParser.parse("".byteInputStream())
-        assertEquals(panDefaults, cardConfiguration.defaults?.pan)
-        assertEquals(cvvDefaults, cardConfiguration.defaults?.cvv)
-        assertEquals(monthDefaults, cardConfiguration.defaults?.month)
-        assertEquals(yearDefaults, cardConfiguration.defaults?.year)
+    fun `should return default card configuration where json string is empty array`() {
+        val expected = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+        assertEquals(expected, cardConfigurationParser.deserialize("[]"))
     }
 
     @Test
-    fun givenAMalformedJsonInputShouldThrowAccessCheckoutDeserializationError() {
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
-        expectedException.expectMessage("Cannot interpret json: ABC")
-
-        cardConfigurationParser.parse("ABC".byteInputStream())
+    fun `should return default card configuration where json string starts with object notation`() {
+        val expected = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+        assertEquals(expected, cardConfigurationParser.deserialize("{"))
+        assertEquals(expected, cardConfigurationParser.deserialize("{]"))
+        assertEquals(expected, cardConfigurationParser.deserialize("{}"))
+        assertEquals(expected, cardConfigurationParser.deserialize("{\""))
     }
 
     @Test
-    fun givenJsonWithMissingOptionalPropertiesShouldNotThrowAccessCheckoutDeserializationError() {
-        val jsonWithMissingOptionalBrandProps = """
-                [
-                    {
-                        "name": "brand",
-                        "panLengths": []
-                    }
-                ]
-        """.trimIndent()
-
-        val cardConfiguration =
-            cardConfigurationParser.parse(jsonWithMissingOptionalBrandProps.byteInputStream())
-
-        assertEquals(1, cardConfiguration.brands!!.size)
-        assertNull(cardConfiguration.brands!![0].cvv)
-        assertNull(cardConfiguration.brands!![0].pan?.matcher)
-        assertEquals(emptyList<Int>(), cardConfiguration.brands!![0].pan?.validLengths)
+    fun `should return default card configuration where json string is a not json`() {
+        val expected = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+        assertEquals(expected, cardConfigurationParser.deserialize("abc"))
     }
 
     @Test
-    fun givenJsonWithMissingRequiredPropertiesShouldThrowAccessCheckoutDeserializationError() {
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
-        expectedException.expectMessage("Missing property: 'name'")
-
-        val requiredPropsMissing = """
-                [
-                    {
-                        "image": "brand_logo",
-                        "panLengths": [
-                        ]
-                    }
-                ]
-        """.trimIndent()
-
-        cardConfigurationParser.parse(requiredPropsMissing.byteInputStream())
+    fun `should return default card configuration where json string is a multi dimensional array`() {
+        val expected = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+        assertEquals(expected, cardConfigurationParser.deserialize("[[]]"))
     }
 
     @Test
-    fun givenJsonWithWrongTypeForStringPropertyThenShouldThrowAccessCheckoutDeserializationError() {
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
-        expectedException.expectMessage("Invalid property type: 'pattern', expected 'String'")
-
-        val wrongPropertyType = """
-             [
+    fun `should be able to parse a single brand`() {
+        val json = """
+            [
                 {
-                    "name": "brand",
-                    "image": "brand_logo",
-                    "pattern": 123,
-                    "cvvLength": 3,
+                    "name": "visa",
+                    "pattern": "^(?!^493698\\d*${'$'})4\\d*${'$'}",
                     "panLengths": [
+                        16,
+                        18,
+                        19
+                    ],
+                    "cvvLength": 3,
+                    "images": [
+                        {
+                            "type": "image/png",
+                            "url": "https://local.com/access-checkout/assets/visa.png"
+                        },
+                        {
+                            "type": "image/svg+xml",
+                            "url": "https://local.com/access-checkout/assets/visa.svg"
+                        }
                     ]
                 }
             ]
         """.trimIndent()
-        cardConfigurationParser.parse(wrongPropertyType.byteInputStream())
+
+        val result = cardConfigurationParser.deserialize(json)
+
+        assertEquals("visa", result.brands[0].name)
+
+        assertEquals("^(?!^493698\\d*${'$'})4\\d*${'$'}", result.brands[0].pan.matcher)
+        assertEquals(listOf(16, 18, 19), result.brands[0].pan.validLengths)
+
+        assertEquals(MATCHER, result.brands[0].cvv.matcher)
+        assertEquals(listOf(3), result.brands[0].cvv.validLengths)
+
+        assertEquals("image/png", result.brands[0].images[0].type)
+        assertEquals("https://local.com/access-checkout/assets/visa.png", result.brands[0].images[0].url)
+        assertEquals("image/svg+xml", result.brands[0].images[1].type)
+        assertEquals("https://local.com/access-checkout/assets/visa.svg", result.brands[0].images[1].url)
     }
 
     @Test
-    fun givenJsonWithWrongTypeForIntPropertyThenShouldThrowAccessCheckoutDeserializationError() {
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
-        expectedException.expectMessage("Invalid property type: 'cvvLength', expected 'Int'")
+    fun `should be able to parse a multiple brands`() {
+        assertEquals(CARD_CONFIG_BASIC, cardConfigurationParser.deserialize(validCardConfiguration))
+    }
 
-        val wrongPropertyType = """
-           [
-                {
-                    "name": "brand",
-                    "image": "brand_logo",
-                    "cvvLength": "3",
-                    "panLengths": [16]
-                }
-            ]
+    @Test
+    fun `should return empty brand name where json brand has missing 'name' property`() {
+        val json = """
+            [{
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [15],
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png", "url": "$BASE_PATH/amex.png" },
+                     { "type": "image/svg+xml", "url": "$BASE_PATH/amex.svg" }
+                ]
+            }]
         """.trimIndent()
 
-        cardConfigurationParser.parse(wrongPropertyType.byteInputStream())
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*${'$'}", listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
     }
 
     @Test
-    fun givenEmptyBrandsConfigThenShouldParseSuccessfully() {
-        val missingBrands = """""".trimIndent()
+    fun `should use default matcher pattern when json brand has missing 'pattern' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "panLengths": [15],
+                "cvvLength": 4,
+                "images": [
+                    { "type": "image/png", "url": "$BASE_PATH/amex.png" },
+                    { "type": "image/svg+xml", "url": "$BASE_PATH/amex.svg" }
+                ]
+            }]
+        """.trimIndent()
 
-        val cardConfiguration = cardConfigurationParser.parse(missingBrands.byteInputStream())
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+        )
 
-        assertNull(cardConfiguration.brands)
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule(MATCHER, listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
     }
 
     @Test
-    fun givenBrandsConfigWithEmptyCardValidationRulesThenShouldParseSuccessfully() {
-        val emptyBrands = """[]""".trimIndent()
+    fun `should not use default matcher pattern when json brand has empty 'pattern' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "",
+                "panLengths": [15],
+                "cvvLength": 4,
+                "images": [
+                    { "type": "image/png", "url": "$BASE_PATH/amex.png" },
+                    { "type": "image/svg+xml", "url": "$BASE_PATH/amex.svg" }
+                ]
+            }]
+        """.trimIndent()
 
-        val cardConfiguration = cardConfigurationParser.parse(emptyBrands.byteInputStream())
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+        )
 
-        assertEquals(emptyList<CardBrand>(), cardConfiguration.brands)
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("", listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
     }
 
     @Test
-    fun givenAValidConfigShouldReturnACompleteCardConfiguration() {
+    fun `should use default pan lengths when json brand has missing 'panLengths' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png", "url": "$BASE_PATH/amex.png" },
+                     { "type": "image/svg+xml", "url": "$BASE_PATH/amex.svg" }
+                ]
+            }]
+        """.trimIndent()
 
-        val cardConfiguration =
-            cardConfigurationParser.parse(validCardConfigurationJson.byteInputStream())
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+        )
 
-        assertEquals(mutableListOf(16,18,19), cardConfiguration.brands?.get(0)?.pan?.validLengths)
-        assertEquals(mutableListOf(16), cardConfiguration.brands?.get(1)?.pan?.validLengths)
-        assertEquals(mutableListOf(15), cardConfiguration.brands?.get(2)?.pan?.validLengths)
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", CARD_DEFAULTS.pan.validLengths)
+        )
 
-        val visa = cardConfiguration.brands?.get(0)
-        assertEquals("visa", visa!!.name)
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
 
-        assertEquals(2, visa.images?.size)
-        val visaCardBrandImage1 = visa.images!![0]
-        assertEquals("image/png", visaCardBrandImage1.type)
-        assertEquals("<BASE_URL>/visa.png", visaCardBrandImage1.url)
-        val visaCardBrandImage2 = visa.images!![1]
-        assertEquals("image/svg+xml", visaCardBrandImage2.type)
-        assertEquals("<BASE_URL>/visa.svg", visaCardBrandImage2.url)
-
-        assertEquals(listOf(3), visa.cvv?.validLengths)
-
-        val mastercard = cardConfiguration.brands?.get(1)
-        assertEquals("mastercard", mastercard!!.name)
-
-        assertEquals(2, mastercard.images?.size)
-        val mastercardCardBrandImage1 = mastercard.images!![0]
-        assertEquals("image/png", mastercardCardBrandImage1.type)
-        assertEquals("<BASE_URL>/mastercard.png", mastercardCardBrandImage1.url)
-        val mastercardCardBrandImage2 = mastercard.images!![1]
-        assertEquals("image/svg+xml", mastercardCardBrandImage2.type)
-        assertEquals("<BASE_URL>/mastercard.svg", mastercardCardBrandImage2.url)
-
-        assertEquals(listOf(3), mastercard.cvv?.validLengths)
-        assertEquals(listOf(16), mastercard.pan?.validLengths)
-
-        val amex = cardConfiguration.brands?.get(2)
-        assertEquals("amex", amex!!.name)
-
-        assertEquals(2, amex.images?.size)
-        val amexCardBrandImage1 = amex.images!![0]
-        assertEquals("image/png", amexCardBrandImage1.type)
-        assertEquals("<BASE_URL>/amex.png", amexCardBrandImage1.url)
-        val amexCardBrandImage2 = amex.images!![1]
-        assertEquals("image/svg+xml", amexCardBrandImage2.type)
-        assertEquals("<BASE_URL>/amex.svg", amexCardBrandImage2.url)
-
-        assertEquals(listOf(4), amex.cvv?.validLengths)
-        assertEquals(listOf(15), amex.pan?.validLengths)
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
     }
 
     @Test
-    fun `should return a CardConfiguration with default parameters when valid json passed`() {
-        val cardConfiguration =
-            cardConfigurationParser.parse(validCardConfigurationJson.byteInputStream())
+    fun `should not use default pan lengths when json brand has empty 'panLengths' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [],
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png", "url": "$BASE_PATH/amex.png" },
+                     { "type": "image/svg+xml", "url": "$BASE_PATH/amex.svg" }
+                ]
+            }]
+        """.trimIndent()
 
-        assertEquals(listOf(15,16,18,19), cardConfiguration.defaults?.pan?.validLengths)
-        assertEquals(listOf(3,4), cardConfiguration.defaults?.cvv?.validLengths)
-        assertEquals(listOf(2), cardConfiguration.defaults?.month?.validLengths)
-        assertEquals(listOf(2), cardConfiguration.defaults?.year?.validLengths)
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", emptyList())
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
     }
 
     @Test
-    fun `should return a CardConfiguration when JSON is empty`() {
-        val cardConfigurationJson = """"""
+    fun `should use default cvv lengths when json brand has missing 'cvvLength' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [15],
+                "images": [
+                     { "type": "image/png", "url": "$BASE_PATH/amex.png" },
+                     { "type": "image/svg+xml", "url": "$BASE_PATH/amex.svg" }
+                ]
+            }]
+        """.trimIndent()
 
-        val cardConfiguration =
-            cardConfigurationParser.parse(cardConfigurationJson.byteInputStream())
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+        )
 
-        assertEquals(listOf(15,16,18,19), cardConfiguration.defaults?.pan?.validLengths)
-        assertEquals(listOf(3,4), cardConfiguration.defaults?.cvv?.validLengths)
-        assertEquals(listOf(2), cardConfiguration.defaults?.month?.validLengths)
-        assertEquals(listOf(2), cardConfiguration.defaults?.year?.validLengths)
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, CARD_DEFAULTS.cvv.validLengths),
+            pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
     }
+
+    @Test
+    fun `should have empty list when json brand has missing 'images' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [15],
+                "cvvLength": 4
+            }]
+        """.trimIndent()
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = emptyList(),
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should have empty list when json brand has empty 'images' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [15],
+                "cvvLength": 4,
+                "images": []
+            }]
+        """.trimIndent()
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = emptyList(),
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should empty brand image type when json brand image has missing 'type' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [12, 13, 14, 15, 16, 17, 18, 19],
+                "cvvLength": 4,
+                "images": [
+                     { "url": "$BASE_PATH/amex.png" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("", "$BASE_PATH/amex.png")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should have empty type value when json brand image has empty 'type' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [15],
+                "cvvLength": 4,
+                "images": [
+                     { "type": "", "url": "$BASE_PATH/amex.png" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("", "$BASE_PATH/amex.png")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should have empty brand image url when json brand image has missing 'url' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [12, 13, 14, 15, 16, 17, 18, 19],
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("image/png", "")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should have empty url value when json brand image has empty 'url' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [15],
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png", "url": "" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("image/png", "")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should have empty brand name when string property value is an int - 'name' property`() {
+        val json = """
+            [{
+                "name": 0,
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [12, 13, 14, 15, 16, 17, 18, 19],
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png", "url": "$BASE_PATH/amex.png" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*${'$'}", PAN_RULE.validLengths)
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should have default pattern when string property value is an int - "pattern" property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": 0,
+                "panLengths": [12, 13, 14, 15, 16, 17, 18, 19],
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png", "url": "$BASE_PATH/amex.png" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule(MATCHER, PAN_RULE.validLengths)
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should ignore value passed where 'panLengths' array property value is an object and use the default value`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": {},
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png", "url": "$BASE_PATH/amex.png" },
+                     { "type": "image/svg+xml", "url": "$BASE_PATH/amex.svg" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should use default pan length when int array property value is an array of strings - 'panLengths' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": ["should be an int not a string"],
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png", "url": "$BASE_PATH/amex.png" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should have default cvv length when int property value is a string - 'cvvLength' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [12, 13, 14, 15, 16, 17, 18, 19],
+                "cvvLength": "should be an int not a string",
+                "images": [
+                     { "type": "image/png", "url": "$BASE_PATH/amex.png" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("image/png", "$BASE_PATH/amex.png")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, CVV_RULE.validLengths),
+            pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should have empty list where 'images' array property value is an object`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [15],
+                "cvvLength": 4,
+                "images": {}
+            }]
+        """.trimIndent()
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = emptyList(),
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*${'$'}", listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+
+        cardConfigurationParser.deserialize(json)
+    }
+
+    @Test
+    fun `should have empty list where 'images' array property value is an multi dimensional array`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [15],
+                "cvvLength": 4,
+                "images": [[]]
+            }]
+        """.trimIndent()
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = emptyList(),
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*${'$'}", listOf(15))
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+
+        cardConfigurationParser.deserialize(json)
+    }
+
+    @Test
+    fun `should have empty brand image type when string property value is an int - 'image type' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [12, 13, 14, 15, 16, 17, 18, 19],
+                "cvvLength": 4,
+                "images": [
+                     { "type": 0, "url": "$BASE_PATH/amex.png" }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("", "$BASE_PATH/amex.png")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
+    @Test
+    fun `should have empty brand image url when string property value is an int - 'image url' property`() {
+        val json = """
+            [{
+                "name": "amex",
+                "pattern": "^3[47]\\d*${'$'}",
+                "panLengths": [12, 13, 14, 15, 16, 17, 18, 19],
+                "cvvLength": 4,
+                "images": [
+                     { "type": "image/png", "url": 0 }
+                ]
+            }]
+        """.trimIndent()
+
+        val brandImages = listOf(
+            CardBrandImage("image/png", "")
+        )
+
+        val expectedBrand = CardBrand(
+            name = "amex",
+            images = brandImages,
+            cvv = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
+        )
+
+        val expectedConfig = CardConfiguration(
+            brands = listOf(expectedBrand),
+            defaults = CARD_DEFAULTS
+        )
+
+        assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
+    }
+
 }
