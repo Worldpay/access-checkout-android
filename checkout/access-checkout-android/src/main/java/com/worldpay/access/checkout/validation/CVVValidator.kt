@@ -17,14 +17,14 @@ interface CVVValidator {
      * @param pan (Optional) the pan field to validate against the cvv
      * @return a [Pair] of [ValidationResult] and [CardBrand] for the cvv field
      */
-    fun validate(cvv: CVV, pan: PAN?): Pair<ValidationResult, CardBrand?>
+    fun validate(cvv: CVV, pan: String?): Pair<ValidationResult, CardBrand?>
 }
 
 internal class CVVValidatorImpl(
     private val cardConfiguration: CardConfiguration?
 ) : CVVValidator {
 
-    override fun validate(cvv: CVV, pan: PAN?): Pair<ValidationResult, CardBrand?> {
+    override fun validate(cvv: CVV, pan: String?): Pair<ValidationResult, CardBrand?> {
         if (cvv.isBlank() && cardConfiguration == null) {
             return Pair(ValidationResult(partial = false, complete = false), null)
         }

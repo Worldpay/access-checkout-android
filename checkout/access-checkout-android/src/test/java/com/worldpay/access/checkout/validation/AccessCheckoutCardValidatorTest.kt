@@ -31,7 +31,7 @@ class AccessCheckoutCardValidatorTest {
         val pan = "0000111122223333"
         val result = ValidationResult(partial = true, complete = false)
         val validationResultPair = Pair(result, null)
-        given(panValidator.validate(pan)).willReturn(validationResultPair)
+        given(panValidator.validate(pan, cardConfiguration)).willReturn(validationResultPair)
 
         val validationResult = accessCheckoutCardValidator.validatePAN(pan)
 
