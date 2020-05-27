@@ -38,7 +38,7 @@ object CardConfigurationUtil {
         val PAN_RULE =
             CardValidationRule(
                 matcher = MATCHER,
-                validLengths = listOf(15, 16, 18, 19)
+                validLengths = listOf(12, 13, 14, 15, 16, 17, 18, 19)
             )
 
         val CVV_RULE =

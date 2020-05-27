@@ -20,7 +20,7 @@ class DefaultCardRulesTest {
     fun `should return expected pan defaults`() {
         val expected = CardValidationRule(
             matcher = DEFAULT_MATCHER,
-            validLengths = listOf(15, 16, 18, 19)
+            validLengths = listOf(12, 13, 14, 15, 16, 17, 18, 19)
         )
 
         assertEquals(expected, PAN_DEFAULTS)
