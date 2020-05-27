@@ -4,34 +4,11 @@ import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.CardBrandUtils.findCardBrandMatchingPAN
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
+import com.worldpay.access.checkout.validation.ValidatorUtils.regexMatches
 
-/**
- * Validator for the cvv field
- */
-interface CVVValidator {
+class CVVValidator {
 
-    /**
-     * Validates the cvv field
-     *
-     * @param cvv the cvv to validate
-     * @param pan (Optional) the pan field to validate against the cvv
-     * @return a [Pair] of [ValidationResult] and [CardBrand] for the cvv field
-     */
-    fun validate(cvv: CVV, pan: String?): Pair<ValidationResult, CardBrand?>
-}
-
-internal class CVVValidatorImpl(
-    private val cardConfiguration: CardConfiguration?
-) : CVVValidator {
-
-    override fun validate(cvv: CVV, pan: String?): Pair<ValidationResult, CardBrand?> {
-        if (cvv.isBlank() && cardConfiguration == null) {
-            return Pair(ValidationResult(partial = false, complete = false), null)
-        }
-
-        if (cardConfiguration == null) {
-            return Pair(ValidationResult(partial = true, complete = true), null)
-        }
+    fun validate(cvv: CVV, pan: String?, cardConfiguration: CardConfiguration): Pair<ValidationResult, CardBrand?> {
 
         if (!pan.isNullOrBlank()) {
             val (cardBrand, _) = findCardBrandMatchingPAN(cardConfiguration.brands, pan)
@@ -44,6 +21,9 @@ internal class CVVValidatorImpl(
     }
 
     private fun getDefaultValidationResult(cvv: CVV, cardConfiguration: CardConfiguration): ValidationResult {
+        if (!regexMatches(cardConfiguration.defaults.cvv.matcher, cvv)) {
+            return ValidationResult(partial = false, complete = false)
+        }
         return getValidationResultFor(cvv, cardConfiguration.defaults.cvv)
     }
 }

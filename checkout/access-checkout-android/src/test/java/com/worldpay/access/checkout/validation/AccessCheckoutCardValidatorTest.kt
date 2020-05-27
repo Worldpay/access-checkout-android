@@ -44,7 +44,7 @@ class AccessCheckoutCardValidatorTest {
         val cvv = "1234"
         val result = ValidationResult(partial = true, complete = false)
 
-        given(cvvValidator.validate(cvv, pan)).willReturn(Pair(result, VISA_BRAND))
+        given(cvvValidator.validate(cvv, pan, cardConfiguration)).willReturn(Pair(result, VISA_BRAND))
 
         val validationResult = accessCheckoutCardValidator.validateCVV(cvv, pan)
 

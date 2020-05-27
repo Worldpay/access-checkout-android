@@ -11,13 +11,13 @@ import java.util.*
  */
 class AccessCheckoutCardValidator @JvmOverloads constructor(override val cardConfiguration: CardConfiguration? = null,
                                                             private val panValidator: PANValidator = PANValidator(),
-                                                            private val cvvValidator: CVVValidator = CVVValidatorImpl(cardConfiguration),
+                                                            private val cvvValidator: CVVValidator = CVVValidator(),
                                                             private val dateValidator: DateValidator = DateValidatorImpl(Calendar.getInstance(),
                                       cardConfiguration)) : CardValidator {
 
     override fun validatePAN(pan: String): Pair<ValidationResult, CardBrand?> = panValidator.validate(pan, getCardConfig())
 
-    override fun validateCVV(cvv: CVV, pan: String?): Pair<ValidationResult, CardBrand?> = cvvValidator.validate(cvv, pan)
+    override fun validateCVV(cvv: CVV, pan: String?): Pair<ValidationResult, CardBrand?> = cvvValidator.validate(cvv, pan, getCardConfig())
 
     override fun validateDate(month: Month?, year: Year?): ValidationResult = dateValidator.validate(month, year)
 

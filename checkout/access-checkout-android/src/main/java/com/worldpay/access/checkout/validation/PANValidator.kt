@@ -6,7 +6,6 @@ import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.validation.CardBrandUtils.findCardBrandMatchingPAN
 import com.worldpay.access.checkout.validation.CardBrandUtils.validateAgainstMatcher
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
-import com.worldpay.access.checkout.validation.ValidatorUtils.isNumeric
 
 class PANValidator {
 
@@ -29,7 +28,6 @@ class PANValidator {
     }
 
     private fun isLuhnValid(pan: String): Boolean {
-        if (!isNumeric(pan)) return false
         var sum = 0
         var alternate = false
         for (i: Int in (pan.length - 1) downTo 0) {
