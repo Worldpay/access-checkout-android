@@ -53,7 +53,7 @@ class AccessCheckoutCardValidatorTest {
 
     @Test
     fun `given a month and a year field then should delegate to Date validator to validate`() {
-        given(dateValidator.validate("01", "29")).willReturn(ValidationResult(partial = false, complete = true))
+        given(dateValidator.validate("01", "29", cardConfiguration)).willReturn(ValidationResult(partial = false, complete = true))
 
         val validationResult = accessCheckoutCardValidator.validateDate("01", "29")
 
@@ -62,7 +62,7 @@ class AccessCheckoutCardValidatorTest {
 
     @Test
     fun `given a month and a year field then should delegate to Date validator to validate length`() {
-        given(dateValidator.canUpdate("01", "29")).willReturn(false)
+        given(dateValidator.canUpdate("01", "29", cardConfiguration)).willReturn(false)
 
         val canUpdate = accessCheckoutCardValidator.canUpdate("01", "29")
 
