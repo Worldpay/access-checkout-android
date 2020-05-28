@@ -2,41 +2,13 @@ package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
-import com.worldpay.access.checkout.api.configuration.DefaultCardRules.MONTH_DEFAULTS
-import com.worldpay.access.checkout.api.configuration.DefaultCardRules.YEAR_DEFAULTS
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import java.util.*
 import java.util.Calendar.*
 
-/**
- * Validator for the date field
- */
-interface DateValidator {
-    /**
-     * Validates the date field
-     *
-     * @param month (Optional) the month to validate
-     * @param year (Optional) the year to validate
-     * @return a [ValidationResult] for the date field
-     */
-    fun validate(month: Month?, year: Year?): ValidationResult
+class DateValidator(private val now: Calendar = getInstance()) {
 
-    /**
-     * Determines whether the date field can be updated with extra characters
-     *
-     * @param month (Optional) the month to validate
-     * @param year (Optional) the year to validate
-     * @return true if extra characters can be entered, false otherwise
-     */
-    fun canUpdate(month: Month?, year: Year?): Boolean
-}
-
-internal class DateValidatorImpl(
-    private val now: Calendar,
-    private val cardConfiguration: CardConfiguration?
-) : DateValidator {
-
-    override fun validate(month: Month?, year: Year?): ValidationResult {
+    fun validate(month: Month?, year: Year?, cardConfiguration: CardConfiguration): ValidationResult {
         val (monthRule, yearRule) = getRulesForDate(cardConfiguration)
 
         var partial = true
@@ -72,7 +44,7 @@ internal class DateValidatorImpl(
         return ValidationResult(partial, complete)
     }
 
-    override fun canUpdate(month: Month?, year: Year?): Boolean {
+    fun canUpdate(month: Month?, year: Year?, cardConfiguration: CardConfiguration): Boolean {
         val (monthRule, yearRule) = getRulesForDate(cardConfiguration)
 
         var complete: Boolean
@@ -90,10 +62,7 @@ internal class DateValidatorImpl(
         return !complete
     }
 
-    private fun getRulesForDate(cardConfiguration: CardConfiguration?): Pair<CardValidationRule, CardValidationRule> {
-        if (cardConfiguration == null) {
-            return Pair(MONTH_DEFAULTS, YEAR_DEFAULTS)
-        }
+    private fun getRulesForDate(cardConfiguration: CardConfiguration): Pair<CardValidationRule, CardValidationRule> {
         return Pair(cardConfiguration.defaults.month, cardConfiguration.defaults.year)
     }
 

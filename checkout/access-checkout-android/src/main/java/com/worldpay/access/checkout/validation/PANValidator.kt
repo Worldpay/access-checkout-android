@@ -6,29 +6,10 @@ import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.validation.CardBrandUtils.findCardBrandMatchingPAN
 import com.worldpay.access.checkout.validation.CardBrandUtils.validateAgainstMatcher
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
-import com.worldpay.access.checkout.validation.ValidatorUtils.isNumeric
 
-/**
- * Validator for the pan field
- */
-interface PANValidator {
+class PANValidator {
 
-    /**
-     * Validates the pan field
-     *
-     * @param pan the pan to validate
-     * @return a [Pair] of [ValidationResult] and [CardBrand] for the pan field
-     */
-    fun validate(pan: PAN): Pair<ValidationResult, CardBrand?>
-}
-
-internal class PANValidatorImpl(private val cardConfiguration: CardConfiguration?) : PANValidator {
-
-    override fun validate(pan: PAN): Pair<ValidationResult, CardBrand?> {
-        if (cardConfiguration == null) {
-            return Pair(ValidationResult(partial = true, complete = pan.isBlank() || isLuhnValid(pan)), null)
-        }
-
+    fun validate(pan: String, cardConfiguration: CardConfiguration): Pair<ValidationResult, CardBrand?> {
         val (cardBrand, cardBrandValidationRule) = findCardBrandMatchingPAN(cardConfiguration.brands, pan)
 
         val validationRule: CardValidationRule = cardBrandValidationRule  ?: cardConfiguration.defaults.pan
@@ -36,7 +17,7 @@ internal class PANValidatorImpl(private val cardConfiguration: CardConfiguration
         return Pair(getValidationResult(validationRule, pan), cardBrand)
     }
 
-    private fun getValidationResult(validationRule: CardValidationRule, pan: PAN): ValidationResult {
+    private fun getValidationResult(validationRule: CardValidationRule, pan: String): ValidationResult {
         val validationResult = getValidationResultFor(pan, validationRule)
         val validMatcher = validateAgainstMatcher(pan, validationRule)
 
@@ -46,8 +27,7 @@ internal class PANValidatorImpl(private val cardConfiguration: CardConfiguration
         return ValidationResult(partial, complete)
     }
 
-    private fun isLuhnValid(pan: PAN): Boolean {
-        if (!isNumeric(pan)) return false
+    private fun isLuhnValid(pan: String): Boolean {
         var sum = 0
         var alternate = false
         for (i: Int in (pan.length - 1) downTo 0) {

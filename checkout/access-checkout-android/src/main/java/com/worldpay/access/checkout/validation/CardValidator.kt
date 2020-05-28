@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.validation
 import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 
-typealias PAN = String
 typealias CVV = String
 typealias Month = String
 typealias Year = String
@@ -24,7 +23,7 @@ interface CardValidator {
      * @param pan the pan to validate
      * @return a [Pair] of [ValidationResult] and [CardBrand] for the pan field
      */
-    fun validatePAN(pan: PAN): Pair<ValidationResult, CardBrand?>
+    fun validatePAN(pan: String): Pair<ValidationResult, CardBrand?>
 
     /**
      * Validates the cvv field
@@ -33,7 +32,7 @@ interface CardValidator {
      * @param pan (Optional) the pan field to validate against the cvv
      * @return a [Pair] of [ValidationResult] and [CardBrand] for the cvv field
      */
-    fun validateCVV(cvv: CVV, pan: PAN?): Pair<ValidationResult, CardBrand?>
+    fun validateCVV(cvv: CVV, pan: String?): Pair<ValidationResult, CardBrand?>
 
     /**
      * Validates the date field
