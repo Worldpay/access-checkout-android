@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.validation
+package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DINERS_BRAND
@@ -21,12 +21,14 @@ import com.worldpay.access.checkout.validation.CardRulesTestFactory.luhnInvalidU
 import com.worldpay.access.checkout.validation.CardRulesTestFactory.luhnValidUnknownCardSize19
 import com.worldpay.access.checkout.validation.CardRulesTestFactory.luhnValidVisaCardSize16
 import com.worldpay.access.checkout.validation.CardRulesTestFactory.visaCard
+import com.worldpay.access.checkout.validation.ValidationResult
 import org.junit.Assert.*
 import org.junit.Test
 
 class PANValidatorTest {
 
-    private val panValidator = PANValidator()
+    private val panValidator =
+        PANValidator()
 
     // validatePAN
 
@@ -39,7 +41,11 @@ class PANValidatorTest {
     fun `given card number entered and a bad matcher for card defaults then should be completely invalid`() {
         val result = panValidator.validate("abc", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = false, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -47,7 +53,11 @@ class PANValidatorTest {
     fun `given incomplete card number entered and using default matcher then should be partially valid but completely invalid`() {
         val result = panValidator.validate("8839", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = true, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -55,7 +65,11 @@ class PANValidatorTest {
     fun `given partial luhn-invalid card entered for card defaults then should be partially valid`() {
         val result = panValidator.validate("1234", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = true, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -63,7 +77,11 @@ class PANValidatorTest {
     fun `given full luhn-invalid card entered for card defaults then should be partially valid`() {
         val result = panValidator.validate("4111111111111112", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = true, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -71,7 +89,11 @@ class PANValidatorTest {
     fun `given no card number entered and only card defaults present then should be partially valid`() {
         val result = panValidator.validate("", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = true, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -79,7 +101,11 @@ class PANValidatorTest {
     fun `given no card number entered and only brand rules present then should be partially valid`() {
         val result = panValidator.validate("", CARD_CONFIG_BASIC)
 
-        assertEquals(ValidationResult(partial = true, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -87,7 +113,11 @@ class PANValidatorTest {
     fun `given no card number entered and both card defaults and brand rules present then should be partially valid`() {
         val result = panValidator.validate("", CARD_CONFIG_BASIC)
 
-        assertEquals(ValidationResult(partial = true, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -95,7 +125,11 @@ class PANValidatorTest {
     fun `given a non-numeric card is entered then should be completely invalid`() {
         val result = panValidator.validate(visaCard + "A", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = false, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -103,7 +137,11 @@ class PANValidatorTest {
     fun `given a non-numeric card with special chars is entered then should be completely invalid`() {
         val result = panValidator.validate(visaCard + "_*", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = false, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -111,7 +149,11 @@ class PANValidatorTest {
     fun `given a non-numeric card with mix of digits and non-numeric chars is entered then should be completely invalid`() {
         val result = panValidator.validate(visaCard + "_AB", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = false, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -119,7 +161,11 @@ class PANValidatorTest {
     fun `given too short card entered for matcher then should be partially valid and completely invalid`() {
         val result = panValidator.validate("1234", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = true, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -127,7 +173,11 @@ class PANValidatorTest {
     fun `given too long card entered for matcher then should be completely invalid`() {
         val result = panValidator.validate("02184074752863339921527185", CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = false, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -135,7 +185,11 @@ class PANValidatorTest {
     fun `given a luhn-valid card with correct size for lower bound of matcher should be completely and partially valid`() {
         val result = panValidator.validate(luhnValidVisaCardSize16,  CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = true, complete = true), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = true
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -143,29 +197,49 @@ class PANValidatorTest {
     fun `given a luhn-valid card with correct size for upper bound of matcher should be completely and partially valid`() {
         val result = panValidator.validate(luhnValidVisaCardSize16, CARD_CONFIG_NO_BRAND)
 
-        assertEquals(ValidationResult(partial = true, complete = true), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = true
+            ), result.first)
         assertNull(result.second)
     }
 
     @Test
     fun `given luhn-invalid identified cards and multiple brand rules config then should only be partially valid`() {
         val result1 = panValidator.validate("4", CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = true, complete = false), result1.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result1.first)
         assertEquals(VISA_BRAND, result1.second)
 
         val result2 = panValidator.validate("51", CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = true, complete = false), result2.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result2.first)
         assertEquals(MASTERCARD_BRAND, result2.second)
     }
 
     @Test
     fun `given luhn-valid identified cards and multiple brand rules config then should be completely valid`() {
         val result1 = panValidator.validate(VISA_PAN, CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = true, complete = true), result1.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = true
+            ), result1.first)
         assertEquals(VISA_BRAND, result1.second)
 
         val result2 = panValidator.validate(AMEX_PAN, CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = false, complete = true), result2.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = true
+            ), result2.first)
         assertEquals(AMEX_BRAND, result2.second)
     }
 
@@ -173,7 +247,11 @@ class PANValidatorTest {
     fun `given luhn-invalid unidentified card should only be partially valid`() {
         val result = panValidator.validate("6", CARD_CONFIG_BASIC)
 
-        assertEquals(ValidationResult(partial = true, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -181,7 +259,11 @@ class PANValidatorTest {
     fun `given luhn-valid unidentified card should only be completely valid`() {
         val result = panValidator.validate("8464222316187751443", CARD_CONFIG_BASIC)
 
-        assertEquals(ValidationResult(partial = false, complete = true), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = true
+            ), result.first)
         assertNull(result.second)
     }
 
@@ -189,7 +271,11 @@ class PANValidatorTest {
     fun `given amex card then should be completely valid`() {
         val result = panValidator.validate(AMEX_PAN, CARD_CONFIG_BASIC)
 
-        assertEquals(ValidationResult(partial = false, complete = true), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = true
+            ), result.first)
         assertEquals(result.second, AMEX_BRAND)
     }
 
@@ -204,80 +290,127 @@ class PANValidatorTest {
             "0000000000000000000"
         )
 
-        val panValidator = PANValidator()
+        val panValidator =
+            PANValidator()
 
         pans.forEach {
             val result = panValidator.validate(it, CARD_CONFIG_NO_BRAND)
-            assertEquals(ValidationResult(partial = it.length != 19, complete = true), result.first)
+            assertEquals(
+                ValidationResult(
+                    partial = it.length != 19,
+                    complete = true
+                ), result.first)
             assertNull(result.second)
         }
     }
 
     @Test
     fun `given luhn-invalid pan then should be partially valid`() {
-        val panValidator = PANValidator()
+        val panValidator =
+            PANValidator()
 
         val result = panValidator.validate("456756789654", CARD_CONFIG_NO_BRAND)
-        assertEquals(ValidationResult(partial = true, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
     @Test
     fun `given a luhn-invalid identified card with correct size should be completely invalid`() {
-        val panValidator = PANValidator()
+        val panValidator =
+            PANValidator()
 
         val result = panValidator.validate(luhnInvalidUnknownCardSize19, CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = false, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = false
+            ), result.first)
         assertEquals(null, result.second)
     }
 
     @Test
     fun `given luhn-valid unidentified cards with varying lengths then should validate against min and max rule`() {
         val result1 = panValidator.validate("8464222316", CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = true, complete = false), result1.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = false
+            ), result1.first)
         assertNull(result1.second)
 
         val result2 = panValidator.validate("8464222316187751443", CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = false, complete = true), result2.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = true
+            ), result2.first)
         assertNull(result2.second)
 
         val result3 = panValidator.validate("02184074752863339921527185", CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = false, complete = false), result3.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = false
+            ), result3.first)
         assertNull(result3.second)
     }
 
     @Test
     fun `given luhn-valid unidentified cards with correct matcher for the default rule then should be completely valid`() {
         val result = panValidator.validate("0000000000000000", CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = true, complete = true), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = true
+            ), result.first)
         assertNull(result.second)
     }
 
     @Test
     fun `given a luhn-valid unidentified card with min length size should be partially and completely valid`() {
         val result = panValidator.validate("9364473081789059", CARD_CONFIG_BASIC)
-        assertEquals(ValidationResult(partial = true, complete = true), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = true,
+                complete = true
+            ), result.first)
         assertNull(result.second)
     }
 
     @Test
     fun `given a luhn-valid unidentified card with max length size should be completely valid`() {
         val result = panValidator.validate(luhnValidUnknownCardSize19, CARD_CONFIG_NO_BRAND)
-        assertEquals(ValidationResult(partial = false, complete = true), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = true
+            ), result.first)
         assertNull(result.second)
     }
 
     @Test
     fun `given a luhn-valid unidentified card with more than max size should be completely invalid`() {
         val result = panValidator.validate("02184074752863339921527185", CARD_CONFIG_NO_BRAND)
-        assertEquals(ValidationResult(partial = false, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 
     @Test
     fun `given a luhn-invalid unidentified card should be completely invalid`() {
         val result = panValidator.validate(luhnInvalidUnknownCardSize19, CARD_CONFIG_NO_BRAND)
-        assertEquals(ValidationResult(partial = false, complete = false), result.first)
+        assertEquals(
+            ValidationResult(
+                partial = false,
+                complete = false
+            ), result.first)
         assertNull(result.second)
     }
 

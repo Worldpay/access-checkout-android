@@ -20,7 +20,7 @@ import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardListenerImpl
 import com.worldpay.access.checkout.sample.card.SessionResponseListenerImpl
-import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
+import com.worldpay.access.checkout.validation.validators.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
 import com.worldpay.access.checkout.views.PANLayout

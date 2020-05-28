@@ -6,8 +6,8 @@ import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.Card
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
-import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.validation.CardValidator
+import com.worldpay.access.checkout.validation.validators.AccessCheckoutCardValidator
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test

@@ -22,7 +22,7 @@ import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder;
 import com.worldpay.access.checkout.client.CardDetails;
 import com.worldpay.access.checkout.client.SessionType;
 import com.worldpay.access.checkout.sample.images.SVGImageLoader;
-import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator;
+import com.worldpay.access.checkout.validation.validators.AccessCheckoutCardValidator;
 import com.worldpay.access.checkout.views.CardCVVText;
 import com.worldpay.access.checkout.views.CardExpiryTextLayout;
 import com.worldpay.access.checkout.views.CardView;
