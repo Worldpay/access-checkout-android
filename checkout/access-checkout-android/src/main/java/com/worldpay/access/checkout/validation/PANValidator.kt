@@ -9,6 +9,12 @@ import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResul
 
 class PANValidator {
 
+    fun getValidationRule(pan: String, cardConfiguration: CardConfiguration): CardValidationRule {
+        val (_, cardBrandValidationRule) = findCardBrandMatchingPAN(cardConfiguration.brands, pan)
+
+        return cardBrandValidationRule  ?: cardConfiguration.defaults.pan
+    }
+
     fun validate(pan: String, cardConfiguration: CardConfiguration): Pair<ValidationResult, CardBrand?> {
         val (cardBrand, cardBrandValidationRule) = findCardBrandMatchingPAN(cardConfiguration.brands, pan)
 

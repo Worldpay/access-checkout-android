@@ -1,6 +1,9 @@
 package com.worldpay.access.checkout.validation
 
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_MONTH_RULE
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_YEAR_RULE
 import org.junit.Test
 import java.util.*
 import kotlin.test.assertEquals
@@ -236,7 +239,7 @@ class DateValidatorTest {
 
     @Test
     fun `given future year only then should be completely valid`() {
-        val dateValidator = getValidatorWithDate(2019, 5, 7)
+        val dateValidator = getValidatorWithDate(2019, 6, 6)
 
         assertEquals(ValidationResult(partial = false, complete = true), dateValidator.validate(null, "20", CARD_CONFIG_NO_BRAND))
     }
@@ -335,6 +338,12 @@ class DateValidatorTest {
     @Test
     fun `given three digit month and three digit year then can be updated`() {
         assertTrue(dateValidator.canUpdate("123", "123", CARD_CONFIG_NO_BRAND))
+    }
+
+    @Test
+    fun `should return default month and year rule when retrieving the validation rule`() {
+        assertEquals(Pair(EXP_MONTH_RULE, EXP_YEAR_RULE), dateValidator.getValidationRule(CARD_CONFIG_BASIC))
+        assertEquals(Pair(EXP_MONTH_RULE, EXP_YEAR_RULE), dateValidator.getValidationRule(CARD_CONFIG_NO_BRAND))
     }
 
     private fun getValidatorWithDate(year: Int, month: Int, day: Int): DateValidator {
