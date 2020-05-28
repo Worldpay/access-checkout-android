@@ -1,11 +1,21 @@
 package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DINERS_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DISCOVER_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.JCB_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MAESTRO_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MASTERCARD_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN_RULE
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.DINERS_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.DISCOVER_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.JCB_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.MAESTRO_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.CardRulesTestFactory.luhnInvalidUnknownCardSize19
 import com.worldpay.access.checkout.validation.CardRulesTestFactory.luhnValidUnknownCardSize19
@@ -270,4 +280,27 @@ class PANValidatorTest {
         assertEquals(ValidationResult(partial = false, complete = false), result.first)
         assertNull(result.second)
     }
+
+    @Test
+    fun `should return branded validation rule when correct pan is used`() {
+        assertEquals(VISA_BRAND.pan, panValidator.getValidationRule(VISA_PAN, CARD_CONFIG_BASIC))
+        assertEquals(MASTERCARD_BRAND.pan, panValidator.getValidationRule(MASTERCARD_PAN, CARD_CONFIG_BASIC))
+        assertEquals(AMEX_BRAND.pan, panValidator.getValidationRule(AMEX_PAN, CARD_CONFIG_BASIC))
+        assertEquals(JCB_BRAND.pan, panValidator.getValidationRule(JCB_PAN, CARD_CONFIG_BASIC))
+        assertEquals(DISCOVER_BRAND.pan, panValidator.getValidationRule(DISCOVER_PAN, CARD_CONFIG_BASIC))
+        assertEquals(DINERS_BRAND.pan, panValidator.getValidationRule(DINERS_PAN, CARD_CONFIG_BASIC))
+        assertEquals(MAESTRO_BRAND.pan, panValidator.getValidationRule(MAESTRO_PAN, CARD_CONFIG_BASIC))
+    }
+
+    @Test
+    fun `should return default validation rule when pan is empty`() {
+        assertEquals(PAN_RULE, panValidator.getValidationRule("", CARD_CONFIG_BASIC))
+        assertEquals(PAN_RULE, panValidator.getValidationRule("", CARD_CONFIG_NO_BRAND))
+    }
+
+    @Test
+    fun `should return default validation rule when pan is is not empty and using default card config`() {
+        assertEquals(PAN_RULE, panValidator.getValidationRule(VISA_PAN, CARD_CONFIG_NO_BRAND))
+    }
+
 }

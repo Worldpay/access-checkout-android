@@ -8,6 +8,10 @@ import java.util.Calendar.*
 
 class DateValidator(private val now: Calendar = getInstance()) {
 
+    fun getValidationRule(cardConfiguration: CardConfiguration): Pair<CardValidationRule, CardValidationRule> {
+        return Pair(cardConfiguration.defaults.month, cardConfiguration.defaults.year)
+    }
+
     fun validate(month: Month?, year: Year?, cardConfiguration: CardConfiguration): ValidationResult {
         val (monthRule, yearRule) = getRulesForDate(cardConfiguration)
 
