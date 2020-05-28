@@ -14,8 +14,7 @@ import com.worldpay.access.checkout.validation.validators.PANValidator
 
 class TextWatcherFactory(
     validationListener: AccessCheckoutValidationListener,
-    private val cardDetailComponents: CardDetailComponents,
-    private val cardConfiguration: CardConfiguration
+    private val cardDetailComponents: CardDetailComponents
 ) {
 
     private val validationRuleHandler = ValidationRuleHandler(cardDetailComponents)
@@ -25,7 +24,7 @@ class TextWatcherFactory(
     private val dateValidator = DateValidator()
     private val cvvValidator = CVVValidator()
 
-    fun createTextWatcher(cardDetailType: CardDetailType): TextWatcher {
+    fun createTextWatcher(cardDetailType: CardDetailType, cardConfiguration: CardConfiguration): TextWatcher {
         if (cardDetailType == PAN) {
             return PANTextWatcher(
                 cardConfiguration = cardConfiguration,

@@ -21,29 +21,28 @@ class TextWatcherFactoryTest {
     fun setup() {
         textWatcherFactory = TextWatcherFactory(
             validationListener = validationListener,
-            cardDetailComponents = cardDetailComponents,
-            cardConfiguration = cardConfiguration
+            cardDetailComponents = cardDetailComponents
         )
     }
 
     @Test
     fun `should get pan text watcher`() {
-        assertTrue(textWatcherFactory.createTextWatcher(PAN) is PANTextWatcher)
+        assertTrue(textWatcherFactory.createTextWatcher(PAN, cardConfiguration) is PANTextWatcher)
     }
 
     @Test
     fun `should get expiry month text watcher`() {
-        assertTrue(textWatcherFactory.createTextWatcher(EXPIRY_MONTH) is ExpiryMonthTextWatcher)
+        assertTrue(textWatcherFactory.createTextWatcher(EXPIRY_MONTH, cardConfiguration) is ExpiryMonthTextWatcher)
     }
 
     @Test
     fun `should get expiry year text watcher`() {
-        assertTrue(textWatcherFactory.createTextWatcher(EXPIRY_YEAR) is ExpiryYearTextWatcher)
+        assertTrue(textWatcherFactory.createTextWatcher(EXPIRY_YEAR, cardConfiguration) is ExpiryYearTextWatcher)
     }
 
     @Test
     fun `should get cvv text watcher`() {
-        assertTrue(textWatcherFactory.createTextWatcher(CVV) is CVVTextWatcher)
+        assertTrue(textWatcherFactory.createTextWatcher(CVV, cardConfiguration) is CVVTextWatcher)
     }
 
 }
