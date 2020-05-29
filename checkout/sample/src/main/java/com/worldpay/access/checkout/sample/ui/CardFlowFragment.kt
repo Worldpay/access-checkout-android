@@ -20,6 +20,7 @@ import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardListenerImpl
 import com.worldpay.access.checkout.sample.card.SessionResponseListenerImpl
+import com.worldpay.access.checkout.util.logging.LoggingUtils
 import com.worldpay.access.checkout.validation.validators.AccessCheckoutCardValidator
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
@@ -35,7 +36,7 @@ class CardFlowFragment : Fragment() {
     private lateinit var cvvText: CardCVVText
     private lateinit var expiryText: CardExpiryTextLayout
     private lateinit var submitBtn: Button
-    private lateinit var multiFlowSwitch: Switch
+    private lateinit var paymentsCvcSwitch: Switch
 
     private lateinit var progressBar: ProgressBar
 
@@ -59,7 +60,7 @@ class CardFlowFragment : Fragment() {
             expiryText = view.findViewById(R.id.card_flow_text_exp)
             cvvText = view.findViewById(R.id.card_flow_text_cvv)
             submitBtn = view.findViewById(R.id.card_flow_btn_submit)
-            multiFlowSwitch = view.findViewById(R.id.card_flow_payments_cvc_switch)
+            paymentsCvcSwitch = view.findViewById(R.id.card_flow_payments_cvc_switch)
 
             submitBtnEnabledColor =
                 getColor(activity.resources, R.color.colorPrimary, null)
@@ -81,8 +82,8 @@ class CardFlowFragment : Fragment() {
     }
 
     private fun handleSwitch() {
-        setSessionTypes(multiFlowSwitch.isChecked)
-        multiFlowSwitch.setOnCheckedChangeListener { _, isChecked ->
+        setSessionTypes(paymentsCvcSwitch.isChecked)
+        paymentsCvcSwitch.setOnCheckedChangeListener { _, isChecked ->
             setSessionTypes(isChecked)
         }
     }
@@ -105,6 +106,10 @@ class CardFlowFragment : Fragment() {
             .build()
 
         submitBtn.setOnClickListener {
+            LoggingUtils.debugLog(javaClass.simpleName, "Started request")
+            this.progressBar.beginLoading()
+            toggleFields(false)
+
             val cardDetails = CardDetails.Builder()
                 .pan(panView.getInsertedText())
                 .expiryDate(expiryText.getMonth(), expiryText.getYear())
@@ -116,7 +121,7 @@ class CardFlowFragment : Fragment() {
 
     private fun initialiseCardValidation(activity: FragmentActivity) {
         val card = AccessCheckoutCard(panView, cvvText, expiryText)
-        card.cardListener = CardListenerImpl(activity, card)
+        card.cardListener = CardListenerImpl(activity, card, progressBar)
         card.cardValidator = AccessCheckoutCardValidator()
 
         CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
@@ -131,6 +136,7 @@ class CardFlowFragment : Fragment() {
         cvvText.isEnabled = enableFields
         expiryText.monthEditText.isEnabled = enableFields
         expiryText.yearEditText.isEnabled = enableFields
+        paymentsCvcSwitch.isEnabled = enableFields
         submitBtn.isEnabled = false
     }
 

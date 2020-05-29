@@ -16,6 +16,7 @@ import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvv.CvvListenerImpl
 import com.worldpay.access.checkout.sample.cvv.SessionResponseListenerImpl
+import com.worldpay.access.checkout.util.logging.LoggingUtils
 import com.worldpay.access.checkout.views.CardCVVText
 
 class CvvFlowFragment : Fragment() {
@@ -64,6 +65,10 @@ class CvvFlowFragment : Fragment() {
             .build()
 
         submitBtn.setOnClickListener {
+            LoggingUtils.debugLog(javaClass.simpleName, "Started request")
+            this.progressBar.beginLoading()
+            toggleFields(false)
+
             val cardDetails = CardDetails.Builder().cvv(cvvText.getInsertedText()).build()
             accessCheckoutClient.generateSession(cardDetails, listOf(SessionType.PAYMENTS_CVC_SESSION))
         }
@@ -71,7 +76,7 @@ class CvvFlowFragment : Fragment() {
 
     private fun initialiseCardValidation(activity: FragmentActivity) {
         val card = AccessCheckoutCVV(cvvText)
-        card.cardListener = CvvListenerImpl(activity, card)
+        card.cardListener = CvvListenerImpl(activity, card, progressBar)
 
         CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
 
