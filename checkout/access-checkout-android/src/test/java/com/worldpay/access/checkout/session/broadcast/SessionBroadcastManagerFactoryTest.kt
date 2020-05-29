@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.session.broadcast
 
-import com.worldpay.access.checkout.views.SessionResponseListener
+import com.worldpay.access.checkout.client.SessionResponseListener
 import org.junit.Test
 import org.mockito.Mockito.mock
 import kotlin.test.assertNotNull

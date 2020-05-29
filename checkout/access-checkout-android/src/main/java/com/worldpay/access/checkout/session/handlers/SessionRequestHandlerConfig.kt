@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
+import com.worldpay.access.checkout.client.SessionResponseListener
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
-import com.worldpay.access.checkout.views.SessionResponseListener
 
 /**
  * This class holds the configuration to be passed to [SessionRequestHandlerFactory] for constructing a [SessionRequestHandler]

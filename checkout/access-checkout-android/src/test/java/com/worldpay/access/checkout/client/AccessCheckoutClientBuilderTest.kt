@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.client
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
+import com.worldpay.access.checkout.client.SessionResponseListener
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.addResponse
@@ -13,7 +14,6 @@ import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcast
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.isExpectingResponse
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.setNumberOfSessionTypes
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
-import com.worldpay.access.checkout.views.SessionResponseListener
 import java.io.Serializable
 import java.util.*
 import java.util.concurrent.atomic.AtomicInteger
@@ -65,23 +65,15 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
 
     private fun sendSuccessCallback(responses: Map<SessionType, String>) {
         debugLog(javaClass.simpleName, "Intent Resp: $responses")
-        externalSessionResponseListener.onRequestFinished(responses,null)
+        externalSessionResponseListener.onSuccess(responses)
     }
 
-    private fun sendErrorCallback(errorSerializable: Serializable?) {
+    private fun sendErrorCallback(errorSerializable: Serializable) {
         try {
             debugLog(javaClass.simpleName, "Intent Err: $errorSerializable")
-            errorSerializable.let {
-                externalSessionResponseListener.onRequestFinished(
-                    null,
-                    errorSerializable as AccessCheckoutException
-                )
-            }
+            externalSessionResponseListener.onError(errorSerializable as AccessCheckoutException)
         } catch (ex: Exception) {
-            externalSessionResponseListener.onRequestFinished(
-                null,
-                AccessCheckoutError("Unknown error", ex)
-            )
+            externalSessionResponseListener.onError(AccessCheckoutError("Unknown error", ex))
         }
     }
 

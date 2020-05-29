@@ -4,12 +4,12 @@ import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.CardDetails
+import com.worldpay.access.checkout.client.SessionResponseListener
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
-import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -93,19 +93,6 @@ class VerifiedTokensSessionRequestHandlerTest {
         }
 
         assertEquals("Expected cvv to be provided but was not", exception.message)
-    }
-
-    @Test
-    fun `should notify external session response listener when request has started`() {
-        val cardDetails = CardDetails.Builder()
-            .pan("1234")
-            .expiryDate(12, 2020)
-            .cvv("123")
-            .build()
-
-        verifiedTokensSessionRequestHandler.handle(cardDetails)
-
-        verify(externalSessionResponseListener).onRequestStarted()
     }
 
     @Test

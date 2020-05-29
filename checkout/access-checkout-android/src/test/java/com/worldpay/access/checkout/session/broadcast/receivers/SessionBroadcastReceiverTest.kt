@@ -4,13 +4,13 @@ import android.content.Context
 import android.content.Intent
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
+import com.worldpay.access.checkout.client.SessionResponseListener
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
-import com.worldpay.access.checkout.views.SessionResponseListener
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -70,7 +70,7 @@ class SessionBroadcastReceiverTest {
         sessionBroadcastReceiver.onReceive(context, intent)
 
         verify(externalSessionResponseListener, atMost(1))
-            .onRequestFinished(null, AccessCheckoutError("some error"))
+            .onError(AccessCheckoutError("some error"))
     }
 
     @Test
@@ -85,7 +85,7 @@ class SessionBroadcastReceiverTest {
 
         val response = mapOf(VERIFIED_TOKEN_SESSION to "some reference")
 
-        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(response, null)
+        verify(externalSessionResponseListener, atMost(1)).onSuccess(response)
     }
 
     @Test
@@ -109,7 +109,7 @@ class SessionBroadcastReceiverTest {
             VERIFIED_TOKEN_SESSION to "verified-token-session-url"
         )
 
-        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(response, null)
+        verify(externalSessionResponseListener, atMost(1)).onSuccess(response)
     }
 
     @Test
@@ -131,7 +131,7 @@ class SessionBroadcastReceiverTest {
             VERIFIED_TOKEN_SESSION to "verified-token-session-url"
         )
 
-        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(response, null)
+        verify(externalSessionResponseListener, atMost(1)).onSuccess(response)
     }
 
     @Test
@@ -145,7 +145,7 @@ class SessionBroadcastReceiverTest {
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
+        verify(externalSessionResponseListener, atMost(1)).onError(expectedEx)
 
         given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
 
@@ -165,7 +165,7 @@ class SessionBroadcastReceiverTest {
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
+        verify(externalSessionResponseListener, atMost(1)).onError(expectedEx)
     }
 
     @Test
@@ -179,22 +179,23 @@ class SessionBroadcastReceiverTest {
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
+        verify(externalSessionResponseListener, atMost(1)).onError(expectedEx)
     }
 
     @Test
     fun `should notify with custom error when a response that is not a session response and error deserialize failure`() {
         broadcastNumSessionTypesRequested(2)
 
-        val expectedEx: AccessCheckoutError? = null
+        val illegalArgumentException = IllegalArgumentException("")
+        val expectedEx = AccessCheckoutError("Unknown error", illegalArgumentException)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
-        given(intent.getSerializableExtra("error")).willReturn(null)
+        given(intent.getSerializableExtra("error")).willReturn(illegalArgumentException)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verify(externalSessionResponseListener, atMost(1)).onRequestFinished(null, expectedEx)
+        verify(externalSessionResponseListener, atMost(1)).onError(expectedEx)
     }
 
     @Test

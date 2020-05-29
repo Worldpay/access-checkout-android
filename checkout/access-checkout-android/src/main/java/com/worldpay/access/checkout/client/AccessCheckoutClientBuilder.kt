@@ -9,7 +9,6 @@ import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFac
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactory
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
-import com.worldpay.access.checkout.views.SessionResponseListener
 
 /**
  * A builder that returns an [AccessCheckoutClient] for the client to use for session generation
@@ -18,7 +17,6 @@ import com.worldpay.access.checkout.views.SessionResponseListener
  */
 class AccessCheckoutClientBuilder {
 
-    private val tag = "AccessCheckoutClient"
     private var baseUrl: String? = null
     private var merchantId: String? = null
     private var context: Context? = null
@@ -28,20 +26,20 @@ class AccessCheckoutClientBuilder {
     /**
      * Sets the base url for Access Worldpay services
      *
-     * @param[baseURL] [String] that represents the base url
+     * @param[baseUrl] [String] that represents the base url
      */
-    fun baseUrl(baseURL: String): AccessCheckoutClientBuilder {
-        this.baseUrl = baseURL
+    fun baseUrl(baseUrl: String): AccessCheckoutClientBuilder {
+        this.baseUrl = baseUrl
         return this
     }
 
     /**
      * Sets the merchant id of the client
      *
-     * @param[merchantID] [String] that represents the id of the merchant given to the client at time of registration
+     * @param[merchantId] [String] that represents the id of the merchant given to the client at time of registration
      */
-    fun merchantId(merchantID: String): AccessCheckoutClientBuilder {
-        this.merchantId = merchantID
+    fun merchantId(merchantId: String): AccessCheckoutClientBuilder {
+        this.merchantId = merchantId
         return this
     }
 
@@ -119,7 +117,7 @@ class AccessCheckoutClientBuilder {
         externalSessionResponseListener: SessionResponseListener
     ): ActivityLifecycleObserverInitialiser {
         return ActivityLifecycleObserverInitialiser(
-            tag,
+            javaClass.simpleName,
             lifecycleOwner as LifecycleOwner,
             SessionBroadcastManagerFactory(localBroadcastManagerFactory, externalSessionResponseListener)
         )

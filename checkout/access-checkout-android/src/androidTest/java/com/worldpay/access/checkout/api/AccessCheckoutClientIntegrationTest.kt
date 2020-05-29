@@ -17,9 +17,9 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.Error
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.CardDetails
+import com.worldpay.access.checkout.client.SessionResponseListener
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
-import com.worldpay.access.checkout.views.SessionResponseListener
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
@@ -28,7 +28,8 @@ import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import java.util.concurrent.TimeUnit
-import kotlin.test.*
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class AccessCheckoutClientIntegrationTest {
 
@@ -113,16 +114,12 @@ class AccessCheckoutClientIntegrationTest {
 
         var assertResponse = false
         val responseListener = object : SessionResponseListener {
-            override fun onRequestStarted() {}
-
-            override fun onRequestFinished(
-                sessionResponseMap: Map<SessionType, String>?,
-                error: AccessCheckoutException?
-            ) {
-                val expectedResponse = mapOf(VERIFIED_TOKEN_SESSION to expectedSessionReference)
-                assertResponse = sessionResponseMap!! == expectedResponse
-                assertTrue("Actual response is $sessionResponseMap") { assertResponse }
+            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {
+                assertEquals(mapOf(VERIFIED_TOKEN_SESSION to expectedSessionReference), sessionResponseMap)
+                assertResponse = true
             }
+
+            override fun onError(error: AccessCheckoutException) {}
         }
 
         val accessCheckoutClient = AccessCheckoutClientBuilder()
@@ -161,14 +158,9 @@ class AccessCheckoutClientIntegrationTest {
 
         var assertionsRan = false
         val responseListener = object : SessionResponseListener {
-            override fun onRequestStarted() {}
+            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
 
-            override fun onRequestFinished(
-                sessionResponseMap: Map<SessionType, String>?,
-                error: AccessCheckoutException?
-            ) {
-                assertNull(sessionResponseMap)
-                assertNotNull(error)
+            override fun onError(error: AccessCheckoutException) {
                 assertEquals("The json body provided does not match the expected schema", error.message)
 
                 error as AccessCheckoutClientError
@@ -208,14 +200,9 @@ class AccessCheckoutClientIntegrationTest {
 
         var assertionsRan = false
         val errorListener = object : SessionResponseListener {
-            override fun onRequestStarted() {}
+            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
 
-            override fun onRequestFinished(
-                sessionResponseMap: Map<SessionType, String>?,
-                error: AccessCheckoutException?
-            ) {
-                assertNull(sessionResponseMap)
-                assertNotNull(error)
+            override fun onError(error: AccessCheckoutException) {
                 assertEquals("The body within the request is not valid json", error.message)
 
                 error as AccessCheckoutClientError
@@ -259,13 +246,9 @@ class AccessCheckoutClientIntegrationTest {
 
         var assertionsRan = false
         val errorListener = object : SessionResponseListener {
-            override fun onRequestStarted() {}
-            override fun onRequestFinished(
-                sessionResponseMap: Map<SessionType, String>?,
-                error: AccessCheckoutException?
-            ) {
-                assertNull(sessionResponseMap)
-                assertNotNull(error)
+            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
+
+            override fun onError(error: AccessCheckoutException) {
                 assertEquals("unknown error", error.message)
 
                 error as AccessCheckoutClientError
@@ -302,13 +285,9 @@ class AccessCheckoutClientIntegrationTest {
 
         var assertionsRan = false
         val errorListener = object : SessionResponseListener {
-            override fun onRequestStarted() {}
-            override fun onRequestFinished(
-                sessionResponseMap: Map<SessionType, String>?,
-                error: AccessCheckoutException?
-            ) {
-                assertNull(sessionResponseMap)
-                assertNotNull(error)
+            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
+
+            override fun onError(error: AccessCheckoutException) {
                 assertEquals("Error message was: Internal Server Error", error.message)
                 assertFalse(error is AccessCheckoutClientError)
                 assertionsRan = true

@@ -9,12 +9,11 @@ internal class ActivityLifecycleObserverInitialiser(
     sessionBroadcastManagerFactory: SessionBroadcastManagerFactory
 ) {
 
-    private val activityLifecycleObserver: ActivityLifecycleObserver =
-        ActivityLifecycleObserver(
-            tag,
-            lifecycleOwner,
-            sessionBroadcastManagerFactory
-        )
+    private val activityLifecycleObserver = ActivityLifecycleObserver(
+        tag,
+        lifecycleOwner,
+        sessionBroadcastManagerFactory
+    )
 
     fun initialise(): ActivityLifecycleObserver {
         return activityLifecycleObserver

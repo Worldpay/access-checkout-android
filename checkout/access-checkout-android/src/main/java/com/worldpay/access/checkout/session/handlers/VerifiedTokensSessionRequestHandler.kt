@@ -5,7 +5,6 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.CardDetails
 import com.worldpay.access.checkout.client.ExpiryDate
 import com.worldpay.access.checkout.client.SessionType
-import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.SessionRequestService
 import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
@@ -32,8 +31,6 @@ internal class VerifiedTokensSessionRequestHandler(
         validateNotNull(cardDetails.pan, "pan")
         validateNotNull(cardDetails.expiryDate, "expiry date")
         validateNotNull(cardDetails.cvv, "cvv")
-
-        sessionRequestHandlerConfig.getExternalSessionResponseListener().onRequestStarted()
 
         val serviceIntent = Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
 
