@@ -6,6 +6,7 @@ import android.widget.Button
 import android.widget.Switch
 import android.widget.TextView
 import com.worldpay.access.checkout.api.AccessCheckoutException
+import com.worldpay.access.checkout.client.SessionResponseListener
 import com.worldpay.access.checkout.client.SessionType
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
@@ -13,58 +14,51 @@ import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.CardCVVText
 import com.worldpay.access.checkout.views.CardExpiryTextLayout
 import com.worldpay.access.checkout.views.PANLayout
-import com.worldpay.access.checkout.views.SessionResponseListener
 
 class SessionResponseListenerImpl(
     private val activity: Activity,
     private val progressBar: ProgressBar
 ) : SessionResponseListener {
 
-    override fun onRequestStarted() {
-        debugLog(javaClass.simpleName, "Started request")
-        progressBar.beginLoading()
-        setEnabledState(allFields = false, submitBtn = false)
-    }
-
-    override fun onRequestFinished(sessionResponseMap: Map<SessionType, String>?, error: AccessCheckoutException?) {
+    override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {
         debugLog(javaClass.simpleName, "Received session reference map: $sessionResponseMap")
 
         progressBar.stopLoading()
 
-        val message = getResponse(sessionResponseMap, error)
-        val title = getTitle(sessionResponseMap)
-
         AlertDialog.Builder(activity)
-            .setTitle(title)
-            .setMessage(message)
+            .setTitle("Response")
+            .setMessage(sessionResponseMap.toString())
             .setPositiveButton(android.R.string.ok, null)
             .create()
             .show()
 
-        if (isSuccessful(sessionResponseMap)) {
-            resetFields()
-            setEnabledState(allFields = true, submitBtn = false)
-        } else {
-            setEnabledState(allFields = true, submitBtn = true)
-        }
+        resetFields()
+        setEnabledState(submitBtn = false)
     }
 
-    private fun isSuccessful(sessionResponseMap: Map<SessionType, String>?) =
-        sessionResponseMap != null && sessionResponseMap.isNotEmpty()
+    override fun onError(error: AccessCheckoutException) {
+        debugLog(javaClass.simpleName, "Received error: ${error.message}")
 
-    private fun getResponse(sessionResponseMap: Map<SessionType, String>?, error: AccessCheckoutException?) =
-        if (isSuccessful(sessionResponseMap)) sessionResponseMap.toString() else error?.message
+        progressBar.stopLoading()
 
-    private fun getTitle(sessionResponseMap: Map<SessionType, String>?) =
-        if (isSuccessful(sessionResponseMap)) "Response" else "Error"
+        AlertDialog.Builder(activity)
+            .setTitle("Error")
+            .setMessage(error.message)
+            .setPositiveButton(android.R.string.ok, null)
+            .create()
+            .show()
 
-    private fun setEnabledState(allFields: Boolean, submitBtn: Boolean) {
-        debugLog(javaClass.simpleName, "Setting enabled state for all fields to : $allFields")
-        activity.findViewById<PANLayout>(R.id.card_flow_text_pan).mEditText.isEnabled = allFields
-        activity.findViewById<TextView>(R.id.card_flow_text_cvv).isEnabled = allFields
-        activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).monthEditText.isEnabled = allFields
-        activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).yearEditText.isEnabled = allFields
-        activity.findViewById<Switch>(R.id.card_flow_payments_cvc_switch).isEnabled = allFields
+
+        setEnabledState(submitBtn = true)
+    }
+
+    private fun setEnabledState(submitBtn: Boolean) {
+        debugLog(javaClass.simpleName, "Setting enabled state for all fields to : true")
+        activity.findViewById<PANLayout>(R.id.card_flow_text_pan).mEditText.isEnabled = true
+        activity.findViewById<TextView>(R.id.card_flow_text_cvv).isEnabled = true
+        activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).monthEditText.isEnabled = true
+        activity.findViewById<CardExpiryTextLayout>(R.id.card_flow_text_exp).yearEditText.isEnabled = true
+        activity.findViewById<Switch>(R.id.card_flow_payments_cvc_switch).isEnabled = true
 
         debugLog(javaClass.simpleName, "Setting enabled state for submit button to : $submitBtn")
         activity.findViewById<Button>(R.id.card_flow_btn_submit).isEnabled = submitBtn

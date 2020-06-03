@@ -1,8 +1,12 @@
-package com.worldpay.access.checkout.validation
+package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.validation.Month
+import com.worldpay.access.checkout.validation.ValidationResult
+import com.worldpay.access.checkout.validation.ValidatorUtils
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
+import com.worldpay.access.checkout.validation.Year
 import java.util.*
 import java.util.Calendar.*
 
@@ -20,7 +24,10 @@ class DateValidator(private val now: Calendar = getInstance()) {
 
         month?.let {
             val validationResultForMonth = if (it == "0" || it == "1") {
-                ValidationResult(partial = true, complete = false)
+                ValidationResult(
+                    partial = true,
+                    complete = false
+                )
             } else {
                 getValidationResult(monthRule, it)
             }
@@ -29,7 +36,10 @@ class DateValidator(private val now: Calendar = getInstance()) {
             complete = validationResultForMonth.complete
 
             if (!partial && !complete) {
-                return ValidationResult(partial = false, complete = false)
+                return ValidationResult(
+                    partial = false,
+                    complete = false
+                )
             }
         }
 
@@ -45,7 +55,10 @@ class DateValidator(private val now: Calendar = getInstance()) {
             complete = complete && validDate
         }
 
-        return ValidationResult(partial, complete)
+        return ValidationResult(
+            partial,
+            complete
+        )
     }
 
     fun canUpdate(month: Month?, year: Year?, cardConfiguration: CardConfiguration): Boolean {
@@ -72,9 +85,18 @@ class DateValidator(private val now: Calendar = getInstance()) {
 
     private fun getValidationResult(rule: CardValidationRule, insertedDateField: String): ValidationResult {
         return when {
-            ValidatorUtils.regexMatches(rule.matcher, insertedDateField) -> getValidationResultFor(insertedDateField, rule)
-            insertedDateField.isBlank() -> ValidationResult(partial = true, complete = false)
-            else -> ValidationResult(partial = false, complete = false)
+            ValidatorUtils.regexMatches(
+                rule.matcher,
+                insertedDateField
+            ) -> getValidationResultFor(insertedDateField, rule)
+            insertedDateField.isBlank() -> ValidationResult(
+                partial = true,
+                complete = false
+            )
+            else -> ValidationResult(
+                partial = false,
+                complete = false
+            )
         }
     }
 

@@ -38,8 +38,6 @@ internal class PaymentsCvcSessionRequestHandler(
 
         cardDetails.cvv as String
 
-        sessionRequestHandlerConfig.getExternalSessionResponseListener().onRequestStarted()
-
         val cvvSessionRequest =
             CVVSessionRequest(
                 cardDetails.cvv,

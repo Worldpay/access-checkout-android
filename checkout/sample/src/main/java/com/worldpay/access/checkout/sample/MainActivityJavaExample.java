@@ -6,8 +6,8 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
-import android.widget.Toast;
 
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
@@ -20,14 +20,14 @@ import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
 import com.worldpay.access.checkout.client.AccessCheckoutClient;
 import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder;
 import com.worldpay.access.checkout.client.CardDetails;
+import com.worldpay.access.checkout.client.SessionResponseListener;
 import com.worldpay.access.checkout.client.SessionType;
 import com.worldpay.access.checkout.sample.images.SVGImageLoader;
-import com.worldpay.access.checkout.validation.AccessCheckoutCardValidator;
+import com.worldpay.access.checkout.validation.validators.AccessCheckoutCardValidator;
 import com.worldpay.access.checkout.views.CardCVVText;
 import com.worldpay.access.checkout.views.CardExpiryTextLayout;
 import com.worldpay.access.checkout.views.CardView;
 import com.worldpay.access.checkout.views.PANLayout;
-import com.worldpay.access.checkout.views.SessionResponseListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -85,6 +85,10 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
                 .build();
 
         submit.setOnClickListener(view -> {
+            debugLog("MainActivityJavaExample", "Started request");
+            loading = true;
+            toggleLoading(false);
+
             CardDetails cardDetails = new CardDetails.Builder()
                     .pan(panView.getInsertedText())
                     .expiryDate(cardExpiryText.getMonth(), cardExpiryText.getYear())
@@ -96,27 +100,34 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
     }
 
     @Override
-    public void onRequestStarted() {
-        debugLog("MainActivityJavaExample", "Started request");
-        loading = true;
-        toggleLoading(false);
+    public void onSuccess(@NotNull Map<SessionType, String> sessionResponseMap) {
+        debugLog("MainActivityJavaExample", String.format("Received session reference map: %s", sessionResponseMap.toString()));
+
+        loading = false;
+        toggleLoading(true);
+
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage(sessionResponseMap.toString())
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show();
     }
 
     @Override
-    public void onRequestFinished(@NotNull Map<SessionType, String> sessionResponseMap, @Nullable AccessCheckoutException error) {
-        debugLog("MainActivityJavaExample", String.format("Received session reference: %s", sessionResponseMap));
+    public void onError(@NotNull AccessCheckoutException error) {
+        debugLog("MainActivityJavaExample", String.format("Received error: %s", error.getMessage()));
+
         loading = false;
         toggleLoading(true);
-        String toastMessage;
-        if (!sessionResponseMap.isEmpty()) {
-            toastMessage = "Ref: " + sessionResponseMap;
-            resetFields();
-        } else {
-            toastMessage = "Error: " + (error != null ? error.getMessage() : null);
-        }
 
 
-        Toast.makeText(this, toastMessage, Toast.LENGTH_LONG).show();
+        new AlertDialog.Builder(this)
+                .setTitle("Error")
+                .setMessage(error.getMessage())
+                .setPositiveButton(android.R.string.ok, null)
+                .create()
+                .show();
     }
 
     @Override

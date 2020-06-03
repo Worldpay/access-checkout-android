@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.session.broadcast
 
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.worldpay.access.checkout.client.SessionResponseListener
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
-import com.worldpay.access.checkout.views.SessionResponseListener
 
 internal class SessionBroadcastManager(
     localBroadcastManagerFactory: LocalBroadcastManagerFactory,

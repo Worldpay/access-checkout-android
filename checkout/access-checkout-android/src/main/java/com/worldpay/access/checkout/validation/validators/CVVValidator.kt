@@ -1,9 +1,11 @@
-package com.worldpay.access.checkout.validation
+package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.validation.CVV
 import com.worldpay.access.checkout.validation.CardBrandUtils.findCardBrandMatchingPAN
+import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import com.worldpay.access.checkout.validation.ValidatorUtils.regexMatches
 
@@ -33,7 +35,10 @@ class CVVValidator {
 
     private fun getDefaultValidationResult(cvv: CVV, cardConfiguration: CardConfiguration): ValidationResult {
         if (!regexMatches(cardConfiguration.defaults.cvv.matcher, cvv)) {
-            return ValidationResult(partial = false, complete = false)
+            return ValidationResult(
+                partial = false,
+                complete = false
+            )
         }
         return getValidationResultFor(cvv, cardConfiguration.defaults.cvv)
     }

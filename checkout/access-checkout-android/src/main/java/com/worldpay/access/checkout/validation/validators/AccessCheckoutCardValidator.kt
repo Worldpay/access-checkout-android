@@ -1,8 +1,9 @@
-package com.worldpay.access.checkout.validation
+package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
+import com.worldpay.access.checkout.validation.*
 
 /**
  * Implementation of a [CardValidator] which delegates responsibility of validating the card fields to the individual
@@ -11,7 +12,8 @@ import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFA
 class AccessCheckoutCardValidator @JvmOverloads constructor(override val cardConfiguration: CardConfiguration? = null,
                                                             private val panValidator: PANValidator = PANValidator(),
                                                             private val cvvValidator: CVVValidator = CVVValidator(),
-                                                            private val dateValidator: DateValidator = DateValidator()) : CardValidator {
+                                                            private val dateValidator: DateValidator = DateValidator()
+) : CardValidator {
 
     override fun validatePAN(pan: String): Pair<ValidationResult, CardBrand?> = panValidator.validate(pan, getCardConfig())
 

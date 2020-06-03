@@ -3,33 +3,32 @@ package com.worldpay.access.checkout.sample.cvv
 import android.app.Activity
 import android.text.InputFilter
 import android.widget.Button
-import android.widget.ProgressBar
 import androidx.core.content.res.ResourcesCompat.getColor
-import androidx.core.view.isInvisible
 import com.worldpay.access.checkout.Card
 import com.worldpay.access.checkout.CardListener
 import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.sample.ui.ProgressBar
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.views.CardView
 
 class CvvListenerImpl(
     private val activity: Activity,
-    private val card: Card
+    private val card: Card,
+    private val progressBar: ProgressBar
 ) : CardListener {
 
     override fun onUpdate(cardView: CardView, valid: Boolean) {
         cardView.isValid(valid)
 
         val submitBtn = activity.findViewById<Button>(R.id.cvv_flow_btn_submit)
-        val progressBar = activity.findViewById<ProgressBar>(R.id.loading_bar)
 
         if (submitBtn == null) {
             debugLog(javaClass.simpleName, "Could not find submit button")
             return
         }
 
-        submitBtn.isEnabled = card.isValid() && progressBar.isInvisible
+        submitBtn.isEnabled = card.isValid() && !progressBar.isLoading()
 
         if (submitBtn.isEnabled) {
             val submitBtnColor = getColor(activity.resources, R.color.colorPrimary, null)

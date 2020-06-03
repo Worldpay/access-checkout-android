@@ -6,7 +6,7 @@ import au.com.dius.pact.consumer.PactVerification
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
-import com.worldpay.access.checkout.session.api.client.CVVSessionClient
+import com.worldpay.access.checkout.session.api.client.PaymentsCvcSessionClient
 import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.serialization.CVVSessionRequestSerializer
@@ -26,12 +26,12 @@ class SessionsPactTest {
         private const val provider = "sessions"
     }
 
-    private lateinit var cvvSessionClient: CVVSessionClient
+    private lateinit var paymentsCvcSessionClient: PaymentsCvcSessionClient
 
     @Before
     fun setup() {
-        cvvSessionClient =
-            CVVSessionClient(
+        paymentsCvcSessionClient =
+            PaymentsCvcSessionClient(
                 CVVSessionResponseDeserializer(),
                 CVVSessionRequestSerializer(),
                 HttpClient()
@@ -199,7 +199,7 @@ class SessionsPactTest {
 
         Assert.assertEquals(
             expectedSessionResponse,
-            cvvSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
         )
     }
 
@@ -213,7 +213,7 @@ class SessionsPactTest {
             )
 
         try {
-            cvvSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException.AccessCheckoutClientError) {
             val validationRule =
@@ -243,7 +243,7 @@ class SessionsPactTest {
             )
 
         try {
-            cvvSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException.AccessCheckoutClientError) {
             val validationRule = AccessCheckoutException.ValidationRule(
@@ -279,15 +279,15 @@ class SessionsPactTest {
         BDDMockito.given(mockEmptySerializer.serialize(sessionRequest))
             .willReturn(emptyString)
 
-        cvvSessionClient =
-            CVVSessionClient(
+        paymentsCvcSessionClient =
+            PaymentsCvcSessionClient(
                 CVVSessionResponseDeserializer(),
                 mockEmptySerializer,
                 HttpClient()
             )
 
         try {
-            cvvSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException.AccessCheckoutClientError) {
 

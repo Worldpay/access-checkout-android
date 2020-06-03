@@ -1,10 +1,11 @@
-package com.worldpay.access.checkout.validation
+package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.validation.CardBrandUtils.findCardBrandMatchingPAN
 import com.worldpay.access.checkout.validation.CardBrandUtils.validateAgainstMatcher
+import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 
 class PANValidator {
@@ -30,7 +31,10 @@ class PANValidator {
         val partial = validationResult.partial && validMatcher
         val complete = validationResult.complete && validMatcher && isLuhnValid(pan)
 
-        return ValidationResult(partial, complete)
+        return ValidationResult(
+            partial,
+            complete
+        )
     }
 
     private fun isLuhnValid(pan: String): Boolean {

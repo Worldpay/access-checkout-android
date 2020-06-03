@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.session.broadcast
 
-import com.worldpay.access.checkout.views.SessionResponseListener
+import com.worldpay.access.checkout.client.SessionResponseListener
 
 internal class SessionBroadcastManagerFactory(
     private val localBroadcastManagerFactory: LocalBroadcastManagerFactory,
