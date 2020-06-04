@@ -32,6 +32,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "4026344341791618")
+            .validationStateIs(pan = true)
             .hasBrand(VISA)
     }
 
