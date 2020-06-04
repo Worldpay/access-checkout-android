@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.client
 
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
+import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 import com.worldpay.access.checkout.validation.AccessCheckoutValidationController
 import com.worldpay.access.checkout.validation.card.CardDetailComponents
@@ -48,7 +49,7 @@ class AccessCheckoutValidationInitialiser {
         return this
     }
 
-    fun initialise() {
+    fun initialise() {0
         validateNotNull(pan, "pan component")
         validateNotNull(expiryMonth, "expiry month component")
         validateNotNull(expiryYear, "expiry year component")

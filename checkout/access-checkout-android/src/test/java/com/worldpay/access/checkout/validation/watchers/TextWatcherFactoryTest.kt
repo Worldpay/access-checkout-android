@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.watchers
 
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.AccessCheckoutValidationListener
+import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
 import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType.*
 import org.junit.Before

@@ -5,7 +5,7 @@ import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.AccessCheckoutValidationInitialiser
-import com.worldpay.access.checkout.client.AccessCheckoutValidationListener
+import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
