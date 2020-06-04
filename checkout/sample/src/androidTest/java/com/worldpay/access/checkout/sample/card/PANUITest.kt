@@ -32,9 +32,46 @@ class PANUITest: AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "4026344341791618")
-            .validationStateIs(pan =true)
             .hasBrand(VISA)
     }
+
+    @Test
+    fun shouldDisplayJCBIconWhenJCBPanIsEntered() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "1800")
+            .hasBrand(JCB)
+    }
+
+    @Test
+    fun shouldDisplayDiscoverIconWhenDiscoverPanIsEntered() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "6011")
+            .hasBrand(DISCOVER)
+    }
+
+    @Test
+    fun shouldDisplayMaestroIconWhenMaestroPanIsEntered() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "493698")
+            .hasBrand(MAESTRO)
+    }
+
+    @Test
+    fun shouldDisplayDinersIconWhenDinersPanIsEntered() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "305")
+            .hasBrand(DINERS)
+    }
+
+    
 
     @Test
     fun givenUserLongClicksAndPastesTooLongStringIntoPanFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
