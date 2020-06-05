@@ -1,36 +1,41 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import android.text.Editable
+import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.ValidationRuleHandler
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
-import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
+import com.worldpay.access.checkout.validation.InputFilterHandler
+import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 
 internal class CVVTextWatcher(
     private val cardConfiguration: CardConfiguration,
-    private val cardDetailComponents: CardDetailComponents,
+    private val panEditText: EditText?,
+    private val cvvEditText: EditText,
     private val cvvValidator: CVVValidator,
-    private val validationRuleHandler: ValidationRuleHandler,
-    private val validationResultHandler: ValidationResultHandler
+    private val inputFilterHandler: InputFilterHandler = InputFilterHandler(),
+    private val cvvValidationResultHandler: CvvValidationResultHandler
 ): AbstractCardDetailTextWatcher() {
 
     override fun afterTextChanged(cvv: Editable?) {
-        val pan = cardDetailComponents.pan.text.toString()
+        val pan = getPan()
 
         val cardValidationRule = cvvValidator.getValidationRule(pan, cardConfiguration)
-        validationRuleHandler.handle(
-            cardDetailType = CVV,
+        inputFilterHandler.handle(
+            editText = cvvEditText,
             cardValidationRule = cardValidationRule
         )
 
         val result = cvvValidator.validate(cvv.toString(), pan, cardConfiguration)
-        validationResultHandler.handle(
-            cardDetailType = CVV,
-            validationResult = result.first,
-            cardBrand = result.second
+        cvvValidationResultHandler.handleResult(
+            validationResult = result.first
         )
+    }
+
+    private fun getPan(): String {
+        if (panEditText == null) {
+            return ""
+        }
+        return panEditText.text.toString()
     }
 
 }
