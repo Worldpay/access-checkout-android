@@ -11,21 +11,22 @@ class NewPanValidator {
     fun validate(pan: String, cardConfiguration: CardConfiguration): Pair<Boolean, CardBrand?> {
         if (pan.isEmpty()) {
              return Pair(false, null)
-        } else {
-            val (cardBrand, cardBrandValidationRule) = CardBrandUtils.findCardBrandMatchingPAN(
-                cardConfiguration.brands,
-                pan
-            )
-
-            val validationRule: CardValidationRule = cardBrandValidationRule  ?: cardConfiguration.defaults.pan
-            var validationResult = getValidationResultFor(pan, validationRule)
-
-            if (validationResult) {
-                validationResult = isLuhnValid(pan)
-            }
-
-            return Pair(validationResult, cardBrand)
         }
+
+        val (cardBrand, cardBrandValidationRule) = CardBrandUtils.findCardBrandMatchingPAN(
+            cardConfiguration.brands,
+            pan
+        )
+
+        val validationRule: CardValidationRule = cardBrandValidationRule  ?: cardConfiguration.defaults.pan
+        var validationResult = getValidationResultFor(pan, validationRule)
+
+        if (validationResult) {
+            validationResult = isLuhnValid(pan)
+        }
+
+        return Pair(validationResult, cardBrand)
+
     }
 
     private fun isLuhnValid(pan: String): Boolean {

@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.validation.validators
 
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules
 import com.worldpay.access.checkout.validation.Month
 import com.worldpay.access.checkout.validation.NewValidatorUtils.getValidationResultFor
@@ -9,6 +10,10 @@ import java.util.*
 class NewDateValidator(private val now: Calendar = Calendar.getInstance()) {
     private val monthRule = DefaultCardRules.MONTH_DEFAULTS
     private val yearRule = DefaultCardRules.YEAR_DEFAULTS
+
+    fun getValidationRule(): Pair<CardValidationRule, CardValidationRule> {
+        return Pair(monthRule, yearRule)
+    }
 
     fun validate(month: String?, year: String?) : Boolean {
         if (month.isNullOrBlank() || year.isNullOrBlank()) {

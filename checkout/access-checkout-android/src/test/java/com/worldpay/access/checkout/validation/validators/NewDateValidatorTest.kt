@@ -1,8 +1,12 @@
 package com.worldpay.access.checkout.validation.validators
 
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.MONTH_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.YEAR_DEFAULTS
 import org.junit.Test
 import java.util.*
 import java.util.Calendar.*
+import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -84,6 +88,14 @@ class NewDateValidatorTest {
         val dateValidator = NewDateValidator(now)
 
         assertTrue(dateValidator.validate("10", "21"))
+    }
+
+    @Test
+    fun `should return a pair containing default month and year rules`() {
+        val rules = dateValidator.getValidationRule()
+
+        assertEquals(YEAR_DEFAULTS, rules.second)
+        assertEquals(MONTH_DEFAULTS, rules.first)
     }
 
     private fun setDate(month: Int, year: Int): Calendar {
