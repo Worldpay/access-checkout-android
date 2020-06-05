@@ -13,7 +13,6 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType.PAN
 import com.worldpay.access.checkout.validation.validators.PANValidator
 import org.junit.Before
@@ -78,7 +77,6 @@ class PANTextWatcherTest {
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val cardDetailComponents = mock<CardDetailComponents>()
         val panValidator = mock<PANValidator>()
 
         val panTextWatcher = PANTextWatcher(
@@ -93,7 +91,6 @@ class PANTextWatcherTest {
         panTextWatcher.onTextChanged("", 1, 2,3)
 
         verifyZeroInteractions(
-            cardDetailComponents,
             panValidator,
             validationResultHandler,
             inputFilterHandler

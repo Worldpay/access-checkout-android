@@ -7,8 +7,6 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
-import com.worldpay.access.checkout.validation.card.CardDetailType.*
-import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
 import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
 internal class CardValidationController(
@@ -34,10 +32,10 @@ internal class CardValidationController(
     }
 
     private fun addTextChangedListeners(cardConfiguration: CardConfiguration) {
-        panTextWatcher = textWatcherFactory.createTextWatcher(PAN, cardConfiguration)
-        expiryMonthTextWatcher = textWatcherFactory.createTextWatcher(EXPIRY_MONTH, cardConfiguration)
-        expiryYearTextWatcher = textWatcherFactory.createTextWatcher(EXPIRY_YEAR, cardConfiguration)
-        cvvTextWatcher = textWatcherFactory.createTextWatcher(CVV, cardConfiguration)
+        panTextWatcher = textWatcherFactory.createPanTextWatcher(panEditText, cardConfiguration)
+        expiryMonthTextWatcher = textWatcherFactory.createExpiryMonthTextWatcher(expiryMonthEditText, cardConfiguration)
+        expiryYearTextWatcher = textWatcherFactory.createExpiryYearTextWatcher(expiryYearEditText, cardConfiguration)
+        cvvTextWatcher = textWatcherFactory.createCvvTextWatcher(cvvEditText, panEditText, cardConfiguration)
 
         panEditText.addTextChangedListener(panTextWatcher)
         expiryMonthEditText.addTextChangedListener(expiryMonthTextWatcher)

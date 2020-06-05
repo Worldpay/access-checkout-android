@@ -13,7 +13,6 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 import org.junit.Before
@@ -83,7 +82,6 @@ class CVVTextWatcherTest {
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val cardDetailComponents = mock<CardDetailComponents>()
         val cvvValidator = mock<CVVValidator>()
 
         val cvvTextWatcher = CVVTextWatcher(
@@ -99,7 +97,6 @@ class CVVTextWatcherTest {
         cvvTextWatcher.onTextChanged("", 1, 2,3)
 
         verifyZeroInteractions(
-            cardDetailComponents,
             cvvValidator,
             validationResultHandler,
             inputFilterHandler

@@ -7,8 +7,6 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
-import com.worldpay.access.checkout.validation.card.CardDetailType.*
-import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
 import com.worldpay.access.checkout.validation.watchers.*
 import org.junit.Before
 import org.junit.Test
@@ -148,17 +146,17 @@ class CardValidationControllerTest {
     }
 
     private fun mockTextWatcherCreation(cardConfiguration: CardConfiguration) {
-        given(textWatcherFactory.createTextWatcher(PAN, cardConfiguration)).willReturn(panTextWatcher)
-        given(textWatcherFactory.createTextWatcher(EXPIRY_MONTH, cardConfiguration)).willReturn(expiryMonthTextWatcher)
-        given(textWatcherFactory.createTextWatcher(EXPIRY_YEAR, cardConfiguration)).willReturn(expiryYearTextWatcher)
-        given(textWatcherFactory.createTextWatcher(CVV, cardConfiguration)).willReturn(cvvTextWatcher)
+        given(textWatcherFactory.createPanTextWatcher(pan, cardConfiguration)).willReturn(panTextWatcher)
+        given(textWatcherFactory.createExpiryMonthTextWatcher(expiryMonth, cardConfiguration)).willReturn(expiryMonthTextWatcher)
+        given(textWatcherFactory.createExpiryYearTextWatcher(expiryYear, cardConfiguration)).willReturn(expiryYearTextWatcher)
+        given(textWatcherFactory.createCvvTextWatcher(cvv, pan, cardConfiguration)).willReturn(cvvTextWatcher)
     }
 
     private fun verifyTextWatchersAreCreated(cardConfiguration: CardConfiguration) {
-        verify(textWatcherFactory).createTextWatcher(PAN, cardConfiguration)
-        verify(textWatcherFactory).createTextWatcher(EXPIRY_MONTH, cardConfiguration)
-        verify(textWatcherFactory).createTextWatcher(EXPIRY_YEAR, cardConfiguration)
-        verify(textWatcherFactory).createTextWatcher(CVV, cardConfiguration)
+        verify(textWatcherFactory).createPanTextWatcher(pan, cardConfiguration)
+        verify(textWatcherFactory).createExpiryMonthTextWatcher(expiryMonth, cardConfiguration)
+        verify(textWatcherFactory).createExpiryYearTextWatcher(expiryYear, cardConfiguration)
+        verify(textWatcherFactory).createCvvTextWatcher(cvv, pan, cardConfiguration)
     }
 
 }

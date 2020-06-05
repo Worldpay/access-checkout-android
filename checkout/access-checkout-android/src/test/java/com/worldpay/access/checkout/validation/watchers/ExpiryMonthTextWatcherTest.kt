@@ -11,7 +11,6 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType.EXPIRY_MONTH
 import com.worldpay.access.checkout.validation.validators.DateValidator
 import org.junit.Before
@@ -67,7 +66,6 @@ class ExpiryMonthTextWatcherTest {
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val cardDetailComponents = mock<CardDetailComponents>()
         val dateValidator = mock<DateValidator>()
 
         val expiryMonthTextWatcher = ExpiryMonthTextWatcher(
@@ -81,7 +79,6 @@ class ExpiryMonthTextWatcherTest {
         expiryMonthTextWatcher.onTextChanged("", 1, 2,3)
 
         verifyZeroInteractions(
-            cardDetailComponents,
             dateValidator,
             validationResultHandler,
             inputFilterHandler
