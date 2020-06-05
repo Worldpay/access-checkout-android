@@ -9,7 +9,7 @@ class CardValidationConfig private constructor(
     val expiryYear: EditText,
     val cvv: EditText,
     val baseUrl: String,
-    val validationListener: AccessCheckoutCardValidationListener
+    val validationListener: AccessCheckoutCardValidationSuccessListener
 ) : ValidationConfig {
 
     class Builder {
@@ -19,7 +19,7 @@ class CardValidationConfig private constructor(
         private var expiryYear: EditText? = null
         private var cvv: EditText? = null
         private var baseUrl: String? = null
-        private var validationListener: AccessCheckoutCardValidationListener? = null
+        private var validationListener: AccessCheckoutCardValidationSuccessListener? = null
 
         fun pan(pan: EditText): Builder {
             this.pan = pan
@@ -46,7 +46,7 @@ class CardValidationConfig private constructor(
             return this
         }
 
-        fun validationListener(validationListener: AccessCheckoutCardValidationListener): Builder {
+        fun validationListener(validationListener: AccessCheckoutCardValidationSuccessListener): Builder {
             this.validationListener = validationListener
             return this
         }
@@ -65,7 +65,7 @@ class CardValidationConfig private constructor(
                 expiryYear = expiryYear as EditText,
                 cvv = cvv as EditText,
                 baseUrl = baseUrl as String,
-                validationListener = validationListener as AccessCheckoutCardValidationListener
+                validationListener = validationListener as AccessCheckoutCardValidationSuccessListener
             )
         }
 

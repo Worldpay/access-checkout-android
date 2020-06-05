@@ -4,7 +4,7 @@ import android.text.Editable
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.InputFilterHandler
-import com.worldpay.access.checkout.validation.result.ValidationResultHandler
+import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.PANValidator
 
 internal class PANTextWatcher(
@@ -12,7 +12,7 @@ internal class PANTextWatcher(
     private var panValidator: PANValidator,
     private val inputFilterHandler: InputFilterHandler = InputFilterHandler(),
     private val panEditText: EditText,
-    private val validationResultHandler: ValidationResultHandler
+    private val panValidationResultHandler: PanValidationResultHandler
 ) : AbstractCardDetailTextWatcher() {
 
     override fun afterTextChanged(pan: Editable?) {
@@ -23,7 +23,7 @@ internal class PANTextWatcher(
         )
 
         val result = panValidator.validate(pan.toString(), cardConfiguration)
-        validationResultHandler.handlePanValidationResult(
+        panValidationResultHandler.handleResult(
             validationResult = result.first,
             cardBrand = result.second
         )

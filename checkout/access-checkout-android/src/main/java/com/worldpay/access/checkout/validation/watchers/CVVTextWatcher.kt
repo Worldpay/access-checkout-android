@@ -4,7 +4,7 @@ import android.text.Editable
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.InputFilterHandler
-import com.worldpay.access.checkout.validation.result.ValidationResultHandler
+import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 
 internal class CVVTextWatcher(
@@ -13,7 +13,7 @@ internal class CVVTextWatcher(
     private val cvvEditText: EditText,
     private val cvvValidator: CVVValidator,
     private val inputFilterHandler: InputFilterHandler = InputFilterHandler(),
-    private val validationResultHandler: ValidationResultHandler
+    private val cvvValidationResultHandler: CvvValidationResultHandler
 ): AbstractCardDetailTextWatcher() {
 
     override fun afterTextChanged(cvv: Editable?) {
@@ -26,7 +26,7 @@ internal class CVVTextWatcher(
         )
 
         val result = cvvValidator.validate(cvv.toString(), pan, cardConfiguration)
-        validationResultHandler.handleCvvValidationResult(
+        cvvValidationResultHandler.handleResult(
             validationResult = result.first
         )
     }

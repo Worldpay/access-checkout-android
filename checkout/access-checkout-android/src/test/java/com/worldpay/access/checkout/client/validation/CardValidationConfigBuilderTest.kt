@@ -14,7 +14,7 @@ class CardValidationConfigBuilderTest {
     private val expiryYear = mock<EditText>()
     private val cvv = mock<EditText>()
     private val baseUrl = "http://localhost"
-    private val validationListener = mock<AccessCheckoutCardValidationListener>()
+    private val validationListener = mock<AccessCheckoutCardValidationSuccessListener>()
 
     @Test
     fun `should build card validation config`() {

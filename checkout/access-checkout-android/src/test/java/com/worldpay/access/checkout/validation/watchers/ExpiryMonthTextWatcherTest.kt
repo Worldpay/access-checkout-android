@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configuratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_MONTH_RULE
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
-import com.worldpay.access.checkout.validation.result.ValidationResultHandler
+import com.worldpay.access.checkout.validation.result.ExpiryMonthValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.DateValidator
 import org.junit.Before
 import org.junit.Test
@@ -18,7 +18,7 @@ import org.junit.Test
 class ExpiryMonthTextWatcherTest {
 
     private val inputFilterHandler = mock<InputFilterHandler>()
-    private val validationResultHandler = mock<ValidationResultHandler>()
+    private val expiryMonthValidationResultHandler = mock<ExpiryMonthValidationResultHandler>()
 
     private val expiryMonthEditText = mock<EditText>()
     private val monthEditable = mock<Editable>()
@@ -31,7 +31,7 @@ class ExpiryMonthTextWatcherTest {
             cardConfiguration = CARD_CONFIG_BASIC,
             dateValidator = DateValidator(),
             expiryMonthEditText = expiryMonthEditText,
-            validationResultHandler = validationResultHandler,
+            expiryMonthValidationResultHandler = expiryMonthValidationResultHandler,
             inputFilterHandler = inputFilterHandler
         )
     }
@@ -51,7 +51,7 @@ class ExpiryMonthTextWatcherTest {
 
         expiryMonthTextWatcher.afterTextChanged(monthEditable)
 
-        verify(validationResultHandler).handleExpiryMonthValidationResult(ValidationResult(partial = false, complete = true))
+        verify(expiryMonthValidationResultHandler).handleResult(ValidationResult(partial = false, complete = true))
     }
 
     @Test
@@ -60,7 +60,7 @@ class ExpiryMonthTextWatcherTest {
 
         expiryMonthTextWatcher.afterTextChanged(monthEditable)
 
-        verify(validationResultHandler).handleExpiryMonthValidationResult(ValidationResult(partial = false, complete = false))
+        verify(expiryMonthValidationResultHandler).handleResult(ValidationResult(partial = false, complete = false))
     }
 
     @Test
@@ -71,7 +71,7 @@ class ExpiryMonthTextWatcherTest {
             cardConfiguration = CARD_CONFIG_BASIC,
             dateValidator = dateValidator,
             expiryMonthEditText = expiryMonthEditText,
-            validationResultHandler = validationResultHandler
+            expiryMonthValidationResultHandler = expiryMonthValidationResultHandler
         )
 
         expiryMonthTextWatcher.beforeTextChanged("", 1, 2,3)
@@ -79,7 +79,7 @@ class ExpiryMonthTextWatcherTest {
 
         verifyZeroInteractions(
             dateValidator,
-            validationResultHandler,
+            expiryMonthValidationResultHandler,
             inputFilterHandler
         )
     }

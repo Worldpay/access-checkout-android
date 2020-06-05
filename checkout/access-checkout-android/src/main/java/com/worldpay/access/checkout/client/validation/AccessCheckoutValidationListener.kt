@@ -2,34 +2,25 @@ package com.worldpay.access.checkout.client.validation
 
 import com.worldpay.access.checkout.api.configuration.CardBrand
 
-interface AccessCheckoutValidationListener {
+interface AccessCheckoutValidationListener
 
-    fun onPanValidated(cardBrand: CardBrand?, isValid: Boolean)
-
-    fun onExpiryDateValidated(isValid: Boolean)
-
-    fun onCvvValidated(cardBrand: CardBrand?, isValid: Boolean)
-
+interface AccessCheckoutValidationSuccessListener: AccessCheckoutValidationListener {
     fun onValidationSuccess()
-
 }
 
-interface AccessCheckoutCvvValidationListener {
-
+interface AccessCheckoutCvvValidatedSuccessListener: AccessCheckoutValidationSuccessListener {
     fun onCvvValidated(isValid: Boolean)
-
-    fun onValidationSuccess()
-
 }
 
-interface AccessCheckoutCardValidationListener {
-
+interface AccessCheckoutPanValidatedSuccessListener: AccessCheckoutValidationSuccessListener {
     fun onPanValidated(cardBrand: CardBrand?, isValid: Boolean)
-
-    fun onExpiryDateValidated(isValid: Boolean)
-
-    fun onCvvValidated(isValid: Boolean)
-
-    fun onValidationSuccess()
-
 }
+
+interface AccessCheckoutExpiryDateValidatedSuccessListener: AccessCheckoutValidationSuccessListener {
+    fun onExpiryDateValidated(isValid: Boolean)
+}
+
+interface AccessCheckoutCardValidationSuccessListener:
+    AccessCheckoutCvvValidatedSuccessListener,
+    AccessCheckoutPanValidatedSuccessListener,
+    AccessCheckoutExpiryDateValidatedSuccessListener

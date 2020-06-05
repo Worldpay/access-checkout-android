@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configuratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_YEAR_RULE
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
-import com.worldpay.access.checkout.validation.result.ValidationResultHandler
+import com.worldpay.access.checkout.validation.result.ExpiryYearValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.DateValidator
 import org.junit.Before
 import org.junit.Test
@@ -18,7 +18,7 @@ import org.junit.Test
 class ExpiryYearTextWatcherTest {
 
     private val inputFilterHandler = mock<InputFilterHandler>()
-    private val validationResultHandler = mock<ValidationResultHandler>()
+    private val expiryYearValidationResultHandler = mock<ExpiryYearValidationResultHandler>()
 
     private val expiryYearEditText = mock<EditText>()
     private val yearEditable = mock<Editable>()
@@ -31,7 +31,7 @@ class ExpiryYearTextWatcherTest {
             cardConfiguration = CARD_CONFIG_BASIC,
             dateValidator = DateValidator(),
             inputFilterHandler = inputFilterHandler,
-            validationResultHandler = validationResultHandler,
+            expiryYearValidationResultHandler = expiryYearValidationResultHandler,
             expiryYearEditText = expiryYearEditText
         )
     }
@@ -51,7 +51,7 @@ class ExpiryYearTextWatcherTest {
 
         expiryYearTextWatcher.afterTextChanged(yearEditable)
 
-        verify(validationResultHandler).handleExpiryYearValidationResult(ValidationResult(partial = false, complete = true))
+        verify(expiryYearValidationResultHandler).handleResult(ValidationResult(partial = false, complete = true))
     }
 
     @Test
@@ -60,7 +60,7 @@ class ExpiryYearTextWatcherTest {
 
         expiryYearTextWatcher.afterTextChanged(yearEditable)
 
-        verify(validationResultHandler).handleExpiryYearValidationResult(ValidationResult(partial = false, complete = false))
+        verify(expiryYearValidationResultHandler).handleResult(ValidationResult(partial = false, complete = false))
     }
 
     @Test
@@ -71,7 +71,7 @@ class ExpiryYearTextWatcherTest {
             cardConfiguration = CARD_CONFIG_BASIC,
             dateValidator = dateValidator,
             inputFilterHandler = inputFilterHandler,
-            validationResultHandler = validationResultHandler,
+            expiryYearValidationResultHandler = expiryYearValidationResultHandler,
             expiryYearEditText = expiryYearEditText
         )
 
@@ -80,7 +80,7 @@ class ExpiryYearTextWatcherTest {
 
         verifyZeroInteractions(
             dateValidator,
-            validationResultHandler,
+            expiryYearValidationResultHandler,
             inputFilterHandler
         )
     }

@@ -12,7 +12,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
-import com.worldpay.access.checkout.validation.result.ValidationResultHandler
+import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 import org.junit.Before
 import org.junit.Test
@@ -20,7 +20,7 @@ import org.junit.Test
 class CVVTextWatcherTest {
 
     private val inputFilterHandler = mock<InputFilterHandler>()
-    private val validationResultHandler = mock<ValidationResultHandler>()
+    private val cvvValidationResultHandler = mock<CvvValidationResultHandler>()
 
     private val panEditText = mock<EditText>()
     private val cvvEditText = mock<EditText>()
@@ -37,7 +37,7 @@ class CVVTextWatcherTest {
             cvvEditText = cvvEditText,
             cvvValidator = CVVValidator(),
             inputFilterHandler = inputFilterHandler,
-            validationResultHandler = validationResultHandler
+            cvvValidationResultHandler = cvvValidationResultHandler
         )
 
         given(cvvEditable.toString()).willReturn("123")
@@ -67,7 +67,7 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(validationResultHandler).handleCvvValidationResult(ValidationResult(partial = false, complete = true))
+        verify(cvvValidationResultHandler).handleResult(ValidationResult(partial = false, complete = true))
     }
 
     @Test
@@ -76,7 +76,7 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(validationResultHandler).handleCvvValidationResult(ValidationResult(partial = true, complete = true))
+        verify(cvvValidationResultHandler).handleResult(ValidationResult(partial = true, complete = true))
     }
 
     @Test
@@ -87,14 +87,14 @@ class CVVTextWatcherTest {
             cvvEditText = cvvEditText,
             cvvValidator = CVVValidator(),
             inputFilterHandler = inputFilterHandler,
-            validationResultHandler = validationResultHandler
+            cvvValidationResultHandler = cvvValidationResultHandler
         )
 
         given(cvvEditable.toString()).willReturn("123")
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(validationResultHandler).handleCvvValidationResult(ValidationResult(partial = true, complete = true))
+        verify(cvvValidationResultHandler).handleResult(ValidationResult(partial = true, complete = true))
     }
 
     @Test
@@ -107,7 +107,7 @@ class CVVTextWatcherTest {
             cvvEditText = cvvEditText,
             cvvValidator = cvvValidator,
             inputFilterHandler = inputFilterHandler,
-            validationResultHandler = validationResultHandler
+            cvvValidationResultHandler = cvvValidationResultHandler
         )
 
         cvvTextWatcher.beforeTextChanged("", 1, 2,3)
@@ -115,7 +115,7 @@ class CVVTextWatcherTest {
 
         verifyZeroInteractions(
             cvvValidator,
-            validationResultHandler,
+            cvvValidationResultHandler,
             inputFilterHandler
         )
     }

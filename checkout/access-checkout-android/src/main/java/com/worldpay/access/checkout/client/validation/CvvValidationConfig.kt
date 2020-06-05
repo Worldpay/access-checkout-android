@@ -5,20 +5,20 @@ import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 
 class CvvValidationConfig private constructor(
     val cvv: EditText,
-    val validationListener: AccessCheckoutCvvValidationListener
+    val validationListener: AccessCheckoutCvvValidatedSuccessListener
 ): ValidationConfig {
 
     class Builder {
 
         private var cvv: EditText? = null
-        private var validationListener: AccessCheckoutCvvValidationListener? = null
+        private var validationListener: AccessCheckoutCvvValidatedSuccessListener? = null
 
         fun cvv(cvv: EditText): Builder {
             this.cvv = cvv
             return this
         }
 
-        fun validationListener(validationListener: AccessCheckoutCvvValidationListener): Builder {
+        fun validationListener(validationListener: AccessCheckoutCvvValidatedSuccessListener): Builder {
             this.validationListener = validationListener
             return this
         }
@@ -29,7 +29,7 @@ class CvvValidationConfig private constructor(
 
             return CvvValidationConfig(
                 cvv = cvv as EditText,
-                validationListener = validationListener as AccessCheckoutCvvValidationListener
+                validationListener = validationListener as AccessCheckoutCvvValidatedSuccessListener
             )
         }
 

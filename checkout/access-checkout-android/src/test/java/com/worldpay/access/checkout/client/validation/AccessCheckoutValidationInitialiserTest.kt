@@ -19,8 +19,8 @@ class AccessCheckoutValidationInitialiserTest {
     private val expiryMonth: EditText = mock()
     private val expiryYear: EditText = mock()
     private val cvv: EditText = mock()
-    private val cardValidationListener: AccessCheckoutCardValidationListener = mock()
-    private val cvvValidationListener: AccessCheckoutCvvValidationListener = mock()
+    private val cardValidationListener: AccessCheckoutCardValidationSuccessListener = mock()
+    private val cvvValidationListener: AccessCheckoutCvvValidatedSuccessListener = mock()
 
     @Test
     fun `should be able to initialise the validation for card validation`() {

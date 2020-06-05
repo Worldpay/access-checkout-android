@@ -12,7 +12,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
-import com.worldpay.access.checkout.validation.result.ValidationResultHandler
+import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.PANValidator
 import org.junit.Before
 import org.junit.Test
@@ -20,7 +20,7 @@ import org.junit.Test
 class PANTextWatcherTest {
 
     private val inputFilterHandler = mock<InputFilterHandler>()
-    private val validationResultHandler = mock<ValidationResultHandler>()
+    private val panValidationResultHandler = mock<PanValidationResultHandler>()
 
     private val panEditText = mock<EditText>()
     private val panEditable = mock<Editable>()
@@ -33,7 +33,7 @@ class PANTextWatcherTest {
             cardConfiguration = CARD_CONFIG_BASIC,
             panValidator = PANValidator(),
             inputFilterHandler = inputFilterHandler,
-            validationResultHandler = validationResultHandler,
+            panValidationResultHandler = panValidationResultHandler,
             panEditText = panEditText
         )
     }
@@ -62,7 +62,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(validationResultHandler).handlePanValidationResult(ValidationResult(partial = true, complete = true), VISA_BRAND)
+        verify(panValidationResultHandler).handleResult(ValidationResult(partial = true, complete = true), VISA_BRAND)
     }
 
     @Test
@@ -71,7 +71,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(validationResultHandler).handlePanValidationResult(ValidationResult(partial = true, complete = false), null)
+        verify(panValidationResultHandler).handleResult(ValidationResult(partial = true, complete = false), null)
     }
 
     @Test
@@ -82,7 +82,7 @@ class PANTextWatcherTest {
             cardConfiguration = CARD_CONFIG_BASIC,
             panValidator = panValidator,
             inputFilterHandler = inputFilterHandler,
-            validationResultHandler = validationResultHandler,
+            panValidationResultHandler = panValidationResultHandler,
             panEditText = panEditText
         )
 
@@ -91,7 +91,7 @@ class PANTextWatcherTest {
 
         verifyZeroInteractions(
             panValidator,
-            validationResultHandler,
+            panValidationResultHandler,
             inputFilterHandler
         )
     }

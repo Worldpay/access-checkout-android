@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.client.validation
 
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
 import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
-import com.worldpay.access.checkout.validation.result.ValidationResultHandler
 import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
 object AccessCheckoutValidationInitialiser {
@@ -12,11 +11,7 @@ object AccessCheckoutValidationInitialiser {
     }
 
     private fun initialiseCardValidation(validationConfig: CardValidationConfig) {
-        val validationResultHandler =
-            ValidationResultHandler(
-                validationConfig.validationListener
-            )
-        val textWatcherFactory = TextWatcherFactory(validationResultHandler)
+        val textWatcherFactory = TextWatcherFactory(validationConfig.validationListener)
 
         CardDetailsValidationController(
             panEditText = validationConfig.pan,
