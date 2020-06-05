@@ -9,7 +9,7 @@ import java.io.IOException
 object BrandLogoMockStub {
 
     fun stubLogos(context: Context) {
-        val images = listOf("visa.svg", "mastercard.svg", "amex.svg")
+        val images = listOf("visa.svg", "mastercard.svg", "amex.svg", "maestro.svg", "diners.svg", "discover.svg", "jcb.svg")
         images.forEach {
             stubFor(
                 WireMock.get("/$CARD_LOGO_PATH/$it")
