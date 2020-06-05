@@ -1,10 +1,8 @@
-package com.worldpay.access.checkout.validation
+package com.worldpay.access.checkout.validation.result
 
 import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.client.validation.AccessCheckoutCardValidationListener
-import com.worldpay.access.checkout.validation.card.CardDetailType
-import com.worldpay.access.checkout.validation.card.CardDetailType.*
-import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
+import com.worldpay.access.checkout.validation.ValidationResult
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ValidationResultHandler(
@@ -43,29 +41,9 @@ class ValidationResultHandler(
     private fun checkAllFields() {
         if (allDetailsValidated()) {
             validationListener.onValidationSuccess()
-        } else {
-            validationListener.onValidationFailure(getInvalidFields())
         }
     }
 
     private fun allDetailsValidated() = panValidated.get() && monthValidated.get() && yearValidated.get() && cvvValidated.get()
-
-    private fun getInvalidFields(): List<CardDetailType> {
-        val fields = mutableListOf<CardDetailType>()
-        if (!panValidated.get()) {
-            fields.add(PAN)
-        }
-        if (!monthValidated.get()) {
-            fields.add(EXPIRY_MONTH)
-        }
-        if (!yearValidated.get()) {
-            fields.add(EXPIRY_YEAR)
-        }
-        if (!cvvValidated.get()) {
-            fields.add(CVV)
-        }
-
-        return fields
-    }
 
 }

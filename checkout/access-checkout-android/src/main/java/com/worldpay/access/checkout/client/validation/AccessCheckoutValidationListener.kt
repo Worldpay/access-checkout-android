@@ -1,8 +1,6 @@
 package com.worldpay.access.checkout.client.validation
 
-import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardBrand
-import com.worldpay.access.checkout.validation.card.CardDetailType
 
 interface AccessCheckoutValidationListener {
 
@@ -14,17 +12,13 @@ interface AccessCheckoutValidationListener {
 
     fun onValidationSuccess()
 
-    fun onValidationFailure(invalidFields: Map<CardDetailType, EditText>)
-
 }
 
 interface AccessCheckoutCvvValidationListener {
 
-    fun onCvvValidated(cardBrand: CardBrand?, isValid: Boolean)
+    fun onCvvValidated(isValid: Boolean)
 
     fun onValidationSuccess()
-
-    fun onValidationFailure(invalidFields: List<CardDetailType>)
 
 }
 
@@ -37,7 +31,5 @@ interface AccessCheckoutCardValidationListener {
     fun onCvvValidated(isValid: Boolean)
 
     fun onValidationSuccess()
-
-    fun onValidationFailure(invalidFields: List<CardDetailType>)
 
 }

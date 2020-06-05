@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.watchers
 import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.validation.ValidationResultHandler
+import com.worldpay.access.checkout.validation.result.ValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 import com.worldpay.access.checkout.validation.validators.DateValidator
 import com.worldpay.access.checkout.validation.validators.PANValidator

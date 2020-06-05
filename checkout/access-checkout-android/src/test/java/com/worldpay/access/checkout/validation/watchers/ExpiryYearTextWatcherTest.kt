@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configuratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_YEAR_RULE
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
-import com.worldpay.access.checkout.validation.ValidationResultHandler
+import com.worldpay.access.checkout.validation.result.ValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.DateValidator
 import org.junit.Before
 import org.junit.Test
