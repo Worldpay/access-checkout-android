@@ -10,9 +10,9 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV_RULE
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.ValidationRuleHandler
 import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
 import com.worldpay.access.checkout.validation.validators.CVVValidator
@@ -21,13 +21,11 @@ import org.junit.Test
 
 class CVVTextWatcherTest {
 
-    private val validationRuleHandler = mock<ValidationRuleHandler>()
+    private val inputFilterHandler = mock<InputFilterHandler>()
     private val validationResultHandler = mock<ValidationResultHandler>()
 
-    private val pan = mock<EditText>()
-    private val expiryMonth = mock<EditText>()
-    private val expiryYear = mock<EditText>()
-    private val cvv = mock<EditText>()
+    private val panEditText = mock<EditText>()
+    private val cvvEditText = mock<EditText>()
 
     private val cvvEditable = mock<Editable>()
 
@@ -35,18 +33,12 @@ class CVVTextWatcherTest {
 
     @Before
     fun setup() {
-        val cardDetailComponents = CardDetailComponents(
-            pan = pan,
-            expiryMonth = expiryMonth,
-            expiryYear = expiryYear,
-            cvv = cvv
-        )
-
         cvvTextWatcher = CVVTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
-            cardDetailComponents = cardDetailComponents,
+            panEditText = panEditText,
+            cvvEditText = cvvEditText,
             cvvValidator = CVVValidator(),
-            validationRuleHandler = validationRuleHandler,
+            inputFilterHandler = inputFilterHandler,
             validationResultHandler = validationResultHandler
         )
 
@@ -59,7 +51,7 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(validationRuleHandler).handle(CVV, VISA_BRAND.cvv)
+        verify(inputFilterHandler).handle(cvvEditText, VISA_BRAND.cvv)
     }
 
     @Test
@@ -68,7 +60,7 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(validationRuleHandler).handle(CVV, CVV_RULE)
+        verify(inputFilterHandler).handle(cvvEditText, CVV_RULE)
     }
 
     @Test
@@ -96,9 +88,10 @@ class CVVTextWatcherTest {
 
         val cvvTextWatcher = CVVTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
-            cardDetailComponents = cardDetailComponents,
+            panEditText = panEditText,
+            cvvEditText = cvvEditText,
             cvvValidator = cvvValidator,
-            validationRuleHandler = validationRuleHandler,
+            inputFilterHandler = inputFilterHandler,
             validationResultHandler = validationResultHandler
         )
 
@@ -109,13 +102,13 @@ class CVVTextWatcherTest {
             cardDetailComponents,
             cvvValidator,
             validationResultHandler,
-            validationRuleHandler
+            inputFilterHandler
         )
     }
 
     private fun mockPan(value: String) {
         val panEditable = mock<Editable>()
-        given(pan.text).willReturn(panEditable)
+        given(panEditText.text).willReturn(panEditable)
         given(panEditable.toString()).willReturn(value)
     }
 

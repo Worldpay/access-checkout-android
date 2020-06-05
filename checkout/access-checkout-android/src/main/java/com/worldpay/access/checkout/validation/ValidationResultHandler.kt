@@ -1,17 +1,14 @@
 package com.worldpay.access.checkout.validation
 
-import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardBrand
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
+import com.worldpay.access.checkout.client.validation.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.validation.card.CardDetailType
 import com.worldpay.access.checkout.validation.card.CardDetailType.*
 import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
 import java.util.concurrent.atomic.AtomicBoolean
 
 class ValidationResultHandler(
-    private val validationListener: AccessCheckoutValidationListener,
-    private val cardDetailComponents: CardDetailComponents
+    private val validationListener: AccessCheckoutCardValidationListener
 ) {
 
     private var panValidated = AtomicBoolean(false)
@@ -49,19 +46,19 @@ class ValidationResultHandler(
 
     private fun allDetailsValidated() = panValidated.get() && monthValidated.get() && yearValidated.get() && cvvValidated.get()
 
-    private fun getInvalidFields(): Map<CardDetailType, EditText> {
-        val fields = mutableMapOf<CardDetailType, EditText>()
+    private fun getInvalidFields(): List<CardDetailType> {
+        val fields = mutableListOf<CardDetailType>()
         if (!panValidated.get()) {
-            fields[PAN] = cardDetailComponents.pan
+            fields.add(PAN)
         }
         if (!monthValidated.get()) {
-            fields[EXPIRY_MONTH] = cardDetailComponents.expiryMonth
+            fields.add(EXPIRY_MONTH)
         }
         if (!yearValidated.get()) {
-            fields[EXPIRY_YEAR] = cardDetailComponents.expiryYear
+            fields.add(EXPIRY_YEAR)
         }
         if (!cvvValidated.get()) {
-            fields[CVV] = cardDetailComponents.cvv
+            fields.add(CVV)
         }
 
         return fields

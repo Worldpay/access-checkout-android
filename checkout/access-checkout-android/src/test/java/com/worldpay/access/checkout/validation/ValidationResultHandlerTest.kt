@@ -1,10 +1,8 @@
 package com.worldpay.access.checkout.validation
 
-import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
+import com.worldpay.access.checkout.client.validation.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType
 import com.worldpay.access.checkout.validation.card.CardDetailType.*
 import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
@@ -14,27 +12,13 @@ import kotlin.test.assertEquals
 
 class ValidationResultHandlerTest {
 
-    private val validationListener: AccessCheckoutValidationListener = mock()
-    private val pan = mock<EditText>()
-    private val expiryMonth = mock<EditText>()
-    private val expiryYear = mock<EditText>()
-    private val cvv = mock<EditText>()
+    private val validationListener = mock<AccessCheckoutCardValidationListener>()
 
     private lateinit var validationResultHandler: ValidationResultHandler
 
     @Before
     fun setup() {
-        val cardDetailComponents = CardDetailComponents(
-            pan = pan,
-            expiryMonth = expiryMonth,
-            expiryYear = expiryYear,
-            cvv = cvv
-        )
-
-        validationResultHandler = ValidationResultHandler(
-            validationListener = validationListener,
-            cardDetailComponents = cardDetailComponents
-        )
+        validationResultHandler = ValidationResultHandler(validationListener)
     }
 
     @Test
@@ -61,7 +45,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when expiry month is validated`() {
-        val validationResult = ValidationResult(partial = true, complete = true)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = true
+            )
 
         validationResultHandler.handle(EXPIRY_MONTH, validationResult)
 
@@ -72,7 +60,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when expiry year is validated`() {
-        val validationResult = ValidationResult(partial = true, complete = true)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = true
+            )
 
         validationResultHandler.handle(EXPIRY_YEAR, validationResult)
 
@@ -83,7 +75,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when cvv is validated with no brand`() {
-        val validationResult = ValidationResult(partial = true, complete = true)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = true
+            )
 
         validationResultHandler.handle(CVV, validationResult, null)
 
@@ -94,7 +90,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when cvv is validated with brand`() {
-        val validationResult = ValidationResult(partial = true, complete = true)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = true
+            )
 
         validationResultHandler.handle(CVV, validationResult, VISA_BRAND)
 
@@ -105,7 +105,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when pan is invalidated with no brand`() {
-        val validationResult = ValidationResult(partial = true, complete = false)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = false
+            )
 
         validationResultHandler.handle(PAN, validationResult, null)
 
@@ -116,7 +120,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when pan is invalidated with brand`() {
-        val validationResult = ValidationResult(partial = true, complete = false)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = false
+            )
 
         validationResultHandler.handle(PAN, validationResult, VISA_BRAND)
 
@@ -127,7 +135,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when expiry month is invalidated`() {
-        val validationResult = ValidationResult(partial = true, complete = false)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = false
+            )
 
         validationResultHandler.handle(EXPIRY_MONTH, validationResult)
 
@@ -138,7 +150,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when expiry year is invalidated`() {
-        val validationResult = ValidationResult(partial = true, complete = false)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = false
+            )
 
         validationResultHandler.handle(EXPIRY_YEAR, validationResult)
 
@@ -149,7 +165,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when cvv is invalidated with no brand`() {
-        val validationResult = ValidationResult(partial = true, complete = false)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = false
+            )
 
         validationResultHandler.handle(CVV, validationResult, null)
 
@@ -160,7 +180,11 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listener when cvv is invalidated with brand`() {
-        val validationResult = ValidationResult(partial = true, complete = false)
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = false
+            )
 
         validationResultHandler.handle(CVV, validationResult, VISA_BRAND)
 
@@ -171,8 +195,12 @@ class ValidationResultHandlerTest {
 
     @Test
     fun `should call listeners validation failure function with all invalid fields`() {
-        val validationResult = ValidationResult(partial = true, complete = false)
-        val argumentCaptor = argumentCaptor<Map<CardDetailType, EditText>>()
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = false
+            )
+        val argumentCaptor = argumentCaptor<List<CardDetailType>>()
 
         validationResultHandler.handle(PAN, validationResult, null)
 
@@ -182,16 +210,17 @@ class ValidationResultHandlerTest {
 
         assertEquals(1, argumentCaptor.allValues.size)
         assertEquals(4, argumentCaptor.firstValue.size)
-        assertEquals(pan, argumentCaptor.firstValue[PAN])
-        assertEquals(expiryMonth, argumentCaptor.firstValue[EXPIRY_MONTH])
-        assertEquals(expiryYear, argumentCaptor.firstValue[EXPIRY_YEAR])
-        assertEquals(cvv, argumentCaptor.firstValue[CVV])
+        assertEquals(listOf(PAN, EXPIRY_MONTH, EXPIRY_YEAR, CVV), argumentCaptor.firstValue)
     }
 
     @Test
     fun `should call listeners validation failure function with all other invalid fields where pan is valid`() {
-        val validationResult = ValidationResult(partial = true, complete = true)
-        val argumentCaptor = argumentCaptor<Map<CardDetailType, EditText>>()
+        val validationResult =
+            ValidationResult(
+                partial = true,
+                complete = true
+            )
+        val argumentCaptor = argumentCaptor<List<CardDetailType>>()
 
         validationResultHandler.handle(PAN, validationResult, null)
 
@@ -201,15 +230,13 @@ class ValidationResultHandlerTest {
 
         assertEquals(1, argumentCaptor.allValues.size)
         assertEquals(3, argumentCaptor.firstValue.size)
-        assertEquals(expiryMonth, argumentCaptor.firstValue[EXPIRY_MONTH])
-        assertEquals(expiryYear, argumentCaptor.firstValue[EXPIRY_YEAR])
-        assertEquals(cvv, argumentCaptor.firstValue[CVV])
+        assertEquals(listOf(EXPIRY_MONTH, EXPIRY_YEAR, CVV), argumentCaptor.firstValue)
     }
 
     @Test
     fun `should call listeners validation success function when all fields are valid`() {
         val validationResult = ValidationResult(partial = true, complete = true)
-        val argumentCaptor = argumentCaptor<Map<CardDetailType, EditText>>()
+        val argumentCaptor = argumentCaptor<List<CardDetailType>>()
 
         // validate the pan
         validationResultHandler.handle(PAN, validationResult, null)
@@ -240,16 +267,13 @@ class ValidationResultHandlerTest {
         assertEquals(3, argumentCaptor.allValues.size)
 
         // validate the first set of arguments to the validation failure call
-        assertEquals(expiryMonth, argumentCaptor.firstValue[EXPIRY_MONTH])
-        assertEquals(expiryYear, argumentCaptor.firstValue[EXPIRY_YEAR])
-        assertEquals(cvv, argumentCaptor.firstValue[CVV])
+        assertEquals(listOf(EXPIRY_MONTH, EXPIRY_YEAR, CVV), argumentCaptor.firstValue)
 
         // validate the second set of arguments to the validation failure call
-        assertEquals(expiryYear, argumentCaptor.firstValue[EXPIRY_YEAR])
-        assertEquals(cvv, argumentCaptor.firstValue[CVV])
+        assertEquals(listOf(EXPIRY_YEAR, CVV), argumentCaptor.secondValue)
 
         // validate the third set of arguments to the validation failure call
-        assertEquals(cvv, argumentCaptor.firstValue[CVV])
+        assertEquals(listOf(CVV), argumentCaptor.thirdValue)
     }
 
 }

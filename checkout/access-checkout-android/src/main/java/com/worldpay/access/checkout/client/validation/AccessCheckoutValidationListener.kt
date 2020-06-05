@@ -24,7 +24,7 @@ interface AccessCheckoutCvvValidationListener {
 
     fun onValidationSuccess()
 
-    fun onValidationFailure(invalidFields: Map<CardDetailType, EditText>)
+    fun onValidationFailure(invalidFields: List<CardDetailType>)
 
 }
 
@@ -38,6 +38,6 @@ interface AccessCheckoutCardValidationListener {
 
     fun onValidationSuccess()
 
-    fun onValidationFailure(invalidFields: Map<CardDetailType, EditText>)
+    fun onValidationFailure(invalidFields: List<CardDetailType>)
 
 }

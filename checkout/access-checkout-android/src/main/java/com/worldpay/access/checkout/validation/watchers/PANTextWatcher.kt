@@ -1,23 +1,25 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import android.text.Editable
+import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.ValidationRuleHandler
 import com.worldpay.access.checkout.validation.card.CardDetailType.PAN
 import com.worldpay.access.checkout.validation.validators.PANValidator
 
 internal class PANTextWatcher(
     private val cardConfiguration: CardConfiguration,
     private var panValidator: PANValidator,
-    private val validationRuleHandler: ValidationRuleHandler,
+    private val inputFilterHandler: InputFilterHandler = InputFilterHandler(),
+    private val panEditText: EditText,
     private val validationResultHandler: ValidationResultHandler
 ) : AbstractCardDetailTextWatcher() {
 
     override fun afterTextChanged(pan: Editable?) {
         val cardValidationRule = panValidator.getValidationRule(pan.toString(), cardConfiguration)
-        validationRuleHandler.handle(
-            cardDetailType = PAN,
+        inputFilterHandler.handle(
+            editText = panEditText,
             cardValidationRule = cardValidationRule
         )
 

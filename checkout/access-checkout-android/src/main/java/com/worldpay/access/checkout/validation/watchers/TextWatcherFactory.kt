@@ -1,10 +1,9 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import android.text.TextWatcher
+import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.ValidationRuleHandler
 import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType
 import com.worldpay.access.checkout.validation.card.CardDetailType.*
@@ -13,12 +12,9 @@ import com.worldpay.access.checkout.validation.validators.DateValidator
 import com.worldpay.access.checkout.validation.validators.PANValidator
 
 class TextWatcherFactory(
-    validationListener: AccessCheckoutValidationListener,
+    private val validationResultHandler: ValidationResultHandler,
     private val cardDetailComponents: CardDetailComponents
 ) {
-
-    private val validationRuleHandler = ValidationRuleHandler(cardDetailComponents)
-    private val validationResultHandler = ValidationResultHandler(validationListener, cardDetailComponents)
 
     private val panValidator = PANValidator()
     private val dateValidator = DateValidator()
@@ -29,7 +25,7 @@ class TextWatcherFactory(
             return PANTextWatcher(
                 cardConfiguration = cardConfiguration,
                 panValidator = panValidator,
-                validationRuleHandler = validationRuleHandler,
+                panEditText = cardDetailComponents.pan as EditText,
                 validationResultHandler = validationResultHandler
             )
         }
@@ -38,8 +34,8 @@ class TextWatcherFactory(
             return ExpiryMonthTextWatcher(
                 cardConfiguration = cardConfiguration,
                 dateValidator = dateValidator,
-                validationRuleHandler = validationRuleHandler,
-                validationResultHandler = validationResultHandler
+                validationResultHandler = validationResultHandler,
+                expiryMonthEditText = cardDetailComponents.expiryMonth as EditText
             )
         }
 
@@ -47,16 +43,16 @@ class TextWatcherFactory(
             return ExpiryYearTextWatcher(
                 cardConfiguration = cardConfiguration,
                 dateValidator = dateValidator,
-                validationRuleHandler = validationRuleHandler,
-                validationResultHandler = validationResultHandler
+                validationResultHandler = validationResultHandler,
+                expiryYearEditText = cardDetailComponents.expiryYear as EditText
             )
         }
 
         return CVVTextWatcher(
             cardConfiguration = cardConfiguration,
-            cardDetailComponents = cardDetailComponents,
+            panEditText = cardDetailComponents.pan as EditText,
+            cvvEditText = cardDetailComponents.cvv as EditText,
             cvvValidator = cvvValidator,
-            validationRuleHandler = validationRuleHandler,
             validationResultHandler = validationResultHandler
         )
     }

@@ -1,19 +1,22 @@
 package com.worldpay.access.checkout.validation
 
 import android.text.TextWatcher
+import android.widget.EditText
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType.*
 import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
 import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
-internal class AccessCheckoutValidationController(
+internal class CardValidationController(
+    private val panEditText: EditText,
+    private val expiryMonthEditText: EditText,
+    private val expiryYearEditText: EditText,
+    private val cvvEditText: EditText,
     baseUrl: String,
-    private val cardDetailComponents: CardDetailComponents,
     cardConfigurationClient: CardConfigurationClient,
     private var textWatcherFactory: TextWatcherFactory
 ) {
@@ -36,17 +39,17 @@ internal class AccessCheckoutValidationController(
         expiryYearTextWatcher = textWatcherFactory.createTextWatcher(EXPIRY_YEAR, cardConfiguration)
         cvvTextWatcher = textWatcherFactory.createTextWatcher(CVV, cardConfiguration)
 
-        cardDetailComponents.pan.addTextChangedListener(panTextWatcher)
-        cardDetailComponents.expiryMonth.addTextChangedListener(expiryMonthTextWatcher)
-        cardDetailComponents.expiryYear.addTextChangedListener(expiryYearTextWatcher)
-        cardDetailComponents.cvv.addTextChangedListener(cvvTextWatcher)
+        panEditText.addTextChangedListener(panTextWatcher)
+        expiryMonthEditText.addTextChangedListener(expiryMonthTextWatcher)
+        expiryYearEditText.addTextChangedListener(expiryYearTextWatcher)
+        cvvEditText.addTextChangedListener(cvvTextWatcher)
     }
 
     private fun removeTextChangedListeners() {
-        cardDetailComponents.pan.removeTextChangedListener(panTextWatcher)
-        cardDetailComponents.expiryMonth.removeTextChangedListener(expiryMonthTextWatcher)
-        cardDetailComponents.expiryYear.removeTextChangedListener(expiryYearTextWatcher)
-        cardDetailComponents.cvv.removeTextChangedListener(cvvTextWatcher)
+        panEditText.removeTextChangedListener(panTextWatcher)
+        expiryMonthEditText.removeTextChangedListener(expiryMonthTextWatcher)
+        expiryYearEditText.removeTextChangedListener(expiryYearTextWatcher)
+        cvvEditText.removeTextChangedListener(cvvTextWatcher)
     }
 
     private fun getCardConfigurationCallback(): Callback<CardConfiguration> {

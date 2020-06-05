@@ -7,7 +7,6 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType.*
 import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
 import com.worldpay.access.checkout.validation.watchers.*
@@ -15,7 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertNotNull
 
-class AccessCheckoutValidationControllerTest {
+class CardValidationControllerTest {
 
     private val baseUrl: String = "base url"
 
@@ -35,18 +34,10 @@ class AccessCheckoutValidationControllerTest {
     private val cardConfigurationClient = mock<CardConfigurationClient>()
 
     private lateinit var callbackCaptor: KArgumentCaptor<Callback<CardConfiguration>>
-    private lateinit var cardDetailComponents: CardDetailComponents
 
     @Before
     fun setup() {
         callbackCaptor = argumentCaptor()
-
-        cardDetailComponents = CardDetailComponents(
-            pan = pan,
-            expiryMonth = expiryMonth,
-            expiryYear = expiryYear,
-            cvv = cvv
-        )
     }
 
     @Test
@@ -145,9 +136,12 @@ class AccessCheckoutValidationControllerTest {
     private fun createAccessCheckoutValidationController() {
         mockTextWatcherCreation(CARD_CONFIG_NO_BRAND)
 
-        AccessCheckoutValidationController(
+        CardValidationController(
+            panEditText = pan,
+            expiryMonthEditText = expiryMonth,
+            expiryYearEditText = expiryYear,
+            cvvEditText = cvv,
             baseUrl = baseUrl,
-            cardDetailComponents = cardDetailComponents,
             cardConfigurationClient = cardConfigurationClient,
             textWatcherFactory = textWatcherFactory
         )

@@ -1,8 +1,9 @@
 package com.worldpay.access.checkout.validation.watchers
 
+import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
+import com.worldpay.access.checkout.validation.ValidationResultHandler
 import com.worldpay.access.checkout.validation.card.CardDetailComponents
 import com.worldpay.access.checkout.validation.card.CardDetailType.*
 import org.junit.Before
@@ -11,16 +12,27 @@ import kotlin.test.assertTrue
 
 class TextWatcherFactoryTest {
 
-    private val validationListener = mock<AccessCheckoutValidationListener>()
-    private val cardDetailComponents = mock<CardDetailComponents>()
+    private val validationResultHandler = mock<ValidationResultHandler>()
     private val cardConfiguration = mock<CardConfiguration>()
+
+    private val cvvEditText = mock<EditText>()
+    private val panEditText = mock<EditText>()
+    private val expiryMonthEditText = mock<EditText>()
+    private val expiryYearEditText = mock<EditText>()
 
     private lateinit var textWatcherFactory: TextWatcherFactory
 
     @Before
     fun setup() {
+        val cardDetailComponents = CardDetailComponents(
+            pan = panEditText,
+            expiryMonth = expiryMonthEditText,
+            expiryYear = expiryYearEditText,
+            cvv = cvvEditText
+        )
+
         textWatcherFactory = TextWatcherFactory(
-            validationListener = validationListener,
+            validationResultHandler = validationResultHandler,
             cardDetailComponents = cardDetailComponents
         )
     }
