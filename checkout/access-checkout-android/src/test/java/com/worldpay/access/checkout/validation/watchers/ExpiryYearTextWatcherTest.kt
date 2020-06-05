@@ -11,7 +11,6 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.card.CardDetailType.EXPIRY_YEAR
 import com.worldpay.access.checkout.validation.validators.DateValidator
 import org.junit.Before
 import org.junit.Test
@@ -52,7 +51,7 @@ class ExpiryYearTextWatcherTest {
 
         expiryYearTextWatcher.afterTextChanged(yearEditable)
 
-        verify(validationResultHandler).handle(EXPIRY_YEAR, ValidationResult(partial = false, complete = true))
+        verify(validationResultHandler).handleExpiryYearValidationResult(ValidationResult(partial = false, complete = true))
     }
 
     @Test
@@ -61,7 +60,7 @@ class ExpiryYearTextWatcherTest {
 
         expiryYearTextWatcher.afterTextChanged(yearEditable)
 
-        verify(validationResultHandler).handle(EXPIRY_YEAR, ValidationResult(partial = false, complete = false))
+        verify(validationResultHandler).handleExpiryYearValidationResult(ValidationResult(partial = false, complete = false))
     }
 
     @Test

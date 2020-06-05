@@ -43,7 +43,7 @@ class TextWatcherFactory(
         )
     }
 
-    fun createCvvTextWatcher(cvvEditText: EditText, panEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+    fun createCvvTextWatcher(cvvEditText: EditText, panEditText: EditText?, cardConfiguration: CardConfiguration): TextWatcher {
         return CVVTextWatcher(
             cardConfiguration = cardConfiguration,
             panEditText = panEditText,

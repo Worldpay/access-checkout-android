@@ -25,7 +25,7 @@ class ValidationResultHandlerTest {
     fun `should call listener when pan is validated with no brand`() {
         val validationResult = ValidationResult(partial = true, complete = true)
 
-        validationResultHandler.handle(PAN, validationResult, null)
+        validationResultHandler.handlePanValidationResult(validationResult, null)
 
         verify(validationListener).onPanValidated(null, true)
         verify(validationListener).onValidationFailure(any())
@@ -36,7 +36,7 @@ class ValidationResultHandlerTest {
     fun `should call listener when pan is validated with brand`() {
         val validationResult = ValidationResult(partial = true, complete = true)
 
-        validationResultHandler.handle(PAN, validationResult, VISA_BRAND)
+        validationResultHandler.handlePanValidationResult(validationResult, VISA_BRAND)
 
         verify(validationListener).onPanValidated(VISA_BRAND, true)
         verify(validationListener).onValidationFailure(any())
@@ -51,7 +51,7 @@ class ValidationResultHandlerTest {
                 complete = true
             )
 
-        validationResultHandler.handle(EXPIRY_MONTH, validationResult)
+        validationResultHandler.handleExpiryMonthValidationResult(validationResult)
 
         verify(validationListener).onExpiryDateValidated(true)
         verify(validationListener).onValidationFailure(any())
@@ -66,7 +66,7 @@ class ValidationResultHandlerTest {
                 complete = true
             )
 
-        validationResultHandler.handle(EXPIRY_YEAR, validationResult)
+        validationResultHandler.handleExpiryYearValidationResult(validationResult)
 
         verify(validationListener).onExpiryDateValidated(true)
         verify(validationListener).onValidationFailure(any())
@@ -81,9 +81,9 @@ class ValidationResultHandlerTest {
                 complete = true
             )
 
-        validationResultHandler.handle(CVV, validationResult, null)
+        validationResultHandler.handleCvvValidationResult(validationResult)
 
-        verify(validationListener).onCvvValidated(null, true)
+        verify(validationListener).onCvvValidated(true)
         verify(validationListener).onValidationFailure(any())
         verifyNoMoreInteractions(validationListener)
     }
@@ -96,9 +96,9 @@ class ValidationResultHandlerTest {
                 complete = true
             )
 
-        validationResultHandler.handle(CVV, validationResult, VISA_BRAND)
+        validationResultHandler.handleCvvValidationResult(validationResult)
 
-        verify(validationListener).onCvvValidated(VISA_BRAND, true)
+        verify(validationListener).onCvvValidated(true)
         verify(validationListener).onValidationFailure(any())
         verifyNoMoreInteractions(validationListener)
     }
@@ -111,7 +111,7 @@ class ValidationResultHandlerTest {
                 complete = false
             )
 
-        validationResultHandler.handle(PAN, validationResult, null)
+        validationResultHandler.handlePanValidationResult(validationResult, null)
 
         verify(validationListener).onPanValidated(null, false)
         verify(validationListener).onValidationFailure(any())
@@ -126,7 +126,7 @@ class ValidationResultHandlerTest {
                 complete = false
             )
 
-        validationResultHandler.handle(PAN, validationResult, VISA_BRAND)
+        validationResultHandler.handlePanValidationResult(validationResult, VISA_BRAND)
 
         verify(validationListener).onPanValidated(VISA_BRAND, false)
         verify(validationListener).onValidationFailure(any())
@@ -141,7 +141,7 @@ class ValidationResultHandlerTest {
                 complete = false
             )
 
-        validationResultHandler.handle(EXPIRY_MONTH, validationResult)
+        validationResultHandler.handleExpiryMonthValidationResult(validationResult)
 
         verify(validationListener).onExpiryDateValidated(false)
         verify(validationListener).onValidationFailure(any())
@@ -156,7 +156,7 @@ class ValidationResultHandlerTest {
                 complete = false
             )
 
-        validationResultHandler.handle(EXPIRY_YEAR, validationResult)
+        validationResultHandler.handleExpiryYearValidationResult(validationResult)
 
         verify(validationListener).onExpiryDateValidated(false)
         verify(validationListener).onValidationFailure(any())
@@ -171,9 +171,9 @@ class ValidationResultHandlerTest {
                 complete = false
             )
 
-        validationResultHandler.handle(CVV, validationResult, null)
+        validationResultHandler.handleCvvValidationResult(validationResult)
 
-        verify(validationListener).onCvvValidated(null, false)
+        verify(validationListener).onCvvValidated(false)
         verify(validationListener).onValidationFailure(any())
         verifyNoMoreInteractions(validationListener)
     }
@@ -186,9 +186,9 @@ class ValidationResultHandlerTest {
                 complete = false
             )
 
-        validationResultHandler.handle(CVV, validationResult, VISA_BRAND)
+        validationResultHandler.handleCvvValidationResult(validationResult)
 
-        verify(validationListener).onCvvValidated(VISA_BRAND, false)
+        verify(validationListener).onCvvValidated(false)
         verify(validationListener).onValidationFailure(any())
         verifyNoMoreInteractions(validationListener)
     }
@@ -202,7 +202,7 @@ class ValidationResultHandlerTest {
             )
         val argumentCaptor = argumentCaptor<List<CardDetailType>>()
 
-        validationResultHandler.handle(PAN, validationResult, null)
+        validationResultHandler.handlePanValidationResult(validationResult, null)
 
         verify(validationListener).onPanValidated(null, false)
         verify(validationListener).onValidationFailure(argumentCaptor.capture())
@@ -222,7 +222,7 @@ class ValidationResultHandlerTest {
             )
         val argumentCaptor = argumentCaptor<List<CardDetailType>>()
 
-        validationResultHandler.handle(PAN, validationResult, null)
+        validationResultHandler.handlePanValidationResult(validationResult, null)
 
         verify(validationListener).onPanValidated(null, true)
         verify(validationListener).onValidationFailure(argumentCaptor.capture())
@@ -239,20 +239,20 @@ class ValidationResultHandlerTest {
         val argumentCaptor = argumentCaptor<List<CardDetailType>>()
 
         // validate the pan
-        validationResultHandler.handle(PAN, validationResult, null)
+        validationResultHandler.handlePanValidationResult(validationResult, null)
         verify(validationListener).onPanValidated(null, true)
 
         // validate the expiry month
-        validationResultHandler.handle(EXPIRY_MONTH, validationResult, null)
+        validationResultHandler.handleExpiryMonthValidationResult(validationResult)
         verify(validationListener, times(1)).onExpiryDateValidated(true)
 
         // validate the expiry year
-        validationResultHandler.handle(EXPIRY_YEAR, validationResult, null)
+        validationResultHandler.handleExpiryYearValidationResult(validationResult)
         verify(validationListener, times(2)).onExpiryDateValidated(true)
 
         // validate the cvv
-        validationResultHandler.handle(CVV, validationResult, null)
-        verify(validationListener).onCvvValidated(null, true)
+        validationResultHandler.handleCvvValidationResult(validationResult)
+        verify(validationListener).onCvvValidated(true)
 
         // ensure validation failure has been called 3 times
         verify(validationListener, times(3)).onValidationFailure(argumentCaptor.capture())

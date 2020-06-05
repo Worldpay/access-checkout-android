@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.validation
+package com.worldpay.access.checkout.validation.controller
 
 import android.text.TextWatcher
 import android.widget.EditText
@@ -9,7 +9,7 @@ import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFA
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
-internal class CardValidationController(
+internal class CardDetailsValidationController(
     private val panEditText: EditText,
     private val expiryMonthEditText: EditText,
     private val expiryYearEditText: EditText,

@@ -34,7 +34,7 @@ interface AccessCheckoutCardValidationListener {
 
     fun onExpiryDateValidated(isValid: Boolean)
 
-    fun onCvvValidated(cardBrand: CardBrand?, isValid: Boolean)
+    fun onCvvValidated(isValid: Boolean)
 
     fun onValidationSuccess()
 

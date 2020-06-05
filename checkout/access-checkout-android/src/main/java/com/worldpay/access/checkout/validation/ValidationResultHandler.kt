@@ -16,27 +16,31 @@ class ValidationResultHandler(
     private var yearValidated = AtomicBoolean(false)
     private var cvvValidated = AtomicBoolean(false)
 
-    fun handle(cardDetailType: CardDetailType, validationResult: ValidationResult, cardBrand: CardBrand? = null) {
-        if (cardDetailType == PAN) {
-            validationListener.onPanValidated(cardBrand, validationResult.complete)
-            panValidated.set(validationResult.complete)
-        }
+    fun handlePanValidationResult(validationResult: ValidationResult, cardBrand: CardBrand?) {
+        validationListener.onPanValidated(cardBrand, validationResult.complete)
+        panValidated.set(validationResult.complete)
+        checkAllFields()
+    }
 
-        if (cardDetailType == EXPIRY_MONTH) {
-            validationListener.onExpiryDateValidated(validationResult.complete)
-            monthValidated.set(validationResult.complete)
-        }
+    fun handleExpiryMonthValidationResult(validationResult: ValidationResult) {
+        validationListener.onExpiryDateValidated(validationResult.complete)
+        monthValidated.set(validationResult.complete)
+        checkAllFields()
+    }
 
-        if (cardDetailType == EXPIRY_YEAR) {
-            validationListener.onExpiryDateValidated(validationResult.complete)
-            yearValidated.set(validationResult.complete)
-        }
+    fun handleExpiryYearValidationResult(validationResult: ValidationResult) {
+        validationListener.onExpiryDateValidated(validationResult.complete)
+        yearValidated.set(validationResult.complete)
+        checkAllFields()
+    }
 
-        if (cardDetailType == CVV) {
-            validationListener.onCvvValidated(cardBrand, validationResult.complete)
-            cvvValidated.set(validationResult.complete)
-        }
+    fun handleCvvValidationResult(validationResult: ValidationResult) {
+        validationListener.onCvvValidated(validationResult.complete)
+        cvvValidated.set(validationResult.complete)
+        checkAllFields()
+    }
 
+    private fun checkAllFields() {
         if (allDetailsValidated()) {
             validationListener.onValidationSuccess()
         } else {

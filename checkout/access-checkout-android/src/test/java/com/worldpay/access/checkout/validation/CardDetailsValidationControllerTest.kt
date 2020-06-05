@@ -7,12 +7,13 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
+import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
 import com.worldpay.access.checkout.validation.watchers.*
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertNotNull
 
-class CardValidationControllerTest {
+class CardDetailsValidationControllerTest {
 
     private val baseUrl: String = "base url"
 
@@ -134,7 +135,7 @@ class CardValidationControllerTest {
     private fun createAccessCheckoutValidationController() {
         mockTextWatcherCreation(CARD_CONFIG_NO_BRAND)
 
-        CardValidationController(
+        CardDetailsValidationController(
             panEditText = pan,
             expiryMonthEditText = expiryMonth,
             expiryYearEditText = expiryYear,

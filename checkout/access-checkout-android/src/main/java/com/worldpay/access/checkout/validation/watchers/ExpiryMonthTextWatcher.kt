@@ -5,7 +5,6 @@ import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.card.CardDetailType.EXPIRY_MONTH
 import com.worldpay.access.checkout.validation.validators.DateValidator
 
 internal class ExpiryMonthTextWatcher(
@@ -24,8 +23,7 @@ internal class ExpiryMonthTextWatcher(
         )
 
         val result = dateValidator.validate(month.toString(), null, cardConfiguration)
-        validationResultHandler.handle(
-            cardDetailType = EXPIRY_MONTH,
+        validationResultHandler.handleExpiryMonthValidationResult(
             validationResult = result
         )
     }

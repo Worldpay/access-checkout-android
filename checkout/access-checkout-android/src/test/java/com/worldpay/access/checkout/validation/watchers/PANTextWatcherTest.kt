@@ -13,7 +13,6 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.card.CardDetailType.PAN
 import com.worldpay.access.checkout.validation.validators.PANValidator
 import org.junit.Before
 import org.junit.Test
@@ -63,7 +62,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(validationResultHandler).handle(PAN, ValidationResult(partial = true, complete = true), VISA_BRAND)
+        verify(validationResultHandler).handlePanValidationResult(ValidationResult(partial = true, complete = true), VISA_BRAND)
     }
 
     @Test
@@ -72,7 +71,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(validationResultHandler).handle(PAN, ValidationResult(partial = true, complete = false), null)
+        verify(validationResultHandler).handlePanValidationResult(ValidationResult(partial = true, complete = false), null)
     }
 
     @Test

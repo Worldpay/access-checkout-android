@@ -13,7 +13,6 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.card.CardDetailType.CVV
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 import org.junit.Before
 import org.junit.Test
@@ -68,7 +67,7 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(validationResultHandler).handle(CVV, ValidationResult(partial = false, complete = true), VISA_BRAND)
+        verify(validationResultHandler).handleCvvValidationResult(ValidationResult(partial = false, complete = true))
     }
 
     @Test
@@ -77,7 +76,25 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(validationResultHandler).handle(CVV, ValidationResult(partial = true, complete = true), null)
+        verify(validationResultHandler).handleCvvValidationResult(ValidationResult(partial = true, complete = true))
+    }
+
+    @Test
+    fun `should pass empty pan value when pan edit text is not provided`() {
+        cvvTextWatcher = CVVTextWatcher(
+            cardConfiguration = CARD_CONFIG_BASIC,
+            panEditText = null,
+            cvvEditText = cvvEditText,
+            cvvValidator = CVVValidator(),
+            inputFilterHandler = inputFilterHandler,
+            validationResultHandler = validationResultHandler
+        )
+
+        given(cvvEditable.toString()).willReturn("123")
+
+        cvvTextWatcher.afterTextChanged(cvvEditable)
+
+        verify(validationResultHandler).handleCvvValidationResult(ValidationResult(partial = true, complete = true))
     }
 
     @Test

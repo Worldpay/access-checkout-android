@@ -5,7 +5,6 @@ import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.card.CardDetailType.PAN
 import com.worldpay.access.checkout.validation.validators.PANValidator
 
 internal class PANTextWatcher(
@@ -24,8 +23,7 @@ internal class PANTextWatcher(
         )
 
         val result = panValidator.validate(pan.toString(), cardConfiguration)
-        validationResultHandler.handle(
-            cardDetailType = PAN,
+        validationResultHandler.handlePanValidationResult(
             validationResult = result.first,
             cardBrand = result.second
         )
