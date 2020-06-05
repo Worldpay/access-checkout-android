@@ -19,7 +19,7 @@ class AccessCheckoutValidationInitialiserTest {
     private val expiryMonth: EditText = mock()
     private val expiryYear: EditText = mock()
     private val cvv: EditText = mock()
-    private val cardValidationListener: AccessCheckoutCardValidationSuccessListener = mock()
+    private val cardValidationListener: AccessCheckoutCardValidationListener = mock()
     private val cvvValidationListener: AccessCheckoutCvvValidatedSuccessListener = mock()
 
     @Test
@@ -38,6 +38,18 @@ class AccessCheckoutValidationInitialiserTest {
         verify(pan).addTextChangedListener(any(TextWatcher::class.java))
         verify(expiryMonth).addTextChangedListener(any(TextWatcher::class.java))
         verify(expiryYear).addTextChangedListener(any(TextWatcher::class.java))
+        verify(cvv).addTextChangedListener(any(TextWatcher::class.java))
+    }
+
+    @Test
+    fun `should be able to initialise the validation for cvv validation`() {
+        val config = CvvValidationConfig.Builder()
+            .cvv(cvv)
+            .validationListener(cvvValidationListener)
+            .build()
+
+        AccessCheckoutValidationInitialiser.initialise(config)
+
         verify(cvv).addTextChangedListener(any(TextWatcher::class.java))
     }
 

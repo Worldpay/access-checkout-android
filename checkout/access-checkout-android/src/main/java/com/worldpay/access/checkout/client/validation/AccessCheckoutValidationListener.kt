@@ -20,7 +20,7 @@ interface AccessCheckoutExpiryDateValidatedSuccessListener: AccessCheckoutValida
     fun onExpiryDateValidated(isValid: Boolean)
 }
 
-interface AccessCheckoutCardValidationSuccessListener:
+interface AccessCheckoutCardValidationListener:
     AccessCheckoutCvvValidatedSuccessListener,
     AccessCheckoutPanValidatedSuccessListener,
     AccessCheckoutExpiryDateValidatedSuccessListener

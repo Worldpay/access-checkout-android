@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.validation
+package com.worldpay.access.checkout.validation.controller
 
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
@@ -7,7 +7,6 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
-import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
 import com.worldpay.access.checkout.validation.watchers.*
 import org.junit.Before
 import org.junit.Test

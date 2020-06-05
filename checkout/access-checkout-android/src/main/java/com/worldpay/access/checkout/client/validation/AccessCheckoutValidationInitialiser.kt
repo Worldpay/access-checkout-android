@@ -2,12 +2,17 @@ package com.worldpay.access.checkout.client.validation
 
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
 import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
+import com.worldpay.access.checkout.validation.controller.CvvDetailsValidationController
 import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
 object AccessCheckoutValidationInitialiser {
 
     fun initialise(validationConfig: ValidationConfig) {
-        initialiseCardValidation(validationConfig as CardValidationConfig)
+        if (validationConfig is CardValidationConfig) {
+            initialiseCardValidation(validationConfig)
+        } else {
+            initialiseCvvValidation(validationConfig as CvvValidationConfig)
+        }
     }
 
     private fun initialiseCardValidation(validationConfig: CardValidationConfig) {
@@ -20,6 +25,15 @@ object AccessCheckoutValidationInitialiser {
             cvvEditText = validationConfig.cvv,
             baseUrl = validationConfig.baseUrl,
             cardConfigurationClient = CardConfigurationClientFactory.createClient(),
+            textWatcherFactory = textWatcherFactory
+        )
+    }
+
+    private fun initialiseCvvValidation(validationConfig: CvvValidationConfig) {
+        val textWatcherFactory = TextWatcherFactory(validationConfig.validationListener)
+
+        CvvDetailsValidationController(
+            cvvEditText = validationConfig.cvv,
             textWatcherFactory = textWatcherFactory
         )
     }

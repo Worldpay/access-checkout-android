@@ -74,7 +74,7 @@ class PanValidationResultHandlerTest {
     }
 
     @Test
-    fun `should call onValidationSuccess when all fields are field`() {
+    fun `should call onValidationSuccess when all fields are valid`() {
         val validationResult = ValidationResult(partial = true, complete = true)
 
         val validationStateManager = mock<ValidationStateManager>()
