@@ -6,11 +6,11 @@ import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.validation.CardBrandUtils
 import com.worldpay.access.checkout.validation.NewValidatorUtils.getValidationResultFor
 
-class NewPanValidator {
+class NewPANValidator {
 
     fun validate(pan: String, cardConfiguration: CardConfiguration): Pair<Boolean, CardBrand?> {
         if (pan.isEmpty()) {
-             return Pair(false, null)
+            return Pair(false, null)
         }
 
         val (cardBrand, cardBrandValidationRule) = CardBrandUtils.findCardBrandMatchingPAN(
@@ -45,4 +45,5 @@ class NewPanValidator {
         }
         return sum % 10 == 0
     }
+
 }

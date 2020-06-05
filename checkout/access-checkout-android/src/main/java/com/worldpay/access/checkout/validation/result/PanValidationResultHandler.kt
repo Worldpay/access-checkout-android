@@ -1,17 +1,16 @@
 package com.worldpay.access.checkout.validation.result
 
 import com.worldpay.access.checkout.api.configuration.CardBrand
-import com.worldpay.access.checkout.client.validation.AccessCheckoutPanValidatedSuccessListener
-import com.worldpay.access.checkout.validation.ValidationResult
+import com.worldpay.access.checkout.client.validation.AccessCheckoutPanValidationListener
 
 class PanValidationResultHandler(
-    private val validationListener: AccessCheckoutPanValidatedSuccessListener,
+    private val validationListener: AccessCheckoutPanValidationListener,
     private val validationStateManager: ValidationStateManager
 ) {
 
-    fun handleResult(validationResult: ValidationResult, cardBrand: CardBrand?) {
-        validationListener.onPanValidated(cardBrand, validationResult.complete)
-        validationStateManager.panValidated.set(validationResult.complete)
+    fun handleResult(isValid: Boolean, cardBrand: CardBrand?) {
+        validationListener.onPanValidated(cardBrand, isValid)
+        validationStateManager.panValidated.set(isValid)
 
         if (validationStateManager.isAllValid()) {
             validationListener.onValidationSuccess()

@@ -11,9 +11,8 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configuratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN_RULE
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.InputFilterHandler
-import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
-import com.worldpay.access.checkout.validation.validators.PANValidator
+import com.worldpay.access.checkout.validation.validators.NewPANValidator
 import org.junit.Before
 import org.junit.Test
 
@@ -31,7 +30,7 @@ class PANTextWatcherTest {
     fun setup() {
         panTextWatcher = PANTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
-            panValidator = PANValidator(),
+            panValidator = NewPANValidator(),
             inputFilterHandler = inputFilterHandler,
             panValidationResultHandler = panValidationResultHandler,
             panEditText = panEditText
@@ -62,7 +61,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(ValidationResult(partial = true, complete = true), VISA_BRAND)
+        verify(panValidationResultHandler).handleResult(true, VISA_BRAND)
     }
 
     @Test
@@ -71,12 +70,12 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(ValidationResult(partial = true, complete = false), null)
+        verify(panValidationResultHandler).handleResult(false, null)
     }
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val panValidator = mock<PANValidator>()
+        val panValidator = mock<NewPANValidator>()
 
         val panTextWatcher = PANTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,

@@ -10,7 +10,7 @@ import kotlin.test.assertNotNull
 class CvvValidationConfigBuilderTest {
 
     private val cvv = mock<EditText>()
-    private val validationListener = mock<AccessCheckoutCvvValidatedSuccessListener>()
+    private val validationListener = mock<AccessCheckoutCvvValidationListener>()
 
     @Test
     fun `should build card validation config`() {

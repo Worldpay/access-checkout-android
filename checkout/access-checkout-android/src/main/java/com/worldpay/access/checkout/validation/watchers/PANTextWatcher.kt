@@ -5,11 +5,11 @@ import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
-import com.worldpay.access.checkout.validation.validators.PANValidator
+import com.worldpay.access.checkout.validation.validators.NewPANValidator
 
 internal class PANTextWatcher(
     private val cardConfiguration: CardConfiguration,
-    private var panValidator: PANValidator,
+    private var panValidator: NewPANValidator,
     private val inputFilterHandler: InputFilterHandler = InputFilterHandler(),
     private val panEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler
@@ -24,7 +24,7 @@ internal class PANTextWatcher(
 
         val result = panValidator.validate(pan.toString(), cardConfiguration)
         panValidationResultHandler.handleResult(
-            validationResult = result.first,
+            isValid = result.first,
             cardBrand = result.second
         )
     }

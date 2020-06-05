@@ -4,7 +4,7 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.worldpay.access.checkout.client.validation.AccessCheckoutExpiryDateValidatedSuccessListener
+import com.worldpay.access.checkout.client.validation.AccessCheckoutExpiryDateValidationListener
 import com.worldpay.access.checkout.validation.ValidationResult
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +14,7 @@ import kotlin.test.assertTrue
 
 class ExpiryMonthValidationResultHandlerTest {
 
-    private val validationListener = mock<AccessCheckoutExpiryDateValidatedSuccessListener>()
+    private val validationListener = mock<AccessCheckoutExpiryDateValidationListener>()
     private val validationStateManager = ValidationStateManager()
 
     private lateinit var validationResultHandler: ExpiryMonthValidationResultHandler
