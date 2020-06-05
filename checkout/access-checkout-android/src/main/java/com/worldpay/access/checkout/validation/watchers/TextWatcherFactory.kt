@@ -1,63 +1,80 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import android.text.TextWatcher
+import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.AccessCheckoutValidationListener
-import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.ValidationRuleHandler
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
-import com.worldpay.access.checkout.validation.card.CardDetailType
-import com.worldpay.access.checkout.validation.card.CardDetailType.*
+import com.worldpay.access.checkout.client.validation.AccessCheckoutCvvValidatedSuccessListener
+import com.worldpay.access.checkout.client.validation.AccessCheckoutExpiryDateValidatedSuccessListener
+import com.worldpay.access.checkout.client.validation.AccessCheckoutPanValidatedSuccessListener
+import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
+import com.worldpay.access.checkout.validation.result.*
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 import com.worldpay.access.checkout.validation.validators.DateValidator
 import com.worldpay.access.checkout.validation.validators.PANValidator
 
 class TextWatcherFactory(
-    validationListener: AccessCheckoutValidationListener,
-    private val cardDetailComponents: CardDetailComponents
+    private val accessCheckoutValidationListener: AccessCheckoutValidationListener
 ) {
-
-    private val validationRuleHandler = ValidationRuleHandler(cardDetailComponents)
-    private val validationResultHandler = ValidationResultHandler(validationListener, cardDetailComponents)
 
     private val panValidator = PANValidator()
     private val dateValidator = DateValidator()
     private val cvvValidator = CVVValidator()
+    private val validationStateManager = ValidationStateManager()
 
-    fun createTextWatcher(cardDetailType: CardDetailType, cardConfiguration: CardConfiguration): TextWatcher {
-        if (cardDetailType == PAN) {
-            return PANTextWatcher(
-                cardConfiguration = cardConfiguration,
-                panValidator = panValidator,
-                validationRuleHandler = validationRuleHandler,
-                validationResultHandler = validationResultHandler
-            )
-        }
+    fun createPanTextWatcher(panEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+        val panValidationResultHandler = PanValidationResultHandler(
+            validationListener = accessCheckoutValidationListener as AccessCheckoutPanValidatedSuccessListener,
+            validationStateManager = validationStateManager
+        )
 
-        if (cardDetailType == EXPIRY_MONTH) {
-            return ExpiryMonthTextWatcher(
-                cardConfiguration = cardConfiguration,
-                dateValidator = dateValidator,
-                validationRuleHandler = validationRuleHandler,
-                validationResultHandler = validationResultHandler
-            )
-        }
+        return PANTextWatcher(
+            cardConfiguration = cardConfiguration,
+            panValidator = panValidator,
+            panEditText = panEditText,
+            panValidationResultHandler = panValidationResultHandler
+        )
+    }
 
-        if (cardDetailType == EXPIRY_YEAR) {
-            return ExpiryYearTextWatcher(
-                cardConfiguration = cardConfiguration,
-                dateValidator = dateValidator,
-                validationRuleHandler = validationRuleHandler,
-                validationResultHandler = validationResultHandler
-            )
-        }
+    fun createExpiryMonthTextWatcher(expiryMonthEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+        val expiryMonthValidationResultHandler = ExpiryMonthValidationResultHandler(
+            validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidatedSuccessListener,
+            validationStateManager = validationStateManager
+        )
+
+        return ExpiryMonthTextWatcher(
+            cardConfiguration = cardConfiguration,
+            dateValidator = dateValidator,
+            expiryMonthValidationResultHandler = expiryMonthValidationResultHandler,
+            expiryMonthEditText = expiryMonthEditText
+        )
+    }
+
+    fun createExpiryYearTextWatcher(expiryYearEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+        val expiryYearValidationResultHandler = ExpiryYearValidationResultHandler(
+            validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidatedSuccessListener,
+            validationStateManager = validationStateManager
+        )
+
+        return ExpiryYearTextWatcher(
+            cardConfiguration = cardConfiguration,
+            dateValidator = dateValidator,
+            expiryYearValidationResultHandler = expiryYearValidationResultHandler,
+            expiryYearEditText = expiryYearEditText
+        )
+    }
+
+    fun createCvvTextWatcher(cvvEditText: EditText, panEditText: EditText?, cardConfiguration: CardConfiguration): TextWatcher {
+        val cvvValidationResultHandler = CvvValidationResultHandler(
+            validationListener = accessCheckoutValidationListener as AccessCheckoutCvvValidatedSuccessListener,
+            validationStateManager = validationStateManager
+        )
 
         return CVVTextWatcher(
             cardConfiguration = cardConfiguration,
-            cardDetailComponents = cardDetailComponents,
+            panEditText = panEditText,
+            cvvEditText = cvvEditText,
             cvvValidator = cvvValidator,
-            validationRuleHandler = validationRuleHandler,
-            validationResultHandler = validationResultHandler
+            cvvValidationResultHandler = cvvValidationResultHandler
         )
     }
 

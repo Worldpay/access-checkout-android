@@ -1,26 +1,26 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import android.text.Editable
+import android.widget.EditText
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_MONTH_RULE
+import com.worldpay.access.checkout.validation.InputFilterHandler
 import com.worldpay.access.checkout.validation.ValidationResult
-import com.worldpay.access.checkout.validation.ValidationResultHandler
-import com.worldpay.access.checkout.validation.ValidationRuleHandler
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
-import com.worldpay.access.checkout.validation.card.CardDetailType.EXPIRY_MONTH
+import com.worldpay.access.checkout.validation.result.ExpiryMonthValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.DateValidator
 import org.junit.Before
 import org.junit.Test
 
 class ExpiryMonthTextWatcherTest {
 
-    private val validationRuleHandler = mock<ValidationRuleHandler>()
-    private val validationResultHandler = mock<ValidationResultHandler>()
+    private val inputFilterHandler = mock<InputFilterHandler>()
+    private val expiryMonthValidationResultHandler = mock<ExpiryMonthValidationResultHandler>()
 
+    private val expiryMonthEditText = mock<EditText>()
     private val monthEditable = mock<Editable>()
 
     private lateinit var expiryMonthTextWatcher: ExpiryMonthTextWatcher
@@ -30,8 +30,9 @@ class ExpiryMonthTextWatcherTest {
         expiryMonthTextWatcher = ExpiryMonthTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             dateValidator = DateValidator(),
-            validationRuleHandler = validationRuleHandler,
-            validationResultHandler = validationResultHandler
+            expiryMonthEditText = expiryMonthEditText,
+            expiryMonthValidationResultHandler = expiryMonthValidationResultHandler,
+            inputFilterHandler = inputFilterHandler
         )
     }
 
@@ -41,7 +42,7 @@ class ExpiryMonthTextWatcherTest {
 
         expiryMonthTextWatcher.afterTextChanged(monthEditable)
 
-        verify(validationRuleHandler).handle(EXPIRY_MONTH, EXP_MONTH_RULE)
+        verify(inputFilterHandler).handle(expiryMonthEditText, EXP_MONTH_RULE)
     }
 
     @Test
@@ -50,7 +51,7 @@ class ExpiryMonthTextWatcherTest {
 
         expiryMonthTextWatcher.afterTextChanged(monthEditable)
 
-        verify(validationResultHandler).handle(EXPIRY_MONTH, ValidationResult(partial = false, complete = true))
+        verify(expiryMonthValidationResultHandler).handleResult(ValidationResult(partial = false, complete = true))
     }
 
     @Test
@@ -59,29 +60,27 @@ class ExpiryMonthTextWatcherTest {
 
         expiryMonthTextWatcher.afterTextChanged(monthEditable)
 
-        verify(validationResultHandler).handle(EXPIRY_MONTH, ValidationResult(partial = false, complete = false))
+        verify(expiryMonthValidationResultHandler).handleResult(ValidationResult(partial = false, complete = false))
     }
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val cardDetailComponents = mock<CardDetailComponents>()
         val dateValidator = mock<DateValidator>()
 
         val expiryMonthTextWatcher = ExpiryMonthTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             dateValidator = dateValidator,
-            validationRuleHandler = validationRuleHandler,
-            validationResultHandler = validationResultHandler
+            expiryMonthEditText = expiryMonthEditText,
+            expiryMonthValidationResultHandler = expiryMonthValidationResultHandler
         )
 
         expiryMonthTextWatcher.beforeTextChanged("", 1, 2,3)
         expiryMonthTextWatcher.onTextChanged("", 1, 2,3)
 
         verifyZeroInteractions(
-            cardDetailComponents,
             dateValidator,
-            validationResultHandler,
-            validationRuleHandler
+            expiryMonthValidationResultHandler,
+            inputFilterHandler
         )
     }
 

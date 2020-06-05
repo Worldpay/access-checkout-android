@@ -1,48 +1,48 @@
 package com.worldpay.access.checkout.validation.watchers
 
+import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.AccessCheckoutValidationListener
-import com.worldpay.access.checkout.validation.card.CardDetailComponents
-import com.worldpay.access.checkout.validation.card.CardDetailType.*
+import com.worldpay.access.checkout.client.validation.AccessCheckoutCardValidationListener
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertTrue
 
 class TextWatcherFactoryTest {
 
-    private val validationListener = mock<AccessCheckoutValidationListener>()
-    private val cardDetailComponents = mock<CardDetailComponents>()
+    private val accessCheckoutValidationListener = mock<AccessCheckoutCardValidationListener>()
     private val cardConfiguration = mock<CardConfiguration>()
+
+    private val cvvEditText = mock<EditText>()
+    private val panEditText = mock<EditText>()
+    private val expiryMonthEditText = mock<EditText>()
+    private val expiryYearEditText = mock<EditText>()
 
     private lateinit var textWatcherFactory: TextWatcherFactory
 
     @Before
     fun setup() {
-        textWatcherFactory = TextWatcherFactory(
-            validationListener = validationListener,
-            cardDetailComponents = cardDetailComponents
-        )
+        textWatcherFactory = TextWatcherFactory(accessCheckoutValidationListener)
     }
 
     @Test
     fun `should get pan text watcher`() {
-        assertTrue(textWatcherFactory.createTextWatcher(PAN, cardConfiguration) is PANTextWatcher)
+        assertTrue(textWatcherFactory.createPanTextWatcher(panEditText, cardConfiguration) is PANTextWatcher)
     }
 
     @Test
     fun `should get expiry month text watcher`() {
-        assertTrue(textWatcherFactory.createTextWatcher(EXPIRY_MONTH, cardConfiguration) is ExpiryMonthTextWatcher)
+        assertTrue(textWatcherFactory.createExpiryMonthTextWatcher(expiryMonthEditText, cardConfiguration) is ExpiryMonthTextWatcher)
     }
 
     @Test
     fun `should get expiry year text watcher`() {
-        assertTrue(textWatcherFactory.createTextWatcher(EXPIRY_YEAR, cardConfiguration) is ExpiryYearTextWatcher)
+        assertTrue(textWatcherFactory.createExpiryYearTextWatcher(expiryYearEditText, cardConfiguration) is ExpiryYearTextWatcher)
     }
 
     @Test
     fun `should get cvv text watcher`() {
-        assertTrue(textWatcherFactory.createTextWatcher(CVV, cardConfiguration) is CVVTextWatcher)
+        assertTrue(textWatcherFactory.createCvvTextWatcher(cvvEditText, panEditText, cardConfiguration) is CVVTextWatcher)
     }
 
 }
