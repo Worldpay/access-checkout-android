@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.validation.validators.NewPANValidator
 internal class PANTextWatcher(
     private val cardConfiguration: CardConfiguration,
     private var panValidator: NewPANValidator,
-    private val inputFilter: InputFilter = InputFilter(),
+    private val inputFilter: InputFilter,
     private val panEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler
 ) : AbstractCardDetailTextWatcher() {

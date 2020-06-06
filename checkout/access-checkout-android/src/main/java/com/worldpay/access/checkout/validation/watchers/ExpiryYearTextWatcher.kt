@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.validation.validators.DateValidator
 internal class ExpiryYearTextWatcher(
     private val cardConfiguration: CardConfiguration,
     private val dateValidator: DateValidator,
-    private val inputFilter: InputFilter = InputFilter(),
+    private val inputFilter: InputFilter,
     private val expiryYearValidationResultHandler: ExpiryYearValidationResultHandler,
     private val expiryYearEditText: EditText
 ): AbstractCardDetailTextWatcher() {

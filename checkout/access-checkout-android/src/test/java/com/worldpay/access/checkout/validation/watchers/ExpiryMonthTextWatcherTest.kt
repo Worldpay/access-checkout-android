@@ -70,6 +70,7 @@ class ExpiryMonthTextWatcherTest {
         val expiryMonthTextWatcher = ExpiryMonthTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             dateValidator = dateValidator,
+            inputFilter = inputFilter,
             expiryMonthEditText = expiryMonthEditText,
             expiryMonthValidationResultHandler = expiryMonthValidationResultHandler
         )

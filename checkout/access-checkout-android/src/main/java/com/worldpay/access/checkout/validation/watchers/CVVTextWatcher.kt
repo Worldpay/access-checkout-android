@@ -12,7 +12,7 @@ internal class CVVTextWatcher(
     private val panEditText: EditText?,
     private val cvvEditText: EditText,
     private val cvvValidator: CVVValidator,
-    private val inputFilter: InputFilter = InputFilter(),
+    private val inputFilter: InputFilter,
     private val cvvValidationResultHandler: CvvValidationResultHandler
 ): AbstractCardDetailTextWatcher() {
 

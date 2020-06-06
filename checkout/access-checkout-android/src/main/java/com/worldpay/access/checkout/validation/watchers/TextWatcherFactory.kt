@@ -7,6 +7,7 @@ import com.worldpay.access.checkout.client.validation.AccessCheckoutCvvValidatio
 import com.worldpay.access.checkout.client.validation.AccessCheckoutExpiryDateValidationListener
 import com.worldpay.access.checkout.client.validation.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
+import com.worldpay.access.checkout.validation.InputFilter
 import com.worldpay.access.checkout.validation.result.*
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 import com.worldpay.access.checkout.validation.validators.DateValidator
@@ -20,6 +21,7 @@ class TextWatcherFactory(
     private val dateValidator = DateValidator()
     private val cvvValidator = CVVValidator()
     private val validationStateManager = ValidationStateManager()
+    private val inputFilter = InputFilter()
 
     fun createPanTextWatcher(panEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
         val panValidationResultHandler = PanValidationResultHandler(
@@ -30,6 +32,7 @@ class TextWatcherFactory(
         return PANTextWatcher(
             cardConfiguration = cardConfiguration,
             panValidator = panValidator,
+            inputFilter = inputFilter,
             panEditText = panEditText,
             panValidationResultHandler = panValidationResultHandler
         )
@@ -44,6 +47,7 @@ class TextWatcherFactory(
         return ExpiryMonthTextWatcher(
             cardConfiguration = cardConfiguration,
             dateValidator = dateValidator,
+            inputFilter = inputFilter,
             expiryMonthValidationResultHandler = expiryMonthValidationResultHandler,
             expiryMonthEditText = expiryMonthEditText
         )
@@ -58,6 +62,7 @@ class TextWatcherFactory(
         return ExpiryYearTextWatcher(
             cardConfiguration = cardConfiguration,
             dateValidator = dateValidator,
+            inputFilter = inputFilter,
             expiryYearValidationResultHandler = expiryYearValidationResultHandler,
             expiryYearEditText = expiryYearEditText
         )
@@ -74,6 +79,7 @@ class TextWatcherFactory(
             panEditText = panEditText,
             cvvEditText = cvvEditText,
             cvvValidator = cvvValidator,
+            inputFilter = inputFilter,
             cvvValidationResultHandler = cvvValidationResultHandler
         )
     }
