@@ -8,7 +8,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_MONTH_RULE
-import com.worldpay.access.checkout.validation.InputFilterHandler
+import com.worldpay.access.checkout.validation.InputFilter
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.result.ExpiryMonthValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.DateValidator
@@ -17,7 +17,7 @@ import org.junit.Test
 
 class ExpiryMonthTextWatcherTest {
 
-    private val inputFilterHandler = mock<InputFilterHandler>()
+    private val inputFilter = mock<InputFilter>()
     private val expiryMonthValidationResultHandler = mock<ExpiryMonthValidationResultHandler>()
 
     private val expiryMonthEditText = mock<EditText>()
@@ -32,7 +32,7 @@ class ExpiryMonthTextWatcherTest {
             dateValidator = DateValidator(),
             expiryMonthEditText = expiryMonthEditText,
             expiryMonthValidationResultHandler = expiryMonthValidationResultHandler,
-            inputFilterHandler = inputFilterHandler
+            inputFilter = inputFilter
         )
     }
 
@@ -42,7 +42,7 @@ class ExpiryMonthTextWatcherTest {
 
         expiryMonthTextWatcher.afterTextChanged(monthEditable)
 
-        verify(inputFilterHandler).handle(expiryMonthEditText, EXP_MONTH_RULE)
+        verify(inputFilter).filter(expiryMonthEditText, EXP_MONTH_RULE)
     }
 
     @Test
@@ -80,7 +80,7 @@ class ExpiryMonthTextWatcherTest {
         verifyZeroInteractions(
             dateValidator,
             expiryMonthValidationResultHandler,
-            inputFilterHandler
+            inputFilter
         )
     }
 
