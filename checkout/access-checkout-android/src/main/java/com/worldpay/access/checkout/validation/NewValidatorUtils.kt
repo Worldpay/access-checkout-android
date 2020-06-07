@@ -15,7 +15,7 @@ internal object NewValidatorUtils {
 
         val validLengths: List<Int> = cardValidationRule.validLengths
 
-        return validLengths.contains(text.length)
+        return validLengths.contains(text.length) && regexMatches(cardValidationRule.matcher, text)
 
     }
 
