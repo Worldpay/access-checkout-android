@@ -1,32 +1,22 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.worldpay.access.checkout.api.configuration.CardBrand
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
-import com.worldpay.access.checkout.validation.CardBrandUtils
 import com.worldpay.access.checkout.validation.NewValidatorUtils.getValidationResultFor
 
 class NewPANValidator {
 
-    fun validate(pan: String, cardConfiguration: CardConfiguration): Pair<Boolean, CardBrand?> {
+    fun validate(pan: String, cardValidationRule: CardValidationRule): Boolean {
         if (pan.isEmpty()) {
-            return Pair(false, null)
+            return false
         }
 
-        val (cardBrand, cardBrandValidationRule) = CardBrandUtils.findCardBrandMatchingPAN(
-            cardConfiguration.brands,
-            pan
-        )
-
-        val validationRule: CardValidationRule = cardBrandValidationRule  ?: cardConfiguration.defaults.pan
-        var validationResult = getValidationResultFor(pan, validationRule)
+        var validationResult = getValidationResultFor(pan, cardValidationRule)
 
         if (validationResult) {
             validationResult = isLuhnValid(pan)
         }
 
-        return Pair(validationResult, cardBrand)
-
+        return validationResult
     }
 
     private fun isLuhnValid(pan: String): Boolean {
