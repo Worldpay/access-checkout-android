@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.validation.CVV
-import com.worldpay.access.checkout.validation.CardBrandUtils.findCardBrandMatchingPAN
+import com.worldpay.access.checkout.validation.CardBrandUtils.findBrandForPan
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import com.worldpay.access.checkout.validation.ValidatorUtils.regexMatches
@@ -14,7 +14,7 @@ class CVVValidator {
     fun getValidationRule(pan: String, cardConfiguration: CardConfiguration): CardValidationRule {
         var rule = cardConfiguration.defaults.cvv
         if (pan.isNotBlank()) {
-            val (cardBrand, _) = findCardBrandMatchingPAN(cardConfiguration.brands, pan)
+            val cardBrand = findBrandForPan(cardConfiguration, pan)
             if (cardBrand != null) {
                 rule = cardBrand.cvv
             }
@@ -24,8 +24,8 @@ class CVVValidator {
 
     fun validate(cvv: CVV, pan: String?, cardConfiguration: CardConfiguration): Pair<ValidationResult, CardBrand?> {
         if (!pan.isNullOrBlank()) {
-            val (cardBrand, _) = findCardBrandMatchingPAN(cardConfiguration.brands, pan)
-            if (cardBrand?.cvv != null) {
+            val cardBrand = findBrandForPan(cardConfiguration, pan)
+            if (cardBrand != null) {
                 return Pair(getValidationResultFor(cvv, cardBrand.cvv), cardBrand)
             }
         }

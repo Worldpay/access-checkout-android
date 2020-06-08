@@ -4,7 +4,7 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.worldpay.access.checkout.client.validation.AccessCheckoutCvvValidatedSuccessListener
+import com.worldpay.access.checkout.client.validation.AccessCheckoutCvvValidationListener
 import com.worldpay.access.checkout.validation.ValidationResult
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +14,7 @@ import kotlin.test.assertTrue
 
 class CvvValidationResultHandlerTest {
 
-    private val validationListener = mock<AccessCheckoutCvvValidatedSuccessListener>()
+    private val validationListener = mock<AccessCheckoutCvvValidationListener>()
     private val validationStateManager = ValidationStateManager()
 
     private lateinit var validationResultHandler: CvvValidationResultHandler

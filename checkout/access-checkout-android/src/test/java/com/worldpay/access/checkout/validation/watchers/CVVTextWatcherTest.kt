@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV_RULE
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.validation.InputFilterHandler
+import com.worldpay.access.checkout.validation.InputFilter
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVVValidator
@@ -19,7 +19,7 @@ import org.junit.Test
 
 class CVVTextWatcherTest {
 
-    private val inputFilterHandler = mock<InputFilterHandler>()
+    private val inputFilter = mock<InputFilter>()
     private val cvvValidationResultHandler = mock<CvvValidationResultHandler>()
 
     private val panEditText = mock<EditText>()
@@ -36,7 +36,7 @@ class CVVTextWatcherTest {
             panEditText = panEditText,
             cvvEditText = cvvEditText,
             cvvValidator = CVVValidator(),
-            inputFilterHandler = inputFilterHandler,
+            inputFilter = inputFilter,
             cvvValidationResultHandler = cvvValidationResultHandler
         )
 
@@ -49,7 +49,7 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(inputFilterHandler).handle(cvvEditText, VISA_BRAND.cvv)
+        verify(inputFilter).filter(cvvEditText, VISA_BRAND.cvv)
     }
 
     @Test
@@ -58,7 +58,7 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(inputFilterHandler).handle(cvvEditText, CVV_RULE)
+        verify(inputFilter).filter(cvvEditText, CVV_RULE)
     }
 
     @Test
@@ -86,7 +86,7 @@ class CVVTextWatcherTest {
             panEditText = null,
             cvvEditText = cvvEditText,
             cvvValidator = CVVValidator(),
-            inputFilterHandler = inputFilterHandler,
+            inputFilter = inputFilter,
             cvvValidationResultHandler = cvvValidationResultHandler
         )
 
@@ -106,7 +106,7 @@ class CVVTextWatcherTest {
             panEditText = panEditText,
             cvvEditText = cvvEditText,
             cvvValidator = cvvValidator,
-            inputFilterHandler = inputFilterHandler,
+            inputFilter = inputFilter,
             cvvValidationResultHandler = cvvValidationResultHandler
         )
 
@@ -116,7 +116,7 @@ class CVVTextWatcherTest {
         verifyZeroInteractions(
             cvvValidator,
             cvvValidationResultHandler,
-            inputFilterHandler
+            inputFilter
         )
     }
 

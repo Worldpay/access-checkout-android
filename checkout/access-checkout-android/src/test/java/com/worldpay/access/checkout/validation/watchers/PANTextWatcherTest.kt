@@ -10,16 +10,15 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN_RULE
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.validation.InputFilterHandler
-import com.worldpay.access.checkout.validation.ValidationResult
+import com.worldpay.access.checkout.validation.InputFilter
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
-import com.worldpay.access.checkout.validation.validators.PANValidator
+import com.worldpay.access.checkout.validation.validators.NewPANValidator
 import org.junit.Before
 import org.junit.Test
 
 class PANTextWatcherTest {
 
-    private val inputFilterHandler = mock<InputFilterHandler>()
+    private val inputFilter = mock<InputFilter>()
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
 
     private val panEditText = mock<EditText>()
@@ -31,8 +30,8 @@ class PANTextWatcherTest {
     fun setup() {
         panTextWatcher = PANTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
-            panValidator = PANValidator(),
-            inputFilterHandler = inputFilterHandler,
+            panValidator = NewPANValidator(),
+            inputFilter = inputFilter,
             panValidationResultHandler = panValidationResultHandler,
             panEditText = panEditText
         )
@@ -44,7 +43,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(inputFilterHandler).handle(panEditText, VISA_BRAND.pan)
+        verify(inputFilter).filter(panEditText, VISA_BRAND.pan)
     }
 
     @Test
@@ -53,7 +52,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(inputFilterHandler).handle(panEditText, PAN_RULE)
+        verify(inputFilter).filter(panEditText, PAN_RULE)
     }
 
     @Test
@@ -62,7 +61,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(ValidationResult(partial = true, complete = true), VISA_BRAND)
+        verify(panValidationResultHandler).handleResult(true, VISA_BRAND)
     }
 
     @Test
@@ -71,17 +70,17 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(ValidationResult(partial = true, complete = false), null)
+        verify(panValidationResultHandler).handleResult(false, null)
     }
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val panValidator = mock<PANValidator>()
+        val panValidator = mock<NewPANValidator>()
 
         val panTextWatcher = PANTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             panValidator = panValidator,
-            inputFilterHandler = inputFilterHandler,
+            inputFilter = inputFilter,
             panValidationResultHandler = panValidationResultHandler,
             panEditText = panEditText
         )
@@ -92,7 +91,7 @@ class PANTextWatcherTest {
         verifyZeroInteractions(
             panValidator,
             panValidationResultHandler,
-            inputFilterHandler
+            inputFilter
         )
     }
 

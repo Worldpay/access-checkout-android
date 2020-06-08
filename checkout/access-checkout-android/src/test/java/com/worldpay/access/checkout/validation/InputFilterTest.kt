@@ -16,7 +16,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-class InputFilterHandlerTest {
+class InputFilterTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
     private val pan = EditText(context)
@@ -24,11 +24,11 @@ class InputFilterHandlerTest {
     private val expiryYear = EditText(context)
     private val cvv = EditText(context)
 
-    private lateinit var inputFilterHandler: InputFilterHandler
+    private lateinit var inputFilter: com.worldpay.access.checkout.validation.InputFilter
 
     @Before
     fun setup() {
-        inputFilterHandler = InputFilterHandler()
+        inputFilter = InputFilter()
 
         assertEquals(0, pan.filters.size)
         assertEquals(0, expiryMonth.filters.size)
@@ -38,7 +38,7 @@ class InputFilterHandlerTest {
 
     @Test
     fun `should set max length on edit text for branded rule`() {
-        inputFilterHandler.handle(pan, VISA_BRAND.pan)
+        inputFilter.filter(pan, VISA_BRAND.pan)
 
         assertEquals(1, pan.filters.size)
         assertTrue(pan.filters[0] is InputFilter.LengthFilter)
@@ -48,7 +48,7 @@ class InputFilterHandlerTest {
 
     @Test
     fun `should set max length on edit text for default rule`() {
-        inputFilterHandler.handle(pan, PAN_RULE)
+        inputFilter.filter(pan, PAN_RULE)
 
         assertEquals(1, pan.filters.size)
         assertTrue(pan.filters[0] is InputFilter.LengthFilter)
@@ -62,7 +62,7 @@ class InputFilterHandlerTest {
 
         given(cardValidationRule.validLengths).willReturn(emptyList())
 
-        inputFilterHandler.handle(pan, cardValidationRule)
+        inputFilter.filter(pan, cardValidationRule)
 
         assertEquals(1, pan.filters.size)
         assertTrue(pan.filters[0] is InputFilter.LengthFilter)

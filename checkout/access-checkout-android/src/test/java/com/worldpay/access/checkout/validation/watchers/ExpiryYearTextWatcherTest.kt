@@ -8,7 +8,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.EXP_YEAR_RULE
-import com.worldpay.access.checkout.validation.InputFilterHandler
+import com.worldpay.access.checkout.validation.InputFilter
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.result.ExpiryYearValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.DateValidator
@@ -17,7 +17,7 @@ import org.junit.Test
 
 class ExpiryYearTextWatcherTest {
 
-    private val inputFilterHandler = mock<InputFilterHandler>()
+    private val inputFilter = mock<InputFilter>()
     private val expiryYearValidationResultHandler = mock<ExpiryYearValidationResultHandler>()
 
     private val expiryYearEditText = mock<EditText>()
@@ -30,7 +30,7 @@ class ExpiryYearTextWatcherTest {
         expiryYearTextWatcher = ExpiryYearTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             dateValidator = DateValidator(),
-            inputFilterHandler = inputFilterHandler,
+            inputFilter = inputFilter,
             expiryYearValidationResultHandler = expiryYearValidationResultHandler,
             expiryYearEditText = expiryYearEditText
         )
@@ -42,7 +42,7 @@ class ExpiryYearTextWatcherTest {
 
         expiryYearTextWatcher.afterTextChanged(yearEditable)
 
-        verify(inputFilterHandler).handle(expiryYearEditText, EXP_YEAR_RULE)
+        verify(inputFilter).filter(expiryYearEditText, EXP_YEAR_RULE)
     }
 
     @Test
@@ -70,7 +70,7 @@ class ExpiryYearTextWatcherTest {
         val expiryYearTextWatcher = ExpiryYearTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             dateValidator = dateValidator,
-            inputFilterHandler = inputFilterHandler,
+            inputFilter = inputFilter,
             expiryYearValidationResultHandler = expiryYearValidationResultHandler,
             expiryYearEditText = expiryYearEditText
         )
@@ -81,7 +81,7 @@ class ExpiryYearTextWatcherTest {
         verifyZeroInteractions(
             dateValidator,
             expiryYearValidationResultHandler,
-            inputFilterHandler
+            inputFilter
         )
     }
 
