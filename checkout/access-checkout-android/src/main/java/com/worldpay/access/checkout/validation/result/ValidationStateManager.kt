@@ -13,5 +13,4 @@ class ValidationStateManager {
         return panValidated.get() && monthValidated.get() && yearValidated.get() && cvvValidated.get()
     }
 
-
 }
