@@ -14,9 +14,6 @@ class TextWatcherFactoryTest {
     private val cardConfiguration = mock<CardConfiguration>()
 
     private val cvvEditText = mock<EditText>()
-    private val panEditText = mock<EditText>()
-    private val expiryMonthEditText = mock<EditText>()
-    private val expiryYearEditText = mock<EditText>()
 
     private lateinit var textWatcherFactory: TextWatcherFactory
 
@@ -27,22 +24,22 @@ class TextWatcherFactoryTest {
 
     @Test
     fun `should get pan text watcher`() {
-        assertTrue(textWatcherFactory.createPanTextWatcher(panEditText, cardConfiguration) is PANTextWatcher)
+        assertTrue(textWatcherFactory.createPanTextWatcher(cardConfiguration) is PANTextWatcher)
     }
 
     @Test
     fun `should get expiry month text watcher`() {
-        assertTrue(textWatcherFactory.createExpiryMonthTextWatcher(expiryMonthEditText, cardConfiguration) is ExpiryMonthTextWatcher)
+        assertTrue(textWatcherFactory.createExpiryMonthTextWatcher(cardConfiguration) is ExpiryMonthTextWatcher)
     }
 
     @Test
     fun `should get expiry year text watcher`() {
-        assertTrue(textWatcherFactory.createExpiryYearTextWatcher(expiryYearEditText, cardConfiguration) is ExpiryYearTextWatcher)
+        assertTrue(textWatcherFactory.createExpiryYearTextWatcher(cardConfiguration) is ExpiryYearTextWatcher)
     }
 
     @Test
     fun `should get cvv text watcher`() {
-        assertTrue(textWatcherFactory.createCvvTextWatcher(cvvEditText, panEditText, cardConfiguration) is CVVTextWatcher)
+        assertTrue(textWatcherFactory.createCvvTextWatcher(cvvEditText, cardConfiguration) is CVVTextWatcher)
     }
 
 }

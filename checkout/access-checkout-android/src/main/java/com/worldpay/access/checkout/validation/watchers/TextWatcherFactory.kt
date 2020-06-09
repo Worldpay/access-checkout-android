@@ -7,7 +7,6 @@ import com.worldpay.access.checkout.client.validation.AccessCheckoutCvvValidatio
 import com.worldpay.access.checkout.client.validation.AccessCheckoutExpiryDateValidationListener
 import com.worldpay.access.checkout.client.validation.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
-import com.worldpay.access.checkout.validation.InputFilter
 import com.worldpay.access.checkout.validation.result.*
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 import com.worldpay.access.checkout.validation.validators.DateValidator
@@ -21,9 +20,8 @@ class TextWatcherFactory(
     private val dateValidator = DateValidator()
     private val cvvValidator = CVVValidator()
     private val validationStateManager = ValidationStateManager()
-    private val inputFilter = InputFilter()
 
-    fun createPanTextWatcher(panEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+    fun createPanTextWatcher(cardConfiguration: CardConfiguration): TextWatcher {
         val panValidationResultHandler = PanValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutPanValidationListener,
             validationStateManager = validationStateManager
@@ -32,13 +30,11 @@ class TextWatcherFactory(
         return PANTextWatcher(
             cardConfiguration = cardConfiguration,
             panValidator = panValidator,
-            inputFilter = inputFilter,
-            panEditText = panEditText,
             panValidationResultHandler = panValidationResultHandler
         )
     }
 
-    fun createExpiryMonthTextWatcher(expiryMonthEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+    fun createExpiryMonthTextWatcher(cardConfiguration: CardConfiguration): TextWatcher {
         val expiryMonthValidationResultHandler = ExpiryMonthValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
             validationStateManager = validationStateManager
@@ -47,13 +43,11 @@ class TextWatcherFactory(
         return ExpiryMonthTextWatcher(
             cardConfiguration = cardConfiguration,
             dateValidator = dateValidator,
-            inputFilter = inputFilter,
-            expiryMonthValidationResultHandler = expiryMonthValidationResultHandler,
-            expiryMonthEditText = expiryMonthEditText
+            expiryMonthValidationResultHandler = expiryMonthValidationResultHandler
         )
     }
 
-    fun createExpiryYearTextWatcher(expiryYearEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+    fun createExpiryYearTextWatcher(cardConfiguration: CardConfiguration): TextWatcher {
         val expiryYearValidationResultHandler = ExpiryYearValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
             validationStateManager = validationStateManager
@@ -62,13 +56,11 @@ class TextWatcherFactory(
         return ExpiryYearTextWatcher(
             cardConfiguration = cardConfiguration,
             dateValidator = dateValidator,
-            inputFilter = inputFilter,
-            expiryYearValidationResultHandler = expiryYearValidationResultHandler,
-            expiryYearEditText = expiryYearEditText
+            expiryYearValidationResultHandler = expiryYearValidationResultHandler
         )
     }
 
-    fun createCvvTextWatcher(cvvEditText: EditText, panEditText: EditText?, cardConfiguration: CardConfiguration): TextWatcher {
+    fun createCvvTextWatcher(panEditText: EditText?, cardConfiguration: CardConfiguration): TextWatcher {
         val cvvValidationResultHandler = CvvValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutCvvValidationListener,
             validationStateManager = validationStateManager
@@ -77,9 +69,7 @@ class TextWatcherFactory(
         return CVVTextWatcher(
             cardConfiguration = cardConfiguration,
             panEditText = panEditText,
-            cvvEditText = cvvEditText,
             cvvValidator = cvvValidator,
-            inputFilter = inputFilter,
             cvvValidationResultHandler = cvvValidationResultHandler
         )
     }

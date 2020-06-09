@@ -1,22 +1,19 @@
 package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
-import com.worldpay.access.checkout.validation.NewValidatorUtils.getValidationResultFor
 
-class NewPANValidator {
+internal class NewPANValidator {
 
-    fun validate(pan: String, cardValidationRule: CardValidationRule): Boolean {
-        if (pan.isEmpty()) {
-            return false
+    private val simpleValidator = SimpleValidator()
+
+    fun validate(text: String, cardValidationRule: CardValidationRule): Boolean {
+        val isValid = simpleValidator.validate(text, cardValidationRule)
+
+        if (isValid) {
+            return isLuhnValid(text)
         }
 
-        var validationResult = getValidationResultFor(pan, cardValidationRule)
-
-        if (validationResult) {
-            validationResult = isLuhnValid(pan)
-        }
-
-        return validationResult
+        return isValid
     }
 
     private fun isLuhnValid(pan: String): Boolean {

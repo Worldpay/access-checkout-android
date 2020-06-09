@@ -4,10 +4,10 @@ import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.validation.CVV
-import com.worldpay.access.checkout.validation.CardBrandUtils.findBrandForPan
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import com.worldpay.access.checkout.validation.ValidatorUtils.regexMatches
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 
 class CVVValidator {
 

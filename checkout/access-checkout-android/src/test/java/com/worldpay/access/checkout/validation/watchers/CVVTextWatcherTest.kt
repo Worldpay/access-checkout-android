@@ -6,11 +6,8 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV_RULE
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.validation.InputFilter
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVVValidator
@@ -19,11 +16,9 @@ import org.junit.Test
 
 class CVVTextWatcherTest {
 
-    private val inputFilter = mock<InputFilter>()
     private val cvvValidationResultHandler = mock<CvvValidationResultHandler>()
 
     private val panEditText = mock<EditText>()
-    private val cvvEditText = mock<EditText>()
 
     private val cvvEditable = mock<Editable>()
 
@@ -34,9 +29,7 @@ class CVVTextWatcherTest {
         cvvTextWatcher = CVVTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             panEditText = panEditText,
-            cvvEditText = cvvEditText,
             cvvValidator = CVVValidator(),
-            inputFilter = inputFilter,
             cvvValidationResultHandler = cvvValidationResultHandler
         )
 
@@ -49,7 +42,7 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(inputFilter).filter(cvvEditText, VISA_BRAND.cvv)
+        verify(cvvValidationResultHandler).handleResult(ValidationResult(partial = false, complete = true))
     }
 
     @Test
@@ -58,7 +51,7 @@ class CVVTextWatcherTest {
 
         cvvTextWatcher.afterTextChanged(cvvEditable)
 
-        verify(inputFilter).filter(cvvEditText, CVV_RULE)
+        verify(cvvValidationResultHandler).handleResult(ValidationResult(partial = true, complete = true))
     }
 
     @Test
@@ -84,9 +77,7 @@ class CVVTextWatcherTest {
         cvvTextWatcher = CVVTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             panEditText = null,
-            cvvEditText = cvvEditText,
             cvvValidator = CVVValidator(),
-            inputFilter = inputFilter,
             cvvValidationResultHandler = cvvValidationResultHandler
         )
 
@@ -104,9 +95,7 @@ class CVVTextWatcherTest {
         val cvvTextWatcher = CVVTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             panEditText = panEditText,
-            cvvEditText = cvvEditText,
             cvvValidator = cvvValidator,
-            inputFilter = inputFilter,
             cvvValidationResultHandler = cvvValidationResultHandler
         )
 
@@ -115,8 +104,7 @@ class CVVTextWatcherTest {
 
         verifyZeroInteractions(
             cvvValidator,
-            cvvValidationResultHandler,
-            inputFilter
+            cvvValidationResultHandler
         )
     }
 

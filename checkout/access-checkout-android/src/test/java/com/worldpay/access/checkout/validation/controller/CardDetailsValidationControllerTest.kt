@@ -7,7 +7,6 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
-import com.worldpay.access.checkout.validation.watchers.*
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertNotNull
@@ -22,12 +21,7 @@ class CardDetailsValidationControllerTest {
     private val expiryYear = mock<EditText>()
     private val cvv = mock<EditText>()
 
-    // watchers
-    private val textWatcherFactory = mock<TextWatcherFactory>()
-    private val panTextWatcher = mock<PANTextWatcher>()
-    private val expiryMonthTextWatcher = mock<ExpiryMonthTextWatcher>()
-    private val expiryYearTextWatcher = mock<ExpiryYearTextWatcher>()
-    private val cvvTextWatcher = mock<CVVTextWatcher>()
+    private val fieldDecoratorFactory = mock<FieldDecoratorFactory>()
 
     private val cardConfigurationClient = mock<CardConfigurationClient>()
 
@@ -48,73 +42,43 @@ class CardDetailsValidationControllerTest {
     }
 
     @Test
-    fun `should add text changed listeners to each of the fields provided upon initialisation`() {
+    fun `should decorate each field that is passed in upon initialisation`() {
         createAccessCheckoutValidationController()
 
-        verifyTextWatchersAreCreated(CARD_CONFIG_NO_BRAND)
-
-        // verify that text changed listeners are added
-        verify(pan).addTextChangedListener(panTextWatcher)
-        verify(expiryMonth).addTextChangedListener(expiryMonthTextWatcher)
-        verify(expiryYear).addTextChangedListener(expiryYearTextWatcher)
-        verify(cvv).addTextChangedListener(cvvTextWatcher)
-
-        verifyNoMoreInteractions(
-            textWatcherFactory,
-            pan,
-            expiryMonth,
-            expiryYear,
-            cvv
-        )
+        verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decoratePanField(pan, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_NO_BRAND)
     }
 
     @Test
-    fun `should reset the text changed listeners when remote card configuration is retrieved`() {
+    fun `should redecorate field when remote card configuration is retrieved`() {
         createAccessCheckoutValidationController()
 
-        verifyTextWatchersAreCreated(CARD_CONFIG_NO_BRAND)
-        verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), callbackCaptor.capture())
+        verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decoratePanField(pan, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_NO_BRAND)
 
+        verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), callbackCaptor.capture())
         // call the callback with a successful card config
-        mockTextWatcherCreation(CARD_CONFIG_BASIC)
         assertNotNull(callbackCaptor.firstValue)
         callbackCaptor.firstValue.onResponse(null, CARD_CONFIG_BASIC)
 
-        // verify that text changed listeners are removed
-        verify(pan).removeTextChangedListener(panTextWatcher)
-        verify(expiryMonth).removeTextChangedListener(expiryMonthTextWatcher)
-        verify(expiryYear).removeTextChangedListener(expiryYearTextWatcher)
-        verify(cvv).removeTextChangedListener(cvvTextWatcher)
-
-        // verify that the new text watchers are being created
-        verifyTextWatchersAreCreated(CARD_CONFIG_BASIC)
-
-        // verify that text changed listeners are added twice (once on initialisation and again after being removed)
-        verify(pan, times(2)).addTextChangedListener(panTextWatcher)
-        verify(expiryMonth, times(2)).addTextChangedListener(expiryMonthTextWatcher)
-        verify(expiryYear, times(2)).addTextChangedListener(expiryYearTextWatcher)
-        verify(cvv, times(2)).addTextChangedListener(cvvTextWatcher)
-
-        verifyNoMoreInteractions(
-            textWatcherFactory,
-            pan,
-            expiryMonth,
-            expiryYear,
-            cvv
-        )
+        verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_BASIC)
+        verify(fieldDecoratorFactory).decoratePanField(pan, CARD_CONFIG_BASIC)
+        verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_BASIC)
+        verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_BASIC)
     }
 
     @Test
     fun `should not do anything when remote card configuration is errors`() {
         createAccessCheckoutValidationController()
 
-        verifyTextWatchersAreCreated(CARD_CONFIG_NO_BRAND)
-
-        // verify that text changed listeners are added
-        verify(pan).addTextChangedListener(panTextWatcher)
-        verify(expiryMonth).addTextChangedListener(expiryMonthTextWatcher)
-        verify(expiryYear).addTextChangedListener(expiryYearTextWatcher)
-        verify(cvv).addTextChangedListener(cvvTextWatcher)
+        verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decoratePanField(pan, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_NO_BRAND)
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), callbackCaptor.capture())
 
@@ -123,7 +87,7 @@ class CardDetailsValidationControllerTest {
         callbackCaptor.firstValue.onResponse(Exception(), null)
 
         verifyNoMoreInteractions(
-            textWatcherFactory,
+            fieldDecoratorFactory,
             pan,
             expiryMonth,
             expiryYear,
@@ -132,8 +96,6 @@ class CardDetailsValidationControllerTest {
     }
 
     private fun createAccessCheckoutValidationController() {
-        mockTextWatcherCreation(CARD_CONFIG_NO_BRAND)
-
         CardDetailsValidationController(
             panEditText = pan,
             expiryMonthEditText = expiryMonth,
@@ -141,22 +103,8 @@ class CardDetailsValidationControllerTest {
             cvvEditText = cvv,
             baseUrl = baseUrl,
             cardConfigurationClient = cardConfigurationClient,
-            textWatcherFactory = textWatcherFactory
+            fieldDecoratorFactory = fieldDecoratorFactory
         )
-    }
-
-    private fun mockTextWatcherCreation(cardConfiguration: CardConfiguration) {
-        given(textWatcherFactory.createPanTextWatcher(pan, cardConfiguration)).willReturn(panTextWatcher)
-        given(textWatcherFactory.createExpiryMonthTextWatcher(expiryMonth, cardConfiguration)).willReturn(expiryMonthTextWatcher)
-        given(textWatcherFactory.createExpiryYearTextWatcher(expiryYear, cardConfiguration)).willReturn(expiryYearTextWatcher)
-        given(textWatcherFactory.createCvvTextWatcher(cvv, pan, cardConfiguration)).willReturn(cvvTextWatcher)
-    }
-
-    private fun verifyTextWatchersAreCreated(cardConfiguration: CardConfiguration) {
-        verify(textWatcherFactory).createPanTextWatcher(pan, cardConfiguration)
-        verify(textWatcherFactory).createExpiryMonthTextWatcher(expiryMonth, cardConfiguration)
-        verify(textWatcherFactory).createExpiryYearTextWatcher(expiryYear, cardConfiguration)
-        verify(textWatcherFactory).createCvvTextWatcher(cvv, pan, cardConfiguration)
     }
 
 }

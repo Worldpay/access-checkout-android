@@ -1,24 +1,24 @@
 package com.worldpay.access.checkout.client.validation
 
-import android.text.TextWatcher
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
-import org.mockito.ArgumentMatchers.any
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.shadows.ShadowInstrumentation
+import kotlin.test.assertEquals
 
+@RunWith(RobolectricTestRunner::class)
 class AccessCheckoutValidationInitialiserTest {
 
-    @get:Rule
-    val expectedException: ExpectedException = ExpectedException.none()
+    private val context = ShadowInstrumentation.getInstrumentation().context
+
+    private val expiryMonth = EditText(context)
+    private val expiryYear = EditText(context)
+    private val cvv = EditText(context)
+    private val pan = EditText(context)
 
     private val baseUrl = "http://localhost"
-    private val pan: EditText = mock()
-    private val expiryMonth: EditText = mock()
-    private val expiryYear: EditText = mock()
-    private val cvv: EditText = mock()
     private val cardValidationListener: AccessCheckoutCardValidationListener = mock()
     private val cvvValidationListener: AccessCheckoutCvvValidationListener = mock()
 
@@ -33,12 +33,17 @@ class AccessCheckoutValidationInitialiserTest {
             .validationListener(cardValidationListener)
             .build()
 
+        assertEquals(0, pan.filters.size)
+        assertEquals(0, expiryMonth.filters.size)
+        assertEquals(0, expiryYear.filters.size)
+        assertEquals(0, cvv.filters.size)
+
         AccessCheckoutValidationInitialiser.initialise(config)
 
-        verify(pan).addTextChangedListener(any(TextWatcher::class.java))
-        verify(expiryMonth).addTextChangedListener(any(TextWatcher::class.java))
-        verify(expiryYear).addTextChangedListener(any(TextWatcher::class.java))
-        verify(cvv).addTextChangedListener(any(TextWatcher::class.java))
+        assertEquals(1, pan.filters.size)
+        assertEquals(1, expiryMonth.filters.size)
+        assertEquals(1, expiryYear.filters.size)
+        assertEquals(1, cvv.filters.size)
     }
 
     @Test
@@ -48,9 +53,11 @@ class AccessCheckoutValidationInitialiserTest {
             .validationListener(cvvValidationListener)
             .build()
 
+        assertEquals(0, cvv.filters.size)
+
         AccessCheckoutValidationInitialiser.initialise(config)
 
-        verify(cvv).addTextChangedListener(any(TextWatcher::class.java))
+        assertEquals(1, cvv.filters.size)
     }
 
 }
