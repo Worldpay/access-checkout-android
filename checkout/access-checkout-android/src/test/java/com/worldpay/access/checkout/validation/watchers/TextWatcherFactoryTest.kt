@@ -24,7 +24,7 @@ class TextWatcherFactoryTest {
 
     @Test
     fun `should get pan text watcher`() {
-        assertTrue(textWatcherFactory.createPanTextWatcher(panEditText, cvvEditText, cardConfiguration) is PANTextWatcher)
+        assertTrue(textWatcherFactory.createPanTextWatcher(cvvEditText, cardConfiguration) is PANTextWatcher)
     }
 
     @Test
@@ -39,7 +39,7 @@ class TextWatcherFactoryTest {
 
     @Test
     fun `should get cvv text watcher`() {
-        assertTrue(textWatcherFactory.createCvvTextWatcher(cvvEditText, cardConfiguration) is CVVTextWatcher)
+        assertTrue(textWatcherFactory.createCvvTextWatcher() is CVVTextWatcher)
     }
 
 }

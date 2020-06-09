@@ -92,7 +92,7 @@ class FieldDecoratorFactoryTest {
     fun `should add new text watchers when decorating pan field each time`() {
         given(panEditText.filters).willReturn(emptyArray())
 
-        fieldDecoratorFactory.decoratePanField(panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText, never()).removeTextChangedListener(any())
         verify(panEditText).addTextChangedListener(Mockito.any(PANTextWatcher::class.java))
@@ -101,7 +101,7 @@ class FieldDecoratorFactoryTest {
 
         given(panEditText.filters).willReturn(emptyArray())
 
-        fieldDecoratorFactory.decoratePanField(panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).removeTextChangedListener(Mockito.any(PANTextWatcher::class.java))
         verify(panEditText).addTextChangedListener(Mockito.any(PANTextWatcher::class.java))
@@ -113,7 +113,7 @@ class FieldDecoratorFactoryTest {
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decoratePanField(panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).filters = captor.capture()
 
@@ -131,7 +131,7 @@ class FieldDecoratorFactoryTest {
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decoratePanField(panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).filters = captor.capture()
 

@@ -27,7 +27,7 @@ class TextWatcherFactory(
 
     private val cvcValidationHandler = CVCValidationHandler(cvvValidator, cvvValidationResultHandler)
 
-    fun createPanTextWatcher(panEditText: EditText, cvvEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+    fun createPanTextWatcher(cvvEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
         val panValidationResultHandler = PanValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutPanValidationListener,
             validationStateManager = validationStateManager

@@ -3,10 +3,10 @@ package com.worldpay.access.checkout.validation.watchers
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules
 import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
-import com.worldpay.access.checkout.validation.validators.NewCVVValidator
+import com.worldpay.access.checkout.validation.validators.SimpleValidator
 
-class CVCValidationHandler(
-    private val cvvValidator: NewCVVValidator,
+internal class CVCValidationHandler(
+    private val cvvValidator: SimpleValidator,
     private val cvvValidationResultHandler: CvvValidationResultHandler,
     private var cardValidationRule: CardValidationRule = DefaultCardRules.CVV_DEFAULTS
 ) {

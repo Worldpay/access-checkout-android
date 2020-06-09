@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import android.text.Editable
+import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
@@ -14,7 +15,6 @@ class PANTextWatcherTest {
 
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
 
-    private val panEditText = mock<EditText>()
     private val cvvEditText = mock<EditText>()
     private val cvcValidationHandler = mock<CVCValidationHandler>()
 

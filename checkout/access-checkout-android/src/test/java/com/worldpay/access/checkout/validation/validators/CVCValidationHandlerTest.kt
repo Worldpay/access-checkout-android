@@ -13,7 +13,7 @@ import kotlin.test.assertEquals
 
 class CVCValidationHandlerTest {
 
-    private val cvcValidator = mock(NewCVVValidator::class.java)
+    private val cvcValidator = mock(SimpleValidator::class.java)
     private val cvcValidationResultHandler = mock(CvvValidationResultHandler::class.java)
     private val validationRule = DefaultCardRules.CVV_DEFAULTS
     private val result = true
