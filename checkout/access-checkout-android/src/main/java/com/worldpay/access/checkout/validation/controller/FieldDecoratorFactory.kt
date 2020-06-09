@@ -20,7 +20,7 @@ internal class FieldDecoratorFactory(
         if (cvvTextWatcher != null) {
             cvvEditText.removeTextChangedListener(cvvTextWatcher)
         }
-        cvvTextWatcher = textWatcherFactory.createCvvTextWatcher(cvvEditText, panEditText, cardConfiguration)
+        cvvTextWatcher = textWatcherFactory.createCvvTextWatcher(cvvEditText, cardConfiguration)
         cvvEditText.addTextChangedListener(cvvTextWatcher)
 
         applyFilter(cvvEditText,
@@ -35,7 +35,7 @@ internal class FieldDecoratorFactory(
         if (panTextWatcher != null) {
             panEditText.removeTextChangedListener(panTextWatcher)
         }
-        panTextWatcher = textWatcherFactory.createPanTextWatcher(panEditText, cardConfiguration)
+        panTextWatcher = textWatcherFactory.createPanTextWatcher(cardConfiguration)
         panEditText.addTextChangedListener(panTextWatcher)
 
         applyFilter(panEditText,
@@ -49,7 +49,7 @@ internal class FieldDecoratorFactory(
         if (expiryMonthTextWatcher != null) {
             expiryMonthEditText.removeTextChangedListener(expiryMonthTextWatcher)
         }
-        expiryMonthTextWatcher = textWatcherFactory.createExpiryMonthTextWatcher(expiryMonthEditText, cardConfiguration)
+        expiryMonthTextWatcher = textWatcherFactory.createExpiryMonthTextWatcher(cardConfiguration)
         expiryMonthEditText.addTextChangedListener(expiryMonthTextWatcher)
 
         applyFilter(expiryMonthEditText,
@@ -63,7 +63,7 @@ internal class FieldDecoratorFactory(
         if (expiryYearTextWatcher != null) {
             expiryYearEditText.removeTextChangedListener(expiryYearTextWatcher)
         }
-        expiryYearTextWatcher = textWatcherFactory.createExpiryYearTextWatcher(expiryYearEditText, cardConfiguration)
+        expiryYearTextWatcher = textWatcherFactory.createExpiryYearTextWatcher(cardConfiguration)
         expiryYearEditText.addTextChangedListener(expiryYearTextWatcher)
 
         applyFilter(expiryYearEditText,
