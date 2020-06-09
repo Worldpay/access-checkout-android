@@ -7,11 +7,6 @@ import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 
-
-enum class FieldType {
-    CVV, PAN, EXPIRY_MONTH, EXPIRY_YEAR
-}
-
 internal class CardDetailsValidationController(
     private val panEditText: EditText,
     private val expiryMonthEditText: EditText,

@@ -4,8 +4,8 @@ import android.text.Editable
 import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
-import com.worldpay.access.checkout.validation.CardBrandUtils.findBrandForPan
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
 
 internal class PANTextWatcher(
