@@ -8,24 +8,14 @@ import com.worldpay.access.checkout.validation.validators.SimpleValidator
 internal class CVCValidationHandler(
     private val cvvValidator: SimpleValidator,
     private val cvvValidationResultHandler: CvvValidationResultHandler,
-    private var cardValidationRule: CardValidationRule = DefaultCardRules.CVV_DEFAULTS
+    private var validationRule: CardValidationRule = DefaultCardRules.CVV_DEFAULTS
 ) {
-    fun updateCvcRuleAndValidate(cvc: String, cvvRule: CardValidationRule?) {
-        if (cvvRule != null) {
-            this.cardValidationRule = cvvRule
-        } else {
-            this.cardValidationRule = DefaultCardRules.CVV_DEFAULTS
-        }
-
-        validate(cvc)
-    }
-
-    fun getRule() : CardValidationRule {
-        return cardValidationRule
+    fun updateValidationRule(validationRule: CardValidationRule) {
+        this.validationRule = validationRule
     }
 
     fun validate(cvc: String) {
-        val result = cvvValidator.validate(cvc.toString(), cardValidationRule)
+        val result = cvvValidator.validate(cvc, validationRule)
         cvvValidationResultHandler.handleResult(result)
     }
 }

@@ -78,7 +78,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(cvcValidationHandler).updateCvcRuleAndValidate(cvvEditable.toString(), VISA_BRAND.cvv)
+        verify(cvcValidationHandler).updateValidationRule(VISA_BRAND.cvv)
     }
 
     @Test
@@ -88,7 +88,7 @@ class PANTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(cvcValidationHandler, times(0)).updateCvcRuleAndValidate(any(), any())
+        verify(cvcValidationHandler, times(0)).updateValidationRule(any())
     }
 
     @Test

@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.watchers.CVCValidationHandler
 import org.junit.Before
@@ -26,15 +27,6 @@ class CVCValidationHandlerTest {
     }
 
     @Test
-    fun `should return current cvc rule`() {
-        val validationRule = mock(CardValidationRule::class.java)
-
-        val cvcValidationHandler = CVCValidationHandler(cvcValidator, cvcValidationResultHandler, validationRule)
-
-        assertEquals(cvcValidationHandler.getRule(), validationRule)
-    }
-
-    @Test
     fun `should validate cvc the pass result to handler`() {
         given(cvcValidator.validate(cvc, validationRule)).willReturn(result)
 
@@ -45,28 +37,14 @@ class CVCValidationHandlerTest {
     }
 
     @Test
-    fun `should update cvc rule and revalidate`() {
-        val newValidationRule = mock(CardValidationRule::class.java)
-        given(cvcValidator.validate(cvc, newValidationRule)).willReturn(result)
+    fun `should update cvc rule`() {
+        cvcValidationHandler.validate("1234")
+        verify(cvcValidationResultHandler).handleResult(true)
 
-        cvcValidationHandler.updateCvcRuleAndValidate(cvc, newValidationRule)
+        cvcValidationHandler.updateValidationRule(VISA_BRAND.cvv)
 
-        assertEquals(cvcValidationHandler.getRule(), newValidationRule)
-        verify(cvcValidator).validate(cvc, newValidationRule)
-        verify(cvcValidationResultHandler).handleResult(result)
-    }
-
-    @Test
-    fun `should update cvc rule to default if called with null validation rule`() {
-        val validationRule = mock(CardValidationRule::class.java)
-
-        val cvcValidationHandler = CVCValidationHandler(cvcValidator, cvcValidationResultHandler, validationRule)
-
-        cvcValidationHandler.updateCvcRuleAndValidate(cvc, null)
-        val expectedRule = DefaultCardRules.CVV_DEFAULTS
-
-        assertEquals(cvcValidationHandler.getRule(), expectedRule)
-        verify(cvcValidator).validate(cvc, expectedRule)
+        cvcValidationHandler.validate("1234")
+        verify(cvcValidationResultHandler).handleResult(false)
     }
 
 }
