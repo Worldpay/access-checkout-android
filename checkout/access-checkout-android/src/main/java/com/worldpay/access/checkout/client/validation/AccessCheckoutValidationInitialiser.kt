@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.client.validation
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
 import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.CvvDetailsValidationController
+import com.worldpay.access.checkout.validation.controller.FieldDecoratorFactory
 import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
 object AccessCheckoutValidationInitialiser {
@@ -25,7 +26,9 @@ object AccessCheckoutValidationInitialiser {
             cvvEditText = validationConfig.cvv,
             baseUrl = validationConfig.baseUrl,
             cardConfigurationClient = CardConfigurationClientFactory.createClient(),
-            textWatcherFactory = textWatcherFactory
+            fieldDecoratorFactory = FieldDecoratorFactory(
+                textWatcherFactory
+            )
         )
     }
 
@@ -34,7 +37,9 @@ object AccessCheckoutValidationInitialiser {
 
         CvvDetailsValidationController(
             cvvEditText = validationConfig.cvv,
-            textWatcherFactory = textWatcherFactory
+            fieldDecoratorFactory = FieldDecoratorFactory(
+                textWatcherFactory
+            )
         )
     }
 
