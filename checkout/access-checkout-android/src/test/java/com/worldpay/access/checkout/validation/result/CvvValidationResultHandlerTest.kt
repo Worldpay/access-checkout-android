@@ -26,7 +26,7 @@ class CvvValidationResultHandlerTest {
 
     @Test
     fun `should call listener when cvv is valid`() {
-        val validationResult = ValidationResult(partial = true, complete = true)
+        val validationResult = true
 
         validationResultHandler.handleResult(validationResult)
 
@@ -38,7 +38,7 @@ class CvvValidationResultHandlerTest {
 
     @Test
     fun `should call listener when cvv is invalid`() {
-        val validationResult = ValidationResult(partial = true, complete = false)
+        val validationResult = false
 
         validationResultHandler.handleResult(validationResult)
 
@@ -50,7 +50,7 @@ class CvvValidationResultHandlerTest {
 
     @Test
     fun `should call onValidationSuccess when all fields are valid`() {
-        val validationResult = ValidationResult(partial = true, complete = true)
+        val validationResult = true
 
         val validationStateManager = mock<ValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)

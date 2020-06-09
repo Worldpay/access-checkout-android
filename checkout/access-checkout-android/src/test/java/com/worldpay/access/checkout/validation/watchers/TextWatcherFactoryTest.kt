@@ -24,7 +24,7 @@ class TextWatcherFactoryTest {
 
     @Test
     fun `should get pan text watcher`() {
-        assertTrue(textWatcherFactory.createPanTextWatcher(cardConfiguration) is PANTextWatcher)
+        assertTrue(textWatcherFactory.createPanTextWatcher(panEditText, cvvEditText, cardConfiguration) is PANTextWatcher)
     }
 
     @Test
