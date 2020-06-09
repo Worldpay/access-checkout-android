@@ -7,6 +7,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
+import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
 import org.junit.Before
 import org.junit.Test
@@ -16,9 +17,8 @@ class PANTextWatcherTest {
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
 
     private val cvvEditText = mock<EditText>()
-    private val cvcValidationHandler = mock<CVCValidationHandler>()
+    private val cvcValidator = mock<CVCValidator>()
 
-    private val panValidator = mock<NewPANValidator>()
     private val panEditable = mock<Editable>()
     private val cvvEditable = mock<Editable>()
 
@@ -31,8 +31,11 @@ class PANTextWatcherTest {
             panValidator = NewPANValidator(),
             panValidationResultHandler = panValidationResultHandler,
             cvvEditText = cvvEditText,
-            cvcValidationHandler = cvcValidationHandler
+            cvcValidator = cvcValidator
         )
+
+        given(cvvEditText.text).willReturn(cvvEditable)
+        given(cvvEditable.toString()).willReturn("")
     }
 
     @Test
@@ -74,21 +77,20 @@ class PANTextWatcherTest {
     @Test
     fun `should revalidate the cvv when the brand changes`() {
         given(panEditable.toString()).willReturn(VISA_PAN)
-        given(cvvEditText.text).willReturn(cvvEditable)
+        given(cvvEditable.toString()).willReturn("123")
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(cvcValidationHandler).updateValidationRule(VISA_BRAND.cvv)
+        verify(cvcValidator).validate("123", VISA_BRAND.cvv)
     }
 
     @Test
     fun `should not revalidate the cvv when the brand doesn't change`() {
         given(panEditable.toString()).willReturn("000000")
-        given(cvvEditText.text).willReturn(cvvEditable)
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(cvcValidationHandler, times(0)).updateValidationRule(any())
+        verify(cvcValidator, never()).validate(any(), any())
     }
 
     @Test
@@ -100,7 +102,7 @@ class PANTextWatcherTest {
             panValidator = panValidator,
             panValidationResultHandler = panValidationResultHandler,
             cvvEditText = cvvEditText,
-            cvcValidationHandler = cvcValidationHandler
+            cvcValidator = cvcValidator
         )
 
         panTextWatcher.beforeTextChanged("", 1, 2,3)

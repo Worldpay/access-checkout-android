@@ -8,14 +8,15 @@ import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvvValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
+import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
 
 internal class PANTextWatcher(
     private val cardConfiguration: CardConfiguration,
     private var panValidator: NewPANValidator,
+    private val cvcValidator: CVCValidator,
     private val cvvEditText: EditText,
-    private val panValidationResultHandler: PanValidationResultHandler,
-    private val cvcValidationHandler: CVCValidationHandler
+    private val panValidationResultHandler: PanValidationResultHandler
 ) : AbstractCardDetailTextWatcher() {
 
     private var cardBrand: CardBrand? = null
@@ -27,8 +28,8 @@ internal class PANTextWatcher(
         if (cardBrand != newCardBrand) {
             cardBrand = newCardBrand
             val cvvText = cvvEditText.text.toString()
-            cvcValidationHandler.updateValidationRule(getCvvValidationRule(cardBrand, cardConfiguration))
-            cvcValidationHandler.validate(cvvText)
+            val cardValidationRule = getCvvValidationRule(cardBrand, cardConfiguration)
+            cvcValidator.validate(cvvText, cardValidationRule)
         }
 
         val cardValidationRule = getPanValidationRule(cardBrand, cardConfiguration)
