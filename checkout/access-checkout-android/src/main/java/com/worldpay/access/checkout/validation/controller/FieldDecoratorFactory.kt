@@ -20,7 +20,7 @@ internal class FieldDecoratorFactory(
         if (cvvTextWatcher != null) {
             cvvEditText.removeTextChangedListener(cvvTextWatcher)
         }
-        cvvTextWatcher = textWatcherFactory.createCvvTextWatcher(cvvEditText, cardConfiguration)
+        cvvTextWatcher = textWatcherFactory.createCvvTextWatcher()
         cvvEditText.addTextChangedListener(cvvTextWatcher)
 
         applyFilter(cvvEditText,
@@ -31,11 +31,11 @@ internal class FieldDecoratorFactory(
         )
     }
 
-    fun decoratePanField(panEditText: EditText, cardConfiguration: CardConfiguration) {
+    fun decoratePanField(panEditText: EditText, cvvEditText: EditText, cardConfiguration: CardConfiguration) {
         if (panTextWatcher != null) {
             panEditText.removeTextChangedListener(panTextWatcher)
         }
-        panTextWatcher = textWatcherFactory.createPanTextWatcher(cardConfiguration)
+        panTextWatcher = textWatcherFactory.createPanTextWatcher(cvvEditText, cardConfiguration)
         panEditText.addTextChangedListener(panTextWatcher)
 
         applyFilter(panEditText,
