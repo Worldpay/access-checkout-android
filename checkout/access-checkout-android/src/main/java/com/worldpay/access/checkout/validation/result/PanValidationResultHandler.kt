@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.validation.result
 
-import com.worldpay.access.checkout.client.validation.AccessCheckoutPanValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 
 class PanValidationResultHandler(

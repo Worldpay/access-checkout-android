@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.controller
 import android.text.InputFilter
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
-import com.worldpay.access.checkout.client.validation.AccessCheckoutCardValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryMonthLengthFilter

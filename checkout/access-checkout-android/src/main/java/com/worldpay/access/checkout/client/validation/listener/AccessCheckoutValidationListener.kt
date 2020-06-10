@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.client.validation
+package com.worldpay.access.checkout.client.validation.listener
 
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 

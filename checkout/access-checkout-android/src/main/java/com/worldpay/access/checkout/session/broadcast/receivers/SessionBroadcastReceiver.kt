@@ -5,8 +5,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
-import com.worldpay.access.checkout.client.SessionResponseListener
-import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.addResponse
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.allRequestsCompleted

@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.session.api.response
 
-import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.session.model.SessionType
 import java.io.Serializable
 
 /**

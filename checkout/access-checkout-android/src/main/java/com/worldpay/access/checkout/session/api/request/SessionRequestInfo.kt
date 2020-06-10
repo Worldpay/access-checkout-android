@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session.api.request
 
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.session.model.SessionType
 import java.io.Serializable
 
 /**

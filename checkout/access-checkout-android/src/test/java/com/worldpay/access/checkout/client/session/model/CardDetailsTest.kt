@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.client
+package com.worldpay.access.checkout.client.session.model
 
 import org.junit.Test
 import kotlin.test.assertEquals

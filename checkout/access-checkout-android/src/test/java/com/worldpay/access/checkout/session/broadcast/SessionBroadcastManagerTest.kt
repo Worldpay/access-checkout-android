@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.session.broadcast
 
 import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.worldpay.access.checkout.client.SessionResponseListener
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
 import org.junit.Test
 import org.mockito.ArgumentCaptor

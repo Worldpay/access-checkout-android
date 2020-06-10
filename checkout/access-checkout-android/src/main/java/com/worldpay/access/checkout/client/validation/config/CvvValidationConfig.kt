@@ -1,6 +1,7 @@
-package com.worldpay.access.checkout.client.validation
+package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 
 class CvvValidationConfig private constructor(

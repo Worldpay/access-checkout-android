@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.client
+package com.worldpay.access.checkout.client.session.model
 
 /**
  * This class is a representation of card information that can be constructed with a [CardDetails.Builder]

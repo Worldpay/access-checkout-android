@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.session.api.response
 
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.request.SessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import org.junit.Test

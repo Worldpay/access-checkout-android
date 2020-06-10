@@ -1,6 +1,9 @@
 package com.worldpay.access.checkout.client.validation
 
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
+import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
+import com.worldpay.access.checkout.client.validation.config.CvvValidationConfig
+import com.worldpay.access.checkout.client.validation.config.ValidationConfig
 import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.CvvDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.FieldDecoratorFactory

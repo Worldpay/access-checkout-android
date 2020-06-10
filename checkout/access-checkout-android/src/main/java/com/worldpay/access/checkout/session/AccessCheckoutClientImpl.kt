@@ -2,10 +2,10 @@ package com.worldpay.access.checkout.session
 
 import android.content.Context
 import android.content.Intent
-import com.worldpay.access.checkout.client.AccessCheckoutClient
-import com.worldpay.access.checkout.client.CardDetails
-import com.worldpay.access.checkout.client.SessionResponseListener
-import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.session.AccessCheckoutClient
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import com.worldpay.access.checkout.client.session.model.CardDetails
+import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver

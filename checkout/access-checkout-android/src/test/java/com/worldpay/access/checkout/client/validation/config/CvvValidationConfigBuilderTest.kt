@@ -1,7 +1,8 @@
-package com.worldpay.access.checkout.client.validation
+package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith

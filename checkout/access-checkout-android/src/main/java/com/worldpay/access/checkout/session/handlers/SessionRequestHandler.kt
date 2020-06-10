@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session.handlers
 
-import com.worldpay.access.checkout.client.CardDetails
-import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.session.model.CardDetails
+import com.worldpay.access.checkout.client.session.model.SessionType
 
 /**
  * The [SessionRequestHandler] interface provides the contract that all session request handlers
