@@ -12,8 +12,7 @@ class ValidationStateManagerTest {
     fun `should start state as invalid`() {
         assertFalse(validationStateManager.isAllValid())
         assertFalse(validationStateManager.panValidated.get())
-        assertFalse(validationStateManager.monthValidated.get())
-        assertFalse(validationStateManager.yearValidated.get())
+        assertFalse(validationStateManager.expiryDateValidated.get())
         assertFalse(validationStateManager.cvvValidated.get())
     }
 
@@ -22,8 +21,7 @@ class ValidationStateManagerTest {
         assertFalse(validationStateManager.isAllValid())
 
         validationStateManager.panValidated.set(true)
-        validationStateManager.monthValidated.set(true)
-        validationStateManager.yearValidated.set(true)
+        validationStateManager.expiryDateValidated.set(true)
         validationStateManager.cvvValidated.set(true)
 
         assertTrue(validationStateManager.isAllValid())
@@ -34,32 +32,7 @@ class ValidationStateManagerTest {
         assertFalse(validationStateManager.isAllValid())
 
         validationStateManager.panValidated.set(false)
-        validationStateManager.monthValidated.set(true)
-        validationStateManager.yearValidated.set(true)
-        validationStateManager.cvvValidated.set(true)
-
-        assertFalse(validationStateManager.isAllValid())
-    }
-
-    @Test
-    fun `should return false when isAllValid and month is invalid`() {
-        assertFalse(validationStateManager.isAllValid())
-
-        validationStateManager.panValidated.set(true)
-        validationStateManager.monthValidated.set(false)
-        validationStateManager.yearValidated.set(true)
-        validationStateManager.cvvValidated.set(true)
-
-        assertFalse(validationStateManager.isAllValid())
-    }
-
-    @Test
-    fun `should return false when isAllValid and year is invalid`() {
-        assertFalse(validationStateManager.isAllValid())
-
-        validationStateManager.panValidated.set(true)
-        validationStateManager.monthValidated.set(true)
-        validationStateManager.yearValidated.set(false)
+        validationStateManager.expiryDateValidated.set(true)
         validationStateManager.cvvValidated.set(true)
 
         assertFalse(validationStateManager.isAllValid())
@@ -70,8 +43,7 @@ class ValidationStateManagerTest {
         assertFalse(validationStateManager.isAllValid())
 
         validationStateManager.panValidated.set(true)
-        validationStateManager.monthValidated.set(true)
-        validationStateManager.yearValidated.set(true)
+        validationStateManager.expiryDateValidated.set(true)
         validationStateManager.cvvValidated.set(false)
 
         assertFalse(validationStateManager.isAllValid())

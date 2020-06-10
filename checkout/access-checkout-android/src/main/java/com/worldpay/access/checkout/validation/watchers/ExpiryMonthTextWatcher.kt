@@ -1,21 +1,23 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import android.text.Editable
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.validation.result.ExpiryMonthValidationResultHandler
-import com.worldpay.access.checkout.validation.validators.DateValidator
+import android.widget.EditText
+import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
+import com.worldpay.access.checkout.validation.validators.NewDateValidator
 
 internal class ExpiryMonthTextWatcher(
-    private val cardConfiguration: CardConfiguration,
-    private val dateValidator: DateValidator,
-    private val expiryMonthValidationResultHandler: ExpiryMonthValidationResultHandler
+    private val dateValidator: NewDateValidator,
+    private val yearEditText: EditText,
+    private val expiryDateValidationResultHandler: ExpiryDateValidationResultHandler
 ): AbstractCardDetailTextWatcher() {
 
     override fun afterTextChanged(month: Editable?) {
-        val result = dateValidator.validate(month.toString(), null, cardConfiguration)
-        expiryMonthValidationResultHandler.handleResult(
-            validationResult = result
-        )
+        val year = yearEditText.text.toString()
+
+        if (year.isNotBlank()) {
+            val result = dateValidator.validate(month.toString(), year)
+            expiryDateValidationResultHandler.handleResult(isValid = result)
+        }
     }
 
 }

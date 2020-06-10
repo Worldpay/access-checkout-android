@@ -5,12 +5,11 @@ import java.util.concurrent.atomic.AtomicBoolean
 class ValidationStateManager {
 
     val panValidated = AtomicBoolean(false)
-    val monthValidated = AtomicBoolean(false)
-    val yearValidated = AtomicBoolean(false)
+    val expiryDateValidated = AtomicBoolean(false)
     val cvvValidated = AtomicBoolean(false)
 
     fun isAllValid(): Boolean {
-        return panValidated.get() && monthValidated.get() && yearValidated.get() && cvvValidated.get()
+        return panValidated.get() && expiryDateValidated.get() && cvvValidated.get()
     }
 
 }

@@ -7,9 +7,12 @@ import com.worldpay.access.checkout.client.validation.AccessCheckoutCvvValidatio
 import com.worldpay.access.checkout.client.validation.AccessCheckoutExpiryDateValidationListener
 import com.worldpay.access.checkout.client.validation.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
-import com.worldpay.access.checkout.validation.result.*
+import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
+import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
+import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
+import com.worldpay.access.checkout.validation.result.ValidationStateManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
-import com.worldpay.access.checkout.validation.validators.DateValidator
+import com.worldpay.access.checkout.validation.validators.NewDateValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
 
 internal class TextWatcherFactory(
@@ -19,7 +22,7 @@ internal class TextWatcherFactory(
     private val validationStateManager = ValidationStateManager()
 
     private val panValidator = NewPANValidator()
-    private val dateValidator = DateValidator()
+    private val dateValidator = NewDateValidator()
 
     fun createPanTextWatcher(cvvEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
         val panValidationResultHandler = PanValidationResultHandler(
@@ -41,29 +44,29 @@ internal class TextWatcherFactory(
         )
     }
 
-    fun createExpiryMonthTextWatcher(cardConfiguration: CardConfiguration): TextWatcher {
-        val expiryMonthValidationResultHandler = ExpiryMonthValidationResultHandler(
+    fun createExpiryMonthTextWatcher(yearEditText: EditText): TextWatcher {
+        val expiryDateValidationResultHandler = ExpiryDateValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
             validationStateManager = validationStateManager
         )
 
         return ExpiryMonthTextWatcher(
-            cardConfiguration = cardConfiguration,
             dateValidator = dateValidator,
-            expiryMonthValidationResultHandler = expiryMonthValidationResultHandler
+            yearEditText = yearEditText,
+            expiryDateValidationResultHandler = expiryDateValidationResultHandler
         )
     }
 
-    fun createExpiryYearTextWatcher(cardConfiguration: CardConfiguration): TextWatcher {
-        val expiryYearValidationResultHandler = ExpiryYearValidationResultHandler(
+    fun createExpiryYearTextWatcher(monthEditText: EditText): TextWatcher {
+        val expiryDateValidationResultHandler = ExpiryDateValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
             validationStateManager = validationStateManager
         )
 
         return ExpiryYearTextWatcher(
-            cardConfiguration = cardConfiguration,
             dateValidator = dateValidator,
-            expiryYearValidationResultHandler = expiryYearValidationResultHandler
+            monthEditText = monthEditText,
+            expiryDateValidationResultHandler = expiryDateValidationResultHandler
         )
     }
 
