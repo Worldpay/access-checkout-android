@@ -47,8 +47,7 @@ class CardDetailsValidationControllerTest {
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryMonth, expiryYear, CARD_CONFIG_NO_BRAND)
     }
 
     @Test
@@ -57,8 +56,7 @@ class CardDetailsValidationControllerTest {
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryMonth, expiryYear, CARD_CONFIG_NO_BRAND)
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), callbackCaptor.capture())
         // call the callback with a successful card config
@@ -67,8 +65,7 @@ class CardDetailsValidationControllerTest {
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_BASIC)
         verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_BASIC)
-        verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_BASIC)
-        verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_BASIC)
+        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryMonth, expiryYear, CARD_CONFIG_BASIC)
     }
 
     @Test
@@ -77,8 +74,7 @@ class CardDetailsValidationControllerTest {
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryMonth, expiryYear, CARD_CONFIG_NO_BRAND)
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), callbackCaptor.capture())
 

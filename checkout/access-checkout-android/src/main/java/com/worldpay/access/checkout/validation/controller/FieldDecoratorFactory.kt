@@ -45,28 +45,33 @@ internal class FieldDecoratorFactory(
         )
     }
 
-    fun decorateExpMonthField(expiryMonthEditText: EditText, cardConfiguration: CardConfiguration) {
-        if (expiryMonthTextWatcher != null) {
-            expiryMonthEditText.removeTextChangedListener(expiryMonthTextWatcher)
-        }
-        expiryMonthTextWatcher = textWatcherFactory.createExpiryMonthTextWatcher(cardConfiguration)
-        expiryMonthEditText.addTextChangedListener(expiryMonthTextWatcher)
+    fun decorateExpiryDateFields(monthEditText: EditText, yearEditText: EditText, cardConfiguration: CardConfiguration) {
+        decorateExpMonthField(monthEditText, yearEditText, cardConfiguration)
+        decorateExpYearField(yearEditText, monthEditText, cardConfiguration)
+    }
 
-        applyFilter(expiryMonthEditText,
+    private fun decorateExpMonthField(monthEditText: EditText, yearEditText: EditText, cardConfiguration: CardConfiguration) {
+        if (expiryMonthTextWatcher != null) {
+            monthEditText.removeTextChangedListener(expiryMonthTextWatcher)
+        }
+        expiryMonthTextWatcher = textWatcherFactory.createExpiryMonthTextWatcher(yearEditText)
+        monthEditText.addTextChangedListener(expiryMonthTextWatcher)
+
+        applyFilter(monthEditText,
             ExpiryMonthLengthFilter(
                 cardConfiguration
             )
         )
     }
 
-    fun decorateExpYearField(expiryYearEditText: EditText, cardConfiguration: CardConfiguration) {
+    private fun decorateExpYearField(yearEditText: EditText, monthEditText: EditText, cardConfiguration: CardConfiguration) {
         if (expiryYearTextWatcher != null) {
-            expiryYearEditText.removeTextChangedListener(expiryYearTextWatcher)
+            yearEditText.removeTextChangedListener(expiryYearTextWatcher)
         }
-        expiryYearTextWatcher = textWatcherFactory.createExpiryYearTextWatcher(cardConfiguration)
-        expiryYearEditText.addTextChangedListener(expiryYearTextWatcher)
+        expiryYearTextWatcher = textWatcherFactory.createExpiryYearTextWatcher(monthEditText)
+        yearEditText.addTextChangedListener(expiryYearTextWatcher)
 
-        applyFilter(expiryYearEditText,
+        applyFilter(yearEditText,
             ExpiryYearLengthFilter(
                 cardConfiguration
             )

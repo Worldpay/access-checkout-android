@@ -27,8 +27,7 @@ internal class CardDetailsValidationController(
     private fun decorateFields(cardConfiguration: CardConfiguration) {
         fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, cardConfiguration)
         fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, cardConfiguration)
-        fieldDecoratorFactory.decorateExpMonthField(expiryMonthEditText, cardConfiguration)
-        fieldDecoratorFactory.decorateExpYearField(expiryYearEditText, cardConfiguration)
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryMonthEditText, expiryYearEditText, cardConfiguration)
     }
 
     private fun getCardConfigurationCallback(): Callback<CardConfiguration> {

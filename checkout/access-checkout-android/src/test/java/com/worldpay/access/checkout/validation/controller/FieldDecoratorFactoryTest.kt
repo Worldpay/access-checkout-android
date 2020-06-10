@@ -143,8 +143,9 @@ class FieldDecoratorFactoryTest {
     @Test
     fun `should add new text watchers when decorating expiry month field each time`() {
         given(expiryMonthEditText.filters).willReturn(emptyArray())
+        given(expiryYearEditText.filters).willReturn(emptyArray())
 
-        fieldDecoratorFactory.decorateExpMonthField(expiryMonthEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryMonthEditText, expiryYearEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryMonthEditText, never()).removeTextChangedListener(any())
         verify(expiryMonthEditText).addTextChangedListener(Mockito.any(ExpiryMonthTextWatcher::class.java))
@@ -152,8 +153,9 @@ class FieldDecoratorFactoryTest {
         reset(expiryMonthEditText)
 
         given(expiryMonthEditText.filters).willReturn(emptyArray())
+        given(expiryYearEditText.filters).willReturn(emptyArray())
 
-        fieldDecoratorFactory.decorateExpMonthField(expiryMonthEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryMonthEditText, expiryYearEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryMonthEditText).removeTextChangedListener(Mockito.any(ExpiryMonthTextWatcher::class.java))
         verify(expiryMonthEditText).addTextChangedListener(Mockito.any(ExpiryMonthTextWatcher::class.java))
@@ -162,10 +164,11 @@ class FieldDecoratorFactoryTest {
     @Test
     fun `should add filters when decorating expiry month field`() {
         given(expiryMonthEditText.filters).willReturn(emptyArray())
+        given(expiryYearEditText.filters).willReturn(emptyArray())
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decorateExpMonthField(expiryMonthEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryMonthEditText, expiryYearEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryMonthEditText).filters = captor.capture()
 
@@ -180,10 +183,11 @@ class FieldDecoratorFactoryTest {
             InputFilter.AllCaps(),
             ExpiryMonthLengthFilter(CARD_CONFIG_NO_BRAND)
         ))
+        given(expiryYearEditText.filters).willReturn(emptyArray())
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decorateExpMonthField(expiryMonthEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryMonthEditText, expiryYearEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryMonthEditText).filters = captor.capture()
 
@@ -195,8 +199,9 @@ class FieldDecoratorFactoryTest {
     @Test
     fun `should add new text watchers when decorating expiry year field each time`() {
         given(expiryYearEditText.filters).willReturn(emptyArray())
+        given(expiryMonthEditText.filters).willReturn(emptyArray())
 
-        fieldDecoratorFactory.decorateExpYearField(expiryYearEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryMonthEditText, expiryYearEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryYearEditText, never()).removeTextChangedListener(any())
         verify(expiryYearEditText).addTextChangedListener(Mockito.any(ExpiryYearTextWatcher::class.java))
@@ -204,8 +209,9 @@ class FieldDecoratorFactoryTest {
         reset(expiryYearEditText)
 
         given(expiryYearEditText.filters).willReturn(emptyArray())
+        given(expiryMonthEditText.filters).willReturn(emptyArray())
 
-        fieldDecoratorFactory.decorateExpYearField(expiryYearEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryMonthEditText, expiryYearEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryYearEditText).removeTextChangedListener(Mockito.any(ExpiryYearTextWatcher::class.java))
         verify(expiryYearEditText).addTextChangedListener(Mockito.any(ExpiryYearTextWatcher::class.java))
@@ -214,10 +220,11 @@ class FieldDecoratorFactoryTest {
     @Test
     fun `should add filters when decorating expiry year field`() {
         given(expiryYearEditText.filters).willReturn(emptyArray())
+        given(expiryMonthEditText.filters).willReturn(emptyArray())
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decorateExpYearField(expiryYearEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryMonthEditText, expiryYearEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryYearEditText).filters = captor.capture()
 
@@ -232,10 +239,11 @@ class FieldDecoratorFactoryTest {
             InputFilter.AllCaps(),
             ExpiryYearLengthFilter(CARD_CONFIG_NO_BRAND)
         ))
+        given(expiryMonthEditText.filters).willReturn(emptyArray())
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decorateExpYearField(expiryYearEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryMonthEditText, expiryYearEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryYearEditText).filters = captor.capture()
 

@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
+import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.CVVValidator
 import org.junit.Before
@@ -17,10 +18,17 @@ class CVVTextWatcherTest {
     private val cvvEditable = mock<Editable>()
 
     private lateinit var cvvTextWatcher: CVVTextWatcher
+    private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
 
     @Before
     fun setup() {
-        val cvcValidator = CVCValidator(cvvValidationResultHandler)
+        cvcValidationRuleManager = CVCValidationRuleManager()
+
+        val cvcValidator = CVCValidator(
+            cvvValidationResultHandler = cvvValidationResultHandler,
+            cardValidationRuleProvider = cvcValidationRuleManager
+        )
+
         cvvTextWatcher = CVVTextWatcher(cvcValidator)
     }
 
@@ -45,4 +53,5 @@ class CVVTextWatcherTest {
             cvvValidationResultHandler
         )
     }
+
 }

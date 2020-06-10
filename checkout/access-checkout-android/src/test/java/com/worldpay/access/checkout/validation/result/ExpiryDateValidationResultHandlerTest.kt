@@ -5,59 +5,52 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.worldpay.access.checkout.client.validation.AccessCheckoutExpiryDateValidationListener
-import com.worldpay.access.checkout.validation.ValidationResult
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ExpiryYearValidationResultHandlerTest {
+class ExpiryDateValidationResultHandlerTest {
 
     private val validationListener = mock<AccessCheckoutExpiryDateValidationListener>()
     private val validationStateManager = ValidationStateManager()
 
-    private lateinit var validationResultHandler: ExpiryYearValidationResultHandler
+    private lateinit var validationResultHandler: ExpiryDateValidationResultHandler
 
     @Before
     fun setup() {
-        validationResultHandler = ExpiryYearValidationResultHandler(validationListener, validationStateManager)
+        validationResultHandler = ExpiryDateValidationResultHandler(validationListener, validationStateManager)
     }
 
     @Test
-    fun `should call listener when cvv is valid`() {
-        val validationResult = ValidationResult(partial = true, complete = true)
-
-        validationResultHandler.handleResult(validationResult)
+    fun `should call listener when date is valid`() {
+        validationResultHandler.handleResult(true)
 
         verify(validationListener).onExpiryDateValidated(true)
         verifyNoMoreInteractions(validationListener)
 
-        assertTrue(validationStateManager.yearValidated.get())
+        assertTrue(validationStateManager.expiryDateValidated.get())
     }
 
     @Test
-    fun `should call listener when cvv is invalid`() {
-        val validationResult = ValidationResult(partial = true, complete = false)
-
-        validationResultHandler.handleResult(validationResult)
+    fun `should call listener when date is invalid`() {
+        validationResultHandler.handleResult(false)
 
         verify(validationListener).onExpiryDateValidated(false)
         verifyNoMoreInteractions(validationListener)
 
-        assertFalse(validationStateManager.yearValidated.get())
+        assertFalse(validationStateManager.expiryDateValidated.get())
     }
 
     @Test
     fun `should call onValidationSuccess when all fields are valid`() {
-        val validationResult = ValidationResult(partial = true, complete = true)
-
         val validationStateManager = mock<ValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)
-        given(validationStateManager.yearValidated).willReturn(AtomicBoolean(false))
+        given(validationStateManager.expiryDateValidated).willReturn(AtomicBoolean(false))
 
-        val validationResultHandler = ExpiryYearValidationResultHandler(validationListener, validationStateManager)
-        validationResultHandler.handleResult(validationResult)
+        val validationResultHandler = ExpiryDateValidationResultHandler(validationListener, validationStateManager)
+        validationResultHandler.handleResult(true)
 
         verify(validationListener).onExpiryDateValidated(true)
         verify(validationListener).onValidationSuccess()
