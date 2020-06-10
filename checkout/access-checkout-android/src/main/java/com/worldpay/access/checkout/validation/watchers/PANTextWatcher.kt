@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvvValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
+import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
 
@@ -16,7 +17,8 @@ internal class PANTextWatcher(
     private var panValidator: NewPANValidator,
     private val cvcValidator: CVCValidator,
     private val cvvEditText: EditText,
-    private val panValidationResultHandler: PanValidationResultHandler
+    private val panValidationResultHandler: PanValidationResultHandler,
+    private val cvcValidationRuleManager: CVCValidationRuleManager
 ) : AbstractCardDetailTextWatcher() {
 
     private var cardBrand: CardBrand? = null
@@ -25,12 +27,7 @@ internal class PANTextWatcher(
         val panText = pan.toString()
         val newCardBrand = findBrandForPan(cardConfiguration, panText)
 
-        if (cardBrand != newCardBrand) {
-            cardBrand = newCardBrand
-            val cvvText = cvvEditText.text.toString()
-            val cardValidationRule = getCvvValidationRule(cardBrand, cardConfiguration)
-            cvcValidator.validate(cvvText, cardValidationRule)
-        }
+        handleCardBrandChange(newCardBrand)
 
         val cardValidationRule = getPanValidationRule(cardBrand, cardConfiguration)
 
@@ -39,6 +36,24 @@ internal class PANTextWatcher(
             isValid = isValid,
             cardBrand = cardBrand
         )
+    }
+
+    private fun handleCardBrandChange(newCardBrand: CardBrand?) {
+        if (cardBrand != newCardBrand) {
+            cardBrand = newCardBrand
+
+            updateCvcValidationRule()
+
+            val cvvText = cvvEditText.text.toString()
+            if (cvvText.isNotBlank()) {
+                cvcValidator.validate(cvvText)
+            }
+        }
+    }
+
+    private fun updateCvcValidationRule() {
+        val cardValidationRule = getCvvValidationRule(cardBrand, cardConfiguration)
+        cvcValidationRuleManager.updateRule(cardValidationRule)
     }
 
 }

@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.result.ValidationStateManager
+import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewDateValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
@@ -20,6 +21,7 @@ internal class TextWatcherFactory(
 ) {
 
     private val validationStateManager = ValidationStateManager()
+    private val cvcValidationRuleManager = CVCValidationRuleManager()
 
     private val panValidator = NewPANValidator()
     private val dateValidator = NewDateValidator()
@@ -39,8 +41,9 @@ internal class TextWatcherFactory(
             cardConfiguration = cardConfiguration,
             panValidator = panValidator,
             cvvEditText =  cvvEditText,
-            cvcValidator = CVCValidator(cvvValidationResultHandler),
-            panValidationResultHandler = panValidationResultHandler
+            cvcValidator = CVCValidator(cvvValidationResultHandler, cvcValidationRuleManager),
+            panValidationResultHandler = panValidationResultHandler,
+            cvcValidationRuleManager = cvcValidationRuleManager
         )
     }
 
@@ -76,7 +79,10 @@ internal class TextWatcherFactory(
             validationStateManager = validationStateManager
         )
 
-        val cvcValidator = CVCValidator(cvvValidationResultHandler)
+        val cvcValidator = CVCValidator(
+            cvvValidationResultHandler = cvvValidationResultHandler,
+            cardValidationRuleProvider = cvcValidationRuleManager
+        )
 
         return CVVTextWatcher(cvcValidator)
     }

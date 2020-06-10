@@ -13,10 +13,16 @@ class CVCValidatorTest {
     private val cvcValidationResultHandler = mock(CvvValidationResultHandler::class.java)
 
     private lateinit var cvcValidator: CVCValidator
+    private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
 
     @Before
     fun setup() {
-        cvcValidator = CVCValidator(cvcValidationResultHandler)
+        cvcValidationRuleManager = CVCValidationRuleManager()
+
+        cvcValidator = CVCValidator(
+            cvvValidationResultHandler = cvcValidationResultHandler,
+            cardValidationRuleProvider = cvcValidationRuleManager
+        )
     }
 
     @Test
@@ -40,7 +46,9 @@ class CVCValidatorTest {
         verify(cvcValidationResultHandler).handleResult(true)
         reset(cvcValidationResultHandler)
 
-        cvcValidator.validate("1234", VISA_BRAND.cvv)
+        cvcValidationRuleManager.updateRule(VISA_BRAND.cvv)
+
+        cvcValidator.validate("1234")
         verify(cvcValidationResultHandler).handleResult(false)
         reset(cvcValidationResultHandler)
 
