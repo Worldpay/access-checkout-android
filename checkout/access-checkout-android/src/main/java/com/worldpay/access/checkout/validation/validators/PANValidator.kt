@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
 import com.worldpay.access.checkout.validation.ValidatorUtils.regexMatches
@@ -15,7 +15,7 @@ class PANValidator {
         return cardBrand.pan
     }
 
-    fun validate(pan: String, cardConfiguration: CardConfiguration): Pair<ValidationResult, CardBrand?> {
+    fun validate(pan: String, cardConfiguration: CardConfiguration): Pair<ValidationResult, RemoteCardBrand?> {
         val cardBrand = findBrandForPan(cardConfiguration, pan)
         var validationRule = cardConfiguration.defaults.pan
         if (cardBrand != null) {

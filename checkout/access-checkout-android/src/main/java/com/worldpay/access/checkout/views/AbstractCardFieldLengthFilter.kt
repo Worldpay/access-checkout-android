@@ -2,11 +2,11 @@ package com.worldpay.access.checkout.views
 
 import android.text.InputFilter
 import android.text.Spanned
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardDefaults
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.validation.ValidationResult
 
@@ -38,9 +38,9 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
         }
     }
 
-    open fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> = Pair(ValidationResult(partial = true, complete = true), null)
+    open fun getValidationResult(field: Spanned): Pair<ValidationResult, RemoteCardBrand?> = Pair(ValidationResult(partial = true, complete = true), null)
 
-    abstract fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults): CardValidationRule
+    abstract fun getMaxLengthRule(cardBrand: RemoteCardBrand?, cardDefaults: CardDefaults): CardValidationRule
 
     private fun getMaxLength(spanned: Spanned): Int {
         val (_, cardBrand) = getValidationResult(spanned)
@@ -60,10 +60,10 @@ class CVVLengthFilter(
     private val panView: CardTextView?
 ) : AbstractCardFieldLengthFilter(cardValidator.cardConfiguration) {
 
-    override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> =
+    override fun getValidationResult(field: Spanned): Pair<ValidationResult, RemoteCardBrand?> =
         cardValidator.validateCVV(field.toString(), panView?.getInsertedText())
 
-    override fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults): CardValidationRule {
+    override fun getMaxLengthRule(cardBrand: RemoteCardBrand?, cardDefaults: CardDefaults): CardValidationRule {
         if (cardBrand == null) return cardDefaults.cvv
         return cardBrand.cvv
     }
@@ -77,9 +77,9 @@ class CVVLengthFilter(
 class PANLengthFilter(private val cardValidator: CardValidator) :
     AbstractCardFieldLengthFilter(cardValidator.cardConfiguration) {
 
-    override fun getValidationResult(field: Spanned): Pair<ValidationResult, CardBrand?> = cardValidator.validatePAN(field.toString())
+    override fun getValidationResult(field: Spanned): Pair<ValidationResult, RemoteCardBrand?> = cardValidator.validatePAN(field.toString())
 
-    override fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults): CardValidationRule {
+    override fun getMaxLengthRule(cardBrand: RemoteCardBrand?, cardDefaults: CardDefaults): CardValidationRule {
         if (cardBrand == null) return cardDefaults.pan
         return cardBrand.pan
     }
@@ -91,6 +91,6 @@ class PANLengthFilter(private val cardValidator: CardValidator) :
  */
 class DateLengthFilter(cardConfiguration: CardConfiguration): AbstractCardFieldLengthFilter(cardConfiguration) {
 
-    override fun getMaxLengthRule(cardBrand: CardBrand?, cardDefaults: CardDefaults) = cardDefaults.month
+    override fun getMaxLengthRule(cardBrand: RemoteCardBrand?, cardDefaults: CardDefaults) = cardDefaults.month
 
 }

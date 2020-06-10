@@ -2,9 +2,9 @@ package com.worldpay.access.checkout.views
 
 import android.text.SpannableStringBuilder
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV_RULE
@@ -87,7 +87,7 @@ class PANLengthFilterTest {
                 "^40\\d{0,14}$",
                 listOf(16)
             )
-        val cardBrand = CardBrand(
+        val cardBrand = RemoteCardBrand(
             "visa",
             emptyList(),
             CVV_RULE,
@@ -122,7 +122,7 @@ class PANLengthFilterTest {
     fun givenAnIdentifiedCardWithAValidationRuleWithNoLimitsThenShouldNotFilter() {
         val nineteenDigitCardInput = "4000000000000000000"
 
-        val cardBrand = CardBrand(
+        val cardBrand = RemoteCardBrand(
             name = "visa",
             images = emptyList(),
             cvv = CVV_RULE,

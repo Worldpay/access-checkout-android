@@ -40,13 +40,13 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         }
     }
 
-    private fun parseBrandsConfig(root: JSONArray): List<CardBrand> {
-        val brandsList = mutableListOf<CardBrand>()
+    private fun parseBrandsConfig(root: JSONArray): List<RemoteCardBrand> {
+        val brandsList = mutableListOf<RemoteCardBrand>()
 
         for (i in 0 until root.length()) {
             val brand = root.getJSONObject(i)
 
-            val cardBrand = CardBrand(
+            val cardBrand = RemoteCardBrand(
                 name = this.toStringProperty(brand, BRAND_NAME_FIELD, EMPTY_STRING),
                 images = getBrandImages(brand),
                 cvv = getCvvRule(brand),
@@ -59,10 +59,10 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         return brandsList
     }
 
-    private fun getBrandImages(brand: JSONObject): List<CardBrandImage> {
+    private fun getBrandImages(brand: JSONObject): List<RemoteCardBrandImage> {
         val images = fetchOptionalArray(brand, BRAND_IMAGES_FIELD) ?: return emptyList()
 
-        val brandImageList = mutableListOf<CardBrandImage>()
+        val brandImageList = mutableListOf<RemoteCardBrandImage>()
 
         for (brandImageIndex in 0 until images.length()) {
             val brandImage = getBrandImageObject(images, brandImageIndex) ?: continue
@@ -70,7 +70,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
             val type = this.toStringProperty(brandImage, CARD_IMAGE_TYPE_FIELD, EMPTY_STRING)
             val url = this.toStringProperty(brandImage, CARD_IMAGE_URL_FIELD, EMPTY_STRING)
 
-            brandImageList.add(CardBrandImage(type, url))
+            brandImageList.add(RemoteCardBrandImage(type, url))
         }
 
         return brandImageList

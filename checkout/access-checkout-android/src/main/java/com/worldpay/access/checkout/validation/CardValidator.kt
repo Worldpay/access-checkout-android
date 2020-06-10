@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation
 
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 
 typealias CVV = String
 typealias Month = String
@@ -21,18 +21,18 @@ interface CardValidator {
      * Validates the pan field
      *
      * @param pan the pan to validate
-     * @return a [Pair] of [ValidationResult] and [CardBrand] for the pan field
+     * @return a [Pair] of [ValidationResult] and [RemoteCardBrand] for the pan field
      */
-    fun validatePAN(pan: String): Pair<ValidationResult, CardBrand?>
+    fun validatePAN(pan: String): Pair<ValidationResult, RemoteCardBrand?>
 
     /**
      * Validates the cvv field
      *
      * @param cvv the pan to validate
      * @param pan (Optional) the pan field to validate against the cvv
-     * @return a [Pair] of [ValidationResult] and [CardBrand] for the cvv field
+     * @return a [Pair] of [ValidationResult] and [RemoteCardBrand] for the cvv field
      */
-    fun validateCVV(cvv: CVV, pan: String?): Pair<ValidationResult, CardBrand?>
+    fun validateCVV(cvv: CVV, pan: String?): Pair<ValidationResult, RemoteCardBrand?>
 
     /**
      * Validates the date field

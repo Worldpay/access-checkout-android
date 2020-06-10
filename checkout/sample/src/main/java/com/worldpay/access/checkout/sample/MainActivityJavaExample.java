@@ -15,8 +15,8 @@ import com.worldpay.access.checkout.AccessCheckoutCard;
 import com.worldpay.access.checkout.Card;
 import com.worldpay.access.checkout.CardListener;
 import com.worldpay.access.checkout.api.AccessCheckoutException;
-import com.worldpay.access.checkout.api.configuration.CardBrand;
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand;
 import com.worldpay.access.checkout.client.AccessCheckoutClient;
 import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder;
 import com.worldpay.access.checkout.client.CardDetails;
@@ -142,7 +142,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
     }
 
     @Override
-    public void onUpdateCardBrand(@Nullable CardBrand cardBrand) {
+    public void onUpdateCardBrand(@Nullable RemoteCardBrand cardBrand) {
         ImageView logoImageView = panView.getMImageView();
         SVGImageLoader.getInstance(this).fetchAndApplyCardLogo(cardBrand, logoImageView);
     }

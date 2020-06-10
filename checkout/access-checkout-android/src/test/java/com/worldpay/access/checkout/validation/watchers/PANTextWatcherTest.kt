@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
+import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
@@ -18,6 +19,8 @@ import kotlin.test.assertEquals
 class PANTextWatcherTest {
 
     private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
+
+    private val toCardBrandTransformer = ToCardBrandTransformer()
 
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
 
@@ -48,11 +51,13 @@ class PANTextWatcherTest {
 
     @Test
     fun `should pass validation rule to validation rule handler where brand is identified`() {
+        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
+
         given(panEditable.toString()).willReturn(VISA_PAN)
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(true, VISA_BRAND)
+        verify(panValidationResultHandler).handleResult(true, cardBrand)
     }
 
     @Test
@@ -66,11 +71,13 @@ class PANTextWatcherTest {
 
     @Test
     fun `should pass validation result to validation result handler where brand is identified`() {
+        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
+
         given(panEditable.toString()).willReturn(VISA_PAN)
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(true, VISA_BRAND)
+        verify(panValidationResultHandler).handleResult(true, cardBrand)
     }
 
     @Test

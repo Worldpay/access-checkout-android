@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.sample.images
 
 import android.app.Activity
 import android.widget.ImageView
-import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
 import com.worldpay.access.checkout.util.logging.AccessCheckoutLogger
@@ -64,13 +64,13 @@ class SVGImageLoader @JvmOverloads constructor(
     }
 
     /**
-     * Fetches the appropriate SVG image for a [CardBrand] from a remotely hosted endpoint over HTTP,
+     * Fetches the appropriate SVG image for a [RemoteCardBrand] from a remotely hosted endpoint over HTTP,
      * and applies it to a target [ImageView]
      *
-     * @param cardBrand the [CardBrand] to which to fetch the image for
+     * @param cardBrand the [RemoteCardBrand] to which to fetch the image for
      * @param target the target [ImageView] to apply the image to
      */
-    fun fetchAndApplyCardLogo(cardBrand: CardBrand?, target: ImageView) {
+    fun fetchAndApplyCardLogo(cardBrand: RemoteCardBrand?, target: ImageView) {
 
         cardBrand?.let {
             val url = it.images?.find { image -> image.type == IMAGE_TYPE }?.url

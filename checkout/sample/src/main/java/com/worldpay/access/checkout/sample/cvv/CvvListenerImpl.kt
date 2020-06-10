@@ -6,7 +6,7 @@ import android.widget.Button
 import androidx.core.content.res.ResourcesCompat.getColor
 import com.worldpay.access.checkout.Card
 import com.worldpay.access.checkout.CardListener
-import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
@@ -43,7 +43,7 @@ class CvvListenerImpl(
         cardView.applyLengthFilter(inputFilter)
     }
 
-    override fun onUpdateCardBrand(cardBrand: CardBrand?) {
+    override fun onUpdateCardBrand(cardBrand: RemoteCardBrand?) {
     }
 
 }
