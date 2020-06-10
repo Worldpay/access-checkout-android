@@ -1,14 +1,13 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import android.text.Editable
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import android.widget.EditText
+import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
+import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
 import org.junit.Before
 import org.junit.Test
@@ -17,7 +16,11 @@ class PANTextWatcherTest {
 
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
 
+    private val cvvEditText = mock<EditText>()
+    private val cvcValidator = mock<CVCValidator>()
+
     private val panEditable = mock<Editable>()
+    private val cvvEditable = mock<Editable>()
 
     private lateinit var panTextWatcher: PANTextWatcher
 
@@ -26,8 +29,13 @@ class PANTextWatcherTest {
         panTextWatcher = PANTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             panValidator = NewPANValidator(),
-            panValidationResultHandler = panValidationResultHandler
+            panValidationResultHandler = panValidationResultHandler,
+            cvvEditText = cvvEditText,
+            cvcValidator = cvcValidator
         )
+
+        given(cvvEditText.text).willReturn(cvvEditable)
+        given(cvvEditable.toString()).willReturn("")
     }
 
     @Test
@@ -67,13 +75,34 @@ class PANTextWatcherTest {
     }
 
     @Test
+    fun `should revalidate the cvv when the brand changes`() {
+        given(panEditable.toString()).willReturn(VISA_PAN)
+        given(cvvEditable.toString()).willReturn("123")
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verify(cvcValidator).validate("123", VISA_BRAND.cvv)
+    }
+
+    @Test
+    fun `should not revalidate the cvv when the brand doesn't change`() {
+        given(panEditable.toString()).willReturn("000000")
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verify(cvcValidator, never()).validate(any(), any())
+    }
+
+    @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
         val panValidator = mock<NewPANValidator>()
 
         val panTextWatcher = PANTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             panValidator = panValidator,
-            panValidationResultHandler = panValidationResultHandler
+            panValidationResultHandler = panValidationResultHandler,
+            cvvEditText = cvvEditText,
+            cvcValidator = cvcValidator
         )
 
         panTextWatcher.beforeTextChanged("", 1, 2,3)

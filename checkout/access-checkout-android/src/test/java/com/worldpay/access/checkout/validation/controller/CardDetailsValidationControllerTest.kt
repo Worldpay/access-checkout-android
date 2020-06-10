@@ -46,7 +46,7 @@ class CardDetailsValidationControllerTest {
         createAccessCheckoutValidationController()
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decoratePanField(pan, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_NO_BRAND)
     }
@@ -56,7 +56,7 @@ class CardDetailsValidationControllerTest {
         createAccessCheckoutValidationController()
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decoratePanField(pan, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_NO_BRAND)
 
@@ -66,7 +66,7 @@ class CardDetailsValidationControllerTest {
         callbackCaptor.firstValue.onResponse(null, CARD_CONFIG_BASIC)
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_BASIC)
-        verify(fieldDecoratorFactory).decoratePanField(pan, CARD_CONFIG_BASIC)
+        verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_BASIC)
         verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_BASIC)
         verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_BASIC)
     }
@@ -76,7 +76,7 @@ class CardDetailsValidationControllerTest {
         createAccessCheckoutValidationController()
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decoratePanField(pan, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decorateExpMonthField(expiryMonth, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decorateExpYearField(expiryYear, CARD_CONFIG_NO_BRAND)
 
