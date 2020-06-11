@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
+import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import org.junit.Before
 import org.junit.Test
@@ -18,7 +19,8 @@ class PanValidationResultHandlerTest {
     private val toCardBrandTransformer = ToCardBrandTransformer()
 
     private val validationListener = mock<AccessCheckoutPanValidationListener>()
-    private val validationStateManager = ValidationStateManager()
+    private val validationStateManager =
+        CardValidationStateManager()
 
     private lateinit var validationResultHandler: PanValidationResultHandler
 
@@ -74,7 +76,7 @@ class PanValidationResultHandlerTest {
     @Test
     fun `should call onValidationSuccess when all fields are valid`() {
         val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
-        val validationStateManager = mock<ValidationStateManager>()
+        val validationStateManager = mock<CardValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)
         given(validationStateManager.panValidated).willReturn(AtomicBoolean(false))
 

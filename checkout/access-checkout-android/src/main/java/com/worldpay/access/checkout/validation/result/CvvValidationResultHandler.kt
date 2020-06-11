@@ -1,10 +1,11 @@
 package com.worldpay.access.checkout.validation.result
 
+import com.worldpay.access.checkout.validation.state.CvcFieldValidationStateManager
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
 
 class CvvValidationResultHandler(
     private val validationListener: AccessCheckoutCvvValidationListener,
-    private val validationStateManager: ValidationStateManager
+    private val validationStateManager: CvcFieldValidationStateManager
 ) {
 
     fun handleResult(validationResult: Boolean) {

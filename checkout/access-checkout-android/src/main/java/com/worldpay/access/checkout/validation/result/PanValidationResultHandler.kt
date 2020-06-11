@@ -1,11 +1,12 @@
 package com.worldpay.access.checkout.validation.result
 
+import com.worldpay.access.checkout.validation.state.PanFieldValidationStateManager
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 
 class PanValidationResultHandler(
     private val validationListener: AccessCheckoutPanValidationListener,
-    private val validationStateManager: ValidationStateManager
+    private val validationStateManager: PanFieldValidationStateManager
 ) {
 
     fun handleResult(isValid: Boolean, cardBrand: CardBrand?) {

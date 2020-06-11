@@ -10,31 +10,33 @@ import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutVal
 import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
-import com.worldpay.access.checkout.validation.result.ValidationStateManager
+import com.worldpay.access.checkout.validation.state.CvcFieldValidationStateManager
+import com.worldpay.access.checkout.validation.state.ExpiryDateFieldValidationStateManager
+import com.worldpay.access.checkout.validation.state.FieldValidationStateManager
+import com.worldpay.access.checkout.validation.state.PanFieldValidationStateManager
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewDateValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
 
 internal class TextWatcherFactory(
-    private val accessCheckoutValidationListener: AccessCheckoutValidationListener
+    private val accessCheckoutValidationListener: AccessCheckoutValidationListener,
+    private val validationStateManager: FieldValidationStateManager
 ) {
 
-    private val validationStateManager = ValidationStateManager()
     private val cvcValidationRuleManager = CVCValidationRuleManager()
-
     private val panValidator = NewPANValidator()
     private val dateValidator = NewDateValidator()
 
     fun createPanTextWatcher(cvvEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
         val panValidationResultHandler = PanValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutPanValidationListener,
-            validationStateManager = validationStateManager
+            validationStateManager = validationStateManager as PanFieldValidationStateManager
         )
 
         val cvvValidationResultHandler = CvvValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutCvvValidationListener,
-            validationStateManager = validationStateManager
+            validationStateManager = validationStateManager as CvcFieldValidationStateManager
         )
 
         return PANTextWatcher(
@@ -50,7 +52,7 @@ internal class TextWatcherFactory(
     fun createExpiryMonthTextWatcher(yearEditText: EditText): TextWatcher {
         val expiryDateValidationResultHandler = ExpiryDateValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
-            validationStateManager = validationStateManager
+            validationStateManager = validationStateManager as ExpiryDateFieldValidationStateManager
         )
 
         return ExpiryMonthTextWatcher(
@@ -63,7 +65,7 @@ internal class TextWatcherFactory(
     fun createExpiryYearTextWatcher(monthEditText: EditText): TextWatcher {
         val expiryDateValidationResultHandler = ExpiryDateValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
-            validationStateManager = validationStateManager
+            validationStateManager = validationStateManager as ExpiryDateFieldValidationStateManager
         )
 
         return ExpiryYearTextWatcher(
@@ -76,7 +78,7 @@ internal class TextWatcherFactory(
     fun createCvvTextWatcher(): TextWatcher {
         val cvvValidationResultHandler = CvvValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutCvvValidationListener,
-            validationStateManager = validationStateManager
+            validationStateManager = validationStateManager as CvcFieldValidationStateManager
         )
 
         val cvcValidator = CVCValidator(

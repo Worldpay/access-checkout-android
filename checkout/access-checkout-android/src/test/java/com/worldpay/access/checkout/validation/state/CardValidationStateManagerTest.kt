@@ -1,12 +1,14 @@
-package com.worldpay.access.checkout.validation.result
+package com.worldpay.access.checkout.validation.state
 
+import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class ValidationStateManagerTest {
+class CardValidationStateManagerTest {
 
-    private val validationStateManager = ValidationStateManager()
+    private val validationStateManager =
+        CardValidationStateManager()
 
     @Test
     fun `should start state as invalid`() {

@@ -4,6 +4,7 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
 import org.junit.Before
 import org.junit.Test
@@ -14,7 +15,8 @@ import kotlin.test.assertTrue
 class ExpiryDateValidationResultHandlerTest {
 
     private val validationListener = mock<AccessCheckoutExpiryDateValidationListener>()
-    private val validationStateManager = ValidationStateManager()
+    private val validationStateManager =
+        CardValidationStateManager()
 
     private lateinit var validationResultHandler: ExpiryDateValidationResultHandler
 
@@ -45,7 +47,7 @@ class ExpiryDateValidationResultHandlerTest {
 
     @Test
     fun `should call onValidationSuccess when all fields are valid`() {
-        val validationStateManager = mock<ValidationStateManager>()
+        val validationStateManager = mock<CardValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)
         given(validationStateManager.expiryDateValidated).willReturn(AtomicBoolean(false))
 
