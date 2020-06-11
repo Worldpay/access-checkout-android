@@ -4,11 +4,10 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
+import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -32,7 +31,7 @@ class ExpiryDateValidationResultHandlerTest {
         verify(validationListener).onExpiryDateValidated(true)
         verifyNoMoreInteractions(validationListener)
 
-        assertTrue(validationStateManager.expiryDateValidated.get())
+        assertTrue(validationStateManager.expiryDateValidated)
     }
 
     @Test
@@ -42,14 +41,14 @@ class ExpiryDateValidationResultHandlerTest {
         verify(validationListener).onExpiryDateValidated(false)
         verifyNoMoreInteractions(validationListener)
 
-        assertFalse(validationStateManager.expiryDateValidated.get())
+        assertFalse(validationStateManager.expiryDateValidated)
     }
 
     @Test
     fun `should call onValidationSuccess when all fields are valid`() {
         val validationStateManager = mock<CardValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)
-        given(validationStateManager.expiryDateValidated).willReturn(AtomicBoolean(false))
+        given(validationStateManager.expiryDateValidated).willReturn(false)
 
         val validationResultHandler = ExpiryDateValidationResultHandler(validationListener, validationStateManager)
         validationResultHandler.handleResult(true)

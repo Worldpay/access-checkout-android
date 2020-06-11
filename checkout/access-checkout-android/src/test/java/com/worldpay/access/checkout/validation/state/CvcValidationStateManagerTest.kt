@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.state
 
-import com.worldpay.access.checkout.validation.state.CvcValidationStateManager
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -12,14 +11,14 @@ class CvcValidationStateManagerTest {
     @Test
     fun `should start state as invalid`() {
         assertFalse(validationStateManager.isAllValid())
-        assertFalse(validationStateManager.cvvValidated.get())
+        assertFalse(validationStateManager.cvvValidated)
     }
 
     @Test
     fun `should return true when cvv is valid`() {
         assertFalse(validationStateManager.isAllValid())
 
-        validationStateManager.cvvValidated.set(true)
+        validationStateManager.cvvValidated = true
 
         assertTrue(validationStateManager.isAllValid())
     }
@@ -28,7 +27,7 @@ class CvcValidationStateManagerTest {
     fun `should return false when cvv is invalid`() {
         assertFalse(validationStateManager.isAllValid())
 
-        validationStateManager.cvvValidated.set(false)
+        validationStateManager.cvvValidated = false
 
         assertFalse(validationStateManager.isAllValid())
     }

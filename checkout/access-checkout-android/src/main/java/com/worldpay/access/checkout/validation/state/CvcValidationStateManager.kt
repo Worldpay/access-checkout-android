@@ -1,12 +1,10 @@
 package com.worldpay.access.checkout.validation.state
 
-import java.util.concurrent.atomic.AtomicBoolean
-
 class CvcValidationStateManager:
     CvcFieldValidationStateManager {
-    override val cvvValidated = AtomicBoolean(false)
+    override var cvvValidated = false
 
     override fun isAllValid(): Boolean {
-        return cvvValidated.get()
+        return cvvValidated
     }
 }

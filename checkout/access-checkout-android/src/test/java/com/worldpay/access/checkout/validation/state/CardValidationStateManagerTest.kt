@@ -13,18 +13,18 @@ class CardValidationStateManagerTest {
     @Test
     fun `should start state as invalid`() {
         assertFalse(validationStateManager.isAllValid())
-        assertFalse(validationStateManager.panValidated.get())
-        assertFalse(validationStateManager.expiryDateValidated.get())
-        assertFalse(validationStateManager.cvvValidated.get())
+        assertFalse(validationStateManager.panValidated)
+        assertFalse(validationStateManager.expiryDateValidated)
+        assertFalse(validationStateManager.cvvValidated)
     }
 
     @Test
     fun `should return true when all is valid`() {
         assertFalse(validationStateManager.isAllValid())
 
-        validationStateManager.panValidated.set(true)
-        validationStateManager.expiryDateValidated.set(true)
-        validationStateManager.cvvValidated.set(true)
+        validationStateManager.panValidated = true
+        validationStateManager.expiryDateValidated = true
+        validationStateManager.cvvValidated = true
 
         assertTrue(validationStateManager.isAllValid())
     }
@@ -33,9 +33,9 @@ class CardValidationStateManagerTest {
     fun `should return false when isAllValid and pan is invalid`() {
         assertFalse(validationStateManager.isAllValid())
 
-        validationStateManager.panValidated.set(false)
-        validationStateManager.expiryDateValidated.set(true)
-        validationStateManager.cvvValidated.set(true)
+        validationStateManager.panValidated = false
+        validationStateManager.expiryDateValidated = true
+        validationStateManager.cvvValidated = true
 
         assertFalse(validationStateManager.isAllValid())
     }
@@ -44,9 +44,9 @@ class CardValidationStateManagerTest {
     fun `should return false when isAllValid and cvv is invalid`() {
         assertFalse(validationStateManager.isAllValid())
 
-        validationStateManager.panValidated.set(true)
-        validationStateManager.expiryDateValidated.set(true)
-        validationStateManager.cvvValidated.set(false)
+        validationStateManager.panValidated = true
+        validationStateManager.expiryDateValidated = true
+        validationStateManager.cvvValidated = false
 
         assertFalse(validationStateManager.isAllValid())
     }

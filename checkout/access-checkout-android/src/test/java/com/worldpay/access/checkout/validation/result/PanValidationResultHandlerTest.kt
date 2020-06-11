@@ -10,7 +10,6 @@ import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import org.junit.Before
 import org.junit.Test
-import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -38,7 +37,7 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated(cardBrand, true)
         verifyNoMoreInteractions(validationListener)
 
-        assertTrue(validationStateManager.panValidated.get())
+        assertTrue(validationStateManager.panValidated)
     }
 
     @Test
@@ -50,7 +49,7 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated(cardBrand, false)
         verifyNoMoreInteractions(validationListener)
 
-        assertFalse(validationStateManager.cvvValidated.get())
+        assertFalse(validationStateManager.cvvValidated)
     }
 
     @Test
@@ -60,7 +59,7 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated(null, true)
         verifyNoMoreInteractions(validationListener)
 
-        assertTrue(validationStateManager.panValidated.get())
+        assertTrue(validationStateManager.panValidated)
     }
 
     @Test
@@ -70,7 +69,7 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated(null, false)
         verifyNoMoreInteractions(validationListener)
 
-        assertFalse(validationStateManager.cvvValidated.get())
+        assertFalse(validationStateManager.cvvValidated)
     }
 
     @Test
@@ -78,7 +77,7 @@ class PanValidationResultHandlerTest {
         val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
         val validationStateManager = mock<CardValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)
-        given(validationStateManager.panValidated).willReturn(AtomicBoolean(false))
+        given(validationStateManager.panValidated).willReturn(false)
 
         val validationResultHandler = PanValidationResultHandler(validationListener, validationStateManager)
         validationResultHandler.handleResult(true, cardBrand)
