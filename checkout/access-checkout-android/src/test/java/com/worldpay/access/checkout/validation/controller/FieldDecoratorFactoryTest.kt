@@ -9,6 +9,7 @@ import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryMonthLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryYearLengthFilter
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
+import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import com.worldpay.access.checkout.validation.watchers.*
 import org.junit.Before
 import org.junit.Test
@@ -28,7 +29,8 @@ class FieldDecoratorFactoryTest {
     @Before
     fun setup() {
         val textWatcherFactory = TextWatcherFactory(
-            accessCheckoutValidationListener = mock<AccessCheckoutCardValidationListener>()
+            accessCheckoutValidationListener = mock<AccessCheckoutCardValidationListener>(),
+            validationStateManager = mock<CardValidationStateManager>()
         )
 
         fieldDecoratorFactory = FieldDecoratorFactory(

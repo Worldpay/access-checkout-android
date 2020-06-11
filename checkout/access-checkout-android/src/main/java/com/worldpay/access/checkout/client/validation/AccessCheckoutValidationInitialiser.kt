@@ -7,6 +7,8 @@ import com.worldpay.access.checkout.client.validation.config.ValidationConfig
 import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.CvvDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.FieldDecoratorFactory
+import com.worldpay.access.checkout.validation.state.CardValidationStateManager
+import com.worldpay.access.checkout.validation.state.CvcValidationStateManager
 import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
 object AccessCheckoutValidationInitialiser {
@@ -20,7 +22,12 @@ object AccessCheckoutValidationInitialiser {
     }
 
     private fun initialiseCardValidation(validationConfig: CardValidationConfig) {
-        val textWatcherFactory = TextWatcherFactory(validationConfig.validationListener)
+        val validationStateManager =
+            CardValidationStateManager()
+        val textWatcherFactory = TextWatcherFactory(
+            accessCheckoutValidationListener = validationConfig.validationListener,
+            validationStateManager = validationStateManager
+        )
 
         CardDetailsValidationController(
             panEditText = validationConfig.pan,
@@ -36,7 +43,12 @@ object AccessCheckoutValidationInitialiser {
     }
 
     private fun initialiseCvvValidation(validationConfig: CvvValidationConfig) {
-        val textWatcherFactory = TextWatcherFactory(validationConfig.validationListener)
+        val validationStateManager =
+            CvcValidationStateManager()
+        val textWatcherFactory = TextWatcherFactory(
+            accessCheckoutValidationListener = validationConfig.validationListener,
+            validationStateManager = validationStateManager
+        )
 
         CvvDetailsValidationController(
             cvvEditText = validationConfig.cvv,

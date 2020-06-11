@@ -4,6 +4,7 @@ import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
+import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertTrue
@@ -21,7 +22,7 @@ class TextWatcherFactoryTest {
 
     @Before
     fun setup() {
-        textWatcherFactory = TextWatcherFactory(accessCheckoutValidationListener)
+        textWatcherFactory = TextWatcherFactory(accessCheckoutValidationListener, mock<CardValidationStateManager>())
     }
 
     @Test
