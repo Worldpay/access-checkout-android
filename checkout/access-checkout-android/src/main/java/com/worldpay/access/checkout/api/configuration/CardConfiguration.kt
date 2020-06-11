@@ -6,33 +6,33 @@ package com.worldpay.access.checkout.api.configuration
  * @property brands a list of card brand configuration
  * @property defaults a list of default configuration to use
  */
-data class CardConfiguration(val brands: List<CardBrand>, val defaults: CardDefaults)
+data class CardConfiguration(val brands: List<RemoteCardBrand>, val defaults: CardDefaults)
 
 /**
  * Representation of a card brand
  *
  * @property name of the card brand
- * @property images a list of [CardBrandImage]'s
+ * @property images a list of [RemoteCardBrandImage]'s
  * @property cvv validation rule for the cvv field
  * @property pan list of validations rules for the pan field
  */
-data class CardBrand(
+data class RemoteCardBrand(
     val name: String,
-    val images: List<CardBrandImage>,
+    val images: List<RemoteCardBrandImage>,
     val cvv: CardValidationRule,
     val pan: CardValidationRule
 )
 
 /**
- * [CardBrandImage] stores the reference to an image resource
- * for a particular [CardBrand]. You can use the url reference
- * to the [CardBrand] to fetch it and apply it to the UI when the
+ * [RemoteCardBrandImage] stores the reference to an image resource
+ * for a particular [RemoteCardBrand]. You can use the url reference
+ * to the [RemoteCardBrand] to fetch it and apply it to the UI when the
  * brand has been identified
  *
  * @param type the media type of the image, e.g. 'image/svg+xml'
  * @param url the URL to where the image can be downloaded from
  */
-data class CardBrandImage(val type: String, val url: String)
+data class RemoteCardBrandImage(val type: String, val url: String)
 
 /**
  * [CardDefaults] defines default validation rules for the fields

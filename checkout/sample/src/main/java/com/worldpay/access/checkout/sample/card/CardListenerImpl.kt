@@ -6,7 +6,7 @@ import android.widget.Button
 import androidx.core.content.res.ResourcesCompat.getColor
 import com.worldpay.access.checkout.Card
 import com.worldpay.access.checkout.CardListener
-import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.images.SVGImageLoader
 import com.worldpay.access.checkout.sample.ui.ProgressBar
@@ -45,7 +45,7 @@ class CardListenerImpl(
         cardView.applyLengthFilter(inputFilter)
     }
 
-    override fun onUpdateCardBrand(cardBrand: CardBrand?) {
+    override fun onUpdateCardBrand(cardBrand: RemoteCardBrand?) {
         val panView = activity.findViewById<PANLayout>(R.id.card_flow_text_pan) ?: return
         val logoImageView = panView.mImageView
         SVGImageLoader.getInstance(activity).fetchAndApplyCardLogo(cardBrand, logoImageView)

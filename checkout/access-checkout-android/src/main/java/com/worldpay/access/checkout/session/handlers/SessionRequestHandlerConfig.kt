@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
-import com.worldpay.access.checkout.client.SessionResponseListener
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 
 /**

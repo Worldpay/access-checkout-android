@@ -15,11 +15,11 @@ import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
 import com.worldpay.access.checkout.api.AccessCheckoutException.Error
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
-import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
-import com.worldpay.access.checkout.client.CardDetails
-import com.worldpay.access.checkout.client.SessionResponseListener
-import com.worldpay.access.checkout.client.SessionType
-import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import com.worldpay.access.checkout.client.session.model.CardDetails
+import com.worldpay.access.checkout.client.session.model.SessionType
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before

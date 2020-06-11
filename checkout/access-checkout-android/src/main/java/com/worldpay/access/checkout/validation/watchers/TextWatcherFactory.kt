@@ -3,10 +3,10 @@ package com.worldpay.access.checkout.validation.watchers
 import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.validation.AccessCheckoutCvvValidationListener
-import com.worldpay.access.checkout.client.validation.AccessCheckoutExpiryDateValidationListener
-import com.worldpay.access.checkout.client.validation.AccessCheckoutPanValidationListener
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutValidationListener
 import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler

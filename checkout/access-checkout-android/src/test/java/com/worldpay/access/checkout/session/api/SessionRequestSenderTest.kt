@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDi
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.client.VerifiedTokenSessionClient
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest

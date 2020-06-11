@@ -1,15 +1,15 @@
 package com.worldpay.access.checkout
 
 import android.text.InputFilter
-import com.worldpay.access.checkout.api.configuration.CardBrand
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.views.CardView
 
 /**
- * The purpose of this interface is that it will receive updates of validations and [CardBrand]'s from the [Card]
+ * The purpose of this interface is that it will receive updates of validations and [RemoteCardBrand]'s from the [Card]
  * when the fields are being edited or have completed editing. Implementations of this interface can decide how to apply
  * those validation results to the card fields or any other appropriate UI elements in the application
 
- * A [CardBrand] is an object that represents the card scheme that is linked to the pan that is being entered by the user.
+ * A [RemoteCardBrand] is an object that represents the card scheme that is linked to the pan that is being entered by the user.
  * Implementers can choose how to style their pan field based on this information, such as showing a small icon for that
  * card brand.
  *
@@ -40,6 +40,6 @@ interface CardListener {
      *
      * @param cardBrand (Optional) The card brand, if identified, that is associated with the card
      */
-    fun onUpdateCardBrand(cardBrand: CardBrand?)
+    fun onUpdateCardBrand(cardBrand: RemoteCardBrand?)
 
 }

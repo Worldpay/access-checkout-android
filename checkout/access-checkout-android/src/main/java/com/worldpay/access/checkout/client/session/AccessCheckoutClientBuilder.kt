@@ -1,7 +1,8 @@
-package com.worldpay.access.checkout.client
+package com.worldpay.access.checkout.client.session
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory

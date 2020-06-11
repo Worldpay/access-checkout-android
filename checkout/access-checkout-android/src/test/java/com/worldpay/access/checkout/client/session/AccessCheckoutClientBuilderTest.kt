@@ -1,8 +1,9 @@
-package com.worldpay.access.checkout.client
+package com.worldpay.access.checkout.client.session
 
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test

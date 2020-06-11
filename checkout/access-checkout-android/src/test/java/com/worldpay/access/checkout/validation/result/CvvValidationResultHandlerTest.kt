@@ -4,8 +4,7 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.worldpay.access.checkout.client.validation.AccessCheckoutCvvValidationListener
-import com.worldpay.access.checkout.validation.ValidationResult
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
 import org.junit.Before
 import org.junit.Test
 import java.util.concurrent.atomic.AtomicBoolean

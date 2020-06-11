@@ -72,31 +72,31 @@ object CardConfigurationUtil {
 
         object Images {
 
-            val VISA_PNG = CardBrandImage(type = "image/png", url = "$BASE_PATH/visa.png")
-            val VISA_SVG = CardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/visa.svg")
+            val VISA_PNG = RemoteCardBrandImage(type = "image/png", url = "$BASE_PATH/visa.png")
+            val VISA_SVG = RemoteCardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/visa.svg")
 
-            val MASTERCARD_PNG = CardBrandImage(type = "image/png", url = "$BASE_PATH/mastercard.png")
-            val MASTERCARD_SVG = CardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/mastercard.svg")
+            val MASTERCARD_PNG = RemoteCardBrandImage(type = "image/png", url = "$BASE_PATH/mastercard.png")
+            val MASTERCARD_SVG = RemoteCardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/mastercard.svg")
 
-            val AMEX_PNG = CardBrandImage(type = "image/png", url = "$BASE_PATH/amex.png")
-            val AMEX_SVG = CardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/amex.svg")
+            val AMEX_PNG = RemoteCardBrandImage(type = "image/png", url = "$BASE_PATH/amex.png")
+            val AMEX_SVG = RemoteCardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/amex.svg")
 
-            val JCB_PNG = CardBrandImage(type = "image/png", url = "$BASE_PATH/jcb.png")
-            val JCB_SVG = CardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/jcb.svg")
+            val JCB_PNG = RemoteCardBrandImage(type = "image/png", url = "$BASE_PATH/jcb.png")
+            val JCB_SVG = RemoteCardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/jcb.svg")
 
-            val DISCOVER_PNG = CardBrandImage(type = "image/png", url = "$BASE_PATH/discover.png")
-            val DISCOVER_SVG = CardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/discover.svg")
+            val DISCOVER_PNG = RemoteCardBrandImage(type = "image/png", url = "$BASE_PATH/discover.png")
+            val DISCOVER_SVG = RemoteCardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/discover.svg")
 
-            val DINERS_PNG = CardBrandImage(type = "image/png", url = "$BASE_PATH/diners.png")
-            val DINERS_SVG = CardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/diners.svg")
+            val DINERS_PNG = RemoteCardBrandImage(type = "image/png", url = "$BASE_PATH/diners.png")
+            val DINERS_SVG = RemoteCardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/diners.svg")
 
-            val MAESTRO_PNG = CardBrandImage(type = "image/png", url = "$BASE_PATH/maestro.png")
-            val MAESTRO_SVG = CardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/maestro.svg")
+            val MAESTRO_PNG = RemoteCardBrandImage(type = "image/png", url = "$BASE_PATH/maestro.png")
+            val MAESTRO_SVG = RemoteCardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/maestro.svg")
 
         }
 
         val VISA_BRAND =
-            CardBrand(
+            RemoteCardBrand(
                 name = "visa",
                 images = listOf(
                     Images.VISA_PNG,
@@ -113,7 +113,7 @@ object CardConfigurationUtil {
             )
 
         val MASTERCARD_BRAND =
-            CardBrand(
+            RemoteCardBrand(
                 name = "mastercard",
                 images = listOf(
                     Images.MASTERCARD_PNG,
@@ -130,7 +130,7 @@ object CardConfigurationUtil {
             )
 
         val AMEX_BRAND =
-            CardBrand(
+            RemoteCardBrand(
                 name = "amex",
                 images = listOf(
                     Images.AMEX_PNG,
@@ -147,7 +147,7 @@ object CardConfigurationUtil {
             )
 
         val JCB_BRAND =
-            CardBrand(
+            RemoteCardBrand(
                 name = "jcb",
                 images = listOf(
                     Images.JCB_PNG,
@@ -164,7 +164,7 @@ object CardConfigurationUtil {
             )
 
         val DISCOVER_BRAND =
-            CardBrand(
+            RemoteCardBrand(
                 name = "discover",
                 images = listOf(
                     Images.DISCOVER_PNG,
@@ -181,7 +181,7 @@ object CardConfigurationUtil {
             )
 
         val DINERS_BRAND =
-            CardBrand(
+            RemoteCardBrand(
                 name = "diners",
                 images = listOf(
                     Images.DINERS_PNG,
@@ -198,7 +198,7 @@ object CardConfigurationUtil {
             )
 
         val MAESTRO_BRAND =
-            CardBrand(
+            RemoteCardBrand(
                 name = "maestro",
                 images = listOf(
                     Images.MAESTRO_PNG,

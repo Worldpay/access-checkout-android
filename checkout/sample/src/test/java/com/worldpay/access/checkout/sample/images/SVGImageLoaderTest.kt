@@ -6,9 +6,9 @@ import android.widget.ImageView
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.given
-import com.worldpay.access.checkout.api.configuration.CardBrand
-import com.worldpay.access.checkout.api.configuration.CardBrandImage
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrandImage
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
@@ -22,9 +22,9 @@ import java.io.InputStream
 class SVGImageLoaderTest {
 
     private val cardBrand =
-        CardBrand(
+        RemoteCardBrand(
             name = "visa",
-            images = listOf(CardBrandImage(type = "image/svg+xml", url = "http://localhost/test.svg")),
+            images = listOf(RemoteCardBrandImage(type = "image/svg+xml", url = "http://localhost/test.svg")),
             cvv = CardValidationRule(matcher = "^[0-9]*\$", validLengths = listOf(3)),
             pan = CardValidationRule(matcher = "^(?!^493698\\d*\$)4\\d*\$", validLengths = listOf(16, 18, 19))
         )
@@ -90,9 +90,9 @@ class SVGImageLoaderTest {
     @Test
     fun shouldNotAttemptToFetchRemoteCardLogoIfNoSvgLogoForUnidentifiedBrandAndShouldSetUnknownCardLogo() {
         val cardBrandWithNoSVG =
-            CardBrand(
+            RemoteCardBrand(
                 name = "visa",
-                images = listOf(CardBrandImage(type = "image/png", url = "http://localhost/test.png")),
+                images = listOf(RemoteCardBrandImage(type = "image/png", url = "http://localhost/test.png")),
                 cvv = CardValidationRule(matcher = "^[0-9]*\$", validLengths = listOf(3)),
                 pan = CardValidationRule(matcher = "^(?!^493698\\d*\$)4\\d*\$", validLengths = listOf(16, 18, 19))
             )

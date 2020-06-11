@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.*
 
 /**
@@ -15,9 +15,9 @@ class AccessCheckoutCardValidator @JvmOverloads constructor(override val cardCon
                                                             private val dateValidator: DateValidator = DateValidator()
 ) : CardValidator {
 
-    override fun validatePAN(pan: String): Pair<ValidationResult, CardBrand?> = panValidator.validate(pan, getCardConfig())
+    override fun validatePAN(pan: String): Pair<ValidationResult, RemoteCardBrand?> = panValidator.validate(pan, getCardConfig())
 
-    override fun validateCVV(cvv: CVV, pan: String?): Pair<ValidationResult, CardBrand?> = cvvValidator.validate(cvv, pan, getCardConfig())
+    override fun validateCVV(cvv: CVV, pan: String?): Pair<ValidationResult, RemoteCardBrand?> = cvvValidator.validate(cvv, pan, getCardConfig())
 
     override fun validateDate(month: Month?, year: Year?): ValidationResult = dateValidator.validate(month, year, getCardConfig())
 

@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.watchers
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.validation.AccessCheckoutCardValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertTrue

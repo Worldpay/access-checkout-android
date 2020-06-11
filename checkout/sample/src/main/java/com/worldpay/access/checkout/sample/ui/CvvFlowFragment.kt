@@ -9,9 +9,9 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.AccessCheckoutCVV
 import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
-import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
-import com.worldpay.access.checkout.client.CardDetails
-import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.session.model.CardDetails
+import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvv.CvvListenerImpl

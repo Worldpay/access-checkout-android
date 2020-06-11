@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.CVV
 import com.worldpay.access.checkout.validation.ValidationResult
 import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResultFor
@@ -22,7 +22,7 @@ class CVVValidator {
         return rule
     }
 
-    fun validate(cvv: CVV, pan: String?, cardConfiguration: CardConfiguration): Pair<ValidationResult, CardBrand?> {
+    fun validate(cvv: CVV, pan: String?, cardConfiguration: CardConfiguration): Pair<ValidationResult, RemoteCardBrand?> {
         if (!pan.isNullOrBlank()) {
             val cardBrand = findBrandForPan(cardConfiguration, pan)
             if (cardBrand != null) {

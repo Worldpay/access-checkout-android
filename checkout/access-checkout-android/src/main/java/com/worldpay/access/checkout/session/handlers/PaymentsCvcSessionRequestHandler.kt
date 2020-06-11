@@ -2,9 +2,9 @@ package com.worldpay.access.checkout.session.handlers
 
 import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.client.CardDetails
-import com.worldpay.access.checkout.client.SessionType
-import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
+import com.worldpay.access.checkout.client.session.model.CardDetails
+import com.worldpay.access.checkout.client.session.model.SessionType
+import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.session.api.SessionRequestService
 import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo

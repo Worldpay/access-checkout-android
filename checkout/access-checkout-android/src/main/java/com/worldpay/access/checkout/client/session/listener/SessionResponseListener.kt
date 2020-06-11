@@ -1,6 +1,7 @@
-package com.worldpay.access.checkout.client
+package com.worldpay.access.checkout.client.session.listener
 
 import com.worldpay.access.checkout.api.AccessCheckoutException
+import com.worldpay.access.checkout.client.session.model.SessionType
 
 /**
  * The [SessionResponseListener] will receive an update once the session state has been generated. The listener will also

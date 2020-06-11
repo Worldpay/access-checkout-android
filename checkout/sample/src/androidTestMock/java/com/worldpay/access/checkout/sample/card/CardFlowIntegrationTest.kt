@@ -5,8 +5,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
-import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
-import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.sample.MockServer.Paths.VERIFIED_TOKENS_SESSIONS_PATH
 import com.worldpay.access.checkout.sample.MockServer.getCurrentContext
 import com.worldpay.access.checkout.sample.MockServer.stubFor

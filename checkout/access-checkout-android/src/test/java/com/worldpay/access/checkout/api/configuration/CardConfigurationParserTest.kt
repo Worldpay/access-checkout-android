@@ -123,11 +123,11 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
-            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            RemoteCardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -157,11 +157,11 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
-            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            RemoteCardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -192,11 +192,11 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
-            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            RemoteCardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -226,11 +226,11 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
-            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            RemoteCardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -261,11 +261,11 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
-            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            RemoteCardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -295,11 +295,11 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
-            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            RemoteCardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, CARD_DEFAULTS.cvv.validLengths),
@@ -325,7 +325,7 @@ class CardConfigurationParserTest {
             }]
         """.trimIndent()
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = emptyList(),
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -352,7 +352,7 @@ class CardConfigurationParserTest {
             }]
         """.trimIndent()
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = emptyList(),
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -382,10 +382,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("", "$BASE_PATH/amex.png")
+            RemoteCardBrandImage("", "$BASE_PATH/amex.png")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -415,10 +415,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("", "$BASE_PATH/amex.png")
+            RemoteCardBrandImage("", "$BASE_PATH/amex.png")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -448,10 +448,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "")
+            RemoteCardBrandImage("image/png", "")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -481,10 +481,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "")
+            RemoteCardBrandImage("image/png", "")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -514,10 +514,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -547,10 +547,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -581,11 +581,11 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png"),
-            CardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png"),
+            RemoteCardBrandImage("image/svg+xml", "$BASE_PATH/amex.svg")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -615,10 +615,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -648,10 +648,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "$BASE_PATH/amex.png")
+            RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, CVV_RULE.validLengths),
@@ -678,7 +678,7 @@ class CardConfigurationParserTest {
             }]
         """.trimIndent()
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = emptyList(),
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -707,7 +707,7 @@ class CardConfigurationParserTest {
             }]
         """.trimIndent()
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = emptyList(),
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -739,10 +739,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("", "$BASE_PATH/amex.png")
+            RemoteCardBrandImage("", "$BASE_PATH/amex.png")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),
@@ -772,10 +772,10 @@ class CardConfigurationParserTest {
         """.trimIndent()
 
         val brandImages = listOf(
-            CardBrandImage("image/png", "")
+            RemoteCardBrandImage("image/png", "")
         )
 
-        val expectedBrand = CardBrand(
+        val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
             cvv = CardValidationRule(MATCHER, listOf(4)),

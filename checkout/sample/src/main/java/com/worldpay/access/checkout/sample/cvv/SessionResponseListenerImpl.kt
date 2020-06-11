@@ -5,8 +5,8 @@ import android.app.AlertDialog
 import android.widget.Button
 import android.widget.TextView
 import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.client.SessionResponseListener
-import com.worldpay.access.checkout.client.SessionType
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog

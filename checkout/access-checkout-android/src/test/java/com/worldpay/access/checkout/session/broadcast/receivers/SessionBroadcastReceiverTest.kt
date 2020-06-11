@@ -4,10 +4,10 @@ import android.content.Context
 import android.content.Intent
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
-import com.worldpay.access.checkout.client.SessionResponseListener
-import com.worldpay.access.checkout.client.SessionType
-import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
-import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import com.worldpay.access.checkout.client.session.model.SessionType
+import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY

@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.sample.cvv
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.client.SessionType.PAYMENTS_CVC_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils

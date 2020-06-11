@@ -1,22 +1,22 @@
 package com.worldpay.access.checkout.validation.utils
 
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.ValidatorUtils
 
 object ValidationUtil {
 
     private const val defaultMaxLength = 100
 
-    fun getCvvValidationRule(cardBrand: CardBrand?, cardConfiguration: CardConfiguration): CardValidationRule {
+    fun getCvvValidationRule(cardBrand: RemoteCardBrand?, cardConfiguration: CardConfiguration): CardValidationRule {
         if (cardBrand == null) {
             return cardConfiguration.defaults.cvv
         }
         return cardBrand.cvv
     }
 
-    fun getPanValidationRule(cardBrand: CardBrand?, cardConfiguration: CardConfiguration): CardValidationRule {
+    fun getPanValidationRule(cardBrand: RemoteCardBrand?, cardConfiguration: CardConfiguration): CardValidationRule {
         if (cardBrand == null) {
             return cardConfiguration.defaults.pan
         }
@@ -26,7 +26,7 @@ object ValidationUtil {
     fun getMaxLength(cardValidationRule: CardValidationRule) =
         cardValidationRule.validLengths.max() ?: defaultMaxLength
 
-    fun findBrandForPan(cardConfiguration: CardConfiguration, pan: String) : CardBrand? {
+    fun findBrandForPan(cardConfiguration: CardConfiguration, pan: String) : RemoteCardBrand? {
         for (brand in cardConfiguration.brands) {
             if (ValidatorUtils.regexMatches(brand.pan.matcher, pan)) {
                 return brand

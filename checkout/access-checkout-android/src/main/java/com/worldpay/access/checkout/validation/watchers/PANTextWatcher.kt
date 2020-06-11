@@ -2,9 +2,10 @@ package com.worldpay.access.checkout.validation.watchers
 
 import android.text.Editable
 import android.widget.EditText
-import com.worldpay.access.checkout.api.configuration.CardBrand
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
+import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvvValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
@@ -18,10 +19,11 @@ internal class PANTextWatcher(
     private val cvcValidator: CVCValidator,
     private val cvvEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler,
-    private val cvcValidationRuleManager: CVCValidationRuleManager
+    private val cvcValidationRuleManager: CVCValidationRuleManager,
+    private val toCardBrandTransformer: ToCardBrandTransformer = ToCardBrandTransformer()
 ) : AbstractCardDetailTextWatcher() {
 
-    private var cardBrand: CardBrand? = null
+    private var cardBrand: RemoteCardBrand? = null
 
     override fun afterTextChanged(pan: Editable?) {
         val panText = pan.toString()
@@ -32,13 +34,14 @@ internal class PANTextWatcher(
         val cardValidationRule = getPanValidationRule(cardBrand, cardConfiguration)
 
         val isValid = panValidator.validate(panText, cardValidationRule)
+
         panValidationResultHandler.handleResult(
             isValid = isValid,
-            cardBrand = cardBrand
+            cardBrand = toCardBrandTransformer.transform(cardBrand)
         )
     }
 
-    private fun handleCardBrandChange(newCardBrand: CardBrand?) {
+    private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
         if (cardBrand != newCardBrand) {
             cardBrand = newCardBrand
 

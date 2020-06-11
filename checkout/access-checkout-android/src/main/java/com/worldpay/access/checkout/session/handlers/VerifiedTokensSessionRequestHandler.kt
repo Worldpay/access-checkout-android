@@ -2,10 +2,10 @@ package com.worldpay.access.checkout.session.handlers
 
 import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.client.CardDetails
-import com.worldpay.access.checkout.client.ExpiryDate
-import com.worldpay.access.checkout.client.SessionType
-import com.worldpay.access.checkout.client.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.CardDetails
+import com.worldpay.access.checkout.client.session.model.ExpiryDate
+import com.worldpay.access.checkout.client.session.model.SessionType
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.SessionRequestService
 import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
