@@ -17,7 +17,7 @@ class CardDetailsValidationControllerTest {
 
     // fields
     private val pan = mock<EditText>()
-    private val expiryMonth = mock<EditText>()
+    private val expiryDate = mock<EditText>()
     private val expiryYear = mock<EditText>()
     private val cvv = mock<EditText>()
 
@@ -47,7 +47,7 @@ class CardDetailsValidationControllerTest {
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryMonth, expiryYear, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryDate, CARD_CONFIG_NO_BRAND)
     }
 
     @Test
@@ -56,7 +56,7 @@ class CardDetailsValidationControllerTest {
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryMonth, expiryYear, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryDate, CARD_CONFIG_NO_BRAND)
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), callbackCaptor.capture())
         // call the callback with a successful card config
@@ -65,7 +65,7 @@ class CardDetailsValidationControllerTest {
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_BASIC)
         verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_BASIC)
-        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryMonth, expiryYear, CARD_CONFIG_BASIC)
+        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryDate, CARD_CONFIG_BASIC)
     }
 
     @Test
@@ -74,7 +74,7 @@ class CardDetailsValidationControllerTest {
 
         verify(fieldDecoratorFactory).decorateCvvField(cvv, pan, CARD_CONFIG_NO_BRAND)
         verify(fieldDecoratorFactory).decoratePanField(pan, cvv, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryMonth, expiryYear, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryDate, CARD_CONFIG_NO_BRAND)
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), callbackCaptor.capture())
 
@@ -85,7 +85,7 @@ class CardDetailsValidationControllerTest {
         verifyNoMoreInteractions(
             fieldDecoratorFactory,
             pan,
-            expiryMonth,
+            expiryDate,
             expiryYear,
             cvv
         )
@@ -94,8 +94,7 @@ class CardDetailsValidationControllerTest {
     private fun createAccessCheckoutValidationController() {
         CardDetailsValidationController(
             panEditText = pan,
-            expiryMonthEditText = expiryMonth,
-            expiryYearEditText = expiryYear,
+            expiryDateEditText = expiryDate,
             cvvEditText = cvv,
             baseUrl = baseUrl,
             cardConfigurationClient = cardConfigurationClient,

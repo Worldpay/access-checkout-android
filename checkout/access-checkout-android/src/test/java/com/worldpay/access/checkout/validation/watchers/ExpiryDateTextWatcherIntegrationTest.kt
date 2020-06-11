@@ -22,8 +22,7 @@ class ExpiryDateTextWatcherIntegrationTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
-    private val expiryMonth = EditText(context)
-    private val expiryYear = EditText(context)
+    private val expiryDate = EditText(context)
 
     private lateinit var expiryDateValidationResultHandler: ExpiryDateValidationResultHandler
 
@@ -32,20 +31,12 @@ class ExpiryDateTextWatcherIntegrationTest {
         val dateValidator = NewDateValidator()
         expiryDateValidationResultHandler = mock()
 
-        val expiryYearTextWatcher = ExpiryYearTextWatcher(
+        val expiryDateTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,
-            monthEditText = expiryMonth,
             expiryDateValidationResultHandler = expiryDateValidationResultHandler
         )
 
-        val expiryMonthTextWatcher = ExpiryMonthTextWatcher(
-            dateValidator = dateValidator,
-            yearEditText = expiryYear,
-            expiryDateValidationResultHandler = expiryDateValidationResultHandler
-        )
-
-        expiryMonth.addTextChangedListener(expiryMonthTextWatcher)
-        expiryYear.addTextChangedListener(expiryYearTextWatcher)
+        expiryDate.addTextChangedListener(expiryDateTextWatcher)
     }
 
     @Test
@@ -85,22 +76,13 @@ class ExpiryDateTextWatcherIntegrationTest {
 
         val dateValidator = NewDateValidator(calendar)
 
-        val expiryYearTextWatcher = ExpiryYearTextWatcher(
+        val expiryYearTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,
-            monthEditText = expiryMonth,
             expiryDateValidationResultHandler = expiryDateValidationResultHandler
         )
 
-        val expiryMonthTextWatcher = ExpiryMonthTextWatcher(
-            dateValidator = dateValidator,
-            yearEditText = expiryYear,
-            expiryDateValidationResultHandler = expiryDateValidationResultHandler
-        )
-
-        val expiryMonth = EditText(context)
         val expiryYear = EditText(context)
 
-        expiryMonth.addTextChangedListener(expiryMonthTextWatcher)
         expiryYear.addTextChangedListener(expiryYearTextWatcher)
 
         enterExpiryDate("05", "20")
@@ -137,8 +119,7 @@ class ExpiryDateTextWatcherIntegrationTest {
     }
 
     private fun enterExpiryDate(month: String?, year: String?) {
-        if (month != null) expiryMonth.setText(month)
-        if (year != null) expiryYear.setText(year)
+        if (year != null) expiryDate.setText(year)
     }
 
     private fun getMonth(offset: Int = 0): String {

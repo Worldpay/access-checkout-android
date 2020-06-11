@@ -31,8 +31,7 @@ object AccessCheckoutValidationInitialiser {
 
         CardDetailsValidationController(
             panEditText = validationConfig.pan,
-            expiryMonthEditText = validationConfig.expiryMonth,
-            expiryYearEditText = validationConfig.expiryYear,
+            expiryDateEditText = validationConfig.expiryDate,
             cvvEditText = validationConfig.cvv,
             baseUrl = validationConfig.baseUrl,
             cardConfigurationClient = CardConfigurationClientFactory.createClient(),

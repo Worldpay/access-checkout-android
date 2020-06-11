@@ -11,8 +11,7 @@ import kotlin.test.assertNotNull
 class CardValidationConfigBuilderTest {
 
     private val pan = mock<EditText>()
-    private val expiryMonth = mock<EditText>()
-    private val expiryYear = mock<EditText>()
+    private val expiryDate = mock<EditText>()
     private val cvv = mock<EditText>()
     private val baseUrl = "http://localhost"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
@@ -22,8 +21,7 @@ class CardValidationConfigBuilderTest {
         val config = CardValidationConfig.Builder()
             .baseUrl(baseUrl)
             .pan(pan)
-            .expiryMonth(expiryMonth)
-            .expiryYear(expiryYear)
+            .expiryDate(expiryDate)
             .cvv(cvv)
             .validationListener(validationListener)
             .build()
@@ -31,8 +29,7 @@ class CardValidationConfigBuilderTest {
         assertNotNull(config)
         assertEquals(baseUrl, config.baseUrl)
         assertEquals(pan, config.pan)
-        assertEquals(expiryMonth, config.expiryMonth)
-        assertEquals(expiryYear, config.expiryYear)
+        assertEquals(expiryDate, config.expiryDate)
         assertEquals(cvv, config.cvv)
         assertEquals(validationListener, config.validationListener)
     }
@@ -42,8 +39,7 @@ class CardValidationConfigBuilderTest {
         val exception = assertFailsWith<IllegalArgumentException> {
             CardValidationConfig.Builder()
                 .pan(pan)
-                .expiryMonth(expiryMonth)
-                .expiryYear(expiryYear)
+                .expiryDate(expiryDate)
                 .cvv(cvv)
                 .validationListener(validationListener)
                 .build()
@@ -57,8 +53,7 @@ class CardValidationConfigBuilderTest {
         val exception = assertFailsWith<IllegalArgumentException> {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
-                .expiryMonth(expiryMonth)
-                .expiryYear(expiryYear)
+                .expiryDate(expiryDate)
                 .cvv(cvv)
                 .validationListener(validationListener)
                 .build()
@@ -68,34 +63,19 @@ class CardValidationConfigBuilderTest {
     }
 
     @Test
-    fun `should throw exception where expiry month is not provided`() {
+    fun `should throw exception where expiry date is not provided`() {
         val exception = assertFailsWith<IllegalArgumentException> {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .pan(pan)
-                .expiryYear(expiryYear)
                 .cvv(cvv)
                 .validationListener(validationListener)
                 .build()
         }
 
-        assertEquals("Expected expiry month component to be provided but was not", exception.message)
+        assertEquals("Expected expiry date component to be provided but was not", exception.message)
     }
 
-    @Test
-    fun `should throw exception where expiry year is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
-            CardValidationConfig.Builder()
-                .baseUrl(baseUrl)
-                .pan(pan)
-                .expiryMonth(expiryMonth)
-                .cvv(cvv)
-                .validationListener(validationListener)
-                .build()
-        }
-
-        assertEquals("Expected expiry year component to be provided but was not", exception.message)
-    }
 
     @Test
     fun `should throw exception where cvv is not provided`() {
@@ -103,8 +83,7 @@ class CardValidationConfigBuilderTest {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .pan(pan)
-                .expiryMonth(expiryMonth)
-                .expiryYear(expiryYear)
+                .expiryDate(expiryDate)
                 .validationListener(validationListener)
                 .build()
         }
@@ -118,8 +97,7 @@ class CardValidationConfigBuilderTest {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .pan(pan)
-                .expiryMonth(expiryMonth)
-                .expiryYear(expiryYear)
+                .expiryDate(expiryDate)
                 .cvv(cvv)
                 .build()
         }

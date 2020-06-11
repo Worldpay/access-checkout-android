@@ -54,15 +54,7 @@ internal class PanLengthFilter(private val cardConfiguration: CardConfiguration)
 
 }
 
-internal class ExpiryMonthLengthFilter(private val cardConfiguration: CardConfiguration): VariableLengthFilter() {
-
-    override fun getMaxLength(source: CharSequence?): Int {
-        return getMaxLength(cardConfiguration.defaults.month)
-    }
-
-}
-
-internal class ExpiryYearLengthFilter(private val cardConfiguration: CardConfiguration): VariableLengthFilter() {
+internal class ExpiryDateLengthFilter(private val cardConfiguration: CardConfiguration): VariableLengthFilter() {
 
     override fun getMaxLength(source: CharSequence?): Int {
         return getMaxLength(cardConfiguration.defaults.year)

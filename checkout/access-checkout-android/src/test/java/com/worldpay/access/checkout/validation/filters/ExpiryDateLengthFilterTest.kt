@@ -10,30 +10,30 @@ import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
-class ExpiryMonthLengthFilterTest {
+class ExpiryDateLengthFilterTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
-    private val month = EditText(context)
+    private val year = EditText(context)
 
     @Before
     fun setup() {
-        month.filters += ExpiryMonthLengthFilter(CARD_CONFIG_BASIC)
+        year.filters += ExpiryDateLengthFilter(CARD_CONFIG_BASIC)
     }
 
     @Test
     fun `should limit to max length`() {
-        month.setText("123")
-        assertEquals("12", month.text.toString())
+        year.setText("123")
+        assertEquals("12", year.text.toString())
     }
 
     @Test
     fun `should allow text within limit`() {
-        month.setText("1")
-        assertEquals("1", month.text.toString())
+        year.setText("1")
+        assertEquals("1", year.text.toString())
 
-        month.setText("12")
-        assertEquals("12", month.text.toString())
+        year.setText("12")
+        assertEquals("12", year.text.toString())
     }
 
 }

@@ -4,7 +4,10 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.validation.filters.*
+import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
+import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
+import com.worldpay.access.checkout.validation.filters.PanLengthFilter
+import com.worldpay.access.checkout.validation.filters.VariableLengthFilter
 import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
 internal class FieldDecoratorFactory(
@@ -13,8 +16,7 @@ internal class FieldDecoratorFactory(
 
     private var cvvTextWatcher: TextWatcher? = null
     private var panTextWatcher: TextWatcher? = null
-    private var expiryMonthTextWatcher: TextWatcher? = null
-    private var expiryYearTextWatcher: TextWatcher? = null
+    private var expiryDateTextWatcher: TextWatcher? = null
 
     fun decorateCvvField(cvvEditText: EditText, panEditText: EditText?, cardConfiguration: CardConfiguration) {
         if (cvvTextWatcher != null) {
@@ -45,37 +47,14 @@ internal class FieldDecoratorFactory(
         )
     }
 
-    fun decorateExpiryDateFields(monthEditText: EditText, yearEditText: EditText, cardConfiguration: CardConfiguration) {
-        decorateExpMonthField(monthEditText, yearEditText, cardConfiguration)
-        decorateExpYearField(yearEditText, monthEditText, cardConfiguration)
-    }
-
-    private fun decorateExpMonthField(monthEditText: EditText, yearEditText: EditText, cardConfiguration: CardConfiguration) {
-        if (expiryMonthTextWatcher != null) {
-            monthEditText.removeTextChangedListener(expiryMonthTextWatcher)
+    fun decorateExpiryDateFields(expiryDateEditText: EditText, cardConfiguration: CardConfiguration) {
+        if (expiryDateTextWatcher != null) {
+            expiryDateEditText.removeTextChangedListener(expiryDateTextWatcher)
         }
-        expiryMonthTextWatcher = textWatcherFactory.createExpiryMonthTextWatcher(yearEditText)
-        monthEditText.addTextChangedListener(expiryMonthTextWatcher)
+        expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher()
+        expiryDateEditText.addTextChangedListener(expiryDateTextWatcher)
 
-        applyFilter(monthEditText,
-            ExpiryMonthLengthFilter(
-                cardConfiguration
-            )
-        )
-    }
-
-    private fun decorateExpYearField(yearEditText: EditText, monthEditText: EditText, cardConfiguration: CardConfiguration) {
-        if (expiryYearTextWatcher != null) {
-            yearEditText.removeTextChangedListener(expiryYearTextWatcher)
-        }
-        expiryYearTextWatcher = textWatcherFactory.createExpiryYearTextWatcher(monthEditText)
-        yearEditText.addTextChangedListener(expiryYearTextWatcher)
-
-        applyFilter(yearEditText,
-            ExpiryYearLengthFilter(
-                cardConfiguration
-            )
-        )
+        applyFilter(expiryDateEditText, ExpiryDateLengthFilter(cardConfiguration))
     }
 
     private fun applyFilter(editText: EditText, variableLengthFilter: VariableLengthFilter) {
