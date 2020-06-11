@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.api.configuration
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.DEFAULT_MATCHER
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.EXPIRY_DATE_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.MONTH_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.YEAR_DEFAULTS
@@ -57,15 +58,32 @@ class DefaultCardRulesTest {
     }
 
     @Test
+    fun `should return expected expiry date defaults`() {
+        val expected = CardValidationRule(
+            matcher = "^0[1-9]{0,1}\$|^1[0-2]{0,1}\\/\\d{0,2}\$",
+            validLengths = listOf(4)
+        )
+
+        assertEquals(expected, EXPIRY_DATE_DEFAULTS)
+    }
+
+    @Test
     fun `should return expected card defaults`() {
         val expected = CardDefaults(
             PAN_DEFAULTS,
             CVV_DEFAULTS,
             MONTH_DEFAULTS,
-            YEAR_DEFAULTS
+            YEAR_DEFAULTS,
+            EXPIRY_DATE_DEFAULTS
         )
 
         assertEquals(expected, CARD_DEFAULTS)
+
+        assertEquals(PAN_DEFAULTS, CARD_DEFAULTS.pan)
+        assertEquals(CVV_DEFAULTS, CARD_DEFAULTS.cvv)
+        assertEquals(MONTH_DEFAULTS, CARD_DEFAULTS.month)
+        assertEquals(YEAR_DEFAULTS, CARD_DEFAULTS.year)
+        assertEquals(EXPIRY_DATE_DEFAULTS, CARD_DEFAULTS.expiryDate)
     }
 
 }

@@ -47,6 +47,12 @@ object CardConfigurationUtil {
                 validLengths = listOf(3, 4)
             )
 
+        val EXP_DATE_DEFAULTS =
+            CardValidationRule(
+                matcher = "^0[1-9]{0,1}\$|^1[0-2]{0,1}\\/\\d{0,2}\$",
+                validLengths = listOf(4)
+            )
+
         val EXP_MONTH_RULE =
             CardValidationRule(
                 "^0[1-9]{0,1}$|^1[0-2]{0,1}$",
@@ -64,7 +70,8 @@ object CardConfigurationUtil {
                 PAN_RULE,
                 CVV_RULE,
                 EXP_MONTH_RULE,
-                EXP_YEAR_RULE
+                EXP_YEAR_RULE,
+                EXP_DATE_DEFAULTS
             )
     }
 
