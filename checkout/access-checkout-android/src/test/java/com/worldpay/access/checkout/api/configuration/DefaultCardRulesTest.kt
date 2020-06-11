@@ -60,8 +60,8 @@ class DefaultCardRulesTest {
     @Test
     fun `should return expected expiry date defaults`() {
         val expected = CardValidationRule(
-            matcher = "^0[1-9]{0,1}\$|^1[0-2]{0,1}\\/\\d{0,2}\$",
-            validLengths = listOf(4)
+            matcher = "^0[1-9]|1[0-2]\\/\\d{2}\$",
+            validLengths = listOf(5)
         )
 
         assertEquals(expected, EXPIRY_DATE_DEFAULTS)

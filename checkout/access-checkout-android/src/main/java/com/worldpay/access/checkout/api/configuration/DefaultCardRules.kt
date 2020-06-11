@@ -18,8 +18,8 @@ object DefaultCardRules {
 
     val EXPIRY_DATE_DEFAULTS =
         CardValidationRule(
-            matcher = "^0[1-9]{0,1}\$|^1[0-2]{0,1}\\/\\d{0,2}\$",
-            validLengths = listOf(4)
+            matcher = "^0[1-9]|1[0-2]\\/\\d{2}\$",
+            validLengths = listOf(5)
         )
 
     val MONTH_DEFAULTS =

@@ -51,7 +51,7 @@ internal class FieldDecoratorFactory(
         if (expiryDateTextWatcher != null) {
             expiryDateEditText.removeTextChangedListener(expiryDateTextWatcher)
         }
-        expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher()
+        expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
         expiryDateEditText.addTextChangedListener(expiryDateTextWatcher)
 
         applyFilter(expiryDateEditText, ExpiryDateLengthFilter(cardConfiguration))

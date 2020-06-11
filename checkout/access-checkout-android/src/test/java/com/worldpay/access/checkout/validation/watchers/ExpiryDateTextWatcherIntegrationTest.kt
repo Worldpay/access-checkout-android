@@ -1,9 +1,7 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.NewDateValidator
@@ -16,6 +14,7 @@ import java.time.LocalDate
 import java.time.Year
 import java.util.*
 import kotlin.math.abs
+import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class ExpiryDateTextWatcherIntegrationTest {
@@ -33,6 +32,7 @@ class ExpiryDateTextWatcherIntegrationTest {
 
         val expiryDateTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,
+            expiryDateEditText = expiryDate,
             expiryDateValidationResultHandler = expiryDateValidationResultHandler
         )
 
@@ -40,29 +40,36 @@ class ExpiryDateTextWatcherIntegrationTest {
     }
 
     @Test
+    fun `should append forward slash after month is entered`() {
+        expiryDate.setText("02")
+
+        assertEquals("02/", expiryDate.text.toString())
+    }
+
+    @Test
     fun `should validate expiry date as true where month and year is valid`() {
-        enterExpiryDate("04", getYear(1))
+        expiryDate.setText("04/${getYear(1)}")
 
         verify(expiryDateValidationResultHandler).handleResult(true)
     }
 
     @Test
     fun `should validate expiry date as false where year is in the past`() {
-        enterExpiryDate("04", getYear(-1))
+        expiryDate.setText("04/${getYear(-1)}")
 
         verify(expiryDateValidationResultHandler).handleResult(false)
     }
 
     @Test
     fun `should validate expiry date as false where month is in the past`() {
-        enterExpiryDate(getMonth(-1), getYear())
+        expiryDate.setText("${getMonth(-1)}/${getYear()}")
 
         verify(expiryDateValidationResultHandler).handleResult(false)
     }
 
     @Test
     fun `should validate expiry date as false where month is invalid and year is invalid`() {
-        enterExpiryDate(getMonth(), getYear(-1))
+        expiryDate.setText("05/19")
 
         verify(expiryDateValidationResultHandler).handleResult(false)
     }
@@ -78,6 +85,7 @@ class ExpiryDateTextWatcherIntegrationTest {
 
         val expiryYearTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,
+            expiryDateEditText = expiryDate,
             expiryDateValidationResultHandler = expiryDateValidationResultHandler
         )
 
@@ -85,49 +93,53 @@ class ExpiryDateTextWatcherIntegrationTest {
 
         expiryYear.addTextChangedListener(expiryYearTextWatcher)
 
-        enterExpiryDate("05", "20")
+        expiryDate.setText("06/20")
 
         verify(expiryDateValidationResultHandler).handleResult(true)
     }
 
     @Test
     fun `should validate expiry date as false where month is non-numeric`() {
-        enterExpiryDate("abc", getYear())
+        expiryDate.setText("ab/${getYear()}")
 
         verify(expiryDateValidationResultHandler).handleResult(false)
     }
 
     @Test
     fun `should validate expiry date as false where year is non-numeric`() {
-        enterExpiryDate(getMonth(), "abc")
+        expiryDate.setText("${getMonth()}/ab")
 
         verify(expiryDateValidationResultHandler).handleResult(false)
     }
 
     @Test
     fun `should not send any validation result where month is not provided`() {
-        enterExpiryDate(null, getYear())
+        expiryDate.setText(getYear())
 
-        verify(expiryDateValidationResultHandler, never()).handleResult(any())
+        verify(expiryDateValidationResultHandler).handleResult(false)
     }
 
     @Test
     fun `should not send any validation result where year is not provided`() {
-        enterExpiryDate(getMonth(), null)
+        expiryDate.setText(getMonth())
 
-        verify(expiryDateValidationResultHandler, never()).handleResult(any())
-    }
-
-    private fun enterExpiryDate(month: String?, year: String?) {
-        if (year != null) expiryDate.setText(year)
+        verify(expiryDateValidationResultHandler).handleResult(false)
     }
 
     private fun getMonth(offset: Int = 0): String {
-        if (offset == 0) return LocalDate.now().month.value.toString()
+        var month = LocalDate.now().month.value.toString()
 
-        if (offset < 0) return LocalDate.now().minusMonths(abs(offset).toLong()).monthValue.toString()
+        if (offset < 0) {
+            month = LocalDate.now().minusMonths(abs(offset).toLong()).monthValue.toString()
+        }
 
-        return LocalDate.now().plusMonths(offset.toLong()).monthValue.toString()
+        if (offset > 0) {
+            month = LocalDate.now().plusMonths(offset.toLong()).monthValue.toString()
+        }
+
+        if (month.length == 1) month = String.format("0%s", month)
+
+        return month
     }
 
     private fun getYear(offset: Int = 0): String {

@@ -1,51 +1,55 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules
-import com.worldpay.access.checkout.validation.Month
-import com.worldpay.access.checkout.validation.Year
+import java.lang.Integer.parseInt
 import java.util.*
 
 class NewDateValidator(private val now: Calendar = Calendar.getInstance()) {
 
-    private val monthRule = DefaultCardRules.MONTH_DEFAULTS
-    private val yearRule = DefaultCardRules.YEAR_DEFAULTS
+    private val expiryDateRule = DefaultCardRules.EXPIRY_DATE_DEFAULTS
 
     private val simpleValidator = SimpleValidator()
 
-    fun getValidationRule(): Pair<CardValidationRule, CardValidationRule> {
-        return Pair(monthRule, yearRule)
-    }
+    fun isExpiryDateComplete(expiryDate: String) = expiryDate.length >= expiryDateRule.validLengths.max()!!
 
-    fun validate(month: String?, year: String?) : Boolean {
-        if (month.isNullOrBlank() || year.isNullOrBlank()) {
+    fun validate(expiryDate: String) : Boolean {
+        if (!expiryDate.contains("/")) {
             return false
         }
 
-        val monthResult = simpleValidator.validate(month, monthRule)
-        val yearResult = simpleValidator.validate(year, yearRule)
+        val isValid = simpleValidator.validate(expiryDate, expiryDateRule)
 
-        if (!yearResult || !monthResult ) {
-            return false
+        if (isValid) {
+            return try {
+                val month = parseInt(expiryDate.split("/")[0])
+                val year = parseInt(expiryDate.split("/")[1])
+                isExpiryDateValid(month, year)
+            } catch (e: NumberFormatException) {
+                false
+            }
         }
 
-        return isFullDateValid(year, month)
+        return false
     }
 
-    private fun isFullDateValid(year: Year, month: Month): Boolean {
-        val validityCal = Calendar.getInstance()
-        validityCal.set(
-            Integer.parseInt("${getYearPrefix(now)}$year"),
-            Integer.parseInt(month),
-            1,
-            validityCal.getActualMaximum(Calendar.HOUR_OF_DAY),
-            validityCal.getActualMaximum(Calendar.MINUTE),
-            validityCal.getActualMaximum(Calendar.SECOND)
-        )
-        validityCal.set(Calendar.MILLISECOND, validityCal.getActualMaximum(Calendar.MILLISECOND))
-        validityCal.set(Calendar.DATE, validityCal.getActualMaximum(Calendar.DATE))
+    private fun isExpiryDateValid(month: Int, year: Int): Boolean {
+        val expiryDate = toCalendarInstance(month, year)
+        return expiryDate.timeInMillis >= now.timeInMillis
+    }
 
-        return validityCal.timeInMillis >= now.timeInMillis
+    private fun toCalendarInstance(month: Int, year: Int): Calendar {
+        val cal = Calendar.getInstance()
+
+        cal.set(Calendar.YEAR, parseInt("${getYearPrefix(now)}$year"))
+        cal.set(Calendar.MONTH, month - 1)
+        cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE))
+
+        cal.set(Calendar.HOUR_OF_DAY, cal.getActualMaximum(Calendar.HOUR_OF_DAY))
+        cal.set(Calendar.MINUTE, cal.getActualMaximum(Calendar.MINUTE))
+        cal.set(Calendar.SECOND, cal.getActualMaximum(Calendar.SECOND))
+        cal.set(Calendar.MILLISECOND, cal.getActualMaximum(Calendar.MILLISECOND))
+
+        return cal
     }
 
     private fun getYearPrefix(calendar: Calendar) = getYear(calendar).toString().substring(0, 2)

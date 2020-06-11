@@ -15,6 +15,7 @@ class TextWatcherFactoryTest {
     private val cardConfiguration = mock<CardConfiguration>()
 
     private val cvvEditText = mock<EditText>()
+    private val expiryDateEditText = mock<EditText>()
 
     private lateinit var textWatcherFactory: TextWatcherFactory
 
@@ -30,7 +31,7 @@ class TextWatcherFactoryTest {
 
     @Test
     fun `should get expiry date text watcher`() {
-        assertTrue(textWatcherFactory.createExpiryDateTextWatcher() is ExpiryDateTextWatcher)
+        assertTrue(textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText) is ExpiryDateTextWatcher)
     }
 
     @Test

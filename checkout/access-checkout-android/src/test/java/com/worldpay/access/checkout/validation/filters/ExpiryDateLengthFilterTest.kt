@@ -14,26 +14,26 @@ class ExpiryDateLengthFilterTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
-    private val year = EditText(context)
+    private val expiryDate = EditText(context)
 
     @Before
     fun setup() {
-        year.filters += ExpiryDateLengthFilter(CARD_CONFIG_BASIC)
+        expiryDate.filters += ExpiryDateLengthFilter(CARD_CONFIG_BASIC)
     }
 
     @Test
     fun `should limit to max length`() {
-        year.setText("123")
-        assertEquals("12", year.text.toString())
+        expiryDate.setText("02/299")
+        assertEquals("02/29", expiryDate.text.toString())
     }
 
     @Test
     fun `should allow text within limit`() {
-        year.setText("1")
-        assertEquals("1", year.text.toString())
+        expiryDate.setText("1")
+        assertEquals("1", expiryDate.text.toString())
 
-        year.setText("12")
-        assertEquals("12", year.text.toString())
+        expiryDate.setText("12")
+        assertEquals("12", expiryDate.text.toString())
     }
 
 }
