@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.validation.controller
 import android.text.InputFilter
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
@@ -59,6 +60,15 @@ class FieldDecoratorFactoryTest {
     }
 
     @Test
+    fun `should add hint to cvv field`() {
+        given(cvvEditText.filters).willReturn(emptyArray())
+
+        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(cvvEditText).setHint(R.string.card_cvv_hint)
+    }
+
+    @Test
     fun `should add filters when decorating cvv field`() {
         given(cvvEditText.filters).willReturn(emptyArray())
 
@@ -111,6 +121,15 @@ class FieldDecoratorFactoryTest {
     }
 
     @Test
+    fun `should add hint to pan field`() {
+        given(panEditText.filters).willReturn(emptyArray())
+
+        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(panEditText).setHint(R.string.card_number_hint)
+    }
+
+    @Test
     fun `should add filters when decorating pan field`() {
         given(panEditText.filters).willReturn(emptyArray())
 
@@ -146,6 +165,7 @@ class FieldDecoratorFactoryTest {
     @Test
     fun `should add new text watchers when decorating expiry date field each time`() {
         given(expiryDateEditText.filters).willReturn(emptyArray())
+
         fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryDateEditText, never()).removeTextChangedListener(any())
@@ -159,6 +179,15 @@ class FieldDecoratorFactoryTest {
 
         verify(expiryDateEditText).removeTextChangedListener(Mockito.any(ExpiryDateTextWatcher::class.java))
         verify(expiryDateEditText).addTextChangedListener(Mockito.any(ExpiryDateTextWatcher::class.java))
+    }
+
+    @Test
+    fun `should add hint to expiry date field`() {
+        given(expiryDateEditText.filters).willReturn(emptyArray())
+
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(expiryDateEditText).setHint(R.string.card_expiry_date_hint)
     }
 
     @Test

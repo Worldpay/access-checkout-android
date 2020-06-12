@@ -2,7 +2,8 @@
     <string name="app_name">Access Checkout Library</string>
     <string name="card_number_hint">Card Number</string>
     <string name="card_expiry_hint">Expiry Date</string>
-    <string name="card_cvv_hint">CVV</string>
+    <string name="card_expiry_date_hint">MM/YY</string>
+    <string name="card_cvv_hint">CVC</string>
     <string name="card_brand_icon">card brand icon</string>
     <string name="month_placeholder">MM</string>
     <string name="year_placeholder">YY</string>

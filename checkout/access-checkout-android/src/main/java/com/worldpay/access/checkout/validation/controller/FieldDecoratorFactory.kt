@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.validation.controller
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.widget.EditText
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
@@ -25,12 +26,9 @@ internal class FieldDecoratorFactory(
         cvvTextWatcher = textWatcherFactory.createCvvTextWatcher()
         cvvEditText.addTextChangedListener(cvvTextWatcher)
 
-        applyFilter(cvvEditText,
-            CvvLengthFilter(
-                panEditText,
-                cardConfiguration
-            )
-        )
+        applyFilter(cvvEditText, CvvLengthFilter(panEditText, cardConfiguration))
+
+        cvvEditText.setHint(R.string.card_cvv_hint)
     }
 
     fun decoratePanField(panEditText: EditText, cvvEditText: EditText, cardConfiguration: CardConfiguration) {
@@ -40,11 +38,9 @@ internal class FieldDecoratorFactory(
         panTextWatcher = textWatcherFactory.createPanTextWatcher(cvvEditText, cardConfiguration)
         panEditText.addTextChangedListener(panTextWatcher)
 
-        applyFilter(panEditText,
-            PanLengthFilter(
-                cardConfiguration
-            )
-        )
+        applyFilter(panEditText, PanLengthFilter(cardConfiguration))
+
+        panEditText.setHint(R.string.card_number_hint)
     }
 
     fun decorateExpiryDateFields(expiryDateEditText: EditText, cardConfiguration: CardConfiguration) {
@@ -55,6 +51,8 @@ internal class FieldDecoratorFactory(
         expiryDateEditText.addTextChangedListener(expiryDateTextWatcher)
 
         applyFilter(expiryDateEditText, ExpiryDateLengthFilter(cardConfiguration))
+
+        expiryDateEditText.setHint(R.string.card_expiry_date_hint)
     }
 
     private fun applyFilter(editText: EditText, variableLengthFilter: VariableLengthFilter) {
