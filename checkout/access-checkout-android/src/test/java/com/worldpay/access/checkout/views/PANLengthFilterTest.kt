@@ -18,10 +18,8 @@ import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class PANLengthFilterTest {
 
     private val cardValidator = Mockito.mock(CardValidator::class.java)

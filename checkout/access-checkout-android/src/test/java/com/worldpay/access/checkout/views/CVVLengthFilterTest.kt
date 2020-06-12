@@ -14,10 +14,8 @@ import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class CVVLengthFilterTest {
 
     private val panView: CardTextView = mock(CardTextView::class.java)

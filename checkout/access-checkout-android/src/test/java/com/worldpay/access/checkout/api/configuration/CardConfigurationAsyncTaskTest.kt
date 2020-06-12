@@ -11,7 +11,6 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -21,7 +20,6 @@ import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class CardConfigurationAsyncTaskTest {
 
     @Test
