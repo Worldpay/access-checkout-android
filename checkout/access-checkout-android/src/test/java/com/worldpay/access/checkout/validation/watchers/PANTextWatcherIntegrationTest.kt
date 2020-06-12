@@ -5,7 +5,9 @@ import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
+import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
+import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
@@ -54,7 +56,6 @@ class PANTextWatcherIntegrationTest {
         pan.addTextChangedListener(panTextWatcher)
     }
 
-
     @Test
     fun `should validate pan as false when partial unknown pan is entered`() {
         pan.setText("00000")
@@ -80,14 +81,14 @@ class PANTextWatcherIntegrationTest {
 
     @Test
     fun `should validate pan as true when 19 character unknown valid luhn is entered`() {
-        pan.setText("0999008073997244886")
+        pan.setText(VALID_UNKNOWN_LUHN)
 
         verify(panValidationResultHandler).handleResult(true, null)
     }
 
     @Test
     fun `should validate pan as true when 19 character unknown invalid luhn is entered`() {
-        pan.setText("0999008073997244887")
+        pan.setText(INVALID_UNKNOWN_LUHN)
 
         verify(panValidationResultHandler).handleResult(false, null)
     }

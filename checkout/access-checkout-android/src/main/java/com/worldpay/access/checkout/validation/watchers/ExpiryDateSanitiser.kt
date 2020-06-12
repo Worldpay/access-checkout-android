@@ -35,11 +35,10 @@ class ExpiryDateSanitiser {
     }
 
     private fun stripNonNumericalCharacters(expiryDate: String): String {
-        var expiryDate1 = expiryDate
-        if (!isNumeric(expiryDate1)) {
-            expiryDate1 = expiryDate1.replace(nonNumericRegex, "")
+        if (!isNumeric(expiryDate)) {
+            return expiryDate.replace(nonNumericRegex, "")
         }
-        return expiryDate1
+        return expiryDate
     }
 
     private fun reformatDate(expiryDate: String): String {
