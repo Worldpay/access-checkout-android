@@ -9,6 +9,7 @@ import com.worldpay.access.checkout.validation.ValidatorUtils.getValidationResul
 import com.worldpay.access.checkout.validation.ValidatorUtils.regexMatches
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 
+@Deprecated(message = "legacy")
 class CVVValidator {
 
     fun getValidationRule(pan: String, cardConfiguration: CardConfiguration): CardValidationRule {

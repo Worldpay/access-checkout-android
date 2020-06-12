@@ -3,13 +3,17 @@ package com.worldpay.access.checkout.validation
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 
+@Deprecated(message = "legacy")
 typealias CVV = String
+@Deprecated(message = "legacy")
 typealias Month = String
+@Deprecated(message = "legacy")
 typealias Year = String
 
 /**
  * The interface responsible for validating the state of card fields
  */
+@Deprecated(message = "legacy")
 interface CardValidator {
 
     /**

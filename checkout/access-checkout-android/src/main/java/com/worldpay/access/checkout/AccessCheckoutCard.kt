@@ -14,6 +14,7 @@ import com.worldpay.access.checkout.views.*
  * @param factory (Optional) The object which is responsible for constructing dependencies for a [Card]. The default is [AccessCheckoutCardDefaultFactory]
  * @constructor Constructs an instance of [AccessCheckoutCard]
  */
+@Deprecated(message = "legacy")
 class AccessCheckoutCard @JvmOverloads constructor(
     private val panView: CardTextView,
     private val cvvView: CardTextView,

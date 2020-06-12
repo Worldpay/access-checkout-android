@@ -11,4 +11,5 @@ package com.worldpay.access.checkout.validation
  * Being [complete]ly valid refers to a field in a complete and valid state and ready to be
  * used in the generate session request
  */
+@Deprecated(message = "legacy")
 data class ValidationResult(val partial: Boolean, val complete: Boolean)

@@ -10,6 +10,7 @@ import com.worldpay.access.checkout.validation.Year
 import java.util.*
 import java.util.Calendar.*
 
+@Deprecated(message = "legacy")
 class DateValidator(private val now: Calendar = getInstance()) {
 
     fun getValidationRule(cardConfiguration: CardConfiguration): Pair<CardValidationRule, CardValidationRule> {

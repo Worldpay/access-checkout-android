@@ -4,6 +4,7 @@ import com.worldpay.access.checkout.validation.CardValidator
 import com.worldpay.access.checkout.views.CVVLengthFilter
 import com.worldpay.access.checkout.views.CardCVVText
 
+@Deprecated(message = "legacy")
 class AccessCheckoutCVV @JvmOverloads constructor(
    private val cvvView: CardCVVText,
    private val factory: CardFactory = AccessCheckoutCardDefaultFactory()

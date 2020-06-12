@@ -19,6 +19,7 @@ import kotlinx.android.synthetic.main.date_view_layout.view.*
  * This class will handle the operations related to text changes and on focus changes, communicating those changes to the
  * required [CardViewListener], and receiving updates to change it's state through the [isValid] method
  */
+@Deprecated(message = "legacy")
 open class CardExpiryTextLayout @JvmOverloads constructor(
     context: Context,
     attrSet: AttributeSet? = null,
