@@ -33,7 +33,8 @@ class ExpiryDateTextWatcherIntegrationTest {
         val expiryDateTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,
             expiryDateEditText = expiryDate,
-            expiryDateValidationResultHandler = expiryDateValidationResultHandler
+            expiryDateValidationResultHandler = expiryDateValidationResultHandler,
+            expiryDateSanitiser = ExpiryDateSanitiser()
         )
 
         expiryDate.addTextChangedListener(expiryDateTextWatcher)
@@ -44,6 +45,60 @@ class ExpiryDateTextWatcherIntegrationTest {
         expiryDate.setText("02")
 
         assertEquals("02/", expiryDate.text.toString())
+    }
+
+    @Test
+    fun `should format single digits correctly`() {
+        val testMap = mapOf(
+            "1" to "1",
+            "02/" to "2",
+            "03/" to "3",
+            "04/" to "4",
+            "05/" to "5",
+            "06/" to "6",
+            "07/" to "7",
+            "08/" to "8",
+            "09/" to "9"
+        )
+
+        for (entry in testMap) {
+            expiryDate.setText("")
+            assertEquals(entry.key, enterAndGetText(entry.value))
+        }
+    }
+
+    @Test
+    fun `should format double digits correctly`() {
+        val testMap = mapOf(
+            "10/" to "10",
+            "11/" to "11",
+            "12/" to "12",
+            "01/3" to "13",
+            "01/4" to "14",
+            "02/4" to "24"
+        )
+
+        for (entry in testMap) {
+            expiryDate.setText("")
+            assertEquals(entry.key, enterAndGetText(entry.value))
+        }
+    }
+
+    @Test
+    fun `should format triple digits correctly`() {
+        val testMap = mapOf(
+            "10/0" to "100",
+            "11/0" to "110",
+            "12/0" to "120",
+            "01/33" to "133",
+            "01/43" to "143",
+            "02/44" to "244"
+        )
+
+        for (entry in testMap) {
+            expiryDate.setText("")
+            assertEquals(entry.key, enterAndGetText(entry.value))
+        }
     }
 
     @Test
@@ -86,7 +141,8 @@ class ExpiryDateTextWatcherIntegrationTest {
         val expiryYearTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,
             expiryDateEditText = expiryDate,
-            expiryDateValidationResultHandler = expiryDateValidationResultHandler
+            expiryDateValidationResultHandler = expiryDateValidationResultHandler,
+            expiryDateSanitiser = ExpiryDateSanitiser()
         )
 
         val expiryYear = EditText(context)
@@ -124,6 +180,11 @@ class ExpiryDateTextWatcherIntegrationTest {
         expiryDate.setText(getMonth())
 
         verify(expiryDateValidationResultHandler).handleResult(false)
+    }
+
+    private fun enterAndGetText(string: String) : String {
+        expiryDate.setText(string)
+        return expiryDate.text.toString()
     }
 
     private fun getMonth(offset: Int = 0): String {

@@ -58,7 +58,8 @@ internal class TextWatcherFactory(
         return ExpiryDateTextWatcher(
             dateValidator = dateValidator,
             expiryDateEditText = expiryDateEditText,
-            expiryDateValidationResultHandler = expiryDateValidationResultHandler
+            expiryDateValidationResultHandler = expiryDateValidationResultHandler,
+            expiryDateSanitiser = ExpiryDateSanitiser()
         )
     }
 

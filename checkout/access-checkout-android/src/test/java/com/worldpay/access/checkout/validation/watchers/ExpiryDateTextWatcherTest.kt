@@ -12,6 +12,7 @@ class ExpiryDateTextWatcherTest {
 
     private val expiryDateValidationResultHandler = mock<ExpiryDateValidationResultHandler>()
     private val dateValidator = spy(NewDateValidator())
+    private val dateSanitiser = spy<ExpiryDateSanitiser>()
 
     private val expiryDateEditable = mock<Editable>()
     private val expiryDateEditText = mock<EditText>()
@@ -25,28 +26,44 @@ class ExpiryDateTextWatcherTest {
         expiryDateTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,
             expiryDateEditText = expiryDateEditText,
-            expiryDateValidationResultHandler = expiryDateValidationResultHandler
+            expiryDateValidationResultHandler = expiryDateValidationResultHandler,
+            expiryDateSanitiser = dateSanitiser
         )
     }
 
     @Test
-    fun `should not validate with 1 character entered`() {
+    fun `should not attempt to format text when deleting characters`() {
+        expiryDateTextWatcher.beforeTextChanged("13",0,0,0)
+        given(expiryDateEditable.toString()).willReturn("1")
+
+        expiryDateTextWatcher.afterTextChanged(expiryDateEditable)
+
+        verify(dateValidator).validate("1")
+        verify(expiryDateValidationResultHandler).handleResult(false)
+        verifyZeroInteractions(dateSanitiser, expiryDateEditText)
+    }
+
+    @Test
+    fun `should sanitise input when expiry date is entered`() {
         given(expiryDateEditable.toString()).willReturn("0")
 
         expiryDateTextWatcher.afterTextChanged(expiryDateEditable)
 
+        verify(dateSanitiser).sanitise("0")
         verify(dateValidator).validate("0")
         verify(expiryDateValidationResultHandler).handleResult(false)
         verifyZeroInteractions(expiryDateEditText)
     }
 
     @Test
-    fun `should not validate with 2 character entered but will add forward slash`() {
-        given(expiryDateEditable.toString()).willReturn("02")
+    fun `should reset text value and cursor when expiry date is santised`() {
+        given(expiryDateEditable.toString()).willReturn("13")
 
         expiryDateTextWatcher.afterTextChanged(expiryDateEditable)
 
-        verify(expiryDateEditText).setText("02/")
+        verify(dateSanitiser).sanitise("13")
+        verify(expiryDateEditText).setText("01/3")
+        verify(expiryDateEditText).setSelection(4)
         verifyZeroInteractions(dateValidator, expiryDateValidationResultHandler)
     }
 
@@ -62,14 +79,14 @@ class ExpiryDateTextWatcherTest {
     }
 
     @Test
-    fun `should validate with 5 character entered`() {
-        given(expiryDateEditable.toString()).willReturn("02/29")
+    fun `should validate with empty string entered`() {
+        given(expiryDateEditable.toString()).willReturn("")
 
         expiryDateTextWatcher.afterTextChanged(expiryDateEditable)
 
-        verify(dateValidator).validate("02/29")
-        verify(expiryDateValidationResultHandler).handleResult(true)
-        verifyZeroInteractions(expiryDateEditText)
+        verify(dateValidator).validate("")
+        verify(expiryDateValidationResultHandler).handleResult(false)
+        verifyZeroInteractions(dateSanitiser, expiryDateEditText)
     }
 
     @Test

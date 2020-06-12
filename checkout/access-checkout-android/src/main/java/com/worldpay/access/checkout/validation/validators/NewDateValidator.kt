@@ -10,8 +10,6 @@ class NewDateValidator(private val now: Calendar = Calendar.getInstance()) {
 
     private val simpleValidator = SimpleValidator()
 
-    fun isExpiryDateComplete(expiryDate: String) = expiryDate.length >= expiryDateRule.validLengths.max()!!
-
     fun validate(expiryDate: String) : Boolean {
         if (!expiryDate.contains("/")) {
             return false
@@ -20,13 +18,9 @@ class NewDateValidator(private val now: Calendar = Calendar.getInstance()) {
         val isValid = simpleValidator.validate(expiryDate, expiryDateRule)
 
         if (isValid) {
-            return try {
-                val month = parseInt(expiryDate.split("/")[0])
-                val year = parseInt(expiryDate.split("/")[1])
-                isExpiryDateValid(month, year)
-            } catch (e: NumberFormatException) {
-                false
-            }
+            val month = parseInt(expiryDate.split("/")[0])
+            val year = parseInt(expiryDate.split("/")[1])
+            return isExpiryDateValid(month, year)
         }
 
         return false
