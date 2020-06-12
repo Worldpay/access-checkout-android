@@ -9,17 +9,14 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
-import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
-@RunWith(RobolectricTestRunner::class)
 class ApiDiscoveryClientTest {
 
     private val apiDiscoveryAsyncTaskFactoryMock: ApiDiscoveryAsyncTaskFactory = mock()

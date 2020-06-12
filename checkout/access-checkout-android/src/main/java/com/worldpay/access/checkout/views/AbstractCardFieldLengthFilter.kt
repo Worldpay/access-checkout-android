@@ -15,6 +15,7 @@ import com.worldpay.access.checkout.validation.ValidationResult
  *
  * @param cardConfiguration (optional) the configuration to use for determining the length for the field
  */
+@Deprecated(message = "legacy")
 sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardConfiguration?) : InputFilter {
 
     internal val lengthFiltersBySizeCache: MutableMap<Int, InputFilter.LengthFilter> = mutableMapOf()
@@ -55,6 +56,7 @@ sealed class AbstractCardFieldLengthFilter(private val cardConfiguration: CardCo
  * [CVVLengthFilter] applies a length restriction to the cvv field based on the identity of the card detected during
  * input
  */
+@Deprecated(message = "legacy")
 class CVVLengthFilter(
     private val cardValidator: CardValidator,
     private val panView: CardTextView?
@@ -74,6 +76,7 @@ class CVVLengthFilter(
  * [PANLengthFilter] applies a length restriction to the pan field based on the identity of the card detected during
  * input
  */
+@Deprecated(message = "legacy")
 class PANLengthFilter(private val cardValidator: CardValidator) :
     AbstractCardFieldLengthFilter(cardValidator.cardConfiguration) {
 
@@ -89,6 +92,7 @@ class PANLengthFilter(private val cardValidator: CardValidator) :
 /**
  * [DateLengthFilter] applies a length restriction to the date field based on configuration defaults
  */
+@Deprecated(message = "legacy")
 class DateLengthFilter(cardConfiguration: CardConfiguration): AbstractCardFieldLengthFilter(cardConfiguration) {
 
     override fun getMaxLengthRule(cardBrand: RemoteCardBrand?, cardDefaults: CardDefaults) = cardDefaults.month

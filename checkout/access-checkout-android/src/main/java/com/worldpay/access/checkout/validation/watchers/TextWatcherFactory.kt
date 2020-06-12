@@ -49,29 +49,17 @@ internal class TextWatcherFactory(
         )
     }
 
-    fun createExpiryMonthTextWatcher(yearEditText: EditText): TextWatcher {
+    fun createExpiryDateTextWatcher(expiryDateEditText: EditText): TextWatcher {
         val expiryDateValidationResultHandler = ExpiryDateValidationResultHandler(
             validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
             validationStateManager = validationStateManager as ExpiryDateFieldValidationStateManager
         )
 
-        return ExpiryMonthTextWatcher(
+        return ExpiryDateTextWatcher(
             dateValidator = dateValidator,
-            yearEditText = yearEditText,
-            expiryDateValidationResultHandler = expiryDateValidationResultHandler
-        )
-    }
-
-    fun createExpiryYearTextWatcher(monthEditText: EditText): TextWatcher {
-        val expiryDateValidationResultHandler = ExpiryDateValidationResultHandler(
-            validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
-            validationStateManager = validationStateManager as ExpiryDateFieldValidationStateManager
-        )
-
-        return ExpiryYearTextWatcher(
-            dateValidator = dateValidator,
-            monthEditText = monthEditText,
-            expiryDateValidationResultHandler = expiryDateValidationResultHandler
+            expiryDateEditText = expiryDateEditText,
+            expiryDateValidationResultHandler = expiryDateValidationResultHandler,
+            expiryDateSanitiser = ExpiryDateSanitiser()
         )
     }
 

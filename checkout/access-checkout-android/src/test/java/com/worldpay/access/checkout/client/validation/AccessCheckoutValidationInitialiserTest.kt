@@ -17,8 +17,7 @@ class AccessCheckoutValidationInitialiserTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
-    private val expiryMonth = EditText(context)
-    private val expiryYear = EditText(context)
+    private val expiryDate = EditText(context)
     private val cvv = EditText(context)
     private val pan = EditText(context)
 
@@ -31,22 +30,19 @@ class AccessCheckoutValidationInitialiserTest {
         val config = CardValidationConfig.Builder()
             .baseUrl(baseUrl)
             .pan(pan)
-            .expiryMonth(expiryMonth)
-            .expiryYear(expiryYear)
+            .expiryDate(expiryDate)
             .cvv(cvv)
             .validationListener(cardValidationListener)
             .build()
 
         assertEquals(0, pan.filters.size)
-        assertEquals(0, expiryMonth.filters.size)
-        assertEquals(0, expiryYear.filters.size)
+        assertEquals(0, expiryDate.filters.size)
         assertEquals(0, cvv.filters.size)
 
         AccessCheckoutValidationInitialiser.initialise(config)
 
         assertEquals(1, pan.filters.size)
-        assertEquals(1, expiryMonth.filters.size)
-        assertEquals(1, expiryYear.filters.size)
+        assertEquals(1, expiryDate.filters.size)
         assertEquals(1, cvv.filters.size)
     }
 

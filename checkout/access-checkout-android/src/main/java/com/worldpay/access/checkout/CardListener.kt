@@ -17,6 +17,7 @@ import com.worldpay.access.checkout.views.CardView
  * a card brand may have a particular limit on the number of characters it will accept. Therefore applying the length filter
  * will help reduce human user error by not allowing the user to type more characters than is allowed for that field.
  */
+@Deprecated(message = "legacy")
 interface CardListener {
 
     /**

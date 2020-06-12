@@ -46,7 +46,8 @@ data class CardDefaults(
     val pan: CardValidationRule,
     val cvv: CardValidationRule,
     val month: CardValidationRule,
-    val year: CardValidationRule
+    val year: CardValidationRule,
+    val expiryDate: CardValidationRule
 )
 
 /**

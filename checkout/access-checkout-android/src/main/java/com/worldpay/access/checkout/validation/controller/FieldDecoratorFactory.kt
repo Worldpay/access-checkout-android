@@ -3,8 +3,12 @@ package com.worldpay.access.checkout.validation.controller
 import android.text.InputFilter
 import android.text.TextWatcher
 import android.widget.EditText
+import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.validation.filters.*
+import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
+import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
+import com.worldpay.access.checkout.validation.filters.PanLengthFilter
+import com.worldpay.access.checkout.validation.filters.VariableLengthFilter
 import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
 internal class FieldDecoratorFactory(
@@ -13,8 +17,7 @@ internal class FieldDecoratorFactory(
 
     private var cvvTextWatcher: TextWatcher? = null
     private var panTextWatcher: TextWatcher? = null
-    private var expiryMonthTextWatcher: TextWatcher? = null
-    private var expiryYearTextWatcher: TextWatcher? = null
+    private var expiryDateTextWatcher: TextWatcher? = null
 
     fun decorateCvvField(cvvEditText: EditText, panEditText: EditText?, cardConfiguration: CardConfiguration) {
         if (cvvTextWatcher != null) {
@@ -23,12 +26,9 @@ internal class FieldDecoratorFactory(
         cvvTextWatcher = textWatcherFactory.createCvvTextWatcher()
         cvvEditText.addTextChangedListener(cvvTextWatcher)
 
-        applyFilter(cvvEditText,
-            CvvLengthFilter(
-                panEditText,
-                cardConfiguration
-            )
-        )
+        applyFilter(cvvEditText, CvvLengthFilter(panEditText, cardConfiguration))
+
+        cvvEditText.setHint(R.string.card_cvv_hint)
     }
 
     fun decoratePanField(panEditText: EditText, cvvEditText: EditText, cardConfiguration: CardConfiguration) {
@@ -38,44 +38,21 @@ internal class FieldDecoratorFactory(
         panTextWatcher = textWatcherFactory.createPanTextWatcher(cvvEditText, cardConfiguration)
         panEditText.addTextChangedListener(panTextWatcher)
 
-        applyFilter(panEditText,
-            PanLengthFilter(
-                cardConfiguration
-            )
-        )
+        applyFilter(panEditText, PanLengthFilter(cardConfiguration))
+
+        panEditText.setHint(R.string.card_number_hint)
     }
 
-    fun decorateExpiryDateFields(monthEditText: EditText, yearEditText: EditText, cardConfiguration: CardConfiguration) {
-        decorateExpMonthField(monthEditText, yearEditText, cardConfiguration)
-        decorateExpYearField(yearEditText, monthEditText, cardConfiguration)
-    }
-
-    private fun decorateExpMonthField(monthEditText: EditText, yearEditText: EditText, cardConfiguration: CardConfiguration) {
-        if (expiryMonthTextWatcher != null) {
-            monthEditText.removeTextChangedListener(expiryMonthTextWatcher)
+    fun decorateExpiryDateFields(expiryDateEditText: EditText, cardConfiguration: CardConfiguration) {
+        if (expiryDateTextWatcher != null) {
+            expiryDateEditText.removeTextChangedListener(expiryDateTextWatcher)
         }
-        expiryMonthTextWatcher = textWatcherFactory.createExpiryMonthTextWatcher(yearEditText)
-        monthEditText.addTextChangedListener(expiryMonthTextWatcher)
+        expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
+        expiryDateEditText.addTextChangedListener(expiryDateTextWatcher)
 
-        applyFilter(monthEditText,
-            ExpiryMonthLengthFilter(
-                cardConfiguration
-            )
-        )
-    }
+        applyFilter(expiryDateEditText, ExpiryDateLengthFilter(cardConfiguration))
 
-    private fun decorateExpYearField(yearEditText: EditText, monthEditText: EditText, cardConfiguration: CardConfiguration) {
-        if (expiryYearTextWatcher != null) {
-            yearEditText.removeTextChangedListener(expiryYearTextWatcher)
-        }
-        expiryYearTextWatcher = textWatcherFactory.createExpiryYearTextWatcher(monthEditText)
-        yearEditText.addTextChangedListener(expiryYearTextWatcher)
-
-        applyFilter(yearEditText,
-            ExpiryYearLengthFilter(
-                cardConfiguration
-            )
-        )
+        expiryDateEditText.setHint(R.string.card_expiry_date_hint)
     }
 
     private fun applyFilter(editText: EditText, variableLengthFilter: VariableLengthFilter) {

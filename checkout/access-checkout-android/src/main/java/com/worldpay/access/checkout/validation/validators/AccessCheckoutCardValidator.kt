@@ -9,6 +9,7 @@ import com.worldpay.access.checkout.validation.*
  * Implementation of a [CardValidator] which delegates responsibility of validating the card fields to the individual
  * card validator implementations
  */
+@Deprecated(message = "legacy")
 class AccessCheckoutCardValidator @JvmOverloads constructor(override val cardConfiguration: CardConfiguration? = null,
                                                             private val panValidator: PANValidator = PANValidator(),
                                                             private val cvvValidator: CVVValidator = CVVValidator(),

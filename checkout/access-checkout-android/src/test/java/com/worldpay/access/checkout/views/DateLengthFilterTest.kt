@@ -11,10 +11,8 @@ import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.annotation.Config
 
 @RunWith(RobolectricTestRunner::class)
-@Config(manifest = Config.NONE)
 class DateLengthFilterTest {
 
     private val cardConfiguration = Mockito.mock(CardConfiguration::class.java)

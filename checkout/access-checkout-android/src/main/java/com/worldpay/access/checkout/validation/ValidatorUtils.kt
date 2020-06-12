@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 
+@Deprecated(message = "legacy")
 internal object ValidatorUtils {
 
     fun isNumeric(number: String) = number.isNotBlank() && number.toCharArray().none { !it.isDigit() }

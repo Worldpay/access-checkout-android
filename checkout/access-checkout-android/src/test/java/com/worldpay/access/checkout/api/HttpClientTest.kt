@@ -6,13 +6,10 @@ import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.testutils.removeWhitespace
-import org.hamcrest.core.IsInstanceOf.instanceOf
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
-import org.mockito.BDDMockito.*
+import org.mockito.BDDMockito.given
 import org.mockito.Mock
 import org.mockito.Mockito
 import java.io.InputStream
@@ -20,6 +17,7 @@ import java.io.Serializable
 import java.net.ConnectException
 import java.net.HttpURLConnection
 import java.net.URL
+import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
 
@@ -40,9 +38,6 @@ class HttpClientTest {
 
     @Mock
     private lateinit var url: URL
-
-    @get:Rule
-    val expectedException: ExpectedException = ExpectedException.none()
 
     @Before
     fun setup() {
@@ -88,39 +83,42 @@ class HttpClientTest {
 
         stubResponse(MockedResponse(201, inputStream, ""))
 
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectCause(instanceOf(java.lang.RuntimeException::class.java))
-        expectedException.expectMessage(errorMessage)
-
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertEquals(errorMessage, exception.message)
+        assertTrue(exception.cause is java.lang.RuntimeException)
     }
 
     @Test
     fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBodyOnPost() {
         val errorMessage = "A server error occurred when trying to make the request"
-        expectedException.expect(AccessCheckoutError::class.java)
-        expectedException.expectMessage(errorMessage)
 
         stubResponse(buildMockedResponse(500, null, null))
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutError> {
+            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertEquals(errorMessage, exception.message)
     }
 
     @Test
     fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithMessageFromServerWhenBodyInResponseOnPost() {
-        expectedException.expect(AccessCheckoutError::class.java)
-        expectedException.expectMessage("Some http message")
-        expectedException.expectMessage("Some exception occurred")
-
         stubResponse(buildMockedResponse(500, "Some exception occurred", "Some http message"))
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutError> {
+            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertEquals("Error message was: Some http message. Error response was: Some exception occurred", exception.message)
     }
 
     @Test
@@ -141,24 +139,22 @@ class HttpClientTest {
                     }""")
 
 
-        expectedException.expect(AccessCheckoutClientError::class.java)
-        expectedException.expectMessage(errorMessage)
-
         stubResponse(buildMockedResponse(400, responseBody, errorMessage))
         given(clientErrorDeserializer.deserialize(responseBody)).willReturn(AccessCheckoutClientError(Error.BODY_DOES_NOT_MATCH_SCHEMA, errorMessage))
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutClientError> {
+            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertEquals(errorMessage, exception.message)
 
     }
 
     @Test
     fun givenHttp400ErrorWithNoResponseBody_ThenShouldThrowAccessCheckoutExceptionWithoutAnyErrorResponseBodyOnPost() {
         val errorMessage = "The body within the request is empty"
-
-        expectedException.expect(AccessCheckoutClientError::class.java)
-        expectedException.expectMessage(errorMessage)
 
         val jsonResponse =  removeWhitespace("""{
                                 "errorName": "bodyIsEmpty",
@@ -170,59 +166,68 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutClientError> {
+            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertEquals(errorMessage, exception.message)
 
     }
 
     @Test
     fun givenHttp400ErrorWithEmptyResponseData_ThenShouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBodyOnPost() {
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectMessage("Error message was: Some Client Error")
-
         stubResponse(MockedResponse(400, null, "Some Client Error"))
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertEquals("Error message was: Some Client Error", exception.message)
+        assertTrue(exception.cause is java.lang.RuntimeException)
     }
 
     @Test
     fun givenServerCannotBeReached_ThenShouldThrowAccessCheckoutExceptionWithCauseOnPost() {
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectCause(instanceOf(ConnectException::class.java))
-
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
         given(url.openConnection()).willThrow(ConnectException())
 
-        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertTrue(exception.cause is ConnectException)
 
     }
 
     @Test
     fun givenSerializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnPost() {
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectCause(instanceOf(RuntimeException::class.java))
-        expectedException.expectMessage("An exception was thrown when trying to establish a connection")
-
         given(serializer.serialize(testRequest)).willThrow(RuntimeException())
 
-        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertEquals("An exception was thrown when trying to establish a connection", exception.message)
+        assertTrue(exception.cause is java.lang.RuntimeException)
 
     }
 
     @Test
     fun givenDeserializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnPost() {
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectCause(instanceOf(RuntimeException::class.java))
-        expectedException.expectMessage("An exception was thrown when trying to establish a connection")
-
         val responseBody = "{}"
         stubResponse(buildMockedResponse(201, responseBody, ""))
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
         given(deserializer.deserialize(responseBody)).willThrow(RuntimeException())
 
-        httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertEquals("An exception was thrown when trying to establish a connection", exception.message)
+        assertTrue(exception.cause is java.lang.RuntimeException)
 
     }
 
@@ -259,23 +264,21 @@ class HttpClientTest {
     fun givenRedirectSentWithNoLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnPost() {
         val redirectResponseCode = 301
 
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectMessage("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header")
-
         val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(redirectResponseCode, null, ""))
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+        }
+
+        assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
     }
 
     @Test
     fun givenRedirectSentWithEmptyLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnPost() {
         val redirectResponseCode = 301
-
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectMessage("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header")
 
         val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location", ""))))
 
@@ -283,7 +286,11 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+        }
+
+        assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
     }
 
     @Test
@@ -316,39 +323,40 @@ class HttpClientTest {
 
         stubResponse(MockedResponse(201, inputStream, ""))
 
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectCause(instanceOf(java.lang.RuntimeException::class.java))
-        expectedException.expectMessage(errorMessage)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doGet(url, deserializer)
+        }
 
-        httpClient.doGet(url, deserializer)
+        assertEquals(errorMessage, exception.message)
+        assertTrue(exception.cause is java.lang.RuntimeException)
     }
 
     @Test
     fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBodyOnGet() {
-        expectedException.expect(AccessCheckoutError::class.java)
-        expectedException.expectMessage("A server error occurred when trying to make the request")
-
         stubResponse(buildMockedResponse(500, null, null))
 
-        httpClient.doGet(url, deserializer)
+        val exception = assertFailsWith<AccessCheckoutError> {
+            httpClient.doGet(url, deserializer)
+        }
+
+        assertEquals("A server error occurred when trying to make the request", exception.message)
     }
 
     @Test
     fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithMessageFromServerWhenBodyInResponseOnGet() {
-        expectedException.expect(AccessCheckoutError::class.java)
-        expectedException.expectMessage("Some http message")
-        expectedException.expectMessage("Some exception occurred")
-
         stubResponse(buildMockedResponse(500, "Some exception occurred", "Some http message"))
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doGet(url, deserializer)
+        val exception = assertFailsWith<AccessCheckoutError> {
+            httpClient.doGet(url, deserializer)
+        }
+
+        assertEquals("Error message was: Some http message. Error response was: Some exception occurred", exception.message)
     }
 
     @Test
     fun givenHttp400ErrorWithResponseBody_ThenShouldThrowAccessCheckoutExceptionWithErrorResponseFromServerOnGet() {
-
         val errorMessage = "The json body provided does not match the expected schema"
         val responseBody = """{
                                 "errorName": "bodyDoesNotMatchSchema",
@@ -362,65 +370,65 @@ class HttpClientTest {
                                 ]
                             }"""
 
-
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectMessage(errorMessage)
-
         stubResponse(buildMockedResponse(400, responseBody, errorMessage))
 
-        httpClient.doGet(url, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doGet(url, deserializer)
+        }
 
+        assertEquals("Error message was: ${errorMessage}. Error response was: ${responseBody.replace("\n", "")}", exception.message)
     }
 
     @Test
     fun givenHttp400ErrorWithNoResponseBody_ThenShouldThrowAccessCheckoutExceptionWithoutAnyErrorResponseBodyOnGet() {
         val errorMessage = "Cannot deserialize empty string"
 
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectMessage(errorMessage)
-
         stubResponse(buildMockedResponse(400, "", errorMessage))
 
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doGet(url, deserializer)
+        }
 
-        httpClient.doGet(url, deserializer)
+        assertEquals("Error message was: $errorMessage", exception.message)
     }
 
     @Test
     fun givenHttp400ErrorWithEmptyResponseData_ThenShouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBodyOnGet() {
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectMessage("Error message was: Some Client Error")
-
         stubResponse(MockedResponse(400, null, "Some Client Error"))
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doGet(url, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doGet(url, deserializer)
+        }
+
+        assertEquals("Error message was: Some Client Error", exception.message)
     }
 
     @Test
     fun givenServerCannotBeReached_ThenShouldThrowAccessCheckoutExceptionWithCauseOnGet() {
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectCause(instanceOf(ConnectException::class.java))
-
         given(url.openConnection()).willThrow(ConnectException())
 
-        httpClient.doGet(url, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doGet(url, deserializer)
+        }
 
+        assertTrue(exception.cause is ConnectException)
     }
 
     @Test
     fun givenDeserializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnGet() {
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectCause(instanceOf(RuntimeException::class.java))
-        expectedException.expectMessage("An exception was thrown when trying to establish a connection")
-
         val responseBody = "{}"
         stubResponse(buildMockedResponse(201, responseBody, ""))
 
         given(deserializer.deserialize(responseBody)).willThrow(RuntimeException())
 
-        httpClient.doGet(url, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doGet(url, deserializer)
+        }
 
+        assertEquals("An exception was thrown when trying to establish a connection", exception.message)
+        assertTrue(exception.cause is java.lang.RuntimeException)
     }
 
     @Test
@@ -454,23 +462,21 @@ class HttpClientTest {
     fun givenRedirectSentWithNoLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnGet() {
         val redirectResponseCode = 301
 
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectMessage("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header")
-
         val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(redirectResponseCode, null, ""))
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doGet(url, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doGet(url, deserializer)
+        }
+
+        assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
     }
 
     @Test
     fun givenRedirectSentWithEmptyLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnGet() {
         val redirectResponseCode = 301
-
-        expectedException.expect(AccessCheckoutHttpException::class.java)
-        expectedException.expectMessage("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header")
 
         val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location", ""))))
 
@@ -478,7 +484,11 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        httpClient.doGet(url, deserializer)
+        val exception = assertFailsWith<AccessCheckoutHttpException> {
+            httpClient.doGet(url, deserializer)
+        }
+
+        assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
     }
 
     private fun buildMockedResponse(

@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.validation.utils
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.validation.ValidatorUtils
 
 object ValidationUtil {
 
@@ -28,7 +27,7 @@ object ValidationUtil {
 
     fun findBrandForPan(cardConfiguration: CardConfiguration, pan: String) : RemoteCardBrand? {
         for (brand in cardConfiguration.brands) {
-            if (ValidatorUtils.regexMatches(brand.pan.matcher, pan)) {
+            if (brand.pan.matcher.toPattern().matcher(pan).find()) {
                 return brand
             }
         }

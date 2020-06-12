@@ -6,8 +6,7 @@ import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 
 class CardValidationConfig private constructor(
     val pan: EditText,
-    val expiryMonth: EditText,
-    val expiryYear: EditText,
+    val expiryDate: EditText,
     val cvv: EditText,
     val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener
@@ -16,8 +15,7 @@ class CardValidationConfig private constructor(
     class Builder {
 
         private var pan: EditText? = null
-        private var expiryMonth: EditText? = null
-        private var expiryYear: EditText? = null
+        private var expiryDate: EditText? = null
         private var cvv: EditText? = null
         private var baseUrl: String? = null
         private var validationListener: AccessCheckoutCardValidationListener? = null
@@ -27,13 +25,8 @@ class CardValidationConfig private constructor(
             return this
         }
 
-        fun expiryMonth(expiryMonth: EditText): Builder {
-            this.expiryMonth = expiryMonth
-            return this
-        }
-
-        fun expiryYear(expiryYear: EditText): Builder {
-            this.expiryYear = expiryYear
+        fun expiryDate(expiryDate: EditText): Builder {
+            this.expiryDate = expiryDate
             return this
         }
 
@@ -54,16 +47,14 @@ class CardValidationConfig private constructor(
 
         fun build(): CardValidationConfig {
             validateNotNull(pan, "pan component")
-            validateNotNull(expiryMonth, "expiry month component")
-            validateNotNull(expiryYear, "expiry year component")
+            validateNotNull(expiryDate, "expiry date component")
             validateNotNull(cvv, "cvv component")
             validateNotNull(baseUrl, "base url")
             validateNotNull(validationListener, "validation listener")
 
             return CardValidationConfig(
                 pan = pan as EditText,
-                expiryMonth = expiryMonth as EditText,
-                expiryYear = expiryYear as EditText,
+                expiryDate = expiryDate as EditText,
                 cvv = cvv as EditText,
                 baseUrl = baseUrl as String,
                 validationListener = validationListener as AccessCheckoutCardValidationListener

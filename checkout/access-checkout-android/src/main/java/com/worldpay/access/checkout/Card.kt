@@ -9,6 +9,7 @@ import com.worldpay.access.checkout.views.CardViewListener
  *
  * See [AccessCheckoutCard] for an out-of-the-box implementation of this
  */
+@Deprecated(message = "legacy")
 interface Card: CardViewListener {
 
     /**

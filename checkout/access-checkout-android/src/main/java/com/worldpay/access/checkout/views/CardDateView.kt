@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.views
 /**
  * [CardDateView] is an interface which represents the expiry date field in the payment form
  */
+@Deprecated(message = "legacy")
 interface CardDateView: CardView {
 
     /**

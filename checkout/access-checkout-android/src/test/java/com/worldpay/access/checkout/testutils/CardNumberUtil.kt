@@ -12,6 +12,9 @@ object CardNumberUtil {
     const val DINERS_PAN = "36121966553184"
     const val MAESTRO_PAN = "6761577168010117"
 
+    const val VALID_UNKNOWN_LUHN = "0999008073997244886"
+    const val INVALID_UNKNOWN_LUHN = "0999008073997244887"
+
     fun visa(length: Int = 16): String {
         return when (length) {
             16 -> "4111111111111111"
