@@ -71,7 +71,7 @@ class AccessCheckoutClientImplTest {
 
         val cardDetails = CardDetails.Builder()
             .pan("1234")
-            .expiryDate(12, 2020)
+            .expiryDate("1220")
             .cvv("123")
             .build()
 
@@ -104,7 +104,7 @@ class AccessCheckoutClientImplTest {
     fun `should be able to call each handler's canHandle method when calling generate`() {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
-            .expiryDate(12, 2020)
+            .expiryDate("1220")
             .cvv("123")
             .build()
 
@@ -152,7 +152,7 @@ class AccessCheckoutClientImplTest {
     fun `should call handle method on the verifiedTokenRequestHandler when calling generate for verified token`() {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
-            .expiryDate(12, 2020)
+            .expiryDate("1220")
             .cvv("123")
             .build()
 
@@ -178,7 +178,7 @@ class AccessCheckoutClientImplTest {
     fun `should not call handle when canHandle returns false`() {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
-            .expiryDate(12, 2020)
+            .expiryDate("1220")
             .cvv("123")
             .build()
 

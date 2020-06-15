@@ -1,7 +1,9 @@
 package com.worldpay.access.checkout.client.validation
 
 import android.widget.EditText
+import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
@@ -71,6 +73,12 @@ class ValidationIntegrationTest {
             .build()
 
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
+
+        verify(cardValidationListener, times(2)).onPanValidated(null, false)
+        verify(cardValidationListener, times(2)).onCvvValidated(false)
+        verify(cardValidationListener, times(2)).onExpiryDateValidated(false)
+
+        reset(cardValidationListener)
     }
 
     @Test

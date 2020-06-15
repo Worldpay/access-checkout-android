@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.validation.controller
 
+import android.text.Editable
 import android.text.InputFilter
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
@@ -23,8 +24,13 @@ import kotlin.test.assertTrue
 class FieldDecoratorFactoryTest {
 
     private val cvvEditText = mock<EditText>()
+    private val cvvEditable = mock<Editable>()
+
     private val panEditText = mock<EditText>()
+    private val panEditable = mock<Editable>()
+
     private val expiryDateEditText = mock<EditText>()
+    private val expiryDateEditable = mock<Editable>()
 
     private lateinit var fieldDecoratorFactory: FieldDecoratorFactory
 
@@ -38,6 +44,15 @@ class FieldDecoratorFactoryTest {
         fieldDecoratorFactory = FieldDecoratorFactory(
             textWatcherFactory = textWatcherFactory
         )
+
+        given(panEditText.text).willReturn(panEditable)
+        given(panEditable.toString()).willReturn("")
+
+        given(expiryDateEditText.text).willReturn(expiryDateEditable)
+        given(expiryDateEditable.toString()).willReturn("")
+
+        given(cvvEditText.text).willReturn(cvvEditable)
+        given(cvvEditable.toString()).willReturn("")
     }
 
     @Test
@@ -52,6 +67,8 @@ class FieldDecoratorFactoryTest {
         reset(cvvEditText)
 
         given(cvvEditText.filters).willReturn(emptyArray())
+        given(cvvEditText.text).willReturn(cvvEditable)
+        given(cvvEditable.toString()).willReturn("")
 
         fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
@@ -113,6 +130,8 @@ class FieldDecoratorFactoryTest {
         reset(panEditText)
 
         given(panEditText.filters).willReturn(emptyArray())
+        given(panEditText.text).willReturn(panEditable)
+        given(panEditable.toString()).willReturn("")
 
         fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
@@ -174,6 +193,8 @@ class FieldDecoratorFactoryTest {
         reset(expiryDateEditText)
 
         given(expiryDateEditText.filters).willReturn(emptyArray())
+        given(expiryDateEditText.text).willReturn(expiryDateEditable)
+        given(expiryDateEditable.toString()).willReturn("")
 
         fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
 

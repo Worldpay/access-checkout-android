@@ -56,7 +56,7 @@ class VerifiedTokensSessionRequestHandlerTest {
     @Test
     fun `should throw illegal argument exception if pan is not provided in card details`() {
         val cardDetails = CardDetails.Builder()
-            .expiryDate(12, 2020)
+            .expiryDate("1220")
             .cvv("123")
             .build()
 
@@ -85,7 +85,7 @@ class VerifiedTokensSessionRequestHandlerTest {
     fun `should throw illegal argument exception if cvv is not provided in card details`() {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
-            .expiryDate(12, 2020)
+            .expiryDate("1220")
             .build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
@@ -99,7 +99,7 @@ class VerifiedTokensSessionRequestHandlerTest {
     fun `should start service via context using the expected intent`() {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
-            .expiryDate(12, 2020)
+            .expiryDate("1220")
             .cvv("123")
             .build()
 

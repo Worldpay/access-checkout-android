@@ -56,7 +56,7 @@ class PaymentsCvcSessionRequestHandlerTest {
     @Test
     fun `should not throw illegal argument exception if pan is not provided in card details`() {
         val cardDetails = CardDetails.Builder()
-            .expiryDate(10, 20)
+            .expiryDate("1020")
             .cvv("123")
             .build()
         paymentsCvcSessionRequestHandler.handle(cardDetails)
