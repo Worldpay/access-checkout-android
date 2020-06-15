@@ -19,11 +19,11 @@ import kotlin.test.assertTrue
 
 class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
-    private fun panInput() = findById<PANLayout>(R.id.card_flow_text_pan)
+    private fun panInput() = findById<EditText>(R.id.card_flow_text_pan)
     private fun cvvInput() = findById<EditText>(R.id.card_flow_text_cvv)
     private fun expiryDateInput() = findById<EditText>(R.id.card_flow_expiry_date)
     private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
-    private fun brandLogo() = findById<ImageView>(R.id.logo_view)
+    private fun brandLogo() = findById<ImageView>(R.id.card_flow_brand_logo)
     private fun paymentsCvcSwitch() = findById<Switch>(R.id.card_flow_payments_cvc_switch)
 
     enum class Input {
@@ -88,8 +88,8 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         val enableMsg = "enabled state"
 
         if (pan != null) {
-            wait { assertTrue("PAN Input - $visibleMsg") { panInput().mEditText.isVisible } }
-            wait { assertEquals(pan, panInput().mEditText.isEnabled, "PAN Input - $enableMsg") }
+            wait { assertTrue("PAN Input - $visibleMsg") { panInput().isVisible } }
+            wait { assertEquals(pan, panInput().isEnabled, "PAN Input - $enableMsg") }
         }
 
         if (cvv != null) {
@@ -123,7 +123,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun focusOn(input: Input): CardFragmentTestUtils {
         when (input) {
-            Input.PAN -> uiObjectWithId(panInput().mEditText.id).click()
+            Input.PAN -> uiObjectWithId(panInput().id).click()
             Input.CVV -> uiObjectWithId(cvvInput().id).click()
             Input.EXPIRY_DATE -> uiObjectWithId(expiryDateInput().id).click()
         }
@@ -131,7 +131,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun enterCardDetails(pan: String? = null, cvv: String? = null, expiryDate: String? = null, assertText: Boolean = false): CardFragmentTestUtils {
-        if (pan != null) enterText(panInput().mEditText, pan)
+        if (pan != null) enterText(panInput(), pan)
         if (cvv != null) enterText(cvvInput(), cvv)
         if (expiryDate != null) enterText(expiryDateInput(), expiryDate)
 
@@ -143,14 +143,14 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun cardDetailsAre(pan: String? = null, cvv: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
-        if (pan != null) wait { assertEquals(pan, panInput().mEditText.text.toString()) }
+        if (pan != null) wait { assertEquals(pan, panInput().text.toString()) }
         if (cvv != null) wait { assertEquals(cvv, cvvInput().text.toString()) }
         if (expiryDate != null) wait { assertEquals(expiryDate, expiryDateInput().text.toString()) }
         return this
     }
 
     fun validationStateIs(pan: Boolean? = null, cvv: Boolean? = null, expiryDate: Boolean? = null): CardFragmentTestUtils {
-        if (pan != null) checkValidationState(panInput().mEditText, pan, "pan")
+        if (pan != null) checkValidationState(panInput(), pan, "pan")
         if (cvv != null) checkValidationState(cvvInput(), cvv, "cvv")
         if (expiryDate != null) checkValidationState(expiryDateInput(), expiryDate, "expiry date")
         return this

@@ -19,7 +19,6 @@ import com.worldpay.access.checkout.client.session.model.SessionType;
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser;
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig;
 import com.worldpay.access.checkout.sample.card.CardValidationListener;
-import com.worldpay.access.checkout.views.PANLayout;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,7 +30,7 @@ import static java.util.Collections.singletonList;
 
 public class MainActivityJavaExample extends AppCompatActivity implements SessionResponseListener {
 
-    private PANLayout panView;
+    private EditText panText;
     private EditText cvvText;
     private EditText expiryText;
 
@@ -50,7 +49,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
     protected void onStart() {
         super.onStart();
 
-        panView = findViewById(R.id.card_flow_text_pan);
+        panText = findViewById(R.id.card_flow_text_pan);
         cvvText = findViewById(R.id.cvv_flow_text_cvv);
         expiryText = findViewById(R.id.card_flow_expiry_date);
         submit = findViewById(R.id.card_flow_btn_submit);
@@ -126,7 +125,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
 
         CardValidationConfig cardValidationConfig = new CardValidationConfig.Builder()
                 .baseUrl(getBaseUrl())
-                .pan(panView.mEditText)
+                .pan(panText)
                 .expiryDate(expiryText)
                 .cvv(cvvText)
                 .validationListener(cardValidationListener)
@@ -150,7 +149,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
             toggleLoading(false);
 
             CardDetails cardDetails = new CardDetails.Builder()
-                    .pan(panView.getInsertedText())
+                    .pan(panText.getText().toString())
                     .expiryDate(expiryText.getText().toString())
                     .cvv(cvvText.getText().toString())
                     .build();
@@ -160,7 +159,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
     }
 
     private void toggleLoading(Boolean enableFields) {
-        panView.mEditText.setEnabled(enableFields);
+        panText.setEnabled(enableFields);
         cvvText.setEnabled(enableFields);
         expiryText.setEnabled(enableFields);
         submit.setEnabled(enableFields);

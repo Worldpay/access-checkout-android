@@ -22,7 +22,6 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardValidationListener
 import com.worldpay.access.checkout.sample.card.SessionResponseListenerImpl
 import com.worldpay.access.checkout.util.logging.LoggingUtils
-import com.worldpay.access.checkout.views.PANLayout
 import kotlin.properties.Delegates
 
 class CardFlowFragment : Fragment() {
@@ -30,7 +29,7 @@ class CardFlowFragment : Fragment() {
     private var submitBtnEnabledColor by Delegates.notNull<Int>()
     private var submitBtnDisabledColor by Delegates.notNull<Int>()
 
-    private lateinit var panView: PANLayout
+    private lateinit var panText: EditText
     private lateinit var cvvText: EditText
     private lateinit var expiryText: EditText
     private lateinit var submitBtn: Button
@@ -54,7 +53,7 @@ class CardFlowFragment : Fragment() {
         activity?.let { activity ->
             progressBar = ProgressBar(activity)
 
-            panView = view.findViewById(R.id.card_flow_text_pan)
+            panText = view.findViewById(R.id.card_flow_text_pan)
             expiryText = view.findViewById(R.id.card_flow_expiry_date)
             cvvText = view.findViewById(R.id.card_flow_text_cvv)
             submitBtn = view.findViewById(R.id.card_flow_btn_submit)
@@ -109,7 +108,7 @@ class CardFlowFragment : Fragment() {
             toggleFields(false)
 
             val cardDetails = CardDetails.Builder()
-                .pan(panView.getInsertedText())
+                .pan(panText.text.toString())
                 .expiryDate(expiryText.text.toString())
                 .cvv(cvvText.text.toString())
                 .build()
@@ -123,7 +122,7 @@ class CardFlowFragment : Fragment() {
 
         val cardValidationConfig = CardValidationConfig.Builder()
             .baseUrl(getBaseUrl())
-            .pan(panView.mEditText)
+            .pan(panText)
             .expiryDate(expiryText)
             .cvv(cvvText)
             .validationListener(cardValidationListener)
@@ -133,7 +132,7 @@ class CardFlowFragment : Fragment() {
     }
 
     private fun toggleFields(enableFields: Boolean) {
-        panView.mEditText.isEnabled = enableFields
+        panText.isEnabled = enableFields
         cvvText.isEnabled = enableFields
         expiryText.isEnabled = enableFields
         paymentsCvcSwitch.isEnabled = enableFields

@@ -87,7 +87,7 @@ class CardConfigurationLongDelayIntegrationTest {
     }
     
     private fun assertExpectedLogo(logoResName: String) {
-        val logoView = cardConfigRule.activity.findViewById<ImageView>(R.id.logo_view)
+        val logoView = cardConfigRule.activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
         assertEquals(logoResName, logoView.getTag(PANLayout.CARD_TAG))
     }
 

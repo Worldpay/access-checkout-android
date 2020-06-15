@@ -2,13 +2,13 @@ package com.worldpay.access.checkout.sample.card
 
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.images.SVGImageLoader.Companion.getInstance
-import com.worldpay.access.checkout.views.PANLayout
 
 class CardValidationListener(private val activity: FragmentActivity) : AccessCheckoutCardValidationListener {
 
@@ -22,11 +22,11 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
     }
 
     override fun onPanValidated(cardBrand: CardBrand?, isValid: Boolean) {
-        val panView = activity.findViewById<PANLayout>(R.id.card_flow_text_pan)
-        val logoImageView = panView.mImageView
+        val brandLogo = activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
+        getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
 
-        getInstance(activity).fetchAndApplyCardLogo(cardBrand, logoImageView)
-        changeFont(panView.mEditText, isValid)
+        val pan = activity.findViewById<EditText>(R.id.card_flow_text_pan)
+        changeFont(pan, isValid)
         if (!isValid) toggleSubmit(false)
     }
 
