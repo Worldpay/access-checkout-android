@@ -28,10 +28,4 @@ interface CardView {
      */
     fun applyLengthFilter(inputFilter: InputFilter)
 
-    /**
-     * A method to return whether this view has focus
-     *
-     * @return Boolean representing if the view has focus
-     */
-    fun hasFocus(): Boolean
 }

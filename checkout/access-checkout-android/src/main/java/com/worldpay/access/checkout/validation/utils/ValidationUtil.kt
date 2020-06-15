@@ -34,4 +34,6 @@ object ValidationUtil {
         return null
     }
 
+    fun isNumeric(number: String) = number.isNotBlank() && number.toCharArray().none { !it.isDigit() }
+
 }

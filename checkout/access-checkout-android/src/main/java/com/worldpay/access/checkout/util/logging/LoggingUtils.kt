@@ -12,8 +12,4 @@ object LoggingUtils {
         accessCheckoutLogger.debugLog(tag, msg)
     }
 
-    @JvmStatic
-    fun errorLog(tag: String, msg: String) {
-        accessCheckoutLogger.errorLog(tag, msg)
-    }
 }

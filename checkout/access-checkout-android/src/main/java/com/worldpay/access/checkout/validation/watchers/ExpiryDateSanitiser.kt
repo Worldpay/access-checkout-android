@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.EXPIRY_DATE_DEFAULTS
-import com.worldpay.access.checkout.validation.ValidatorUtils.isNumeric
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
 
 class ExpiryDateSanitiser {
 

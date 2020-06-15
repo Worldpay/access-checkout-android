@@ -7,6 +7,9 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
+import org.junit.Assert
+import org.junit.Assert.assertFalse
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -67,6 +70,61 @@ class ValidationUtilTest {
     @Test
     fun `should be able to find null brand for visa pan but where card config has no brands`() {
         assertNull(ValidationUtil.findBrandForPan(CARD_CONFIG_NO_BRAND, VISA_PAN))
+    }
+
+    @Test
+    fun `given single numeric char then isNumeric should return true`() {
+        Assert.assertTrue(isNumeric("1"))
+    }
+
+    @Test
+    fun `given all numeric chars then isNumeric should return true`() {
+        Assert.assertTrue(isNumeric("1234567890"))
+    }
+
+    @Test
+    fun `given all non-numeric chars then isNumeric should return false`() {
+        assertFalse(isNumeric("ABCDEFGHI"))
+    }
+
+    @Test
+    fun `given some non-numeric chars then isNumeric should return false`() {
+        assertFalse(isNumeric("123ABC456"))
+    }
+
+    @Test
+    fun `given empty then isNumeric should return false`() {
+        assertFalse(isNumeric(""))
+    }
+
+    @Test
+    fun `given special chars then isNumeric should return false`() {
+        assertFalse(isNumeric("@£%&*!"))
+    }
+
+    @Test
+    fun `given single numeric char with a leading space then isNumeric should return false`() {
+        assertFalse(isNumeric(" 1"))
+    }
+
+    @Test
+    fun `given all numeric chars with a leading space then isNumeric should return false`() {
+        assertFalse(isNumeric(" 123"))
+    }
+
+    @Test
+    fun `given single numeric char with a trailing space then isNumeric should return false`() {
+        assertFalse(isNumeric("1 "))
+    }
+
+    @Test
+    fun `given all numeric chars with a trailing space then isNumeric should return false`() {
+        assertFalse(isNumeric("123 "))
+    }
+
+    @Test
+    fun `given all numeric chars with a space in the middle then isNumeric should return false`() {
+        assertFalse(isNumeric("1 4"))
     }
 
 }
