@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.sample.cvv.testutil
 
 import android.widget.Button
+import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -10,13 +11,12 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.views.CardCVVText
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class CvvFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
-    private fun cvvInput() = findById<CardCVVText>(R.id.cvv_flow_text_cvv)
+    private fun cvvInput() = findById<EditText>(R.id.cvv_flow_text_cvv)
     private fun submitButton() = findById<Button>(R.id.cvv_flow_btn_submit)
 
     fun isInInitialState(): CvvFragmentTestUtils {

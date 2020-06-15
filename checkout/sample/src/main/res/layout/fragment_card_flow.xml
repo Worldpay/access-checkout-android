@@ -18,28 +18,29 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.worldpay.access.checkout.views.CardExpiryTextLayout
-        android:id="@+id/card_flow_text_exp"
+    <EditText
+        android:id="@+id/card_flow_expiry_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:ems="10"
-        android:hint="@string/card_expiry_hint"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="36dp"
+        android:ems="4"
+        android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="number"
-        app:layout_constraintStart_toStartOf="@+id/card_flow_text_pan"
-        app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan"
+        tools:ignore="TextFields" />
 
-    <com.worldpay.access.checkout.views.CardCVVText
+    <EditText
         android:id="@+id/card_flow_text_cvv"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="30dp"
-        android:layout_marginTop="32dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginTop="36dp"
         android:ems="4"
-        android:hint="@string/card_cvv_hint"
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="number"
-        app:layout_constraintStart_toEndOf="@+id/card_flow_text_exp"
+        app:layout_constraintStart_toEndOf="@+id/card_flow_expiry_date"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan" />
 
     <Switch
@@ -49,7 +50,7 @@
         android:layout_marginTop="30dp"
         android:layout_marginEnd="24dp"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/card_flow_text_exp" />
+        app:layout_constraintTop_toBottomOf="@+id/card_flow_expiry_date" />
 
     <TextView
         android:id="@+id/card_flow_multi_session_switch_title"

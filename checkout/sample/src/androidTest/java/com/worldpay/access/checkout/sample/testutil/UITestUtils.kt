@@ -43,12 +43,16 @@ object UITestUtils {
 
     fun setOrientationLeft() {
         val uiDevice = getInstance(getInstrumentation())
-        uiDevice.setOrientationLeft()
+        if (uiDevice.isNaturalOrientation) {
+            uiDevice.setOrientationLeft()
+        }
     }
 
     fun setOrientationNatural() {
         val uiDevice = getInstance(getInstrumentation())
-        uiDevice.setOrientationNatural()
+        if (!uiDevice.isNaturalOrientation) {
+            uiDevice.setOrientationNatural()
+        }
     }
 
     fun reopenApp() {

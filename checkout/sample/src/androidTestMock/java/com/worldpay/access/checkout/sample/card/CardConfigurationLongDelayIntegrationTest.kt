@@ -30,9 +30,6 @@ class CardConfigurationLongDelayIntegrationTest {
 
     private val luhnValidMastercardCard = "5555555555554444"
     private val luhnInvalidMastercardCard = "55555555555111"
-    private val unknownCvv = "123456"
-    private val month = "12"
-    private val year = "99"
 
     @Before
     fun setup() {
@@ -51,8 +48,8 @@ class CardConfigurationLongDelayIntegrationTest {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = luhnInvalidMastercardCard, cvv = unknownCvv, month = "13", year = year)
-            .validationStateIs(pan = false, cvv = true, month = false, year = false)
+            .enterCardDetails(pan = luhnInvalidMastercardCard, cvv = "12345", expiryDate = "0119")
+            .validationStateIs(pan = false, cvv = true, expiryDate = false)
             .enabledStateIs(submitButton = false)
             .hasNoBrand()
 
@@ -71,16 +68,16 @@ class CardConfigurationLongDelayIntegrationTest {
 
         // Assert that with now configuration has come back that the CVV is invalid for mastercard
         cardFragmentTestUtils
-            .validationStateIs(pan = false, cvv = false, month = false, year = false)
+            .validationStateIs(pan = false, cvv = false, expiryDate = false)
             .enabledStateIs(submitButton = false)
 
         // Re-enter a luhn valid, mastercard identified card and valid date and submit
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "123", month = month)
-            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "123", expiryDate = "1299")
+            .validationStateIs(pan = true, cvv = true, expiryDate = true)
             .enterCardDetails(cvv = "12345")
             .cardDetailsAre(cvv = "123")
-            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .validationStateIs(pan = true, cvv = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()

@@ -27,8 +27,6 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     private val amexCard = "343434343434343"
     private val amexCvv = "1234"
-    private val month = "12"
-    private val year = "99"
 
     @Test
     fun shouldBeAbleToRetrieveSuccessfulResponse_withRedirects() {
@@ -36,7 +34,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
+            .enterCardDetails(pan = amexCard, cvv = amexCvv, expiryDate = "1299")
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
@@ -55,7 +53,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
         // failing scenario with payments cvc session
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = unknownCardError, cvv = amexCvv, month = month, year = year)
+            .enterCardDetails(pan = unknownCardError, cvv = amexCvv, expiryDate = "1299")
             .setPaymentsCvcSwitchState(checked = true)
             .clickSubmitButton()
             .requestIsInProgress()
@@ -63,12 +61,12 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
                 "The json body provided does not match the expected schema"
             )
             .closeDialog()
-            .isInErrorState(pan = unknownCardError, cvv = amexCvv, month = month, year = year)
+            .isInErrorState(pan = unknownCardError, cvv = amexCvv, expiryDate = "12/99")
             .paymentsCvcSessionCheckedState(checked = true)
 
         // passing scenario with single session
         cardFragmentTestUtils
-            .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
+            .enterCardDetails(pan = amexCard, cvv = amexCvv, expiryDate = "1299")
             .setPaymentsCvcSwitchState(checked = false)
             .clickSubmitButton()
             .requestIsInProgress()
@@ -83,7 +81,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
     fun shouldBeAbleToRetrieveSuccessfulResponse_withoutRedirects() {
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
+            .enterCardDetails(pan = amexCard, cvv = amexCvv, expiryDate = "1299")
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
@@ -101,14 +99,14 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = unknownCardError, cvv = amexCvv, month = month, year = year)
+            .enterCardDetails(pan = unknownCardError, cvv = amexCvv, expiryDate = "1299")
             .clickSubmitButton()
             .requestIsInProgress()
             .hasErrorDialogWithMessage(
                 "The json body provided does not match the expected schema"
             )
             .closeDialog()
-            .isInErrorState(pan = unknownCardError, cvv = amexCvv, month = month, year = year)
+            .isInErrorState(pan = unknownCardError, cvv = amexCvv, expiryDate = "12/99")
     }
 
     @Test
@@ -119,7 +117,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = unknownCardError, cvv = amexCvv, month = month, year = year)
+            .enterCardDetails(pan = unknownCardError, cvv = amexCvv, expiryDate = "1299")
             .setPaymentsCvcSwitchState(checked = true)
             .clickSubmitButton()
             .requestIsInProgress()
@@ -127,7 +125,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
                 "The json body provided does not match the expected schema"
             )
             .closeDialog()
-            .isInErrorState(pan = unknownCardError, cvv = amexCvv, month = month, year = year)
+            .isInErrorState(pan = unknownCardError, cvv = amexCvv, expiryDate = "12/99")
             .paymentsCvcSessionCheckedState(checked = true)
     }
 
@@ -137,7 +135,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
+            .enterCardDetails(pan = amexCard, cvv = amexCvv, expiryDate = "1299")
             .clickSubmitButton()
 
         // rotate landscape
@@ -159,7 +157,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
         CardFragmentTestUtils(activityRule)
             .isInInitialState()
-            .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
+            .enterCardDetails(pan = amexCard, cvv = amexCvv, expiryDate = "1299")
             .clickSubmitButton()
 
         reopenApp()
@@ -176,10 +174,10 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
     fun shouldReturnVerifiedTokenAndPaymentCvcTokenAndResetToOffOnSuccess_whenToggleIsOn() {
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = "4111111111111111", cvv = "123", month = "11", year = "40")
-            .cardDetailsAre(pan = "4111111111111111", cvv = "123", month = "11", year = "40")
+            .enterCardDetails(pan = "4111111111111111", cvv = "123", expiryDate = "1140")
+            .cardDetailsAre(pan = "4111111111111111", cvv = "123", expiryDate = "11/40")
             .hasBrand(CardBrand.VISA)
-            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .validationStateIs(pan = true, cvv = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
             .setPaymentsCvcSwitchState(checked = true)
             .clickSubmitButton()

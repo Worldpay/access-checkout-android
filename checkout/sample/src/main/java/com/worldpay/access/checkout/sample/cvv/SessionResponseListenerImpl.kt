@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.sample.cvv
 import android.app.Activity
 import android.app.AlertDialog
 import android.widget.Button
+import android.widget.EditText
 import android.widget.TextView
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
@@ -10,7 +11,6 @@ import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
-import com.worldpay.access.checkout.views.CardCVVText
 
 class SessionResponseListenerImpl(
     private val activity: Activity,
@@ -29,7 +29,7 @@ class SessionResponseListenerImpl(
             .create()
             .show()
 
-        activity.findViewById<CardCVVText>(R.id.cvv_flow_text_cvv).text.clear()
+        activity.findViewById<EditText>(R.id.cvv_flow_text_cvv).text.clear()
         setEnabledState(submitBtn = false)
     }
 

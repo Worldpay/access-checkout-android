@@ -15,8 +15,7 @@ class DiscoveryIntegrationTest {
 
     private val amexCard = "343434343434343"
     private val amexCvv = "1234"
-    private val month = "12"
-    private val year = "99"
+    private val expiryDate = "1299"
 
     @get:Rule
     var activityTestRule = ActivityTestRule(MainActivity::class.java)
@@ -34,7 +33,7 @@ class DiscoveryIntegrationTest {
 
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = amexCard, cvv = amexCvv, month = month, year = year)
+            .enterCardDetails(pan = amexCard, cvv = amexCvv, expiryDate = expiryDate)
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
