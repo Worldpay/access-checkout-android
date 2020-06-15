@@ -32,13 +32,26 @@ class ExpiryDateTextWatcherTest {
     }
 
     @Test
-    fun `should not attempt to format text when deleting characters`() {
+    fun `should attempt to format text when deleting characters`() {
         expiryDateTextWatcher.beforeTextChanged("13",0,0,0)
         given(expiryDateEditable.toString()).willReturn("1")
 
         expiryDateTextWatcher.afterTextChanged(expiryDateEditable)
 
+        verify(dateSanitiser).sanitise("1")
         verify(dateValidator).validate("1")
+        verify(expiryDateValidationResultHandler).handleResult(false)
+        verifyZeroInteractions(expiryDateEditText)
+    }
+
+    @Test
+    fun `should not attempt to format text when deleting separator characters`() {
+        expiryDateTextWatcher.beforeTextChanged("13/",0,0,0)
+        given(expiryDateEditable.toString()).willReturn("13")
+
+        expiryDateTextWatcher.afterTextChanged(expiryDateEditable)
+
+        verify(dateValidator).validate("13")
         verify(expiryDateValidationResultHandler).handleResult(false)
         verifyZeroInteractions(dateSanitiser, expiryDateEditText)
     }

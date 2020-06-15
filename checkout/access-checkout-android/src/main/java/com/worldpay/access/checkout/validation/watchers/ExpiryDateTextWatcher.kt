@@ -4,6 +4,7 @@ import android.text.Editable
 import android.widget.EditText
 import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.NewDateValidator
+import com.worldpay.access.checkout.validation.watchers.ExpiryDateSanitiser.Companion.SEPARATOR
 
 internal class ExpiryDateTextWatcher(
     private val dateValidator: NewDateValidator,
@@ -12,29 +13,43 @@ internal class ExpiryDateTextWatcher(
     private val expiryDateSanitiser: ExpiryDateSanitiser
 ): AbstractCardDetailTextWatcher() {
 
-    private var charactersLengthBeforeChange = 0
+    private var textBefore = ""
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
-        charactersLengthBeforeChange = s.toString().length
+        textBefore = s.toString()
         super.beforeTextChanged(s, start, count, after)
     }
 
     override fun afterTextChanged(editable: Editable?) {
         val expiryDate = editable.toString()
-        val isDeletingCharacters = charactersLengthBeforeChange > expiryDate.length
 
-        if (expiryDate.isNotBlank() && !isDeletingCharacters) {
-            val newExpiryDate = expiryDateSanitiser.sanitise(expiryDate)
+        if (expiryDate.isNotBlank()) {
+            val isNotDeletingSeparator = !attemptingToDeleteSeparator(textBefore, expiryDate)
+            val hasNoSeparator = !expiryDate.contains(SEPARATOR)
 
-            if (expiryDate != newExpiryDate) {
-                expiryDateEditText.setText(newExpiryDate)
-                expiryDateEditText.setSelection(newExpiryDate.length)
-                return
+            if (hasNoSeparator && isNotDeletingSeparator) {
+                val newExpiryDate = expiryDateSanitiser.sanitise(expiryDate)
+                if (expiryDate != newExpiryDate) {
+                    updateText(newExpiryDate)
+                    return
+                }
             }
         }
 
-        val result = dateValidator.validate(editable.toString())
+        val result = dateValidator.validate(expiryDate)
         expiryDateValidationResultHandler.handleResult(isValid = result)
+    }
+
+    private fun attemptingToDeleteSeparator(textBefore: String, textAfter: String): Boolean {
+        if (textBefore.endsWith(SEPARATOR) && !textAfter.endsWith(SEPARATOR)) {
+            return textAfter.plus(SEPARATOR) == textBefore
+        }
+        return false
+    }
+
+    private fun updateText(text: String) {
+        expiryDateEditText.setText(text)
+        expiryDateEditText.setSelection(text.length)
     }
 
 }
