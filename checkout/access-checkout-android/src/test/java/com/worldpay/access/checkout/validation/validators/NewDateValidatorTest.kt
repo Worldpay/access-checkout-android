@@ -11,6 +11,11 @@ class NewDateValidatorTest {
     private val dateValidator = NewDateValidator()
 
     @Test
+    fun `should be invalid if letters are entered`() {
+        assertFalse(dateValidator.validate( "ab"))
+    }
+
+    @Test
     fun `should be invalid if month and year are empty`() {
         assertFalse(dateValidator.validate( ""))
     }

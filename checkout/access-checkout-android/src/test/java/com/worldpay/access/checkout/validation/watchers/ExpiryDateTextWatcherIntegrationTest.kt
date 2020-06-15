@@ -43,28 +43,163 @@ class ExpiryDateTextWatcherIntegrationTest {
     @Test
     fun `should append forward slash after month is entered`() {
         expiryDate.setText("02")
-
         assertEquals("02/", expiryDate.text.toString())
     }
 
     @Test
-    fun `should format single digits correctly`() {
+    fun `should be able to edit month independently without reformatting`() {
+        expiryDate.setText("01/29")
+        assertEquals("01/29", expiryDate.text.toString())
+
+        expiryDate.setText("0/29")
+        assertEquals("0/29", expiryDate.text.toString())
+
+        expiryDate.setText("/29")
+        assertEquals("/29", expiryDate.text.toString())
+
+        expiryDate.setText("1/29")
+        assertEquals("1/29", expiryDate.text.toString())
+    }
+
+    @Test
+    fun `should reformat pasted new date overwriting an existing one`() {
+        expiryDate.setText("01/19")
+        assertEquals("01/19", expiryDate.text.toString())
+
+        expiryDate.setText("1299")
+        assertEquals("12/99", expiryDate.text.toString())
+
+        expiryDate.setText("1298")
+        assertEquals("12/98", expiryDate.text.toString())
+
+        expiryDate.setText("12/98")
+        assertEquals("12/98", expiryDate.text.toString())
+
+        expiryDate.setText("12")
+        assertEquals("12/", expiryDate.text.toString())
+
+        expiryDate.setText("12")
+        assertEquals("12", expiryDate.text.toString())
+    }
+
+    @Test
+    fun `should be able to delete characters to empty from valid expiry date`() {
+        expiryDate.setText("12/99")
+        assertEquals("12/99", expiryDate.text.toString())
+
+        expiryDate.setText("12/9")
+        assertEquals("12/9", expiryDate.text.toString())
+
+        expiryDate.setText("12/")
+        assertEquals("12/", expiryDate.text.toString())
+
+        expiryDate.setText("12")
+        assertEquals("12", expiryDate.text.toString())
+
+        expiryDate.setText("1")
+        assertEquals("1", expiryDate.text.toString())
+
+        expiryDate.setText("")
+        assertEquals("", expiryDate.text.toString())
+    }
+
+    @Test
+    fun `should be able to delete characters to empty from invalid expiry date`() {
+        expiryDate.setText("13/99")
+        assertEquals("13/99", expiryDate.text.toString())
+
+        expiryDate.setText("13/9")
+        assertEquals("13/9", expiryDate.text.toString())
+
+        expiryDate.setText("13/")
+        assertEquals("13/", expiryDate.text.toString())
+
+        expiryDate.setText("13")
+        assertEquals("13", expiryDate.text.toString())
+
+        expiryDate.setText("1")
+        assertEquals("1", expiryDate.text.toString())
+
+        expiryDate.setText("")
+        assertEquals("", expiryDate.text.toString())
+    }
+
+    @Test
+    fun `should not reformat pasted value when pasted value is same as current value`() {
+        expiryDate.setText("12/")
+        assertEquals("12/", expiryDate.text.toString())
+
+        expiryDate.setText("12")
+        assertEquals("12", expiryDate.text.toString())
+    }
+
+    @Test
+    fun `should be able to add characters to complete`() {
+        expiryDate.setText("")
+        assertEquals("", expiryDate.text.toString())
+
+        expiryDate.setText("1")
+        assertEquals("1", expiryDate.text.toString())
+
+        expiryDate.setText("12")
+        assertEquals("12/", expiryDate.text.toString())
+
+        expiryDate.setText("12/")
+        assertEquals("12/", expiryDate.text.toString())
+
+        expiryDate.setText("12/9")
+        assertEquals("12/9", expiryDate.text.toString())
+
+        expiryDate.setText("12/99")
+        assertEquals("12/99", expiryDate.text.toString())
+    }
+
+    @Test
+    fun `should format single digits correctly - overwrite`() {
         val testMap = mapOf(
             "1" to "1",
-            "02/" to "2",
-            "03/" to "3",
-            "04/" to "4",
-            "05/" to "5",
-            "06/" to "6",
-            "07/" to "7",
-            "08/" to "8",
-            "09/" to "9"
+            "2" to "02/",
+            "3" to "03/",
+            "4" to "04/",
+            "5" to "05/",
+            "6" to "06/",
+            "7" to "07/",
+            "8" to "08/",
+            "9" to "09/"
+        )
+
+        for (entry in testMap) {
+            assertEquals(entry.value, enterAndGetText(entry.key))
+        }
+    }
+
+    @Test
+    fun `should format single digits correctly - newly entered`() {
+        val testMap = mapOf(
+            "1" to "1",
+            "2" to "02/",
+            "3" to "03/",
+            "4" to "04/",
+            "5" to "05/",
+            "6" to "06/",
+            "7" to "07/",
+            "8" to "08/",
+            "9" to "09/"
         )
 
         for (entry in testMap) {
             expiryDate.setText("")
-            assertEquals(entry.key, enterAndGetText(entry.value))
+            assertEquals(entry.value, enterAndGetText(entry.key))
         }
+    }
+
+    @Test
+    fun `should reformat when month value changes despite the separator being deleted`() {
+        expiryDate.setText("02/")
+        assertEquals("02/", expiryDate.text.toString())
+
+        expiryDate.setText("03")
+        assertEquals("03/", expiryDate.text.toString())
     }
 
     @Test

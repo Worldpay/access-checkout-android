@@ -6,7 +6,10 @@ import com.worldpay.access.checkout.validation.ValidatorUtils.isNumeric
 class ExpiryDateSanitiser {
 
     private val nonNumericRegex = Regex("[^0-9/]")
-    private val separator = "/"
+
+    companion object {
+        const val SEPARATOR = "/"
+    }
 
     fun sanitise(str: String): String {
         // do not sanitise empty strings
@@ -25,7 +28,7 @@ class ExpiryDateSanitiser {
         if (expiryDate.length == 1) {
             val month = getFormattedMonth(expiryDate)
             return if (month.length > 1) {
-                month.plus(separator)
+                month.plus(SEPARATOR)
             } else {
                 month
             }
@@ -45,7 +48,7 @@ class ExpiryDateSanitiser {
         val month = getFormattedMonth(expiryDate)
         val year = getFormattedYear(expiryDate)
 
-        return limitToMaxLength(month.plus(separator).plus(year))
+        return limitToMaxLength(month.plus(SEPARATOR).plus(year))
     }
 
     private fun getFormattedMonth(expiryDate: String): String {
