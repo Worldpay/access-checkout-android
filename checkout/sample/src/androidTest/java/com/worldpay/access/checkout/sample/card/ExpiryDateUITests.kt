@@ -64,32 +64,6 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
             .validationStateIs(expiryDate = false)
     }
 
-//    @Test
-//    fun shouldAcceptValidYearUntilFocusMovedAwayFromExpiryDate_whenMonthIsEmpty() {
-//        cardFragmentTestUtils
-//            .isInInitialState()
-//            .cardDetailsAre(month = "")
-//            .enterCardDetails(year = getCurrentYearWithOffset(0))
-//            .validationStateIs(year = true)
-//            .focusOn(MONTH)
-//            .validationStateIs(year = true)
-//            .focusOn(PAN)
-//            .validationStateIs(year = false)
-//    }
-
-//    @Test
-//    fun shouldAcceptValidMonthUntilFocusMovedAwayFromExpiryDate_whenYearIsEmpty() {
-//        cardFragmentTestUtils
-//            .isInInitialState()
-//            .cardDetailsAre(year = "")
-//            .enterCardDetails(month = "01")
-//            .validationStateIs(year = true)
-//            .focusOn(EXPIRY_DATE)
-//            .validationStateIs(year = true)
-//            .focusOn(PAN)
-//            .validationStateIs(year = false)
-//    }
-
     @Test
     fun shouldNotAcceptIncompleteYear() {
         cardFragmentTestUtils.isInInitialState()

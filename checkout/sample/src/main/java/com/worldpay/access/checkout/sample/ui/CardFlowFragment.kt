@@ -7,8 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.Switch
-import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
@@ -22,22 +22,20 @@ import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardValidationListener
 import com.worldpay.access.checkout.sample.card.SessionResponseListenerImpl
-import kotlin.properties.Delegates
+import com.worldpay.access.checkout.sample.images.SVGImageLoader
 
 class CardFlowFragment : Fragment() {
-
-    private var submitBtnEnabledColor by Delegates.notNull<Int>()
-    private var submitBtnDisabledColor by Delegates.notNull<Int>()
 
     private lateinit var panText: EditText
     private lateinit var cvvText: EditText
     private lateinit var expiryText: EditText
-    private lateinit var submitBtn: Button
+    private lateinit var submitBtn: SubmitButton
     private lateinit var paymentsCvcSwitch: Switch
-
     private lateinit var progressBar: ProgressBar
 
     private lateinit var sessionTypes: List<SessionType>
+
+    private lateinit var cardValidationListener : CardValidationListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -52,30 +50,32 @@ class CardFlowFragment : Fragment() {
 
         activity?.let { activity ->
             progressBar = ProgressBar(activity)
+            submitBtn = SubmitButton(activity, R.id.card_flow_btn_submit)
 
             panText = view.findViewById(R.id.card_flow_text_pan)
             expiryText = view.findViewById(R.id.card_flow_expiry_date)
             cvvText = view.findViewById(R.id.card_flow_text_cvv)
-            submitBtn = view.findViewById(R.id.card_flow_btn_submit)
             paymentsCvcSwitch = view.findViewById(R.id.card_flow_payments_cvc_switch)
 
-            submitBtnEnabledColor =
-                getColor(activity.resources, R.color.colorPrimary, null)
-
-            submitBtnDisabledColor =
-                getColor(activity.resources, android.R.color.darker_gray, null)
+            val brandImageView = view.findViewById<ImageView>(R.id.card_flow_brand_logo)
+            SVGImageLoader.getInstance(activity).fetchAndApplyCardLogo(null, brandImageView)
 
             handleSwitch()
 
-            initialiseCardValidation(activity)
+            cardValidationListener = CardValidationListener(activity)
 
-            initialisePaymentFlow(activity)
+            initialisePaymentFlow(activity, view)
         }
     }
 
     override fun onResume() {
-        toggleFields(!progressBar.isLoading())
         super.onResume()
+        if (progressBar.isLoading()) {
+            disableFields()
+            submitBtn.disable()
+        } else {
+            initialiseCardValidation(cardValidationListener)
+        }
     }
 
     private fun handleSwitch() {
@@ -93,7 +93,7 @@ class CardFlowFragment : Fragment() {
         }
     }
 
-    private fun initialisePaymentFlow(activity: FragmentActivity) {
+    private fun initialisePaymentFlow(activity : FragmentActivity, view : View) {
         val accessCheckoutClient = AccessCheckoutClientBuilder()
             .baseUrl(getBaseUrl())
             .merchantId(getMerchantID())
@@ -102,10 +102,11 @@ class CardFlowFragment : Fragment() {
             .lifecycleOwner(this)
             .build()
 
-        submitBtn.setOnClickListener {
+        view.findViewById<Button>(R.id.card_flow_btn_submit).setOnClickListener {
             Log.d(javaClass.simpleName, "Started request")
             this.progressBar.beginLoading()
-            toggleFields(false)
+            disableFields()
+            submitBtn.disable()
 
             val cardDetails = CardDetails.Builder()
                 .pan(panText.text.toString())
@@ -117,9 +118,7 @@ class CardFlowFragment : Fragment() {
         }
     }
 
-    private fun initialiseCardValidation(activity: FragmentActivity) {
-        val cardValidationListener = CardValidationListener(activity)
-
+    private fun initialiseCardValidation(cardValidationListener : CardValidationListener) {
         val cardValidationConfig = CardValidationConfig.Builder()
             .baseUrl(getBaseUrl())
             .pan(panText)
@@ -131,12 +130,11 @@ class CardFlowFragment : Fragment() {
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
     }
 
-    private fun toggleFields(enableFields: Boolean) {
-        panText.isEnabled = enableFields
-        cvvText.isEnabled = enableFields
-        expiryText.isEnabled = enableFields
-        paymentsCvcSwitch.isEnabled = enableFields
-        submitBtn.isEnabled = false
+    private fun disableFields() {
+        panText.isEnabled = false
+        cvvText.isEnabled = false
+        expiryText.isEnabled = false
+        paymentsCvcSwitch.isEnabled = false
     }
 
     private fun getMerchantID() = BuildConfig.MERCHANT_ID

@@ -109,13 +109,13 @@ class FieldDecoratorFactoryTest {
     fun `should set text when the cvv field is in layout`() {
         val cvvEditable = mock<Editable>()
         given(cvvEditText.filters).willReturn(emptyArray())
-        given(cvvEditText.isInLayout).willReturn(true)
+        given(cvvEditText.isCursorVisible).willReturn(true)
         given(cvvEditText.text).willReturn(cvvEditable)
         given(cvvEditable.toString()).willReturn("123")
 
         fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).isInLayout
+        verify(cvvEditText).isCursorVisible
         verify(cvvEditText).setText("123")
     }
 
@@ -123,13 +123,13 @@ class FieldDecoratorFactoryTest {
     fun `should not set text when the cvv field is not in layout`() {
         val cvvEditable = mock<Editable>()
         given(cvvEditText.filters).willReturn(emptyArray())
-        given(cvvEditText.isInLayout).willReturn(false)
+        given(cvvEditText.isCursorVisible).willReturn(false)
         given(cvvEditText.text).willReturn(cvvEditable)
         given(cvvEditable.toString()).willReturn("123")
 
         fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).isInLayout
+        verify(cvvEditText).isCursorVisible
         verify(cvvEditText, never()).setText(any<String>())
     }
 
@@ -200,13 +200,13 @@ class FieldDecoratorFactoryTest {
     fun `should set text when the pan field is in layout`() {
         val panEditable = mock<Editable>()
         given(panEditText.filters).willReturn(emptyArray())
-        given(panEditText.isInLayout).willReturn(true)
+        given(panEditText.isCursorVisible).willReturn(true)
         given(panEditText.text).willReturn(panEditable)
         given(panEditable.toString()).willReturn(VISA_PAN)
 
         fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(panEditText).isInLayout
+        verify(panEditText).isCursorVisible
         verify(panEditText).setText(VISA_PAN)
     }
 
@@ -214,13 +214,13 @@ class FieldDecoratorFactoryTest {
     fun `should not set text when the pan field is not in layout`() {
         val panEditable = mock<Editable>()
         given(panEditText.filters).willReturn(emptyArray())
-        given(panEditText.isInLayout).willReturn(false)
+        given(panEditText.isCursorVisible).willReturn(false)
         given(panEditText.text).willReturn(panEditable)
         given(panEditable.toString()).willReturn(VISA_PAN)
 
         fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(panEditText).isInLayout
+        verify(panEditText).isCursorVisible
         verify(panEditText, never()).setText(any<String>())
     }
 
@@ -291,13 +291,13 @@ class FieldDecoratorFactoryTest {
     fun `should set text when the expiry date field is in layout`() {
         val expiryDateEditable = mock<Editable>()
         given(expiryDateEditText.filters).willReturn(emptyArray())
-        given(expiryDateEditText.isInLayout).willReturn(true)
+        given(expiryDateEditText.isCursorVisible).willReturn(true)
         given(expiryDateEditText.text).willReturn(expiryDateEditable)
         given(expiryDateEditable.toString()).willReturn("12/21")
 
         fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(expiryDateEditText).isInLayout
+        verify(expiryDateEditText).isCursorVisible
         verify(expiryDateEditText).setText("12/21")
     }
 
@@ -305,13 +305,13 @@ class FieldDecoratorFactoryTest {
     fun `should not set text when the expiry date field is not in layout`() {
         val expiryDateEditable = mock<Editable>()
         given(expiryDateEditText.filters).willReturn(emptyArray())
-        given(expiryDateEditText.isInLayout).willReturn(false)
+        given(expiryDateEditText.isCursorVisible).willReturn(false)
         given(expiryDateEditText.text).willReturn(expiryDateEditable)
         given(expiryDateEditable.toString()).willReturn("12/21")
 
         fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(expiryDateEditText).isInLayout
+        verify(expiryDateEditText).isCursorVisible
         verify(expiryDateEditText, never()).setText(any<String>())
     }
 

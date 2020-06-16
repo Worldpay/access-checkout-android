@@ -2,6 +2,9 @@ package com.worldpay.access.checkout.sample.testutil
 
 import android.content.pm.ActivityInfo
 import android.view.accessibility.AccessibilityWindowInfo
+import android.widget.ProgressBar
+import androidx.core.view.isVisible
+import androidx.drawerlayout.widget.DrawerLayout
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.assertion.ViewAssertions.matches
@@ -46,10 +49,38 @@ object UITestUtils {
 
     fun rotateLandscape(activityRule: ActivityTestRule<MainActivity>) {
         activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
+
+        await().atMost(5, TimeUnit.SECONDS).until {
+
+            val drawerIsVisible = activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
+            val progressBarIsVisible = activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
+
+            if (!drawerIsVisible && !progressBarIsVisible) {
+                onView(withId(android.R.id.button1))
+                    .inRoot(isDialog())
+                    .check(matches(isDisplayed()))
+            }
+
+            true
+        }
     }
 
     fun rotatePortrait(activityRule: ActivityTestRule<MainActivity>) {
         activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        await().atMost(5, TimeUnit.SECONDS).until {
+
+            val drawerIsVisible = activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
+            val progressBarIsVisible = activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
+
+            if (!drawerIsVisible && !progressBarIsVisible) {
+                onView(withId(android.R.id.button1))
+                    .inRoot(isDialog())
+                    .check(matches(isDisplayed()))
+            }
+
+            true
+        }
     }
 
     fun reopenApp() {

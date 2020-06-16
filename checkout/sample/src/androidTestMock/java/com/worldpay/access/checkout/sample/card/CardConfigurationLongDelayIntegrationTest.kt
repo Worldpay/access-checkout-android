@@ -9,7 +9,6 @@ import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import org.awaitility.Awaitility
 import org.junit.After
 import org.junit.Before
@@ -58,9 +57,6 @@ class CardConfigurationLongDelayIntegrationTest {
                 assertExpectedLogo(MASTERCARD.cardBrandName)
                 true
             } catch (ex: AssertionError) {
-                // trigger an action on the UI
-                uiObjectWithId(R.id.card_number_edit_text).click()
-                uiObjectWithId(R.id.card_flow_text_cvv).click()
                 false
             }
         }
