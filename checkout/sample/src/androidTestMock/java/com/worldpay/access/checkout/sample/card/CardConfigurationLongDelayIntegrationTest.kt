@@ -10,7 +10,6 @@ import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.views.PANLayout
 import org.awaitility.Awaitility
 import org.junit.After
 import org.junit.Before
@@ -88,7 +87,7 @@ class CardConfigurationLongDelayIntegrationTest {
     
     private fun assertExpectedLogo(logoResName: String) {
         val logoView = cardConfigRule.activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
-        assertEquals(logoResName, logoView.getTag(PANLayout.CARD_TAG))
+        assertEquals(logoResName, logoView.getTag(R.integer.card_tag))
     }
 
 }

@@ -12,7 +12,6 @@ import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
-import com.worldpay.access.checkout.views.PANLayout
 
 class SessionResponseListenerImpl(
     private val activity: Activity,

@@ -13,7 +13,6 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.views.PANLayout
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -158,12 +157,12 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun hasNoBrand(): CardFragmentTestUtils {
         val resourceEntryName = activity().resources.getResourceEntryName(R.drawable.card_unknown_logo)
-        wait { assertEquals(resourceEntryName, brandLogo().getTag(PANLayout.CARD_TAG)) }
+        wait { assertEquals(resourceEntryName, brandLogo().getTag(R.integer.card_tag)) }
         return this
     }
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
-        wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(PANLayout.CARD_TAG)) }
+        wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
         return this
     }
 

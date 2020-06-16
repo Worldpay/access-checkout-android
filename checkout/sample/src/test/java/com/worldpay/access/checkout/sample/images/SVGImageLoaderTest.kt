@@ -9,7 +9,6 @@ import com.nhaarman.mockitokotlin2.given
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
 import org.junit.Before
 import org.junit.Test
@@ -81,7 +80,7 @@ class SVGImageLoaderTest {
         verifyZeroInteractions(client)
 
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
-        verify(targetImageView).setTag(PANLayout.CARD_TAG, "card_unknown_logo")
+        verify(targetImageView).setTag(R.integer.card_tag, "card_unknown_logo")
     }
 
     @Test
@@ -109,7 +108,7 @@ class SVGImageLoaderTest {
 
         verifyZeroInteractions(client)
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
-        verify(targetImageView).setTag(PANLayout.CARD_TAG, "card_unknown_logo")
+        verify(targetImageView).setTag(R.integer.card_tag, "card_unknown_logo")
     }
 
     @Test

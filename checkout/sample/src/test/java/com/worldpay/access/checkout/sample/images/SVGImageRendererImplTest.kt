@@ -7,8 +7,8 @@ import android.view.View
 import android.widget.ImageView
 import com.caverock.androidsvg.SVG
 import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.util.logging.Logger
-import com.worldpay.access.checkout.views.PANLayout
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers
@@ -57,7 +57,7 @@ class SVGImageRendererImplTest {
 
         Mockito.verify(target).setImageDrawable(ArgumentMatchers.any(PictureDrawable::class.java))
         Mockito.verify(target).setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        Mockito.verify(target).setTag(PANLayout.CARD_TAG, "someName")
+        Mockito.verify(target).setTag(R.integer.card_tag, "someName")
     }
 
     @Test

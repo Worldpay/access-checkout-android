@@ -3,9 +3,9 @@ package com.worldpay.access.checkout.sample.images
 import android.graphics.drawable.PictureDrawable
 import android.view.View
 import android.widget.ImageView
+import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.util.logging.AccessCheckoutLogger
 import com.worldpay.access.checkout.util.logging.Logger
-import com.worldpay.access.checkout.views.PANLayout
 import java.io.InputStream
 
 interface SVGImageRenderer {
@@ -39,7 +39,7 @@ class SVGImageRendererImpl(private val runOnUiThreadFunc: (Runnable) -> Unit,
                 logger.debugLog("SVGImageRendererImpl", "Applying $brandName logo to target view")
                 targetView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 targetView.setImageDrawable(drawable)
-                targetView.setTag(PANLayout.CARD_TAG, brandName)
+                targetView.setTag(R.integer.card_tag, brandName)
             })
         } catch (e: Exception) {
             logger.errorLog("SVGImageRendererImpl", "Failed to parse SVG image: ${e.message}")

@@ -8,7 +8,6 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
 import com.worldpay.access.checkout.util.logging.AccessCheckoutLogger
 import com.worldpay.access.checkout.util.logging.Logger
-import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
 import java.io.File
 import java.io.IOException
@@ -118,7 +117,7 @@ class SVGImageLoader @JvmOverloads constructor(
         logger.debugLog("SVGImageLoader", "Applying card unknown logo to target view")
         target.setImageResource(R.drawable.card_unknown_logo)
         val resourceEntryName = target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
-        target.setTag(PANLayout.CARD_TAG, resourceEntryName)
+        target.setTag(R.integer.card_tag, resourceEntryName)
     }
 
 }
