@@ -7,6 +7,7 @@ import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
+import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
@@ -24,13 +25,8 @@ import kotlin.test.assertTrue
 class FieldDecoratorFactoryTest {
 
     private val cvvEditText = mock<EditText>()
-    private val cvvEditable = mock<Editable>()
-
     private val panEditText = mock<EditText>()
-    private val panEditable = mock<Editable>()
-
     private val expiryDateEditText = mock<EditText>()
-    private val expiryDateEditable = mock<Editable>()
 
     private lateinit var fieldDecoratorFactory: FieldDecoratorFactory
 
@@ -44,15 +40,6 @@ class FieldDecoratorFactoryTest {
         fieldDecoratorFactory = FieldDecoratorFactory(
             textWatcherFactory = textWatcherFactory
         )
-
-        given(panEditText.text).willReturn(panEditable)
-        given(panEditable.toString()).willReturn("")
-
-        given(expiryDateEditText.text).willReturn(expiryDateEditable)
-        given(expiryDateEditable.toString()).willReturn("")
-
-        given(cvvEditText.text).willReturn(cvvEditable)
-        given(cvvEditable.toString()).willReturn("")
     }
 
     @Test
@@ -67,8 +54,8 @@ class FieldDecoratorFactoryTest {
         reset(cvvEditText)
 
         given(cvvEditText.filters).willReturn(emptyArray())
-        given(cvvEditText.text).willReturn(cvvEditable)
-        given(cvvEditable.toString()).willReturn("")
+        given(cvvEditText.text).willReturn(mock())
+        given(mock<Editable>().toString()).willReturn("")
 
         fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
@@ -119,6 +106,34 @@ class FieldDecoratorFactoryTest {
     }
 
     @Test
+    fun `should set text when the cvv field is in layout`() {
+        val cvvEditable = mock<Editable>()
+        given(cvvEditText.filters).willReturn(emptyArray())
+        given(cvvEditText.isInLayout).willReturn(true)
+        given(cvvEditText.text).willReturn(cvvEditable)
+        given(cvvEditable.toString()).willReturn("123")
+
+        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(cvvEditText).isInLayout
+        verify(cvvEditText).setText("123")
+    }
+
+    @Test
+    fun `should not set text when the cvv field is not in layout`() {
+        val cvvEditable = mock<Editable>()
+        given(cvvEditText.filters).willReturn(emptyArray())
+        given(cvvEditText.isInLayout).willReturn(false)
+        given(cvvEditText.text).willReturn(cvvEditable)
+        given(cvvEditable.toString()).willReturn("123")
+
+        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(cvvEditText).isInLayout
+        verify(cvvEditText, never()).setText(any<String>())
+    }
+
+    @Test
     fun `should add new text watchers when decorating pan field each time`() {
         given(panEditText.filters).willReturn(emptyArray())
 
@@ -130,8 +145,8 @@ class FieldDecoratorFactoryTest {
         reset(panEditText)
 
         given(panEditText.filters).willReturn(emptyArray())
-        given(panEditText.text).willReturn(panEditable)
-        given(panEditable.toString()).willReturn("")
+        given(panEditText.text).willReturn(mock())
+        given(mock<Editable>().toString()).willReturn("")
 
         fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
@@ -182,6 +197,34 @@ class FieldDecoratorFactoryTest {
     }
 
     @Test
+    fun `should set text when the pan field is in layout`() {
+        val panEditable = mock<Editable>()
+        given(panEditText.filters).willReturn(emptyArray())
+        given(panEditText.isInLayout).willReturn(true)
+        given(panEditText.text).willReturn(panEditable)
+        given(panEditable.toString()).willReturn(VISA_PAN)
+
+        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(panEditText).isInLayout
+        verify(panEditText).setText(VISA_PAN)
+    }
+
+    @Test
+    fun `should not set text when the pan field is not in layout`() {
+        val panEditable = mock<Editable>()
+        given(panEditText.filters).willReturn(emptyArray())
+        given(panEditText.isInLayout).willReturn(false)
+        given(panEditText.text).willReturn(panEditable)
+        given(panEditable.toString()).willReturn(VISA_PAN)
+
+        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(panEditText).isInLayout
+        verify(panEditText, never()).setText(any<String>())
+    }
+
+    @Test
     fun `should add new text watchers when decorating expiry date field each time`() {
         given(expiryDateEditText.filters).willReturn(emptyArray())
 
@@ -193,8 +236,8 @@ class FieldDecoratorFactoryTest {
         reset(expiryDateEditText)
 
         given(expiryDateEditText.filters).willReturn(emptyArray())
-        given(expiryDateEditText.text).willReturn(expiryDateEditable)
-        given(expiryDateEditable.toString()).willReturn("")
+        given(expiryDateEditText.text).willReturn(mock())
+        given(mock<Editable>().toString()).willReturn("")
 
         fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
 
@@ -242,6 +285,34 @@ class FieldDecoratorFactoryTest {
         assertEquals(2, captor.firstValue.size)
         assertTrue(captor.firstValue[0] is InputFilter.AllCaps)
         assertTrue(captor.firstValue[1] is ExpiryDateLengthFilter)
+    }
+
+    @Test
+    fun `should set text when the expiry date field is in layout`() {
+        val expiryDateEditable = mock<Editable>()
+        given(expiryDateEditText.filters).willReturn(emptyArray())
+        given(expiryDateEditText.isInLayout).willReturn(true)
+        given(expiryDateEditText.text).willReturn(expiryDateEditable)
+        given(expiryDateEditable.toString()).willReturn("12/21")
+
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(expiryDateEditText).isInLayout
+        verify(expiryDateEditText).setText("12/21")
+    }
+
+    @Test
+    fun `should not set text when the expiry date field is not in layout`() {
+        val expiryDateEditable = mock<Editable>()
+        given(expiryDateEditText.filters).willReturn(emptyArray())
+        given(expiryDateEditText.isInLayout).willReturn(false)
+        given(expiryDateEditText.text).willReturn(expiryDateEditable)
+        given(expiryDateEditable.toString()).willReturn("12/21")
+
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(expiryDateEditText).isInLayout
+        verify(expiryDateEditText, never()).setText(any<String>())
     }
 
 }

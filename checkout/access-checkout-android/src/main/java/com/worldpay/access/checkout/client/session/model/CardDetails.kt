@@ -60,10 +60,10 @@ class CardDetails private constructor(
             if (expiryDate.contains(separator)) {
                 val split = expiryDate.split(separator)
                 month = split.toTypedArray()[0].toInt()
-                year = split.toTypedArray()[1].toInt()
+                year = 2000 + split.toTypedArray()[1].toInt()
             } else {
                 month = expiryDate.dropLast(2).toInt()
-                year = expiryDate.substring(2).toInt()
+                year = 2000 + expiryDate.substring(2).toInt()
             }
 
         }

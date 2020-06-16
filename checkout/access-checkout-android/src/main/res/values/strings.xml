@@ -6,6 +6,4 @@
     <string name="card_brand_icon">card brand icon</string>
     <string name="month_placeholder">MM</string>
     <string name="year_placeholder">YY</string>
-
-    <integer name="card_tag">7348</integer>
 </resources>

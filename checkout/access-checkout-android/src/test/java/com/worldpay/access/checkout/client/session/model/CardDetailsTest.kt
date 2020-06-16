@@ -18,7 +18,7 @@ class CardDetailsTest {
         assertNotNull(cardDetails)
         assertEquals("120392895018742508243", cardDetails.pan)
         assertEquals(11, cardDetails.expiryDate?.month)
-        assertEquals(20, cardDetails.expiryDate?.year)
+        assertEquals(2020, cardDetails.expiryDate?.year)
         assertEquals("123", cardDetails.cvv)
     }
 
@@ -33,7 +33,7 @@ class CardDetailsTest {
         assertNotNull(cardDetails)
         assertEquals("120392895018742508243", cardDetails.pan)
         assertEquals(11, cardDetails.expiryDate?.month)
-        assertEquals(20, cardDetails.expiryDate?.year)
+        assertEquals(2020, cardDetails.expiryDate?.year)
         assertEquals("123", cardDetails.cvv)
     }
 
