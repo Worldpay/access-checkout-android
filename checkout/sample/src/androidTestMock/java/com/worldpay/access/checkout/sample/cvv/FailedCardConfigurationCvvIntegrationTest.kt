@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.simulateCardConfigurationServerError
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationNatural
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -24,7 +24,7 @@ class FailedCardConfigurationCvvIntegrationTest {
     @Before
     fun setUp() {
         cvvFragmentTestUtils = CvvFragmentTestUtils(cardConfigurationErrorRule)
-        setOrientationNatural()
+        rotatePortrait(cardConfigurationErrorRule)
         navigateTo(R.id.nav_cvv_flow)
     }
 

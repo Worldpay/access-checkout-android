@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.sample.testutil
 
+import android.content.pm.ActivityInfo
 import android.view.accessibility.AccessibilityWindowInfo
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.NoMatchingViewException
@@ -11,9 +12,11 @@ import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
+import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice.getInstance
 import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
+import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import org.awaitility.Awaitility.await
 import java.util.concurrent.TimeUnit
@@ -41,20 +44,12 @@ object UITestUtils {
         }
     }
 
-    fun setOrientationLeft() {
-        val uiDevice = getInstance(getInstrumentation())
-        if (uiDevice.isNaturalOrientation) {
-            uiDevice.setOrientationLeft()
-            uiDevice.waitForIdle()
-        }
+    fun rotateLandscape(activityRule: ActivityTestRule<MainActivity>) {
+        activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
     }
 
-    fun setOrientationNatural() {
-        val uiDevice = getInstance(getInstrumentation())
-        if (!uiDevice.isNaturalOrientation) {
-            uiDevice.setOrientationNatural()
-            uiDevice.waitForIdle()
-        }
+    fun rotatePortrait(activityRule: ActivityTestRule<MainActivity>) {
+        activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
     }
 
     fun reopenApp() {

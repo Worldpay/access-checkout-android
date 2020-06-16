@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationNatural
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -25,7 +25,7 @@ class DelayedCardConfigurationCvvIntegrationTest {
     @Before
     fun setup() {
         cvvFragmentTestUtils = CvvFragmentTestUtils(cardConfigurationRule)
-        setOrientationNatural()
+        rotatePortrait(cardConfigurationRule)
         navigateTo(R.id.nav_cvv_flow)
     }
 

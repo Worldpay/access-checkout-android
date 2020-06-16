@@ -17,7 +17,7 @@ import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VerifiedTokenResponses.validResponseWithDelay
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.simulateHttpRedirect
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationLeft
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -139,7 +139,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
 
         // rotate landscape
-        setOrientationLeft()
+        rotateLandscape(activityRule)
 
         cardFragmentTestUtils.requestIsInProgress()
 

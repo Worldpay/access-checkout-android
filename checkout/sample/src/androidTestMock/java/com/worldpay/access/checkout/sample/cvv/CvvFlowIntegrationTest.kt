@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationNatural
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -24,7 +24,7 @@ class CvvFlowIntegrationTest {
     @Before
     fun setup() {
         cvvFragmentTestUtils = CvvFragmentTestUtils(activityRule)
-        setOrientationNatural()
+        rotatePortrait(activityRule)
         navigateTo(R.id.nav_cvv_flow)
     }
 

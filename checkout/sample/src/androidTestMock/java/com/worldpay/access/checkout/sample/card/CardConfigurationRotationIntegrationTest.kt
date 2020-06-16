@@ -4,8 +4,8 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationLeft
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationNatural
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Test
 
 class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
@@ -27,7 +27,7 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .enabledStateIs(submitButton = false)
 
         // rotate landscape
-        setOrientationLeft()
+        rotateLandscape(activityRule)
 
         // Re-enter a luhn valid, mastercard identified card and valid date
         CardFragmentTestUtils(activityRule)
@@ -41,7 +41,7 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .enabledStateIs(submitButton = true)
 
         // rotate portrait
-        setOrientationNatural()
+        rotatePortrait(activityRule)
 
         CardFragmentTestUtils(activityRule)
             .hasBrand(MASTERCARD)
@@ -53,7 +53,7 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .enabledStateIs(submitButton = false)
 
         // rotate landscape
-        setOrientationLeft()
+        rotateLandscape(activityRule)
 
         CardFragmentTestUtils(activityRule)
             .hasBrand(MASTERCARD)
