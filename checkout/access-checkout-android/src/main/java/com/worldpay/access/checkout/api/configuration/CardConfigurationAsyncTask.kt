@@ -14,7 +14,7 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
 ) :
     AsyncTask<String, Void, AsyncTaskResult<CardConfiguration>>() {
 
-    companion object {
+    internal companion object {
         private const val TAG = "CardConfigurationAsyncTask"
         private const val CARD_CONFIGURATION_RESOURCE = "access-checkout/cardTypes.json"
     }

@@ -1,13 +1,12 @@
 package com.worldpay.access.checkout.sample.images
 
 import android.app.Activity
+import android.util.Log
 import android.widget.ImageView
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
-import com.worldpay.access.checkout.util.logging.AccessCheckoutLogger
-import com.worldpay.access.checkout.util.logging.Logger
 import okhttp3.*
 import java.io.File
 import java.io.IOException
@@ -23,8 +22,7 @@ class SVGImageLoader @JvmOverloads constructor(
     ),
     private val svgImageRenderer: SVGImageRenderer = buildSvgImageRenderer(
         runOnUiThreadFunc
-    ),
-    private val logger: Logger = AccessCheckoutLogger()
+    )
 ) {
     private val idleResCounter = IdleResourceCounterFactory.getResCounter("SvgImageLoader")
 
@@ -114,7 +112,7 @@ class SVGImageLoader @JvmOverloads constructor(
     }
 
     private fun setUnknownCardBrand(target: ImageView) {
-        logger.debugLog("SVGImageLoader", "Applying card unknown logo to target view")
+        Log.d("SVGImageLoader", "Applying card unknown logo to target view")
         target.setImageResource(R.drawable.card_unknown_logo)
         val resourceEntryName = target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
         target.setTag(R.integer.card_tag, resourceEntryName)

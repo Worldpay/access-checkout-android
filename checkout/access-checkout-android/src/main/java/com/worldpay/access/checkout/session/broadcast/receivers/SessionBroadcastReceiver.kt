@@ -26,7 +26,7 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
         this.externalSessionResponseListener = externalSessionResponseListener
     }
 
-    companion object {
+    internal companion object {
         const val NUMBER_OF_SESSION_TYPE_KEY = "num_of_session_types"
         const val RESPONSE_KEY = "response"
         const val ERROR_KEY = "error"

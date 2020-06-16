@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.util.logging
 /**
  * Static utility methods for logging
  */
-object LoggingUtils {
+internal object LoggingUtils {
 
     private val accessCheckoutLogger = AccessCheckoutLogger()
 

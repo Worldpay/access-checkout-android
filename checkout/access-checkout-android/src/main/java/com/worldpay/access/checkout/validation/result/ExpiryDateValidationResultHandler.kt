@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.result
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
 import com.worldpay.access.checkout.validation.state.ExpiryDateFieldValidationStateManager
 
-class ExpiryDateValidationResultHandler(
+internal class ExpiryDateValidationResultHandler(
     private val validationListener: AccessCheckoutExpiryDateValidationListener,
     private val validationStateManager: ExpiryDateFieldValidationStateManager
 ) {

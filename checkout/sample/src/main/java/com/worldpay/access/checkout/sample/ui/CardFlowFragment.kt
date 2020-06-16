@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.sample.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,7 +22,6 @@ import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardValidationListener
 import com.worldpay.access.checkout.sample.card.SessionResponseListenerImpl
-import com.worldpay.access.checkout.util.logging.LoggingUtils
 import kotlin.properties.Delegates
 
 class CardFlowFragment : Fragment() {
@@ -103,7 +103,7 @@ class CardFlowFragment : Fragment() {
             .build()
 
         submitBtn.setOnClickListener {
-            LoggingUtils.debugLog(javaClass.simpleName, "Started request")
+            Log.d(javaClass.simpleName, "Started request")
             this.progressBar.beginLoading()
             toggleFields(false)
 

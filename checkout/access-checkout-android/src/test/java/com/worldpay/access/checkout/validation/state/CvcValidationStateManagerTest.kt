@@ -5,8 +5,8 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CvcValidationStateManagerTest {
-    val validationStateManager =
-        CvcValidationStateManager()
+
+    private val validationStateManager = CvcValidationStateManager()
 
     @Test
     fun `should start state as invalid`() {

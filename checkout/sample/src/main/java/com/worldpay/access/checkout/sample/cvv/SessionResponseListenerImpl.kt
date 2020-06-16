@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.sample.cvv
 
 import android.app.Activity
 import android.app.AlertDialog
+import android.util.Log
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
@@ -10,7 +11,6 @@ import com.worldpay.access.checkout.client.session.listener.SessionResponseListe
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
-import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 
 class SessionResponseListenerImpl(
     private val activity: Activity,
@@ -18,7 +18,7 @@ class SessionResponseListenerImpl(
 ) : SessionResponseListener {
 
     override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {
-        debugLog(javaClass.simpleName, "Received session reference: $sessionResponseMap")
+        Log.d(javaClass.simpleName, "Received session reference: $sessionResponseMap")
 
         progressBar.stopLoading()
 
@@ -34,7 +34,7 @@ class SessionResponseListenerImpl(
     }
 
     override fun onError(error: AccessCheckoutException) {
-        debugLog(javaClass.simpleName, "Received error: ${error.message}")
+        Log.d(javaClass.simpleName, "Received error: ${error.message}")
 
         progressBar.stopLoading()
 
@@ -51,10 +51,10 @@ class SessionResponseListenerImpl(
     }
 
     private fun setEnabledState(submitBtn: Boolean) {
-        debugLog(javaClass.simpleName, "Setting enabled state for cvv to : true")
+        Log.d(javaClass.simpleName, "Setting enabled state for cvv to : true")
         activity.findViewById<TextView>(R.id.cvv_flow_text_cvv).isEnabled = true
 
-        debugLog(javaClass.simpleName, "Setting enabled state for submit button to : $submitBtn")
+        Log.d(javaClass.simpleName, "Setting enabled state for submit button to : $submitBtn")
         activity.findViewById<Button>(R.id.cvv_flow_btn_submit).isEnabled = submitBtn
     }
 

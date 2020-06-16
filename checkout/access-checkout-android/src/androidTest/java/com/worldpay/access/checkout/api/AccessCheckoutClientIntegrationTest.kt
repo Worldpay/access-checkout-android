@@ -36,8 +36,7 @@ class AccessCheckoutClientIntegrationTest {
     private val verifiedTokensEndpoint = "verifiedTokens/sessions"
     private val cvv = "123"
     private val cardNumber = "1111222233334444"
-    private val month = 12
-    private val year = 2020
+    private val expiryDate = "1220"
     private val merchantId = "identity"
 
     private val verifiedTokenMediaType = "application/vnd.worldpay.verified-tokens-v1.hal+json"
@@ -317,7 +316,7 @@ class AccessCheckoutClientIntegrationTest {
     private fun getCardDetails(): CardDetails {
         return CardDetails.Builder()
             .pan(cardNumber)
-            .expiryDate(month, year)
+            .expiryDate(expiryDate)
             .cvv(cvv)
             .build()
     }

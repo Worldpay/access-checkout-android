@@ -16,7 +16,7 @@ import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),
     Callback<SessionResponseInfo> {
 
-    companion object {
+    internal companion object {
         const val REQUEST_KEY = "request"
     }
 
@@ -56,8 +56,7 @@ internal interface Factory {
     fun getSessionRequestSender(context: Context): SessionRequestSender
 }
 
-internal class DefaultFactory:
-    Factory {
+internal class DefaultFactory: Factory {
 
     override fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory =
         LocalBroadcastManagerFactory(context)

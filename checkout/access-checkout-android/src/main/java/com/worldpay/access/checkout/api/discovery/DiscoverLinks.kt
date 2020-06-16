@@ -8,7 +8,7 @@ import java.io.Serializable
 
 internal class DiscoverLinks(val endpoints: List<Endpoint>): Serializable {
 
-    companion object {
+    internal companion object {
         val verifiedTokens = DiscoverLinks(
             listOf(
                 Endpoint("service:verifiedTokens"),

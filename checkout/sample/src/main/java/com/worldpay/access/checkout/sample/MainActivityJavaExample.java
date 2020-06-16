@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.sample;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -25,7 +26,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-import static com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog;
 import static java.util.Collections.singletonList;
 
 public class MainActivityJavaExample extends AppCompatActivity implements SessionResponseListener {
@@ -64,7 +64,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
 
     @Override
     public void onSuccess(@NotNull Map<SessionType, String> sessionResponseMap) {
-        debugLog("MainActivityJavaExample", String.format("Received session reference map: %s", sessionResponseMap.toString()));
+        Log.d("MainActivityJavaExample", String.format("Received session reference map: %s", sessionResponseMap.toString()));
 
         loading = false;
         toggleLoading(true);
@@ -79,7 +79,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
 
     @Override
     public void onError(@NotNull AccessCheckoutException error) {
-        debugLog("MainActivityJavaExample", String.format("Received error: %s", error.getMessage()));
+        Log.d("MainActivityJavaExample", String.format("Received error: %s", error.getMessage()));
 
         loading = false;
         toggleLoading(true);
@@ -144,7 +144,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
                 .build();
 
         submit.setOnClickListener(view -> {
-            debugLog("MainActivityJavaExample", "Started request");
+            Log.d("MainActivityJavaExample", "Started request");
             loading = true;
             toggleLoading(false);
 

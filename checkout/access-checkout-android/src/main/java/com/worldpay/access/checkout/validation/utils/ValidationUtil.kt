@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 
-object ValidationUtil {
+internal object ValidationUtil {
 
     private const val defaultMaxLength = 100
 
