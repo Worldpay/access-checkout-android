@@ -29,9 +29,8 @@ class DiscoverLinksTest {
         val expectedAcceptHeader = "application/vnd.worldpay.sessions-v1.hal+json"
         val expectedContentHeader = "application/vnd.worldpay.sessions-v1.hal+json"
 
-        assertEquals(DiscoverLinks.sessions.headers["Accept"], expectedAcceptHeader)
-        assertEquals(DiscoverLinks.sessions.headers["Content-Type"], expectedContentHeader)
-
+        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Accept"], expectedAcceptHeader)
+        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Content-Type"], expectedContentHeader)
     }
 
     @Test
@@ -39,7 +38,7 @@ class DiscoverLinksTest {
         val expectedAcceptHeader = "application/vnd.worldpay.verified-tokens-v1.hal+json"
         val expectedContentHeader = "application/vnd.worldpay.verified-tokens-v1.hal+json"
 
-        assertEquals(DiscoverLinks.verifiedTokens.headers["Accept"], expectedAcceptHeader)
-        assertEquals(DiscoverLinks.verifiedTokens.headers["Content-Type"], expectedContentHeader)
+        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Accept"], expectedAcceptHeader)
+        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Content-Type"], expectedContentHeader)
     }
 }

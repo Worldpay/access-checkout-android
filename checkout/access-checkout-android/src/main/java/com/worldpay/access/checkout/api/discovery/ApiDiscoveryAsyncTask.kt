@@ -23,8 +23,7 @@ import java.net.URL
 internal class ApiDiscoveryAsyncTask(
     private val callback: Callback<String>,
     private val endpoints: List<Endpoint>,
-    private val httpClient: HttpClient,
-    private val headers: Map<String, String>
+    private val httpClient: HttpClient
 ) : AsyncTask<String, Any, AsyncTaskResult<String>>() {
 
     override fun doInBackground(vararg params: String?): AsyncTaskResult<String> {
@@ -33,8 +32,8 @@ internal class ApiDiscoveryAsyncTask(
 
             var resourceUrl = params[0]
 
-            for (e in endpoints) {
-                resourceUrl = fetchLinkFromUrl(resourceUrl, e.getDeserializer(), headers)
+            for (endpoint in endpoints) {
+                resourceUrl = fetchLinkFromUrl(resourceUrl, endpoint.getDeserializer(), endpoint.headers)
             }
 
             debugLog(javaClass.simpleName, "Received response from service discovery endpoint")

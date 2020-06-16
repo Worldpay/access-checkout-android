@@ -61,7 +61,9 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
     }
 
     @Throws(AccessCheckoutException::class)
-    fun <Response> doGet(url: URL, deserializer: Deserializer<Response>, headers: Map<String, String> = HashMap<String, String>()
+    fun <Response> doGet(
+        url: URL, deserializer: Deserializer<Response>,
+        headers: Map<String, String> = mapOf()
     ): Response {
         var httpUrlConn: HttpURLConnection? = null
         try {
