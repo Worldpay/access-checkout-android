@@ -23,7 +23,8 @@ import java.net.URL
 internal class ApiDiscoveryAsyncTask(
     private val callback: Callback<String>,
     private val endpoints: List<Endpoint>,
-    private val httpClient: HttpClient
+    private val httpClient: HttpClient,
+    private val headers: Map<String, String>
 ) : AsyncTask<String, Any, AsyncTaskResult<String>>() {
 
     override fun doInBackground(vararg params: String?): AsyncTaskResult<String> {
@@ -33,7 +34,7 @@ internal class ApiDiscoveryAsyncTask(
             var resourceUrl = params[0]
 
             for (e in endpoints) {
-                resourceUrl = fetchLinkFromUrl(resourceUrl, e.getDeserializer())
+                resourceUrl = fetchLinkFromUrl(resourceUrl, e.getDeserializer(), headers)
             }
 
             debugLog(javaClass.simpleName, "Received response from service discovery endpoint")
@@ -57,14 +58,14 @@ internal class ApiDiscoveryAsyncTask(
         callbackOnTaskResult(callback, result)
     }
 
-    private fun fetchLinkFromUrl(url: String?, deserializer: Deserializer<String>): String {
+    private fun fetchLinkFromUrl(url: String?, deserializer: Deserializer<String>, headers: Map<String, String>): String {
         val httpUrl = try {
             URL(url)
         } catch (e: MalformedURLException) {
             debugLog(javaClass.simpleName, "Invalid URL supplied: $url")
             throw AccessCheckoutDiscoveryException("Invalid URL supplied: $url", e)
         }
-        return httpClient.doGet(httpUrl, deserializer)
+        return httpClient.doGet(httpUrl, deserializer, headers)
     }
 
 }

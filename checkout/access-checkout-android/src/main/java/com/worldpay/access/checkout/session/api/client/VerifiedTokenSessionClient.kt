@@ -14,10 +14,6 @@ internal class VerifiedTokenSessionClient(
     private val httpClient: HttpClient
 ) : SessionClient {
 
-    companion object {
-        private const val VERIFIED_TOKENS_MEDIA_TYPE = "application/vnd.worldpay.verified-tokens-v1.hal+json"
-    }
-
     override fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse? {
         val headers = HashMap<String, String>()
         headers[CONTENT_TYPE_HEADER] = VERIFIED_TOKENS_MEDIA_TYPE

@@ -20,7 +20,7 @@ import kotlin.test.assertTrue
 class ApiDiscoveryClientTest {
 
     private val apiDiscoveryAsyncTaskFactoryMock: ApiDiscoveryAsyncTaskFactory = mock()
-    private var discoverLinks: DiscoverLinks = DiscoverLinks(listOf(Endpoint("some-service"), Endpoint("some-endpoint")))
+    private var discoverLinks: DiscoverLinks = DiscoverLinks(listOf(Endpoint("some-service"), Endpoint("some-endpoint")), mapOf())
     private val apiDiscoveryAsyncTaskMock: ApiDiscoveryAsyncTask = mock()
 
     @get:Rule
@@ -92,7 +92,7 @@ class ApiDiscoveryClientTest {
             }
         }
 
-        discoverLinks = DiscoverLinks(listOf(Endpoint("one"), Endpoint("two"), Endpoint("three")))
+        discoverLinks = DiscoverLinks(listOf(Endpoint("one"), Endpoint("two"), Endpoint("three")), mapOf())
 
         val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
         given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(apiDiscoveryAsyncTaskMock)

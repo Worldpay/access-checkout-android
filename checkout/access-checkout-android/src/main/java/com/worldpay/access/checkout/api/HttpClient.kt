@@ -61,11 +61,14 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
     }
 
     @Throws(AccessCheckoutException::class)
-    fun <Response> doGet(url: URL, deserializer: Deserializer<Response>): Response {
+    fun <Response> doGet(url: URL, deserializer: Deserializer<Response>, headers: Map<String, String> = HashMap<String, String>()
+    ): Response {
         var httpUrlConn: HttpURLConnection? = null
         try {
+
             httpUrlConn = url.openConnection() as HttpURLConnection
             httpUrlConn.requestMethod = GET_METHOD
+            setRequestProperties(httpUrlConn, headers)
             httpUrlConn.connectTimeout = CONNECT_TIMEOUT
             httpUrlConn.readTimeout = READ_TIMEOUT
 

@@ -6,7 +6,14 @@ import au.com.dius.pact.consumer.PactVerification
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.api.discovery.DiscoveryCache
+import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
+import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
 import com.worldpay.access.checkout.session.api.client.PaymentsCvcSessionClient
+import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
 import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.serialization.CVVSessionRequestSerializer
@@ -27,6 +34,7 @@ class SessionsPactTest {
     }
 
     private lateinit var paymentsCvcSessionClient: PaymentsCvcSessionClient
+    private lateinit var discoveryClient: ApiDiscoveryClient
 
     @Before
     fun setup() {
@@ -36,13 +44,19 @@ class SessionsPactTest {
                 CVVSessionRequestSerializer(),
                 HttpClient()
             )
+
+        discoveryClient = ApiDiscoveryClient(
+            discoveryCache = DiscoveryCache,
+            apiDiscoveryAsyncTaskFactory = ApiDiscoveryAsyncTaskFactory()
+        )
     }
 
     @get:Rule
     var mockProvider = PactProviderRuleMk2(provider, "localhost", 8080, this)
 
 
-    private val path = "/sessions/payments/cvc"
+    private val sessionPath = "/sessions/payments/cvc"
+    private val discoveryPath = "/sessions"
     private val cvv = "123"
     private val cvvNonNumerical = "aaa"
 
@@ -51,6 +65,9 @@ class SessionsPactTest {
 
     private val sessionReferenceRegex = "https?://[^/]+/sessions/[^/]+"
     private val sessionReferenceExample = "http://access.worldpay.com/sessions/<encrypted-data>"
+
+    private val sessionEndpointRegex = "https?://[^/]+/sessions/.+"
+    private val paymentsCvcSessionEndpoint = "http://access.worldpay.com/sessions/payments/cvc"
 
     private val curiesRegex = "https?://[^/]+/rels/sessions/\\{rel\\}.json"
     private val curiesExample = "http://access.worldpay.com/rels/sessions/{rel}.json"
@@ -69,11 +86,53 @@ class SessionsPactTest {
         .closeArray()
         .closeObject()
 
+    private val getResponseBody = PactDslJsonBody()
+        .`object`("_links")
+        .`object`("sessions:paymentsCvc")
+        .stringMatcher("href", sessionEndpointRegex, paymentsCvcSessionEndpoint )
+        .closeObject()
+        .closeObject()
+
+    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
+    fun createSuccessfulGetRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
+        return builder
+            .uponReceiving("A service discovery request")
+            .path(discoveryPath)
+            .method("GET")
+            .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
+            .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
+            .willRespondWith()
+            .status(200)
+            .headers(
+                mutableMapOf(
+                    Pair(
+                        "Content-Type",
+                        "application/vnd.worldpay.sessions-v1.hal+json"
+                    )
+                )
+            )
+            .body(getResponseBody)
+            .toPact()
+    }
+
+    @Test
+    @PactVerification("sessions", fragment = "createSuccessfulGetRequestInteraction")
+    fun `should receive a valid response when a valid GET request is sent`() {
+        val httpClient  = HttpClient()
+        val url = URL(mockProvider.url + discoveryPath)
+        val headers = mapOf(ACCEPT_HEADER to SESSIONS_MEDIA_TYPE, CONTENT_TYPE_HEADER to SESSIONS_MEDIA_TYPE )
+
+        val deserializer = DiscoverLinks.sessions.endpoints[1].getDeserializer()
+
+        val response = httpClient.doGet(url, deserializer, headers)
+        Assert.assertEquals(paymentsCvcSessionEndpoint, response)
+    }
+
     @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
     fun createSuccessfulRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
@@ -97,7 +156,7 @@ class SessionsPactTest {
     fun createInvalidIdentityRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with invalid identity")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
@@ -120,7 +179,7 @@ class SessionsPactTest {
     fun createStringNonNumericalCvvRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with non-numerical CVV")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
@@ -149,7 +208,7 @@ class SessionsPactTest {
     fun createEmptyBodyErrorInteractionRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with empty body")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
@@ -199,7 +258,7 @@ class SessionsPactTest {
 
         Assert.assertEquals(
             expectedSessionResponse,
-            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
         )
     }
 
@@ -213,7 +272,7 @@ class SessionsPactTest {
             )
 
         try {
-            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException.AccessCheckoutClientError) {
             val validationRule =
@@ -243,7 +302,7 @@ class SessionsPactTest {
             )
 
         try {
-            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException.AccessCheckoutClientError) {
             val validationRule = AccessCheckoutException.ValidationRule(
@@ -287,7 +346,7 @@ class SessionsPactTest {
             )
 
         try {
-            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException.AccessCheckoutClientError) {
 

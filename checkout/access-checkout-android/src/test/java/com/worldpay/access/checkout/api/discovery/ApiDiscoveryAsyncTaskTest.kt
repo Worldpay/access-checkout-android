@@ -31,6 +31,7 @@ class ApiDiscoveryAsyncTaskTest {
     private val linkDiscoveryDeserializerMock: LinkDiscoveryDeserializer = mock()
     private val secondLinkDiscoveryDeserializerMock: LinkDiscoveryDeserializer = mock()
     private val thirdLinkDiscoveryDeserializerMock: LinkDiscoveryDeserializer = mock()
+    private val headers: Map<String, String> = mock()
 
     @Before
     fun setUp() {
@@ -53,7 +54,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute("abcd")
@@ -85,7 +87,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
@@ -114,7 +117,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
@@ -148,7 +152,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
@@ -174,7 +179,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
@@ -200,7 +206,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
@@ -229,7 +236,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
@@ -260,7 +268,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             endpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute(baseURL)
@@ -290,7 +299,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             oneLevelEndpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute(baseURL)
@@ -325,7 +335,8 @@ class ApiDiscoveryAsyncTaskTest {
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
             threeLevelEndpointsMock,
-            httpClientMock
+            httpClientMock,
+            headers
         )
 
         accessCheckoutDiscoveryAsyncTask.execute(baseURL)

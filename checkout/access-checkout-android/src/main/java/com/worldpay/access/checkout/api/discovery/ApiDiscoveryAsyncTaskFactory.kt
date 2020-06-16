@@ -9,9 +9,11 @@ internal class ApiDiscoveryAsyncTaskFactory {
         return ApiDiscoveryAsyncTask(
             callback,
             discoverLinks.endpoints,
-            HttpClient()
+            HttpClient(),
+            discoverLinks.headers
         )
     }
+
 
 }
 

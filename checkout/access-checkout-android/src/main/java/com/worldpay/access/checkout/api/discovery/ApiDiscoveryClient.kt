@@ -42,9 +42,10 @@ internal class ApiDiscoveryClient(
             debugLog(javaClass.simpleName, "Discovering endpoint")
 
             currentAttempts.addAndGet(1)
-            val asyncTaskResultCallback = getAsyncTaskResultCallback(callback, discoverLinks, baseUrl)
 
+            val asyncTaskResultCallback = getAsyncTaskResultCallback(callback, discoverLinks, baseUrl)
             val accessCheckoutDiscoveryAsyncTask = apiDiscoveryAsyncTaskFactory.getAsyncTask(asyncTaskResultCallback, discoverLinks)
+
             accessCheckoutDiscoveryAsyncTask.execute(baseUrl)
         } else {
             debugLog(javaClass.simpleName, "Task result was already present. Num of currentAttempts: ${currentAttempts.get()}")
@@ -108,5 +109,4 @@ internal class ApiDiscoveryClient(
             }
         }
     }
-
 }
