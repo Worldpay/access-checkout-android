@@ -45,6 +45,7 @@ object UITestUtils {
         val uiDevice = getInstance(getInstrumentation())
         if (uiDevice.isNaturalOrientation) {
             uiDevice.setOrientationLeft()
+            uiDevice.waitForIdle()
         }
     }
 
@@ -52,6 +53,7 @@ object UITestUtils {
         val uiDevice = getInstance(getInstrumentation())
         if (!uiDevice.isNaturalOrientation) {
             uiDevice.setOrientationNatural()
+            uiDevice.waitForIdle()
         }
     }
 
