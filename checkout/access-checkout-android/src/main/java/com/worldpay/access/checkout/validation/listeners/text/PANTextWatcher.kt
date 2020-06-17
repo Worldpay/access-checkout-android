@@ -4,8 +4,8 @@ import android.text.Editable
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.validation.result.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
-import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvvValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
@@ -19,8 +19,8 @@ internal class PANTextWatcher(
     private val cvcValidator: CVCValidator,
     private val cvvEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler,
-    private val cvcValidationRuleManager: CVCValidationRuleManager,
-    private val toCardBrandTransformer: ToCardBrandTransformer = ToCardBrandTransformer()
+    private val brandChangedHandler : BrandChangedHandler,
+    private val cvcValidationRuleManager: CVCValidationRuleManager
 ) : AbstractCardDetailTextWatcher() {
 
     private var cardBrand: RemoteCardBrand? = null
@@ -35,15 +35,14 @@ internal class PANTextWatcher(
 
         val isValid = panValidator.validate(panText, cardValidationRule)
 
-        panValidationResultHandler.handleResult(
-            isValid = isValid,
-            cardBrand = toCardBrandTransformer.transform(cardBrand)
-        )
+        panValidationResultHandler.handleResult(isValid)
     }
 
     private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
         if (cardBrand != newCardBrand) {
             cardBrand = newCardBrand
+
+            brandChangedHandler.handle(newCardBrand)
 
             updateCvcValidationRule()
 

@@ -45,6 +45,7 @@ class CVCTextWatcherIntegrationTest {
             cvcValidator = cvcValidator,
             cvvEditText = cvv,
             panValidationResultHandler = mock(),
+            brandChangedHandler = mock(),
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 

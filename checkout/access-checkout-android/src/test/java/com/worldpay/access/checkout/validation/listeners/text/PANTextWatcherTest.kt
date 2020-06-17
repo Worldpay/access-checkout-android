@@ -6,7 +6,9 @@ import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
+import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.validation.result.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
@@ -23,6 +25,7 @@ class PANTextWatcherTest {
     private val toCardBrandTransformer = ToCardBrandTransformer()
 
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
+    private val brandChangedHandler = mock<BrandChangedHandler>()
 
     private val cvvEditText = mock<EditText>()
     private val cvcValidator = mock<CVCValidator>()
@@ -40,6 +43,7 @@ class PANTextWatcherTest {
             cardConfiguration = CARD_CONFIG_BASIC,
             panValidator = NewPANValidator(),
             panValidationResultHandler = panValidationResultHandler,
+            brandChangedHandler = brandChangedHandler,
             cvvEditText = cvvEditText,
             cvcValidator = cvcValidator,
             cvcValidationRuleManager = cvcValidationRuleManager
@@ -50,43 +54,39 @@ class PANTextWatcherTest {
     }
 
     @Test
-    fun `should pass validation rule to validation rule handler where brand is identified`() {
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
-
+    fun `should pass validation rule to validation rule handler where result is true for known brand`() {
         given(panEditable.toString()).willReturn(VISA_PAN)
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(true, cardBrand)
+        verify(panValidationResultHandler).handleResult(true)
     }
 
     @Test
-    fun `should pass validation rule to validation rule handler where brand is not identified`() {
+    fun `should pass validation rule to validation rule handler where result is true for unknown brand`() {
+        given(panEditable.toString()).willReturn(VALID_UNKNOWN_LUHN)
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verify(panValidationResultHandler).handleResult(true)
+    }
+
+    @Test
+    fun `should pass validation rule to validation rule handler where result is false for unknown brand`() {
         given(panEditable.toString()).willReturn("000000")
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(false, null)
+        verify(panValidationResultHandler).handleResult(false)
     }
 
     @Test
-    fun `should pass validation result to validation result handler where brand is identified`() {
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
-
-        given(panEditable.toString()).willReturn(VISA_PAN)
+    fun `should pass validation rule to validation rule handler where result is false for known brand`() {
+        given(panEditable.toString()).willReturn("411")
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(true, cardBrand)
-    }
-
-    @Test
-    fun `should pass validation result to validation result handler where brand is not identified`() {
-        given(panEditable.toString()).willReturn("000000")
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panValidationResultHandler).handleResult(false, null)
+        verify(panValidationResultHandler).handleResult(false)
     }
 
     @Test
@@ -101,6 +101,15 @@ class PANTextWatcherTest {
         assertEquals(VISA_BRAND.cvv, cvcValidationRuleManager.getRule())
 
         verify(cvcValidator).validate("123")
+    }
+
+    @Test
+    fun `should handle brand change when brand is different from the last known brand`() {
+        given(panEditable.toString()).willReturn(VISA_PAN)
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
     @Test
@@ -133,6 +142,7 @@ class PANTextWatcherTest {
             cardConfiguration = CARD_CONFIG_BASIC,
             panValidator = panValidator,
             panValidationResultHandler = panValidationResultHandler,
+            brandChangedHandler = brandChangedHandler,
             cvvEditText = cvvEditText,
             cvcValidator = cvcValidator,
             cvcValidationRuleManager = cvcValidationRuleManager

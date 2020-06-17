@@ -9,8 +9,8 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUH
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.validation.result.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
-import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
@@ -32,8 +32,7 @@ class PANTextWatcherIntegrationTest {
 
     private val cvcValidator = mock<CVCValidator>()
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
-
-    private val toCardBrandTransformer = ToCardBrandTransformer()
+    private val brandChangedHandler = mock<BrandChangedHandler>()
 
     @Before
     fun setup() {
@@ -49,8 +48,8 @@ class PANTextWatcherIntegrationTest {
             cvcValidator = cvcValidator,
             cvvEditText = cvv,
             panValidationResultHandler = panValidationResultHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager,
-            toCardBrandTransformer = toCardBrandTransformer
+            brandChangedHandler = brandChangedHandler,
+            cvcValidationRuleManager = cvcValidationRuleManager
         )
 
         pan.addTextChangedListener(panTextWatcher)
@@ -60,43 +59,44 @@ class PANTextWatcherIntegrationTest {
     fun `should validate pan as false when partial unknown pan is entered`() {
         pan.setText("00000")
 
-        verify(panValidationResultHandler).handleResult(false, null)
+        verify(panValidationResultHandler).handleResult(false)
+        verify(brandChangedHandler, never()).handle(any())
     }
 
     @Test
     fun `should validate pan as false when partial visa pan is entered`() {
         pan.setText(PARTIAL_VISA)
 
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
-        verify(panValidationResultHandler).handleResult(false, cardBrand)
+        verify(panValidationResultHandler).handleResult(false)
+        verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
     @Test
     fun `should validate pan as true when full visa pan is entered`() {
         pan.setText(VISA_PAN)
 
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
-        verify(panValidationResultHandler).handleResult(true, cardBrand)
+        verify(panValidationResultHandler).handleResult(true)
+        verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
     @Test
     fun `should validate pan as true when 19 character unknown valid luhn is entered`() {
         pan.setText(VALID_UNKNOWN_LUHN)
 
-        verify(panValidationResultHandler).handleResult(true, null)
+        verify(panValidationResultHandler).handleResult(true)
+        verify(brandChangedHandler, never()).handle(any())
     }
 
     @Test
     fun `should validate pan as true when 19 character unknown invalid luhn is entered`() {
         pan.setText(INVALID_UNKNOWN_LUHN)
 
-        verify(panValidationResultHandler).handleResult(false, null)
+        verify(panValidationResultHandler).handleResult(false)
+        verify(brandChangedHandler, never()).handle(any())
     }
 
     @Test
     fun `should validate cvv when pan brand is recognised and cvv is not empty`() {
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
-
         assertEquals(CVV_DEFAULTS, cvcValidationRuleManager.getRule())
 
         cvv.setText("123")
@@ -107,13 +107,12 @@ class PANTextWatcherIntegrationTest {
         assertEquals(VISA_BRAND.cvv, cvcValidationRuleManager.getRule())
 
         verify(cvcValidator).validate("123")
-        verify(panValidationResultHandler).handleResult(true, cardBrand)
+        verify(panValidationResultHandler).handleResult(true)
+        verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
     @Test
     fun `should not validate cvv when pan brand is recognised and cvv is empty`() {
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
-
         assertEquals(CVV_DEFAULTS, cvcValidationRuleManager.getRule())
 
         pan.setText(VISA_PAN)
@@ -121,7 +120,8 @@ class PANTextWatcherIntegrationTest {
         assertEquals(VISA_BRAND.cvv, cvcValidationRuleManager.getRule())
 
         verify(cvcValidator, never()).validate(any())
-        verify(panValidationResultHandler).handleResult(true, cardBrand)
+        verify(panValidationResultHandler).handleResult(true)
+        verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
 }

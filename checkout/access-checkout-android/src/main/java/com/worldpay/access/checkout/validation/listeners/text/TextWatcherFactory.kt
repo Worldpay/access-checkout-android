@@ -3,10 +3,8 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutValidationListener
+import com.worldpay.access.checkout.client.validation.listener.*
+import com.worldpay.access.checkout.validation.result.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
@@ -14,6 +12,7 @@ import com.worldpay.access.checkout.validation.state.CvcFieldValidationStateMana
 import com.worldpay.access.checkout.validation.state.ExpiryDateFieldValidationStateManager
 import com.worldpay.access.checkout.validation.state.FieldValidationStateManager
 import com.worldpay.access.checkout.validation.state.PanFieldValidationStateManager
+import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewDateValidator
@@ -39,12 +38,18 @@ internal class TextWatcherFactory(
             validationStateManager = validationStateManager as CvcFieldValidationStateManager
         )
 
+        val brandChangedHandler = BrandChangedHandler(
+            validationListener = accessCheckoutValidationListener as AccessCheckoutBrandChangedListener,
+            toCardBrandTransformer = ToCardBrandTransformer()
+        )
+
         return PANTextWatcher(
             cardConfiguration = cardConfiguration,
             panValidator = panValidator,
             cvvEditText =  cvvEditText,
             cvcValidator = CVCValidator(cvvValidationResultHandler, cvcValidationRuleManager),
             panValidationResultHandler = panValidationResultHandler,
+            brandChangedHandler = brandChangedHandler,
             cvcValidationRuleManager = cvcValidationRuleManager
         )
     }

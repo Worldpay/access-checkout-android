@@ -5,9 +5,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.validation.state.CardValidationStateManager
-import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertFalse
@@ -15,11 +13,8 @@ import kotlin.test.assertTrue
 
 class PanValidationResultHandlerTest {
 
-    private val toCardBrandTransformer = ToCardBrandTransformer()
-
     private val validationListener = mock<AccessCheckoutPanValidationListener>()
-    private val validationStateManager =
-        CardValidationStateManager()
+    private val validationStateManager = CardValidationStateManager()
 
     private lateinit var validationResultHandler: PanValidationResultHandler
 
@@ -29,60 +24,55 @@ class PanValidationResultHandlerTest {
     }
 
     @Test
-    fun `should call listener when cvv is valid with brand`() {
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
+    fun `should call listener when pan is valid with brand`() {
+        validationResultHandler.handleResult(true)
 
-        validationResultHandler.handleResult(true, cardBrand)
-
-        verify(validationListener).onPanValidated(cardBrand, true)
+        verify(validationListener).onPanValidated(true)
         verifyNoMoreInteractions(validationListener)
 
         assertTrue(validationStateManager.panValidated)
     }
 
     @Test
-    fun `should call listener when cvv is invalid with brand`() {
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
+    fun `should call listener when pan is invalid with brand`() {
+        validationResultHandler.handleResult(false)
 
-        validationResultHandler.handleResult(false, cardBrand)
-
-        verify(validationListener).onPanValidated(cardBrand, false)
+        verify(validationListener).onPanValidated( false)
         verifyNoMoreInteractions(validationListener)
 
-        assertFalse(validationStateManager.cvvValidated)
+        assertFalse(validationStateManager.panValidated)
     }
 
     @Test
-    fun `should call listener when cvv is valid with no brand`() {
-        validationResultHandler.handleResult(true, null)
+    fun `should call listener when pan is valid with no brand`() {
+        validationResultHandler.handleResult(true)
 
-        verify(validationListener).onPanValidated(null, true)
+        verify(validationListener).onPanValidated(true)
         verifyNoMoreInteractions(validationListener)
 
         assertTrue(validationStateManager.panValidated)
     }
 
     @Test
-    fun `should call listener when cvv is invalid with no brand`() {
-        validationResultHandler.handleResult(false, null)
+    fun `should call listener when pan is invalid with no brand`() {
+        validationResultHandler.handleResult(false)
 
-        verify(validationListener).onPanValidated(null, false)
+        verify(validationListener).onPanValidated(false)
         verifyNoMoreInteractions(validationListener)
 
-        assertFalse(validationStateManager.cvvValidated)
+        assertFalse(validationStateManager.panValidated)
     }
 
     @Test
     fun `should call onValidationSuccess when all fields are valid`() {
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
         val validationStateManager = mock<CardValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)
         given(validationStateManager.panValidated).willReturn(false)
 
         val validationResultHandler = PanValidationResultHandler(validationListener, validationStateManager)
-        validationResultHandler.handleResult(true, cardBrand)
+        validationResultHandler.handleResult(true)
 
-        verify(validationListener).onPanValidated(cardBrand, true)
+        verify(validationListener).onPanValidated(true)
         verify(validationListener).onValidationSuccess()
         verifyNoMoreInteractions(validationListener)
     }

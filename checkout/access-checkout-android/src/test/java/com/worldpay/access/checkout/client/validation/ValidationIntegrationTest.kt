@@ -1,9 +1,7 @@
 package com.worldpay.access.checkout.client.validation
 
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
@@ -79,49 +77,78 @@ class ValidationIntegrationTest {
     @Test
     fun `should call listener with valid result and no brand for valid luhn pan - onPanValidated`() {
         pan.setText(VALID_UNKNOWN_LUHN)
-        verify(cardValidationListener).onPanValidated(null, true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener, never()).onBrandChange(any())
     }
 
     @Test
     fun `should call listener with invalid result and no brand for invalid luhn pan - onPanValidated`() {
         pan.setText(INVALID_UNKNOWN_LUHN)
-        verify(cardValidationListener).onPanValidated(null, false)
+        verify(cardValidationListener).onPanValidated(false)
+        verify(cardValidationListener, never()).onBrandChange(any())
     }
 
     @Test
     fun `should call listener with invalid result and visa brand for partial visa pan - onPanValidated`() {
         pan.setText(PARTIAL_VISA)
-        verify(cardValidationListener).onPanValidated(transform(VISA_BRAND), false)
+        verify(cardValidationListener).onPanValidated(false)
+        verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
     }
 
     @Test
     fun `should call listener with invalid result and null brand for partial unknown pan - onPanValidated`() {
         pan.setText("000")
-        verify(cardValidationListener).onPanValidated(null, false)
+        verify(cardValidationListener).onPanValidated(false)
+        verify(cardValidationListener, never()).onBrandChange(any())
     }
 
     @Test
     fun `should call listener with valid result and correct brand for identified pan - onPanValidated`() {
         pan.setText(VISA_PAN)
-        verify(cardValidationListener).onPanValidated(transform(VISA_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(MASTERCARD_PAN)
-        verify(cardValidationListener).onPanValidated(transform(MASTERCARD_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(MASTERCARD_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(AMEX_PAN)
-        verify(cardValidationListener).onPanValidated(transform(AMEX_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(AMEX_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(JCB_PAN)
-        verify(cardValidationListener).onPanValidated(transform(JCB_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(JCB_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(DISCOVER_PAN)
-        verify(cardValidationListener).onPanValidated(transform(DISCOVER_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(DISCOVER_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(DINERS_PAN)
-        verify(cardValidationListener).onPanValidated(transform(DINERS_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(DINERS_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(MAESTRO_PAN)
-        verify(cardValidationListener).onPanValidated(transform(MAESTRO_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(MAESTRO_BRAND))
+
+        reset(cardValidationListener)
+
+        pan.setText("")
+        verify(cardValidationListener).onPanValidated(false)
+        verify(cardValidationListener).onBrandChange(null)
     }
 
     @Test
@@ -130,14 +157,16 @@ class ValidationIntegrationTest {
         verify(cardValidationListener).onCvvValidated(true)
 
         pan.setText(VISA_PAN)
-        verify(cardValidationListener).onPanValidated(transform(VISA_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
         verify(cardValidationListener).onCvvValidated(false)
     }
 
     @Test
     fun `should call each listener function as each input is filled and then finally call the onValidationSuccess function`() {
         pan.setText(VISA_PAN)
-        verify(cardValidationListener).onPanValidated(transform(VISA_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
 
         cvc.setText("1234")
         verify(cardValidationListener).onCvvValidated(true)
@@ -158,7 +187,9 @@ class ValidationIntegrationTest {
 
         override fun onValidationSuccess() {}
 
-        override fun onPanValidated(cardBrand: CardBrand?, isValid: Boolean) {}
+        override fun onPanValidated(isValid: Boolean) {}
+
+        override fun onBrandChange(cardBrand : CardBrand?) {}
 
         override fun onExpiryDateValidated(isValid: Boolean) {}
 
