@@ -7,6 +7,10 @@ import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
 import com.worldpay.access.checkout.api.AccessCheckoutException.*
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
+import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
+import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
 import com.worldpay.access.checkout.session.api.client.VerifiedTokenSessionClient
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
@@ -47,7 +51,9 @@ class PactTest {
     @get:Rule
     val expectedException: ExpectedException = ExpectedException.none()
 
-    private val path = "/verifiedTokens/sessions"
+    private val sessionPath = "/verifiedTokens/sessions"
+    private val discoveryPath = "/verifiedTokens"
+
     private val cardNumber = "1111222233334444"
     private val invalidLuhn = "444444444444444"
     private val cardStringTooShort = "1111"
@@ -64,6 +70,9 @@ class PactTest {
 
     private val identity = "identity"
     private val invalidIdentity = "ABC"
+
+    private val discoveryEndpointRegex = "https?://[^/]+/verifiedTokens/.+"
+    private val verifiedTokensSessionEndpoint = "http://access.worldpay.com/verifiedTokens/sessions"
 
     private val sessionReferenceRegex = "https?://[^/]+/verifiedTokens/sessions/[^/]+"
     private val sessionReferenceExample = "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
@@ -83,11 +92,56 @@ class PactTest {
         .closeArray()
         .closeObject()
 
+    private val getResponseBody = PactDslJsonBody()
+        .`object`("_links")
+        .`object`("verifiedTokens:sessions")
+        .stringMatcher("href", discoveryEndpointRegex, verifiedTokensSessionEndpoint)
+        .closeObject()
+        .closeObject()
+
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
+    fun createSuccessfulGetRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
+        return builder
+            .uponReceiving("A service discovery request")
+            .path(discoveryPath)
+            .method("GET")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
+            .willRespondWith()
+            .status(200)
+            .headers(
+                mutableMapOf(
+                    Pair(
+                        CONTENT_TYPE_HEADER,
+                        VERIFIED_TOKENS_MEDIA_TYPE
+                    )
+                )
+            )
+            .body(getResponseBody)
+            .toPact()
+    }
+
+    @Test
+    @PactVerification("verified-tokens", fragment = "createSuccessfulGetRequestInteraction")
+    fun `should receive a valid response when a valid GET request is sent`() {
+        val httpClient  = HttpClient()
+        val url = URL(mockProvider.url + discoveryPath)
+        val headers = mapOf(
+            ACCEPT_HEADER to VERIFIED_TOKENS_MEDIA_TYPE,
+            CONTENT_TYPE_HEADER to VERIFIED_TOKENS_MEDIA_TYPE
+        )
+
+        val deserializer = DiscoverLinks.verifiedTokens.endpoints[1].getDeserializer()
+
+        val response = httpClient.doGet(url, deserializer, headers)
+        assertEquals(verifiedTokensSessionEndpoint, response)
+    }
+
     @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createSuccessfulRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
@@ -111,7 +165,7 @@ class PactTest {
     fun createInvalidIdentityRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with invalid identity")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
@@ -134,7 +188,7 @@ class PactTest {
     fun createInvalidLuhnRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with invalid luhn")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
@@ -163,7 +217,7 @@ class PactTest {
     fun createStringTooShortRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with string card property too short")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
@@ -192,7 +246,7 @@ class PactTest {
     fun createStringTooLongRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with string card property too long")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
@@ -221,7 +275,7 @@ class PactTest {
     fun createIntegerMonthTooSmallRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with month int too small")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
@@ -250,7 +304,7 @@ class PactTest {
     fun createIntegerMonthTooLargeRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with month int too large")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
@@ -279,7 +333,7 @@ class PactTest {
     fun createStringNonNumericalCvvRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with non-numerical CVV")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
@@ -308,7 +362,7 @@ class PactTest {
     fun createEmptyBodyErrorInteractionRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with empty body")
-            .path(path)
+            .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
@@ -365,7 +419,7 @@ class PactTest {
 
         assertEquals(
             expectedSessionResponse,
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
         )
     }
 
@@ -384,7 +438,7 @@ class PactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule =
@@ -415,7 +469,7 @@ class PactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -449,7 +503,7 @@ class PactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -483,7 +537,7 @@ class PactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -517,7 +571,7 @@ class PactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -551,7 +605,7 @@ class PactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -585,7 +639,7 @@ class PactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
             val validationRule = ValidationRule(
@@ -634,7 +688,7 @@ class PactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + path), sessionRequest)
+            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutClientError) {
 

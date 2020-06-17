@@ -14,10 +14,6 @@ internal class PaymentsCvcSessionClient(
     private val httpClient: HttpClient
 ) : SessionClient {
 
-    companion object {
-        private const val SESSIONS_MEDIA_TYPE = "application/vnd.worldpay.sessions-v1.hal+json"
-    }
-
     override fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse? {
         val headers = HashMap<String, String>()
         headers[CONTENT_TYPE_HEADER] = SESSIONS_MEDIA_TYPE

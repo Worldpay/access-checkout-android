@@ -23,4 +23,22 @@ class DiscoverLinksTest {
         assertEquals(DiscoverLinks.verifiedTokens.endpoints[0].endpoint, expectedService)
         assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].endpoint, expectedEndpoint)
     }
+
+    @Test
+    fun `discoverLinks sessions should return headers for sessions service`() {
+        val expectedAcceptHeader = "application/vnd.worldpay.sessions-v1.hal+json"
+        val expectedContentHeader = "application/vnd.worldpay.sessions-v1.hal+json"
+
+        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Accept"], expectedAcceptHeader)
+        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Content-Type"], expectedContentHeader)
+    }
+
+    @Test
+    fun `discoverLinks verified tokens should return headers for verifiedTokens service`() {
+        val expectedAcceptHeader = "application/vnd.worldpay.verified-tokens-v1.hal+json"
+        val expectedContentHeader = "application/vnd.worldpay.verified-tokens-v1.hal+json"
+
+        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Accept"], expectedAcceptHeader)
+        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Content-Type"], expectedContentHeader)
+    }
 }

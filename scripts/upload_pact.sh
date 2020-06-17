@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-export SESSIONS_CONTRACT_VERSION="1.0.0"
+export SESSIONS_CONTRACT_VERSION="$PROJECT_VERSION"
 export VT_CONTRACT_VERSION=$PROJECT_VERSION
 
 curl --fail --show-error -v -XPUT \-H "Content-Type: application/json" \
