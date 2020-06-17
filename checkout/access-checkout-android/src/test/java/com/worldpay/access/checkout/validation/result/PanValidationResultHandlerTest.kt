@@ -1,9 +1,6 @@
 package com.worldpay.access.checkout.validation.result
 
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import org.junit.Before
@@ -24,7 +21,9 @@ class PanValidationResultHandlerTest {
     }
 
     @Test
-    fun `should call listener when pan is valid with brand`() {
+    fun `should call listener when pan is valid and was previously invalid`() {
+        validationResultHandler.handleResult(false)
+
         validationResultHandler.handleResult(true)
 
         verify(validationListener).onPanValidated(true)
@@ -34,7 +33,10 @@ class PanValidationResultHandlerTest {
     }
 
     @Test
-    fun `should call listener when pan is invalid with brand`() {
+    fun `should call listener when pan is invalid and was previously valid`() {
+        validationResultHandler.handleResult(true)
+        reset(validationListener)
+
         validationResultHandler.handleResult(false)
 
         verify(validationListener).onPanValidated( false)
@@ -44,23 +46,48 @@ class PanValidationResultHandlerTest {
     }
 
     @Test
-    fun `should call listener when pan is valid with no brand`() {
+    fun `should not call listener when pan is valid and was previously valid`() {
+        validationResultHandler.handleResult(true)
+        reset(validationListener)
+
         validationResultHandler.handleResult(true)
 
-        verify(validationListener).onPanValidated(true)
-        verifyNoMoreInteractions(validationListener)
+        verifyZeroInteractions(validationListener)
 
         assertTrue(validationStateManager.panValidated)
     }
 
     @Test
-    fun `should call listener when pan is invalid with no brand`() {
+    fun `should not call listener when pan is invalid and was previously invalid`() {
+        validationResultHandler.handleResult(false)
+        reset(validationListener)
+
         validationResultHandler.handleResult(false)
 
-        verify(validationListener).onPanValidated(false)
-        verifyNoMoreInteractions(validationListener)
+        verifyZeroInteractions(validationListener)
 
         assertFalse(validationStateManager.panValidated)
+    }
+
+    @Test
+    fun `should call listener when focus is changed and notification has not been sent previously`() {
+        validationResultHandler.handleFocusChange()
+
+        verify(validationListener).onPanValidated(false)
+
+        assertFalse(validationStateManager.panValidated)
+    }
+
+    @Test
+    fun `should not call listener when focus is changed and notification has been sent previously`() {
+        validationResultHandler.handleResult(true)
+        reset(validationListener)
+
+        validationResultHandler.handleFocusChange()
+
+        verifyZeroInteractions(validationListener)
+
+        assertTrue(validationStateManager.panValidated)
     }
 
     @Test
