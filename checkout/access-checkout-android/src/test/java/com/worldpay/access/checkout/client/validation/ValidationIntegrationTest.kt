@@ -82,23 +82,23 @@ class ValidationIntegrationTest {
     }
 
     @Test
-    fun `should call listener with invalid result and no brand for invalid luhn pan - onPanValidated`() {
+    fun `should not call listener with invalid result and no brand for invalid luhn pan - onPanValidated`() {
         pan.setText(INVALID_UNKNOWN_LUHN)
-        verify(cardValidationListener).onPanValidated(false)
+        verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener, never()).onBrandChange(any())
     }
 
     @Test
-    fun `should call listener with invalid result and visa brand for partial visa pan - onPanValidated`() {
+    fun `should not call listener with invalid result but should notify of visa brand for partial visa pan - onPanValidated`() {
         pan.setText(PARTIAL_VISA)
-        verify(cardValidationListener).onPanValidated(false)
+        verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
     }
 
     @Test
-    fun `should call listener with invalid result and null brand for partial unknown pan - onPanValidated`() {
+    fun `should not call listener with invalid result and null brand for partial unknown pan - onPanValidated`() {
         pan.setText("000")
-        verify(cardValidationListener).onPanValidated(false)
+        verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener, never()).onBrandChange(any())
     }
 
@@ -111,37 +111,37 @@ class ValidationIntegrationTest {
         reset(cardValidationListener)
 
         pan.setText(MASTERCARD_PAN)
-        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(transform(MASTERCARD_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(AMEX_PAN)
-        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(transform(AMEX_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(JCB_PAN)
-        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(transform(JCB_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(DISCOVER_PAN)
-        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(transform(DISCOVER_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(DINERS_PAN)
-        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(transform(DINERS_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(MAESTRO_PAN)
-        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(transform(MAESTRO_BRAND))
 
         reset(cardValidationListener)

@@ -6,10 +6,10 @@ internal class CardValidationStateManager: ExpiryDateFieldValidationStateManager
 
     override var panValidationState = false
     override var expiryDateValidationState = false
-    override var cvvValidated = false
+    override var cvcValidationState = false
 
     override fun isAllValid(): Boolean {
-        return panValidationState && expiryDateValidationState && cvvValidated
+        return panValidationState && expiryDateValidationState && cvcValidationState
     }
 
 }

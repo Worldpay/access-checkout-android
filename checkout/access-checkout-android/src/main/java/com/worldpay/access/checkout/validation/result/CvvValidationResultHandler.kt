@@ -8,13 +8,31 @@ internal class CvvValidationResultHandler(
     private val validationStateManager: CvcFieldValidationStateManager
 ) {
 
-    fun handleResult(validationResult: Boolean) {
-        validationListener.onCvvValidated(validationResult)
-        validationStateManager.cvvValidated = validationResult
+    private var notificationSent = false
+
+    fun handleResult(isValid: Boolean) {
+        if (hasStateChanged(isValid)) {
+            notifyListener(isValid)
+        }
+    }
+
+    fun handleFocusChange() {
+        if (!notificationSent) {
+            notifyListener(validationStateManager.cvcValidationState)
+        }
+    }
+
+    private fun hasStateChanged(isValid : Boolean) = isValid != validationStateManager.cvcValidationState
+
+    private fun notifyListener(isValid : Boolean) {
+        validationListener.onCvvValidated(isValid)
+        validationStateManager.cvcValidationState = isValid
 
         if (validationStateManager.isAllValid()) {
             validationListener.onValidationSuccess()
         }
+
+        notificationSent = true
     }
 
 }

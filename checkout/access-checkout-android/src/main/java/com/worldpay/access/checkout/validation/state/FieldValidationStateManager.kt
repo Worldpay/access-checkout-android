@@ -13,5 +13,5 @@ internal interface PanFieldValidationStateManager : FieldValidationStateManager 
 }
 
 internal interface CvcFieldValidationStateManager : FieldValidationStateManager {
-    var cvvValidated : Boolean
+    var cvcValidationState : Boolean
 }

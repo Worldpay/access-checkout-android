@@ -14,7 +14,7 @@ class CardValidationStateManagerTest {
         assertFalse(validationStateManager.isAllValid())
         assertFalse(validationStateManager.panValidationState)
         assertFalse(validationStateManager.expiryDateValidationState)
-        assertFalse(validationStateManager.cvvValidated)
+        assertFalse(validationStateManager.cvcValidationState)
     }
 
     @Test
@@ -23,7 +23,7 @@ class CardValidationStateManagerTest {
 
         validationStateManager.panValidationState = true
         validationStateManager.expiryDateValidationState = true
-        validationStateManager.cvvValidated = true
+        validationStateManager.cvcValidationState = true
 
         assertTrue(validationStateManager.isAllValid())
     }
@@ -34,7 +34,7 @@ class CardValidationStateManagerTest {
 
         validationStateManager.panValidationState = false
         validationStateManager.expiryDateValidationState = true
-        validationStateManager.cvvValidated = true
+        validationStateManager.cvcValidationState = true
 
         assertFalse(validationStateManager.isAllValid())
     }
@@ -45,7 +45,7 @@ class CardValidationStateManagerTest {
 
         validationStateManager.panValidationState = true
         validationStateManager.expiryDateValidationState = true
-        validationStateManager.cvvValidated = false
+        validationStateManager.cvcValidationState = false
 
         assertFalse(validationStateManager.isAllValid())
     }

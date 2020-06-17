@@ -2,9 +2,9 @@ package com.worldpay.access.checkout.validation.state
 
 internal class CvcValidationStateManager: CvcFieldValidationStateManager {
 
-    override var cvvValidated = false
+    override var cvcValidationState = false
 
     override fun isAllValid(): Boolean {
-        return cvvValidated
+        return cvcValidationState
     }
 }
