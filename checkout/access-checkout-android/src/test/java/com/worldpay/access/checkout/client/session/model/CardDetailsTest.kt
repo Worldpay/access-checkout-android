@@ -47,7 +47,7 @@ class CardDetailsTest {
                 .build()
         }
 
-        assertEquals("expecting expiry date in format MM/YY but found 11200", exception.message)
+        assertEquals("expecting expiry date in format MM/YY or MMYY but found 11200", exception.message)
     }
 
     @Test
@@ -60,7 +60,7 @@ class CardDetailsTest {
                 .build()
         }
 
-        assertEquals("expecting expiry date in format MM/YY but found abcd", exception.message)
+        assertEquals("expecting expiry date in format MM/YY or MMYY but found abcd", exception.message)
     }
 
     @Test

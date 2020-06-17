@@ -54,7 +54,7 @@ class CardDetails private constructor(
             val isCorrectLength = expiryDateWithoutSeparator.length == maxExpiryDateLength
 
             if (!isCorrectLength || !isNumeric) {
-                throw IllegalArgumentException("expecting expiry date in format MM/YY but found $expiryDate")
+                throw IllegalArgumentException("expecting expiry date in format MM/YY or MMYY but found $expiryDate")
             }
 
             if (expiryDate.contains(separator)) {
