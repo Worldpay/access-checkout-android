@@ -9,7 +9,7 @@ import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.filters.VariableLengthFilter
-import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
+import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 
 internal class FieldDecoratorFactory(
     private val textWatcherFactory: TextWatcherFactory

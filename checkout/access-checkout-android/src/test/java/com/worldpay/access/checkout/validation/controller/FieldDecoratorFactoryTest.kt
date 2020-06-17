@@ -11,11 +11,11 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
+import com.worldpay.access.checkout.validation.listeners.text.CVVTextWatcher
+import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateTextWatcher
+import com.worldpay.access.checkout.validation.listeners.text.PANTextWatcher
+import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 import com.worldpay.access.checkout.validation.state.CardValidationStateManager
-import com.worldpay.access.checkout.validation.watchers.CVVTextWatcher
-import com.worldpay.access.checkout.validation.watchers.ExpiryDateTextWatcher
-import com.worldpay.access.checkout.validation.watchers.PANTextWatcher
-import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito

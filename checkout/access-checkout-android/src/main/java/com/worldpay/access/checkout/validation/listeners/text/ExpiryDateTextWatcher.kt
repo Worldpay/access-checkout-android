@@ -1,10 +1,10 @@
-package com.worldpay.access.checkout.validation.watchers
+package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
+import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateSanitiser.Companion.SEPARATOR
 import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.NewDateValidator
-import com.worldpay.access.checkout.validation.watchers.ExpiryDateSanitiser.Companion.SEPARATOR
 
 internal class ExpiryDateTextWatcher(
     private val dateValidator: NewDateValidator,
