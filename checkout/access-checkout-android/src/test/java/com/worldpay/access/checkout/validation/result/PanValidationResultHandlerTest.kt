@@ -29,7 +29,7 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated(true)
         verifyNoMoreInteractions(validationListener)
 
-        assertTrue(validationStateManager.panValidated)
+        assertTrue(validationStateManager.panValidationState)
     }
 
     @Test
@@ -42,7 +42,7 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated( false)
         verifyNoMoreInteractions(validationListener)
 
-        assertFalse(validationStateManager.panValidated)
+        assertFalse(validationStateManager.panValidationState)
     }
 
     @Test
@@ -54,7 +54,7 @@ class PanValidationResultHandlerTest {
 
         verifyZeroInteractions(validationListener)
 
-        assertTrue(validationStateManager.panValidated)
+        assertTrue(validationStateManager.panValidationState)
     }
 
     @Test
@@ -66,7 +66,7 @@ class PanValidationResultHandlerTest {
 
         verifyZeroInteractions(validationListener)
 
-        assertFalse(validationStateManager.panValidated)
+        assertFalse(validationStateManager.panValidationState)
     }
 
     @Test
@@ -75,7 +75,7 @@ class PanValidationResultHandlerTest {
 
         verify(validationListener).onPanValidated(false)
 
-        assertFalse(validationStateManager.panValidated)
+        assertFalse(validationStateManager.panValidationState)
     }
 
     @Test
@@ -87,14 +87,14 @@ class PanValidationResultHandlerTest {
 
         verifyZeroInteractions(validationListener)
 
-        assertTrue(validationStateManager.panValidated)
+        assertTrue(validationStateManager.panValidationState)
     }
 
     @Test
     fun `should call onValidationSuccess when all fields are valid`() {
         val validationStateManager = mock<CardValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)
-        given(validationStateManager.panValidated).willReturn(false)
+        given(validationStateManager.panValidationState).willReturn(false)
 
         val validationResultHandler = PanValidationResultHandler(validationListener, validationStateManager)
         validationResultHandler.handleResult(true)

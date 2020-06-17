@@ -18,15 +18,15 @@ internal class PanValidationResultHandler(
 
     fun handleFocusChange() {
         if (!notificationSent) {
-            notifyListener(validationStateManager.panValidated)
+            notifyListener(validationStateManager.panValidationState)
         }
     }
 
-    private fun hasStateChanged(isValid : Boolean) = isValid != validationStateManager.panValidated
+    private fun hasStateChanged(isValid : Boolean) = isValid != validationStateManager.panValidationState
 
     private fun notifyListener(isValid : Boolean) {
         validationListener.onPanValidated(isValid)
-        validationStateManager.panValidated = isValid
+        validationStateManager.panValidationState = isValid
 
         if (validationStateManager.isAllValid()) {
             validationListener.onValidationSuccess()
