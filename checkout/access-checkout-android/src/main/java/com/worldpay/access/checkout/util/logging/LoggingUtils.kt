@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.util.logging
 /**
  * Static utility methods for logging
  */
-object LoggingUtils {
+internal object LoggingUtils {
 
     private val accessCheckoutLogger = AccessCheckoutLogger()
 
@@ -12,8 +12,4 @@ object LoggingUtils {
         accessCheckoutLogger.debugLog(tag, msg)
     }
 
-    @JvmStatic
-    fun errorLog(tag: String, msg: String) {
-        accessCheckoutLogger.errorLog(tag, msg)
-    }
 }

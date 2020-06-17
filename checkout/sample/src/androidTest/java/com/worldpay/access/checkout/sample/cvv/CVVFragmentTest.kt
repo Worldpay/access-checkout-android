@@ -8,7 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvv.testutil.AbstractCvvFragmentTest
 import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.setOrientationLeft
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -68,7 +68,7 @@ class CVVFragmentTest: AbstractCvvFragmentTest() {
             .enabledStateIs(submitButton = true)
 
         // rotate landscape
-        setOrientationLeft()
+        rotateLandscape(activityRule)
 
         CvvFragmentTestUtils(activityRule)
             .cardDetailsAre(cvv = "1111")
@@ -84,7 +84,7 @@ class CVVFragmentTest: AbstractCvvFragmentTest() {
             .enabledStateIs(submitButton = false)
 
         // rotate landscape
-        setOrientationLeft()
+        rotateLandscape(activityRule)
 
         CvvFragmentTestUtils(activityRule)
             .cardDetailsAre(cvv = "11")

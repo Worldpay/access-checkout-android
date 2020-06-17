@@ -1,48 +1,38 @@
 package com.worldpay.access.checkout.sample;
 
 import android.os.Bundle;
-import android.text.InputFilter;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
-import com.worldpay.access.checkout.AccessCheckoutCard;
-import com.worldpay.access.checkout.Card;
-import com.worldpay.access.checkout.CardListener;
 import com.worldpay.access.checkout.api.AccessCheckoutException;
-import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory;
-import com.worldpay.access.checkout.api.configuration.RemoteCardBrand;
 import com.worldpay.access.checkout.client.session.AccessCheckoutClient;
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder;
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener;
 import com.worldpay.access.checkout.client.session.model.CardDetails;
 import com.worldpay.access.checkout.client.session.model.SessionType;
-import com.worldpay.access.checkout.sample.images.SVGImageLoader;
-import com.worldpay.access.checkout.validation.validators.AccessCheckoutCardValidator;
-import com.worldpay.access.checkout.views.CardCVVText;
-import com.worldpay.access.checkout.views.CardExpiryTextLayout;
-import com.worldpay.access.checkout.views.CardView;
-import com.worldpay.access.checkout.views.PANLayout;
+import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser;
+import com.worldpay.access.checkout.client.validation.config.CardValidationConfig;
+import com.worldpay.access.checkout.sample.card.CardValidationListener;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
-import static com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog;
 import static java.util.Collections.singletonList;
 
-public class MainActivityJavaExample extends AppCompatActivity implements CardListener, SessionResponseListener {
+public class MainActivityJavaExample extends AppCompatActivity implements SessionResponseListener {
 
-    private Card card;
-    private PANLayout panView;
-    private CardCVVText cardCVVText;
-    private CardExpiryTextLayout cardExpiryText;
+    private EditText panText;
+    private EditText cvvText;
+    private EditText expiryText;
 
     private Boolean loading = false;
 
@@ -59,49 +49,22 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
     protected void onStart() {
         super.onStart();
 
-        panView = findViewById(R.id.card_flow_text_pan);
-        cardCVVText = findViewById(R.id.cvv_flow_text_cvv);
-        cardExpiryText = findViewById(R.id.card_flow_text_exp);
+        panText = findViewById(R.id.card_flow_text_pan);
+        cvvText = findViewById(R.id.cvv_flow_text_cvv);
+        expiryText = findViewById(R.id.card_flow_expiry_date);
         submit = findViewById(R.id.card_flow_btn_submit);
         contentLayout = findViewById(R.id.fragment_card_flow);
         loadingBar = findViewById(R.id.loading_bar);
 
-        card = new AccessCheckoutCard(panView, cardCVVText, cardExpiryText);
-        card.setCardListener(this);
-        card.setCardValidator(new AccessCheckoutCardValidator());
+        initialiseValidation();
 
-        CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl());
-
-        panView.setCardViewListener(card);
-        cardCVVText.setCardViewListener(card);
-        cardExpiryText.setCardViewListener(card);
-
-        final AccessCheckoutClient accessCheckoutClient = new AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl())
-                .merchantId(getMerchantID())
-                .sessionResponseListener(this)
-                .context(getApplicationContext())
-                .lifecycleOwner(this)
-                .build();
-
-        submit.setOnClickListener(view -> {
-            debugLog("MainActivityJavaExample", "Started request");
-            loading = true;
-            toggleLoading(false);
-
-            CardDetails cardDetails = new CardDetails.Builder()
-                    .pan(panView.getInsertedText())
-                    .expiryDate(cardExpiryText.getMonth(), cardExpiryText.getYear())
-                    .cvv(cardCVVText.getInsertedText())
-                    .build();
-            accessCheckoutClient.generateSession(cardDetails, singletonList(SessionType.VERIFIED_TOKEN_SESSION));
-        });
-
+        initialisePaymentFlow();
     }
+
 
     @Override
     public void onSuccess(@NotNull Map<SessionType, String> sessionResponseMap) {
-        debugLog("MainActivityJavaExample", String.format("Received session reference map: %s", sessionResponseMap.toString()));
+        Log.d("MainActivityJavaExample", String.format("Received session reference map: %s", sessionResponseMap.toString()));
 
         loading = false;
         toggleLoading(true);
@@ -116,11 +79,10 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
 
     @Override
     public void onError(@NotNull AccessCheckoutException error) {
-        debugLog("MainActivityJavaExample", String.format("Received error: %s", error.getMessage()));
+        Log.d("MainActivityJavaExample", String.format("Received error: %s", error.getMessage()));
 
         loading = false;
         toggleLoading(true);
-
 
         new AlertDialog.Builder(this)
                 .setTitle("Error")
@@ -128,23 +90,6 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
                 .setPositiveButton(android.R.string.ok, null)
                 .create()
                 .show();
-    }
-
-    @Override
-    public void onUpdate(@NotNull CardView cardView, boolean valid) {
-        cardView.isValid(valid);
-        submit.setEnabled(card.isValid() && !loading);
-    }
-
-    @Override
-    public void onUpdateLengthFilter(@NotNull CardView cardView, @NotNull InputFilter inputFilter) {
-        cardView.applyLengthFilter(inputFilter);
-    }
-
-    @Override
-    public void onUpdateCardBrand(@Nullable RemoteCardBrand cardBrand) {
-        ImageView logoImageView = panView.getMImageView();
-        SVGImageLoader.getInstance(this).fetchAndApplyCardLogo(cardBrand, logoImageView);
     }
 
     @Override
@@ -175,11 +120,48 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
         return BuildConfig.MERCHANT_ID;
     }
 
+    private void initialiseValidation() {
+        CardValidationListener cardValidationListener = new CardValidationListener(this);
+
+        CardValidationConfig cardValidationConfig = new CardValidationConfig.Builder()
+                .baseUrl(getBaseUrl())
+                .pan(panText)
+                .expiryDate(expiryText)
+                .cvv(cvvText)
+                .validationListener(cardValidationListener)
+                .build();
+
+        AccessCheckoutValidationInitialiser.initialise(cardValidationConfig);
+    }
+
+    private void initialisePaymentFlow() {
+        final AccessCheckoutClient accessCheckoutClient = new AccessCheckoutClientBuilder()
+                .baseUrl(getBaseUrl())
+                .merchantId(getMerchantID())
+                .sessionResponseListener(this)
+                .context(getApplicationContext())
+                .lifecycleOwner(this)
+                .build();
+
+        submit.setOnClickListener(view -> {
+            Log.d("MainActivityJavaExample", "Started request");
+            loading = true;
+            toggleLoading(false);
+
+            CardDetails cardDetails = new CardDetails.Builder()
+                    .pan(panText.getText().toString())
+                    .expiryDate(expiryText.getText().toString())
+                    .cvv(cvvText.getText().toString())
+                    .build();
+
+            accessCheckoutClient.generateSession(cardDetails, singletonList(SessionType.VERIFIED_TOKEN_SESSION));
+        });
+    }
+
     private void toggleLoading(Boolean enableFields) {
-        panView.mEditText.setEnabled(enableFields);
-        cardCVVText.setEnabled(enableFields);
-        cardExpiryText.monthEditText.setEnabled(enableFields);
-        cardExpiryText.yearEditText.setEnabled(enableFields);
+        panText.setEnabled(enableFields);
+        cvvText.setEnabled(enableFields);
+        expiryText.setEnabled(enableFields);
         submit.setEnabled(enableFields);
 
         fieldsToggle(enableFields);
@@ -195,10 +177,4 @@ public class MainActivityJavaExample extends AppCompatActivity implements CardLi
         }
     }
 
-    private void resetFields() {
-        panView.mEditText.getText().clear();
-        cardCVVText.getText().clear();
-        cardExpiryText.monthEditText.getText().clear();
-        cardExpiryText.yearEditText.getText().clear();
-    }
 }

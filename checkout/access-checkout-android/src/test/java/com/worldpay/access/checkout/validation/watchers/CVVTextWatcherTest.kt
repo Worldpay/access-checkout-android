@@ -8,7 +8,6 @@ import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
-import com.worldpay.access.checkout.validation.validators.CVVValidator
 import org.junit.Before
 import org.junit.Test
 
@@ -43,7 +42,7 @@ class CVVTextWatcherTest {
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val cvvValidator = mock<CVVValidator>()
+        val cvvValidator = mock<CVCValidator>()
 
         cvvTextWatcher.beforeTextChanged("", 1, 2,3)
         cvvTextWatcher.onTextChanged("", 1, 2,3)

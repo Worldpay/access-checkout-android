@@ -14,12 +14,9 @@ import org.junit.Test
 
 class CardConfigurationIntegrationTest {
 
-    private val luhnValidUnknownCard = "000000"
+    private val luhnValidUnknownCard = "8888888888888888"
     private val luhnValidMastercardCard = "5555555555554444"
-    private val luhnInvalidUnknownCard = "111234"
     private val unknownCvv = "1234"
-    private val month = "12"
-    private val year = "99"
 
     @get:Rule
     var cardConfigurationErrorRule: CardConfigurationErrorRule = CardConfigurationErrorRule(
@@ -38,25 +35,12 @@ class CardConfigurationIntegrationTest {
     }
 
     @Test
-    fun givenCardConfigurationCallFails_AndValidUnknownCardDataIsInsertedAndUserPressesSubmit_ThenSuccessfulResponseIsReceived() {
+    fun givenCardConfigCallFails_validKnownBrandCardDetails_returnsSuccessfulResponse() {
         cardFragmentTestUtils
-            .isInInitialState()
-            .enterCardDetails(pan = luhnInvalidUnknownCard, cvv = unknownCvv, month = "13", year = year)
-            .cardDetailsAre(pan = luhnInvalidUnknownCard, cvv = unknownCvv, month = "13", year = year)
+            .enterCardDetails(pan = luhnValidMastercardCard, cvv = unknownCvv, expiryDate = "1299")
+            .cardDetailsAre(pan = luhnValidMastercardCard, cvv = unknownCvv, expiryDate = "12/99")
             .hasNoBrand()
-            .validationStateIs(pan = false, cvv = true, month = false, year = false)
-            .enabledStateIs(submitButton = false)
-
-        cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidUnknownCard)
-            .hasNoBrand()
-            .validationStateIs(pan = true, cvv = true, month = false, year = false)
-            .enabledStateIs(submitButton = false)
-
-        cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidMastercardCard, month = month)
-            .hasNoBrand()
-            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .validationStateIs(pan = true, cvv = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
@@ -64,6 +48,22 @@ class CardConfigurationIntegrationTest {
                 mapOf(VERIFIED_TOKEN_SESSION to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
     }
+
+    @Test
+    fun givenCardConfigCallFails_validUnknownBrandCardDetails_returnsSuccessfulResponse() {
+        cardFragmentTestUtils
+            .enterCardDetails(pan = luhnValidUnknownCard, cvv = unknownCvv, expiryDate = "1299")
+            .cardDetailsAre(pan = luhnValidUnknownCard, cvv = unknownCvv, expiryDate = "12/99")
+            .hasNoBrand()
+            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .enabledStateIs(submitButton = true)
+            .clickSubmitButton()
+            .requestIsInProgress()
+            .hasResponseDialogWithMessage(
+                mapOf(VERIFIED_TOKEN_SESSION to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
+            )
+    }
+
 }
 
 class CardConfigurationErrorRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {

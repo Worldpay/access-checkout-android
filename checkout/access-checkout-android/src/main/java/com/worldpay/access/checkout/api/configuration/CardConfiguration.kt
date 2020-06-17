@@ -6,7 +6,7 @@ package com.worldpay.access.checkout.api.configuration
  * @property brands a list of card brand configuration
  * @property defaults a list of default configuration to use
  */
-data class CardConfiguration(val brands: List<RemoteCardBrand>, val defaults: CardDefaults)
+internal data class CardConfiguration(val brands: List<RemoteCardBrand>, val defaults: CardDefaults)
 
 /**
  * Representation of a card brand
@@ -16,7 +16,7 @@ data class CardConfiguration(val brands: List<RemoteCardBrand>, val defaults: Ca
  * @property cvv validation rule for the cvv field
  * @property pan list of validations rules for the pan field
  */
-data class RemoteCardBrand(
+internal data class RemoteCardBrand(
     val name: String,
     val images: List<RemoteCardBrandImage>,
     val cvv: CardValidationRule,
@@ -32,7 +32,7 @@ data class RemoteCardBrand(
  * @param type the media type of the image, e.g. 'image/svg+xml'
  * @param url the URL to where the image can be downloaded from
  */
-data class RemoteCardBrandImage(val type: String, val url: String)
+internal data class RemoteCardBrandImage(val type: String, val url: String)
 
 /**
  * [CardDefaults] defines default validation rules for the fields
@@ -42,7 +42,7 @@ data class RemoteCardBrandImage(val type: String, val url: String)
  * @property month a default month validation rule
  * @property year a default year validation rule
  */
-data class CardDefaults(
+internal data class CardDefaults(
     val pan: CardValidationRule,
     val cvv: CardValidationRule,
     val month: CardValidationRule,
@@ -56,4 +56,4 @@ data class CardDefaults(
  * @property matcher a regex which is used to match a field to this rule
  * @property validLengths a rule which defines the fields valid lengths
  */
-data class CardValidationRule(val matcher: String, val validLengths: List<Int>)
+internal data class CardValidationRule(val matcher: String, val validLengths: List<Int>)

@@ -5,7 +5,7 @@ import com.worldpay.access.checkout.api.configuration.RemoteCardBrandImage
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 
-class ToCardBrandTransformer {
+internal class ToCardBrandTransformer {
 
     fun transform(remoteCardBrand: RemoteCardBrand?): CardBrand? {
         if (remoteCardBrand == null) return null

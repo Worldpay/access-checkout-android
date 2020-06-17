@@ -6,11 +6,9 @@ import android.widget.ImageView
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.given
-import com.worldpay.access.checkout.api.configuration.CardValidationRule
-import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.api.configuration.RemoteCardBrandImage
+import com.worldpay.access.checkout.client.validation.model.CardBrand
+import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
 import org.junit.Before
 import org.junit.Test
@@ -22,11 +20,9 @@ import java.io.InputStream
 class SVGImageLoaderTest {
 
     private val cardBrand =
-        RemoteCardBrand(
+        CardBrand(
             name = "visa",
-            images = listOf(RemoteCardBrandImage(type = "image/svg+xml", url = "http://localhost/test.svg")),
-            cvv = CardValidationRule(matcher = "^[0-9]*\$", validLengths = listOf(3)),
-            pan = CardValidationRule(matcher = "^(?!^493698\\d*\$)4\\d*\$", validLengths = listOf(16, 18, 19))
+            images = listOf(CardBrandImage(type = "image/svg+xml", url = "http://localhost/test.svg"))
         )
 
     private lateinit var activity: Activity
@@ -84,17 +80,15 @@ class SVGImageLoaderTest {
         verifyZeroInteractions(client)
 
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
-        verify(targetImageView).setTag(PANLayout.CARD_TAG, "card_unknown_logo")
+        verify(targetImageView).setTag(R.integer.card_tag, "card_unknown_logo")
     }
 
     @Test
     fun shouldNotAttemptToFetchRemoteCardLogoIfNoSvgLogoForUnidentifiedBrandAndShouldSetUnknownCardLogo() {
         val cardBrandWithNoSVG =
-            RemoteCardBrand(
+            CardBrand(
                 name = "visa",
-                images = listOf(RemoteCardBrandImage(type = "image/png", url = "http://localhost/test.png")),
-                cvv = CardValidationRule(matcher = "^[0-9]*\$", validLengths = listOf(3)),
-                pan = CardValidationRule(matcher = "^(?!^493698\\d*\$)4\\d*\$", validLengths = listOf(16, 18, 19))
+                images = listOf(CardBrandImage(type = "image/png", url = "http://localhost/test.png"))
             )
 
         val mockHttpCall = mock(Call::class.java)
@@ -114,7 +108,7 @@ class SVGImageLoaderTest {
 
         verifyZeroInteractions(client)
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
-        verify(targetImageView).setTag(PANLayout.CARD_TAG, "card_unknown_logo")
+        verify(targetImageView).setTag(R.integer.card_tag, "card_unknown_logo")
     }
 
     @Test

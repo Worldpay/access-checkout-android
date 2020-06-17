@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPan
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.validation.state.PanFieldValidationStateManager
 
-class PanValidationResultHandler(
+internal class PanValidationResultHandler(
     private val validationListener: AccessCheckoutPanValidationListener,
     private val validationStateManager: PanFieldValidationStateManager
 ) {

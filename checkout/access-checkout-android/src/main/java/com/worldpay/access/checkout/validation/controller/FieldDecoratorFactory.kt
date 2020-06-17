@@ -25,6 +25,9 @@ internal class FieldDecoratorFactory(
         }
         cvvTextWatcher = textWatcherFactory.createCvvTextWatcher()
         cvvEditText.addTextChangedListener(cvvTextWatcher)
+        if (cvvEditText.isCursorVisible) {
+            cvvEditText.setText(cvvEditText.text.toString())
+        }
 
         applyFilter(cvvEditText, CvvLengthFilter(panEditText, cardConfiguration))
 
@@ -37,6 +40,9 @@ internal class FieldDecoratorFactory(
         }
         panTextWatcher = textWatcherFactory.createPanTextWatcher(cvvEditText, cardConfiguration)
         panEditText.addTextChangedListener(panTextWatcher)
+        if (panEditText.isCursorVisible) {
+            panEditText.setText(panEditText.text.toString())
+        }
 
         applyFilter(panEditText, PanLengthFilter(cardConfiguration))
 
@@ -49,6 +55,9 @@ internal class FieldDecoratorFactory(
         }
         expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
         expiryDateEditText.addTextChangedListener(expiryDateTextWatcher)
+        if (expiryDateEditText.isCursorVisible) {
+            expiryDateEditText.setText(expiryDateEditText.text.toString())
+        }
 
         applyFilter(expiryDateEditText, ExpiryDateLengthFilter(cardConfiguration))
 

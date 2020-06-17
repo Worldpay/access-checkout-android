@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.session.handlers
 import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.model.CardDetails
-import com.worldpay.access.checkout.client.session.model.ExpiryDate
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.SessionRequestService
@@ -48,10 +47,9 @@ internal class VerifiedTokensSessionRequestHandler(
 
     private fun createCardSessionRequest(cardDetails: CardDetails): CardSessionRequest {
         cardDetails.pan as String
-        cardDetails.expiryDate as ExpiryDate
         cardDetails.cvv as String
 
-        val cardExpiryDate = CardExpiryDate(cardDetails.expiryDate.month, cardDetails.expiryDate.year)
+        val cardExpiryDate = CardExpiryDate(cardDetails.expiryDate!!.month, cardDetails.expiryDate.year)
 
         return CardSessionRequest(
             cardDetails.pan,

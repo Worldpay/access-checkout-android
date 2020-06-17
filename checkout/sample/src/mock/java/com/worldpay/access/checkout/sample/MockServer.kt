@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.sample
 
 import android.content.Context
+import android.util.Log
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier
@@ -13,7 +14,6 @@ import com.worldpay.access.checkout.sample.stub.SessionsMockStub.stubSessionsPay
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.stubSessionsTokenRootRequest
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifiedTokenRootRequest
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifiedTokenSessionRequest
-import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 
 object MockServer {
 
@@ -35,7 +35,7 @@ object MockServer {
     }
 
     fun startWiremock(context: Context, port: Int = 8080) {
-        debugLog("MockServer", "Starting WireMock server!")
+        Log.d("MockServer", "Starting WireMock server!")
 
         MockServer.context = context
 
@@ -73,7 +73,7 @@ object MockServer {
     }
 
     fun defaultStubMappings(context: Context) {
-        debugLog("MockServer", "Stubbing root endpoint with 200 response")
+        Log.d("MockServer", "Stubbing root endpoint with 200 response")
         wireMockServer.stubFor(rootResourceMapping())
 
         // verified token
@@ -91,9 +91,9 @@ object MockServer {
     private fun waitForWiremock() {
         do {
             Thread.sleep(1000)
-            debugLog("MockServer", "Waiting for wiremock to start!")
+            Log.d("MockServer", "Waiting for wiremock to start!")
         } while (!hasStarted)
-        debugLog("MockServer", "Started wiremock!!")
+        Log.d("MockServer", "Started wiremock!!")
         baseUrl = wireMockServer.baseUrl()
     }
 

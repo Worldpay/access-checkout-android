@@ -19,7 +19,7 @@ internal abstract class VariableLengthFilter: InputFilter {
         dstart: Int,
         dend: Int
     ): CharSequence? {
-        val maxLength = this.getMaxLength(source)
+        val maxLength = this.getMaxLength(dest.toString() + source.toString())
         val lengthFilter = InputFilter.LengthFilter(maxLength)
         return lengthFilter.filter(source, start, end, dest, dstart, dend)
     }

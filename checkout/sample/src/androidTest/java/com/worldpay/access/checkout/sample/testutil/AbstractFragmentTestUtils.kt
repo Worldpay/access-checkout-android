@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.sample.testutil
 
 import android.app.Activity
+import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
@@ -15,7 +16,6 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
-import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -85,7 +85,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
                     throw AssertionError("Failed assertion after waiting $seconds seconds: ${exception.message}", exception)
                 } else {
                     Thread.sleep(pauseInterval.toLong())
-                    debugLog(javaClass.simpleName, "Retrying assertion $assertions")
+                    Log.d(javaClass.simpleName, "Retrying assertion $assertions")
                     continue
                 }
             }

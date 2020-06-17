@@ -1,13 +1,12 @@
 package com.worldpay.access.checkout.sample.images
 
 import android.app.Activity
+import android.util.Log
 import android.widget.ImageView
-import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.client.validation.model.CardBrand
+import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
-import com.worldpay.access.checkout.util.logging.AccessCheckoutLogger
-import com.worldpay.access.checkout.util.logging.Logger
-import com.worldpay.access.checkout.views.PANLayout
 import okhttp3.*
 import java.io.File
 import java.io.IOException
@@ -23,8 +22,7 @@ class SVGImageLoader @JvmOverloads constructor(
     ),
     private val svgImageRenderer: SVGImageRenderer = buildSvgImageRenderer(
         runOnUiThreadFunc
-    ),
-    private val logger: Logger = AccessCheckoutLogger()
+    )
 ) {
     private val idleResCounter = IdleResourceCounterFactory.getResCounter("SvgImageLoader")
 
@@ -64,45 +62,60 @@ class SVGImageLoader @JvmOverloads constructor(
     }
 
     /**
-     * Fetches the appropriate SVG image for a [RemoteCardBrand] from a remotely hosted endpoint over HTTP,
+     * Fetches the appropriate SVG image for a [CardBrand] from a remotely hosted endpoint over HTTP,
      * and applies it to a target [ImageView]
      *
-     * @param cardBrand the [RemoteCardBrand] to which to fetch the image for
+     * @param cardBrand the [CardBrand] to which to fetch the image for
      * @param target the target [ImageView] to apply the image to
      */
-    fun fetchAndApplyCardLogo(cardBrand: RemoteCardBrand?, target: ImageView) {
+    fun fetchAndApplyCardLogo(cardBrand: CardBrand?, target: ImageView) {
+        if (cardBrand == null) {
+            setUnknownCardBrand(target)
+            return
+        }
 
-        cardBrand?.let {
-            val url = it.images?.find { image -> image.type == IMAGE_TYPE }?.url
-
-            url?.let {
-                idleResCounter.increment()
-                val request = Request.Builder().url(url).build()
-                val newCall = client.newCall(request)
-                newCall.enqueue(object : Callback {
-                    override fun onFailure(call: Call, e: IOException) {}
-
-                    @Throws(IOException::class)
-                    override fun onResponse(call: Call, response: Response) {
-
-                        response.body()?.let { responseBody ->
-                            run {
-                                svgImageRenderer.renderImage(responseBody.byteStream(), target, cardBrand.name)
-                                idleResCounter.decrement()
-                                idleResCounter.unregisterIdleResCounter()
-                            }
-                        }
-                    }
-                })
+        var appliedBrandImage = false
+        for (image in cardBrand.images) {
+            if (image.type != IMAGE_TYPE) {
+                continue
             }
-        } ?: setUnknownCardBrand(target)
+
+            applyBrandImage(cardBrand.name, image, target)
+            appliedBrandImage = true
+        }
+
+        if (!appliedBrandImage) {
+            setUnknownCardBrand(target)
+        }
+    }
+
+    private fun applyBrandImage(brandName: String, image: CardBrandImage, target: ImageView) {
+        idleResCounter.increment()
+
+        val request = Request.Builder().url(image.url).build()
+        val newCall = client.newCall(request)
+
+        newCall.enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {}
+
+            @Throws(IOException::class)
+            override fun onResponse(call: Call, response: Response) {
+                response.body()?.let { responseBody ->
+                    run {
+                        svgImageRenderer.renderImage(responseBody.byteStream(), target, brandName)
+                        idleResCounter.decrement()
+                        idleResCounter.unregisterIdleResCounter()
+                    }
+                }
+            }
+        })
     }
 
     private fun setUnknownCardBrand(target: ImageView) {
-        logger.debugLog("SVGImageLoader", "Applying card unknown logo to target view")
+        Log.d("SVGImageLoader", "Applying card unknown logo to target view")
         target.setImageResource(R.drawable.card_unknown_logo)
         val resourceEntryName = target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
-        target.setTag(PANLayout.CARD_TAG, resourceEntryName)
+        target.setTag(R.integer.card_tag, resourceEntryName)
     }
 
 }

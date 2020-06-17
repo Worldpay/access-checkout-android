@@ -1,13 +1,13 @@
 package com.worldpay.access.checkout.validation.watchers
 
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.EXPIRY_DATE_DEFAULTS
-import com.worldpay.access.checkout.validation.ValidatorUtils.isNumeric
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
 
-class ExpiryDateSanitiser {
+internal class ExpiryDateSanitiser {
 
     private val nonNumericRegex = Regex("[^0-9/]")
 
-    companion object {
+    internal companion object {
         const val SEPARATOR = "/"
     }
 

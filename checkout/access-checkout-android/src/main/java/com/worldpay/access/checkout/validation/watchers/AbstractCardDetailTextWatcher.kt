@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.watchers
 
 import android.text.TextWatcher
 
-abstract class AbstractCardDetailTextWatcher : TextWatcher {
+internal abstract class AbstractCardDetailTextWatcher : TextWatcher {
 
     override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
 

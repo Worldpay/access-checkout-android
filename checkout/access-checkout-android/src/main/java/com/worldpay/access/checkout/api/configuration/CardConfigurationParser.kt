@@ -12,7 +12,7 @@ import org.json.JSONObject
 
 internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
 
-    companion object {
+    internal companion object {
 
         private const val EMPTY_STRING = ""
 

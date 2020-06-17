@@ -1,30 +1,31 @@
 package com.worldpay.access.checkout.sample.ui
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.worldpay.access.checkout.AccessCheckoutCVV
-import com.worldpay.access.checkout.api.configuration.CardConfigurationFactory
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
+import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
+import com.worldpay.access.checkout.client.validation.config.CvvValidationConfig
 import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.cvv.CvvListenerImpl
+import com.worldpay.access.checkout.sample.cvv.CvvValidationListener
 import com.worldpay.access.checkout.sample.cvv.SessionResponseListenerImpl
-import com.worldpay.access.checkout.util.logging.LoggingUtils
-import com.worldpay.access.checkout.views.CardCVVText
 
 class CvvFlowFragment : Fragment() {
 
-    private lateinit var cvvText: CardCVVText
-    private lateinit var submitBtn: Button
-
+    private lateinit var cvvText: EditText
+    private lateinit var submitBtn: SubmitButton
     private lateinit var progressBar: ProgressBar
+
+    private lateinit var cvvValidationListener : CvvValidationListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,23 +40,28 @@ class CvvFlowFragment : Fragment() {
 
         activity?.let { activity ->
             progressBar = ProgressBar(activity)
+            submitBtn = SubmitButton(activity, R.id.cvv_flow_btn_submit)
 
             cvvText = view.findViewById(R.id.cvv_flow_text_cvv)
-            submitBtn = view.findViewById(R.id.cvv_flow_btn_submit)
 
-            initialiseCardValidation(activity)
+            cvvValidationListener = CvvValidationListener(activity)
 
-            initialisePaymentFlow(activity)
+            initialisePaymentFlow(activity, view)
         }
 
     }
 
     override fun onResume() {
-        toggleFields(!progressBar.isLoading())
         super.onResume()
+        if (progressBar.isLoading()) {
+            disableFields()
+            submitBtn.disable()
+        } else {
+            initialiseCardValidation(cvvValidationListener)
+        }
     }
 
-    private fun initialisePaymentFlow(activity: FragmentActivity) {
+    private fun initialisePaymentFlow(activity : FragmentActivity, view : View) {
         val accessCheckoutClient = AccessCheckoutClientBuilder()
             .baseUrl(getBaseUrl())
             .merchantId(getMerchantID())
@@ -64,28 +70,28 @@ class CvvFlowFragment : Fragment() {
             .lifecycleOwner(this)
             .build()
 
-        submitBtn.setOnClickListener {
-            LoggingUtils.debugLog(javaClass.simpleName, "Started request")
-            this.progressBar.beginLoading()
-            toggleFields(false)
+        view.findViewById<Button>(R.id.cvv_flow_btn_submit).setOnClickListener {
+            Log.d(javaClass.simpleName, "Started request")
+            progressBar.beginLoading()
+            disableFields()
+            submitBtn.disable()
 
-            val cardDetails = CardDetails.Builder().cvv(cvvText.getInsertedText()).build()
+            val cardDetails = CardDetails.Builder().cvv(cvvText.text.toString()).build()
             accessCheckoutClient.generateSession(cardDetails, listOf(SessionType.PAYMENTS_CVC_SESSION))
         }
     }
 
-    private fun initialiseCardValidation(activity: FragmentActivity) {
-        val card = AccessCheckoutCVV(cvvText)
-        card.cardListener = CvvListenerImpl(activity, card, progressBar)
+    private fun initialiseCardValidation(cvvValidationListener: CvvValidationListener) {
+        val cvvValidationConfig = CvvValidationConfig.Builder()
+            .cvv(cvvText)
+            .validationListener(cvvValidationListener)
+            .build()
 
-        CardConfigurationFactory.getRemoteCardConfiguration(card, getBaseUrl())
-
-        cvvText.cardViewListener = card
+        AccessCheckoutValidationInitialiser.initialise(cvvValidationConfig)
     }
 
-    private fun toggleFields(enableFields: Boolean) {
-        cvvText.isEnabled = enableFields
-        submitBtn.isEnabled = false
+    private fun disableFields() {
+        cvvText.isEnabled = false
     }
 
     private fun getMerchantID() = BuildConfig.MERCHANT_ID

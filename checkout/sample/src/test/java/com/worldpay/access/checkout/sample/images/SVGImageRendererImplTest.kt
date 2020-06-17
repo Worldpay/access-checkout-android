@@ -7,14 +7,14 @@ import android.view.View
 import android.widget.ImageView
 import com.caverock.androidsvg.SVG
 import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.worldpay.access.checkout.util.logging.Logger
-import com.worldpay.access.checkout.views.PANLayout
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.worldpay.access.checkout.sample.R
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.mock
-import org.mockito.Mockito
+import org.mockito.Mockito.verify
 import java.io.InputStream
 
 class SVGImageRendererImplTest {
@@ -22,42 +22,39 @@ class SVGImageRendererImplTest {
     private lateinit var svgImageRenderer: SVGImageRenderer
     private lateinit var activity: Activity
     private lateinit var target: ImageView
-    private lateinit var logger: Logger
     private lateinit var svgWrapper: SVGWrapper
     private lateinit var runOnUiThreadFun: (Runnable) -> Unit
 
     @Before
     @Suppress("UNCHECKED_CAST")
     fun setup() {
-        activity = Mockito.mock(Activity::class.java)
-        target = Mockito.mock(ImageView::class.java)
-        logger = Mockito.mock(Logger::class.java)
-        svgWrapper = Mockito.mock(SVGWrapper::class.java)
-        runOnUiThreadFun = Mockito.mock(Function1::class.java as Class<Function1<Runnable, Unit>>)
-        svgImageRenderer =
-            SVGImageRendererImpl(runOnUiThreadFun, logger, svgWrapper)
+        activity = mock(Activity::class.java)
+        target = mock(ImageView::class.java)
+        svgWrapper = mock(SVGWrapper::class.java)
+        runOnUiThreadFun = mock(Function1::class.java as Class<Function1<Runnable, Unit>>)
+        svgImageRenderer = SVGImageRendererImpl(runOnUiThreadFun, svgWrapper)
     }
 
     @Test
     fun shouldRenderImageIntoTargetView() {
-        val inputStream = Mockito.mock(InputStream::class.java)
-        val svg = Mockito.mock(SVG::class.java)
+        val inputStream = mock(InputStream::class.java)
+        val svg = mock(SVG::class.java)
 
         given(target.measuredWidth).willReturn(1)
         given(target.measuredHeight).willReturn(1)
         given(svgWrapper.getSVGFromInputStream(inputStream)).willReturn(svg)
-        given(svg.renderToPicture(1, 1)).willReturn(Mockito.mock(Picture::class.java))
+        given(svg.renderToPicture(1, 1)).willReturn(mock(Picture::class.java))
 
         svgImageRenderer.renderImage(inputStream!!, target, "someName")
 
         val argumentCaptor = argumentCaptor<Runnable>()
-        Mockito.verify(runOnUiThreadFun).invoke(argumentCaptor.capture())
+        verify(runOnUiThreadFun).invoke(argumentCaptor.capture())
 
         argumentCaptor.firstValue.run()
 
-        Mockito.verify(target).setImageDrawable(ArgumentMatchers.any(PictureDrawable::class.java))
-        Mockito.verify(target).setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-        Mockito.verify(target).setTag(PANLayout.CARD_TAG, "someName")
+        verify(target).setImageDrawable(ArgumentMatchers.any(PictureDrawable::class.java))
+        verify(target).setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+        verify(target).setTag(R.integer.card_tag, "someName")
     }
 
     @Test
@@ -67,6 +64,6 @@ class SVGImageRendererImplTest {
 
         svgImageRenderer.renderImage(mockInputStream, target, "someName")
 
-        Mockito.verify(logger).errorLog("SVGImageRendererImpl", "Failed to parse SVG image: some exception")
+        verifyZeroInteractions(target)
     }
 }

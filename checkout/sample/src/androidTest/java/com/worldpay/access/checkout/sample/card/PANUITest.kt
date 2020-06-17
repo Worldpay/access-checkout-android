@@ -3,12 +3,14 @@ package com.worldpay.access.checkout.sample.card
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
 import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.*
+import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -17,12 +19,12 @@ import org.junit.runner.RunWith
 class PANUITest: AbstractCardFragmentTest() {
 
     @Test
-    fun givenUserClicksCardViewAndInsertsUnknownPartiallyValidCardNumberThenTextShouldTurnGreenAndDisplayUnknownCardIcon() {
+    fun givenUserClicksCardViewAndInsertsUnknownPartialCardNumberThenTextShouldTurnRedAndDisplayUnknownCardIcon() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "1111111")
-            .validationStateIs(pan = true)
+            .validationStateIs(pan = false)
             .hasNoBrand()
     }
 
@@ -160,7 +162,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "44")
-            .validationStateIs(pan = true)
+            .validationStateIs(pan = false)
             .hasBrand(VISA)
     }
 
@@ -170,7 +172,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "22")
-            .validationStateIs(pan = true)
+            .validationStateIs(pan = false)
             .hasBrand(MASTERCARD)
     }
 
@@ -180,23 +182,23 @@ class PANUITest: AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "34")
-            .validationStateIs(pan = true)
+            .validationStateIs(pan = false)
             .hasBrand(AMEX)
     }
 
     @Test
-    fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenChangesToPartialMastercardTextShouldNotIndicateInvalidAndIconShouldBeMastercard() {
+    fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenChangesToPartialMastercardTextShouldIndicateInvalidAndIconShouldBeMastercard() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "44000000")
-            .validationStateIs(pan = true)
+            .validationStateIs(pan = false)
             .hasBrand(VISA)
             .enterCardDetails(pan = "")
-            .validationStateIs(pan = true)
+            .validationStateIs(pan = false)
             .hasNoBrand()
             .enterCardDetails(pan = "55000000")
-            .validationStateIs(pan = true)
+            .validationStateIs(pan = false)
             .hasBrand(MASTERCARD)
     }
 
@@ -206,15 +208,9 @@ class PANUITest: AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "40")
-            .validationStateIs(pan = true)
+            .validationStateIs(pan = false)
             .hasBrand(VISA)
-
-        onView(withId(R.id.month_edit_text))
-            .check(matches(isDisplayed()))
-            .check(matches(isEnabled()))
-            .perform(pressImeActionButton())
-
-        cardFragmentTestUtils
+            .focusOn(EXPIRY_DATE)
             .validationStateIs(pan = false)
             .hasBrand(VISA)
     }
@@ -230,7 +226,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .validationStateIs(pan = true)
             .hasBrand(VISA)
 
-        onView(withId(R.id.card_number_edit_text))
+        onView(withId(R.id.card_flow_text_pan))
             .perform(click(), typeTextIntoFocusedView("1"), closeSoftKeyboard())
             .check(matches(withText(validVisaCardNumber)))
     }
@@ -246,7 +242,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .validationStateIs(pan = true)
             .hasBrand(MASTERCARD)
 
-        onView(withId(R.id.card_number_edit_text))
+        onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("4"), pressImeActionButton())
             .check(matches(withText(validMastercardCardNumber)))
     }
@@ -262,7 +258,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .validationStateIs(pan = true)
             .hasBrand(AMEX)
 
-        onView(withId(R.id.card_number_edit_text))
+        onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("4"), closeSoftKeyboard())
             .check(matches(withText(validAmexCardNumber)))
     }
@@ -278,7 +274,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .validationStateIs(pan = true)
             .hasNoBrand()
 
-        onView(withId(R.id.card_number_edit_text))
+        onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("0"), closeSoftKeyboard())
             .check(matches(withText(validUnidentifiedCardNumber)))
     }

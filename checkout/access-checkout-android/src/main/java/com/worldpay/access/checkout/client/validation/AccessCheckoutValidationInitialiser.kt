@@ -13,6 +13,7 @@ import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
 
 object AccessCheckoutValidationInitialiser {
 
+    @JvmStatic
     fun initialise(validationConfig: ValidationConfig) {
         if (validationConfig is CardValidationConfig) {
             initialiseCardValidation(validationConfig)

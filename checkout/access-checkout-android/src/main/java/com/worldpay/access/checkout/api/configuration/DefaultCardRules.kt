@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.api.configuration
 
-object DefaultCardRules {
+internal object DefaultCardRules {
 
     const val DEFAULT_MATCHER = "^[0-9]*\$"
 

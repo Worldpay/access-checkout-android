@@ -1,20 +1,20 @@
 package com.worldpay.access.checkout.validation.state
 
-interface FieldValidationStateManager {
+internal interface FieldValidationStateManager {
     fun isAllValid(): Boolean
 }
 
-interface ExpiryDateFieldValidationStateManager :
+internal interface ExpiryDateFieldValidationStateManager :
     FieldValidationStateManager {
     var expiryDateValidated : Boolean
 }
 
-interface PanFieldValidationStateManager :
+internal interface PanFieldValidationStateManager :
     FieldValidationStateManager {
     var panValidated : Boolean
 }
 
-interface CvcFieldValidationStateManager :
+internal interface CvcFieldValidationStateManager :
     FieldValidationStateManager {
     var cvvValidated : Boolean
 }

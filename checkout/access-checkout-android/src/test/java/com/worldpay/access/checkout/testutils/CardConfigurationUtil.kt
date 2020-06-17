@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.testutils
 import com.worldpay.access.checkout.api.configuration.*
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
 
-object CardConfigurationUtil {
+internal object CardConfigurationUtil {
 
     const val BASE_PATH = "https://local.com/access-checkout/assets"
 

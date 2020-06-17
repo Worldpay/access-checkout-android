@@ -165,7 +165,7 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
         return exec(location)
     }
 
-    companion object {
+    internal companion object {
         private const val POST_METHOD = "POST"
         private const val GET_METHOD = "GET"
         private const val LOCATION = "Location"

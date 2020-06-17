@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.validation.state
 
-class CardValidationStateManager: ExpiryDateFieldValidationStateManager,
+internal class CardValidationStateManager: ExpiryDateFieldValidationStateManager,
     CvcFieldValidationStateManager,
     PanFieldValidationStateManager {
 

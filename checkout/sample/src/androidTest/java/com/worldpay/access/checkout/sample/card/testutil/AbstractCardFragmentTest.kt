@@ -4,6 +4,7 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Before
 import org.junit.Rule
 
@@ -19,6 +20,7 @@ abstract class AbstractCardFragmentTest {
         cardFragmentTestUtils = CardFragmentTestUtils(activityRule)
         defaultStubMappings(activityRule.activity)
         closeSoftKeyboard()
+        rotatePortrait(activityRule)
     }
 
 }

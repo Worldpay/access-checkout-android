@@ -9,8 +9,6 @@ import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.views.PANLayout
 import org.awaitility.Awaitility
 import org.junit.After
 import org.junit.Before
@@ -30,9 +28,6 @@ class CardConfigurationLongDelayIntegrationTest {
 
     private val luhnValidMastercardCard = "5555555555554444"
     private val luhnInvalidMastercardCard = "55555555555111"
-    private val unknownCvv = "123456"
-    private val month = "12"
-    private val year = "99"
 
     @Before
     fun setup() {
@@ -51,8 +46,8 @@ class CardConfigurationLongDelayIntegrationTest {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = luhnInvalidMastercardCard, cvv = unknownCvv, month = "13", year = year)
-            .validationStateIs(pan = false, cvv = true, month = false, year = false)
+            .enterCardDetails(pan = luhnInvalidMastercardCard, cvv = "12345", expiryDate = "0119")
+            .validationStateIs(pan = false, cvv = true, expiryDate = false)
             .enabledStateIs(submitButton = false)
             .hasNoBrand()
 
@@ -62,25 +57,22 @@ class CardConfigurationLongDelayIntegrationTest {
                 assertExpectedLogo(MASTERCARD.cardBrandName)
                 true
             } catch (ex: AssertionError) {
-                // trigger an action on the UI
-                uiObjectWithId(R.id.card_number_edit_text).click()
-                uiObjectWithId(R.id.card_flow_text_cvv).click()
                 false
             }
         }
 
         // Assert that with now configuration has come back that the CVV is invalid for mastercard
         cardFragmentTestUtils
-            .validationStateIs(pan = false, cvv = false, month = false, year = false)
+            .validationStateIs(pan = false, cvv = false, expiryDate = false)
             .enabledStateIs(submitButton = false)
 
         // Re-enter a luhn valid, mastercard identified card and valid date and submit
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "123", month = month)
-            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "123", expiryDate = "1299")
+            .validationStateIs(pan = true, cvv = true, expiryDate = true)
             .enterCardDetails(cvv = "12345")
             .cardDetailsAre(cvv = "123")
-            .validationStateIs(pan = true, cvv = true, month = true, year = true)
+            .validationStateIs(pan = true, cvv = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
@@ -90,8 +82,8 @@ class CardConfigurationLongDelayIntegrationTest {
     }
     
     private fun assertExpectedLogo(logoResName: String) {
-        val logoView = cardConfigRule.activity.findViewById<ImageView>(R.id.logo_view)
-        assertEquals(logoResName, logoView.getTag(PANLayout.CARD_TAG))
+        val logoView = cardConfigRule.activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
+        assertEquals(logoResName, logoView.getTag(R.integer.card_tag))
     }
 
 }

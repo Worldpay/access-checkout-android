@@ -8,7 +8,7 @@ internal interface CardValidationRuleProvider {
     fun getRule(): CardValidationRule
 }
 
-class CVCValidationRuleManager : CardValidationRuleProvider {
+internal class CVCValidationRuleManager : CardValidationRuleProvider {
 
     private val cvvValidationRule = AtomicReference(CVV_DEFAULTS)
 

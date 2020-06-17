@@ -1,11 +1,10 @@
 package com.worldpay.access.checkout.sample.images
 
 import android.graphics.drawable.PictureDrawable
+import android.util.Log
 import android.view.View
 import android.widget.ImageView
-import com.worldpay.access.checkout.util.logging.AccessCheckoutLogger
-import com.worldpay.access.checkout.util.logging.Logger
-import com.worldpay.access.checkout.views.PANLayout
+import com.worldpay.access.checkout.sample.R
 import java.io.InputStream
 
 interface SVGImageRenderer {
@@ -16,11 +15,9 @@ interface SVGImageRenderer {
  * This class is responsible for rendering an SVG image into a target view
  *
  * @param runOnUiThreadFunc the reference to a runOnUiThread function
- * @param logger the logging instance
  * @param svgWrapper the [SVGWrapper]
  */
 class SVGImageRendererImpl(private val runOnUiThreadFunc: (Runnable) -> Unit,
-                           private val logger: Logger = AccessCheckoutLogger(),
                            private val svgWrapper: SVGWrapper = SVGWrapper.svgWrapper
 ): SVGImageRenderer {
 
@@ -36,13 +33,13 @@ class SVGImageRendererImpl(private val runOnUiThreadFunc: (Runnable) -> Unit,
             val svg = svgWrapper.getSVGFromInputStream(inputStream)
             val drawable = PictureDrawable(svg.renderToPicture(targetView.measuredWidth, targetView.measuredHeight))
             runOnUiThreadFunc(Runnable {
-                logger.debugLog("SVGImageRendererImpl", "Applying $brandName logo to target view")
+                Log.d("SVGImageRendererImpl", "Applying $brandName logo to target view")
                 targetView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                 targetView.setImageDrawable(drawable)
-                targetView.setTag(PANLayout.CARD_TAG, brandName)
+                targetView.setTag(R.integer.card_tag, brandName)
             })
         } catch (e: Exception) {
-            logger.errorLog("SVGImageRendererImpl", "Failed to parse SVG image: ${e.message}")
+            Log.e("SVGImageRendererImpl", "Failed to parse SVG image: ${e.message}")
         }
     }
 }

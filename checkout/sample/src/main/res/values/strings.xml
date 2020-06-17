@@ -10,4 +10,5 @@
     <string name="enable_multi_token_title">Payments CVC Session</string>
     <string name="enable_multi_token_desc">Retrieve verified token and payments cvc sessions</string>
 
+    <integer name="card_tag">7348</integer>
 </resources>

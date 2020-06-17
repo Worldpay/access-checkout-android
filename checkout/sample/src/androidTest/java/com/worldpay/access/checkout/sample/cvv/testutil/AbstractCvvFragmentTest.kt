@@ -6,6 +6,7 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Before
 import org.junit.Rule
 
@@ -22,6 +23,7 @@ abstract class AbstractCvvFragmentTest {
         defaultStubMappings(activityRule.activity)
         navigateTo(R.id.nav_cvv_flow)
         closeSoftKeyboard()
+        rotatePortrait(activityRule)
     }
 
 }
