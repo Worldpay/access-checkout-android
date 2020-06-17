@@ -31,7 +31,7 @@ internal class FieldDecoratorFactory(
 
         applyFilter(cvvEditText, CvvLengthFilter(panEditText, cardConfiguration))
 
-        cvvEditText.setHint(R.string.card_cvv_hint)
+        cvvEditText.setHint(R.string.card_cvc_hint)
     }
 
     fun decoratePanField(panEditText: EditText, cvvEditText: EditText, cardConfiguration: CardConfiguration) {

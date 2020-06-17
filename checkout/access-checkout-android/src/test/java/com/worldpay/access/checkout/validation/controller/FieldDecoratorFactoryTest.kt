@@ -69,7 +69,7 @@ class FieldDecoratorFactoryTest {
 
         fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).setHint(R.string.card_cvv_hint)
+        verify(cvvEditText).setHint(R.string.card_cvc_hint)
     }
 
     @Test
