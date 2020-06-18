@@ -7,6 +7,7 @@ import com.worldpay.access.checkout.client.validation.config.ValidationConfig
 import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.CvvDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.FieldDecoratorFactory
+import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
@@ -32,6 +33,8 @@ object AccessCheckoutValidationInitialiser {
         )
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
+        val focusChangeListenerFactory = FocusChangeListenerFactory(resultHandlerFactory)
+        val fieldDecoratorFactory = FieldDecoratorFactory(textWatcherFactory, focusChangeListenerFactory)
 
         CardDetailsValidationController(
             panEditText = validationConfig.pan,
@@ -39,9 +42,7 @@ object AccessCheckoutValidationInitialiser {
             cvvEditText = validationConfig.cvv,
             baseUrl = validationConfig.baseUrl,
             cardConfigurationClient = CardConfigurationClientFactory.createClient(),
-            fieldDecoratorFactory = FieldDecoratorFactory(
-                textWatcherFactory
-            )
+            fieldDecoratorFactory = fieldDecoratorFactory
         )
     }
 
@@ -54,12 +55,12 @@ object AccessCheckoutValidationInitialiser {
         )
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
+        val focusChangeListenerFactory = FocusChangeListenerFactory(resultHandlerFactory)
+        val fieldDecoratorFactory = FieldDecoratorFactory(textWatcherFactory, focusChangeListenerFactory)
 
         CvvDetailsValidationController(
             cvvEditText = validationConfig.cvv,
-            fieldDecoratorFactory = FieldDecoratorFactory(
-                textWatcherFactory
-            )
+            fieldDecoratorFactory = fieldDecoratorFactory
         )
     }
 

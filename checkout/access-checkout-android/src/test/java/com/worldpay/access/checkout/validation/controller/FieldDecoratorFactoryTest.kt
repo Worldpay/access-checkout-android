@@ -10,6 +10,10 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
+import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
+import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
+import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
+import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.CVVTextWatcher
 import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateTextWatcher
 import com.worldpay.access.checkout.validation.listeners.text.PANTextWatcher
@@ -26,13 +30,15 @@ class FieldDecoratorFactoryTest {
     private val expiryDateEditText = mock<EditText>()
 
     private val textWatcherFactory = mock<TextWatcherFactory>()
+    private val focusChangeListenerFactory = mock<FocusChangeListenerFactory>()
 
     private lateinit var fieldDecoratorFactory: FieldDecoratorFactory
 
     @Before
     fun setup() {
         fieldDecoratorFactory = FieldDecoratorFactory(
-            textWatcherFactory = textWatcherFactory
+            textWatcherFactory = textWatcherFactory,
+            focusChangeListenerFactory = focusChangeListenerFactory
         )
     }
 
@@ -117,16 +123,28 @@ class FieldDecoratorFactoryTest {
 
     @Test
     fun `should not set text when the cvv field is not in layout`() {
-        val cvvEditable = mock<Editable>()
         given(cvvEditText.filters).willReturn(emptyArray())
         given(cvvEditText.isCursorVisible).willReturn(false)
-        given(cvvEditText.text).willReturn(cvvEditable)
-        given(cvvEditable.toString()).willReturn("123")
 
         fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
         verify(cvvEditText).isCursorVisible
         verify(cvvEditText, never()).setText(any<String>())
+    }
+
+    @Test
+    fun `should add focus change listener to cvv field`() {
+        val listener = mock<CvcFocusChangeListener>()
+        given(cvvEditText.filters).willReturn(emptyArray())
+        given(cvvEditText.isCursorVisible).willReturn(false)
+        given(focusChangeListenerFactory.createCvcFocusChangeListener()).willReturn(listener)
+        val argumentCaptor = argumentCaptor<CvcFocusChangeListener>()
+
+        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(cvvEditText).onFocusChangeListener = argumentCaptor.capture()
+
+        assertEquals(listener, argumentCaptor.firstValue)
     }
 
     @Test
@@ -210,16 +228,28 @@ class FieldDecoratorFactoryTest {
 
     @Test
     fun `should not set text when the pan field is not in layout`() {
-        val panEditable = mock<Editable>()
         given(panEditText.filters).willReturn(emptyArray())
         given(panEditText.isCursorVisible).willReturn(false)
-        given(panEditText.text).willReturn(panEditable)
-        given(panEditable.toString()).willReturn(VISA_PAN)
 
         fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).isCursorVisible
         verify(panEditText, never()).setText(any<String>())
+    }
+
+    @Test
+    fun `should add focus change listener to pan field`() {
+        val listener = mock<PanFocusChangeListener>()
+        given(panEditText.filters).willReturn(emptyArray())
+        given(panEditText.isCursorVisible).willReturn(false)
+        given(focusChangeListenerFactory.createPanFocusChangeListener()).willReturn(listener)
+        val argumentCaptor = argumentCaptor<PanFocusChangeListener>()
+
+        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(panEditText).onFocusChangeListener = argumentCaptor.capture()
+
+        assertEquals(listener, argumentCaptor.firstValue)
     }
 
     @Test
@@ -303,16 +333,28 @@ class FieldDecoratorFactoryTest {
 
     @Test
     fun `should not set text when the expiry date field is not in layout`() {
-        val expiryDateEditable = mock<Editable>()
         given(expiryDateEditText.filters).willReturn(emptyArray())
         given(expiryDateEditText.isCursorVisible).willReturn(false)
-        given(expiryDateEditText.text).willReturn(expiryDateEditable)
-        given(expiryDateEditable.toString()).willReturn("12/21")
 
         fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryDateEditText).isCursorVisible
         verify(expiryDateEditText, never()).setText(any<String>())
+    }
+
+    @Test
+    fun `should add focus change listener to expiry date field`() {
+        val listener = mock<ExpiryDateFocusChangeListener>()
+        given(expiryDateEditText.filters).willReturn(emptyArray())
+        given(expiryDateEditText.isCursorVisible).willReturn(false)
+        given(focusChangeListenerFactory.createExpiryDateFocusChangeListener()).willReturn(listener)
+        val argumentCaptor = argumentCaptor<ExpiryDateFocusChangeListener>()
+
+        fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
+
+        verify(expiryDateEditText).onFocusChangeListener = argumentCaptor.capture()
+
+        assertEquals(listener, argumentCaptor.firstValue)
     }
 
 }
