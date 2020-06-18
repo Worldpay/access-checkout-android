@@ -17,6 +17,7 @@
         android:ems="4"
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="number"
+        android:textColor="@color/DEFAULT"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
