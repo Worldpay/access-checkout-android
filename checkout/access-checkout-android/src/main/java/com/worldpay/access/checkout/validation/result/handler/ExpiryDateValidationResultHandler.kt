@@ -1,7 +1,7 @@
-package com.worldpay.access.checkout.validation.result
+package com.worldpay.access.checkout.validation.result.handler
 
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
-import com.worldpay.access.checkout.validation.state.ExpiryDateFieldValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.ExpiryDateFieldValidationStateManager
 
 internal class ExpiryDateValidationResultHandler(
     private val validationListener: AccessCheckoutExpiryDateValidationListener,

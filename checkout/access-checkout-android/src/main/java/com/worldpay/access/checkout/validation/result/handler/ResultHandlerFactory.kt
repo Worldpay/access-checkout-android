@@ -1,10 +1,10 @@
-package com.worldpay.access.checkout.validation.result
+package com.worldpay.access.checkout.validation.result.handler
 
 import com.worldpay.access.checkout.client.validation.listener.*
-import com.worldpay.access.checkout.validation.state.CvcFieldValidationStateManager
-import com.worldpay.access.checkout.validation.state.ExpiryDateFieldValidationStateManager
-import com.worldpay.access.checkout.validation.state.FieldValidationStateManager
-import com.worldpay.access.checkout.validation.state.PanFieldValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.CvcFieldValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.ExpiryDateFieldValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.FieldValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.PanFieldValidationStateManager
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 
 internal class ResultHandlerFactory(
@@ -39,10 +39,11 @@ internal class ResultHandlerFactory(
 
     fun getExpiryDateValidationResultHandler() : ExpiryDateValidationResultHandler {
         if (expiryDateValidationResultHandler == null) {
-            expiryDateValidationResultHandler = ExpiryDateValidationResultHandler(
-                validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
-                validationStateManager = fieldValidationStateManager as ExpiryDateFieldValidationStateManager
-            )
+            expiryDateValidationResultHandler =
+                ExpiryDateValidationResultHandler(
+                    validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
+                    validationStateManager = fieldValidationStateManager as ExpiryDateFieldValidationStateManager
+                )
         }
         return expiryDateValidationResultHandler as ExpiryDateValidationResultHandler
     }

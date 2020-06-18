@@ -1,7 +1,7 @@
-package com.worldpay.access.checkout.validation.result
+package com.worldpay.access.checkout.validation.result.handler
 
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
-import com.worldpay.access.checkout.validation.state.CvcFieldValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.CvcFieldValidationStateManager
 
 internal class CvvValidationResultHandler(
     private val validationListener: AccessCheckoutCvvValidationListener,

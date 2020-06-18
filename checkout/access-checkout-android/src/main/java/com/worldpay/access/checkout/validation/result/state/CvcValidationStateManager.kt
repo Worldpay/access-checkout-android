@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.validation.state
+package com.worldpay.access.checkout.validation.result.state
 
 internal class CvcValidationStateManager: CvcFieldValidationStateManager {
 

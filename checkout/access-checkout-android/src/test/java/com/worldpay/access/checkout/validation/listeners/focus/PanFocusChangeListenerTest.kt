@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.listeners.focus
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import org.junit.Before
 import org.junit.Test
 

@@ -4,7 +4,7 @@ import android.widget.EditText
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.validation.result.ResultHandlerFactory
+import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertTrue

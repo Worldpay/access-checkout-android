@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation.listeners.focus
 
 import android.view.View
-import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 
 internal class ExpiryDateFocusChangeListener(
     private val expiryDateValidationResultHandler : ExpiryDateValidationResultHandler

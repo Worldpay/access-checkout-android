@@ -1,7 +1,7 @@
-package com.worldpay.access.checkout.validation.result
+package com.worldpay.access.checkout.validation.result.handler
 
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
-import com.worldpay.access.checkout.validation.state.PanFieldValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.PanFieldValidationStateManager
 
 internal class PanValidationResultHandler(
     private val validationListener: AccessCheckoutPanValidationListener,

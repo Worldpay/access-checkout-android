@@ -1,8 +1,8 @@
-package com.worldpay.access.checkout.validation.result
+package com.worldpay.access.checkout.validation.result.handler
 
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
-import com.worldpay.access.checkout.validation.state.CardValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertFalse
@@ -17,7 +17,10 @@ class ExpiryDateValidationResultHandlerTest {
 
     @Before
     fun setup() {
-        validationResultHandler = ExpiryDateValidationResultHandler(validationListener, validationStateManager)
+        validationResultHandler = ExpiryDateValidationResultHandler(
+            validationListener,
+            validationStateManager
+        )
     }
 
     @Test
@@ -96,7 +99,10 @@ class ExpiryDateValidationResultHandlerTest {
         given(validationStateManager.isAllValid()).willReturn(true)
         given(validationStateManager.expiryDateValidationState).willReturn(false)
 
-        val validationResultHandler = ExpiryDateValidationResultHandler(validationListener, validationStateManager)
+        val validationResultHandler = ExpiryDateValidationResultHandler(
+            validationListener,
+            validationStateManager
+        )
         validationResultHandler.handleResult(true)
 
         verify(validationListener).onExpiryDateValidated(true)

@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation.listeners.focus
 
 import android.view.View
-import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 
 internal class PanFocusChangeListener(
     private val panValidationResultHandler : PanValidationResultHandler

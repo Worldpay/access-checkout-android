@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.validation.listeners.focus
 
-import com.worldpay.access.checkout.validation.result.ResultHandlerFactory
+import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 
 internal class FocusChangeListenerFactory(private val resultHandlerFactory : ResultHandlerFactory) {
 

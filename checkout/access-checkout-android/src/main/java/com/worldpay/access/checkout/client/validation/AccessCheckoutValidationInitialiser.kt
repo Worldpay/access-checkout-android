@@ -8,9 +8,9 @@ import com.worldpay.access.checkout.validation.controller.CardDetailsValidationC
 import com.worldpay.access.checkout.validation.controller.CvvDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.FieldDecoratorFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
-import com.worldpay.access.checkout.validation.result.ResultHandlerFactory
-import com.worldpay.access.checkout.validation.state.CardValidationStateManager
-import com.worldpay.access.checkout.validation.state.CvcValidationStateManager
+import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
+import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.CvcValidationStateManager
 
 object AccessCheckoutValidationInitialiser {
 

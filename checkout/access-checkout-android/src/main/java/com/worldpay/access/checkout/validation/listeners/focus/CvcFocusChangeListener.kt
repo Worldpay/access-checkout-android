@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation.listeners.focus
 
 import android.view.View
-import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.CvvValidationResultHandler
 
 internal class CvcFocusChangeListener(
     private val cvvValidationResultHandler : CvvValidationResultHandler

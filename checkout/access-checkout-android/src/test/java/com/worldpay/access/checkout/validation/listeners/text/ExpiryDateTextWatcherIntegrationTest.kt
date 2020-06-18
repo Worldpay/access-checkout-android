@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
-import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.NewDateValidator
 import org.junit.Before
 import org.junit.Test

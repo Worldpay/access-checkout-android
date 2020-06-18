@@ -1,8 +1,8 @@
-package com.worldpay.access.checkout.validation.result
+package com.worldpay.access.checkout.validation.result.handler
 
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
-import com.worldpay.access.checkout.validation.state.CardValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
