@@ -5,7 +5,6 @@ import android.text.InputFilter
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
@@ -15,10 +14,8 @@ import com.worldpay.access.checkout.validation.listeners.text.CVVTextWatcher
 import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateTextWatcher
 import com.worldpay.access.checkout.validation.listeners.text.PANTextWatcher
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
-import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import org.junit.Before
 import org.junit.Test
-import org.mockito.Mockito
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -28,15 +25,12 @@ class FieldDecoratorFactoryTest {
     private val panEditText = mock<EditText>()
     private val expiryDateEditText = mock<EditText>()
 
+    private val textWatcherFactory = mock<TextWatcherFactory>()
+
     private lateinit var fieldDecoratorFactory: FieldDecoratorFactory
 
     @Before
     fun setup() {
-        val textWatcherFactory = TextWatcherFactory(
-            accessCheckoutValidationListener = mock<AccessCheckoutCardValidationListener>(),
-            validationStateManager = mock<CardValidationStateManager>()
-        )
-
         fieldDecoratorFactory = FieldDecoratorFactory(
             textWatcherFactory = textWatcherFactory
         )
@@ -44,12 +38,14 @@ class FieldDecoratorFactoryTest {
 
     @Test
     fun `should add new text watchers when decorating cvv field each time`() {
+        val cvvTextWatcher = mock<CVVTextWatcher>()
         given(cvvEditText.filters).willReturn(emptyArray())
+        given(textWatcherFactory.createCvvTextWatcher()).willReturn(cvvTextWatcher)
 
         fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
         verify(cvvEditText, never()).removeTextChangedListener(any())
-        verify(cvvEditText).addTextChangedListener(Mockito.any(CVVTextWatcher::class.java))
+        verify(cvvEditText).addTextChangedListener(cvvTextWatcher)
 
         reset(cvvEditText)
 
@@ -59,8 +55,8 @@ class FieldDecoratorFactoryTest {
 
         fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).removeTextChangedListener(Mockito.any(CVVTextWatcher::class.java))
-        verify(cvvEditText).addTextChangedListener(Mockito.any(CVVTextWatcher::class.java))
+        verify(cvvEditText).removeTextChangedListener(cvvTextWatcher)
+        verify(cvvEditText).addTextChangedListener(cvvTextWatcher)
     }
 
     @Test
@@ -135,12 +131,14 @@ class FieldDecoratorFactoryTest {
 
     @Test
     fun `should add new text watchers when decorating pan field each time`() {
+        val panTextWatcher = mock<PANTextWatcher>()
         given(panEditText.filters).willReturn(emptyArray())
+        given(textWatcherFactory.createPanTextWatcher(cvvEditText, CARD_CONFIG_NO_BRAND)).willReturn(panTextWatcher)
 
         fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText, never()).removeTextChangedListener(any())
-        verify(panEditText).addTextChangedListener(Mockito.any(PANTextWatcher::class.java))
+        verify(panEditText).addTextChangedListener(panTextWatcher)
 
         reset(panEditText)
 
@@ -150,8 +148,8 @@ class FieldDecoratorFactoryTest {
 
         fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(panEditText).removeTextChangedListener(Mockito.any(PANTextWatcher::class.java))
-        verify(panEditText).addTextChangedListener(Mockito.any(PANTextWatcher::class.java))
+        verify(panEditText).removeTextChangedListener(panTextWatcher)
+        verify(panEditText).addTextChangedListener(panTextWatcher)
     }
 
     @Test
@@ -226,12 +224,14 @@ class FieldDecoratorFactoryTest {
 
     @Test
     fun `should add new text watchers when decorating expiry date field each time`() {
+        val expiryDateTextWatcher = mock<ExpiryDateTextWatcher>()
         given(expiryDateEditText.filters).willReturn(emptyArray())
+        given(textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)).willReturn(expiryDateTextWatcher)
 
         fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
 
         verify(expiryDateEditText, never()).removeTextChangedListener(any())
-        verify(expiryDateEditText).addTextChangedListener(Mockito.any(ExpiryDateTextWatcher::class.java))
+        verify(expiryDateEditText).addTextChangedListener(expiryDateTextWatcher)
 
         reset(expiryDateEditText)
 
@@ -241,8 +241,8 @@ class FieldDecoratorFactoryTest {
 
         fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(expiryDateEditText).removeTextChangedListener(Mockito.any(ExpiryDateTextWatcher::class.java))
-        verify(expiryDateEditText).addTextChangedListener(Mockito.any(ExpiryDateTextWatcher::class.java))
+        verify(expiryDateEditText).removeTextChangedListener(expiryDateTextWatcher)
+        verify(expiryDateEditText).addTextChangedListener(expiryDateTextWatcher)
     }
 
     @Test

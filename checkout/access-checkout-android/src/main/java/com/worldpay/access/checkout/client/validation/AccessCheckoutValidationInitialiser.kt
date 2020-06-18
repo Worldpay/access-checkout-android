@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.validation.controller.CardDetailsValidationC
 import com.worldpay.access.checkout.validation.controller.CvvDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.FieldDecoratorFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
+import com.worldpay.access.checkout.validation.result.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.state.CardValidationStateManager
 import com.worldpay.access.checkout.validation.state.CvcValidationStateManager
 
@@ -23,12 +24,14 @@ object AccessCheckoutValidationInitialiser {
     }
 
     private fun initialiseCardValidation(validationConfig: CardValidationConfig) {
-        val validationStateManager =
-            CardValidationStateManager()
-        val textWatcherFactory = TextWatcherFactory(
+        val validationStateManager = CardValidationStateManager()
+
+        val resultHandlerFactory = ResultHandlerFactory(
             accessCheckoutValidationListener = validationConfig.validationListener,
-            validationStateManager = validationStateManager
+            fieldValidationStateManager = validationStateManager
         )
+
+        val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
 
         CardDetailsValidationController(
             panEditText = validationConfig.pan,
@@ -43,12 +46,14 @@ object AccessCheckoutValidationInitialiser {
     }
 
     private fun initialiseCvvValidation(validationConfig: CvvValidationConfig) {
-        val validationStateManager =
-            CvcValidationStateManager()
-        val textWatcherFactory = TextWatcherFactory(
+        val validationStateManager = CvcValidationStateManager()
+
+        val resultHandlerFactory = ResultHandlerFactory(
             accessCheckoutValidationListener = validationConfig.validationListener,
-            validationStateManager = validationStateManager
+            fieldValidationStateManager = validationStateManager
         )
+
+        val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
 
         CvvDetailsValidationController(
             cvvEditText = validationConfig.cvv,

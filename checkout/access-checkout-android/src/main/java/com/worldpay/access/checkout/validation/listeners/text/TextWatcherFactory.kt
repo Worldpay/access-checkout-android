@@ -3,24 +3,14 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.validation.listener.*
-import com.worldpay.access.checkout.validation.result.BrandChangedHandler
-import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
-import com.worldpay.access.checkout.validation.result.ExpiryDateValidationResultHandler
-import com.worldpay.access.checkout.validation.result.PanValidationResultHandler
-import com.worldpay.access.checkout.validation.state.CvcFieldValidationStateManager
-import com.worldpay.access.checkout.validation.state.ExpiryDateFieldValidationStateManager
-import com.worldpay.access.checkout.validation.state.FieldValidationStateManager
-import com.worldpay.access.checkout.validation.state.PanFieldValidationStateManager
-import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
+import com.worldpay.access.checkout.validation.result.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewDateValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
 
 internal class TextWatcherFactory(
-    private val accessCheckoutValidationListener: AccessCheckoutValidationListener,
-    private val validationStateManager: FieldValidationStateManager
+    private val resultHandlerFactory : ResultHandlerFactory
 ) {
 
     private val cvcValidationRuleManager = CVCValidationRuleManager()
@@ -28,54 +18,29 @@ internal class TextWatcherFactory(
     private val dateValidator = NewDateValidator()
 
     fun createPanTextWatcher(cvvEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
-        val panValidationResultHandler = PanValidationResultHandler(
-            validationListener = accessCheckoutValidationListener as AccessCheckoutPanValidationListener,
-            validationStateManager = validationStateManager as PanFieldValidationStateManager
-        )
-
-        val cvvValidationResultHandler = CvvValidationResultHandler(
-            validationListener = accessCheckoutValidationListener as AccessCheckoutCvvValidationListener,
-            validationStateManager = validationStateManager as CvcFieldValidationStateManager
-        )
-
-        val brandChangedHandler = BrandChangedHandler(
-            validationListener = accessCheckoutValidationListener as AccessCheckoutBrandChangedListener,
-            toCardBrandTransformer = ToCardBrandTransformer()
-        )
-
         return PANTextWatcher(
             cardConfiguration = cardConfiguration,
             panValidator = panValidator,
             cvvEditText =  cvvEditText,
-            cvcValidator = CVCValidator(cvvValidationResultHandler, cvcValidationRuleManager),
-            panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
+            cvcValidator = CVCValidator(resultHandlerFactory.getCvvValidationResultHandler(), cvcValidationRuleManager),
+            panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
+            brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager
         )
     }
 
     fun createExpiryDateTextWatcher(expiryDateEditText: EditText): TextWatcher {
-        val expiryDateValidationResultHandler = ExpiryDateValidationResultHandler(
-            validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
-            validationStateManager = validationStateManager as ExpiryDateFieldValidationStateManager
-        )
-
         return ExpiryDateTextWatcher(
             dateValidator = dateValidator,
             expiryDateEditText = expiryDateEditText,
-            expiryDateValidationResultHandler = expiryDateValidationResultHandler,
+            expiryDateValidationResultHandler = resultHandlerFactory.getExpiryDateValidationResultHandler(),
             expiryDateSanitiser = ExpiryDateSanitiser()
         )
     }
 
     fun createCvvTextWatcher(): TextWatcher {
-        val cvvValidationResultHandler = CvvValidationResultHandler(
-            validationListener = accessCheckoutValidationListener as AccessCheckoutCvvValidationListener,
-            validationStateManager = validationStateManager as CvcFieldValidationStateManager
-        )
-
         val cvcValidator = CVCValidator(
-            cvvValidationResultHandler = cvvValidationResultHandler,
+            cvvValidationResultHandler = resultHandlerFactory.getCvvValidationResultHandler(),
             cardValidationRuleProvider = cvcValidationRuleManager
         )
 
