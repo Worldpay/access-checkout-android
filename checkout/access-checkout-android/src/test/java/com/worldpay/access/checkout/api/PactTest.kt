@@ -7,9 +7,8 @@ import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.api.exception.ValidationRule
-import com.worldpay.access.checkout.api.exception.ValidationRuleName
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
 import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
 import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
@@ -442,7 +441,7 @@ class PactTest {
             verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
-            val validationRule = ValidationRule(ValidationRuleName.FIELD_HAS_INVALID_VALUE, "Identity is invalid", "\$.identity")
+            val validationRule = ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
             val accessCheckoutException = AccessCheckoutException(
                 message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
                 validationRules = listOf(validationRule)
@@ -472,7 +471,7 @@ class PactTest {
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
-                ValidationRuleName.PAN_FAILED_LUHN_CHECK,
+                "panFailedLuhnCheck",
                 "The identified field contains a PAN that has failed the Luhn check.",
                 "\$.cardNumber"
             )
@@ -505,7 +504,7 @@ class PactTest {
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
-                ValidationRuleName.STRING_IS_TOO_SHORT,
+                "stringIsTooShort",
                 "Card number is too short - must be between 10 & 19 digits",
                 "\$.cardNumber"
             )
@@ -538,7 +537,7 @@ class PactTest {
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
-                ValidationRuleName.STRING_IS_TOO_LONG,
+                "stringIsTooLong",
                 "Card number is too long - must be between 10 & 19 digits",
                 "\$.cardNumber"
             )
@@ -571,7 +570,7 @@ class PactTest {
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
-                ValidationRuleName.INTEGER_IS_TOO_SMALL,
+                "integerIsTooSmall",
                 "Card expiry month is too small - must be between 1 & 12",
                 "\$.cardExpiryDate.month"
             )
@@ -604,7 +603,7 @@ class PactTest {
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
-                ValidationRuleName.INTEGER_IS_TOO_LARGE,
+                "integerIsTooLarge",
                 "Card expiry month is too large - must be between 1 & 12",
                 "\$.cardExpiryDate.month"
             )
@@ -637,7 +636,7 @@ class PactTest {
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
-                ValidationRuleName.FIELD_MUST_BE_NUMBER,
+                "fieldMustBeNumber",
                 "CVC must be numeric",
                 "\$.cvc"
             )

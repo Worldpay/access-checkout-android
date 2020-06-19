@@ -1,8 +1,7 @@
 package com.worldpay.access.checkout.api.serialization
 
-import com.worldpay.access.checkout.api.exception.ValidationRule
-import com.worldpay.access.checkout.api.exception.ValidationRuleErrorProvider
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import org.json.JSONObject
 
 internal class ClientErrorDeserializer : Deserializer<AccessCheckoutException>() {
@@ -48,7 +47,7 @@ internal class ClientErrorDeserializer : Deserializer<AccessCheckoutException>()
         val validationErrorPath = toStringProperty(vErr, "jsonPath")
 
         return ValidationRule(
-            ValidationRuleErrorProvider.getRuleForName(validationRuleErrorName),
+            validationRuleErrorName,
             validationErrorMessage,
             validationErrorPath
         )

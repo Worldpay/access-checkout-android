@@ -14,6 +14,7 @@ import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
@@ -216,7 +217,7 @@ class AccessCheckoutClientIntegrationTest {
     }
 
     @Test
-    fun shouldReturnUnknownError_whenResponseValidationRuleIsUnknown() {
+    fun shouldReturnException_evenWhenResponseValidationRuleIsUnknown() {
         val cardDetails = getCardDetails()
         val request = getExpectedRequest(cardDetails)
 
@@ -240,7 +241,10 @@ class AccessCheckoutClientIntegrationTest {
             override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
 
             override fun onError(error: AccessCheckoutException) {
-                val expectedException = AccessCheckoutException("unknown rule name some-unknown-error")
+                val expectedException = AccessCheckoutException(
+                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    validationRules = listOf(ValidationRule("some-unknown-error", "String is too short", "$.cvv"))
+                )
                 assertEquals(expectedException, error)
                 assertionsRan = true
             }

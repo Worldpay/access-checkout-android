@@ -1,7 +1,5 @@
 package com.worldpay.access.checkout.client.api.exception
 
-import com.worldpay.access.checkout.api.exception.ValidationRule
-
 /**
  * General Exception class for any errors that occur within the Access Checkout SDK
  *
@@ -14,3 +12,12 @@ data class AccessCheckoutException(
     override val cause : Exception? = null,
     val validationRules : List<ValidationRule> = emptyList()
 ) : RuntimeException()
+
+/**
+ * Validation rule object that represents a response from the api
+ *
+ * @property[errorName] the name of the error
+ * @property[message] the error message
+ * @property[jsonPath] the json path to the error point
+ */
+data class ValidationRule(val errorName : String, val message : String, val jsonPath : String)

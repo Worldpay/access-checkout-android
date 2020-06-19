@@ -10,9 +10,8 @@ import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
-import com.worldpay.access.checkout.api.exception.ValidationRule
-import com.worldpay.access.checkout.api.exception.ValidationRuleName
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
 import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
 import com.worldpay.access.checkout.session.api.client.PaymentsCvcSessionClient
@@ -279,7 +278,7 @@ class SessionsPactTest {
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
-                    ValidationRuleName.FIELD_HAS_INVALID_VALUE,
+                    "fieldHasInvalidValue",
                     "Identity is invalid",
                     "\$.identity"
                 )
@@ -307,7 +306,7 @@ class SessionsPactTest {
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
-                ValidationRuleName.FIELD_MUST_BE_NUMBER,
+                "fieldMustBeNumber",
                 "CVC must be numeric",
                 "\$.cvc"
             )

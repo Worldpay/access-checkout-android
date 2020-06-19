@@ -1,8 +1,7 @@
 package com.worldpay.access.checkout.api.serialization
 
-import com.worldpay.access.checkout.api.exception.ValidationRule
-import com.worldpay.access.checkout.api.exception.ValidationRuleName
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -82,52 +81,6 @@ class ClientErrorDeserializerTest {
     }
 
     @Test
-    fun givenValidBodySchemaErrorJsonThenShouldSuccessfullyDeserializeToException() {
-        val expectedNameToValidationRuleMap = mapOf(
-            Pair("unrecognizedField", ValidationRuleName.UNRECOGNIZED_FIELD),
-            Pair("fieldHasInvalidValue", ValidationRuleName.FIELD_HAS_INVALID_VALUE),
-            Pair("panFailedLuhnCheck", ValidationRuleName.PAN_FAILED_LUHN_CHECK),
-            Pair("fieldIsMissing", ValidationRuleName.FIELD_IS_MISSING),
-            Pair("stringIsTooShort", ValidationRuleName.STRING_IS_TOO_SHORT),
-            Pair("stringIsTooLong", ValidationRuleName.STRING_IS_TOO_LONG),
-            Pair("fieldMustBeInteger", ValidationRuleName.FIELD_MUST_BE_INTEGER),
-            Pair("integerIsTooSmall", ValidationRuleName.INTEGER_IS_TOO_SMALL),
-            Pair("integerIsTooLarge", ValidationRuleName.INTEGER_IS_TOO_LARGE),
-            Pair("fieldMustBeNumber", ValidationRuleName.FIELD_MUST_BE_NUMBER),
-
-            Pair("fieldMustBeString", ValidationRuleName.FIELD_MUST_BE_STRING),
-            Pair("fieldMustBeBoolean", ValidationRuleName.FIELD_MUST_BE_BOOLEAN),
-            Pair("fieldMustBeObject", ValidationRuleName.FIELD_MUST_BE_OBJECT),
-            Pair("fieldMustBeArray", ValidationRuleName.FIELD_MUST_BE_ARRAY),
-            Pair("fieldIsNull", ValidationRuleName.FIELD_IS_NULL),
-            Pair("fieldIsEmpty", ValidationRuleName.FIELD_IS_EMPTY),
-            Pair("fieldIsNotAllowed", ValidationRuleName.FIELD_IS_NOT_ALLOWED),
-            Pair("numberIsTooSmall", ValidationRuleName.NUMBER_IS_TOO_SMALL),
-            Pair("numberIsTooLarge", ValidationRuleName.NUMBER_IS_TOO_LARGE),
-            Pair("stringFailedRegexCheck", ValidationRuleName.STRING_FAILED_REGEX_CHECK),
-            Pair("dateHasInvalidFormat", ValidationRuleName.DATE_HAS_INVALID_FORMAT)
-        )
-
-        expectedNameToValidationRuleMap.forEach { (name, validationRule) ->
-            run {
-                val message = "Some message"
-                val jsonPath = "\$.somePath"
-                val jsonResponse = getErrorResponseAsString(name, message, jsonPath)
-
-                val deserializedError = clientErrorDeserializer.deserialize(jsonResponse)
-                val expectedValidationRuleList = listOf(ValidationRule(validationRule, message, jsonPath))
-
-                val expectedErrorObject = AccessCheckoutException(
-                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = expectedValidationRuleList
-                )
-
-                assertEquals(expectedErrorObject, deserializedError)
-            }
-        }
-    }
-
-    @Test
     fun givenValidBodySchemaErrorJsonWithMultipleBrokenRulesThenShouldSuccessfullyDeserializeToExceptionWithCompleteValidationRulesList() {
         val jsonResponse =
             """{
@@ -161,21 +114,21 @@ class ClientErrorDeserializerTest {
         val expectedValidationRuleList =
             listOf(
                 ValidationRule(
-                    ValidationRuleName.INTEGER_IS_TOO_LARGE,
+                    "integerIsTooLarge",
                     "Card expiry year must be less than 9999",
                     "\$.cardExpiryDate.year"
                 ),
                 ValidationRule(
-                    ValidationRuleName.FIELD_HAS_INVALID_VALUE,
+                    "fieldHasInvalidValue",
                     "Card number must be numeric",
                     "\$.cardNumber"
                 ),
                 ValidationRule(
-                    ValidationRuleName.STRING_IS_TOO_SHORT,
+                    "stringIsTooShort",
                     "Card number is too short - must be between 10 & 19 digits",
                     "\$.cardNumber"
                 ),
-                ValidationRule(ValidationRuleName.FIELD_HAS_INVALID_VALUE, "Identity is invalid", "\$.identity")
+                ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
             )
 
 
@@ -225,7 +178,7 @@ class ClientErrorDeserializerTest {
                 message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
                 validationRules = listOf(
                     ValidationRule(
-                        ValidationRuleName.PAN_FAILED_LUHN_CHECK,
+                        "panFailedLuhnCheck",
                         "The identified field contains a PAN that has failed the Luhn check.",
                         "\$.cardNumber"
                     )
@@ -258,7 +211,7 @@ class ClientErrorDeserializerTest {
                 message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
                 validationRules = listOf(
                     ValidationRule(
-                        ValidationRuleName.UNRECOGNIZED_FIELD,
+                        "unrecognizedField",
                         "Field is not recognized",
                         "\$.aaa"
                     )
@@ -297,9 +250,6 @@ class ClientErrorDeserializerTest {
 
     @Test
     fun givenMalformatedErrorWithUnknownFields_whenDeserializing_shouldThrowException() {
-
-        expectedException.expect(AccessCheckoutException::class.java)
-
         val jsonResponse = """{
                                 "errorName": "bodyDoesNotMatchSchema",
                                 "message": "The json body provided does not match the expected schema",
@@ -313,8 +263,14 @@ class ClientErrorDeserializerTest {
                                 ]
                             }"""
 
-        clientErrorDeserializer.deserialize(jsonResponse)
+        val error = clientErrorDeserializer.deserialize(jsonResponse)
 
+        val expectedException = AccessCheckoutException(
+            message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+            validationRules = listOf(ValidationRule("xxxxx", "yyyy", "${'$'}.aaa"))
+        )
+
+        assertEquals(expectedException, error)
     }
 
     @Test
@@ -335,9 +291,6 @@ class ClientErrorDeserializerTest {
 
     @Test
     fun givenInvalidValidationRules_whenDeserializing_shouldThrowException() {
-
-        expectedException.expect(AccessCheckoutException::class.java)
-
         val jsonResponse = """{
                                 "errorName": "bodyDoesNotMatchSchema",
                                 "message": "The json body provided does not match the expected schema",
@@ -352,21 +305,14 @@ class ClientErrorDeserializerTest {
                                 ]
                             }"""
 
-        clientErrorDeserializer.deserialize(jsonResponse)
+        val error = clientErrorDeserializer.deserialize(jsonResponse)
 
+        val expectedException = AccessCheckoutException(
+            message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+            validationRules = listOf(ValidationRule("xxxxx", "yyyy", "${'$'}.aaa"))
+        )
+
+        assertEquals(expectedException, error)
     }
 
-    private fun getErrorResponseAsString(errorName: String, message: String, jsonPath: String): String {
-        return """{
-                    "errorName": "bodyDoesNotMatchSchema",
-                    "message": "The json body provided does not match the expected schema",
-                    "validationErrors": [
-                        {
-                            "errorName": "$errorName",
-                            "message": "$message",
-                            "jsonPath": "$jsonPath"
-                        }
-                    ]
-                }"""
-    }
 }
