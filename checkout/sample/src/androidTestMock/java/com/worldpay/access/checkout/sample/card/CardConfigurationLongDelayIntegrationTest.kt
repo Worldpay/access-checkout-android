@@ -46,8 +46,8 @@ class CardConfigurationLongDelayIntegrationTest {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = luhnInvalidMastercardCard, cvv = "12345", expiryDate = "0119")
-            .validationStateIs(pan = false, cvv = true, expiryDate = false)
+            .enterCardDetails(pan = luhnInvalidMastercardCard, cvv = "1234", expiryDate = "0199")
+            .validationStateIs(pan = false, cvv = true, expiryDate = true)
             .enabledStateIs(submitButton = false)
             .hasNoBrand()
 
@@ -63,7 +63,7 @@ class CardConfigurationLongDelayIntegrationTest {
 
         // Assert that with now configuration has come back that the CVV is invalid for mastercard
         cardFragmentTestUtils
-            .validationStateIs(pan = false, cvv = false, expiryDate = false)
+            .validationStateIs(pan = false, cvv = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // Re-enter a luhn valid, mastercard identified card and valid date and submit

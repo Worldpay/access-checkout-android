@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.CvvValidationResultHandler
 
 internal class CVCValidator(
     private val cvvValidationResultHandler: CvvValidationResultHandler,

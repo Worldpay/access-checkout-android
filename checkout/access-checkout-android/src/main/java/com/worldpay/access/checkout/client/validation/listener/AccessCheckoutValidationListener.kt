@@ -13,7 +13,11 @@ interface AccessCheckoutCvvValidationListener: AccessCheckoutValidationSuccessLi
 }
 
 interface AccessCheckoutPanValidationListener: AccessCheckoutValidationSuccessListener {
-    fun onPanValidated(cardBrand: CardBrand?, isValid: Boolean)
+    fun onPanValidated(isValid: Boolean)
+}
+
+interface AccessCheckoutBrandChangedListener {
+    fun onBrandChange(cardBrand: CardBrand?)
 }
 
 interface AccessCheckoutExpiryDateValidationListener: AccessCheckoutValidationSuccessListener {
@@ -23,4 +27,5 @@ interface AccessCheckoutExpiryDateValidationListener: AccessCheckoutValidationSu
 interface AccessCheckoutCardValidationListener:
     AccessCheckoutCvvValidationListener,
     AccessCheckoutPanValidationListener,
-    AccessCheckoutExpiryDateValidationListener
+    AccessCheckoutExpiryDateValidationListener,
+    AccessCheckoutBrandChangedListener

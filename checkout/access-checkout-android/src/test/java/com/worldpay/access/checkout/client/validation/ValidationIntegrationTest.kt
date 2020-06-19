@@ -1,9 +1,7 @@
 package com.worldpay.access.checkout.client.validation
 
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
@@ -34,6 +32,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
+import kotlin.test.fail
 
 @RunWith(RobolectricTestRunner::class)
 class ValidationIntegrationTest {
@@ -79,49 +78,78 @@ class ValidationIntegrationTest {
     @Test
     fun `should call listener with valid result and no brand for valid luhn pan - onPanValidated`() {
         pan.setText(VALID_UNKNOWN_LUHN)
-        verify(cardValidationListener).onPanValidated(null, true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener, never()).onBrandChange(any())
     }
 
     @Test
-    fun `should call listener with invalid result and no brand for invalid luhn pan - onPanValidated`() {
+    fun `should not call listener with invalid result and no brand for invalid luhn pan - onPanValidated`() {
         pan.setText(INVALID_UNKNOWN_LUHN)
-        verify(cardValidationListener).onPanValidated(null, false)
+        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener, never()).onBrandChange(any())
     }
 
     @Test
-    fun `should call listener with invalid result and visa brand for partial visa pan - onPanValidated`() {
+    fun `should not call listener with invalid result but should notify of visa brand for partial visa pan - onPanValidated`() {
         pan.setText(PARTIAL_VISA)
-        verify(cardValidationListener).onPanValidated(transform(VISA_BRAND), false)
+        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
     }
 
     @Test
-    fun `should call listener with invalid result and null brand for partial unknown pan - onPanValidated`() {
+    fun `should not call listener with invalid result and null brand for partial unknown pan - onPanValidated`() {
         pan.setText("000")
-        verify(cardValidationListener).onPanValidated(null, false)
+        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener, never()).onBrandChange(any())
     }
 
     @Test
     fun `should call listener with valid result and correct brand for identified pan - onPanValidated`() {
         pan.setText(VISA_PAN)
-        verify(cardValidationListener).onPanValidated(transform(VISA_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(MASTERCARD_PAN)
-        verify(cardValidationListener).onPanValidated(transform(MASTERCARD_BRAND), true)
+        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener).onBrandChange(transform(MASTERCARD_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(AMEX_PAN)
-        verify(cardValidationListener).onPanValidated(transform(AMEX_BRAND), true)
+        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener).onBrandChange(transform(AMEX_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(JCB_PAN)
-        verify(cardValidationListener).onPanValidated(transform(JCB_BRAND), true)
+        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener).onBrandChange(transform(JCB_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(DISCOVER_PAN)
-        verify(cardValidationListener).onPanValidated(transform(DISCOVER_BRAND), true)
+        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener).onBrandChange(transform(DISCOVER_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(DINERS_PAN)
-        verify(cardValidationListener).onPanValidated(transform(DINERS_BRAND), true)
+        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener).onBrandChange(transform(DINERS_BRAND))
+
+        reset(cardValidationListener)
 
         pan.setText(MAESTRO_PAN)
-        verify(cardValidationListener).onPanValidated(transform(MAESTRO_BRAND), true)
+        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener).onBrandChange(transform(MAESTRO_BRAND))
+
+        reset(cardValidationListener)
+
+        pan.setText("")
+        verify(cardValidationListener).onPanValidated(false)
+        verify(cardValidationListener).onBrandChange(null)
     }
 
     @Test
@@ -130,14 +158,16 @@ class ValidationIntegrationTest {
         verify(cardValidationListener).onCvvValidated(true)
 
         pan.setText(VISA_PAN)
-        verify(cardValidationListener).onPanValidated(transform(VISA_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
         verify(cardValidationListener).onCvvValidated(false)
     }
 
     @Test
     fun `should call each listener function as each input is filled and then finally call the onValidationSuccess function`() {
         pan.setText(VISA_PAN)
-        verify(cardValidationListener).onPanValidated(transform(VISA_BRAND), true)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
 
         cvc.setText("1234")
         verify(cardValidationListener).onCvvValidated(true)
@@ -146,6 +176,103 @@ class ValidationIntegrationTest {
         verify(cardValidationListener).onExpiryDateValidated(true)
 
         verify(cardValidationListener).onValidationSuccess()
+    }
+
+    @Test
+    fun `should notify validation result on focus lost where notification has not already been sent - pan`() {
+        pan.setText("0000")
+        verifyZeroInteractions(cardValidationListener)
+
+        pan.requestFocus()
+
+        if (pan.hasFocus()) {
+            pan.clearFocus()
+        } else {
+            fail("could not gain focus")
+        }
+
+        verify(cardValidationListener).onPanValidated(false)
+    }
+
+    @Test
+    fun `should not notify validation result on focus lost where notification has already been sent - pan`() {
+        pan.setText(VISA_PAN)
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
+
+        pan.requestFocus()
+
+        if (pan.hasFocus()) {
+            pan.clearFocus()
+        } else {
+            fail("could not gain focus")
+        }
+
+        verifyNoMoreInteractions(cardValidationListener)
+    }
+
+    @Test
+    fun `should notify validation result on focus lost where notification has not already been sent - cvc`() {
+        cvc.setText("")
+        verifyZeroInteractions(cardValidationListener)
+
+        cvc.requestFocus()
+
+        if (cvc.hasFocus()) {
+            cvc.clearFocus()
+        } else {
+            fail("could not gain focus")
+        }
+
+        verify(cardValidationListener).onCvvValidated(false)
+    }
+
+    @Test
+    fun `should not notify validation result on focus lost where notification has already been sent - cvc`() {
+        cvc.setText("123")
+        verify(cardValidationListener).onCvvValidated(true)
+
+        cvc.requestFocus()
+
+        if (cvc.hasFocus()) {
+            cvc.clearFocus()
+        } else {
+            fail("could not gain focus")
+        }
+
+        verifyNoMoreInteractions(cardValidationListener)
+    }
+
+    @Test
+    fun `should notify validation result on focus lost where notification has not already been sent - expiry date`() {
+        expiryDate.setText("01/19")
+        verifyZeroInteractions(cardValidationListener)
+
+        expiryDate.requestFocus()
+
+        if (expiryDate.hasFocus()) {
+            expiryDate.clearFocus()
+        } else {
+            fail("could not gain focus")
+        }
+
+        verify(cardValidationListener).onExpiryDateValidated(false)
+    }
+
+    @Test
+    fun `should not notify validation result on focus lost where notification has already been sent - expiry date`() {
+        expiryDate.setText("12/99")
+        verify(cardValidationListener).onExpiryDateValidated(true)
+
+        expiryDate.requestFocus()
+
+        if (expiryDate.hasFocus()) {
+            expiryDate.clearFocus()
+        } else {
+            fail("could not gain focus")
+        }
+
+        verifyNoMoreInteractions(cardValidationListener)
     }
 
     private fun transform(remoteCardBrand: RemoteCardBrand): CardBrand? {
@@ -158,7 +285,9 @@ class ValidationIntegrationTest {
 
         override fun onValidationSuccess() {}
 
-        override fun onPanValidated(cardBrand: CardBrand?, isValid: Boolean) {}
+        override fun onPanValidated(isValid: Boolean) {}
+
+        override fun onBrandChange(cardBrand : CardBrand?) {}
 
         override fun onExpiryDateValidated(isValid: Boolean) {}
 

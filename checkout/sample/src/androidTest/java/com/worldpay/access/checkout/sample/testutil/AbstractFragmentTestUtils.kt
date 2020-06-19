@@ -41,6 +41,10 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         }
     }
 
+    protected fun checkValidationStateIsUnknown(editText: EditText, field: String) {
+        wait { assertEquals(color(R.color.DEFAULT), editText.currentTextColor, "$field field expected to be unvalidated") }
+    }
+
     protected fun enterText(editText: EditText, text: String) {
         wait { assertTrue("${editText.id} - visibility state") { editText.isVisible } }
         wait { assertTrue("${editText.id} - enabled state") { editText.isEnabled } }

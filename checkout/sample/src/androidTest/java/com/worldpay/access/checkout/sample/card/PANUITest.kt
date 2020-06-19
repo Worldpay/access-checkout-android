@@ -10,6 +10,7 @@ import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.*
+import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.CVV
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -19,11 +20,14 @@ import org.junit.runner.RunWith
 class PANUITest: AbstractCardFragmentTest() {
 
     @Test
-    fun givenUserClicksCardViewAndInsertsUnknownPartialCardNumberThenTextShouldTurnRedAndDisplayUnknownCardIcon() {
+    fun givenUserClicksCardViewAndInsertsUnknownPartialCardNumberThenTextShouldOnlyShowInvalidWhenFocusIsLostDisplayUnknownCardIcon() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "1111111")
+            .validationStateIsUnknown(pan = true)
+            .hasNoBrand()
+            .focusOn(CVV)
             .validationStateIs(pan = false)
             .hasNoBrand()
     }
@@ -87,13 +91,15 @@ class PANUITest: AbstractCardFragmentTest() {
     }
 
     @Test
-    fun givenUserClicksCardViewAndInsertsLuhnInvalidVisaCardNumberThenTextShouldTurnRedAndDisplayVisaIcon() {
+    fun givenUserClicksCardViewAndInsertsLuhnInvalidVisaCardNumberThenTextShouldTurnRedWhenFocusIsLostAndDisplayVisaIcon() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "4024001728904375123")
-            .validationStateIs(pan = false)
+            .validationStateIsUnknown(pan = true)
             .hasBrand(VISA)
+            .focusOn(CVV)
+            .validationStateIs(pan = false)
     }
 
     @Test
@@ -107,13 +113,15 @@ class PANUITest: AbstractCardFragmentTest() {
     }
 
     @Test
-    fun givenUserClicksCardViewAndInsertsLuhnInvalidMastercardCardNumberThenTextShouldTurnRedAndDisplayMastercardIcon() {
+    fun givenUserClicksCardViewAndInsertsLuhnInvalidMastercardCardNumberThenTextShouldTurnRedWhenFocusIsLostAndDisplayMastercardIcon() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "5555555555554443")
-            .validationStateIs(pan = false)
+            .validationStateIsUnknown(pan = true)
             .hasBrand(MASTERCARD)
+            .focusOn(CVV)
+            .validationStateIs(pan = false)
     }
 
     @Test
@@ -127,13 +135,15 @@ class PANUITest: AbstractCardFragmentTest() {
     }
 
     @Test
-    fun givenUserClicksCardViewAndInsertsLuhnInvalidAmexCardNumberThenTextShouldTurnRedAndDisplayAmexIcon() {
+    fun givenUserClicksCardViewAndInsertsLuhnInvalidAmexCardNumberThenTextShouldOnlyBeInvalidWhenFocusIsLostAndDisplayAmexIcon() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "343434343434341")
-            .validationStateIs(pan =false)
+            .validationStateIsUnknown(pan = true)
             .hasBrand(AMEX)
+            .focusOn(CVV)
+            .validationStateIs(pan = false)
     }
 
     @Test
@@ -147,22 +157,23 @@ class PANUITest: AbstractCardFragmentTest() {
     }
 
     @Test
-    fun givenUserClicksCardViewAndInsertsLuhnInvalidUnknownCardNumberThenTextShouldTurnRedAndDisplayUnknownIcon() {
+    fun givenUserClicksCardViewAndInsertsLuhnInvalidUnknownCardNumberThenTextShouldTurnRedWhenFocusIsLostAndDisplayUnknownIcon() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "1111111111111111112")
-            .validationStateIs(pan = false)
+            .validationStateIsUnknown(pan = true)
             .hasNoBrand()
+            .focusOn(CVV)
+            .validationStateIs(pan = false)
     }
 
     @Test
-    fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenTextShouldDisplayVisaIcon() {
+    fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenShouldDisplayVisaIcon() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "44")
-            .validationStateIs(pan = false)
             .hasBrand(VISA)
     }
 
@@ -172,7 +183,6 @@ class PANUITest: AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "22")
-            .validationStateIs(pan = false)
             .hasBrand(MASTERCARD)
     }
 
@@ -182,33 +192,32 @@ class PANUITest: AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "34")
-            .validationStateIs(pan = false)
             .hasBrand(AMEX)
     }
 
     @Test
-    fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenChangesToPartialMastercardTextShouldIndicateInvalidAndIconShouldBeMastercard() {
+    fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberThenChangesToPartialMastercardTextIconShouldBeMastercardAndShouldNotBeInvalid() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "44000000")
-            .validationStateIs(pan = false)
+            .validationStateIsUnknown(pan = true)
             .hasBrand(VISA)
             .enterCardDetails(pan = "")
-            .validationStateIs(pan = false)
+            .validationStateIsUnknown(pan = true)
             .hasNoBrand()
             .enterCardDetails(pan = "55000000")
-            .validationStateIs(pan = false)
+            .validationStateIsUnknown(pan = true)
             .hasBrand(MASTERCARD)
     }
 
     @Test
-    fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberAndMovesToDifferentFieldThenTextShouldDisplayVisaIconButDisplayErrorText() {
+    fun givenUserClicksCardViewAndInsertsPartialVisaCardNumberAndMovesToDifferentFieldThenTextShouldDisplayVisaIconButDisplayErrorTextWhenFocusIsLost() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "40")
-            .validationStateIs(pan = false)
+            .validationStateIsUnknown(pan = true)
             .hasBrand(VISA)
             .focusOn(EXPIRY_DATE)
             .validationStateIs(pan = false)

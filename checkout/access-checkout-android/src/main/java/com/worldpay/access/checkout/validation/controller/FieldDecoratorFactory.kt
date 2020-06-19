@@ -9,10 +9,12 @@ import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.filters.VariableLengthFilter
-import com.worldpay.access.checkout.validation.watchers.TextWatcherFactory
+import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
+import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 
 internal class FieldDecoratorFactory(
-    private val textWatcherFactory: TextWatcherFactory
+    private val textWatcherFactory: TextWatcherFactory,
+    private val focusChangeListenerFactory : FocusChangeListenerFactory
 ) {
 
     private var cvvTextWatcher: TextWatcher? = null
@@ -29,9 +31,11 @@ internal class FieldDecoratorFactory(
             cvvEditText.setText(cvvEditText.text.toString())
         }
 
+        cvvEditText.onFocusChangeListener = focusChangeListenerFactory.createCvcFocusChangeListener()
+
         applyFilter(cvvEditText, CvvLengthFilter(panEditText, cardConfiguration))
 
-        cvvEditText.setHint(R.string.card_cvv_hint)
+        cvvEditText.setHint(R.string.card_cvc_hint)
     }
 
     fun decoratePanField(panEditText: EditText, cvvEditText: EditText, cardConfiguration: CardConfiguration) {
@@ -43,6 +47,8 @@ internal class FieldDecoratorFactory(
         if (panEditText.isCursorVisible) {
             panEditText.setText(panEditText.text.toString())
         }
+
+        panEditText.onFocusChangeListener = focusChangeListenerFactory.createPanFocusChangeListener()
 
         applyFilter(panEditText, PanLengthFilter(cardConfiguration))
 
@@ -58,6 +64,8 @@ internal class FieldDecoratorFactory(
         if (expiryDateEditText.isCursorVisible) {
             expiryDateEditText.setText(expiryDateEditText.text.toString())
         }
+
+        expiryDateEditText.onFocusChangeListener = focusChangeListenerFactory.createExpiryDateFocusChangeListener()
 
         applyFilter(expiryDateEditText, ExpiryDateLengthFilter(cardConfiguration))
 

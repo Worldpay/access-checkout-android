@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.validators
 
 import com.nhaarman.mockitokotlin2.reset
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.validation.result.CvvValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.CvvValidationResultHandler
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.verify

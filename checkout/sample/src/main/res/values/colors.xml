@@ -3,4 +3,8 @@
     <color name="colorPrimary">@color/worldPayRed</color>
     <color name="colorPrimaryDark">@android:color/holo_red_dark</color>
     <color name="worldPayRed">#f01e14</color>
+
+    <color name="DEFAULT">@android:color/black</color>
+    <color name="SUCCESS">@android:color/holo_green_dark</color>
+    <color name="FAIL">@android:color/holo_red_light</color>
 </resources>

@@ -22,13 +22,15 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
         if (!isValid) submitButton.disable()
     }
 
-    override fun onPanValidated(cardBrand: CardBrand?, isValid: Boolean) {
-        val brandLogo = activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
-        getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
-
+    override fun onPanValidated(isValid: Boolean) {
         val pan = activity.findViewById<EditText>(R.id.card_flow_text_pan)
         changeFont(pan, isValid)
         if (!isValid) submitButton.disable()
+    }
+
+    override fun onBrandChange(cardBrand : CardBrand?) {
+        val brandLogo = activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
+        getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
     }
 
     override fun onExpiryDateValidated(isValid: Boolean) {
