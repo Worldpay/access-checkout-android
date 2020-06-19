@@ -10,6 +10,9 @@ import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
+import com.worldpay.access.checkout.api.exception.ValidationRule
+import com.worldpay.access.checkout.api.exception.ValidationRuleName
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
 import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
 import com.worldpay.access.checkout.session.api.client.PaymentsCvcSessionClient
@@ -274,17 +277,15 @@ class SessionsPactTest {
         try {
             paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException.AccessCheckoutClientError) {
-            val validationRule =
-                AccessCheckoutException.ValidationRule(
-                    AccessCheckoutException.ValidationRuleName.FIELD_HAS_INVALID_VALUE,
+        } catch (ex: AccessCheckoutException) {
+            val validationRule = ValidationRule(
+                    ValidationRuleName.FIELD_HAS_INVALID_VALUE,
                     "Identity is invalid",
                     "\$.identity"
                 )
-            val accessCheckoutClientError = AccessCheckoutException.AccessCheckoutClientError(
-                AccessCheckoutException.Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(validationRule)
+            val accessCheckoutClientError = AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(validationRule)
             )
             Assert.assertEquals(accessCheckoutClientError, ex)
         } catch (ex: Exception) {
@@ -304,16 +305,15 @@ class SessionsPactTest {
         try {
             paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException.AccessCheckoutClientError) {
-            val validationRule = AccessCheckoutException.ValidationRule(
-                AccessCheckoutException.ValidationRuleName.FIELD_MUST_BE_NUMBER,
+        } catch (ex: AccessCheckoutException) {
+            val validationRule = ValidationRule(
+                ValidationRuleName.FIELD_MUST_BE_NUMBER,
                 "CVC must be numeric",
                 "\$.cvc"
             )
-            val accessCheckoutClientError = AccessCheckoutException.AccessCheckoutClientError(
-                AccessCheckoutException.Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(validationRule)
+            val accessCheckoutClientError = AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(validationRule)
             )
             Assert.assertEquals(accessCheckoutClientError, ex)
         } catch (ex: Exception) {
@@ -348,12 +348,9 @@ class SessionsPactTest {
         try {
             paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException.AccessCheckoutClientError) {
+        } catch (ex: AccessCheckoutException) {
 
-            val accessCheckoutClientError = AccessCheckoutException.AccessCheckoutClientError(
-                AccessCheckoutException.Error.BODY_IS_EMPTY,
-                "The body within the request is empty"
-            )
+            val accessCheckoutClientError = AccessCheckoutException("bodyIsEmpty : The body within the request is empty")
             Assert.assertEquals(accessCheckoutClientError, ex)
         } catch (ex: Exception) {
             fail("Should not have reached here!")

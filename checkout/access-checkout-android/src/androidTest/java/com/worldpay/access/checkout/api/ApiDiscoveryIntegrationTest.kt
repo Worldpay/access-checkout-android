@@ -8,7 +8,6 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.github.tomakehurst.wiremock.stubbing.Scenario
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.rootResponseMapping
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.verifiedTokensMapping
@@ -16,12 +15,15 @@ import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.awaitility.Awaitility.await
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class ApiDiscoveryIntegrationTest {
@@ -72,11 +74,14 @@ class ApiDiscoveryIntegrationTest {
                 )
         )
 
-        var exception: Exception? = null
+        var assertionDone = false
+        val exceptedException = AccessCheckoutException("Error message was: Server Error")
 
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
-                exception = error
+                assertEquals(exceptedException, error)
+                assertNull(response)
+                assertionDone = true
             }
         }
 
@@ -84,11 +89,7 @@ class ApiDiscoveryIntegrationTest {
 
         client.discover(wireMockRule.baseUrl(), callback, DiscoverLinks.verifiedTokens)
 
-        await().atMost(5, TimeUnit.SECONDS).until {
-            Log.d("AccessCheckoutDiscoveryIntegrationTest", "Error received: $exception")
-            exception is AccessCheckoutDiscoveryException &&
-                    exception?.message == "An error was thrown when trying to make a connection to the service"
-        }
+        await().atMost(5, TimeUnit.SECONDS).until { assertionDone }
     }
 
     @Test

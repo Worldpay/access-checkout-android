@@ -2,9 +2,8 @@ package com.worldpay.access.checkout.session.api.request
 
 import android.os.AsyncTask
 import android.util.Log
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHttpException
 import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.client.SessionClient
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import java.net.URL
@@ -37,16 +36,8 @@ internal class RequestDispatcher constructor(
                 .sessionType(sessionRequestInfo.sessionType)
                 .build()
 
-        } catch (ex: AccessCheckoutClientError) {
+        } catch (ex: AccessCheckoutException) {
             exception = ex
-            return null
-        } catch (ex: AccessCheckoutHttpException) {
-            exception = if (!ex.message.isNullOrBlank()) {
-                ex
-            } else {
-                AccessCheckoutHttpException("An exception was thrown when trying to establish a connection", ex)
-            }
-
             return null
         } catch (ex: Exception) {
             Log.e("RequestDispatcher", "Received exception: $ex")
@@ -57,7 +48,10 @@ internal class RequestDispatcher constructor(
 
     private fun getSessionRequestInfo(params: Array<out SessionRequestInfo>): SessionRequestInfo {
         if (params.isEmpty()) {
-            throw AccessCheckoutHttpException("No request was supplied for sending", null)
+            throw AccessCheckoutException(
+                "No request was supplied for sending",
+                null
+            )
         }
         return params[0]
     }

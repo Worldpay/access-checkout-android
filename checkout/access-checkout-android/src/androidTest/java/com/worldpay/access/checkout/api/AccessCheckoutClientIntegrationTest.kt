@@ -12,9 +12,8 @@ import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
-import com.worldpay.access.checkout.api.AccessCheckoutException.Error
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
@@ -29,7 +28,6 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
-import kotlin.test.assertFalse
 
 class AccessCheckoutClientIntegrationTest {
 
@@ -160,10 +158,7 @@ class AccessCheckoutClientIntegrationTest {
             override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
 
             override fun onError(error: AccessCheckoutException) {
-                assertEquals("The json body provided does not match the expected schema", error.message)
-
-                error as AccessCheckoutClientError
-                assertEquals(Error.BODY_DOES_NOT_MATCH_SCHEMA, error.error)
+                assertEquals("bodyDoesNotMatchSchema : The json body provided does not match the expected schema", error.message)
                 assertionsRan = true
             }
         }
@@ -202,10 +197,7 @@ class AccessCheckoutClientIntegrationTest {
             override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
 
             override fun onError(error: AccessCheckoutException) {
-                assertEquals("The body within the request is not valid json", error.message)
-
-                error as AccessCheckoutClientError
-                assertEquals(Error.BODY_IS_NOT_JSON, error.error)
+                assertEquals("bodyIsNotJson : The body within the request is not valid json", error.message)
                 assertionsRan = true
             }
         }
@@ -232,7 +224,7 @@ class AccessCheckoutClientIntegrationTest {
                    "errorName": "bodyDoesNotMatchSchema",
                    "message": "The json body provided does not match the expected schema",
                    "validationErrors": [{
-                        "errorName": "some-unkown-error",
+                        "errorName": "some-unknown-error",
                         "message": "String is too short",
                         "jsonPath": "\$.cvv"
                     }]}"""
@@ -248,10 +240,8 @@ class AccessCheckoutClientIntegrationTest {
             override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
 
             override fun onError(error: AccessCheckoutException) {
-                assertEquals("unknown error", error.message)
-
-                error as AccessCheckoutClientError
-                assertEquals(Error.UNKNOWN_ERROR, error.error)
+                val expectedException = AccessCheckoutException("unknown rule name some-unknown-error")
+                assertEquals(expectedException, error)
                 assertionsRan = true
             }
         }
@@ -288,7 +278,6 @@ class AccessCheckoutClientIntegrationTest {
 
             override fun onError(error: AccessCheckoutException) {
                 assertEquals("Error message was: Internal Server Error", error.message)
-                assertFalse(error is AccessCheckoutClientError)
                 assertionsRan = true
             }
         }

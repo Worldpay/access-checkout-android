@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.api.discovery
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -29,11 +29,11 @@ internal class ApiDiscoveryClient(
      * @param[discoverLinks] A [DiscoverLinks] object which contains the information on the service to discover
      *
      * @return [String] Url of the discovered endpoint
-     * @throws [AccessCheckoutDiscoveryException] This can be thrown in the event where no base url is supplied
+     * @throws [AccessCheckoutException] This can be thrown in the event where no base url is supplied
      */
     fun discover(baseUrl: String, callback: Callback<String>, discoverLinks: DiscoverLinks) {
         if (baseUrl.isBlank()) {
-            throw AccessCheckoutDiscoveryException("No URL supplied")
+            throw AccessCheckoutException("No URL supplied")
         }
 
         val asyncTaskResult = discoveryCache.getResult(discoverLinks)

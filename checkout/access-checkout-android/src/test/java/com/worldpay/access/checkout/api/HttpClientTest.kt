@@ -2,9 +2,9 @@ package com.worldpay.access.checkout.api
 
 import com.google.common.collect.Maps.newHashMap
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.removeWhitespace
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -20,7 +20,6 @@ import java.net.URL
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-
 class HttpClientTest {
 
     private lateinit var urlFactory: URLFactory
@@ -31,7 +30,7 @@ class HttpClientTest {
 
     private lateinit var serializer: Serializer<TestRequest>
 
-    private lateinit var clientErrorDeserializer: Deserializer<AccessCheckoutClientError>
+    private lateinit var clientErrorDeserializer: Deserializer<AccessCheckoutException>
 
     private val testRequest = TestRequest("abc")
     private val testRequestString = "{ \"property\": \"${testRequest.property}\" }"
@@ -85,7 +84,7 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
@@ -101,7 +100,7 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutError> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
@@ -114,7 +113,7 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutError> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
@@ -123,8 +122,8 @@ class HttpClientTest {
 
     @Test
     fun givenHttp400ErrorWithResponseBody_ThenShouldThrowAccessCheckoutExceptionWithErrorResponseFromServerOnPost() {
-
-        val errorMessage = "The json body provided does not match the expected schema"
+        val errorMessage = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
+        val expectedException = AccessCheckoutException(errorMessage)
         val responseBody =
             removeWhitespace("""{
                         "errorName": "bodyDoesNotMatchSchema",
@@ -140,21 +139,21 @@ class HttpClientTest {
 
 
         stubResponse(buildMockedResponse(400, responseBody, errorMessage))
-        given(clientErrorDeserializer.deserialize(responseBody)).willReturn(AccessCheckoutClientError(Error.BODY_DOES_NOT_MATCH_SCHEMA, errorMessage))
+        given(clientErrorDeserializer.deserialize(responseBody)).willReturn(expectedException)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutClientError> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
-        assertEquals(errorMessage, exception.message)
-
+        assertEquals(expectedException, exception)
     }
 
     @Test
     fun givenHttp400ErrorWithNoResponseBody_ThenShouldThrowAccessCheckoutExceptionWithoutAnyErrorResponseBodyOnPost() {
-        val errorMessage = "The body within the request is empty"
+        val errorMessage = "bodyIsEmpty : The body within the request is empty"
+        val expectedException = AccessCheckoutException(errorMessage)
 
         val jsonResponse =  removeWhitespace("""{
                                 "errorName": "bodyIsEmpty",
@@ -162,30 +161,29 @@ class HttpClientTest {
                             }""")
 
         stubResponse(buildMockedResponse(400, jsonResponse, errorMessage))
-        given(clientErrorDeserializer.deserialize(jsonResponse)).willReturn(AccessCheckoutClientError(Error.BODY_IS_EMPTY, errorMessage))
+        given(clientErrorDeserializer.deserialize(jsonResponse)).willReturn(expectedException)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutClientError> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
-        assertEquals(errorMessage, exception.message)
-
+        assertEquals(expectedException, exception)
     }
 
     @Test
     fun givenHttp400ErrorWithEmptyResponseData_ThenShouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBodyOnPost() {
         stubResponse(MockedResponse(400, null, "Some Client Error"))
+        val expectedException = AccessCheckoutException("Error message was: Some Client Error")
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
-        assertEquals("Error message was: Some Client Error", exception.message)
-        assertTrue(exception.cause is java.lang.RuntimeException)
+        assertEquals(expectedException, exception)
     }
 
     @Test
@@ -193,7 +191,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
         given(url.openConnection()).willThrow(ConnectException())
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
@@ -205,7 +203,7 @@ class HttpClientTest {
     fun givenSerializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnPost() {
         given(serializer.serialize(testRequest)).willThrow(RuntimeException())
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
@@ -222,7 +220,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
         given(deserializer.deserialize(responseBody)).willThrow(RuntimeException())
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
@@ -269,7 +267,7 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
         }
 
@@ -286,7 +284,7 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
         }
 
@@ -323,7 +321,7 @@ class HttpClientTest {
 
         stubResponse(MockedResponse(201, inputStream, ""))
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 
@@ -335,7 +333,7 @@ class HttpClientTest {
     fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBodyOnGet() {
         stubResponse(buildMockedResponse(500, null, null))
 
-        val exception = assertFailsWith<AccessCheckoutError> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 
@@ -348,7 +346,7 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutError> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 
@@ -372,7 +370,7 @@ class HttpClientTest {
 
         stubResponse(buildMockedResponse(400, responseBody, errorMessage))
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 
@@ -385,7 +383,7 @@ class HttpClientTest {
 
         stubResponse(buildMockedResponse(400, "", errorMessage))
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 
@@ -398,7 +396,7 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 
@@ -409,7 +407,7 @@ class HttpClientTest {
     fun givenServerCannotBeReached_ThenShouldThrowAccessCheckoutExceptionWithCauseOnGet() {
         given(url.openConnection()).willThrow(ConnectException())
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 
@@ -423,7 +421,7 @@ class HttpClientTest {
 
         given(deserializer.deserialize(responseBody)).willThrow(RuntimeException())
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 
@@ -467,7 +465,7 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 
@@ -484,7 +482,7 @@ class HttpClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutHttpException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             httpClient.doGet(url, deserializer)
         }
 

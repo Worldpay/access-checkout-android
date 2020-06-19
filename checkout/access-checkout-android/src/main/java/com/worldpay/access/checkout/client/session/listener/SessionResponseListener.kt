@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.client.session.listener
 
-import com.worldpay.access.checkout.api.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.model.SessionType
 
 /**

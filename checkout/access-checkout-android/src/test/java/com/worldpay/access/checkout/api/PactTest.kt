@@ -6,8 +6,10 @@ import au.com.dius.pact.consumer.PactVerification
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
 import au.com.dius.pact.model.RequestResponsePact
-import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.api.exception.ValidationRule
+import com.worldpay.access.checkout.api.exception.ValidationRuleName
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
 import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
 import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
@@ -24,8 +26,8 @@ import org.junit.rules.ExpectedException
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import java.net.URL
+import kotlin.test.assertFailsWith
 import kotlin.test.fail
-
 
 class PactTest {
 
@@ -439,15 +441,13 @@ class PactTest {
         try {
             verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutClientError) {
-            val validationRule =
-                ValidationRule(ValidationRuleName.FIELD_HAS_INVALID_VALUE, "Identity is invalid", "\$.identity")
-            val accessCheckoutClientError = AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(validationRule)
+        } catch (ex: AccessCheckoutException) {
+            val validationRule = ValidationRule(ValidationRuleName.FIELD_HAS_INVALID_VALUE, "Identity is invalid", "\$.identity")
+            val accessCheckoutException = AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(validationRule)
             )
-            assertEquals(accessCheckoutClientError, ex)
+            assertEquals(accessCheckoutException, ex)
         } catch (ex: Exception) {
             fail("Should not have reached here!")
         }
@@ -470,18 +470,17 @@ class PactTest {
         try {
             verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutClientError) {
+        } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
                 ValidationRuleName.PAN_FAILED_LUHN_CHECK,
                 "The identified field contains a PAN that has failed the Luhn check.",
                 "\$.cardNumber"
             )
-            val accessCheckoutClientError = AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(validationRule)
+            val accessCheckoutException = AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(validationRule)
             )
-            assertEquals(accessCheckoutClientError, ex)
+            assertEquals(accessCheckoutException, ex)
         } catch (ex: Exception) {
             fail("Should not have reached here!")
         }
@@ -504,18 +503,17 @@ class PactTest {
         try {
             verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutClientError) {
+        } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
                 ValidationRuleName.STRING_IS_TOO_SHORT,
                 "Card number is too short - must be between 10 & 19 digits",
                 "\$.cardNumber"
             )
-            val accessCheckoutClientError = AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(validationRule)
+            val accessCheckoutException = AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(validationRule)
             )
-            assertEquals(accessCheckoutClientError, ex)
+            assertEquals(accessCheckoutException, ex)
         } catch (ex: Exception) {
             fail("Should not have reached here!")
         }
@@ -538,18 +536,17 @@ class PactTest {
         try {
             verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutClientError) {
+        } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
                 ValidationRuleName.STRING_IS_TOO_LONG,
                 "Card number is too long - must be between 10 & 19 digits",
                 "\$.cardNumber"
             )
-            val accessCheckoutClientError = AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(validationRule)
+            val accessCheckoutException = AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(validationRule)
             )
-            assertEquals(accessCheckoutClientError, ex)
+            assertEquals(accessCheckoutException, ex)
         } catch (ex: Exception) {
             fail("Should not have reached here!")
         }
@@ -572,18 +569,17 @@ class PactTest {
         try {
             verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutClientError) {
+        } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
                 ValidationRuleName.INTEGER_IS_TOO_SMALL,
                 "Card expiry month is too small - must be between 1 & 12",
                 "\$.cardExpiryDate.month"
             )
-            val accessCheckoutClientError = AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(validationRule)
+            val accessCheckoutException = AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(validationRule)
             )
-            assertEquals(accessCheckoutClientError, ex)
+            assertEquals(accessCheckoutException, ex)
         } catch (ex: Exception) {
             fail("Should not have reached here!")
         }
@@ -606,18 +602,17 @@ class PactTest {
         try {
             verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutClientError) {
+        } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
                 ValidationRuleName.INTEGER_IS_TOO_LARGE,
                 "Card expiry month is too large - must be between 1 & 12",
                 "\$.cardExpiryDate.month"
             )
-            val accessCheckoutClientError = AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(validationRule)
+            val accessCheckoutException = AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(validationRule)
             )
-            assertEquals(accessCheckoutClientError, ex)
+            assertEquals(accessCheckoutException, ex)
         } catch (ex: Exception) {
             fail("Should not have reached here!")
         }
@@ -640,18 +635,17 @@ class PactTest {
         try {
             verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutClientError) {
+        } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
                 ValidationRuleName.FIELD_MUST_BE_NUMBER,
                 "CVC must be numeric",
                 "\$.cvc"
             )
-            val accessCheckoutClientError = AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(validationRule)
+            val accessCheckoutException = AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(validationRule)
             )
-            assertEquals(accessCheckoutClientError, ex)
+            assertEquals(accessCheckoutException, ex)
         } catch (ex: Exception) {
             fail("Should not have reached here!")
         }
@@ -676,8 +670,7 @@ class PactTest {
             )
 
 
-        given(mockEmptySerializer.serialize(sessionRequest))
-            .willReturn(emptyString)
+        given(mockEmptySerializer.serialize(sessionRequest)).willReturn(emptyString)
 
         verifiedTokenSessionClient =
             VerifiedTokenSessionClient(
@@ -686,23 +679,14 @@ class PactTest {
                 HttpClient()
             )
 
-        try {
+        val expectedException = AccessCheckoutException("bodyIsEmpty : The body within the request is empty")
+
+        val exception = assertFailsWith<AccessCheckoutException> {
             verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
-            fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutClientError) {
-
-            val accessCheckoutClientError = AccessCheckoutClientError(
-                Error.BODY_IS_EMPTY,
-                "The body within the request is empty"
-            )
-            assertEquals(accessCheckoutClientError, ex)
-        } catch (ex: Exception) {
-            fail("Should not have reached here!")
         }
+
+        assertEquals(expectedException, exception)
     }
-
-
-    private fun generateEmptyBodyRequest() = ""
 
     private fun generateRequest(
         identity: String = this.identity,

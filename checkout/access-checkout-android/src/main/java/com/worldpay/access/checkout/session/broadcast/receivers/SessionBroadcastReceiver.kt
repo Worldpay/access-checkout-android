@@ -3,8 +3,7 @@ package com.worldpay.access.checkout.session.broadcast.receivers
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
@@ -73,7 +72,12 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
             debugLog(javaClass.simpleName, "Intent Err: $errorSerializable")
             externalSessionResponseListener.onError(errorSerializable as AccessCheckoutException)
         } catch (ex: Exception) {
-            externalSessionResponseListener.onError(AccessCheckoutError("Unknown error", ex))
+            externalSessionResponseListener.onError(
+                AccessCheckoutException(
+                    "Unknown error",
+                    ex
+                )
+            )
         }
     }
 

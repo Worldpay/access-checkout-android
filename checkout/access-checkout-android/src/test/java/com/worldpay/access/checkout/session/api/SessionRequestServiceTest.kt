@@ -5,8 +5,8 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
@@ -160,7 +160,7 @@ class SessionRequestServiceTest {
         val localBroadcastManager = mock(LocalBroadcastManager::class.java)
         given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
 
-        val exception = AccessCheckoutException.AccessCheckoutError("some error")
+        val exception = AccessCheckoutException("some error")
         sessionRequestService.onResponse(exception, null)
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)

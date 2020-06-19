@@ -2,10 +2,10 @@ package com.worldpay.access.checkout.api.discovery
 
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializer
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.awaitility.Awaitility
 import org.junit.Before
 import org.junit.Test
@@ -44,7 +44,7 @@ class ApiDiscoveryAsyncTaskTest {
 
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
-                assertTrue(error is AccessCheckoutDiscoveryException)
+                assertTrue(error is AccessCheckoutException)
                 assertEquals("Invalid URL supplied: abcd", error.message)
                 asserted = true
             }
@@ -62,25 +62,19 @@ class ApiDiscoveryAsyncTaskTest {
     }
 
     @Test
-    fun `should throw an AccessCheckoutDiscoveryException when root service discovery throws an error`() {
+    fun `should throw an AccessCheckoutException when root service discovery throws an error`() {
         var asserted = false
+        val expectedException = AccessCheckoutException("Some message", AccessCheckoutException("deserialization"))
 
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
-                assertTrue(error is AccessCheckoutDiscoveryException)
-                assertTrue(error.cause is AccessCheckoutHttpException)
-                assertEquals(error.message, "An error was thrown when trying to make a connection to the service")
+                assertEquals(expectedException, error)
                 asserted = true
             }
         }
 
         val rootURL = URL("http://localhost")
-        BDDMockito.given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(
-            AccessCheckoutHttpException(
-                "Some message",
-                AccessCheckoutDeserializationException("deserialization")
-            )
-        )
+        given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(expectedException)
 
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
@@ -94,22 +88,19 @@ class ApiDiscoveryAsyncTaskTest {
     }
 
     @Test
-    fun  `should throw an AccessCheckoutDiscoveryException when service discovery throws a server error`() {
+    fun  `should throw an AccessCheckoutException when service discovery throws a server error`() {
         var asserted = false
+        val expectedException = AccessCheckoutException("Some message")
 
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
-                assertTrue(error is AccessCheckoutDiscoveryException)
-                assertTrue(error.cause is AccessCheckoutError)
-                assertEquals(error.message, "An error was thrown when trying to make a connection to the service")
+                assertEquals(expectedException, error)
                 asserted = true
             }
         }
 
         val rootURL = URL("http://localhost")
-        BDDMockito.given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(
-            AccessCheckoutError("Some message")
-        )
+        given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(expectedException)
 
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
@@ -123,14 +114,13 @@ class ApiDiscoveryAsyncTaskTest {
     }
 
     @Test
-    fun `should throw an AccessCheckoutDiscoveryException when deserializer throws an exception`() {
+    fun `should throw an AccessCheckoutException when deserializer throws an exception`() {
         var asserted = false
+        val expectedException = AccessCheckoutException("Some message", AccessCheckoutException("deserialization"))
 
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
-                assertTrue(error is AccessCheckoutDiscoveryException)
-                assertTrue(error.cause is AccessCheckoutHttpException)
-                assertEquals(error.message, "An error was thrown when trying to make a connection to the service")
+                assertEquals(expectedException, error)
                 asserted = true
             }
         }
@@ -138,12 +128,7 @@ class ApiDiscoveryAsyncTaskTest {
         val serviceUrl = "http://localhost/verifiedTokens"
         val rootURL = URL("http://localhost")
         given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willReturn(serviceUrl)
-        given(httpClientMock.doGet(URL(serviceUrl), secondLinkDiscoveryDeserializerMock)).willThrow(
-            AccessCheckoutHttpException(
-                "Some message",
-                AccessCheckoutDeserializationException("deserialization")
-            )
-        )
+        given(httpClientMock.doGet(URL(serviceUrl), secondLinkDiscoveryDeserializerMock)).willThrow(expectedException)
 
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
             callback,
@@ -214,7 +199,7 @@ class ApiDiscoveryAsyncTaskTest {
         var asserted = false
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
-                assertTrue(error is AccessCheckoutDiscoveryException)
+                assertTrue(error is AccessCheckoutException)
                 assertNotNull(error.cause)
                 assertEquals(MalformedURLException::class.java, error.cause!!::class.java)
                 assertEquals("Invalid URL supplied: $rubbishResponse", error.message)

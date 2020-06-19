@@ -1,15 +1,15 @@
 package com.worldpay.access.checkout.api
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.serialization.ClientErrorDeserializer
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import java.io.*
 import java.net.HttpURLConnection
 import java.net.URL
 
 internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
-                          private val clientErrorDeserializer: Deserializer<AccessCheckoutClientError> = ClientErrorDeserializer()) {
+                          private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer()) {
 
     @Throws(AccessCheckoutException::class)
     fun <Request : Serializable, Response> doPost(
@@ -45,16 +45,11 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
 
                 return deserializer.deserialize(responseData)
             }
-        } catch (ex: AccessCheckoutClientError) {
-            throw ex
-        } catch (ex: AccessCheckoutError) {
-            throw ex
         } catch (ex: AccessCheckoutException) {
-            val message = ex.message
-            throw AccessCheckoutHttpException(message, ex)
+            throw ex
         } catch (ex: Exception) {
             val message = ex.message ?: "An exception was thrown when trying to establish a connection"
-            throw AccessCheckoutHttpException(message, ex)
+            throw AccessCheckoutException(message = message, cause = ex)
         } finally {
             httpUrlConn?.disconnect()
         }
@@ -83,13 +78,11 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
 
             return deserializer.deserialize(responseData)
 
-        } catch (ex: AccessCheckoutError) {
-            throw ex
         } catch (ex: AccessCheckoutException) {
-            throw AccessCheckoutHttpException(ex.message, ex)
+            throw ex
         } catch (ex: Exception) {
             val message = ex.message ?: "An exception was thrown when trying to establish a connection"
-            throw AccessCheckoutHttpException(message, ex)
+            throw AccessCheckoutException(message, ex)
         } finally {
             httpUrlConn?.disconnect()
         }
@@ -100,7 +93,7 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
     }
 
     private fun getClientError(conn: HttpURLConnection): AccessCheckoutException {
-        var clientException: AccessCheckoutClientError? = null
+        var clientException: AccessCheckoutException? = null
         var errorData: String? = null
 
         if (conn.errorStream != null) {
@@ -108,16 +101,16 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
             clientException = clientErrorDeserializer.deserialize(errorData)
         }
 
-        return clientException ?: AccessCheckoutHttpException(getMessage(conn, errorData))
+        return clientException ?: AccessCheckoutException(getMessage(conn, errorData))
     }
 
     private fun getServerError(conn: HttpURLConnection): AccessCheckoutException {
         if (conn.errorStream != null) {
             val errorData = getResponseData(conn.errorStream)
             val message = getMessage(conn, errorData)
-            return AccessCheckoutError(message)
+            return AccessCheckoutException(message)
         }
-        return AccessCheckoutError("A server error occurred when trying to make the request")
+        return AccessCheckoutException("A server error occurred when trying to make the request")
     }
 
     private fun getMessage(conn: HttpURLConnection, errorData: String?): String {
@@ -160,7 +153,7 @@ internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
     private fun <Response> handleRedirect(httpUrlConn: HttpURLConnection, exec: (String) -> Response): Response {
         val location = httpUrlConn.getHeaderField(LOCATION)
         if (location.isNullOrBlank()) {
-            throw AccessCheckoutHttpException("Response from server was a redirect HTTP response code: ${httpUrlConn.responseCode} but did not include a Location header")
+            throw AccessCheckoutException("Response from server was a redirect HTTP response code: ${httpUrlConn.responseCode} but did not include a Location header")
         }
         return exec(location)
     }

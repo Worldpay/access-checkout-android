@@ -11,11 +11,14 @@ import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemp
 import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationAsyncTask
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.awaitility.Awaitility.await
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class CardConfigurationIntegrationTest {
@@ -130,11 +133,14 @@ class CardConfigurationIntegrationTest {
                 )
         )
 
-        var exception: Exception? = null
+        var assertionDone = false
+        val expectedException = AccessCheckoutException("Error message was: Server Error")
 
         val callback = object : Callback<CardConfiguration> {
             override fun onResponse(error: Exception?, response: CardConfiguration?) {
-                exception = error
+                assertEquals(expectedException, error)
+                assertNull(response)
+                assertionDone = true
             }
         }
 
@@ -142,10 +148,6 @@ class CardConfigurationIntegrationTest {
 
         asyncTask.execute(wireMockRule.baseUrl())
 
-        await().atMost(5, TimeUnit.SECONDS).until {
-            Log.d("CardConfigurationIntegrationTest", "Error received: $exception")
-            exception is AccessCheckoutException.AccessCheckoutConfigurationException &&
-                    exception?.message == "There was an error when trying to fetch the card configuration"
-        }
+        await().atMost(5, TimeUnit.SECONDS).until { assertionDone }
     }
 }
