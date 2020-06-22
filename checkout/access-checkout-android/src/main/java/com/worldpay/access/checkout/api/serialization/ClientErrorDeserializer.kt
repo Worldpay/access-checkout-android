@@ -1,34 +1,31 @@
 package com.worldpay.access.checkout.api.serialization
 
-import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
-import com.worldpay.access.checkout.api.AccessCheckoutException.ValidationRule
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import org.json.JSONObject
 
-internal class ClientErrorDeserializer : Deserializer<AccessCheckoutClientError>() {
+internal class ClientErrorDeserializer : Deserializer<AccessCheckoutException>() {
 
-    override fun deserialize(json: String): AccessCheckoutClientError {
+    override fun deserialize(json: String): AccessCheckoutException {
         return super.deserialize(json) {
             val root = JSONObject(json)
 
             val clientErrorName = toStringProperty(root, "errorName")
             val message = toStringProperty(root, "message")
-            var clientValidationRuleList: List<ValidationRule>? = null
+            var clientValidationRuleList: List<ValidationRule> = emptyList()
 
             if (root.has("validationErrors")) {
                 clientValidationRuleList = deserializeValidationRules(root)
             }
 
-            AccessCheckoutClientError(
-                AccessCheckoutException.getErrorForName(clientErrorName),
-                message,
-                clientValidationRuleList
+            AccessCheckoutException(
+                message = "$clientErrorName : $message",
+                validationRules = clientValidationRuleList
             )
         }
     }
 
-    private fun deserializeValidationRules(root: JSONObject): List<ValidationRule>? {
-
+    private fun deserializeValidationRules(root: JSONObject): List<ValidationRule> {
         val validationErrorArr = fetchArray(root, "validationErrors")
         val valErrSize = validationErrorArr.length()
         if (valErrSize > 0) {
@@ -41,7 +38,7 @@ internal class ClientErrorDeserializer : Deserializer<AccessCheckoutClientError>
             return clientValidationRuleList.toList()
         }
 
-        return null
+        return emptyList()
     }
 
     private fun getValidationRuleFromJson(vErr: JSONObject): ValidationRule {
@@ -50,7 +47,7 @@ internal class ClientErrorDeserializer : Deserializer<AccessCheckoutClientError>
         val validationErrorPath = toStringProperty(vErr, "jsonPath")
 
         return ValidationRule(
-            AccessCheckoutException.getRuleForName(validationRuleErrorName),
+            validationRuleErrorName,
             validationErrorMessage,
             validationErrorPath
         )

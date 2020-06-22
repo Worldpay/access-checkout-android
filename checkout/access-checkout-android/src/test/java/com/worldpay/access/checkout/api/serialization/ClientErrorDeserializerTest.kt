@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.api.serialization
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.*
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -15,7 +16,7 @@ class ClientErrorDeserializerTest {
 
     @Test
     fun givenEmptyResponseThenShouldThrowDeserializationException() {
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Cannot deserialize empty string")
 
         clientErrorDeserializer.deserialize("")
@@ -24,7 +25,7 @@ class ClientErrorDeserializerTest {
     @Test
     fun givenBadJsonStringThenShouldThrowDeserializationException() {
         val json = "abc"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Cannot interpret json: $json")
 
         clientErrorDeserializer.deserialize(json)
@@ -33,7 +34,7 @@ class ClientErrorDeserializerTest {
     @Test
     fun givenJsonStringWithMissingObjectThenShouldThrowDeserializationException() {
         val json = "{ }"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Missing property: 'errorName'")
 
         clientErrorDeserializer.deserialize(json)
@@ -44,7 +45,7 @@ class ClientErrorDeserializerTest {
         val json = """{
                         "errorName": "methodNotAllowed"
                     }"""
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Missing property: 'message'")
 
         clientErrorDeserializer.deserialize(json)
@@ -58,7 +59,7 @@ class ClientErrorDeserializerTest {
                     }"""
 
 
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Invalid property type: 'errorName', expected 'String'")
 
         clientErrorDeserializer.deserialize(json)
@@ -74,57 +75,9 @@ class ClientErrorDeserializerTest {
 
         val deserializedResponse = clientErrorDeserializer.deserialize(jsonResponse)
 
-
-        val expectedErrorObject = AccessCheckoutClientError(Error.METHOD_NOT_ALLOWED, "Requested method is not allowed")
+        val expectedErrorObject = AccessCheckoutException("methodNotAllowed : Requested method is not allowed")
 
         assertEquals(expectedErrorObject, deserializedResponse)
-    }
-
-    @Test
-    fun givenValidBodySchemaErrorJsonThenShouldSuccessfullyDeserializeToException() {
-        val expectedNameToValidationRuleMap = mapOf(
-            Pair("unrecognizedField", ValidationRuleName.UNRECOGNIZED_FIELD),
-            Pair("fieldHasInvalidValue", ValidationRuleName.FIELD_HAS_INVALID_VALUE),
-            Pair("panFailedLuhnCheck", ValidationRuleName.PAN_FAILED_LUHN_CHECK),
-            Pair("fieldIsMissing", ValidationRuleName.FIELD_IS_MISSING),
-            Pair("stringIsTooShort", ValidationRuleName.STRING_IS_TOO_SHORT),
-            Pair("stringIsTooLong", ValidationRuleName.STRING_IS_TOO_LONG),
-            Pair("fieldMustBeInteger", ValidationRuleName.FIELD_MUST_BE_INTEGER),
-            Pair("integerIsTooSmall", ValidationRuleName.INTEGER_IS_TOO_SMALL),
-            Pair("integerIsTooLarge", ValidationRuleName.INTEGER_IS_TOO_LARGE),
-            Pair("fieldMustBeNumber", ValidationRuleName.FIELD_MUST_BE_NUMBER),
-
-            Pair("fieldMustBeString", ValidationRuleName.FIELD_MUST_BE_STRING),
-            Pair("fieldMustBeBoolean", ValidationRuleName.FIELD_MUST_BE_BOOLEAN),
-            Pair("fieldMustBeObject", ValidationRuleName.FIELD_MUST_BE_OBJECT),
-            Pair("fieldMustBeArray", ValidationRuleName.FIELD_MUST_BE_ARRAY),
-            Pair("fieldIsNull", ValidationRuleName.FIELD_IS_NULL),
-            Pair("fieldIsEmpty", ValidationRuleName.FIELD_IS_EMPTY),
-            Pair("fieldIsNotAllowed", ValidationRuleName.FIELD_IS_NOT_ALLOWED),
-            Pair("numberIsTooSmall", ValidationRuleName.NUMBER_IS_TOO_SMALL),
-            Pair("numberIsTooLarge", ValidationRuleName.NUMBER_IS_TOO_LARGE),
-            Pair("stringFailedRegexCheck", ValidationRuleName.STRING_FAILED_REGEX_CHECK),
-            Pair("dateHasInvalidFormat", ValidationRuleName.DATE_HAS_INVALID_FORMAT)
-        )
-
-        expectedNameToValidationRuleMap.forEach { (name, validationRule) ->
-            run {
-                val message = "Some message"
-                val jsonPath = "\$.somePath"
-                val jsonResponse = getErrorResponseAsString(name, message, jsonPath)
-
-                val deserializedError = clientErrorDeserializer.deserialize(jsonResponse)
-                val expectedValidationRuleList = listOf(ValidationRule(validationRule, message, jsonPath))
-
-                val expectedErrorObject = AccessCheckoutClientError(
-                    Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                    "The json body provided does not match the expected schema",
-                    expectedValidationRuleList
-                )
-
-                assertEquals(expectedErrorObject, deserializedError)
-            }
-        }
     }
 
     @Test
@@ -161,28 +114,27 @@ class ClientErrorDeserializerTest {
         val expectedValidationRuleList =
             listOf(
                 ValidationRule(
-                    ValidationRuleName.INTEGER_IS_TOO_LARGE,
+                    "integerIsTooLarge",
                     "Card expiry year must be less than 9999",
                     "\$.cardExpiryDate.year"
                 ),
                 ValidationRule(
-                    ValidationRuleName.FIELD_HAS_INVALID_VALUE,
+                    "fieldHasInvalidValue",
                     "Card number must be numeric",
                     "\$.cardNumber"
                 ),
                 ValidationRule(
-                    ValidationRuleName.STRING_IS_TOO_SHORT,
+                    "stringIsTooShort",
                     "Card number is too short - must be between 10 & 19 digits",
                     "\$.cardNumber"
                 ),
-                ValidationRule(ValidationRuleName.FIELD_HAS_INVALID_VALUE, "Identity is invalid", "\$.identity")
+                ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
             )
 
 
-        val expectedErrorObject = AccessCheckoutClientError(
-            Error.BODY_DOES_NOT_MATCH_SCHEMA,
-            "The json body provided does not match the expected schema",
-            expectedValidationRuleList
+        val expectedErrorObject = AccessCheckoutException(
+            message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+            validationRules = expectedValidationRuleList
         )
 
         assertEquals(expectedErrorObject, deserializedError)
@@ -200,17 +152,13 @@ class ClientErrorDeserializerTest {
         val deserializedError = clientErrorDeserializer.deserialize(jsonResponse)
 
 
-        val expectedErrorObject = AccessCheckoutClientError(
-            Error.BODY_IS_NOT_JSON,
-            "The body within the request is not valid json"
-        )
+        val expectedErrorObject = AccessCheckoutException("bodyIsNotJson : The body within the request is not valid json")
 
         assertEquals(expectedErrorObject, deserializedError)
     }
 
     @Test
     fun givenValidBodySchemaErrorWithLuhnInvalidCardErrorThenShouldSuccessfullyDeserializeToException() {
-
         val jsonResponse = """{
                                 "errorName": "bodyDoesNotMatchSchema",
                                 "message": "The json body provided does not match the expected schema",
@@ -226,12 +174,11 @@ class ClientErrorDeserializerTest {
         val deserializedError = clientErrorDeserializer.deserialize(jsonResponse)
 
         val expectedException =
-            AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(
+            AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(
                     ValidationRule(
-                        ValidationRuleName.PAN_FAILED_LUHN_CHECK,
+                        "panFailedLuhnCheck",
                         "The identified field contains a PAN that has failed the Luhn check.",
                         "\$.cardNumber"
                     )
@@ -244,7 +191,6 @@ class ClientErrorDeserializerTest {
 
     @Test
     fun givenValidBodySchemaErrorWithUnknownFieldErrorThenShouldSuccessfullyDeserializeToException() {
-
         val jsonResponse = """{
                                 "errorName": "bodyDoesNotMatchSchema",
                                 "message": "The json body provided does not match the expected schema",
@@ -261,12 +207,11 @@ class ClientErrorDeserializerTest {
         val deserializedError = clientErrorDeserializer.deserialize(jsonResponse)
 
         val expectedException =
-            AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                listOf(
+            AccessCheckoutException(
+                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                validationRules = listOf(
                     ValidationRule(
-                        ValidationRuleName.UNRECOGNIZED_FIELD,
+                        "unrecognizedField",
                         "Field is not recognized",
                         "\$.aaa"
                     )
@@ -279,13 +224,12 @@ class ClientErrorDeserializerTest {
 
     @Test
     fun givenEmptyBodyErrorResponseThenShouldSuccessfullyDeserializeException() {
-
         val jsonResponse = """{
                                 "errorName": "bodyIsEmpty",
                                 "message": "The body within the request is empty"
                             }"""
 
-        val expectedException = AccessCheckoutClientError(Error.BODY_IS_EMPTY, "The body within the request is empty")
+        val expectedException = AccessCheckoutException("bodyIsEmpty : The body within the request is empty")
 
         val deserializedError = clientErrorDeserializer.deserialize(jsonResponse)
         assertEquals(expectedException, deserializedError)
@@ -293,13 +237,12 @@ class ClientErrorDeserializerTest {
 
     @Test
     fun givenUndocumentedErrorResponseThenShouldSuccessfullyDeserializeUnknownError() {
-
         val jsonResponse = """{
                                 "errorName": "this is an undocumented error",
                                 "message": "this error should be documented"
                             }"""
 
-        val expectedException = AccessCheckoutClientError(Error.UNKNOWN_ERROR, "this error should be documented")
+        val expectedException = AccessCheckoutException("this is an undocumented error : this error should be documented")
 
         val deserializedError = clientErrorDeserializer.deserialize(jsonResponse)
         assertEquals(expectedException, deserializedError)
@@ -307,9 +250,6 @@ class ClientErrorDeserializerTest {
 
     @Test
     fun givenMalformatedErrorWithUnknownFields_whenDeserializing_shouldThrowException() {
-
-        expectedException.expect(AccessCheckoutClientError::class.java)
-
         val jsonResponse = """{
                                 "errorName": "bodyDoesNotMatchSchema",
                                 "message": "The json body provided does not match the expected schema",
@@ -323,8 +263,14 @@ class ClientErrorDeserializerTest {
                                 ]
                             }"""
 
-        clientErrorDeserializer.deserialize(jsonResponse)
+        val error = clientErrorDeserializer.deserialize(jsonResponse)
 
+        val expectedException = AccessCheckoutException(
+            message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+            validationRules = listOf(ValidationRule("xxxxx", "yyyy", "${'$'}.aaa"))
+        )
+
+        assertEquals(expectedException, error)
     }
 
     @Test
@@ -338,21 +284,13 @@ class ClientErrorDeserializerTest {
 
         val deserializedError = clientErrorDeserializer.deserialize(jsonResponse)
 
-        val expectedException =
-            AccessCheckoutClientError(
-                Error.BODY_DOES_NOT_MATCH_SCHEMA,
-                "The json body provided does not match the expected schema",
-                null
-            )
+        val expectedException = AccessCheckoutException("bodyDoesNotMatchSchema : The json body provided does not match the expected schema")
 
         assertEquals(expectedException, deserializedError)
     }
 
     @Test
     fun givenInvalidValidationRules_whenDeserializing_shouldThrowException() {
-
-        expectedException.expect(AccessCheckoutClientError::class.java)
-
         val jsonResponse = """{
                                 "errorName": "bodyDoesNotMatchSchema",
                                 "message": "The json body provided does not match the expected schema",
@@ -367,21 +305,14 @@ class ClientErrorDeserializerTest {
                                 ]
                             }"""
 
-        clientErrorDeserializer.deserialize(jsonResponse)
+        val error = clientErrorDeserializer.deserialize(jsonResponse)
 
+        val expectedException = AccessCheckoutException(
+            message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+            validationRules = listOf(ValidationRule("xxxxx", "yyyy", "${'$'}.aaa"))
+        )
+
+        assertEquals(expectedException, error)
     }
 
-    private fun getErrorResponseAsString(errorName: String, message: String, jsonPath: String): String {
-        return """{
-                    "errorName": "bodyDoesNotMatchSchema",
-                    "message": "The json body provided does not match the expected schema",
-                    "validationErrors": [
-                        {
-                            "errorName": "$errorName",
-                            "message": "$message",
-                            "jsonPath": "$jsonPath"
-                        }
-                    ]
-                }"""
-    }
 }

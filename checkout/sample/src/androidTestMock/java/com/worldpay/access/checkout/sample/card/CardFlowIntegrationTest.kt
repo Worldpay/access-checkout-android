@@ -58,7 +58,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasErrorDialogWithMessage(
-                "The json body provided does not match the expected schema"
+                "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             )
             .closeDialog()
             .isInErrorState(pan = unknownCardError, cvc = amexCvc, expiryDate = "12/99")
@@ -103,7 +103,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasErrorDialogWithMessage(
-                "The json body provided does not match the expected schema"
+                "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             )
             .closeDialog()
             .isInErrorState(pan = unknownCardError, cvc = amexCvc, expiryDate = "12/99")
@@ -122,7 +122,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasErrorDialogWithMessage(
-                "The json body provided does not match the expected schema"
+                "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             )
             .closeDialog()
             .isInErrorState(pan = unknownCardError, cvc = amexCvc, expiryDate = "12/99")

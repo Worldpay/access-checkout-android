@@ -1,10 +1,8 @@
 package com.worldpay.access.checkout.session.api.request
 
-import com.worldpay.access.checkout.api.AccessCheckoutException
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutClientError
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutHttpException
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.client.SessionClient
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
@@ -19,6 +17,7 @@ import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
 import java.net.URL
 import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
@@ -104,18 +103,17 @@ class RequestDispatcherTest {
 
     @Test
     fun givenAClientError_ThenShouldReturnErrorInCallback() {
-        given(sessionClient.getSessionResponse(URL("$baseUrl/$verifiedTokensEndpoint"), sessionRequest)).willThrow(
-            AccessCheckoutClientError(AccessCheckoutException.Error.INTERNAL_ERROR_OCCURRED, "Some message")
-        )
+        val expectedException = AccessCheckoutException("internalErrorOccurred : Some message")
+        given(sessionClient.getSessionResponse(URL("$baseUrl/$verifiedTokensEndpoint"), sessionRequest)).willThrow(expectedException)
 
         var assertResponse = false
 
         val responseListener = object :
             Callback<SessionResponseInfo> {
             override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
-                assertResponse = error is AccessCheckoutClientError && error.message == "Some message"
-                assertTrue(assertResponse)
+                assertEquals(expectedException, error)
                 assertNull(response)
+                assertResponse = true
             }
         }
 
@@ -131,7 +129,7 @@ class RequestDispatcherTest {
     @Test
     fun givenHttpException_ThenShouldReturnExceptionInCallback() {
         given(sessionClient.getSessionResponse(URL("$baseUrl/$verifiedTokensEndpoint"), sessionRequest)).willThrow(
-            AccessCheckoutHttpException(
+            AccessCheckoutException(
                 "Some message",
                 null
             )
@@ -142,7 +140,7 @@ class RequestDispatcherTest {
         val responseListener = object :
             Callback<SessionResponseInfo> {
             override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
-                assertResponse = error is AccessCheckoutHttpException && error.message == "Some message"
+                assertResponse = error is AccessCheckoutException && error.message == "Some message"
                 assertTrue(assertResponse)
                 assertNull(response)
             }
@@ -160,45 +158,16 @@ class RequestDispatcherTest {
 
     @Test
     fun givenHttpExceptionWithEmptyMessage_ThenShouldReturnExceptionWithDefaultMessageInCallback() {
-        given(sessionClient.getSessionResponse(URL("$baseUrl/$verifiedTokensEndpoint"), sessionRequest)).willThrow(
-            AccessCheckoutHttpException("", null)
-        )
+        val expectedException = AccessCheckoutException("")
+        given(sessionClient.getSessionResponse(URL("$baseUrl/$verifiedTokensEndpoint"), sessionRequest)).willThrow(expectedException)
 
         var assertResponse = false
 
-        val responseListener = object :
-            Callback<SessionResponseInfo> {
+        val responseListener = object : Callback<SessionResponseInfo> {
             override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
-                assertResponse = error is AccessCheckoutHttpException && error.message == "An exception was thrown when trying to establish a connection"
-                assertTrue(assertResponse)
+                assertEquals(expectedException, error)
                 assertNull(response)
-            }
-        }
-
-        RequestDispatcher(
-            "$baseUrl/$verifiedTokensEndpoint",
-            responseListener,
-            sessionClient
-        ).execute(sessionRequestInfo)
-
-        await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
-
-    }
-
-    @Test
-    fun givenHttpExceptionWithNullMessage_ThenShouldReturnExceptionWithDefaultMessageInCallback() {
-        given(sessionClient.getSessionResponse(URL("$baseUrl/$verifiedTokensEndpoint"), sessionRequest)).willThrow(
-            AccessCheckoutHttpException(null, null)
-        )
-
-        var assertResponse = false
-
-        val responseListener = object :
-            Callback<SessionResponseInfo> {
-            override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
-                assertResponse = error is AccessCheckoutHttpException && error.message == "An exception was thrown when trying to establish a connection"
-                assertTrue(assertResponse)
-                assertNull(response)
+                assertResponse = true
             }
         }
 
@@ -247,7 +216,7 @@ class RequestDispatcherTest {
             Callback<SessionResponseInfo> {
             override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
                 assertResponse =
-                    error is AccessCheckoutHttpException && error.message == "No request was supplied for sending"
+                    error is AccessCheckoutException && error.message == "No request was supplied for sending"
                 assertTrue("Actual error is '$error', message is '${error?.message}'") { assertResponse }
                 assertNull(response)
             }

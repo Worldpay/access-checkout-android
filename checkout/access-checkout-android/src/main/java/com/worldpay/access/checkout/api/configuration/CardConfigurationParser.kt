@@ -1,12 +1,12 @@
 package com.worldpay.access.checkout.api.configuration
 
 import android.util.Log
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.DEFAULT_MATCHER
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.api.serialization.Deserializer
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -132,7 +132,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
                 if (it[i] is Int) {
                     validLengthsList.add(it[i] as Int)
                 } else {
-                    throw AccessCheckoutDeserializationException("Expected property type int but got something else")
+                    throw AccessCheckoutException("Expected property type int but got something else")
                 }
             }
         }

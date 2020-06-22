@@ -3,8 +3,8 @@ package com.worldpay.access.checkout.api.discovery
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -33,7 +33,7 @@ class ApiDiscoveryClientTest {
 
     @Test
     fun `should throw an exception when base url is empty`() {
-        expectedException.expect(AccessCheckoutDiscoveryException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("No URL supplied")
 
         ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock).discover("", getEmptyCallback(), discoverLinks)

@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.session.broadcast.receivers
 import android.content.Context
 import android.content.Intent
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutError
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
@@ -64,13 +64,17 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(1)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("error")).willReturn(AccessCheckoutError("some error"))
+        given(intent.getSerializableExtra("error")).willReturn(
+            AccessCheckoutException(
+                "some error"
+            )
+        )
         given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
         verify(externalSessionResponseListener, atMost(1))
-            .onError(AccessCheckoutError("some error"))
+            .onError(AccessCheckoutException("some error"))
     }
 
     @Test
@@ -138,7 +142,7 @@ class SessionBroadcastReceiverTest {
     fun `should return first exception given multiple session types are requested`() {
         broadcastNumSessionTypesRequested(2)
 
-        val expectedEx: AccessCheckoutError = mock()
+        val expectedEx: AccessCheckoutException = mock()
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("response")).willReturn(null)
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
@@ -158,7 +162,7 @@ class SessionBroadcastReceiverTest {
     fun `should return null session given an error is received`() {
         broadcastNumSessionTypesRequested(2)
 
-        val expectedEx: AccessCheckoutError = mock()
+        val expectedEx: AccessCheckoutException = mock()
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
         given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
@@ -172,7 +176,7 @@ class SessionBroadcastReceiverTest {
     fun `should notify with error once when a response that is not a session response is received`() {
         broadcastNumSessionTypesRequested(2)
 
-        val expectedEx: AccessCheckoutError = mock()
+        val expectedEx: AccessCheckoutException = mock()
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
@@ -187,7 +191,8 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(2)
 
         val illegalArgumentException = IllegalArgumentException("")
-        val expectedEx = AccessCheckoutError("Unknown error", illegalArgumentException)
+        val expectedEx =
+            AccessCheckoutException("Unknown error", illegalArgumentException)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))

@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.session.api
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClientFactory
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
@@ -30,7 +30,7 @@ internal class SessionRequestSender(
                     requestDispatcher.execute(sessionRequestInfo)
                 } else {
                     sessionResponseCallback.onResponse(
-                        AccessCheckoutDiscoveryException("Could not discover URL", error), null
+                        AccessCheckoutException("Could not discover URL", error), null
                     )
                 }
             }

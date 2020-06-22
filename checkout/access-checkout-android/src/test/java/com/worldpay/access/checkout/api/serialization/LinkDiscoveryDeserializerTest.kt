@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.api.serialization
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.junit.Assert.assertEquals
 import org.junit.Rule
 import org.junit.Test
@@ -17,7 +17,7 @@ class LinkDiscoveryDeserializerTest {
 
     @Test
     fun givenEmptyResponseThenShouldThrowDeserializationException() {
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Cannot deserialize empty string")
 
         linkDiscoveryRootDeserializer.deserialize("")
@@ -26,7 +26,7 @@ class LinkDiscoveryDeserializerTest {
     @Test
     fun givenBadJsonStringThenShouldThrowDeserializationException() {
         val json = "abc"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Cannot interpret json: $json")
 
         linkDiscoveryRootDeserializer.deserialize(json)
@@ -35,7 +35,7 @@ class LinkDiscoveryDeserializerTest {
     @Test
     fun givenJsonStringWithMissingObjectThenShouldThrowDeserializationException() {
         val json = "{ }"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Missing object: '_links'")
 
         linkDiscoveryRootDeserializer.deserialize(json)
@@ -44,7 +44,7 @@ class LinkDiscoveryDeserializerTest {
     @Test
     fun givenJsonStringWithMissingPropertyThenShouldThrowDeserializationException() {
         val json = "{ \"_links\": { \"$namespace\": { } } }"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Missing property: 'href'")
 
         linkDiscoveryRootDeserializer.deserialize(json)
@@ -53,7 +53,7 @@ class LinkDiscoveryDeserializerTest {
     @Test
     fun givenJsonStringWithInvalidStringTypeThenShouldThrowDeserializationException() {
         val json = "{ \"_links\": { \"$namespace\": { \"href\": true } } }"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Invalid property type: 'href', expected 'String'")
 
         linkDiscoveryRootDeserializer.deserialize(json)

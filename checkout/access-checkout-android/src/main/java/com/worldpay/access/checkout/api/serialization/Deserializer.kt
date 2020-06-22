@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.api.serialization
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
@@ -26,13 +26,16 @@ internal abstract class Deserializer<T> {
      */
     protected fun deserialize(json: String, parser: Parser<T>): T {
         if (json.isEmpty()) {
-            throw AccessCheckoutDeserializationException("Cannot deserialize empty string")
+            throw AccessCheckoutException("Cannot deserialize empty string")
         }
 
         return try {
             parser(json)
         } catch (jsonException: JSONException) {
-            throw AccessCheckoutDeserializationException("Cannot interpret json: $json", jsonException)
+            throw AccessCheckoutException(
+                "Cannot interpret json: $json",
+                jsonException
+            )
         }
     }
 
@@ -41,7 +44,7 @@ internal abstract class Deserializer<T> {
     protected fun fetchOptionalArray(obj: JSONObject, field: String): JSONArray? {
         return try {
             fetchArray(obj, field)
-        } catch (ex: AccessCheckoutDeserializationException) {
+        } catch (ex: AccessCheckoutException) {
             return null
         }
     }
@@ -50,7 +53,7 @@ internal abstract class Deserializer<T> {
         return try {
             obj.getJSONArray(field)
         } catch (ex: JSONException) {
-            throw AccessCheckoutDeserializationException("Missing array: '$field'", ex)
+            throw AccessCheckoutException("Missing array: '$field'", ex)
         }
     }
 
@@ -60,7 +63,7 @@ internal abstract class Deserializer<T> {
 
     protected fun <T : Any> toProperty(obj: JSONObject, field: String, clazz: KClass<out T>): T {
         return toOptionalProperty(obj, field, clazz)
-            ?: throw AccessCheckoutDeserializationException("Missing property: '$field'")
+            ?: throw AccessCheckoutException("Missing property: '$field'")
     }
 
     protected fun <T : Any> toOptionalProperty(obj: JSONObject, field: String, clazz: KClass<out T>): T? {
@@ -68,11 +71,11 @@ internal abstract class Deserializer<T> {
             val fetchProperty = fetchProperty(obj, field)
             clazz.javaObjectType.cast(fetchProperty)
         } catch (ex: ClassCastException) {
-            throw AccessCheckoutDeserializationException(
+            throw AccessCheckoutException(
                 "Invalid property type: '$field', expected '${clazz.simpleName}'",
                 ex
             )
-        } catch (ex: AccessCheckoutDeserializationException) {
+        } catch (ex: AccessCheckoutException) {
             null
         }
     }
@@ -81,11 +84,11 @@ internal abstract class Deserializer<T> {
         return try {
             obj.get(field)
         } catch (ex: JSONException) {
-            throw AccessCheckoutDeserializationException("Missing property: '$field'", ex)
+            throw AccessCheckoutException("Missing property: '$field'", ex)
         }
     }
 
     private fun <T> fetchOrElseThrow(obj: T?, field: String, type: String): T {
-        return obj ?: throw AccessCheckoutDeserializationException("Missing $type: '$field'")
+        return obj ?: throw AccessCheckoutException("Missing $type: '$field'")
     }
 }

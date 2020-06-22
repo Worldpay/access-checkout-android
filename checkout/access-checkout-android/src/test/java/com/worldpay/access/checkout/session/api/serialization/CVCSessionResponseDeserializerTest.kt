@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.session.api.serialization
 
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponse.Links
 import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.Endpoints
@@ -19,7 +19,7 @@ class CVCSessionResponseDeserializerTest {
 
     @Test
     fun givenEmptyResponseThenShouldThrowDeserializationException() {
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Cannot deserialize empty string")
 
         sessionResponseDeserializer.deserialize("")
@@ -28,7 +28,7 @@ class CVCSessionResponseDeserializerTest {
     @Test
     fun givenBadJsonStringThenShouldThrowDeserializationException() {
         val json = "abc"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Cannot interpret json: $json")
 
         sessionResponseDeserializer.deserialize(json)
@@ -37,7 +37,7 @@ class CVCSessionResponseDeserializerTest {
     @Test
     fun givenJsonStringWithMissingObjectThenShouldThrowDeserializationException() {
         val json = "{ }"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Missing object: '_links'")
 
         sessionResponseDeserializer.deserialize(json)
@@ -46,7 +46,7 @@ class CVCSessionResponseDeserializerTest {
     @Test
     fun givenJsonStringWithMissingPropertyThenShouldThrowDeserializationException() {
         val json = "{ \"_links\": { \"sessions:session\": { } } }"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Missing property: 'href'")
 
         sessionResponseDeserializer.deserialize(json)
@@ -55,7 +55,7 @@ class CVCSessionResponseDeserializerTest {
     @Test
     fun givenJsonStringWithInvalidStringTypeThenShouldThrowDeserializationException() {
         val json = "{ \"_links\": { \"sessions:session\": { \"href\": true } } }"
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Invalid property type: 'href', expected 'String'")
 
         sessionResponseDeserializer.deserialize(json)
@@ -78,7 +78,7 @@ class CVCSessionResponseDeserializerTest {
                     ]
                   }
                 }"""
-        expectedException.expect(AccessCheckoutDeserializationException::class.java)
+        expectedException.expect(AccessCheckoutException::class.java)
         expectedException.expectMessage("Invalid property type: 'templated'")
 
         sessionResponseDeserializer.deserialize(badJson)

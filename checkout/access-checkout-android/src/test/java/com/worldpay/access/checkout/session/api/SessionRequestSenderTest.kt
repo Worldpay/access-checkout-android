@@ -3,10 +3,10 @@ package com.worldpay.access.checkout.session.api
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.eq
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDiscoveryException
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.client.VerifiedTokenSessionClient
@@ -103,9 +103,9 @@ class SessionRequestSenderTest {
 
         val sessionResponseCallback = object : Callback<SessionResponseInfo> {
             override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
-                assertTrue(error is AccessCheckoutDiscoveryException)
+                assertTrue(error is AccessCheckoutException)
                 assertEquals("Could not discover URL", error?.message)
-                assertTrue((error as AccessCheckoutDiscoveryException).cause is RuntimeException)
+                assertTrue((error as AccessCheckoutException).cause is RuntimeException)
                 assertEquals("Some exception", error.cause?.message)
                 assertResponse = true
             }

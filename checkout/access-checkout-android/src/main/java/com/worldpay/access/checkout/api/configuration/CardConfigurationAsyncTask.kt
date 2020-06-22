@@ -2,8 +2,8 @@ package com.worldpay.access.checkout.api.configuration
 
 import android.os.AsyncTask
 import com.worldpay.access.checkout.api.*
-import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutConfigurationException
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.net.URL
 
@@ -26,14 +26,14 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
             val cardConfiguration = httpClient.doGet(url, cardConfigurationParser)
             debugLog(TAG, "Received card configuration: $cardConfiguration")
             AsyncTaskResult(cardConfiguration)
-        } catch (ex: AccessCheckoutConfigurationException) {
+        } catch (ex: AccessCheckoutException) {
             debugLog(TAG, "AccessCheckoutException thrown when fetching card configuration: $ex")
             AsyncTaskResult(ex)
         } catch (ex: Exception) {
             val message = "There was an error when trying to fetch the card configuration"
             debugLog(TAG, "$message: $ex")
-            val accessCheckoutConfigurationException = AccessCheckoutConfigurationException(message, ex)
-            AsyncTaskResult(accessCheckoutConfigurationException)
+            val accessCheckoutException = AccessCheckoutException(message, ex)
+            AsyncTaskResult(accessCheckoutException)
         }
     }
 
@@ -44,12 +44,12 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
     private fun validateURL(params: Array<out String?>) {
         val url = params[0]
         if (url.isNullOrBlank()) {
-            throw AccessCheckoutConfigurationException("Empty URL specified")
+            throw AccessCheckoutException("Empty URL specified")
         }
         try {
             URL(url)
         } catch (ex: Exception) {
-            throw AccessCheckoutConfigurationException("Invalid URL specified", ex)
+            throw AccessCheckoutException("Invalid URL specified", ex)
         }
     }
 

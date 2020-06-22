@@ -1,12 +1,12 @@
 package com.worldpay.access.checkout.api.discovery
 
 import android.os.AsyncTask
-import com.worldpay.access.checkout.api.AccessCheckoutException.*
 import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.net.MalformedURLException
 import java.net.URL
@@ -38,18 +38,12 @@ internal class ApiDiscoveryAsyncTask(
 
             debugLog(javaClass.simpleName, "Received response from service discovery endpoint")
             AsyncTaskResult(resourceUrl as String)
+        } catch (ex: AccessCheckoutException) {
+            AsyncTaskResult(ex)
         } catch (ex: Exception) {
             val errorMessage = "An error was thrown when trying to make a connection to the service"
-            when (ex) {
-                is AccessCheckoutHttpException, is AccessCheckoutError -> {
-                    debugLog(javaClass.simpleName, errorMessage)
-                    AsyncTaskResult(AccessCheckoutDiscoveryException(errorMessage, ex))
-                }
-                else -> {
-                    debugLog(javaClass.simpleName, ex.message ?: errorMessage)
-                    AsyncTaskResult(ex)
-                }
-            }
+            debugLog(javaClass.simpleName, ex.message ?: errorMessage)
+            AsyncTaskResult(ex)
         }
     }
 
@@ -62,7 +56,7 @@ internal class ApiDiscoveryAsyncTask(
             URL(url)
         } catch (e: MalformedURLException) {
             debugLog(javaClass.simpleName, "Invalid URL supplied: $url")
-            throw AccessCheckoutDiscoveryException("Invalid URL supplied: $url", e)
+            throw AccessCheckoutException("Invalid URL supplied: $url", e)
         }
         return httpClient.doGet(httpUrl, deserializer, headers)
     }
