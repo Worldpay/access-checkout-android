@@ -5,13 +5,18 @@ internal interface FieldValidationStateManager {
 }
 
 internal interface ExpiryDateFieldValidationStateManager : FieldValidationStateManager {
-    var expiryDateValidationState : Boolean
+    var expiryDateValidationState : FieldValidationState
 }
 
 internal interface PanFieldValidationStateManager : FieldValidationStateManager {
-    var panValidationState : Boolean
+    var panValidationState : FieldValidationState
 }
 
 internal interface CvcFieldValidationStateManager : FieldValidationStateManager {
-    var cvcValidationState : Boolean
+    var cvcValidationState : FieldValidationState
+}
+
+internal class FieldValidationState {
+    var validationState = false
+    var notificationSent = false
 }

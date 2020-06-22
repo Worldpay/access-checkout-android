@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
+import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 
@@ -9,7 +10,8 @@ class CardValidationConfig private constructor(
     val expiryDate: EditText,
     val cvc: EditText,
     val baseUrl: String,
-    val validationListener: AccessCheckoutCardValidationListener
+    val validationListener: AccessCheckoutCardValidationListener,
+    val lifecycleOwner : LifecycleOwner
 ) : ValidationConfig {
 
     class Builder {
@@ -19,6 +21,7 @@ class CardValidationConfig private constructor(
         private var cvc: EditText? = null
         private var baseUrl: String? = null
         private var validationListener: AccessCheckoutCardValidationListener? = null
+        private var lifecycleOwner: LifecycleOwner? = null
 
         fun pan(pan: EditText): Builder {
             this.pan = pan
@@ -45,19 +48,26 @@ class CardValidationConfig private constructor(
             return this
         }
 
+        fun lifecycleOwner(lifecycleOwner : LifecycleOwner) : Builder {
+            this.lifecycleOwner = lifecycleOwner
+            return this
+        }
+
         fun build(): CardValidationConfig {
             validateNotNull(pan, "pan component")
             validateNotNull(expiryDate, "expiry date component")
             validateNotNull(cvc, "cvc component")
             validateNotNull(baseUrl, "base url")
             validateNotNull(validationListener, "validation listener")
+            validateNotNull(lifecycleOwner, "lifecycle owner")
 
             return CardValidationConfig(
                 pan = pan as EditText,
                 expiryDate = expiryDate as EditText,
                 cvc = cvc as EditText,
                 baseUrl = baseUrl as String,
-                validationListener = validationListener as AccessCheckoutCardValidationListener
+                validationListener = validationListener as AccessCheckoutCardValidationListener,
+                lifecycleOwner = lifecycleOwner as LifecycleOwner
             )
         }
 

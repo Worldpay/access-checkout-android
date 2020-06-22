@@ -125,6 +125,7 @@ class CardFlowFragment : Fragment() {
             .expiryDate(expiryText)
             .cvc(cvcText)
             .validationListener(cardValidationListener)
+            .lifecycleOwner(this)
             .build()
 
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)

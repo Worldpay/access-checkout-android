@@ -64,6 +64,16 @@ class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
         return this
     }
 
+    fun validationStateIs(cvv: Boolean): CvvFragmentTestUtils {
+        checkValidationState(cvvInput(), cvv, "cvv")
+        return this
+    }
+
+    fun focusOff() :CvvFragmentTestUtils {
+        cvvInput().onFocusChangeListener.onFocusChange(cvvInput(), false)
+        return this
+    }
+
     fun clickSubmitButton(): CvcFragmentTestUtils {
         enabledStateIs(submitButton = true)
         uiObjectWithId(R.id.cvc_flow_btn_submit).click()

@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.validation.result.handler
 
+import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.*
 import com.worldpay.access.checkout.validation.result.state.CvcFieldValidationStateManager
 import com.worldpay.access.checkout.validation.result.state.ExpiryDateFieldValidationStateManager
@@ -9,7 +10,8 @@ import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransform
 
 internal class ResultHandlerFactory(
     private val accessCheckoutValidationListener : AccessCheckoutValidationListener,
-    private val fieldValidationStateManager : FieldValidationStateManager
+    private val fieldValidationStateManager : FieldValidationStateManager,
+    private val lifecycleOwner : LifecycleOwner
 ) {
 
     private var cvcValidationResultHandler : CvcValidationResultHandler? = null
@@ -21,7 +23,8 @@ internal class ResultHandlerFactory(
         if (cvcValidationResultHandler == null) {
             cvcValidationResultHandler = CvcValidationResultHandler(
                 validationListener = accessCheckoutValidationListener as AccessCheckoutCvcValidationListener,
-                validationStateManager = fieldValidationStateManager as CvcFieldValidationStateManager
+                validationStateManager = fieldValidationStateManager as CvcFieldValidationStateManager,
+                lifecycleOwner = lifecycleOwner
             )
         }
         return cvcValidationResultHandler as CvcValidationResultHandler
@@ -31,9 +34,11 @@ internal class ResultHandlerFactory(
         if (panValidationResultHandler == null) {
             panValidationResultHandler = PanValidationResultHandler(
                 validationListener = accessCheckoutValidationListener as AccessCheckoutPanValidationListener,
-                validationStateManager = fieldValidationStateManager as PanFieldValidationStateManager
+                validationStateManager = fieldValidationStateManager as PanFieldValidationStateManager,
+                lifecycleOwner = lifecycleOwner
             )
         }
+
         return panValidationResultHandler as PanValidationResultHandler
     }
 
@@ -42,7 +47,8 @@ internal class ResultHandlerFactory(
             expiryDateValidationResultHandler =
                 ExpiryDateValidationResultHandler(
                     validationListener = accessCheckoutValidationListener as AccessCheckoutExpiryDateValidationListener,
-                    validationStateManager = fieldValidationStateManager as ExpiryDateFieldValidationStateManager
+                    validationStateManager = fieldValidationStateManager as ExpiryDateFieldValidationStateManager,
+                    lifecycleOwner = lifecycleOwner
                 )
         }
         return expiryDateValidationResultHandler as ExpiryDateValidationResultHandler

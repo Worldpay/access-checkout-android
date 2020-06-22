@@ -25,11 +25,12 @@ object AccessCheckoutValidationInitialiser {
     }
 
     private fun initialiseCardValidation(validationConfig: CardValidationConfig) {
-        val validationStateManager = CardValidationStateManager()
+        val validationStateManager = CardValidationStateManager
 
         val resultHandlerFactory = ResultHandlerFactory(
             accessCheckoutValidationListener = validationConfig.validationListener,
-            fieldValidationStateManager = validationStateManager
+            fieldValidationStateManager = validationStateManager,
+            lifecycleOwner = validationConfig.lifecycleOwner
         )
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
@@ -47,11 +48,12 @@ object AccessCheckoutValidationInitialiser {
     }
 
     private fun initialiseCvcValidation(validationConfig: CvcValidationConfig) {
-        val validationStateManager = CvcValidationStateManager()
+        val validationStateManager = CvcValidationStateManager
 
         val resultHandlerFactory = ResultHandlerFactory(
             accessCheckoutValidationListener = validationConfig.validationListener,
-            fieldValidationStateManager = validationStateManager
+            fieldValidationStateManager = validationStateManager,
+            lifecycleOwner = validationConfig.lifecycleOwner
         )
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
