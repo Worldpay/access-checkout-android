@@ -83,8 +83,8 @@ class CardFragmentTest: AbstractCardFragmentTest() {
         // Enter an invalid luhn, mastercard identified card and valid date
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = "4", cvv = "12", expiryDate = "1299")
-            .validationStateIs(pan = false, cvv = false, expiryDate = true)
+            .enterCardDetails(pan = "4", cvc = "12", expiryDate = "1299")
+            .validationStateIs(pan = false, cvc = false, expiryDate = true)
             .hasBrand(VISA)
             .enabledStateIs(submitButton = false)
 
@@ -93,7 +93,7 @@ class CardFragmentTest: AbstractCardFragmentTest() {
 
         // Re-enter a luhn valid, mastercard identified card and valid date
         cardFragmentTestUtils
-            .validationStateIs(pan = false, cvv = false, expiryDate = true)
+            .validationStateIs(pan = false, cvc = false, expiryDate = true)
             .hasBrand(VISA)
             .enabledStateIs(submitButton = false)
     }

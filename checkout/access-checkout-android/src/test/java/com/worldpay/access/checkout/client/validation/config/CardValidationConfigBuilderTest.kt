@@ -120,7 +120,7 @@ class CardValidationConfigBuilderTest {
                 .baseUrl(baseUrl)
                 .pan(pan)
                 .expiryDate(expiryDate)
-                .cvv(cvv)
+                .cvc(cvc)
                 .validationListener(validationListener)
                 .build()
         }

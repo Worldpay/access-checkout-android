@@ -64,13 +64,13 @@ class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
         return this
     }
 
-    fun validationStateIs(cvv: Boolean): CvvFragmentTestUtils {
-        checkValidationState(cvvInput(), cvv, "cvv")
+    fun validationStateIs(cvv: Boolean): CvcFragmentTestUtils {
+        checkValidationState(cvcInput(), cvv, "cvv")
         return this
     }
 
-    fun focusOff() :CvvFragmentTestUtils {
-        cvvInput().onFocusChangeListener.onFocusChange(cvvInput(), false)
+    fun focusOff() :CvcFragmentTestUtils {
+        cvcInput().onFocusChangeListener.onFocusChange(cvcInput(), false)
         return this
     }
 

@@ -77,7 +77,7 @@ class CardFlowFragment : Fragment() {
             disableFields()
             submitBtn.disable()
         } else {
-            initialiseCardValidation(cardValidationListener, viewModel)
+            initialiseCardValidation(cardValidationListener)
         }
     }
 

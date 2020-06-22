@@ -67,7 +67,7 @@ class FocusChangeValidationIntegrationTest {
 
         val cardValidationConfig = CardValidationConfig.Builder()
             .pan(pan)
-            .cvv(cvc)
+            .cvc(cvc)
             .expiryDate(expiryDate)
             .validationListener(cardValidationListener)
             .baseUrl(baseUrl)
@@ -110,7 +110,7 @@ class FocusChangeValidationIntegrationTest {
             fail("could not gain focus")
         }
 
-        verify(cardValidationListener).onCvvValidated(false)
+        verify(cardValidationListener).onCvcValidated(false)
     }
 
 
@@ -133,7 +133,7 @@ class FocusChangeValidationIntegrationTest {
 
     class CardValidationListener : AccessCheckoutCardValidationListener {
 
-        override fun onCvvValidated(isValid: Boolean) {}
+        override fun onCvcValidated(isValid: Boolean) {}
 
         override fun onValidationSuccess() {}
 

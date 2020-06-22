@@ -44,8 +44,8 @@ class CvcValidationConfigBuilderTest {
     @Test
     fun `should throw exception where lifecycle owner is not provided`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            CvvValidationConfig.Builder()
-                .cvv(cvv)
+            CvcValidationConfig.Builder()
+                .cvc(cvc)
                 .validationListener(validationListener)
                 .build()
         }
