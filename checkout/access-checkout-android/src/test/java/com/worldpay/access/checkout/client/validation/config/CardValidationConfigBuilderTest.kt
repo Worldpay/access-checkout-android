@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
+import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import org.junit.Test
@@ -15,6 +16,7 @@ class CardValidationConfigBuilderTest {
     private val cvc = mock<EditText>()
     private val baseUrl = "http://localhost"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
+    private val lifecycleOwner = mock<LifecycleOwner>()
 
     @Test
     fun `should build card validation config`() {
@@ -24,6 +26,7 @@ class CardValidationConfigBuilderTest {
             .expiryDate(expiryDate)
             .cvc(cvc)
             .validationListener(validationListener)
+            .lifecycleOwner(lifecycleOwner)
             .build()
 
         assertNotNull(config)
@@ -42,6 +45,7 @@ class CardValidationConfigBuilderTest {
                 .expiryDate(expiryDate)
                 .cvc(cvc)
                 .validationListener(validationListener)
+                .lifecycleOwner(lifecycleOwner)
                 .build()
         }
 
@@ -56,6 +60,7 @@ class CardValidationConfigBuilderTest {
                 .expiryDate(expiryDate)
                 .cvc(cvc)
                 .validationListener(validationListener)
+                .lifecycleOwner(lifecycleOwner)
                 .build()
         }
 
@@ -70,6 +75,7 @@ class CardValidationConfigBuilderTest {
                 .pan(pan)
                 .cvc(cvc)
                 .validationListener(validationListener)
+                .lifecycleOwner(lifecycleOwner)
                 .build()
         }
 
@@ -85,6 +91,7 @@ class CardValidationConfigBuilderTest {
                 .pan(pan)
                 .expiryDate(expiryDate)
                 .validationListener(validationListener)
+                .lifecycleOwner(lifecycleOwner)
                 .build()
         }
 
@@ -99,10 +106,26 @@ class CardValidationConfigBuilderTest {
                 .pan(pan)
                 .expiryDate(expiryDate)
                 .cvc(cvc)
+                .lifecycleOwner(lifecycleOwner)
                 .build()
         }
 
         assertEquals("Expected validation listener to be provided but was not", exception.message)
+    }
+
+    @Test
+    fun `should throw exception where lifecycle owner is not provided`() {
+        val exception = assertFailsWith<IllegalArgumentException> {
+            CardValidationConfig.Builder()
+                .baseUrl(baseUrl)
+                .pan(pan)
+                .expiryDate(expiryDate)
+                .cvv(cvv)
+                .validationListener(validationListener)
+                .build()
+        }
+
+        assertEquals("Expected lifecycle owner to be provided but was not", exception.message)
     }
 
 }

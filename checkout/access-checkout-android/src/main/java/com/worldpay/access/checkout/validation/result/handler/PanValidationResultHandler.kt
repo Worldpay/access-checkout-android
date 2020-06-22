@@ -24,6 +24,11 @@ internal class PanValidationResultHandler(
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
+    internal fun onStop() {
+
+    }
+
     fun handleResult(isValid: Boolean) {
         if (hasStateChanged(isValid)) {
             notifyListener(isValid)

@@ -1,6 +1,8 @@
 package com.worldpay.access.checkout.client.validation
 
 import android.widget.EditText
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
@@ -27,9 +29,11 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.fail
@@ -46,6 +50,8 @@ class ValidationIntegrationTest {
     private val pan = EditText(context)
     private val cvc = EditText(context)
     private val expiryDate = EditText(context)
+    private val lifecycleOwner = mock<LifecycleOwner>()
+    private val lifecycle = mock<Lifecycle>()
 
     private val toCardBrandTransformer = ToCardBrandTransformer()
 
@@ -53,6 +59,7 @@ class ValidationIntegrationTest {
 
     @Before
     fun setup() {
+        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
         val server = MockWebServer()
         server.enqueue(MockResponse().setBody(cardConfigJson))
         server.start()
@@ -68,11 +75,17 @@ class ValidationIntegrationTest {
             .expiryDate(expiryDate)
             .validationListener(cardValidationListener)
             .baseUrl(baseUrl)
+            .lifecycleOwner(lifecycleOwner)
             .build()
 
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
 
         reset(cardValidationListener)
+    }
+
+    @After
+    fun tearDown() {
+
     }
 
     @Test
@@ -179,22 +192,6 @@ class ValidationIntegrationTest {
     }
 
     @Test
-    fun `should notify validation result on focus lost where notification has not already been sent - pan`() {
-        pan.setText("0000")
-        verifyZeroInteractions(cardValidationListener)
-
-        pan.requestFocus()
-
-        if (pan.hasFocus()) {
-            pan.clearFocus()
-        } else {
-            fail("could not gain focus")
-        }
-
-        verify(cardValidationListener).onPanValidated(false)
-    }
-
-    @Test
     fun `should not notify validation result on focus lost where notification has already been sent - pan`() {
         pan.setText(VISA_PAN)
         verify(cardValidationListener).onPanValidated(true)
@@ -212,22 +209,6 @@ class ValidationIntegrationTest {
     }
 
     @Test
-    fun `should notify validation result on focus lost where notification has not already been sent - cvc`() {
-        cvc.setText("")
-        verifyZeroInteractions(cardValidationListener)
-
-        cvc.requestFocus()
-
-        if (cvc.hasFocus()) {
-            cvc.clearFocus()
-        } else {
-            fail("could not gain focus")
-        }
-
-        verify(cardValidationListener).onCvcValidated(false)
-    }
-
-    @Test
     fun `should not notify validation result on focus lost where notification has already been sent - cvc`() {
         cvc.setText("123")
         verify(cardValidationListener).onCvcValidated(true)
@@ -241,22 +222,6 @@ class ValidationIntegrationTest {
         }
 
         verifyNoMoreInteractions(cardValidationListener)
-    }
-
-    @Test
-    fun `should notify validation result on focus lost where notification has not already been sent - expiry date`() {
-        expiryDate.setText("01/19")
-        verifyZeroInteractions(cardValidationListener)
-
-        expiryDate.requestFocus()
-
-        if (expiryDate.hasFocus()) {
-            expiryDate.clearFocus()
-        } else {
-            fail("could not gain focus")
-        }
-
-        verify(cardValidationListener).onExpiryDateValidated(false)
     }
 
     @Test

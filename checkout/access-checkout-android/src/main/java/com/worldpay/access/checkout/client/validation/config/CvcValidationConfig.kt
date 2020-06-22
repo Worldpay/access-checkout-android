@@ -35,6 +35,7 @@ class CvcValidationConfig private constructor(
         fun build(): CvcValidationConfig {
             validateNotNull(cvc, "cvc component")
             validateNotNull(validationListener, "validation listener")
+            validateNotNull(lifecycleOwner, "lifecycle owner")
 
             return CvcValidationConfig(
                 cvc = cvc as EditText,

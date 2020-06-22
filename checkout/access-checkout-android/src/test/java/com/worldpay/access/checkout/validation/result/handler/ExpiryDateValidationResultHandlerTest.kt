@@ -1,8 +1,11 @@
 package com.worldpay.access.checkout.validation.result.handler
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.FieldValidationState
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertFalse
@@ -11,15 +14,24 @@ import kotlin.test.assertTrue
 class ExpiryDateValidationResultHandlerTest {
 
     private val validationListener = mock<AccessCheckoutExpiryDateValidationListener>()
-    private val validationStateManager = CardValidationStateManager()
+    private val lifecycleOwner = mock<LifecycleOwner>()
+    private val lifecycle = mock<Lifecycle>()
+    private val validationStateManager = CardValidationStateManager
+    private val fieldValidationState = mock<FieldValidationState>()
 
     private lateinit var validationResultHandler: ExpiryDateValidationResultHandler
 
     @Before
     fun setup() {
+        validationStateManager.expiryDateValidationState.validationState = false
+        validationStateManager.expiryDateValidationState.notificationSent = false
+
+        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
+
         validationResultHandler = ExpiryDateValidationResultHandler(
             validationListener,
-            validationStateManager
+            validationStateManager,
+            lifecycleOwner
         )
     }
 
@@ -32,7 +44,7 @@ class ExpiryDateValidationResultHandlerTest {
         verify(validationListener).onExpiryDateValidated(true)
         verifyNoMoreInteractions(validationListener)
 
-        assertTrue(validationStateManager.expiryDateValidationState)
+        assertTrue(validationStateManager.expiryDateValidationState.validationState)
     }
 
     @Test
@@ -45,7 +57,7 @@ class ExpiryDateValidationResultHandlerTest {
         verify(validationListener).onExpiryDateValidated( false)
         verifyNoMoreInteractions(validationListener)
 
-        assertFalse(validationStateManager.expiryDateValidationState)
+        assertFalse(validationStateManager.expiryDateValidationState.validationState)
     }
 
     @Test
@@ -57,7 +69,7 @@ class ExpiryDateValidationResultHandlerTest {
 
         verifyZeroInteractions(validationListener)
 
-        assertTrue(validationStateManager.expiryDateValidationState)
+        assertTrue(validationStateManager.expiryDateValidationState.validationState)
     }
 
     @Test
@@ -69,7 +81,7 @@ class ExpiryDateValidationResultHandlerTest {
 
         verifyZeroInteractions(validationListener)
 
-        assertFalse(validationStateManager.expiryDateValidationState)
+        assertFalse(validationStateManager.expiryDateValidationState.validationState)
     }
 
     @Test
@@ -78,7 +90,7 @@ class ExpiryDateValidationResultHandlerTest {
 
         verify(validationListener).onExpiryDateValidated(false)
 
-        assertFalse(validationStateManager.expiryDateValidationState)
+        assertFalse(validationStateManager.expiryDateValidationState.validationState)
     }
 
     @Test
@@ -90,18 +102,21 @@ class ExpiryDateValidationResultHandlerTest {
 
         verifyZeroInteractions(validationListener)
 
-        assertTrue(validationStateManager.expiryDateValidationState)
+        assertTrue(validationStateManager.expiryDateValidationState.validationState)
     }
 
     @Test
     fun `should call onValidationSuccess when all fields are valid`() {
         val validationStateManager = mock<CardValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)
-        given(validationStateManager.expiryDateValidationState).willReturn(false)
+        given(validationStateManager.expiryDateValidationState).willReturn(fieldValidationState)
+
+        given(validationStateManager.expiryDateValidationState.validationState).willReturn(false)
 
         val validationResultHandler = ExpiryDateValidationResultHandler(
             validationListener,
-            validationStateManager
+            validationStateManager,
+            lifecycleOwner
         )
         validationResultHandler.handleResult(true)
 
