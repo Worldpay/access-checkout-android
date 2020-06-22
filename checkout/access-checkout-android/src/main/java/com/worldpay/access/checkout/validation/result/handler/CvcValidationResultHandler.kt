@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.validation.result.handler
 
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import com.worldpay.access.checkout.validation.result.state.CvcFieldValidationStateManager
 
-internal class CvvValidationResultHandler(
-    private val validationListener: AccessCheckoutCvvValidationListener,
+internal class CvcValidationResultHandler(
+    private val validationListener: AccessCheckoutCvcValidationListener,
     private val validationStateManager: CvcFieldValidationStateManager
 ) {
 
@@ -25,7 +25,7 @@ internal class CvvValidationResultHandler(
     private fun hasStateChanged(isValid : Boolean) = isValid != validationStateManager.cvcValidationState
 
     private fun notifyListener(isValid : Boolean) {
-        validationListener.onCvvValidated(isValid)
+        validationListener.onCvcValidated(isValid)
         validationStateManager.cvcValidationState = isValid
 
         if (validationStateManager.isAllValid()) {

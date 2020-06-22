@@ -6,39 +6,39 @@ import kotlin.test.assertEquals
 class SessionRequestTest {
 
     @Test
-    fun `should be able to set and get the cvv and merchant identity for a cvv session request`() {
-        val cvv = "123"
+    fun `should be able to set and get the cvc and merchant identity for a cvc session request`() {
+        val cvc = "123"
         val identity = "MERCHANT-123"
 
-        val cvvSessionRequest =
-            CVVSessionRequest(
-                cvv,
+        val cvcSessionRequest =
+            CvcSessionRequest(
+                cvc,
                 identity
             )
 
-        assertEquals(cvv, cvvSessionRequest.cvv)
-        assertEquals(identity, cvvSessionRequest.identity)
+        assertEquals(cvc, cvcSessionRequest.cvc)
+        assertEquals(identity, cvcSessionRequest.identity)
     }
 
     @Test
     fun `should be able to set and get the expected details for card session request`() {
         val cardNumber = "12333333"
         val cardExpiryDate = CardSessionRequest.CardExpiryDate(10, 2050)
-        val cvv = "123"
+        val cvc = "123"
         val identity = "MERCHANT-123"
 
-        val cvvSessionRequest =
+        val cvcSessionRequest =
             CardSessionRequest(
                 cardNumber,
                 cardExpiryDate,
-                cvv,
+                cvc,
                 identity
             )
 
-        assertEquals(cardNumber, cvvSessionRequest.cardNumber)
-        assertEquals(cardExpiryDate, cvvSessionRequest.cardExpiryDate)
-        assertEquals(cvv, cvvSessionRequest.cvv)
-        assertEquals(identity, cvvSessionRequest.identity)
+        assertEquals(cardNumber, cvcSessionRequest.cardNumber)
+        assertEquals(cardExpiryDate, cvcSessionRequest.cardExpiryDate)
+        assertEquals(cvc, cvcSessionRequest.cvc)
+        assertEquals(identity, cvcSessionRequest.identity)
     }
 
 }

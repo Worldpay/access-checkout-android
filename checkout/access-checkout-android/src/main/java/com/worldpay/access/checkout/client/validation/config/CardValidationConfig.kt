@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 class CardValidationConfig private constructor(
     val pan: EditText,
     val expiryDate: EditText,
-    val cvv: EditText,
+    val cvc: EditText,
     val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener
 ) : ValidationConfig {
@@ -16,7 +16,7 @@ class CardValidationConfig private constructor(
 
         private var pan: EditText? = null
         private var expiryDate: EditText? = null
-        private var cvv: EditText? = null
+        private var cvc: EditText? = null
         private var baseUrl: String? = null
         private var validationListener: AccessCheckoutCardValidationListener? = null
 
@@ -30,8 +30,8 @@ class CardValidationConfig private constructor(
             return this
         }
 
-        fun cvv(cvv: EditText): Builder {
-            this.cvv = cvv
+        fun cvc(cvc: EditText): Builder {
+            this.cvc = cvc
             return this
         }
 
@@ -48,14 +48,14 @@ class CardValidationConfig private constructor(
         fun build(): CardValidationConfig {
             validateNotNull(pan, "pan component")
             validateNotNull(expiryDate, "expiry date component")
-            validateNotNull(cvv, "cvv component")
+            validateNotNull(cvc, "cvc component")
             validateNotNull(baseUrl, "base url")
             validateNotNull(validationListener, "validation listener")
 
             return CardValidationConfig(
                 pan = pan as EditText,
                 expiryDate = expiryDate as EditText,
-                cvv = cvv as EditText,
+                cvc = cvc as EditText,
                 baseUrl = baseUrl as String,
                 validationListener = validationListener as AccessCheckoutCardValidationListener
             )

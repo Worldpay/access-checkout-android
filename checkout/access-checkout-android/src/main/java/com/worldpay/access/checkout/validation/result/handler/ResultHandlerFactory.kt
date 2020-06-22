@@ -12,19 +12,19 @@ internal class ResultHandlerFactory(
     private val fieldValidationStateManager : FieldValidationStateManager
 ) {
 
-    private var cvvValidationResultHandler : CvvValidationResultHandler? = null
+    private var cvcValidationResultHandler : CvcValidationResultHandler? = null
     private var panValidationResultHandler : PanValidationResultHandler? = null
     private var expiryDateValidationResultHandler : ExpiryDateValidationResultHandler? = null
     private var brandChangedHandler : BrandChangedHandler? = null
 
-    fun getCvvValidationResultHandler() : CvvValidationResultHandler {
-        if (cvvValidationResultHandler == null) {
-            cvvValidationResultHandler = CvvValidationResultHandler(
-                validationListener = accessCheckoutValidationListener as AccessCheckoutCvvValidationListener,
+    fun getCvcValidationResultHandler() : CvcValidationResultHandler {
+        if (cvcValidationResultHandler == null) {
+            cvcValidationResultHandler = CvcValidationResultHandler(
+                validationListener = accessCheckoutValidationListener as AccessCheckoutCvcValidationListener,
                 validationStateManager = fieldValidationStateManager as CvcFieldValidationStateManager
             )
         }
-        return cvvValidationResultHandler as CvvValidationResultHandler
+        return cvcValidationResultHandler as CvcValidationResultHandler
     }
 
     fun getPanValidationResultHandler() : PanValidationResultHandler {

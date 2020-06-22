@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation.utils
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
-import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
@@ -17,15 +17,15 @@ import kotlin.test.assertNull
 class ValidationUtilTest {
 
     @Test
-    fun `should be able to retrieve cvv validation rule given a brand`() {
-        val rule = ValidationUtil.getCvvValidationRule(VISA_BRAND, CARD_CONFIG_BASIC)
-        assertEquals(VISA_BRAND.cvv, rule)
+    fun `should be able to retrieve cvc validation rule given a brand`() {
+        val rule = ValidationUtil.getCvcValidationRule(VISA_BRAND, CARD_CONFIG_BASIC)
+        assertEquals(VISA_BRAND.cvc, rule)
     }
 
     @Test
-    fun `should be able to retrieve cvv validation rule given no brand`() {
-        val rule = ValidationUtil.getCvvValidationRule(null, CARD_CONFIG_BASIC)
-        assertEquals(CVV_DEFAULTS, rule)
+    fun `should be able to retrieve cvc validation rule given no brand`() {
+        val rule = ValidationUtil.getCvcValidationRule(null, CARD_CONFIG_BASIC)
+        assertEquals(CVC_DEFAULTS, rule)
     }
 
     @Test

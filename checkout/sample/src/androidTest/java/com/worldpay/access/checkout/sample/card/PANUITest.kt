@@ -10,7 +10,7 @@ import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.*
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.CVV
+import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.CVC
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +27,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .enterCardDetails(pan = "1111111")
             .validationStateIsUnknown(pan = true)
             .hasNoBrand()
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(pan = false)
             .hasNoBrand()
     }
@@ -98,7 +98,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .enterCardDetails(pan = "4024001728904375123")
             .validationStateIsUnknown(pan = true)
             .hasBrand(VISA)
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(pan = false)
     }
 
@@ -120,7 +120,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .enterCardDetails(pan = "5555555555554443")
             .validationStateIsUnknown(pan = true)
             .hasBrand(MASTERCARD)
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(pan = false)
     }
 
@@ -142,7 +142,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .enterCardDetails(pan = "343434343434341")
             .validationStateIsUnknown(pan = true)
             .hasBrand(AMEX)
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(pan = false)
     }
 
@@ -164,7 +164,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .enterCardDetails(pan = "1111111111111111112")
             .validationStateIsUnknown(pan = true)
             .hasNoBrand()
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(pan = false)
     }
 

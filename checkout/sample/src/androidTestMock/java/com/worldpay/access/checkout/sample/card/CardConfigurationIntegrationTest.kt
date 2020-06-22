@@ -16,7 +16,7 @@ class CardConfigurationIntegrationTest {
 
     private val luhnValidUnknownCard = "8888888888888888"
     private val luhnValidMastercardCard = "5555555555554444"
-    private val unknownCvv = "1234"
+    private val unknownCvc = "1234"
 
     @get:Rule
     var cardConfigurationErrorRule: CardConfigurationErrorRule = CardConfigurationErrorRule(
@@ -37,10 +37,10 @@ class CardConfigurationIntegrationTest {
     @Test
     fun givenCardConfigCallFails_validKnownBrandCardDetails_returnsSuccessfulResponse() {
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidMastercardCard, cvv = unknownCvv, expiryDate = "1299")
-            .cardDetailsAre(pan = luhnValidMastercardCard, cvv = unknownCvv, expiryDate = "12/99")
+            .enterCardDetails(pan = luhnValidMastercardCard, cvc = unknownCvc, expiryDate = "1299")
+            .cardDetailsAre(pan = luhnValidMastercardCard, cvc = unknownCvc, expiryDate = "12/99")
             .hasNoBrand()
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
@@ -52,10 +52,10 @@ class CardConfigurationIntegrationTest {
     @Test
     fun givenCardConfigCallFails_validUnknownBrandCardDetails_returnsSuccessfulResponse() {
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidUnknownCard, cvv = unknownCvv, expiryDate = "1299")
-            .cardDetailsAre(pan = luhnValidUnknownCard, cvv = unknownCvv, expiryDate = "12/99")
+            .enterCardDetails(pan = luhnValidUnknownCard, cvc = unknownCvc, expiryDate = "1299")
+            .cardDetailsAre(pan = luhnValidUnknownCard, cvc = unknownCvc, expiryDate = "12/99")
             .hasNoBrand()
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()

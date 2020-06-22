@@ -40,7 +40,7 @@ class CardValidationStateManagerTest {
     }
 
     @Test
-    fun `should return false when isAllValid and cvv is invalid`() {
+    fun `should return false when isAllValid and cvc is invalid`() {
         assertFalse(validationStateManager.isAllValid())
 
         validationStateManager.panValidationState = true

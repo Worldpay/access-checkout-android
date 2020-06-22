@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.api.configuration
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.BASE_PATH
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVV_RULE
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CVC_RULE
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN_RULE
 import org.junit.Assert.assertEquals
@@ -94,8 +94,8 @@ class CardConfigurationParserTest {
         assertEquals("^(?!^493698\\d*${'$'})4\\d*${'$'}", result.brands[0].pan.matcher)
         assertEquals(listOf(16, 18, 19), result.brands[0].pan.validLengths)
 
-        assertEquals(MATCHER, result.brands[0].cvv.matcher)
-        assertEquals(listOf(3), result.brands[0].cvv.validLengths)
+        assertEquals(MATCHER, result.brands[0].cvc.matcher)
+        assertEquals(listOf(3), result.brands[0].cvc.validLengths)
 
         assertEquals("image/png", result.brands[0].images[0].type)
         assertEquals("https://local.com/access-checkout/assets/visa.png", result.brands[0].images[0].url)
@@ -130,7 +130,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*${'$'}", listOf(15))
         )
 
@@ -164,7 +164,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule(MATCHER, listOf(15))
         )
 
@@ -199,7 +199,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("", listOf(15))
         )
 
@@ -233,7 +233,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", CARD_DEFAULTS.pan.validLengths)
         )
 
@@ -268,7 +268,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", emptyList())
         )
 
@@ -281,7 +281,7 @@ class CardConfigurationParserTest {
     }
 
     @Test
-    fun `should use default cvv lengths when json brand has missing 'cvvLength' property`() {
+    fun `should use default cvc lengths when json brand has missing 'cvvLength' property`() {
         val json = """
             [{
                 "name": "amex",
@@ -302,7 +302,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, CARD_DEFAULTS.cvv.validLengths),
+            cvc = CardValidationRule(MATCHER, CARD_DEFAULTS.cvc.validLengths),
             pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
         )
 
@@ -328,7 +328,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = emptyList(),
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
         )
 
@@ -355,7 +355,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = emptyList(),
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
         )
 
@@ -388,7 +388,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
         )
 
@@ -421,7 +421,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
         )
 
@@ -454,7 +454,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
         )
 
@@ -487,7 +487,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", listOf(15))
         )
 
@@ -520,7 +520,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*${'$'}", PAN_RULE.validLengths)
         )
 
@@ -553,7 +553,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule(MATCHER, PAN_RULE.validLengths)
         )
 
@@ -588,7 +588,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
         )
 
@@ -621,7 +621,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
         )
 
@@ -634,7 +634,7 @@ class CardConfigurationParserTest {
     }
 
     @Test
-    fun `should have default cvv length when int property value is a string - 'cvvLength' property`() {
+    fun `should have default cvc length when int property value is a string - 'cvvLength' property`() {
         val json = """
             [{
                 "name": "amex",
@@ -654,7 +654,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, CVV_RULE.validLengths),
+            cvc = CardValidationRule(MATCHER, CVC_RULE.validLengths),
             pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
         )
 
@@ -681,7 +681,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = emptyList(),
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*${'$'}", listOf(15))
         )
 
@@ -710,7 +710,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = emptyList(),
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*${'$'}", listOf(15))
         )
 
@@ -745,7 +745,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
         )
 
@@ -778,7 +778,7 @@ class CardConfigurationParserTest {
         val expectedBrand = RemoteCardBrand(
             name = "amex",
             images = brandImages,
-            cvv = CardValidationRule(MATCHER, listOf(4)),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
             pan = CardValidationRule("^3[47]\\d*\$", PAN_RULE.validLengths)
         )
 

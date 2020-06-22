@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session.api.client
 
-import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
+import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
 import org.junit.Test
 import kotlin.test.assertFailsWith
@@ -21,7 +21,7 @@ class SessionClientFactoryTest {
                     12,
                     2020
                 ),
-                cvv = "123",
+                cvc = "123",
                 identity = "MERCHANT-123"
             )
 
@@ -32,10 +32,10 @@ class SessionClientFactoryTest {
     }
 
     @Test
-    fun `should be able to create a cvv session client`() {
+    fun `should be able to create a cvc session client`() {
         val sessionRequest =
-            CVVSessionRequest(
-                cvv = "123",
+            CvcSessionRequest(
+                cvc = "123",
                 identity = "merchant-123"
             )
 

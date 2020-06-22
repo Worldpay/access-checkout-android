@@ -5,18 +5,18 @@ package com.worldpay.access.checkout.client.session.model
  *
  * @property [pan] an optional [String] containing the PAN
  * @property [expiryDate] an optional [ExpiryDate] object containing the expiry month and year
- * @property [cvv] an optional [String] containing the cvv
+ * @property [cvc] an optional [String] containing the cvc
  */
 class CardDetails private constructor(
     val pan: String?,
     val expiryDate: ExpiryDate?,
-    val cvv: String?
+    val cvc: String?
 ) {
 
     data class Builder(
         private var pan: String? = null,
         private var expiryDate: ExpiryDate? = null,
-        private var cvv: String? = null
+        private var cvc: String? = null
     ) {
 
         fun pan(pan: String) = apply { this.pan = pan }
@@ -25,10 +25,10 @@ class CardDetails private constructor(
             this.expiryDate = ExpiryDate(expiryDate)
         }
 
-        fun cvv(cvv: String) = apply { this.cvv = cvv }
+        fun cvc(cvc: String) = apply { this.cvc = cvc }
 
         fun build() =
-            CardDetails(pan, expiryDate, cvv)
+            CardDetails(pan, expiryDate, cvc)
 
     }
 

@@ -72,7 +72,7 @@ class AccessCheckoutClientImplTest {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate("1220")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
@@ -105,7 +105,7 @@ class AccessCheckoutClientImplTest {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate("1220")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         val tokenRequests = listOf(VERIFIED_TOKEN_SESSION, PAYMENTS_CVC_SESSION)
@@ -127,7 +127,7 @@ class AccessCheckoutClientImplTest {
     @Test
     fun `should call handle method on the sessionTokenRequestHandler when calling generate for session token`() {
         val cardDetails = CardDetails.Builder()
-            .cvv("123")
+            .cvc("123")
             .build()
 
         val tokenRequests = listOf(PAYMENTS_CVC_SESSION)
@@ -153,7 +153,7 @@ class AccessCheckoutClientImplTest {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate("1220")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         val tokenRequests = listOf(VERIFIED_TOKEN_SESSION)
@@ -179,7 +179,7 @@ class AccessCheckoutClientImplTest {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate("1220")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         val accessCheckoutClient =

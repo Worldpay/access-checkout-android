@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.sample.card
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.CVV
+import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.CVC
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.time.LocalDate
@@ -24,7 +24,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
             cardFragmentTestUtils
                 .enterCardDetails(expiryDate = month)
                 .cardDetailsAre(expiryDate = "${month}/")
-                .focusOn(CVV)
+                .focusOn(CVC)
                 .validationStateIs(expiryDate = false)
         }
     }
@@ -36,7 +36,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .enterCardDetails(expiryDate = "1")
             .cardDetailsAre(expiryDate = "1")
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(expiryDate = false)
 
         val months: Array<String> = arrayOf("2", "3", "4", "5", "6", "7", "8", "9")
@@ -45,7 +45,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
             cardFragmentTestUtils
                 .enterCardDetails(expiryDate = month)
                 .cardDetailsAre(expiryDate = "0${month}/")
-                .focusOn(CVV)
+                .focusOn(CVC)
                 .validationStateIs(expiryDate = false)
         }
     }
@@ -56,7 +56,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
             .isInInitialState()
             .enterCardDetails(expiryDate = "00")
             .cardDetailsAre(expiryDate = "00/")
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(expiryDate = false)
     }
 
@@ -67,7 +67,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
             .enterCardDetails(expiryDate = "00")
             .cardDetailsAre(expiryDate = "00/")
             .validationStateIsUnknown(expiryDate = true)
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(expiryDate = false)
     }
 
@@ -77,7 +77,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
             .isInInitialState()
             .enterCardDetails(expiryDate = "13")
             .cardDetailsAre(expiryDate = "01/3")
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(expiryDate = false)
     }
 
@@ -86,7 +86,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
         cardFragmentTestUtils.isInInitialState()
             .enterCardDetails(expiryDate = "122")
             .cardDetailsAre(expiryDate = "12/2")
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(expiryDate = false)
     }
 
@@ -95,7 +95,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .enterCardDetails(expiryDate = "${getMonth()}/19")
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(expiryDate = false)
     }
 
@@ -104,7 +104,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .enterCardDetails(expiryDate = "${getMonth(-1)}${getYear()}")
-            .focusOn(CVV)
+            .focusOn(CVC)
             .validationStateIs(expiryDate = false)
     }
 

@@ -4,14 +4,14 @@ import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
 
-internal class CvvDetailsValidationController(
-    cvvEditText: EditText,
+internal class CvcDetailsValidationController(
+    cvcEditText: EditText,
     fieldDecoratorFactory: FieldDecoratorFactory
 ) {
 
     init {
         val cardConfiguration = CardConfiguration(emptyList(), CARD_DEFAULTS)
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, null, cardConfiguration)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, null, cardConfiguration)
     }
 
 }

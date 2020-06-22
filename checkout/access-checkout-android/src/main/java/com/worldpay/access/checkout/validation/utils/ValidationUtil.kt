@@ -8,11 +8,11 @@ internal object ValidationUtil {
 
     private const val defaultMaxLength = 100
 
-    fun getCvvValidationRule(cardBrand: RemoteCardBrand?, cardConfiguration: CardConfiguration): CardValidationRule {
+    fun getCvcValidationRule(cardBrand: RemoteCardBrand?, cardConfiguration: CardConfiguration): CardValidationRule {
         if (cardBrand == null) {
-            return cardConfiguration.defaults.cvv
+            return cardConfiguration.defaults.cvc
         }
-        return cardBrand.cvv
+        return cardBrand.cvc
     }
 
     fun getPanValidationRule(cardBrand: RemoteCardBrand?, cardConfiguration: CardConfiguration): CardValidationRule {

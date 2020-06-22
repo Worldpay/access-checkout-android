@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.cvv
+package com.worldpay.access.checkout.sample.cvc
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -6,97 +6,97 @@ import androidx.test.espresso.action.ViewActions.typeText
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.cvv.testutil.AbstractCvvFragmentTest
-import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
+import com.worldpay.access.checkout.sample.cvc.testutil.AbstractCvcFragmentTest
+import com.worldpay.access.checkout.sample.cvc.testutil.CvcFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class CVVFragmentTest: AbstractCvvFragmentTest() {
+class CVCFragmentTest: AbstractCvcFragmentTest() {
 
     @Test
     fun shouldHaveAllElementsInExpectedState() {
-        cvvFragmentTestUtils
+        cvcFragmentTestUtils
             .isInInitialState()
-            .enabledStateIs(cvv = true, submitButton = false)
+            .enabledStateIs(cvc = true, submitButton = false)
     }
 
     @Test
     fun shouldKeepDisabledSubmitButtonOn1and2digitsEntered() {
-        cvvFragmentTestUtils
+        cvcFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(cvv = "1")
-            .cardDetailsAre(cvv = "1")
+            .enterCardDetails(cvc = "1")
+            .cardDetailsAre(cvc = "1")
             .enabledStateIs(submitButton = false)
-            .enterCardDetails(cvv = "12")
-            .cardDetailsAre(cvv = "12")
+            .enterCardDetails(cvc = "12")
+            .cardDetailsAre(cvc = "12")
             .enabledStateIs(submitButton = false)
     }
 
     @Test
     fun shouldEnableSubmitButtonOn3or4digitsEntered() {
-        cvvFragmentTestUtils
+        cvcFragmentTestUtils
             .isInInitialState()
             .enabledStateIs(submitButton = false)
-            .enterCardDetails(cvv = "123")
-            .cardDetailsAre(cvv = "123")
+            .enterCardDetails(cvc = "123")
+            .cardDetailsAre(cvc = "123")
             .enabledStateIs(submitButton = true)
-            .enterCardDetails(cvv = "1234")
-            .cardDetailsAre(cvv = "1234")
+            .enterCardDetails(cvc = "1234")
+            .cardDetailsAre(cvc = "1234")
             .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun shouldIgnoreLettersInCvvInput() {
-        cvvFragmentTestUtils.isInInitialState()
+    fun shouldIgnoreLettersInCvcInput() {
+        cvcFragmentTestUtils.isInInitialState()
 
-        onView(withId(R.id.cvv_flow_text_cvv))
+        onView(withId(R.id.cvc_flow_text_cvc))
             .perform(click(), typeText("sdovidsiv23odfvj0d"))
 
-        cvvFragmentTestUtils
-            .cardDetailsAre(cvv = "230")
+        cvcFragmentTestUtils
+            .cardDetailsAre(cvc = "230")
             .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun shouldKeepStateOnRotationAfterEnteringValidCVV() {
-        cvvFragmentTestUtils
+    fun shouldKeepStateOnRotationAfterEnteringValidCVC() {
+        cvcFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(cvv = "1111")
-            .cardDetailsAre(cvv = "1111")
+            .enterCardDetails(cvc = "1111")
+            .cardDetailsAre(cvc = "1111")
             .enabledStateIs(submitButton = true)
 
         // rotate landscape
         rotateLandscape(activityRule)
 
-        CvvFragmentTestUtils(activityRule)
-            .cardDetailsAre(cvv = "1111")
+        CvcFragmentTestUtils(activityRule)
+            .cardDetailsAre(cvc = "1111")
             .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun shouldKeepStateOnRotationAfterEnteringInvalidCVV() {
-        cvvFragmentTestUtils
+    fun shouldKeepStateOnRotationAfterEnteringInvalidCVC() {
+        cvcFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(cvv = "11")
-            .cardDetailsAre(cvv = "11")
+            .enterCardDetails(cvc = "11")
+            .cardDetailsAre(cvc = "11")
             .enabledStateIs(submitButton = false)
 
         // rotate landscape
         rotateLandscape(activityRule)
 
-        CvvFragmentTestUtils(activityRule)
-            .cardDetailsAre(cvv = "11")
+        CvcFragmentTestUtils(activityRule)
+            .cardDetailsAre(cvc = "11")
             .enabledStateIs(submitButton = false)
     }
     
     @Test
     fun shouldOnlyKeepMaxLengthUponPastingLengthyValue() {
-        cvvFragmentTestUtils
+        cvcFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(cvv = "11111111111111")
-            .cardDetailsAre(cvv = "1111")
+            .enterCardDetails(cvc = "11111111111111")
+            .cardDetailsAre(cvc = "1111")
             .enabledStateIs(submitButton = true)
     }
     

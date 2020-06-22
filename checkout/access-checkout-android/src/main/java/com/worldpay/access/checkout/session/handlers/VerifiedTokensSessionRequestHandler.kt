@@ -29,7 +29,7 @@ internal class VerifiedTokensSessionRequestHandler(
     override fun handle(cardDetails: CardDetails) {
         validateNotNull(cardDetails.pan, "pan")
         validateNotNull(cardDetails.expiryDate, "expiry date")
-        validateNotNull(cardDetails.cvv, "cvv")
+        validateNotNull(cardDetails.cvc, "cvc")
 
         val serviceIntent = Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
 
@@ -47,14 +47,14 @@ internal class VerifiedTokensSessionRequestHandler(
 
     private fun createCardSessionRequest(cardDetails: CardDetails): CardSessionRequest {
         cardDetails.pan as String
-        cardDetails.cvv as String
+        cardDetails.cvc as String
 
         val cardExpiryDate = CardExpiryDate(cardDetails.expiryDate!!.month, cardDetails.expiryDate.year)
 
         return CardSessionRequest(
             cardDetails.pan,
             cardExpiryDate,
-            cardDetails.cvv,
+            cardDetails.cvc,
             sessionRequestHandlerConfig.getMerchantId()
         )
     }

@@ -52,7 +52,7 @@
         tools:ignore="TextFields" />
 
     <EditText
-        android:id="@+id/card_flow_text_cvv"
+        android:id="@+id/card_flow_text_cvc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
@@ -83,7 +83,7 @@
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         app:layout_constraintEnd_toStartOf="@+id/card_flow_payments_cvc_switch"
         app:layout_constraintStart_toStartOf="@+id/card_flow_text_pan"
-        app:layout_constraintTop_toBottomOf="@+id/card_flow_text_cvv" />
+        app:layout_constraintTop_toBottomOf="@+id/card_flow_text_cvc" />
 
     <TextView
         android:id="@+id/card_flow_multi_session_switch_desc"

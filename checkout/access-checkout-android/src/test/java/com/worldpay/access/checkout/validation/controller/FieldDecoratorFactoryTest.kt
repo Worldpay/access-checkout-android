@@ -7,14 +7,14 @@ import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
+import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
-import com.worldpay.access.checkout.validation.listeners.text.CVVTextWatcher
+import com.worldpay.access.checkout.validation.listeners.text.CVCTextWatcher
 import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateTextWatcher
 import com.worldpay.access.checkout.validation.listeners.text.PANTextWatcher
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 
 class FieldDecoratorFactoryTest {
 
-    private val cvvEditText = mock<EditText>()
+    private val cvcEditText = mock<EditText>()
     private val panEditText = mock<EditText>()
     private val expiryDateEditText = mock<EditText>()
 
@@ -43,106 +43,106 @@ class FieldDecoratorFactoryTest {
     }
 
     @Test
-    fun `should add new text watchers when decorating cvv field each time`() {
-        val cvvTextWatcher = mock<CVVTextWatcher>()
-        given(cvvEditText.filters).willReturn(emptyArray())
-        given(textWatcherFactory.createCvvTextWatcher()).willReturn(cvvTextWatcher)
+    fun `should add new text watchers when decorating cvc field each time`() {
+        val cvcTextWatcher = mock<CVCTextWatcher>()
+        given(cvcEditText.filters).willReturn(emptyArray())
+        given(textWatcherFactory.createCvcTextWatcher()).willReturn(cvcTextWatcher)
 
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText, never()).removeTextChangedListener(any())
-        verify(cvvEditText).addTextChangedListener(cvvTextWatcher)
+        verify(cvcEditText, never()).removeTextChangedListener(any())
+        verify(cvcEditText).addTextChangedListener(cvcTextWatcher)
 
-        reset(cvvEditText)
+        reset(cvcEditText)
 
-        given(cvvEditText.filters).willReturn(emptyArray())
-        given(cvvEditText.text).willReturn(mock())
+        given(cvcEditText.filters).willReturn(emptyArray())
+        given(cvcEditText.text).willReturn(mock())
         given(mock<Editable>().toString()).willReturn("")
 
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).removeTextChangedListener(cvvTextWatcher)
-        verify(cvvEditText).addTextChangedListener(cvvTextWatcher)
+        verify(cvcEditText).removeTextChangedListener(cvcTextWatcher)
+        verify(cvcEditText).addTextChangedListener(cvcTextWatcher)
     }
 
     @Test
-    fun `should add hint to cvv field`() {
-        given(cvvEditText.filters).willReturn(emptyArray())
+    fun `should add hint to cvc field`() {
+        given(cvcEditText.filters).willReturn(emptyArray())
 
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).setHint(R.string.card_cvc_hint)
+        verify(cvcEditText).setHint(R.string.card_cvc_hint)
     }
 
     @Test
-    fun `should add filters when decorating cvv field`() {
-        given(cvvEditText.filters).willReturn(emptyArray())
+    fun `should add filters when decorating cvc field`() {
+        given(cvcEditText.filters).willReturn(emptyArray())
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).filters = captor.capture()
+        verify(cvcEditText).filters = captor.capture()
 
         assertEquals(1, captor.firstValue.size)
-        assertTrue(captor.firstValue[0] is CvvLengthFilter)
+        assertTrue(captor.firstValue[0] is CvcLengthFilter)
     }
 
     @Test
-    fun `should replace any length filters when decorating cvv field multiple times`() {
-        given(cvvEditText.filters).willReturn(arrayOf(
+    fun `should replace any length filters when decorating cvc field multiple times`() {
+        given(cvcEditText.filters).willReturn(arrayOf(
             InputFilter.LengthFilter(1000),
             InputFilter.AllCaps(),
-            CvvLengthFilter(panEditText, CARD_CONFIG_NO_BRAND)
+            CvcLengthFilter(panEditText, CARD_CONFIG_NO_BRAND)
         ))
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).filters = captor.capture()
+        verify(cvcEditText).filters = captor.capture()
 
         assertEquals(2, captor.firstValue.size)
         assertTrue(captor.firstValue[0] is InputFilter.AllCaps)
-        assertTrue(captor.firstValue[1] is CvvLengthFilter)
+        assertTrue(captor.firstValue[1] is CvcLengthFilter)
     }
 
     @Test
-    fun `should set text when the cvv field is in layout`() {
-        val cvvEditable = mock<Editable>()
-        given(cvvEditText.filters).willReturn(emptyArray())
-        given(cvvEditText.isCursorVisible).willReturn(true)
-        given(cvvEditText.text).willReturn(cvvEditable)
-        given(cvvEditable.toString()).willReturn("123")
+    fun `should set text when the cvc field is in layout`() {
+        val cvcEditable = mock<Editable>()
+        given(cvcEditText.filters).willReturn(emptyArray())
+        given(cvcEditText.isCursorVisible).willReturn(true)
+        given(cvcEditText.text).willReturn(cvcEditable)
+        given(cvcEditable.toString()).willReturn("123")
 
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).isCursorVisible
-        verify(cvvEditText).setText("123")
+        verify(cvcEditText).isCursorVisible
+        verify(cvcEditText).setText("123")
     }
 
     @Test
-    fun `should not set text when the cvv field is not in layout`() {
-        given(cvvEditText.filters).willReturn(emptyArray())
-        given(cvvEditText.isCursorVisible).willReturn(false)
+    fun `should not set text when the cvc field is not in layout`() {
+        given(cvcEditText.filters).willReturn(emptyArray())
+        given(cvcEditText.isCursorVisible).willReturn(false)
 
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).isCursorVisible
-        verify(cvvEditText, never()).setText(any<String>())
+        verify(cvcEditText).isCursorVisible
+        verify(cvcEditText, never()).setText(any<String>())
     }
 
     @Test
-    fun `should add focus change listener to cvv field`() {
+    fun `should add focus change listener to cvc field`() {
         val listener = mock<CvcFocusChangeListener>()
-        given(cvvEditText.filters).willReturn(emptyArray())
-        given(cvvEditText.isCursorVisible).willReturn(false)
+        given(cvcEditText.filters).willReturn(emptyArray())
+        given(cvcEditText.isCursorVisible).willReturn(false)
         given(focusChangeListenerFactory.createCvcFocusChangeListener()).willReturn(listener)
         val argumentCaptor = argumentCaptor<CvcFocusChangeListener>()
 
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, CARD_CONFIG_NO_BRAND)
 
-        verify(cvvEditText).onFocusChangeListener = argumentCaptor.capture()
+        verify(cvcEditText).onFocusChangeListener = argumentCaptor.capture()
 
         assertEquals(listener, argumentCaptor.firstValue)
     }
@@ -151,9 +151,9 @@ class FieldDecoratorFactoryTest {
     fun `should add new text watchers when decorating pan field each time`() {
         val panTextWatcher = mock<PANTextWatcher>()
         given(panEditText.filters).willReturn(emptyArray())
-        given(textWatcherFactory.createPanTextWatcher(cvvEditText, CARD_CONFIG_NO_BRAND)).willReturn(panTextWatcher)
+        given(textWatcherFactory.createPanTextWatcher(cvcEditText, CARD_CONFIG_NO_BRAND)).willReturn(panTextWatcher)
 
-        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText, never()).removeTextChangedListener(any())
         verify(panEditText).addTextChangedListener(panTextWatcher)
@@ -164,7 +164,7 @@ class FieldDecoratorFactoryTest {
         given(panEditText.text).willReturn(mock())
         given(mock<Editable>().toString()).willReturn("")
 
-        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).removeTextChangedListener(panTextWatcher)
         verify(panEditText).addTextChangedListener(panTextWatcher)
@@ -174,7 +174,7 @@ class FieldDecoratorFactoryTest {
     fun `should add hint to pan field`() {
         given(panEditText.filters).willReturn(emptyArray())
 
-        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).setHint(R.string.card_number_hint)
     }
@@ -185,7 +185,7 @@ class FieldDecoratorFactoryTest {
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).filters = captor.capture()
 
@@ -203,7 +203,7 @@ class FieldDecoratorFactoryTest {
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).filters = captor.capture()
 
@@ -220,7 +220,7 @@ class FieldDecoratorFactoryTest {
         given(panEditText.text).willReturn(panEditable)
         given(panEditable.toString()).willReturn(VISA_PAN)
 
-        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).isCursorVisible
         verify(panEditText).setText(VISA_PAN)
@@ -231,7 +231,7 @@ class FieldDecoratorFactoryTest {
         given(panEditText.filters).willReturn(emptyArray())
         given(panEditText.isCursorVisible).willReturn(false)
 
-        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).isCursorVisible
         verify(panEditText, never()).setText(any<String>())
@@ -245,7 +245,7 @@ class FieldDecoratorFactoryTest {
         given(focusChangeListenerFactory.createPanFocusChangeListener()).willReturn(listener)
         val argumentCaptor = argumentCaptor<PanFocusChangeListener>()
 
-        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, CARD_CONFIG_NO_BRAND)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, CARD_CONFIG_NO_BRAND)
 
         verify(panEditText).onFocusChangeListener = argumentCaptor.capture()
 

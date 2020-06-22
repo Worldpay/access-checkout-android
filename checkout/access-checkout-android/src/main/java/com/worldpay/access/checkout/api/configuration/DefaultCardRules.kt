@@ -10,7 +10,7 @@ internal object DefaultCardRules {
             validLengths = listOf(12, 13, 14, 15, 16, 17, 18, 19)
         )
 
-    val CVV_DEFAULTS =
+    val CVC_DEFAULTS =
         CardValidationRule(
             matcher = DEFAULT_MATCHER,
             validLengths = listOf(3, 4)
@@ -37,7 +37,7 @@ internal object DefaultCardRules {
     val CARD_DEFAULTS =
         CardDefaults(
             PAN_DEFAULTS,
-            CVV_DEFAULTS,
+            CVC_DEFAULTS,
             MONTH_DEFAULTS,
             YEAR_DEFAULTS,
             EXPIRY_DATE_DEFAULTS

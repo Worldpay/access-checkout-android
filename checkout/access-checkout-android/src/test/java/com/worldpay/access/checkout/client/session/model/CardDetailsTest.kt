@@ -12,14 +12,14 @@ class CardDetailsTest {
         val cardDetails = CardDetails.Builder()
             .pan("120392895018742508243")
             .expiryDate("11/20")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         assertNotNull(cardDetails)
         assertEquals("120392895018742508243", cardDetails.pan)
         assertEquals(11, cardDetails.expiryDate?.month)
         assertEquals(2020, cardDetails.expiryDate?.year)
-        assertEquals("123", cardDetails.cvv)
+        assertEquals("123", cardDetails.cvc)
     }
 
     @Test
@@ -27,14 +27,14 @@ class CardDetailsTest {
         val cardDetails = CardDetails.Builder()
             .pan("120392895018742508243")
             .expiryDate("1120")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         assertNotNull(cardDetails)
         assertEquals("120392895018742508243", cardDetails.pan)
         assertEquals(11, cardDetails.expiryDate?.month)
         assertEquals(2020, cardDetails.expiryDate?.year)
-        assertEquals("123", cardDetails.cvv)
+        assertEquals("123", cardDetails.cvc)
     }
 
     @Test
@@ -43,7 +43,7 @@ class CardDetailsTest {
             CardDetails.Builder()
                 .pan("120392895018742508243")
                 .expiryDate("11200")
-                .cvv("123")
+                .cvc("123")
                 .build()
         }
 
@@ -56,7 +56,7 @@ class CardDetailsTest {
             CardDetails.Builder()
                 .pan("120392895018742508243")
                 .expiryDate("abcd")
-                .cvv("123")
+                .cvc("123")
                 .build()
         }
 
@@ -67,7 +67,7 @@ class CardDetailsTest {
     fun `should be able to create a card details instance without providing pan`() {
         val cardDetails = CardDetails.Builder()
             .expiryDate("1120")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         assertNotNull(cardDetails)
@@ -77,14 +77,14 @@ class CardDetailsTest {
     fun `should be able to create a card details instance without providing expiry date`() {
         val cardDetails = CardDetails.Builder()
             .pan("120392895018742508243")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         assertNotNull(cardDetails)
     }
 
     @Test
-    fun `should be able to create a card details instance without providing cvv`() {
+    fun `should be able to create a card details instance without providing cvc`() {
         val cardDetails = CardDetails.Builder()
             .pan("120392895018742508243")
             .expiryDate("1120")

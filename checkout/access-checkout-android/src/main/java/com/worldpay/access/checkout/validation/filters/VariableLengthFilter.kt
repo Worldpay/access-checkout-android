@@ -5,7 +5,7 @@ import android.text.Spanned
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
-import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvvValidationRule
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getMaxLength
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
 
@@ -28,16 +28,16 @@ internal abstract class VariableLengthFilter: InputFilter {
 
 }
 
-internal class CvvLengthFilter(
+internal class CvcLengthFilter(
     private val panEditText: EditText?,
     private val cardConfiguration: CardConfiguration
 ): VariableLengthFilter() {
 
     override fun getMaxLength(source: CharSequence?): Int {
-        var validationRule = cardConfiguration.defaults.cvv
+        var validationRule = cardConfiguration.defaults.cvc
         if (panEditText != null) {
             val cardBrand = findBrandForPan(cardConfiguration, panEditText.text.toString())
-            validationRule = getCvvValidationRule(cardBrand, cardConfiguration)
+            validationRule = getCvcValidationRule(cardBrand, cardConfiguration)
         }
         return getMaxLength(validationRule)
     }

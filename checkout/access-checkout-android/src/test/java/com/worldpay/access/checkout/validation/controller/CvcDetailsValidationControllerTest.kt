@@ -11,10 +11,10 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configuratio
 import org.junit.Before
 import org.junit.Test
 
-class CvvDetailsValidationControllerTest {
+class CvcDetailsValidationControllerTest {
 
     // fields
-    private val cvv = mock<EditText>()
+    private val cvc = mock<EditText>()
 
     private val fieldDecoratorFactory = mock<FieldDecoratorFactory>()
 
@@ -29,12 +29,12 @@ class CvvDetailsValidationControllerTest {
     fun `should add text changed listeners to each of the fields provided upon initialisation`() {
         createAccessCheckoutValidationController()
 
-        verify(fieldDecoratorFactory).decorateCvvField(cvv, null, CARD_CONFIG_NO_BRAND)
+        verify(fieldDecoratorFactory).decorateCvcField(cvc, null, CARD_CONFIG_NO_BRAND)
     }
 
     private fun createAccessCheckoutValidationController() {
-        CvvDetailsValidationController(
-            cvvEditText = cvv,
+        CvcDetailsValidationController(
+            cvcEditText = cvc,
             fieldDecoratorFactory = fieldDecoratorFactory
         )
     }

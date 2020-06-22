@@ -1,10 +1,10 @@
-package com.worldpay.access.checkout.sample.cvv
+package com.worldpay.access.checkout.sample.cvc
 
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
+import com.worldpay.access.checkout.sample.cvc.testutil.CvcFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.simulateCardConfigurationServerError
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
@@ -14,18 +14,18 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class FailedCardConfigurationCvvIntegrationTest {
+class FailedCardConfigurationCvcIntegrationTest {
 
     @get:Rule
     var cardConfigurationErrorRule: CardConfigurationErrorRule = CardConfigurationErrorRule(MainActivity::class.java)
 
-    private lateinit var cvvFragmentTestUtils: CvvFragmentTestUtils
+    private lateinit var cvcFragmentTestUtils: CvcFragmentTestUtils
 
     @Before
     fun setUp() {
-        cvvFragmentTestUtils = CvvFragmentTestUtils(cardConfigurationErrorRule)
+        cvcFragmentTestUtils = CvcFragmentTestUtils(cardConfigurationErrorRule)
         rotatePortrait(cardConfigurationErrorRule)
-        navigateTo(R.id.nav_cvv_flow)
+        navigateTo(R.id.nav_cvc_flow)
     }
 
     @After
@@ -35,16 +35,16 @@ class FailedCardConfigurationCvvIntegrationTest {
 
     @Test
     fun shouldSuccessfullyReturnResponse_whenCardConfigurationRetrievalFails() {
-        cvvFragmentTestUtils
+        cvcFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(cvv = "123")
+            .enterCardDetails(cvc = "123")
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
                 mapOf(PAYMENTS_CVC_SESSION to cardConfigurationErrorRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
             )
             .closeDialog()
-            .cardDetailsAre(cvv = "")
+            .cardDetailsAre(cvc = "")
             .enabledStateIs(submitButton = false)
     }
 

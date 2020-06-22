@@ -53,7 +53,7 @@ class SessionRequestSenderTest {
                     1,
                     2020
                 ),
-                cvv = "123",
+                cvc = "123",
                 identity = ""
             )
 
@@ -95,7 +95,7 @@ class SessionRequestSenderTest {
                     1,
                     2020
                 ),
-                cvv = "123",
+                cvc = "123",
                 identity = ""
             )
 

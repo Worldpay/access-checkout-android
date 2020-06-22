@@ -57,7 +57,7 @@ class SessionResponseListenerImpl(
     private fun enableFields() {
         Log.d(javaClass.simpleName, "Setting enabled state for all fields to : true")
         activity.findViewById<EditText>(R.id.card_flow_text_pan).isEnabled = true
-        activity.findViewById<TextView>(R.id.card_flow_text_cvv).isEnabled = true
+        activity.findViewById<TextView>(R.id.card_flow_text_cvc).isEnabled = true
         activity.findViewById<EditText>(R.id.card_flow_expiry_date).isEnabled = true
         activity.findViewById<Switch>(R.id.card_flow_payments_cvc_switch).isEnabled = true
     }
@@ -65,7 +65,7 @@ class SessionResponseListenerImpl(
     private fun resetFields() {
         Log.d(javaClass.simpleName, "Resetting all fields")
         activity.findViewById<EditText>(R.id.card_flow_text_pan).text.clear()
-        activity.findViewById<EditText>(R.id.card_flow_text_cvv).text.clear()
+        activity.findViewById<EditText>(R.id.card_flow_text_cvc).text.clear()
         activity.findViewById<EditText>(R.id.card_flow_expiry_date).text.clear()
         activity.findViewById<Switch>(R.id.card_flow_payments_cvc_switch).isChecked = false
     }

@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.worldpay.access.checkout.validation.result.handler.CvvValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 
 internal class CVCValidator(
-    private val cvvValidationResultHandler: CvvValidationResultHandler,
+    private val cvcValidationResultHandler: CvcValidationResultHandler,
     private val cardValidationRuleProvider: CardValidationRuleProvider
 ) {
 
@@ -12,7 +12,7 @@ internal class CVCValidator(
     fun validate(cvc: String) {
         val result = simpleValidator.validate(cvc, cardValidationRuleProvider.getRule())
 
-        cvvValidationResultHandler.handleResult(result)
+        cvcValidationResultHandler.handleResult(result)
     }
 
 }

@@ -57,7 +57,7 @@ class VerifiedTokensSessionRequestHandlerTest {
     fun `should throw illegal argument exception if pan is not provided in card details`() {
         val cardDetails = CardDetails.Builder()
             .expiryDate("1220")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
@@ -71,7 +71,7 @@ class VerifiedTokensSessionRequestHandlerTest {
     fun `should throw illegal argument exception if expiry date is not provided in card details`() {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
@@ -82,7 +82,7 @@ class VerifiedTokensSessionRequestHandlerTest {
     }
 
     @Test
-    fun `should throw illegal argument exception if cvv is not provided in card details`() {
+    fun `should throw illegal argument exception if cvc is not provided in card details`() {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate("1220")
@@ -92,7 +92,7 @@ class VerifiedTokensSessionRequestHandlerTest {
             verifiedTokensSessionRequestHandler.handle(cardDetails)
         }
 
-        assertEquals("Expected cvv to be provided but was not", exception.message)
+        assertEquals("Expected cvc to be provided but was not", exception.message)
     }
 
     @Test
@@ -100,7 +100,7 @@ class VerifiedTokensSessionRequestHandlerTest {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate("1220")
-            .cvv("123")
+            .cvc("123")
             .build()
 
         verifiedTokensSessionRequestHandler.handle(cardDetails)
@@ -114,7 +114,7 @@ class VerifiedTokensSessionRequestHandlerTest {
 
         assertEquals(cardDetails.pan, sessionRequestInfo.requestBody.cardNumber)
         assertEquals("merchant-id", sessionRequestInfo.requestBody.identity)
-        assertEquals(cardDetails.cvv, sessionRequestInfo.requestBody.cvv)
+        assertEquals(cardDetails.cvc, sessionRequestInfo.requestBody.cvc)
         assertEquals(cardDetails.expiryDate?.month, sessionRequestInfo.requestBody.cardExpiryDate.month)
         assertEquals(cardDetails.expiryDate?.year, sessionRequestInfo.requestBody.cardExpiryDate.year)
 

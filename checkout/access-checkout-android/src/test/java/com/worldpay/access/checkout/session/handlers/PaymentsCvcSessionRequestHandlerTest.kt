@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
-import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
+import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import org.junit.Before
 import org.junit.Test
@@ -57,7 +57,7 @@ class PaymentsCvcSessionRequestHandlerTest {
     fun `should not throw illegal argument exception if pan is not provided in card details`() {
         val cardDetails = CardDetails.Builder()
             .expiryDate("1020")
-            .cvv("123")
+            .cvc("123")
             .build()
         paymentsCvcSessionRequestHandler.handle(cardDetails)
     }
@@ -66,26 +66,26 @@ class PaymentsCvcSessionRequestHandlerTest {
     fun `should not throw illegal argument exception if expiry date is not provided in card details`() {
         val cardDetails = CardDetails.Builder()
             .pan("123456789")
-            .cvv("123")
+            .cvc("123")
             .build()
         paymentsCvcSessionRequestHandler.handle(cardDetails)
     }
 
     @Test
-    fun `should throw illegal argument exception if cvv is not provided in card details`() {
+    fun `should throw illegal argument exception if cvc is not provided in card details`() {
         val cardDetails = CardDetails.Builder().build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
             paymentsCvcSessionRequestHandler.handle(cardDetails)
         }
 
-        assertEquals("Expected cvv to be provided but was not", exception.message)
+        assertEquals("Expected cvc to be provided but was not", exception.message)
     }
 
     @Test
     fun `should start service via context using the expected intent`() {
         val cardDetails = CardDetails.Builder()
-            .cvv("123")
+            .cvc("123")
             .build()
 
         paymentsCvcSessionRequestHandler.handle(cardDetails)
@@ -96,10 +96,10 @@ class PaymentsCvcSessionRequestHandlerTest {
 
         val sessionRequestInfo = argument.value.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
 
-        sessionRequestInfo.requestBody as CVVSessionRequest
+        sessionRequestInfo.requestBody as CvcSessionRequest
 
         assertEquals("merchant-id", sessionRequestInfo.requestBody.identity)
-        assertEquals(cardDetails.cvv, sessionRequestInfo.requestBody.cvv)
+        assertEquals(cardDetails.cvc, sessionRequestInfo.requestBody.cvc)
 
         assertEquals("base-url", sessionRequestInfo.baseUrl)
 

@@ -31,7 +31,7 @@ import static java.util.Collections.singletonList;
 public class MainActivityJavaExample extends AppCompatActivity implements SessionResponseListener {
 
     private EditText panText;
-    private EditText cvvText;
+    private EditText cvcText;
     private EditText expiryText;
 
     private Boolean loading = false;
@@ -50,7 +50,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
         super.onStart();
 
         panText = findViewById(R.id.card_flow_text_pan);
-        cvvText = findViewById(R.id.cvv_flow_text_cvv);
+        cvcText = findViewById(R.id.cvc_flow_text_cvc);
         expiryText = findViewById(R.id.card_flow_expiry_date);
         submit = findViewById(R.id.card_flow_btn_submit);
         contentLayout = findViewById(R.id.fragment_card_flow);
@@ -127,7 +127,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
                 .baseUrl(getBaseUrl())
                 .pan(panText)
                 .expiryDate(expiryText)
-                .cvv(cvvText)
+                .cvc(cvcText)
                 .validationListener(cardValidationListener)
                 .build();
 
@@ -151,7 +151,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
             CardDetails cardDetails = new CardDetails.Builder()
                     .pan(panText.getText().toString())
                     .expiryDate(expiryText.getText().toString())
-                    .cvv(cvvText.getText().toString())
+                    .cvc(cvcText.getText().toString())
                     .build();
 
             accessCheckoutClient.generateSession(cardDetails, singletonList(SessionType.VERIFIED_TOKEN_SESSION));
@@ -160,7 +160,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
 
     private void toggleLoading(Boolean enableFields) {
         panText.setEnabled(enableFields);
-        cvvText.setEnabled(enableFields);
+        cvcText.setEnabled(enableFields);
         expiryText.setEnabled(enableFields);
         submit.setEnabled(enableFields);
 

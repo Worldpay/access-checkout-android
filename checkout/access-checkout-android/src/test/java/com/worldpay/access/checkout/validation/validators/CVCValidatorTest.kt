@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.validators
 
 import com.nhaarman.mockitokotlin2.reset
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.validation.result.handler.CvvValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.verify
@@ -10,7 +10,7 @@ import org.mockito.Mockito.mock
 
 class CVCValidatorTest {
 
-    private val cvcValidationResultHandler = mock(CvvValidationResultHandler::class.java)
+    private val cvcValidationResultHandler = mock(CvcValidationResultHandler::class.java)
 
     private lateinit var cvcValidator: CVCValidator
     private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
@@ -20,7 +20,7 @@ class CVCValidatorTest {
         cvcValidationRuleManager = CVCValidationRuleManager()
 
         cvcValidator = CVCValidator(
-            cvvValidationResultHandler = cvcValidationResultHandler,
+            cvcValidationResultHandler = cvcValidationResultHandler,
             cardValidationRuleProvider = cvcValidationRuleManager
         )
     }
@@ -46,7 +46,7 @@ class CVCValidatorTest {
         verify(cvcValidationResultHandler).handleResult(true)
         reset(cvcValidationResultHandler)
 
-        cvcValidationRuleManager.updateRule(VISA_BRAND.cvv)
+        cvcValidationRuleManager.updateRule(VISA_BRAND.cvc)
 
         cvcValidator.validate("1234")
         verify(cvcValidationResultHandler).handleResult(false)

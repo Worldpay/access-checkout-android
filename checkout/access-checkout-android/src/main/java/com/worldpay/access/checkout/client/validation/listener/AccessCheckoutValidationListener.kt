@@ -8,8 +8,8 @@ interface AccessCheckoutValidationSuccessListener: AccessCheckoutValidationListe
     fun onValidationSuccess()
 }
 
-interface AccessCheckoutCvvValidationListener: AccessCheckoutValidationSuccessListener {
-    fun onCvvValidated(isValid: Boolean)
+interface AccessCheckoutCvcValidationListener: AccessCheckoutValidationSuccessListener {
+    fun onCvcValidated(isValid: Boolean)
 }
 
 interface AccessCheckoutPanValidationListener: AccessCheckoutValidationSuccessListener {
@@ -25,7 +25,7 @@ interface AccessCheckoutExpiryDateValidationListener: AccessCheckoutValidationSu
 }
 
 interface AccessCheckoutCardValidationListener:
-    AccessCheckoutCvvValidationListener,
+    AccessCheckoutCvcValidationListener,
     AccessCheckoutPanValidationListener,
     AccessCheckoutExpiryDateValidationListener,
     AccessCheckoutBrandChangedListener

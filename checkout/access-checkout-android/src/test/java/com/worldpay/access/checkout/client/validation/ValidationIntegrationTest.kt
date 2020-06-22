@@ -64,7 +64,7 @@ class ValidationIntegrationTest {
 
         val cardValidationConfig = CardValidationConfig.Builder()
             .pan(pan)
-            .cvv(cvc)
+            .cvc(cvc)
             .expiryDate(expiryDate)
             .validationListener(cardValidationListener)
             .baseUrl(baseUrl)
@@ -153,14 +153,14 @@ class ValidationIntegrationTest {
     }
 
     @Test
-    fun `should call listener with invalid result for cvv when brand is detected after pan input`() {
+    fun `should call listener with invalid result for cvc when brand is detected after pan input`() {
         cvc.setText("1234")
-        verify(cardValidationListener).onCvvValidated(true)
+        verify(cardValidationListener).onCvcValidated(true)
 
         pan.setText(VISA_PAN)
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
-        verify(cardValidationListener).onCvvValidated(false)
+        verify(cardValidationListener).onCvcValidated(false)
     }
 
     @Test
@@ -170,7 +170,7 @@ class ValidationIntegrationTest {
         verify(cardValidationListener).onBrandChange(transform(VISA_BRAND))
 
         cvc.setText("1234")
-        verify(cardValidationListener).onCvvValidated(true)
+        verify(cardValidationListener).onCvcValidated(true)
 
         expiryDate.setText("1229")
         verify(cardValidationListener).onExpiryDateValidated(true)
@@ -224,13 +224,13 @@ class ValidationIntegrationTest {
             fail("could not gain focus")
         }
 
-        verify(cardValidationListener).onCvvValidated(false)
+        verify(cardValidationListener).onCvcValidated(false)
     }
 
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - cvc`() {
         cvc.setText("123")
-        verify(cardValidationListener).onCvvValidated(true)
+        verify(cardValidationListener).onCvcValidated(true)
 
         cvc.requestFocus()
 
@@ -281,7 +281,7 @@ class ValidationIntegrationTest {
 
     class CardValidationListener : AccessCheckoutCardValidationListener {
 
-        override fun onCvvValidated(isValid: Boolean) {}
+        override fun onCvcValidated(isValid: Boolean) {}
 
         override fun onValidationSuccess() {}
 

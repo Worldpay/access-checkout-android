@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.api.configuration
 import android.util.Log
 import com.worldpay.access.checkout.api.AccessCheckoutException.AccessCheckoutDeserializationException
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
-import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.DEFAULT_MATCHER
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.api.serialization.Deserializer
@@ -21,7 +21,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         private const val BRAND_IMAGES_FIELD = "images"
         private const val CARD_IMAGE_TYPE_FIELD = "type"
         private const val CARD_IMAGE_URL_FIELD = "url"
-        private const val BRAND_CVV_LENGTH_FIELD = "cvvLength"
+        private const val BRAND_CVC_LENGTH_FIELD = "cvvLength"
         private const val BRAND_PAN_LENGTHS_FIELD = "panLengths"
 
         // Card validation rule fields
@@ -49,7 +49,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
             val cardBrand = RemoteCardBrand(
                 name = this.toStringProperty(brand, BRAND_NAME_FIELD, EMPTY_STRING),
                 images = getBrandImages(brand),
-                cvv = getCvvRule(brand),
+                cvc = getCvcRule(brand),
                 pan = getPanRule(brand)
             )
 
@@ -85,13 +85,13 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         }
     }
 
-    private fun getCvvRule(brand: JSONObject): CardValidationRule {
-        var validLengths = CVV_DEFAULTS.validLengths
+    private fun getCvcRule(brand: JSONObject): CardValidationRule {
+        var validLengths = CVC_DEFAULTS.validLengths
 
         try {
-            val cvvLength = toOptionalProperty(brand, BRAND_CVV_LENGTH_FIELD, Int::class)
-            if (cvvLength != null) {
-                validLengths = listOf(cvvLength)
+            val cvcLength = toOptionalProperty(brand, BRAND_CVC_LENGTH_FIELD, Int::class)
+            if (cvcLength != null) {
+                validLengths = listOf(cvcLength)
             }
         } catch (e: Exception) {
             Log.w(javaClass.simpleName, e.message, e)

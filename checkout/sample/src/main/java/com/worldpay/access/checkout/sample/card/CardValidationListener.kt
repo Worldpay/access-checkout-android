@@ -16,9 +16,9 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
     private val invalidColor = getColor(activity.resources, R.color.FAIL, null)
     private val submitButton = SubmitButton(activity, R.id.card_flow_btn_submit)
 
-    override fun onCvvValidated(isValid: Boolean) {
-        val cvv = activity.findViewById<EditText>(R.id.card_flow_text_cvv)
-        changeFont(cvv, isValid)
+    override fun onCvcValidated(isValid: Boolean) {
+        val cvc = activity.findViewById<EditText>(R.id.card_flow_text_cvc)
+        changeFont(cvc, isValid)
         if (!isValid) submitButton.disable()
     }
 

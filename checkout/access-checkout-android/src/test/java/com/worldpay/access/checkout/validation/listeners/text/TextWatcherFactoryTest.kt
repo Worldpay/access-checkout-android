@@ -14,7 +14,7 @@ class TextWatcherFactoryTest {
     private val resultHandlerFactory = mock<ResultHandlerFactory>()
     private val cardConfiguration = mock<CardConfiguration>()
 
-    private val cvvEditText = mock<EditText>()
+    private val cvcEditText = mock<EditText>()
     private val expiryDateEditText = mock<EditText>()
 
     private lateinit var textWatcherFactory: TextWatcherFactory
@@ -27,9 +27,9 @@ class TextWatcherFactoryTest {
     @Test
     fun `should get pan text watcher`() {
         given(resultHandlerFactory.getPanValidationResultHandler()).willReturn(mock())
-        given(resultHandlerFactory.getCvvValidationResultHandler()).willReturn(mock())
+        given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
-        assertTrue(textWatcherFactory.createPanTextWatcher(cvvEditText, cardConfiguration) is PANTextWatcher)
+        assertTrue(textWatcherFactory.createPanTextWatcher(cvcEditText, cardConfiguration) is PANTextWatcher)
     }
 
     @Test
@@ -39,9 +39,9 @@ class TextWatcherFactoryTest {
     }
 
     @Test
-    fun `should get cvv text watcher`() {
-        given(resultHandlerFactory.getCvvValidationResultHandler()).willReturn(mock())
-        assertTrue(textWatcherFactory.createCvvTextWatcher() is CVVTextWatcher)
+    fun `should get cvc text watcher`() {
+        given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
+        assertTrue(textWatcherFactory.createCvcTextWatcher() is CVCTextWatcher)
     }
 
 }

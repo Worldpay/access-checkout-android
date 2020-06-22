@@ -11,17 +11,17 @@
         tools:layout="@layout/fragment_card_flow">
 
         <action
-            android:id="@+id/action_card_flow_to_cvv_flow"
-            app:destination="@id/nav_cvv_flow" />
+            android:id="@+id/action_card_flow_to_cvc_flow"
+            app:destination="@id/nav_cvc_flow" />
     </fragment>
 
     <fragment
-        android:id="@+id/nav_cvv_flow"
-        android:label="CVV Flow"
-        android:name="com.worldpay.access.checkout.sample.ui.CvvFlowFragment"
-        tools:layout="@layout/fragment_cvv_flow" >
+        android:id="@+id/nav_cvc_flow"
+        android:label="CVC Flow"
+        android:name="com.worldpay.access.checkout.sample.ui.CvcFlowFragment"
+        tools:layout="@layout/fragment_cvc_flow" >
         <action
-            android:id="@+id/action_cvv_flow_to_card_flow"
+            android:id="@+id/action_cvc_flow_to_card_flow"
             app:destination="@id/nav_card_flow" />
     </fragment>
 

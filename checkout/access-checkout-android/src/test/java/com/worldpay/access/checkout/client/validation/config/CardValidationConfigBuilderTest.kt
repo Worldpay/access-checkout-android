@@ -12,7 +12,7 @@ class CardValidationConfigBuilderTest {
 
     private val pan = mock<EditText>()
     private val expiryDate = mock<EditText>()
-    private val cvv = mock<EditText>()
+    private val cvc = mock<EditText>()
     private val baseUrl = "http://localhost"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
 
@@ -22,7 +22,7 @@ class CardValidationConfigBuilderTest {
             .baseUrl(baseUrl)
             .pan(pan)
             .expiryDate(expiryDate)
-            .cvv(cvv)
+            .cvc(cvc)
             .validationListener(validationListener)
             .build()
 
@@ -30,7 +30,7 @@ class CardValidationConfigBuilderTest {
         assertEquals(baseUrl, config.baseUrl)
         assertEquals(pan, config.pan)
         assertEquals(expiryDate, config.expiryDate)
-        assertEquals(cvv, config.cvv)
+        assertEquals(cvc, config.cvc)
         assertEquals(validationListener, config.validationListener)
     }
 
@@ -40,7 +40,7 @@ class CardValidationConfigBuilderTest {
             CardValidationConfig.Builder()
                 .pan(pan)
                 .expiryDate(expiryDate)
-                .cvv(cvv)
+                .cvc(cvc)
                 .validationListener(validationListener)
                 .build()
         }
@@ -54,7 +54,7 @@ class CardValidationConfigBuilderTest {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .expiryDate(expiryDate)
-                .cvv(cvv)
+                .cvc(cvc)
                 .validationListener(validationListener)
                 .build()
         }
@@ -68,7 +68,7 @@ class CardValidationConfigBuilderTest {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .pan(pan)
-                .cvv(cvv)
+                .cvc(cvc)
                 .validationListener(validationListener)
                 .build()
         }
@@ -78,7 +78,7 @@ class CardValidationConfigBuilderTest {
 
 
     @Test
-    fun `should throw exception where cvv is not provided`() {
+    fun `should throw exception where cvc is not provided`() {
         val exception = assertFailsWith<IllegalArgumentException> {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
@@ -88,7 +88,7 @@ class CardValidationConfigBuilderTest {
                 .build()
         }
 
-        assertEquals("Expected cvv component to be provided but was not", exception.message)
+        assertEquals("Expected cvc component to be provided but was not", exception.message)
     }
 
     @Test
@@ -98,7 +98,7 @@ class CardValidationConfigBuilderTest {
                 .baseUrl(baseUrl)
                 .pan(pan)
                 .expiryDate(expiryDate)
-                .cvv(cvv)
+                .cvc(cvc)
                 .build()
         }
 
