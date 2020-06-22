@@ -61,12 +61,11 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
     }
 
     @Test
-    fun shouldNotBeInvalidUntilFocusIsLost() {
+    fun shouldBeInvalidWhenFocusIsLost() {
         cardFragmentTestUtils
             .isInInitialState()
             .enterCardDetails(expiryDate = "00")
             .cardDetailsAre(expiryDate = "00/")
-            .validationStateIsUnknown(expiryDate = true)
             .focusOn(CVC)
             .validationStateIs(expiryDate = false)
     }
