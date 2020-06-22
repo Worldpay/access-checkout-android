@@ -3,7 +3,7 @@
     <string name="submit_text">Submit</string>
 
     <string name="card_flow_nav_text">Card Flow</string>
-    <string name="cvv_flow_nav_text">CVV Flow</string>
+    <string name="cvc_flow_nav_text">CVC Flow</string>
 
     <string name="nav_header_desc">Navigation header</string>
 

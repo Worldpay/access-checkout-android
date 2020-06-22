@@ -23,7 +23,7 @@ internal class CardSessionRequestSerializer : Serializer<SessionRequest> {
 
         root.put("cardNumber", instance.cardNumber)
         root.put("cardExpiryDate", expiryDate)
-        root.put("cvc", instance.cvv)
+        root.put("cvc", instance.cvc)
         root.put("identity", instance.identity)
         return root.toString()
     }

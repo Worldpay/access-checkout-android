@@ -41,7 +41,7 @@ internal object CardConfigurationUtil {
                 validLengths = listOf(12, 13, 14, 15, 16, 17, 18, 19)
             )
 
-        val CVV_RULE =
+        val CVC_RULE =
             CardValidationRule(
                 matcher = MATCHER,
                 validLengths = listOf(3, 4)
@@ -68,7 +68,7 @@ internal object CardConfigurationUtil {
         val CARD_DEFAULTS =
             CardDefaults(
                 PAN_RULE,
-                CVV_RULE,
+                CVC_RULE,
                 EXP_MONTH_RULE,
                 EXP_YEAR_RULE,
                 EXP_DATE_DEFAULTS
@@ -109,7 +109,7 @@ internal object CardConfigurationUtil {
                     Images.VISA_PNG,
                     Images.VISA_SVG
                 ),
-                cvv = CardValidationRule(
+                cvc = CardValidationRule(
                     matcher = MATCHER,
                     validLengths = listOf(3)
                 ),
@@ -126,7 +126,7 @@ internal object CardConfigurationUtil {
                     Images.MASTERCARD_PNG,
                     Images.MASTERCARD_SVG
                 ),
-                cvv = CardValidationRule(
+                cvc = CardValidationRule(
                     matcher = MATCHER,
                     validLengths = listOf(3)
                 ),
@@ -143,7 +143,7 @@ internal object CardConfigurationUtil {
                     Images.AMEX_PNG,
                     Images.AMEX_SVG
                 ),
-                cvv = CardValidationRule(
+                cvc = CardValidationRule(
                     matcher = MATCHER,
                     validLengths = listOf(4)
                 ),
@@ -160,7 +160,7 @@ internal object CardConfigurationUtil {
                     Images.JCB_PNG,
                     Images.JCB_SVG
                 ),
-                cvv = CardValidationRule(
+                cvc = CardValidationRule(
                     matcher = MATCHER,
                     validLengths = listOf(3)
                 ),
@@ -177,7 +177,7 @@ internal object CardConfigurationUtil {
                     Images.DISCOVER_PNG,
                     Images.DISCOVER_SVG
                 ),
-                cvv = CardValidationRule(
+                cvc = CardValidationRule(
                     matcher = MATCHER,
                     validLengths = listOf(3)
                 ),
@@ -194,7 +194,7 @@ internal object CardConfigurationUtil {
                     Images.DINERS_PNG,
                     Images.DINERS_SVG
                 ),
-                cvv = CardValidationRule(
+                cvc = CardValidationRule(
                     matcher = MATCHER,
                     validLengths = listOf(3)
                 ),
@@ -211,7 +211,7 @@ internal object CardConfigurationUtil {
                     Images.MAESTRO_PNG,
                     Images.MAESTRO_SVG
                 ),
-                cvv = CardValidationRule(
+                cvc = CardValidationRule(
                     matcher = MATCHER,
                     validLengths = listOf(3)
                 ),

@@ -26,7 +26,7 @@ class FocusChangeListenerFactoryTest {
 
     @Test
     fun `should get cvc focus change listener`() {
-        given(resultHandlerFactory.getCvvValidationResultHandler()).willReturn(mock())
+        given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
         assertNotNull(focusChangeListenerFactory.createCvcFocusChangeListener())
     }
 

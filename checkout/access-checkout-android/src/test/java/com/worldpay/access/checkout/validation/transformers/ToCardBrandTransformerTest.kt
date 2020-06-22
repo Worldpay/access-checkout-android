@@ -34,7 +34,7 @@ class ToCardBrandTransformerTest {
 
     @Test
     fun `should transform remote card brand to card brand with no images`() {
-        val brand = RemoteCardBrand("brand", emptyList(), VISA_BRAND.cvv, VISA_BRAND.pan)
+        val brand = RemoteCardBrand("brand", emptyList(), VISA_BRAND.cvc, VISA_BRAND.pan)
         val actual = toCardBrandTransformer.transform(brand)
 
         assertNotNull(actual)

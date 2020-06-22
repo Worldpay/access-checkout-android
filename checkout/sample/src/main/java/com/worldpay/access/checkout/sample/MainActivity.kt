@@ -30,7 +30,7 @@ class MainActivity : AppCompatActivity() {
         val appBarConfiguration = AppBarConfiguration(
             setOf(
                 R.id.nav_card_flow,
-                R.id.nav_cvv_flow
+                R.id.nav_cvc_flow
             ), drawerLayout
         )
 

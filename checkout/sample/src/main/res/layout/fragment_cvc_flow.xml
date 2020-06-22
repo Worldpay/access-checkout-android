@@ -2,13 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/fragment_cvv_flow"
+    android:id="@+id/fragment_cvc_flow"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".sample.ui.CvvFlowFragment">
+    tools:context=".sample.ui.CvcFlowFragment">
 
     <EditText
-        android:id="@+id/cvv_flow_text_cvv"
+        android:id="@+id/cvc_flow_text_cvc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/cvv_flow_btn_submit"
+        android:id="@+id/cvc_flow_btn_submit"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
@@ -35,7 +35,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cvv_flow_text_cvv" />
+        app:layout_constraintTop_toBottomOf="@+id/cvc_flow_text_cvc" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

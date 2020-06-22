@@ -2,45 +2,45 @@ package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
-class CvvValidationConfigBuilderTest {
+class CvcValidationConfigBuilderTest {
 
-    private val cvv = mock<EditText>()
-    private val validationListener = mock<AccessCheckoutCvvValidationListener>()
+    private val cvc = mock<EditText>()
+    private val validationListener = mock<AccessCheckoutCvcValidationListener>()
 
     @Test
     fun `should build card validation config`() {
-        val config = CvvValidationConfig.Builder()
-            .cvv(cvv)
+        val config = CvcValidationConfig.Builder()
+            .cvc(cvc)
             .validationListener(validationListener)
             .build()
 
         assertNotNull(config)
-        assertEquals(cvv, config.cvv)
+        assertEquals(cvc, config.cvc)
         assertEquals(validationListener, config.validationListener)
     }
 
     @Test
-    fun `should throw exception where cvv is not provided`() {
+    fun `should throw exception where cvc is not provided`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            CvvValidationConfig.Builder()
+            CvcValidationConfig.Builder()
                 .validationListener(validationListener)
                 .build()
         }
 
-        assertEquals("Expected cvv component to be provided but was not", exception.message)
+        assertEquals("Expected cvc component to be provided but was not", exception.message)
     }
 
     @Test
     fun `should throw exception where validation listener is not provided`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-            CvvValidationConfig.Builder()
-                .cvv(cvv)
+            CvcValidationConfig.Builder()
+                .cvc(cvc)
                 .build()
         }
 

@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
-import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
+import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -29,7 +29,7 @@ class PaymentsCvcSessionClientTest {
     private lateinit var deserializer: Deserializer<SessionResponse>
 
     @Mock
-    private lateinit var serializer: Serializer<CVVSessionRequest>
+    private lateinit var serializer: Serializer<CvcSessionRequest>
 
     @Test
     fun `should make expected http request when getting session response`() {
@@ -43,8 +43,8 @@ class PaymentsCvcSessionClientTest {
         )
 
         val sessionRequest =
-            CVVSessionRequest(
-                cvv = "123",
+            CvcSessionRequest(
+                cvc = "123",
                 identity = "merchant-123"
             )
 

@@ -34,7 +34,7 @@ import kotlin.test.assertFalse
 class AccessCheckoutClientIntegrationTest {
 
     private val verifiedTokensEndpoint = "verifiedTokens/sessions"
-    private val cvv = "123"
+    private val cvc = "123"
     private val cardNumber = "1111222233334444"
     private val expiryDate = "1220"
     private val merchantId = "identity"
@@ -317,7 +317,7 @@ class AccessCheckoutClientIntegrationTest {
         return CardDetails.Builder()
             .pan(cardNumber)
             .expiryDate(expiryDate)
-            .cvv(cvv)
+            .cvc(cvc)
             .build()
     }
 
@@ -328,7 +328,7 @@ class AccessCheckoutClientIntegrationTest {
                     "month": ${cardDetails.expiryDate?.month},
                     "year": ${cardDetails.expiryDate?.year}
                 },
-                "cvc": "${cardDetails.cvv}",
+                "cvc": "${cardDetails.cvc}",
                 "identity": "$merchantId"
             }"""
     }

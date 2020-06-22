@@ -4,7 +4,7 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
-import com.worldpay.access.checkout.sample.cvv.testutil.CvvFragmentTestUtils
+import com.worldpay.access.checkout.sample.cvc.testutil.CvcFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.simulateRootResourceTemporaryServerError
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import org.junit.Before
@@ -14,7 +14,7 @@ import org.junit.Test
 class DiscoveryIntegrationTest {
 
     private val amexCard = "343434343434343"
-    private val amexCvv = "1234"
+    private val amexCvc = "1234"
     private val expiryDate = "1299"
 
     @get:Rule
@@ -33,7 +33,7 @@ class DiscoveryIntegrationTest {
 
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = amexCard, cvv = amexCvv, expiryDate = expiryDate)
+            .enterCardDetails(pan = amexCard, cvc = amexCvc, expiryDate = expiryDate)
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
@@ -45,14 +45,14 @@ class DiscoveryIntegrationTest {
     }
 
     @Test
-    fun shouldRetryDiscoveryAndReturnSuccessfulResponse_whenDiscoveryFailsFirstTime_cvvFlow() {
-        navigateTo(R.id.nav_cvv_flow)
+    fun shouldRetryDiscoveryAndReturnSuccessfulResponse_whenDiscoveryFailsFirstTime_cvcFlow() {
+        navigateTo(R.id.nav_cvc_flow)
 
-        val cvvFragmentTestUtils = CvvFragmentTestUtils(activityTestRule)
+        val cvcFragmentTestUtils = CvcFragmentTestUtils(activityTestRule)
 
-        cvvFragmentTestUtils
+        cvcFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(cvv = "123")
+            .enterCardDetails(cvc = "123")
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(

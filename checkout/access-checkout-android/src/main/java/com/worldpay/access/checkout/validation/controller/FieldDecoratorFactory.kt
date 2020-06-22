@@ -5,7 +5,7 @@ import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.validation.filters.CvvLengthFilter
+import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.filters.VariableLengthFilter
@@ -17,32 +17,32 @@ internal class FieldDecoratorFactory(
     private val focusChangeListenerFactory : FocusChangeListenerFactory
 ) {
 
-    private var cvvTextWatcher: TextWatcher? = null
+    private var cvcTextWatcher: TextWatcher? = null
     private var panTextWatcher: TextWatcher? = null
     private var expiryDateTextWatcher: TextWatcher? = null
 
-    fun decorateCvvField(cvvEditText: EditText, panEditText: EditText?, cardConfiguration: CardConfiguration) {
-        if (cvvTextWatcher != null) {
-            cvvEditText.removeTextChangedListener(cvvTextWatcher)
+    fun decorateCvcField(cvcEditText: EditText, panEditText: EditText?, cardConfiguration: CardConfiguration) {
+        if (cvcTextWatcher != null) {
+            cvcEditText.removeTextChangedListener(cvcTextWatcher)
         }
-        cvvTextWatcher = textWatcherFactory.createCvvTextWatcher()
-        cvvEditText.addTextChangedListener(cvvTextWatcher)
-        if (cvvEditText.isCursorVisible) {
-            cvvEditText.setText(cvvEditText.text.toString())
+        cvcTextWatcher = textWatcherFactory.createCvcTextWatcher()
+        cvcEditText.addTextChangedListener(cvcTextWatcher)
+        if (cvcEditText.isCursorVisible) {
+            cvcEditText.setText(cvcEditText.text.toString())
         }
 
-        cvvEditText.onFocusChangeListener = focusChangeListenerFactory.createCvcFocusChangeListener()
+        cvcEditText.onFocusChangeListener = focusChangeListenerFactory.createCvcFocusChangeListener()
 
-        applyFilter(cvvEditText, CvvLengthFilter(panEditText, cardConfiguration))
+        applyFilter(cvcEditText, CvcLengthFilter(panEditText, cardConfiguration))
 
-        cvvEditText.setHint(R.string.card_cvc_hint)
+        cvcEditText.setHint(R.string.card_cvc_hint)
     }
 
-    fun decoratePanField(panEditText: EditText, cvvEditText: EditText, cardConfiguration: CardConfiguration) {
+    fun decoratePanField(panEditText: EditText, cvcEditText: EditText, cardConfiguration: CardConfiguration) {
         if (panTextWatcher != null) {
             panEditText.removeTextChangedListener(panTextWatcher)
         }
-        panTextWatcher = textWatcherFactory.createPanTextWatcher(cvvEditText, cardConfiguration)
+        panTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText, cardConfiguration)
         panEditText.addTextChangedListener(panTextWatcher)
         if (panEditText.isCursorVisible) {
             panEditText.setText(panEditText.text.toString())

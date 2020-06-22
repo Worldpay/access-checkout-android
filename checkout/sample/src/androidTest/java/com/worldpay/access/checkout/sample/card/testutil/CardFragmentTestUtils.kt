@@ -19,20 +19,20 @@ import kotlin.test.assertTrue
 class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
     private fun panInput() = findById<EditText>(R.id.card_flow_text_pan)
-    private fun cvvInput() = findById<EditText>(R.id.card_flow_text_cvv)
+    private fun cvcInput() = findById<EditText>(R.id.card_flow_text_cvc)
     private fun expiryDateInput() = findById<EditText>(R.id.card_flow_expiry_date)
     private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
     private fun brandLogo() = findById<ImageView>(R.id.card_flow_brand_logo)
     private fun paymentsCvcSwitch() = findById<Switch>(R.id.card_flow_payments_cvc_switch)
 
     enum class Input {
-        PAN, CVV, EXPIRY_DATE
+        PAN, CVC, EXPIRY_DATE
     }
 
     fun isInInitialState(): CardFragmentTestUtils {
         progressBarNotVisible()
-        enabledStateIs(pan = true, cvv = true, expiryDate = true, submitButton = false)
-        cardDetailsAre(pan = "", cvv = "", expiryDate = "")
+        enabledStateIs(pan = true, cvc = true, expiryDate = true, submitButton = false)
+        cardDetailsAre(pan = "", cvc = "", expiryDate = "")
         hasNoBrand()
         paymentsCvcSessionCheckedState(checked = false)
         return this
@@ -54,7 +54,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun requestIsInProgress(): CardFragmentTestUtils {
         progressBarIsVisible()
-        enabledStateIs(pan = false, cvv = false, expiryDate = false, paymentsCvcSwitch = false, submitButton = false)
+        enabledStateIs(pan = false, cvc = false, expiryDate = false, paymentsCvcSwitch = false, submitButton = false)
         return this
     }
 
@@ -73,14 +73,14 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun isInErrorState(pan: String? = null, cvv: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
+    fun isInErrorState(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
         progressBarNotVisible()
-        enabledStateIs(pan = true, cvv = true, expiryDate = true, paymentsCvcSwitch = true, submitButton = true)
-        cardDetailsAre(pan, cvv, expiryDate)
+        enabledStateIs(pan = true, cvc = true, expiryDate = true, paymentsCvcSwitch = true, submitButton = true)
+        cardDetailsAre(pan, cvc, expiryDate)
         return this
     }
 
-    fun enabledStateIs(pan: Boolean? = null, cvv: Boolean? = null, expiryDate: Boolean? = null,
+    fun enabledStateIs(pan: Boolean? = null, cvc: Boolean? = null, expiryDate: Boolean? = null,
                        paymentsCvcSwitch: Boolean? = null,
                        submitButton: Boolean? = null): CardFragmentTestUtils {
         val visibleMsg = "visibility state"
@@ -91,9 +91,9 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
             wait { assertEquals(pan, panInput().isEnabled, "PAN Input - $enableMsg") }
         }
 
-        if (cvv != null) {
-            wait { assertTrue("CVV Input - $visibleMsg") { cvvInput().isVisible } }
-            wait { assertEquals(cvv, cvvInput().isEnabled, "CVV Input - $enableMsg") }
+        if (cvc != null) {
+            wait { assertTrue("CVC Input - $visibleMsg") { cvcInput().isVisible } }
+            wait { assertEquals(cvc, cvcInput().isEnabled, "CVC Input - $enableMsg") }
         }
 
         if (expiryDate != null) {
@@ -123,41 +123,41 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     fun focusOn(input: Input): CardFragmentTestUtils {
         when (input) {
             Input.PAN -> uiObjectWithId(panInput().id).click()
-            Input.CVV -> uiObjectWithId(cvvInput().id).click()
+            Input.CVC -> uiObjectWithId(cvcInput().id).click()
             Input.EXPIRY_DATE -> uiObjectWithId(expiryDateInput().id).click()
         }
         return this
     }
 
-    fun enterCardDetails(pan: String? = null, cvv: String? = null, expiryDate: String? = null, assertText: Boolean = false): CardFragmentTestUtils {
+    fun enterCardDetails(pan: String? = null, cvc: String? = null, expiryDate: String? = null, assertText: Boolean = false): CardFragmentTestUtils {
         if (pan != null) enterText(panInput(), pan)
-        if (cvv != null) enterText(cvvInput(), cvv)
+        if (cvc != null) enterText(cvcInput(), cvc)
         if (expiryDate != null) enterText(expiryDateInput(), expiryDate)
 
         if (assertText) {
-            cardDetailsAre(pan, cvv, expiryDate)
+            cardDetailsAre(pan, cvc, expiryDate)
         }
 
         return this
     }
 
-    fun cardDetailsAre(pan: String? = null, cvv: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
+    fun cardDetailsAre(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
         if (pan != null) wait { assertEquals(pan, panInput().text.toString()) }
-        if (cvv != null) wait { assertEquals(cvv, cvvInput().text.toString()) }
+        if (cvc != null) wait { assertEquals(cvc, cvcInput().text.toString()) }
         if (expiryDate != null) wait { assertEquals(expiryDate, expiryDateInput().text.toString()) }
         return this
     }
 
-    fun validationStateIs(pan: Boolean? = null, cvv: Boolean? = null, expiryDate: Boolean? = null): CardFragmentTestUtils {
+    fun validationStateIs(pan: Boolean? = null, cvc: Boolean? = null, expiryDate: Boolean? = null): CardFragmentTestUtils {
         if (pan != null) checkValidationState(panInput(), pan, "pan")
-        if (cvv != null) checkValidationState(cvvInput(), cvv, "cvv")
+        if (cvc != null) checkValidationState(cvcInput(), cvc, "cvc")
         if (expiryDate != null) checkValidationState(expiryDateInput(), expiryDate, "expiry date")
         return this
     }
 
     fun validationStateIsUnknown(pan: Boolean? = null, cvc: Boolean? = null, expiryDate: Boolean? = null): CardFragmentTestUtils {
         if (pan != null && pan) checkValidationStateIsUnknown(panInput(), "pan")
-        if (cvc != null && cvc) checkValidationStateIsUnknown(cvvInput(), "cvc")
+        if (cvc != null && cvc) checkValidationStateIsUnknown(cvcInput(), "cvc")
         if (expiryDate != null && expiryDate) checkValidationStateIsUnknown(expiryDateInput(), "expiry date")
         return this
     }

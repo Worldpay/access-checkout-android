@@ -1,23 +1,23 @@
 package com.worldpay.access.checkout.validation.result.handler
 
 import com.nhaarman.mockitokotlin2.*
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvvValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class CvvValidationResultHandlerTest {
+class CvcValidationResultHandlerTest {
 
-    private val validationListener = mock<AccessCheckoutCvvValidationListener>()
+    private val validationListener = mock<AccessCheckoutCvcValidationListener>()
     private val validationStateManager = CardValidationStateManager()
 
-    private lateinit var validationResultHandler: CvvValidationResultHandler
+    private lateinit var validationResultHandler: CvcValidationResultHandler
 
     @Before
     fun setup() {
-        validationResultHandler = CvvValidationResultHandler(
+        validationResultHandler = CvcValidationResultHandler(
             validationListener,
             validationStateManager
         )
@@ -29,7 +29,7 @@ class CvvValidationResultHandlerTest {
 
         validationResultHandler.handleResult(true)
 
-        verify(validationListener).onCvvValidated(true)
+        verify(validationListener).onCvcValidated(true)
         verifyNoMoreInteractions(validationListener)
 
         assertTrue(validationStateManager.cvcValidationState)
@@ -42,7 +42,7 @@ class CvvValidationResultHandlerTest {
 
         validationResultHandler.handleResult(false)
 
-        verify(validationListener).onCvvValidated( false)
+        verify(validationListener).onCvcValidated( false)
         verifyNoMoreInteractions(validationListener)
 
         assertFalse(validationStateManager.cvcValidationState)
@@ -76,7 +76,7 @@ class CvvValidationResultHandlerTest {
     fun `should call listener when focus is changed and notification has not been sent previously`() {
         validationResultHandler.handleFocusChange()
 
-        verify(validationListener).onCvvValidated(false)
+        verify(validationListener).onCvcValidated(false)
 
         assertFalse(validationStateManager.cvcValidationState)
     }
@@ -101,13 +101,13 @@ class CvvValidationResultHandlerTest {
         given(validationStateManager.isAllValid()).willReturn(true)
         given(validationStateManager.cvcValidationState).willReturn(false)
 
-        val validationResultHandler = CvvValidationResultHandler(
+        val validationResultHandler = CvcValidationResultHandler(
             validationListener,
             validationStateManager
         )
         validationResultHandler.handleResult(validationResult)
 
-        verify(validationListener).onCvvValidated(true)
+        verify(validationListener).onCvcValidated(true)
         verify(validationListener).onValidationSuccess()
         verifyNoMoreInteractions(validationListener)
     }

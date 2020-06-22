@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.cvv
+package com.worldpay.access.checkout.sample.cvc
 
 import android.app.Activity
 import android.app.AlertDialog
@@ -17,7 +17,7 @@ class SessionResponseListenerImpl(
     private val progressBar: ProgressBar
 ) : SessionResponseListener {
 
-    private val submitBtn = SubmitButton(activity, R.id.cvv_flow_btn_submit)
+    private val submitBtn = SubmitButton(activity, R.id.cvc_flow_btn_submit)
 
     override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {
         Log.d(javaClass.simpleName, "Received session reference: $sessionResponseMap")
@@ -31,7 +31,7 @@ class SessionResponseListenerImpl(
             .create()
             .show()
 
-        activity.findViewById<EditText>(R.id.cvv_flow_text_cvv).text.clear()
+        activity.findViewById<EditText>(R.id.cvc_flow_text_cvc).text.clear()
         enableFields()
         submitBtn.disable()
     }
@@ -53,8 +53,8 @@ class SessionResponseListenerImpl(
     }
 
     private fun enableFields() {
-        Log.d(javaClass.simpleName, "Setting enabled state for cvv to : true")
-        activity.findViewById<TextView>(R.id.cvv_flow_text_cvv).isEnabled = true
+        Log.d(javaClass.simpleName, "Setting enabled state for cvc to : true")
+        activity.findViewById<TextView>(R.id.cvc_flow_text_cvc).isEnabled = true
     }
 
 }

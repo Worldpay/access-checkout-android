@@ -13,7 +13,7 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
 
     private val luhnValidMastercardCard = "5555555555554444"
     private val luhnInvalidMastercardCard = "55555555555111"
-    private val unknownCvv = "12"
+    private val unknownCvc = "12"
 
     fun activity(): MainActivity = activityRule.activity
 
@@ -23,8 +23,8 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
         // Enter an invalid luhn, mastercard identified card and valid date
         CardFragmentTestUtils(activityRule)
             .isInInitialState()
-            .enterCardDetails(pan = luhnInvalidMastercardCard, cvv = unknownCvv, expiryDate = "1299")
-            .validationStateIs(pan = false, cvv = false, expiryDate = true)
+            .enterCardDetails(pan = luhnInvalidMastercardCard, cvc = unknownCvc, expiryDate = "1299")
+            .validationStateIs(pan = false, cvc = false, expiryDate = true)
             .hasBrand(MASTERCARD)
             .enabledStateIs(submitButton = false)
 
@@ -33,13 +33,13 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
 
         // Re-enter a luhn valid, mastercard identified card and valid date
         CardFragmentTestUtils(activityRule)
-            .validationStateIs(pan = false, cvv = false, expiryDate = true)
+            .validationStateIs(pan = false, cvc = false, expiryDate = true)
             .hasBrand(MASTERCARD)
             .enabledStateIs(submitButton = false)
-            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "123", expiryDate = "1299")
-            .cardDetailsAre(pan = luhnValidMastercardCard, cvv = "123", expiryDate = "12/99")
+            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "123", expiryDate = "1299")
+            .cardDetailsAre(pan = luhnValidMastercardCard, cvc = "123", expiryDate = "12/99")
             .hasBrand(MASTERCARD)
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
 
         // rotate portrait
@@ -47,11 +47,11 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
 
         CardFragmentTestUtils(activityRule)
             .hasBrand(MASTERCARD)
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
-            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "12", expiryDate = "1299")
+            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "12", expiryDate = "1299")
             .hasBrand(MASTERCARD)
-            .validationStateIs(pan = true, cvv = false, expiryDate = true)
+            .validationStateIs(pan = true, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // rotate landscape
@@ -59,10 +59,10 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
 
         CardFragmentTestUtils(activityRule)
             .hasBrand(MASTERCARD)
-            .validationStateIs(pan = true, cvv = false, expiryDate = true)
+            .validationStateIs(pan = true, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
-            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "123", expiryDate = "1299")
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "123", expiryDate = "1299")
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
     }
 

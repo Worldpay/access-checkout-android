@@ -14,10 +14,10 @@ import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
 import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
 import com.worldpay.access.checkout.session.api.client.PaymentsCvcSessionClient
 import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
-import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
+import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
-import com.worldpay.access.checkout.session.api.serialization.CVVSessionRequestSerializer
-import com.worldpay.access.checkout.session.api.serialization.CVVSessionResponseDeserializer
+import com.worldpay.access.checkout.session.api.serialization.CVCSessionRequestSerializer
+import com.worldpay.access.checkout.session.api.serialization.CVCSessionResponseDeserializer
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -40,8 +40,8 @@ class SessionsPactTest {
     fun setup() {
         paymentsCvcSessionClient =
             PaymentsCvcSessionClient(
-                CVVSessionResponseDeserializer(),
-                CVVSessionRequestSerializer(),
+                CVCSessionResponseDeserializer(),
+                CVCSessionRequestSerializer(),
                 HttpClient()
             )
 
@@ -57,8 +57,8 @@ class SessionsPactTest {
 
     private val sessionPath = "/sessions/payments/cvc"
     private val discoveryPath = "/sessions"
-    private val cvv = "123"
-    private val cvvNonNumerical = "aaa"
+    private val cvc = "123"
+    private val cvcNonNumerical = "aaa"
 
     private val identity = "identity"
     private val invalidIdentity = "ABC"
@@ -176,14 +176,14 @@ class SessionsPactTest {
     }
 
     @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
-    fun createStringNonNumericalCvvRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
+    fun createStringNonNumericalCvcRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with non-numerical CVV")
             .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
-            .body(generateRequest(cvv = cvvNonNumerical))
+            .body(generateRequest(cvc = cvcNonNumerical))
             .willRespondWith()
             .status(400)
             .headers(
@@ -236,8 +236,8 @@ class SessionsPactTest {
     @PactVerification("sessions", fragment = "createSuccessfulRequestInteraction")
     fun `should receive a valid response when a valid request is sent`() {
         val sessionRequest =
-            CVVSessionRequest(
-                cvv,
+            CvcSessionRequest(
+                cvc,
                 identity
             )
         val expectedCuries = arrayOf(
@@ -266,8 +266,8 @@ class SessionsPactTest {
     @PactVerification("sessions", fragment = "createInvalidIdentityRequestInteraction")
     fun `should receive a 400 response when a request is sent with an invalid identity`() {
         val sessionRequest =
-            CVVSessionRequest(
-                cvv,
+            CvcSessionRequest(
+                cvc,
                 invalidIdentity
             )
 
@@ -293,11 +293,11 @@ class SessionsPactTest {
     }
 
     @Test
-    @PactVerification("sessions", fragment = "createStringNonNumericalCvvRequestInteraction")
-    fun `should receive an error when no numeric CVV is provided`() {
+    @PactVerification("sessions", fragment = "createStringNonNumericalCvcRequestInteraction")
+    fun `should receive an error when no numeric cvc is provided`() {
         val sessionRequest =
-            CVVSessionRequest(
-                cvvNonNumerical,
+            CvcSessionRequest(
+                cvcNonNumerical,
                 identity
             )
 
@@ -325,11 +325,11 @@ class SessionsPactTest {
     @PactVerification("sessions", fragment = "createEmptyBodyErrorInteractionRequestInteraction")
     fun `should receive a 400 response with error when body of request is empty`() {
 
-        val mockEmptySerializer = Mockito.mock(CVVSessionRequestSerializer::class.java)
+        val mockEmptySerializer = Mockito.mock(CVCSessionRequestSerializer::class.java)
 
         val emptyString = ""
         val sessionRequest =
-            CVVSessionRequest(
+            CvcSessionRequest(
                 emptyString,
                 emptyString
             )
@@ -340,7 +340,7 @@ class SessionsPactTest {
 
         paymentsCvcSessionClient =
             PaymentsCvcSessionClient(
-                CVVSessionResponseDeserializer(),
+                CVCSessionResponseDeserializer(),
                 mockEmptySerializer,
                 HttpClient()
             )
@@ -362,11 +362,11 @@ class SessionsPactTest {
 
     private fun generateRequest(
         identity: String = this.identity,
-        cvv: String = this.cvv
+        cvc: String = this.cvc
     ): PactDslJsonBody {
         return PactDslJsonBody()
             .asBody()
-            .stringValue("cvc", cvv)
+            .stringValue("cvc", cvc)
             .stringValue("identity", identity)
     }
 

@@ -8,7 +8,7 @@ import org.json.JSONObject
 /**
  * This class is responsible for deserialising the response json from a request for a Payments CVC Session
  */
-internal class CVVSessionResponseDeserializer : Deserializer<SessionResponse>() {
+internal class CVCSessionResponseDeserializer : Deserializer<SessionResponse>() {
 
     override fun deserialize(json: String): SessionResponse {
         return super.deserialize(json) {

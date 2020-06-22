@@ -60,13 +60,12 @@ class PactTest {
     private val cardStringTooLong = "33333333333333333391111111111111"
 
     private val expiryMonth = 12
-    private val nonIntegerMonth = "aa"
     private val integerMonthTooSmall = 0
     private val integerMonthTooLarge = 13
     private val expiryYear = 2020
 
-    private val cvv = "123"
-    private val cvvNonNumerical = "aaa"
+    private val cvc = "123"
+    private val cvcNonNumerical = "aaa"
 
     private val identity = "identity"
     private val invalidIdentity = "ABC"
@@ -330,14 +329,14 @@ class PactTest {
     }
 
     @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
-    fun createStringNonNumericalCvvRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
+    fun createStringNonNumericalCvcRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with non-numerical CVV")
             .path(sessionPath)
             .method("POST")
             .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
             .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .body(generateRequest(cvv = cvvNonNumerical))
+            .body(generateRequest(cvc = cvcNonNumerical))
             .willRespondWith()
             .status(400)
             .headers(
@@ -397,7 +396,7 @@ class PactTest {
                     expiryMonth,
                     expiryYear
                 ),
-                cvv,
+                cvc,
                 identity
             )
 
@@ -433,7 +432,7 @@ class PactTest {
                     expiryMonth,
                     expiryYear
                 ),
-                cvv,
+                cvc,
                 invalidIdentity
             )
 
@@ -464,7 +463,7 @@ class PactTest {
                     expiryMonth,
                     expiryYear
                 ),
-                cvv,
+                cvc,
                 identity
             )
 
@@ -498,7 +497,7 @@ class PactTest {
                     expiryMonth,
                     expiryYear
                 ),
-                cvv,
+                cvc,
                 identity
             )
 
@@ -532,7 +531,7 @@ class PactTest {
                     expiryMonth,
                     expiryYear
                 ),
-                cvv,
+                cvc,
                 identity
             )
 
@@ -566,7 +565,7 @@ class PactTest {
                     integerMonthTooSmall,
                     expiryYear
                 ),
-                cvv,
+                cvc,
                 identity
             )
 
@@ -600,7 +599,7 @@ class PactTest {
                     integerMonthTooLarge,
                     expiryYear
                 ),
-                cvv,
+                cvc,
                 identity
             )
 
@@ -625,7 +624,7 @@ class PactTest {
     }
 
     @Test
-    @PactVerification("verified-tokens", fragment = "createStringNonNumericalCvvRequestInteraction")
+    @PactVerification("verified-tokens", fragment = "createStringNonNumericalCvcRequestInteraction")
     fun givenStringNonNumericalRequestThenShouldReceiveA400ResponseWithCorrectError() {
         val sessionRequest =
             CardSessionRequest(
@@ -634,7 +633,7 @@ class PactTest {
                     expiryMonth,
                     expiryYear
                 ),
-                cvvNonNumerical,
+                cvcNonNumerical,
                 identity
             )
 
@@ -708,7 +707,7 @@ class PactTest {
     private fun generateRequest(
         identity: String = this.identity,
         pan: String = cardNumber,
-        cvv: String = this.cvv,
+        cvc: String = this.cvc,
         month: Int = expiryMonth,
         year: Int = expiryYear
     ): PactDslJsonBody {
@@ -719,7 +718,7 @@ class PactTest {
             .integerType("year", year)
             .closeObject()
             .asBody()
-            .stringValue("cvc", cvv)
+            .stringValue("cvc", cvc)
             .stringValue("identity", identity)
     }
 

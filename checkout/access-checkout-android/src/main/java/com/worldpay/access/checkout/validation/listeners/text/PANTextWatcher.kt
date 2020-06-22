@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
-import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvvValidationRule
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
@@ -17,7 +17,7 @@ internal class PANTextWatcher(
     private val cardConfiguration: CardConfiguration,
     private var panValidator: NewPANValidator,
     private val cvcValidator: CVCValidator,
-    private val cvvEditText: EditText,
+    private val cvcEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler,
     private val brandChangedHandler : BrandChangedHandler,
     private val cvcValidationRuleManager: CVCValidationRuleManager
@@ -46,15 +46,15 @@ internal class PANTextWatcher(
 
             updateCvcValidationRule()
 
-            val cvvText = cvvEditText.text.toString()
-            if (cvvText.isNotBlank()) {
-                cvcValidator.validate(cvvText)
+            val cvcText = cvcEditText.text.toString()
+            if (cvcText.isNotBlank()) {
+                cvcValidator.validate(cvcText)
             }
         }
     }
 
     private fun updateCvcValidationRule() {
-        val cardValidationRule = getCvvValidationRule(cardBrand, cardConfiguration)
+        val cardValidationRule = getCvcValidationRule(cardBrand, cardConfiguration)
         cvcValidationRuleManager.updateRule(cardValidationRule)
     }
 

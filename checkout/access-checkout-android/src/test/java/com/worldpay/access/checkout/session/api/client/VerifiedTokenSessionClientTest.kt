@@ -49,7 +49,7 @@ class VerifiedTokenSessionClientTest {
                     12,
                     2020
                 ),
-                cvv = "123",
+                cvc = "123",
                 identity = "MERCHANT-123"
             )
 

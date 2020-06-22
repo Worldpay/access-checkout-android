@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.session.api.client
 
 import com.worldpay.access.checkout.api.HttpClient
-import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
+import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
-import com.worldpay.access.checkout.session.api.serialization.CVVSessionRequestSerializer
-import com.worldpay.access.checkout.session.api.serialization.CVVSessionResponseDeserializer
+import com.worldpay.access.checkout.session.api.serialization.CVCSessionRequestSerializer
+import com.worldpay.access.checkout.session.api.serialization.CVCSessionResponseDeserializer
 import com.worldpay.access.checkout.session.api.serialization.CardSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
 
@@ -32,10 +32,10 @@ internal class SessionClientFactory {
                     HttpClient()
                 )
             }
-            is CVVSessionRequest -> {
+            is CvcSessionRequest -> {
                 return PaymentsCvcSessionClient(
-                    CVVSessionResponseDeserializer(),
-                    CVVSessionRequestSerializer(),
+                    CVCSessionResponseDeserializer(),
+                    CVCSessionRequestSerializer(),
                     HttpClient()
                 )
             }

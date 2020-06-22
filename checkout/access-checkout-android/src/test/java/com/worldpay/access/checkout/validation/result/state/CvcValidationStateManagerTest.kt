@@ -15,7 +15,7 @@ class CvcValidationStateManagerTest {
     }
 
     @Test
-    fun `should return true when cvv is valid`() {
+    fun `should return true when cvc is valid`() {
         assertFalse(validationStateManager.isAllValid())
 
         validationStateManager.cvcValidationState = true
@@ -24,7 +24,7 @@ class CvcValidationStateManagerTest {
     }
 
     @Test
-    fun `should return false when cvv is invalid`() {
+    fun `should return false when cvc is invalid`() {
         assertFalse(validationStateManager.isAllValid())
 
         validationStateManager.cvcValidationState = false

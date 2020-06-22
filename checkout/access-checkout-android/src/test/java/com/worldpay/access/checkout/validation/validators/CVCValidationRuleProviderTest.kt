@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import org.junit.Before
 import org.junit.Test
@@ -16,17 +16,17 @@ class CVCValidationRuleProviderTest {
     }
 
     @Test
-    fun `should start with cvv default`() {
-        assertEquals(CVV_DEFAULTS, cvcValidationRuleManager.getRule())
+    fun `should start with cvc default`() {
+        assertEquals(CVC_DEFAULTS, cvcValidationRuleManager.getRule())
     }
 
     @Test
     fun `should be able to update rule`() {
-        assertEquals(CVV_DEFAULTS, cvcValidationRuleManager.getRule())
+        assertEquals(CVC_DEFAULTS, cvcValidationRuleManager.getRule())
 
-        cvcValidationRuleManager.updateRule(VISA_BRAND.cvv)
+        cvcValidationRuleManager.updateRule(VISA_BRAND.cvc)
 
-        assertEquals(VISA_BRAND.cvv, cvcValidationRuleManager.getRule())
+        assertEquals(VISA_BRAND.cvc, cvcValidationRuleManager.getRule())
     }
 
 }

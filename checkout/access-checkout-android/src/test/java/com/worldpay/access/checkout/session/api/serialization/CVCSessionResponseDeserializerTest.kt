@@ -9,10 +9,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.rules.ExpectedException
 
-class CVVSessionResponseDeserializerTest {
+class CVCSessionResponseDeserializerTest {
 
     private val sessionResponseDeserializer =
-        CVVSessionResponseDeserializer()
+        CVCSessionResponseDeserializer()
 
     @get:Rule
     val expectedException: ExpectedException = ExpectedException.none()

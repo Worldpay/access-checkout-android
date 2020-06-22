@@ -3,14 +3,13 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.text.Editable
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
-import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
-import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
@@ -22,16 +21,14 @@ class PANTextWatcherTest {
 
     private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
 
-    private val toCardBrandTransformer = ToCardBrandTransformer()
-
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
     private val brandChangedHandler = mock<BrandChangedHandler>()
 
-    private val cvvEditText = mock<EditText>()
+    private val cvcEditText = mock<EditText>()
     private val cvcValidator = mock<CVCValidator>()
 
     private val panEditable = mock<Editable>()
-    private val cvvEditable = mock<Editable>()
+    private val cvcEditable = mock<Editable>()
 
     private lateinit var panTextWatcher: PANTextWatcher
 
@@ -44,13 +41,13 @@ class PANTextWatcherTest {
             panValidator = NewPANValidator(),
             panValidationResultHandler = panValidationResultHandler,
             brandChangedHandler = brandChangedHandler,
-            cvvEditText = cvvEditText,
+            cvcEditText = cvcEditText,
             cvcValidator = cvcValidator,
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 
-        given(cvvEditText.text).willReturn(cvvEditable)
-        given(cvvEditable.toString()).willReturn("")
+        given(cvcEditText.text).willReturn(cvcEditable)
+        given(cvcEditable.toString()).willReturn("")
     }
 
     @Test
@@ -90,15 +87,15 @@ class PANTextWatcherTest {
     }
 
     @Test
-    fun `should revalidate the cvv when the brand changes and cvv is not empty`() {
+    fun `should revalidate the cvc when the brand changes and cvc is not empty`() {
         given(panEditable.toString()).willReturn(VISA_PAN)
-        given(cvvEditable.toString()).willReturn("123")
+        given(cvcEditable.toString()).willReturn("123")
 
-        assertEquals(CVV_DEFAULTS, cvcValidationRuleManager.getRule())
+        assertEquals(CVC_DEFAULTS, cvcValidationRuleManager.getRule())
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        assertEquals(VISA_BRAND.cvv, cvcValidationRuleManager.getRule())
+        assertEquals(VISA_BRAND.cvc, cvcValidationRuleManager.getRule())
 
         verify(cvcValidator).validate("123")
     }
@@ -113,20 +110,20 @@ class PANTextWatcherTest {
     }
 
     @Test
-    fun `should not revalidate the cvv if the cvv is blank and should only update the rule`() {
+    fun `should not revalidate the cvc if the cvc is blank and should only update the rule`() {
         given(panEditable.toString()).willReturn(VISA_PAN)
-        given(cvvEditable.toString()).willReturn("")
+        given(cvcEditable.toString()).willReturn("")
 
-        assertEquals(CVV_DEFAULTS, cvcValidationRuleManager.getRule())
+        assertEquals(CVC_DEFAULTS, cvcValidationRuleManager.getRule())
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        assertEquals(VISA_BRAND.cvv, cvcValidationRuleManager.getRule())
+        assertEquals(VISA_BRAND.cvc, cvcValidationRuleManager.getRule())
         verify(cvcValidator, never()).validate(any())
     }
 
     @Test
-    fun `should not revalidate the cvv when the brand doesn't change`() {
+    fun `should not revalidate the cvc when the brand doesn't change`() {
         given(panEditable.toString()).willReturn("000000")
 
         panTextWatcher.afterTextChanged(panEditable)
@@ -143,7 +140,7 @@ class PANTextWatcherTest {
             panValidator = panValidator,
             panValidationResultHandler = panValidationResultHandler,
             brandChangedHandler = brandChangedHandler,
-            cvvEditText = cvvEditText,
+            cvcEditText = cvcEditText,
             cvcValidator = cvcValidator,
             cvcValidationRuleManager = cvcValidationRuleManager
         )

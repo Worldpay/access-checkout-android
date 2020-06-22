@@ -6,7 +6,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.validation.result.handler.CvvValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import com.worldpay.access.checkout.validation.validators.NewPANValidator
@@ -21,29 +21,29 @@ class CVCTextWatcherIntegrationTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
-    private val cvv = EditText(context)
+    private val cvc = EditText(context)
     private val pan = EditText(context)
 
-    private lateinit var cvvValidationResultHandler: CvvValidationResultHandler
+    private lateinit var cvcValidationResultHandler: CvcValidationResultHandler
 
     @Before
     fun setup() {
-        cvvValidationResultHandler = mock()
+        cvcValidationResultHandler = mock()
 
         val cvcValidationRuleManager = CVCValidationRuleManager()
-        val cvcValidator = CVCValidator(cvvValidationResultHandler, cvcValidationRuleManager)
+        val cvcValidator = CVCValidator(cvcValidationResultHandler, cvcValidationRuleManager)
 
-        val cvvTextWatcher = CVVTextWatcher(
+        val cvcTextWatcher = CVCTextWatcher(
             cvcValidator = cvcValidator
         )
 
-        cvv.addTextChangedListener(cvvTextWatcher)
+        cvc.addTextChangedListener(cvcTextWatcher)
 
         val panTextWatcher = PANTextWatcher(
             cardConfiguration = CARD_CONFIG_BASIC,
             panValidator = NewPANValidator(),
             cvcValidator = cvcValidator,
-            cvvEditText = cvv,
+            cvcEditText = cvc,
             panValidationResultHandler = mock(),
             brandChangedHandler = mock(),
             cvcValidationRuleManager = cvcValidationRuleManager
@@ -53,70 +53,70 @@ class CVCTextWatcherIntegrationTest {
     }
 
     @Test
-    fun `should validate cvv as false given 1 digit cvv is entered and no pan`() {
-        cvv.setText("1")
+    fun `should validate cvc as false given 1 digit cvc is entered and no pan`() {
+        cvc.setText("1")
 
-        verify(cvvValidationResultHandler).handleResult(false)
+        verify(cvcValidationResultHandler).handleResult(false)
     }
 
     @Test
-    fun `should validate cvv as false given 2 digit cvv is entered and no pan`() {
-        cvv.setText("12")
+    fun `should validate cvc as false given 2 digit cvc is entered and no pan`() {
+        cvc.setText("12")
 
-        verify(cvvValidationResultHandler).handleResult(false)
+        verify(cvcValidationResultHandler).handleResult(false)
     }
 
     @Test
-    fun `should validate cvv as true given 3 digit cvv is entered and no pan`() {
-        cvv.setText("123")
+    fun `should validate cvc as true given 3 digit cvc is entered and no pan`() {
+        cvc.setText("123")
 
-        verify(cvvValidationResultHandler).handleResult(true)
+        verify(cvcValidationResultHandler).handleResult(true)
     }
 
     @Test
-    fun `should validate cvv as true given 4 digit cvv is entered and no pan`() {
-        cvv.setText("1234")
+    fun `should validate cvc as true given 4 digit cvc is entered and no pan`() {
+        cvc.setText("1234")
 
-        verify(cvvValidationResultHandler).handleResult(true)
+        verify(cvcValidationResultHandler).handleResult(true)
     }
 
     @Test
-    fun `should validate cvv as false given 5 digit cvv is entered and no pan`() {
-        cvv.setText("12345")
+    fun `should validate cvc as false given 5 digit cvc is entered and no pan`() {
+        cvc.setText("12345")
 
-        verify(cvvValidationResultHandler).handleResult(false)
+        verify(cvcValidationResultHandler).handleResult(false)
     }
 
     @Test
-    fun `should validate cvv as true given 3 digit cvv is entered and visa pan is entered`() {
+    fun `should validate cvc as true given 3 digit cvc is entered and visa pan is entered`() {
         pan.setText(VISA_PAN)
-        cvv.setText("123")
+        cvc.setText("123")
 
-        verify(cvvValidationResultHandler).handleResult(true)
+        verify(cvcValidationResultHandler).handleResult(true)
     }
 
     @Test
-    fun `should validate cvv as false given 4 digit cvv is entered and visa pan is entered`() {
+    fun `should validate cvc as false given 4 digit cvc is entered and visa pan is entered`() {
         pan.setText(VISA_PAN)
-        cvv.setText("1234")
+        cvc.setText("1234")
 
-        verify(cvvValidationResultHandler).handleResult(false)
+        verify(cvcValidationResultHandler).handleResult(false)
     }
 
     @Test
-    fun `should validate cvv as true given 4 digit cvv is entered and amex pan is entered`() {
+    fun `should validate cvc as true given 4 digit cvc is entered and amex pan is entered`() {
         pan.setText(AMEX_PAN)
-        cvv.setText("1234")
+        cvc.setText("1234")
 
-        verify(cvvValidationResultHandler).handleResult(true)
+        verify(cvcValidationResultHandler).handleResult(true)
     }
 
     @Test
-    fun `should validate cvv as false given 5 digit cvv is entered and amex pan is entered`() {
+    fun `should validate cvc as false given 5 digit cvc is entered and amex pan is entered`() {
         pan.setText(AMEX_PAN)
-        cvv.setText("12345")
+        cvc.setText("12345")
 
-        verify(cvvValidationResultHandler).handleResult(false)
+        verify(cvcValidationResultHandler).handleResult(false)
     }
 
 }

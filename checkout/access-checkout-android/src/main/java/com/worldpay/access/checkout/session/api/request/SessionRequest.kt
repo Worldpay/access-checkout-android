@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.session.api.request
 
+import com.worldpay.access.checkout.session.api.request.CardSessionRequest.CardExpiryDate
 import java.io.Serializable
 
 /**
@@ -12,10 +13,10 @@ internal interface SessionRequest: Serializable
  *
  * @property [cardNumber] A [String] representing the card number
  * @property [cardExpiryDate] A [CardExpiryDate] representing the card expiry
- * @property [cvv] A [String] representing the card's cvv number
+ * @property [cvc] A [String] representing the card's cvc number
  * @property [identity] A [String] representing the merchant id
  */
-internal data class CardSessionRequest(val cardNumber: String, val cardExpiryDate: CardExpiryDate, val cvv: String, val identity: String):
+internal data class CardSessionRequest(val cardNumber: String, val cardExpiryDate: CardExpiryDate, val cvc: String, val identity: String):
     SessionRequest {
 
     /**
@@ -31,7 +32,7 @@ internal data class CardSessionRequest(val cardNumber: String, val cardExpiryDat
 /**
  * A serializable class that represents the request body for the Payments CVC session endpoint
  *
- * @property [cvv] A [String] representing the card's cvv number
+ * @property [cvc] A [String] representing the card's cvc number
  * @property [identity] A [String] representing the merchant id
  */
-internal data class CVVSessionRequest(val cvv: String, val identity: String): SessionRequest
+internal data class CvcSessionRequest(val cvc: String, val identity: String): SessionRequest

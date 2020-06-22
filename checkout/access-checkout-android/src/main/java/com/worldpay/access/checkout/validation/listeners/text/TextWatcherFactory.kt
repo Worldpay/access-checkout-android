@@ -17,12 +17,12 @@ internal class TextWatcherFactory(
     private val panValidator = NewPANValidator()
     private val dateValidator = NewDateValidator()
 
-    fun createPanTextWatcher(cvvEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+    fun createPanTextWatcher(cvcEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
         return PANTextWatcher(
             cardConfiguration = cardConfiguration,
             panValidator = panValidator,
-            cvvEditText =  cvvEditText,
-            cvcValidator = CVCValidator(resultHandlerFactory.getCvvValidationResultHandler(), cvcValidationRuleManager),
+            cvcEditText =  cvcEditText,
+            cvcValidator = CVCValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager
@@ -38,13 +38,13 @@ internal class TextWatcherFactory(
         )
     }
 
-    fun createCvvTextWatcher(): TextWatcher {
+    fun createCvcTextWatcher(): TextWatcher {
         val cvcValidator = CVCValidator(
-            cvvValidationResultHandler = resultHandlerFactory.getCvvValidationResultHandler(),
+            cvcValidationResultHandler = resultHandlerFactory.getCvcValidationResultHandler(),
             cardValidationRuleProvider = cvcValidationRuleManager
         )
 
-        return CVVTextWatcher(cvcValidator)
+        return CVCTextWatcher(cvcValidator)
     }
 
 }

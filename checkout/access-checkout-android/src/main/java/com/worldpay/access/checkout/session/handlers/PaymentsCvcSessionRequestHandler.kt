@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
 import com.worldpay.access.checkout.session.api.SessionRequestService
-import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
+import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
 
@@ -31,16 +31,16 @@ internal class PaymentsCvcSessionRequestHandler(
     /**
      * Validates that the mandatory fields for this [SessionType] are present
      *
-     * @param cardDetails [CardDetails] object containing cvv
+     * @param cardDetails [CardDetails] object containing cvc
      */
     override fun handle(cardDetails: CardDetails) {
-        validateNotNull(cardDetails.cvv, "cvv")
+        validateNotNull(cardDetails.cvc, "cvc")
 
-        cardDetails.cvv as String
+        cardDetails.cvc as String
 
-        val cvvSessionRequest =
-            CVVSessionRequest(
-                cardDetails.cvv,
+        val cvcSessionRequest =
+            CvcSessionRequest(
+                cardDetails.cvc,
                 sessionRequestHandlerConfig.getMerchantId()
             )
 
@@ -48,7 +48,7 @@ internal class PaymentsCvcSessionRequestHandler(
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl(sessionRequestHandlerConfig.getBaseUrl())
-            .requestBody(cvvSessionRequest)
+            .requestBody(cvcSessionRequest)
             .sessionType(PAYMENTS_CVC_SESSION)
             .discoverLinks(DiscoverLinks.sessions)
             .build()

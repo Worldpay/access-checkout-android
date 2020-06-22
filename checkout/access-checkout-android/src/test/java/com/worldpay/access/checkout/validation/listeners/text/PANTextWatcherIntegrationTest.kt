@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
-import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVV_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -26,7 +26,7 @@ class PANTextWatcherIntegrationTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
-    private val cvv = EditText(context)
+    private val cvc = EditText(context)
     private val pan = EditText(context)
     private val cvcValidationRuleManager = CVCValidationRuleManager()
 
@@ -36,17 +36,17 @@ class PANTextWatcherIntegrationTest {
 
     @Before
     fun setup() {
-        val cvvTextWatcher = CVVTextWatcher(
+        val cvcTextWatcher = CVCTextWatcher(
             cvcValidator = cvcValidator
         )
 
-        cvv.addTextChangedListener(cvvTextWatcher)
+        cvc.addTextChangedListener(cvcTextWatcher)
 
         val panTextWatcher = PANTextWatcher(
             cardConfiguration = CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC,
             panValidator = NewPANValidator(),
             cvcValidator = cvcValidator,
-            cvvEditText = cvv,
+            cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
             brandChangedHandler = brandChangedHandler,
             cvcValidationRuleManager = cvcValidationRuleManager
@@ -96,15 +96,15 @@ class PANTextWatcherIntegrationTest {
     }
 
     @Test
-    fun `should validate cvv when pan brand is recognised and cvv is not empty`() {
-        assertEquals(CVV_DEFAULTS, cvcValidationRuleManager.getRule())
+    fun `should validate cvc when pan brand is recognised and cvc is not empty`() {
+        assertEquals(CVC_DEFAULTS, cvcValidationRuleManager.getRule())
 
-        cvv.setText("123")
+        cvc.setText("123")
         reset(cvcValidator)
 
         pan.setText(VISA_PAN)
 
-        assertEquals(VISA_BRAND.cvv, cvcValidationRuleManager.getRule())
+        assertEquals(VISA_BRAND.cvc, cvcValidationRuleManager.getRule())
 
         verify(cvcValidator).validate("123")
         verify(panValidationResultHandler).handleResult(true)
@@ -112,12 +112,12 @@ class PANTextWatcherIntegrationTest {
     }
 
     @Test
-    fun `should not validate cvv when pan brand is recognised and cvv is empty`() {
-        assertEquals(CVV_DEFAULTS, cvcValidationRuleManager.getRule())
+    fun `should not validate cvc when pan brand is recognised and cvc is empty`() {
+        assertEquals(CVC_DEFAULTS, cvcValidationRuleManager.getRule())
 
         pan.setText(VISA_PAN)
 
-        assertEquals(VISA_BRAND.cvv, cvcValidationRuleManager.getRule())
+        assertEquals(VISA_BRAND.cvc, cvcValidationRuleManager.getRule())
 
         verify(cvcValidator, never()).validate(any())
         verify(panValidationResultHandler).handleResult(true)

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.cvv.testutil
+package com.worldpay.access.checkout.sample.cvc.testutil
 
 import android.widget.Button
 import android.widget.EditText
@@ -14,46 +14,46 @@ import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
-class CvvFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
+class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
-    private fun cvvInput() = findById<EditText>(R.id.cvv_flow_text_cvv)
-    private fun submitButton() = findById<Button>(R.id.cvv_flow_btn_submit)
+    private fun cvcInput() = findById<EditText>(R.id.cvc_flow_text_cvc)
+    private fun submitButton() = findById<Button>(R.id.cvc_flow_btn_submit)
 
-    fun isInInitialState(): CvvFragmentTestUtils {
+    fun isInInitialState(): CvcFragmentTestUtils {
         progressBarNotVisible()
-        enabledStateIs(cvv = true, submitButton = false)
-        cardDetailsAre(cvv = "")
+        enabledStateIs(cvc = true, submitButton = false)
+        cardDetailsAre(cvc = "")
         return this
     }
 
-    fun requestIsInProgress(): CvvFragmentTestUtils {
+    fun requestIsInProgress(): CvcFragmentTestUtils {
         progressBarIsVisible()
-        enabledStateIs(cvv = false, submitButton = false)
+        enabledStateIs(cvc = false, submitButton = false)
         return this
     }
 
-    fun hasResponseDialogWithMessage(response: String): CvvFragmentTestUtils {
+    fun hasResponseDialogWithMessage(response: String): CvcFragmentTestUtils {
         dialogHasText(response)
         return this
     }
 
-    fun hasErrorDialogWithMessage(error: String): CvvFragmentTestUtils {
+    fun hasErrorDialogWithMessage(error: String): CvcFragmentTestUtils {
         dialogHasText(error)
         return this
     }
 
-    fun closeDialog(): CvvFragmentTestUtils {
+    fun closeDialog(): CvcFragmentTestUtils {
         onView(withId(android.R.id.button1)).perform(click())
         return this
     }
 
-    fun enabledStateIs(cvv: Boolean? = null, submitButton: Boolean? = null): CvvFragmentTestUtils {
+    fun enabledStateIs(cvc: Boolean? = null, submitButton: Boolean? = null): CvcFragmentTestUtils {
         val visibleMsg = "visibility state"
         val enableMsg = "enabled state"
 
-        if (cvv != null) {
-            wait { assertTrue("CVV Input - $visibleMsg") { cvvInput().isVisible } }
-            wait { assertEquals(cvv, cvvInput().isEnabled, "CVV Input - $enableMsg") }
+        if (cvc != null) {
+            wait { assertTrue("CVC Input - $visibleMsg") { cvcInput().isVisible } }
+            wait { assertEquals(cvc, cvcInput().isEnabled, "CVC Input - $enableMsg") }
         }
 
         if (submitButton != null) {
@@ -64,24 +64,24 @@ class CvvFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
         return this
     }
 
-    fun clickSubmitButton(): CvvFragmentTestUtils {
+    fun clickSubmitButton(): CvcFragmentTestUtils {
         enabledStateIs(submitButton = true)
-        uiObjectWithId(R.id.cvv_flow_btn_submit).click()
+        uiObjectWithId(R.id.cvc_flow_btn_submit).click()
         return this
     }
 
-    fun enterCardDetails(cvv: String, assertText: Boolean = false): CvvFragmentTestUtils {
-        enterText(cvvInput(), cvv)
+    fun enterCardDetails(cvc: String, assertText: Boolean = false): CvcFragmentTestUtils {
+        enterText(cvcInput(), cvc)
 
         if (assertText) {
-            cardDetailsAre(cvv)
+            cardDetailsAre(cvc)
         }
 
         return this
     }
 
-    fun cardDetailsAre(cvv: String): CvvFragmentTestUtils {
-        wait { assertEquals(cvv, cvvInput().text.toString()) }
+    fun cardDetailsAre(cvc: String): CvcFragmentTestUtils {
+        wait { assertEquals(cvc, cvcInput().text.toString()) }
         return this
     }
 

@@ -10,191 +10,191 @@ import org.junit.runner.RunWith
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class CVVUITests: AbstractCardFragmentTest() {
+class CVCUITests: AbstractCardFragmentTest() {
 
     private val amex = "343434343434343"
     private val mastercard = "5197278258794613"
     private val visa = "4111111111111111"
 
     @Test
-    fun shouldObserveCvvRules_noBrand() {
+    fun shouldObserveCvcRules_noBrand() {
         cardFragmentTestUtils.isInInitialState()
             .enterCardDetails(pan = "", expiryDate = "1140")
             .hasNoBrand()
 
         // max 4 digits - so enter 5 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "12345")
+            .enterCardDetails(cvc = "12345")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "1234")
-            .validationStateIs(pan = false, cvv = true, expiryDate = true)
+            .cardDetailsAre(cvc = "1234")
+            .validationStateIs(pan = false, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // min 3 digits - so enter 2 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "12")
+            .enterCardDetails(cvc = "12")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "12")
-            .validationStateIs(pan = false, cvv = false, expiryDate = true)
+            .cardDetailsAre(cvc = "12")
+            .validationStateIs(pan = false, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // accept 3 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "123")
+            .enterCardDetails(cvc = "123")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "123")
-            .validationStateIs(pan = false, cvv = true, expiryDate = true)
+            .cardDetailsAre(cvc = "123")
+            .validationStateIs(pan = false, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // accept 4 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "1234")
+            .enterCardDetails(cvc = "1234")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "1234")
-            .validationStateIs(pan = false, cvv = true, expiryDate = true)
+            .cardDetailsAre(cvc = "1234")
+            .validationStateIs(pan = false, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = false)
     }
 
     @Test
-    fun shouldObserveCvvRules_amex() {
+    fun shouldObserveCvcRules_amex() {
         cardFragmentTestUtils.isInInitialState()
             .enterCardDetails(pan = amex, expiryDate = "1140")
             .hasBrand(AMEX)
 
         // max 4 digits - so enter 5 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "12345")
+            .enterCardDetails(cvc = "12345")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "1234")
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .cardDetailsAre(cvc = "1234")
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
 
         // min 4 digits - so enter 3 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "123")
+            .enterCardDetails(cvc = "123")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "123")
-            .validationStateIs(pan = true, cvv = false, expiryDate = true)
+            .cardDetailsAre(cvc = "123")
+            .validationStateIs(pan = true, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // accept 4 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "1234")
+            .enterCardDetails(cvc = "1234")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "1234")
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .cardDetailsAre(cvc = "1234")
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun shouldObserveCvvRules_mastercard() {
+    fun shouldObserveCvcRules_mastercard() {
         cardFragmentTestUtils.isInInitialState()
             .enterCardDetails(pan = mastercard, expiryDate = "1140")
             .hasBrand(MASTERCARD)
 
         // max 3 digits - so enter 4 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "1234")
+            .enterCardDetails(cvc = "1234")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "123")
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .cardDetailsAre(cvc = "123")
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
 
         // min 3 digits - so enter 2 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "12")
+            .enterCardDetails(cvc = "12")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "12")
-            .validationStateIs(pan = true, cvv = false, expiryDate = true)
+            .cardDetailsAre(cvc = "12")
+            .validationStateIs(pan = true, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // accept 3 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "123")
+            .enterCardDetails(cvc = "123")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "123")
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .cardDetailsAre(cvc = "123")
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun shouldObserveCvvRules_visa() {
+    fun shouldObserveCvcRules_visa() {
         cardFragmentTestUtils.isInInitialState()
             .enterCardDetails(pan = visa, expiryDate = "1140")
             .hasBrand(VISA)
 
         // max 3 digits - so enter 4 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "1234")
+            .enterCardDetails(cvc = "1234")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "123")
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .cardDetailsAre(cvc = "123")
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
 
         // min 3 digits - so enter 2 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "12")
+            .enterCardDetails(cvc = "12")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "12")
-            .validationStateIs(pan = true, cvv = false, expiryDate = true)
+            .cardDetailsAre(cvc = "12")
+            .validationStateIs(pan = true, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // accept 3 digits
         cardFragmentTestUtils
-            .enterCardDetails(cvv = "123")
+            .enterCardDetails(cvc = "123")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "123")
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .cardDetailsAre(cvc = "123")
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun shouldRevalidateCvv_whenCardBrandChanges() {
-        // enter amex details, cvv is invalid
+    fun shouldRevalidateCvc_whenCardBrandChanges() {
+        // enter amex details, cvc is invalid
         cardFragmentTestUtils
-            .enterCardDetails(pan = amex, cvv = "123", expiryDate = "1140")
-            .cardDetailsAre(cvv = "123")
+            .enterCardDetails(pan = amex, cvc = "123", expiryDate = "1140")
+            .cardDetailsAre(cvc = "123")
             .hasBrand(AMEX)
-            .validationStateIs(pan = true, cvv = false, expiryDate = true)
+            .validationStateIs(pan = true, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
-        // change pan to mastercard, cvv is now valid
+        // change pan to mastercard, cvc is now valid
         cardFragmentTestUtils
             .enterCardDetails(pan = mastercard)
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "123")
+            .cardDetailsAre(cvc = "123")
             .hasBrand(MASTERCARD)
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
     }
 
     @Test
-    fun shouldRevalidateCvv_whenPanIsEntered() {
-        // enter cvv
+    fun shouldRevalidateCvc_whenPanIsEntered() {
+        // enter cvc
         cardFragmentTestUtils
             .isInInitialState()
             .cardDetailsAre(pan = "")
             .hasNoBrand()
-            .enterCardDetails(cvv = "1234")
+            .enterCardDetails(cvc = "1234")
             .focusOn(EXPIRY_DATE)
-            .validationStateIs(cvv = true)
+            .validationStateIs(cvc = true)
 
-        // enter visa card number - cvv is valid
+        // enter visa card number - cvc is valid
         cardFragmentTestUtils
             .enterCardDetails(pan = visa)
             .focusOn(EXPIRY_DATE)
             .hasBrand(VISA)
-            .validationStateIs(cvv = false)
+            .validationStateIs(cvc = false)
             .enabledStateIs(submitButton = false)
     }
 
     @Test
-    fun shouldOnlyKeepMaxCvvLength_whenPasting() {
+    fun shouldOnlyKeepMaxCvcLength_whenPasting() {
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(cvv = "12345")
+            .enterCardDetails(cvc = "12345")
             .focusOn(EXPIRY_DATE)
-            .cardDetailsAre(cvv = "1234")
+            .cardDetailsAre(cvc = "1234")
             .enabledStateIs(submitButton = false)
     }
 }

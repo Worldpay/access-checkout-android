@@ -27,14 +27,14 @@ class NavigationUITest {
         MainActivity::class.java)
 
     private val cardFlowTitle = "Card Flow"
-    private val cvvFlowTitle = "CVV Flow"
+    private val cvcFlowTitle = "CVC Flow"
 
     @Test
     fun shouldHaveOnly2ItemsInNavigationDrawer() {
         onView(withId(R.id.drawer_layout)).perform(open()).check(matches(isOpen()))
 
         onView(allOf(withTagKey(R.menu.drawer_menu), hasSibling(withText(cardFlowTitle)), isDisplayed()))
-        onView(allOf(withTagKey(R.menu.drawer_menu), hasSibling(withText(cvvFlowTitle)), isDisplayed()))
+        onView(allOf(withTagKey(R.menu.drawer_menu), hasSibling(withText(cvcFlowTitle)), isDisplayed()))
 
         onView(withId(R.id.drawer_layout)).perform(close()).check(matches(isClosed()))
     }
@@ -48,23 +48,23 @@ class NavigationUITest {
     }
 
     @Test
-    fun shouldBeAbleToNavigateToCVVFlow() {
-        navigateTo(R.id.nav_cvv_flow)
+    fun shouldBeAbleToNavigateToCVCFlow() {
+        navigateTo(R.id.nav_cvc_flow)
 
-        onView(withId(R.id.fragment_cvv_flow))
+        onView(withId(R.id.fragment_cvc_flow))
             .check(matches(isDisplayed()))
 
-        assertToolbarTitle(cvvFlowTitle)
+        assertToolbarTitle(cvcFlowTitle)
     }
 
     @Test
-    fun shouldBeAbleToNavigateBackToCardFlow_fromCvvFlow() {
-        navigateTo(R.id.nav_cvv_flow)
+    fun shouldBeAbleToNavigateBackToCardFlow_fromCvcFlow() {
+        navigateTo(R.id.nav_cvc_flow)
 
-        onView(withId(R.id.fragment_cvv_flow))
+        onView(withId(R.id.fragment_cvc_flow))
             .check(matches(isDisplayed()))
 
-        assertToolbarTitle(cvvFlowTitle)
+        assertToolbarTitle(cvcFlowTitle)
 
         navigateTo(R.id.nav_card_flow)
 

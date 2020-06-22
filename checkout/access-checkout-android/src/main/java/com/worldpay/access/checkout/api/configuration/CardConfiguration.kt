@@ -13,13 +13,13 @@ internal data class CardConfiguration(val brands: List<RemoteCardBrand>, val def
  *
  * @property name of the card brand
  * @property images a list of [RemoteCardBrandImage]'s
- * @property cvv validation rule for the cvv field
+ * @property cvc validation rule for the cvc field
  * @property pan list of validations rules for the pan field
  */
 internal data class RemoteCardBrand(
     val name: String,
     val images: List<RemoteCardBrandImage>,
-    val cvv: CardValidationRule,
+    val cvc: CardValidationRule,
     val pan: CardValidationRule
 )
 
@@ -38,13 +38,13 @@ internal data class RemoteCardBrandImage(val type: String, val url: String)
  * [CardDefaults] defines default validation rules for the fields
  *
  * @property pan a default pan validation rule
- * @property cvv a default cvv validation rule
+ * @property cvc a default cvc validation rule
  * @property month a default month validation rule
  * @property year a default year validation rule
  */
 internal data class CardDefaults(
     val pan: CardValidationRule,
-    val cvv: CardValidationRule,
+    val cvc: CardValidationRule,
     val month: CardValidationRule,
     val year: CardValidationRule,
     val expiryDate: CardValidationRule

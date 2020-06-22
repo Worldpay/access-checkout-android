@@ -46,8 +46,8 @@ class CardConfigurationLongDelayIntegrationTest {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = luhnInvalidMastercardCard, cvv = "1234", expiryDate = "0199")
-            .validationStateIs(pan = false, cvv = true, expiryDate = true)
+            .enterCardDetails(pan = luhnInvalidMastercardCard, cvc = "1234", expiryDate = "0199")
+            .validationStateIs(pan = false, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = false)
             .hasNoBrand()
 
@@ -61,18 +61,18 @@ class CardConfigurationLongDelayIntegrationTest {
             }
         }
 
-        // Assert that with now configuration has come back that the CVV is invalid for mastercard
+        // Assert that with now configuration has come back that the CVC is invalid for mastercard
         cardFragmentTestUtils
-            .validationStateIs(pan = false, cvv = false, expiryDate = true)
+            .validationStateIs(pan = false, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // Re-enter a luhn valid, mastercard identified card and valid date and submit
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidMastercardCard, cvv = "123", expiryDate = "1299")
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
-            .enterCardDetails(cvv = "12345")
-            .cardDetailsAre(cvv = "123")
-            .validationStateIs(pan = true, cvv = true, expiryDate = true)
+            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "123", expiryDate = "1299")
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
+            .enterCardDetails(cvc = "12345")
+            .cardDetailsAre(cvc = "123")
+            .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()

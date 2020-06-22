@@ -25,13 +25,13 @@ class ResultHandlerFactoryTest {
 
     @Test
     fun `should return a cvc validation result handler`() {
-        assertNotNull(resultHandlerFactory.getCvvValidationResultHandler())
+        assertNotNull(resultHandlerFactory.getCvcValidationResultHandler())
     }
 
     @Test
     fun `should return same instance of cvc validation result handler on multiple calls using same instance of factory`() {
-        val handler1 = resultHandlerFactory.getCvvValidationResultHandler()
-        val handler2 = resultHandlerFactory.getCvvValidationResultHandler()
+        val handler1 = resultHandlerFactory.getCvcValidationResultHandler()
+        val handler2 = resultHandlerFactory.getCvcValidationResultHandler()
 
         assertEquals(handler1, handler2)
 
@@ -39,7 +39,7 @@ class ResultHandlerFactoryTest {
             accessCheckoutValidationListener, fieldValidationStateManager
         )
 
-        val handler3 = resultHandlerFactory.getCvvValidationResultHandler()
+        val handler3 = resultHandlerFactory.getCvcValidationResultHandler()
 
         assertNotEquals(handler2, handler3)
     }

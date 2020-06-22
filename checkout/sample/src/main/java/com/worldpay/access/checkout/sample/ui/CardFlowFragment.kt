@@ -27,7 +27,7 @@ import com.worldpay.access.checkout.sample.images.SVGImageLoader
 class CardFlowFragment : Fragment() {
 
     private lateinit var panText: EditText
-    private lateinit var cvvText: EditText
+    private lateinit var cvcText: EditText
     private lateinit var expiryText: EditText
     private lateinit var submitBtn: SubmitButton
     private lateinit var paymentsCvcSwitch: Switch
@@ -54,7 +54,7 @@ class CardFlowFragment : Fragment() {
 
             panText = view.findViewById(R.id.card_flow_text_pan)
             expiryText = view.findViewById(R.id.card_flow_expiry_date)
-            cvvText = view.findViewById(R.id.card_flow_text_cvv)
+            cvcText = view.findViewById(R.id.card_flow_text_cvc)
             paymentsCvcSwitch = view.findViewById(R.id.card_flow_payments_cvc_switch)
 
             val brandImageView = view.findViewById<ImageView>(R.id.card_flow_brand_logo)
@@ -111,7 +111,7 @@ class CardFlowFragment : Fragment() {
             val cardDetails = CardDetails.Builder()
                 .pan(panText.text.toString())
                 .expiryDate(expiryText.text.toString())
-                .cvv(cvvText.text.toString())
+                .cvc(cvcText.text.toString())
                 .build()
 
             accessCheckoutClient.generateSession(cardDetails, sessionTypes)
@@ -123,7 +123,7 @@ class CardFlowFragment : Fragment() {
             .baseUrl(getBaseUrl())
             .pan(panText)
             .expiryDate(expiryText)
-            .cvv(cvvText)
+            .cvc(cvcText)
             .validationListener(cardValidationListener)
             .build()
 
@@ -132,7 +132,7 @@ class CardFlowFragment : Fragment() {
 
     private fun disableFields() {
         panText.isEnabled = false
-        cvvText.isEnabled = false
+        cvcText.isEnabled = false
         expiryText.isEnabled = false
         paymentsCvcSwitch.isEnabled = false
     }

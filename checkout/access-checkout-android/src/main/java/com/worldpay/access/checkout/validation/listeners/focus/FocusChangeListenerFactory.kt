@@ -9,7 +9,7 @@ internal class FocusChangeListenerFactory(private val resultHandlerFactory : Res
     }
 
     fun createCvcFocusChangeListener() : CvcFocusChangeListener {
-        return CvcFocusChangeListener(resultHandlerFactory.getCvvValidationResultHandler())
+        return CvcFocusChangeListener(resultHandlerFactory.getCvcValidationResultHandler())
     }
 
     fun createExpiryDateFocusChangeListener() : ExpiryDateFocusChangeListener {

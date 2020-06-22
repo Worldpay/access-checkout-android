@@ -8,8 +8,8 @@ import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.api.AccessCheckoutException
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
-import com.worldpay.access.checkout.session.api.request.CVVSessionRequest
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
+import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
@@ -79,7 +79,7 @@ class SessionRequestServiceTest {
                     12,
                     21
                 ),
-                cvv = "123",
+                cvc = "123",
                 identity = "merchant-id"
             )
 
@@ -98,11 +98,11 @@ class SessionRequestServiceTest {
     }
 
     @Test
-    fun `should be able to send cvv session request when the intent has the appropriate information`() {
+    fun `should be able to send cvc session request when the intent has the appropriate information`() {
         val intent = mock(Intent::class.java)
         val sessionRequest =
-            CVVSessionRequest(
-                cvv = "123",
+            CvcSessionRequest(
+                cvc = "123",
                 identity = "merchant-id"
             )
 

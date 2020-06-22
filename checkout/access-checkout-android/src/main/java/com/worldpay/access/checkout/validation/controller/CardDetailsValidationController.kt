@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 internal class CardDetailsValidationController(
     private val panEditText: EditText,
     private val expiryDateEditText: EditText,
-    private val cvvEditText: EditText,
+    private val cvcEditText: EditText,
     baseUrl: String,
     cardConfigurationClient: CardConfigurationClient,
     private val fieldDecoratorFactory: FieldDecoratorFactory
@@ -24,8 +24,8 @@ internal class CardDetailsValidationController(
     }
 
     private fun decorateFields(cardConfiguration: CardConfiguration) {
-        fieldDecoratorFactory.decorateCvvField(cvvEditText, panEditText, cardConfiguration)
-        fieldDecoratorFactory.decoratePanField(panEditText, cvvEditText, cardConfiguration)
+        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, cardConfiguration)
+        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, cardConfiguration)
         fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, cardConfiguration)
     }
 

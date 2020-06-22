@@ -2,10 +2,10 @@ package com.worldpay.access.checkout.client.validation
 
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
-import com.worldpay.access.checkout.client.validation.config.CvvValidationConfig
+import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.config.ValidationConfig
 import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
-import com.worldpay.access.checkout.validation.controller.CvvDetailsValidationController
+import com.worldpay.access.checkout.validation.controller.CvcDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.FieldDecoratorFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
@@ -20,7 +20,7 @@ object AccessCheckoutValidationInitialiser {
         if (validationConfig is CardValidationConfig) {
             initialiseCardValidation(validationConfig)
         } else {
-            initialiseCvvValidation(validationConfig as CvvValidationConfig)
+            initialiseCvcValidation(validationConfig as CvcValidationConfig)
         }
     }
 
@@ -39,14 +39,14 @@ object AccessCheckoutValidationInitialiser {
         CardDetailsValidationController(
             panEditText = validationConfig.pan,
             expiryDateEditText = validationConfig.expiryDate,
-            cvvEditText = validationConfig.cvv,
+            cvcEditText = validationConfig.cvc,
             baseUrl = validationConfig.baseUrl,
             cardConfigurationClient = CardConfigurationClientFactory.createClient(),
             fieldDecoratorFactory = fieldDecoratorFactory
         )
     }
 
-    private fun initialiseCvvValidation(validationConfig: CvvValidationConfig) {
+    private fun initialiseCvcValidation(validationConfig: CvcValidationConfig) {
         val validationStateManager = CvcValidationStateManager()
 
         val resultHandlerFactory = ResultHandlerFactory(
@@ -58,8 +58,8 @@ object AccessCheckoutValidationInitialiser {
         val focusChangeListenerFactory = FocusChangeListenerFactory(resultHandlerFactory)
         val fieldDecoratorFactory = FieldDecoratorFactory(textWatcherFactory, focusChangeListenerFactory)
 
-        CvvDetailsValidationController(
-            cvvEditText = validationConfig.cvv,
+        CvcDetailsValidationController(
+            cvcEditText = validationConfig.cvc,
             fieldDecoratorFactory = fieldDecoratorFactory
         )
     }

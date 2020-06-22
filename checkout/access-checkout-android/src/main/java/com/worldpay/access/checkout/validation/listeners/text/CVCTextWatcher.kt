@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.text.Editable
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 
-internal class CVVTextWatcher(
+internal class CVCTextWatcher(
     private val cvcValidator: CVCValidator
 ): AbstractCardDetailTextWatcher() {
 

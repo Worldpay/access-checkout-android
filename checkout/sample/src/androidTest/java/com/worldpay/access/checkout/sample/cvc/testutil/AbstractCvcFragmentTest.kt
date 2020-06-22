@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.cvv.testutil
+package com.worldpay.access.checkout.sample.cvc.testutil
 
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.rule.ActivityTestRule
@@ -10,18 +10,18 @@ import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Before
 import org.junit.Rule
 
-abstract class AbstractCvvFragmentTest {
+abstract class AbstractCvcFragmentTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
-    lateinit var cvvFragmentTestUtils: CvvFragmentTestUtils
+    lateinit var cvcFragmentTestUtils: CvcFragmentTestUtils
 
     @Before
     fun setup() {
-        cvvFragmentTestUtils = CvvFragmentTestUtils(activityRule)
+        cvcFragmentTestUtils = CvcFragmentTestUtils(activityRule)
         defaultStubMappings(activityRule.activity)
-        navigateTo(R.id.nav_cvv_flow)
+        navigateTo(R.id.nav_cvc_flow)
         closeSoftKeyboard()
         rotatePortrait(activityRule)
     }

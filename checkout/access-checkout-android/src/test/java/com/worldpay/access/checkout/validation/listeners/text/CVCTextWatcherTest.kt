@@ -5,18 +5,18 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
-import com.worldpay.access.checkout.validation.result.handler.CvvValidationResultHandler
+import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
 import org.junit.Before
 import org.junit.Test
 
-class CVVTextWatcherTest {
+class CVCTextWatcherTest {
 
-    private val cvvValidationResultHandler = mock<CvvValidationResultHandler>()
-    private val cvvEditable = mock<Editable>()
+    private val cvcValidationResultHandler = mock<CvcValidationResultHandler>()
+    private val cvcEditable = mock<Editable>()
 
-    private lateinit var cvvTextWatcher: CVVTextWatcher
+    private lateinit var CVCTextWatcher: CVCTextWatcher
     private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
 
     @Before
@@ -24,32 +24,32 @@ class CVVTextWatcherTest {
         cvcValidationRuleManager = CVCValidationRuleManager()
 
         val cvcValidator = CVCValidator(
-            cvvValidationResultHandler = cvvValidationResultHandler,
+            cvcValidationResultHandler = cvcValidationResultHandler,
             cardValidationRuleProvider = cvcValidationRuleManager
         )
 
-        cvvTextWatcher = CVVTextWatcher(cvcValidator)
+        CVCTextWatcher = CVCTextWatcher(cvcValidator)
     }
 
     @Test
     fun `should handle valid result after text changes`() {
-        given(cvvEditable.toString()).willReturn("123")
+        given(cvcEditable.toString()).willReturn("123")
 
-        cvvTextWatcher.afterTextChanged(cvvEditable)
+        CVCTextWatcher.afterTextChanged(cvcEditable)
 
-        verify(cvvValidationResultHandler).handleResult(true)
+        verify(cvcValidationResultHandler).handleResult(true)
     }
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val cvvValidator = mock<CVCValidator>()
+        val cvcValidator = mock<CVCValidator>()
 
-        cvvTextWatcher.beforeTextChanged("", 1, 2,3)
-        cvvTextWatcher.onTextChanged("", 1, 2,3)
+        CVCTextWatcher.beforeTextChanged("", 1, 2,3)
+        CVCTextWatcher.onTextChanged("", 1, 2,3)
 
         verifyZeroInteractions(
-            cvvValidator,
-            cvvValidationResultHandler
+            cvcValidator,
+            cvcValidationResultHandler
         )
     }
 
