@@ -16,7 +16,7 @@ class CVCTextWatcherTest {
     private val cvcValidationResultHandler = mock<CvcValidationResultHandler>()
     private val cvcEditable = mock<Editable>()
 
-    private lateinit var CVCTextWatcher: CVCTextWatcher
+    private lateinit var cvcTextWatcher: CVCTextWatcher
     private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
 
     @Before
@@ -28,14 +28,14 @@ class CVCTextWatcherTest {
             cardValidationRuleProvider = cvcValidationRuleManager
         )
 
-        CVCTextWatcher = CVCTextWatcher(cvcValidator)
+        cvcTextWatcher = CVCTextWatcher(cvcValidator)
     }
 
     @Test
     fun `should handle valid result after text changes`() {
         given(cvcEditable.toString()).willReturn("123")
 
-        CVCTextWatcher.afterTextChanged(cvcEditable)
+        cvcTextWatcher.afterTextChanged(cvcEditable)
 
         verify(cvcValidationResultHandler).handleResult(true)
     }
@@ -44,8 +44,8 @@ class CVCTextWatcherTest {
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
         val cvcValidator = mock<CVCValidator>()
 
-        CVCTextWatcher.beforeTextChanged("", 1, 2,3)
-        CVCTextWatcher.onTextChanged("", 1, 2,3)
+        cvcTextWatcher.beforeTextChanged("", 1, 2,3)
+        cvcTextWatcher.onTextChanged("", 1, 2,3)
 
         verifyZeroInteractions(
             cvcValidator,
