@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.sample.ui
 
+import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -11,6 +12,8 @@ import android.widget.ImageView
 import android.widget.Switch
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
@@ -125,6 +128,7 @@ class CardFlowFragment : Fragment() {
             .expiryDate(expiryText)
             .cvc(cvcText)
             .validationListener(cardValidationListener)
+            .lifecycleOwner(this)
             .build()
 
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)

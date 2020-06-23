@@ -6,7 +6,6 @@ import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
-import org.junit.Ignore
 import org.junit.Test
 
 class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
@@ -17,7 +16,6 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
 
     fun activity(): MainActivity = activityRule.activity
 
-    @Ignore
     @Test
     fun givenScreenIsRotated_ThenFieldsShouldKeepValidationState() {
         // Enter an invalid luhn, mastercard identified card and valid date

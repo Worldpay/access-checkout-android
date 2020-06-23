@@ -1,15 +1,17 @@
 package com.worldpay.access.checkout.validation.result.state
 
-internal class CardValidationStateManager: ExpiryDateFieldValidationStateManager,
+internal object CardValidationStateManager: ExpiryDateFieldValidationStateManager,
     CvcFieldValidationStateManager,
     PanFieldValidationStateManager {
 
-    override var panValidationState = false
-    override var expiryDateValidationState = false
-    override var cvcValidationState = false
+    override val panValidationState = FieldValidationState()
+    override val expiryDateValidationState = FieldValidationState()
+    override val cvcValidationState = FieldValidationState()
 
     override fun isAllValid(): Boolean {
-        return panValidationState && expiryDateValidationState && cvcValidationState
+        return panValidationState.validationState && expiryDateValidationState.validationState && cvcValidationState.validationState
     }
 
 }
+
+

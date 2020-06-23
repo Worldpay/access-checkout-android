@@ -4,6 +4,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.VISA
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -74,6 +75,23 @@ class CardFragmentTest: AbstractCardFragmentTest() {
             .cardDetailsAre(pan = "4111111111111111", cvc = "123", expiryDate = "06/04")
             .hasBrand(VISA)
             .validationStateIs(pan = true, cvc = true, expiryDate = false)
+            .enabledStateIs(submitButton = false)
+    }
+
+    @Test
+    fun shouldKeepValidationStateOnFieldsWhenAppIsReopened() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .enterCardDetails(pan = "4", cvc = "12", expiryDate = "1299")
+            .validationStateIs(pan = false, cvc = false, expiryDate = true)
+            .hasBrand(VISA)
+            .enabledStateIs(submitButton = false)
+
+        reopenApp()
+
+        cardFragmentTestUtils
+            .validationStateIs(pan = false, cvc = false, expiryDate = true)
+            .hasBrand(VISA)
             .enabledStateIs(submitButton = false)
     }
 

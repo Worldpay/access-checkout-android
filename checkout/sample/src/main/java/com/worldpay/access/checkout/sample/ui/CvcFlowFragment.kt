@@ -85,6 +85,7 @@ class CvcFlowFragment : Fragment() {
         val cvcValidationConfig = CvcValidationConfig.Builder()
             .cvc(cvcText)
             .validationListener(cvcValidationListener)
+            .lifecycleOwner(this)
             .build()
 
         AccessCheckoutValidationInitialiser.initialise(cvcValidationConfig)

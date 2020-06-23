@@ -1,8 +1,11 @@
 package com.worldpay.access.checkout.validation.result.handler
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.FieldValidationState
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertFalse
@@ -11,15 +14,25 @@ import kotlin.test.assertTrue
 class PanValidationResultHandlerTest {
 
     private val validationListener = mock<AccessCheckoutPanValidationListener>()
-    private val validationStateManager = CardValidationStateManager()
+    private val lifecycleOwner = mock<LifecycleOwner>()
+    private val lifecycle = mock<Lifecycle>()
+
+    private val validationStateManager = CardValidationStateManager
+    private val fieldValidationState = mock<FieldValidationState>()
 
     private lateinit var validationResultHandler: PanValidationResultHandler
 
     @Before
     fun setup() {
+        validationStateManager.panValidationState.validationState = false
+        validationStateManager.panValidationState.notificationSent = false
+
+        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
+
         validationResultHandler = PanValidationResultHandler(
             validationListener,
-            validationStateManager
+            validationStateManager,
+            lifecycleOwner
         )
     }
 
@@ -32,7 +45,8 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated(true)
         verifyNoMoreInteractions(validationListener)
 
-        assertTrue(validationStateManager.panValidationState)
+        assertTrue(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
     @Test
@@ -45,7 +59,8 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated( false)
         verifyNoMoreInteractions(validationListener)
 
-        assertFalse(validationStateManager.panValidationState)
+        assertFalse(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
     @Test
@@ -57,7 +72,7 @@ class PanValidationResultHandlerTest {
 
         verifyZeroInteractions(validationListener)
 
-        assertTrue(validationStateManager.panValidationState)
+        assertTrue(validationStateManager.panValidationState.validationState)
     }
 
     @Test
@@ -69,7 +84,7 @@ class PanValidationResultHandlerTest {
 
         verifyZeroInteractions(validationListener)
 
-        assertFalse(validationStateManager.panValidationState)
+        assertFalse(validationStateManager.panValidationState.validationState)
     }
 
     @Test
@@ -78,7 +93,8 @@ class PanValidationResultHandlerTest {
 
         verify(validationListener).onPanValidated(false)
 
-        assertFalse(validationStateManager.panValidationState)
+        assertFalse(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
     @Test
@@ -90,24 +106,45 @@ class PanValidationResultHandlerTest {
 
         verifyZeroInteractions(validationListener)
 
-        assertTrue(validationStateManager.panValidationState)
+        assertTrue(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
     @Test
     fun `should call onValidationSuccess when all fields are valid`() {
         val validationStateManager = mock<CardValidationStateManager>()
         given(validationStateManager.isAllValid()).willReturn(true)
-        given(validationStateManager.panValidationState).willReturn(false)
+        given(validationStateManager.panValidationState).willReturn(fieldValidationState)
+        given(validationStateManager.panValidationState.validationState).willReturn(false)
 
         val validationResultHandler = PanValidationResultHandler(
             validationListener,
-            validationStateManager
+            validationStateManager,
+            lifecycleOwner
         )
+
         validationResultHandler.handleResult(true)
 
         verify(validationListener).onPanValidated(true)
         verify(validationListener).onValidationSuccess()
         verifyNoMoreInteractions(validationListener)
+    }
+
+    @Test
+    fun `should notify listener if notification previously sent when lifecycle is started`() {
+        validationStateManager.panValidationState.notificationSent = true
+
+        validationResultHandler.onStart()
+
+        verify(validationListener).onPanValidated(false)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should not notify listener if notification not previously sent when lifecycle is started`() {
+        validationResultHandler.onStart()
+
+        verifyZeroInteractions(validationListener)
     }
 
 }

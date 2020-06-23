@@ -1,13 +1,17 @@
 package com.worldpay.access.checkout.client.validation
 
 import android.widget.EditText
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.BDDMockito.given
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.assertEquals
@@ -24,6 +28,13 @@ class AccessCheckoutValidationInitialiserTest {
     private val baseUrl = "http://localhost"
     private val cardValidationListener: AccessCheckoutCardValidationListener = mock()
     private val cvcValidationListener: AccessCheckoutCvcValidationListener = mock()
+    private val lifecycleOwner = mock<LifecycleOwner>()
+    private val lifecycle = mock<Lifecycle>()
+
+    @Before
+    fun setUp() {
+        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
+    }
 
     @Test
     fun `should be able to initialise the validation for card validation`() {
@@ -33,6 +44,7 @@ class AccessCheckoutValidationInitialiserTest {
             .expiryDate(expiryDate)
             .cvc(cvc)
             .validationListener(cardValidationListener)
+            .lifecycleOwner(lifecycleOwner)
             .build()
 
         assertEquals(0, pan.filters.size)
@@ -51,6 +63,7 @@ class AccessCheckoutValidationInitialiserTest {
         val config = CvcValidationConfig.Builder()
             .cvc(cvc)
             .validationListener(cvcValidationListener)
+            .lifecycleOwner(lifecycleOwner)
             .build()
 
         assertEquals(0, cvc.filters.size)

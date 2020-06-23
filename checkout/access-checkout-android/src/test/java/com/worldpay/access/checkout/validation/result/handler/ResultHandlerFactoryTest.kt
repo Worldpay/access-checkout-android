@@ -1,10 +1,14 @@
 package com.worldpay.access.checkout.validation.result.handler
 
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.FieldValidationState
 import org.junit.Before
 import org.junit.Test
+import org.mockito.BDDMockito.given
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
@@ -13,13 +17,17 @@ class ResultHandlerFactoryTest {
 
     private val accessCheckoutValidationListener = mock<AccessCheckoutCardValidationListener>()
     private val fieldValidationStateManager = mock<CardValidationStateManager>()
+    private val lifecycleOwner = mock<LifecycleOwner>()
+    private val lifecycle = mock<Lifecycle>()
 
     private lateinit var resultHandlerFactory : ResultHandlerFactory
 
     @Before
     fun setup() {
+        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
         resultHandlerFactory = ResultHandlerFactory(
-            accessCheckoutValidationListener, fieldValidationStateManager
+            accessCheckoutValidationListener, fieldValidationStateManager,
+            lifecycleOwner
         )
     }
 
@@ -36,7 +44,8 @@ class ResultHandlerFactoryTest {
         assertEquals(handler1, handler2)
 
         val resultHandlerFactory = ResultHandlerFactory(
-            accessCheckoutValidationListener, fieldValidationStateManager
+            accessCheckoutValidationListener, fieldValidationStateManager,
+            lifecycleOwner
         )
 
         val handler3 = resultHandlerFactory.getCvcValidationResultHandler()
@@ -57,7 +66,8 @@ class ResultHandlerFactoryTest {
         assertEquals(handler1, handler2)
 
         val resultHandlerFactory = ResultHandlerFactory(
-            accessCheckoutValidationListener, fieldValidationStateManager
+            accessCheckoutValidationListener, fieldValidationStateManager,
+            lifecycleOwner
         )
 
         val handler3 = resultHandlerFactory.getPanValidationResultHandler()
@@ -78,7 +88,8 @@ class ResultHandlerFactoryTest {
         assertEquals(handler1, handler2)
 
         val resultHandlerFactory = ResultHandlerFactory(
-            accessCheckoutValidationListener, fieldValidationStateManager
+            accessCheckoutValidationListener, fieldValidationStateManager,
+            lifecycleOwner
         )
 
         val handler3 = resultHandlerFactory.getExpiryDateValidationResultHandler()
@@ -99,7 +110,8 @@ class ResultHandlerFactoryTest {
         assertEquals(handler1, handler2)
 
         val resultHandlerFactory = ResultHandlerFactory(
-            accessCheckoutValidationListener, fieldValidationStateManager
+            accessCheckoutValidationListener, fieldValidationStateManager,
+            lifecycleOwner
         )
 
         val handler3 = resultHandlerFactory.getBrandChangedHandler()

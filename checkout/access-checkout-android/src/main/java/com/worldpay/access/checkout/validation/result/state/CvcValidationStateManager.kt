@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.validation.result.state
 
-internal class CvcValidationStateManager: CvcFieldValidationStateManager {
+internal object CvcValidationStateManager: CvcFieldValidationStateManager {
 
-    override var cvcValidationState = false
+    override val cvcValidationState = FieldValidationState()
 
     override fun isAllValid(): Boolean {
-        return cvcValidationState
+        return cvcValidationState.validationState
     }
 }

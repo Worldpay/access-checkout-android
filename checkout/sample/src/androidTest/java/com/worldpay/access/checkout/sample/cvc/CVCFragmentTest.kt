@@ -8,6 +8,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvc.testutil.AbstractCvcFragmentTest
 import com.worldpay.access.checkout.sample.cvc.testutil.CvcFragmentTestUtils
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -90,7 +91,23 @@ class CVCFragmentTest: AbstractCvcFragmentTest() {
             .cardDetailsAre(cvc = "11")
             .enabledStateIs(submitButton = false)
     }
-    
+
+    @Test
+    fun shouldKeepValidationStateOnFieldsWhenAppIsReopened() {
+        cvcFragmentTestUtils
+            .isInInitialState()
+            .enterCardDetails(cvc = "12")
+            .focusOff()
+            .validationStateIs(false)
+            .enabledStateIs(submitButton = false)
+
+        reopenApp()
+
+        cvcFragmentTestUtils
+            .validationStateIs(false)
+            .enabledStateIs(submitButton = false)
+    }
+
     @Test
     fun shouldOnlyKeepMaxLengthUponPastingLengthyValue() {
         cvcFragmentTestUtils
