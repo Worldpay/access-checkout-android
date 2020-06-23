@@ -11,14 +11,6 @@ class CardValidationStateManagerTest {
         CardValidationStateManager
 
     @Test
-    fun `should be static`() {
-        val validationStateManager1 = CardValidationStateManager
-        val validationStateManager2 = CardValidationStateManager
-
-        assertEquals(validationStateManager1, validationStateManager2)
-    }
-
-    @Test
     fun `should return true when all is valid`() {
         assertFalse(validationStateManager.isAllValid())
 

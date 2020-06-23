@@ -80,7 +80,6 @@ class CardFragmentTest: AbstractCardFragmentTest() {
 
     @Test
     fun shouldKeepValidationStateOnFieldsWhenAppIsReopened() {
-        // Enter an invalid luhn, mastercard identified card and valid date
         cardFragmentTestUtils
             .isInInitialState()
             .enterCardDetails(pan = "4", cvc = "12", expiryDate = "1299")
@@ -88,10 +87,8 @@ class CardFragmentTest: AbstractCardFragmentTest() {
             .hasBrand(VISA)
             .enabledStateIs(submitButton = false)
 
-        // rotate landscape
         reopenApp()
 
-        // Re-enter a luhn valid, mastercard identified card and valid date
         cardFragmentTestUtils
             .validationStateIs(pan = false, cvc = false, expiryDate = true)
             .hasBrand(VISA)

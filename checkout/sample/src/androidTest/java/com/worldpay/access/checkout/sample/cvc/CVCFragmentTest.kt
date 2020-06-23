@@ -94,7 +94,6 @@ class CVCFragmentTest: AbstractCvcFragmentTest() {
 
     @Test
     fun shouldKeepValidationStateOnFieldsWhenAppIsReopened() {
-        // Enter an invalid luhn, mastercard identified card and valid date
         cvcFragmentTestUtils
             .isInInitialState()
             .enterCardDetails(cvc = "12")
@@ -102,10 +101,8 @@ class CVCFragmentTest: AbstractCvcFragmentTest() {
             .validationStateIs(false)
             .enabledStateIs(submitButton = false)
 
-        // rotate landscape
         reopenApp()
 
-        // Re-enter a luhn valid, mastercard identified card and valid date
         cvcFragmentTestUtils
             .validationStateIs(false)
             .enabledStateIs(submitButton = false)

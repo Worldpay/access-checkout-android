@@ -10,14 +10,6 @@ class CvcValidationStateManagerTest {
     private val validationStateManager = CvcValidationStateManager
 
     @Test
-    fun `should be static`() {
-        val validationStateManager1 = CvcValidationStateManager
-        val validationStateManager2 = CvcValidationStateManager
-
-        assertEquals(validationStateManager1, validationStateManager2)
-    }
-
-    @Test
     fun `should return true when cvc is valid`() {
         assertFalse(validationStateManager.isAllValid())
 
