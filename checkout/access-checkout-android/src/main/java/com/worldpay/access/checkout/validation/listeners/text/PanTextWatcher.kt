@@ -9,12 +9,12 @@ import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandFor
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
-import com.worldpay.access.checkout.validation.validators.CVCValidator
-import com.worldpay.access.checkout.validation.validators.NewPANValidator
+import com.worldpay.access.checkout.validation.validators.CvcValidator
+import com.worldpay.access.checkout.validation.validators.PanValidator
 
-internal class PANTextWatcher(
-    private var panValidator: NewPANValidator,
-    private val cvcValidator: CVCValidator,
+internal class PanTextWatcher(
+    private var panValidator: PanValidator,
+    private val cvcValidator: CvcValidator,
     private val cvcEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler,
     private val brandChangedHandler : BrandChangedHandler,

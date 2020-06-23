@@ -4,7 +4,7 @@ import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
-import com.worldpay.access.checkout.validation.validators.NewDateValidator
+import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -27,7 +27,7 @@ class ExpiryDateTextWatcherIntegrationTest {
 
     @Before
     fun setup() {
-        val dateValidator = NewDateValidator()
+        val dateValidator = ExpiryDateValidator()
         expiryDateValidationResultHandler = mock()
 
         val expiryDateTextWatcher = ExpiryDateTextWatcher(
@@ -271,7 +271,7 @@ class ExpiryDateTextWatcherIntegrationTest {
         calendar.set(Calendar.MONTH, 5)
         calendar.set(Calendar.DAY_OF_MONTH, 30)
 
-        val dateValidator = NewDateValidator(calendar)
+        val dateValidator = ExpiryDateValidator(calendar)
 
         val expiryYearTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,

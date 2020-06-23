@@ -12,8 +12,8 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
-import com.worldpay.access.checkout.validation.validators.CVCValidator
-import com.worldpay.access.checkout.validation.validators.NewPANValidator
+import com.worldpay.access.checkout.validation.validators.CvcValidator
+import com.worldpay.access.checkout.validation.validators.PanValidator
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,7 +22,7 @@ import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
-class PANTextWatcherIntegrationTest {
+class PanTextWatcherIntegrationTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
@@ -30,7 +30,7 @@ class PANTextWatcherIntegrationTest {
     private val pan = EditText(context)
     private val cvcValidationRuleManager = CVCValidationRuleManager()
 
-    private val cvcValidator = mock<CVCValidator>()
+    private val cvcValidator = mock<CvcValidator>()
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
     private val brandChangedHandler = mock<BrandChangedHandler>()
 
@@ -38,14 +38,14 @@ class PANTextWatcherIntegrationTest {
     fun setup() {
         mockSuccessfulCardConfiguration()
 
-        val cvcTextWatcher = CVCTextWatcher(
+        val cvcTextWatcher = CvcTextWatcher(
             cvcValidator = cvcValidator
         )
 
         cvc.addTextChangedListener(cvcTextWatcher)
 
-        val panTextWatcher = PANTextWatcher(
-            panValidator = NewPANValidator(),
+        val panTextWatcher = PanTextWatcher(
+            panValidator = PanValidator(),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,

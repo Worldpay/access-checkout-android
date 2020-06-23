@@ -8,7 +8,7 @@ import org.json.JSONObject
 /**
  * This class is responsible for serialising the request data for a Payments CVC Session
  */
-internal class CVCSessionRequestSerializer : Serializer<SessionRequest> {
+internal class CvcSessionRequestSerializer : Serializer<SessionRequest> {
 
     override fun serialize(instance: SessionRequest): String {
         if (instance !is CvcSessionRequest) {

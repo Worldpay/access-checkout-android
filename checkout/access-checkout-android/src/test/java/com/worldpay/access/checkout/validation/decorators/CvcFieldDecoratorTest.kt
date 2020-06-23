@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
-import com.worldpay.access.checkout.validation.listeners.text.CVCTextWatcher
+import com.worldpay.access.checkout.validation.listeners.text.CvcTextWatcher
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -19,7 +19,7 @@ class CvcFieldDecoratorTest {
     private val cvcEditText = mock<EditText>()
     private val panEditText = mock<EditText>()
 
-    private val cvcTextWatcher = mock<CVCTextWatcher>()
+    private val cvcTextWatcher = mock<CvcTextWatcher>()
     private val cvcFocusChangeListener = mock<CvcFocusChangeListener>()
     private val lengthFilterFactory = LengthFilterFactory()
 

@@ -3,23 +3,23 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.widget.EditText
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
-import com.worldpay.access.checkout.validation.validators.CVCValidator
-import com.worldpay.access.checkout.validation.validators.NewDateValidator
-import com.worldpay.access.checkout.validation.validators.NewPANValidator
+import com.worldpay.access.checkout.validation.validators.CvcValidator
+import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
+import com.worldpay.access.checkout.validation.validators.PanValidator
 
 internal class TextWatcherFactory(
     private val resultHandlerFactory : ResultHandlerFactory
 ) {
 
     private val cvcValidationRuleManager = CVCValidationRuleManager()
-    private val panValidator = NewPANValidator()
-    private val dateValidator = NewDateValidator()
+    private val panValidator = PanValidator()
+    private val dateValidator = ExpiryDateValidator()
 
-    fun createPanTextWatcher(cvcEditText: EditText): PANTextWatcher {
-        return PANTextWatcher(
+    fun createPanTextWatcher(cvcEditText: EditText): PanTextWatcher {
+        return PanTextWatcher(
             panValidator = panValidator,
             cvcEditText =  cvcEditText,
-            cvcValidator = CVCValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
+            cvcValidator = CvcValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager
@@ -35,13 +35,13 @@ internal class TextWatcherFactory(
         )
     }
 
-    fun createCvcTextWatcher(): CVCTextWatcher {
-        val cvcValidator = CVCValidator(
+    fun createCvcTextWatcher(): CvcTextWatcher {
+        val cvcValidator = CvcValidator(
             cvcValidationResultHandler = resultHandlerFactory.getCvcValidationResultHandler(),
             cardValidationRuleProvider = cvcValidationRuleManager
         )
 
-        return CVCTextWatcher(cvcValidator)
+        return CvcTextWatcher(cvcValidator)
     }
 
 }

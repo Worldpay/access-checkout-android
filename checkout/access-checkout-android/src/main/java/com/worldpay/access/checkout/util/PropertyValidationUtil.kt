@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.util
 
-internal object ValidationUtil {
+internal object PropertyValidationUtil {
 
     fun validateNotNull(property: Any?, propertyKey: String) {
         if (property == null) {

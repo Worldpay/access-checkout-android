@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CV
 import com.worldpay.access.checkout.session.api.SessionRequestService
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
-import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
+import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
  * [PaymentsCvcSessionRequestHandler] is responsible for handling requests for a [PAYMENTS_CVC_SESSION]

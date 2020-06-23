@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 
-internal class NewPANValidator {
+internal class PanValidator {
 
     private val simpleValidator = SimpleValidator()
 

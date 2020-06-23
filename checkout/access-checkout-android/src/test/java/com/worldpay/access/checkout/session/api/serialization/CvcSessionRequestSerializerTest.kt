@@ -11,7 +11,7 @@ import kotlin.test.assertFailsWith
 
 class CvcSessionRequestSerializerTest {
 
-    private val sessionRequestSerializer: Serializer<SessionRequest> = CVCSessionRequestSerializer()
+    private val sessionRequestSerializer: Serializer<SessionRequest> = CvcSessionRequestSerializer()
 
     @Test
     fun `should be able to serialize cvc session request to json`() {

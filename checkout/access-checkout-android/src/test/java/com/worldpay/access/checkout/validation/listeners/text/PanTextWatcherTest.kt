@@ -11,13 +11,13 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
-import com.worldpay.access.checkout.validation.validators.CVCValidator
-import com.worldpay.access.checkout.validation.validators.NewPANValidator
+import com.worldpay.access.checkout.validation.validators.CvcValidator
+import com.worldpay.access.checkout.validation.validators.PanValidator
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class PANTextWatcherTest {
+class PanTextWatcherTest {
 
     private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
 
@@ -25,12 +25,12 @@ class PANTextWatcherTest {
     private val brandChangedHandler = mock<BrandChangedHandler>()
 
     private val cvcEditText = mock<EditText>()
-    private val cvcValidator = mock<CVCValidator>()
+    private val cvcValidator = mock<CvcValidator>()
 
     private val panEditable = mock<Editable>()
     private val cvcEditable = mock<Editable>()
 
-    private lateinit var panTextWatcher: PANTextWatcher
+    private lateinit var panTextWatcher: PanTextWatcher
 
     @Before
     fun setup() {
@@ -38,8 +38,8 @@ class PANTextWatcherTest {
 
         cvcValidationRuleManager = CVCValidationRuleManager()
 
-        panTextWatcher = PANTextWatcher(
-            panValidator = NewPANValidator(),
+        panTextWatcher = PanTextWatcher(
+            panValidator = PanValidator(),
             panValidationResultHandler = panValidationResultHandler,
             brandChangedHandler = brandChangedHandler,
             cvcEditText = cvcEditText,
@@ -134,9 +134,9 @@ class PANTextWatcherTest {
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val panValidator = mock<NewPANValidator>()
+        val panValidator = mock<PanValidator>()
 
-        val panTextWatcher = PANTextWatcher(
+        val panTextWatcher = PanTextWatcher(
             panValidator = panValidator,
             panValidationResultHandler = panValidationResultHandler,
             brandChangedHandler = brandChangedHandler,

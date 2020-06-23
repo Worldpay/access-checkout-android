@@ -14,7 +14,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 // todo: fix this test class
-class ValidationUtilTest {
+class PropertyValidationUtilTest {
 
     @Test
     fun `should be able to retrieve cvc validation rule given a brand`() {

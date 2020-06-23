@@ -4,8 +4,8 @@ import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
-import com.worldpay.access.checkout.session.api.serialization.CVCSessionRequestSerializer
-import com.worldpay.access.checkout.session.api.serialization.CVCSessionResponseDeserializer
+import com.worldpay.access.checkout.session.api.serialization.CvcSessionRequestSerializer
+import com.worldpay.access.checkout.session.api.serialization.CvcSessionResponseDeserializer
 import com.worldpay.access.checkout.session.api.serialization.CardSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
 
@@ -34,8 +34,8 @@ internal class SessionClientFactory {
             }
             is CvcSessionRequest -> {
                 return PaymentsCvcSessionClient(
-                    CVCSessionResponseDeserializer(),
-                    CVCSessionRequestSerializer(),
+                    CvcSessionResponseDeserializer(),
+                    CvcSessionRequestSerializer(),
                     HttpClient()
                 )
             }

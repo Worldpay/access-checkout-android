@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 
-internal class CVCValidator(
+internal class CvcValidator(
     private val cvcValidationResultHandler: CvcValidationResultHandler,
     private val cardValidationRuleProvider: CardValidationRuleProvider
 ) {

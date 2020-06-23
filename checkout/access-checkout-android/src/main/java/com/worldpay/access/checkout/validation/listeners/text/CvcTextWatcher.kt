@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import com.worldpay.access.checkout.validation.validators.CVCValidator
+import com.worldpay.access.checkout.validation.validators.CvcValidator
 
-internal class CVCTextWatcher(
-    private val cvcValidator: CVCValidator
+internal class CvcTextWatcher(
+    private val cvcValidator: CvcValidator
 ): AbstractCardDetailTextWatcher() {
 
     override fun afterTextChanged(cvc: Editable) {

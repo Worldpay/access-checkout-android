@@ -7,28 +7,28 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
-import com.worldpay.access.checkout.validation.validators.CVCValidator
+import com.worldpay.access.checkout.validation.validators.CvcValidator
 import org.junit.Before
 import org.junit.Test
 
-class CVCTextWatcherTest {
+class CvcTextWatcherTest {
 
     private val cvcValidationResultHandler = mock<CvcValidationResultHandler>()
     private val cvcEditable = mock<Editable>()
 
-    private lateinit var cvcTextWatcher: CVCTextWatcher
+    private lateinit var cvcTextWatcher: CvcTextWatcher
     private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
 
     @Before
     fun setup() {
         cvcValidationRuleManager = CVCValidationRuleManager()
 
-        val cvcValidator = CVCValidator(
+        val cvcValidator = CvcValidator(
             cvcValidationResultHandler = cvcValidationResultHandler,
             cardValidationRuleProvider = cvcValidationRuleManager
         )
 
-        cvcTextWatcher = CVCTextWatcher(cvcValidator)
+        cvcTextWatcher = CvcTextWatcher(cvcValidator)
     }
 
     @Test
@@ -42,7 +42,7 @@ class CVCTextWatcherTest {
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val cvcValidator = mock<CVCValidator>()
+        val cvcValidator = mock<CvcValidator>()
 
         cvcTextWatcher.beforeTextChanged("", 1, 2,3)
         cvcTextWatcher.onTextChanged("", 1, 2,3)

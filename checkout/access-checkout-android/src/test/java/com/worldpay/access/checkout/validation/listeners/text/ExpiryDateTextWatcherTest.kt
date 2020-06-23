@@ -4,14 +4,14 @@ import android.text.Editable
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
-import com.worldpay.access.checkout.validation.validators.NewDateValidator
+import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
 import org.junit.Before
 import org.junit.Test
 
 class ExpiryDateTextWatcherTest {
 
     private val expiryDateValidationResultHandler = mock<ExpiryDateValidationResultHandler>()
-    private val dateValidator = spy(NewDateValidator())
+    private val dateValidator = spy(ExpiryDateValidator())
     private val dateSanitiser = spy<ExpiryDateSanitiser>()
 
     private val expiryDateEditable = mock<Editable>()

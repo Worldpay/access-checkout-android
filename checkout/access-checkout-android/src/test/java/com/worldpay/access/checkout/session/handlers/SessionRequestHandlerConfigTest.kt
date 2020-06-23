@@ -53,7 +53,7 @@ class SessionRequestHandlerConfigTest {
                 .externalSessionResponseListener(mock(SessionResponseListener::class.java))
                 .build()
         }
-        assertEquals("Expected merchant ID to be provided but was not", exception.message)
+        assertEquals("Expected merchant id to be provided but was not", exception.message)
     }
 
     @Test

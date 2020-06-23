@@ -8,9 +8,9 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 import kotlin.test.assertFailsWith
 
-class CVCSessionResponseDeserializerTest {
+class CvcSessionResponseDeserializerTest {
 
-    private val sessionResponseDeserializer = CVCSessionResponseDeserializer()
+    private val sessionResponseDeserializer = CvcSessionResponseDeserializer()
 
     @Test
     fun givenEmptyResponseThenShouldThrowDeserializationException() {

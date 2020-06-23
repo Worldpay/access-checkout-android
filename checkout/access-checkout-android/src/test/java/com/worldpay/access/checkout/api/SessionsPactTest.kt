@@ -18,8 +18,8 @@ import com.worldpay.access.checkout.session.api.client.PaymentsCvcSessionClient
 import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
-import com.worldpay.access.checkout.session.api.serialization.CVCSessionRequestSerializer
-import com.worldpay.access.checkout.session.api.serialization.CVCSessionResponseDeserializer
+import com.worldpay.access.checkout.session.api.serialization.CvcSessionRequestSerializer
+import com.worldpay.access.checkout.session.api.serialization.CvcSessionResponseDeserializer
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -42,8 +42,8 @@ class SessionsPactTest {
     fun setup() {
         paymentsCvcSessionClient =
             PaymentsCvcSessionClient(
-                CVCSessionResponseDeserializer(),
-                CVCSessionRequestSerializer(),
+                CvcSessionResponseDeserializer(),
+                CvcSessionRequestSerializer(),
                 HttpClient()
             )
 
@@ -324,7 +324,7 @@ class SessionsPactTest {
     @PactVerification("sessions", fragment = "createEmptyBodyErrorInteractionRequestInteraction")
     fun `should receive a 400 response with error when body of request is empty`() {
 
-        val mockEmptySerializer = Mockito.mock(CVCSessionRequestSerializer::class.java)
+        val mockEmptySerializer = Mockito.mock(CvcSessionRequestSerializer::class.java)
 
         val emptyString = ""
         val sessionRequest =
@@ -339,7 +339,7 @@ class SessionsPactTest {
 
         paymentsCvcSessionClient =
             PaymentsCvcSessionClient(
-                CVCSessionResponseDeserializer(),
+                CvcSessionResponseDeserializer(),
                 mockEmptySerializer,
                 HttpClient()
             )

@@ -5,10 +5,10 @@ import android.widget.EditText
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
-import com.worldpay.access.checkout.validation.listeners.text.PANTextWatcher
+import com.worldpay.access.checkout.validation.listeners.text.PanTextWatcher
 
 internal class PanFieldDecorator(
-    private val panTextWatcher: PANTextWatcher,
+    private val panTextWatcher: PanTextWatcher,
     private val panFocusChangeListener: PanFocusChangeListener,
     private val panLengthFilter: PanLengthFilter,
     private val panEditText: EditText

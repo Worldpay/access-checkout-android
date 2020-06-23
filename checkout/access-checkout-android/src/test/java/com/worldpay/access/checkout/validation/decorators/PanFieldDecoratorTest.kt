@@ -9,7 +9,7 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
-import com.worldpay.access.checkout.validation.listeners.text.PANTextWatcher
+import com.worldpay.access.checkout.validation.listeners.text.PanTextWatcher
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -19,7 +19,7 @@ class PanFieldDecoratorTest {
 
     private val panEditText = mock<EditText>()
 
-    private val panTextWatcher = mock<PANTextWatcher>()
+    private val panTextWatcher = mock<PanTextWatcher>()
     private val panFocusChangeListener = mock<PanFocusChangeListener>()
     private val lengthFilterFactory = LengthFilterFactory()
 
