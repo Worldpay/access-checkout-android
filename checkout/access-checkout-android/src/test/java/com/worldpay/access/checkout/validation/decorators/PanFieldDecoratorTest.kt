@@ -10,7 +10,6 @@ import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.PANTextWatcher
-import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -18,10 +17,9 @@ import kotlin.test.assertTrue
 
 class PanFieldDecoratorTest {
 
-    private val cvcEditText = mock<EditText>()
     private val panEditText = mock<EditText>()
 
-    private val textWatcherFactory = mock<TextWatcherFactory>()
+    private val panTextWatcher = mock<PANTextWatcher>()
     private val panFocusChangeListener = mock<PanFocusChangeListener>()
     private val lengthFilterFactory = LengthFilterFactory()
 
@@ -30,19 +28,16 @@ class PanFieldDecoratorTest {
     @Before
     fun setup() {
         panFieldDecorator = PanFieldDecorator(
-            textWatcherFactory = textWatcherFactory,
+            panTextWatcher = panTextWatcher,
             panFocusChangeListener = panFocusChangeListener,
-            lengthFilterFactory = lengthFilterFactory,
-            panEditText = panEditText,
-            cvcEditText = cvcEditText
+            panLengthFilter = lengthFilterFactory.getPanLengthFilter(),
+            panEditText = panEditText
         )
     }
 
     @Test
     fun `should add new text watchers when decorating pan field each time`() {
-        val panTextWatcher = mock<PANTextWatcher>()
         given(panEditText.filters).willReturn(emptyArray())
-        given(textWatcherFactory.createPanTextWatcher(cvcEditText)).willReturn(panTextWatcher)
 
         panFieldDecorator.decorate()
 

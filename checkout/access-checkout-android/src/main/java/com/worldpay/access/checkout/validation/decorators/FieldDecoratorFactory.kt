@@ -15,18 +15,16 @@ internal class FieldDecoratorFactory(
         return CvcFieldDecorator(
             cvcTextWatcher = textWatcherFactory.createCvcTextWatcher(),
             cvcFocusChangeListener = focusChangeListenerFactory.createCvcFocusChangeListener(),
-            lengthFilterFactory = lengthFilterFactory,
-            cvcEditText = cvcEditText,
-            panEditText = panEditText
+            cvcLengthFilter = lengthFilterFactory.getCvcLengthFilter(panEditText),
+            cvcEditText = cvcEditText
         )
     }
 
     fun getPanDecorator(panEditText: EditText, cvcEditText: EditText) : PanFieldDecorator {
         return PanFieldDecorator(
-            textWatcherFactory = textWatcherFactory,
+            panTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText),
             panFocusChangeListener = focusChangeListenerFactory.createPanFocusChangeListener(),
-            lengthFilterFactory = lengthFilterFactory,
-            cvcEditText = cvcEditText,
+            panLengthFilter = lengthFilterFactory.getPanLengthFilter(),
             panEditText = panEditText
         )
     }
@@ -35,7 +33,7 @@ internal class FieldDecoratorFactory(
         return ExpiryDateFieldDecorator(
             expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText),
             expiryDateFocusChangeListener = focusChangeListenerFactory.createExpiryDateFocusChangeListener(),
-            lengthFilterFactory = lengthFilterFactory,
+            expiryDateLengthFilter = lengthFilterFactory.getExpiryDateLengthFilter(),
             expiryDateEditText = expiryDateEditText
         )
     }

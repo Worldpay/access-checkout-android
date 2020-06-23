@@ -30,9 +30,8 @@ class CvcFieldDecoratorTest {
         cvcFieldDecorator = CvcFieldDecorator(
             cvcTextWatcher = cvcTextWatcher,
             cvcFocusChangeListener = cvcFocusChangeListener,
-            lengthFilterFactory = lengthFilterFactory,
-            cvcEditText = cvcEditText,
-            panEditText = panEditText
+            cvcLengthFilter = lengthFilterFactory.getCvcLengthFilter(panEditText),
+            cvcEditText = cvcEditText
         )
     }
 

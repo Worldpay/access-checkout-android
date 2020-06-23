@@ -3,16 +3,14 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertTrue
+import kotlin.test.assertNotNull
 
 class TextWatcherFactoryTest {
 
     private val resultHandlerFactory = mock<ResultHandlerFactory>()
-    private val cardConfiguration = mock<CardConfiguration>()
 
     private val cvcEditText = mock<EditText>()
     private val expiryDateEditText = mock<EditText>()
@@ -29,19 +27,25 @@ class TextWatcherFactoryTest {
         given(resultHandlerFactory.getPanValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
-        assertTrue(textWatcherFactory.createPanTextWatcher(cvcEditText) is PANTextWatcher)
+
+        val textWatcher : PANTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText)
+        assertNotNull(textWatcher)
     }
 
     @Test
     fun `should get expiry date text watcher`() {
         given(resultHandlerFactory.getExpiryDateValidationResultHandler()).willReturn(mock())
-        assertTrue(textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText) is ExpiryDateTextWatcher)
+
+        val textWatcher : ExpiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
+        assertNotNull(textWatcher)
     }
 
     @Test
     fun `should get cvc text watcher`() {
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
-        assertTrue(textWatcherFactory.createCvcTextWatcher() is CVCTextWatcher)
+
+        val textWatcher : CVCTextWatcher = textWatcherFactory.createCvcTextWatcher()
+        assertNotNull(textWatcher)
     }
 
 }

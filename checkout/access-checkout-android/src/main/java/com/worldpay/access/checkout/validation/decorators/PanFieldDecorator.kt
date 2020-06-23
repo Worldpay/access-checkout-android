@@ -3,16 +3,15 @@ package com.worldpay.access.checkout.validation.decorators
 import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
+import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
-import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
+import com.worldpay.access.checkout.validation.listeners.text.PANTextWatcher
 
 internal class PanFieldDecorator(
-    private val textWatcherFactory : TextWatcherFactory,
-    private val panFocusChangeListener : PanFocusChangeListener,
-    private val lengthFilterFactory : LengthFilterFactory,
-    private val panEditText : EditText,
-    private val cvcEditText : EditText
+    private val panTextWatcher: PANTextWatcher,
+    private val panFocusChangeListener: PanFocusChangeListener,
+    private val panLengthFilter: PanLengthFilter,
+    private val panEditText: EditText
 ) : AbstractFieldDecorator() {
 
     private var addedPanTextWatcher: TextWatcher? = null
@@ -26,7 +25,7 @@ internal class PanFieldDecorator(
 
         panEditText.onFocusChangeListener = panFocusChangeListener
 
-        applyFilter(panEditText, lengthFilterFactory.getPanLengthFilter())
+        applyFilter(panEditText, panLengthFilter)
 
         panEditText.setHint(R.string.card_number_hint)
     }
@@ -35,7 +34,7 @@ internal class PanFieldDecorator(
         if (addedPanTextWatcher != null) {
             panEditText.removeTextChangedListener(addedPanTextWatcher)
         }
-        addedPanTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText)
+        addedPanTextWatcher = panTextWatcher
         panEditText.addTextChangedListener(addedPanTextWatcher)
     }
 

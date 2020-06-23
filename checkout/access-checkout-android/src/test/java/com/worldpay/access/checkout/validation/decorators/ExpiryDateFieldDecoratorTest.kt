@@ -29,7 +29,7 @@ class ExpiryDateFieldDecoratorTest {
         expiryDateFieldDecorator = ExpiryDateFieldDecorator(
             expiryDateTextWatcher = expiryDateTextWatcher,
             expiryDateFocusChangeListener = expiryDateFocusChangeListener,
-            lengthFilterFactory = lengthFilterFactory,
+            expiryDateLengthFilter = lengthFilterFactory.getExpiryDateLengthFilter(),
             expiryDateEditText = expiryDateEditText
         )
     }
