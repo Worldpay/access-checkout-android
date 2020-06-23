@@ -36,7 +36,7 @@ class ExpiryDateValidationResultHandlerTest {
     }
 
     @Test
-    fun `should call listener when expiry date is valid and was previously invalid`() {
+    fun `should call listener when expiry date is valid and was previously invalid and set notification sent state`() {
         validationResultHandler.handleResult(false)
 
         validationResultHandler.handleResult(true)
@@ -45,6 +45,8 @@ class ExpiryDateValidationResultHandlerTest {
         verifyNoMoreInteractions(validationListener)
 
         assertTrue(validationStateManager.expiryDateValidationState.validationState)
+        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
+
     }
 
     @Test
@@ -58,6 +60,7 @@ class ExpiryDateValidationResultHandlerTest {
         verifyNoMoreInteractions(validationListener)
 
         assertFalse(validationStateManager.expiryDateValidationState.validationState)
+        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
     }
 
     @Test
@@ -91,6 +94,7 @@ class ExpiryDateValidationResultHandlerTest {
         verify(validationListener).onExpiryDateValidated(false)
 
         assertFalse(validationStateManager.expiryDateValidationState.validationState)
+        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
     }
 
     @Test
@@ -103,6 +107,7 @@ class ExpiryDateValidationResultHandlerTest {
         verifyZeroInteractions(validationListener)
 
         assertTrue(validationStateManager.expiryDateValidationState.validationState)
+        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
     }
 
     @Test
@@ -123,6 +128,23 @@ class ExpiryDateValidationResultHandlerTest {
         verify(validationListener).onExpiryDateValidated(true)
         verify(validationListener).onValidationSuccess()
         verifyNoMoreInteractions(validationListener)
+    }
+
+    @Test
+    fun `should notify listener if notification previously sent when lifecycle is started`() {
+        validationStateManager.expiryDateValidationState.notificationSent = true
+
+        validationResultHandler.onStart()
+
+        verify(validationListener).onExpiryDateValidated(false)
+        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should not notify listener if notification not previously sent when lifecycle is started`() {
+        validationResultHandler.onStart()
+
+        verifyZeroInteractions(validationListener)
     }
 
 }

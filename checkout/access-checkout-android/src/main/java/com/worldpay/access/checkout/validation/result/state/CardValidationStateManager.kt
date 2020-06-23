@@ -4,9 +4,9 @@ internal object CardValidationStateManager: ExpiryDateFieldValidationStateManage
     CvcFieldValidationStateManager,
     PanFieldValidationStateManager {
 
-    override var panValidationState = FieldValidationState()
-    override var expiryDateValidationState = FieldValidationState()
-    override var cvcValidationState = FieldValidationState()
+    override val panValidationState = FieldValidationState()
+    override val expiryDateValidationState = FieldValidationState()
+    override val cvcValidationState = FieldValidationState()
 
     override fun isAllValid(): Boolean {
         return panValidationState.validationState && expiryDateValidationState.validationState && cvcValidationState.validationState

@@ -18,7 +18,7 @@ internal class ExpiryDateValidationResultHandler(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    internal fun reValidate() {
+    internal fun onStart() {
         if (validationStateManager.expiryDateValidationState.notificationSent) {
             notifyListener(validationStateManager.expiryDateValidationState.validationState)
         }

@@ -18,7 +18,7 @@ internal class CvcValidationResultHandler(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    internal fun reValidate() {
+    internal fun onStart() {
         if (validationStateManager.cvcValidationState.notificationSent) {
             notifyListener(validationStateManager.cvcValidationState.validationState)
         }

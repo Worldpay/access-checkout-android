@@ -1,7 +1,5 @@
 package com.worldpay.access.checkout.client.validation
 
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig

@@ -46,6 +46,7 @@ class PanValidationResultHandlerTest {
         verifyNoMoreInteractions(validationListener)
 
         assertTrue(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
     @Test
@@ -59,6 +60,7 @@ class PanValidationResultHandlerTest {
         verifyNoMoreInteractions(validationListener)
 
         assertFalse(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
     @Test
@@ -92,6 +94,7 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated(false)
 
         assertFalse(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
     @Test
@@ -104,6 +107,7 @@ class PanValidationResultHandlerTest {
         verifyZeroInteractions(validationListener)
 
         assertTrue(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
     @Test
@@ -124,6 +128,23 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated(true)
         verify(validationListener).onValidationSuccess()
         verifyNoMoreInteractions(validationListener)
+    }
+
+    @Test
+    fun `should notify listener if notification previously sent when lifecycle is started`() {
+        validationStateManager.panValidationState.notificationSent = true
+
+        validationResultHandler.onStart()
+
+        verify(validationListener).onPanValidated(false)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should not notify listener if notification not previously sent when lifecycle is started`() {
+        validationResultHandler.onStart()
+
+        verifyZeroInteractions(validationListener)
     }
 
 }

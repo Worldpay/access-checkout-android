@@ -11,7 +11,7 @@ class CardValidationStateManagerTest {
         CardValidationStateManager
 
     @Test
-    fun `should be a singleton`() {
+    fun `should be static`() {
         val validationStateManager1 = CardValidationStateManager
         val validationStateManager2 = CardValidationStateManager
 

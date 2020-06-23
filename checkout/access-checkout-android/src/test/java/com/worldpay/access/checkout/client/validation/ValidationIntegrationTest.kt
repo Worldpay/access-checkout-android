@@ -26,6 +26,7 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -33,7 +34,6 @@ import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.Robolectric
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.fail
@@ -85,7 +85,13 @@ class ValidationIntegrationTest {
 
     @After
     fun tearDown() {
-
+        val stateManager = CardValidationStateManager
+        stateManager.panValidationState.notificationSent = false
+        stateManager.panValidationState.validationState = false
+        stateManager.expiryDateValidationState.notificationSent = false
+        stateManager.expiryDateValidationState.validationState = false
+        stateManager.cvcValidationState.notificationSent = false
+        stateManager.cvcValidationState.validationState = false
     }
 
     @Test
@@ -238,6 +244,58 @@ class ValidationIntegrationTest {
         }
 
         verifyNoMoreInteractions(cardValidationListener)
+    }
+
+    @Test
+    fun `should notify validation result on focus lost where notification has not already been sent - pan`() {
+        pan.setText("0000")
+        verifyZeroInteractions(cardValidationListener)
+
+        pan.requestFocus()
+
+        if (pan.hasFocus()) {
+            pan.clearFocus()
+        } else {
+            fail("could not gain focus")
+        }
+
+        verify(cardValidationListener).onPanValidated(false)
+    }
+
+
+
+    @Test
+    fun `should notify validation result on focus lost where notification has not already been sent - cvc`() {
+        cvc.setText("")
+        verifyZeroInteractions(cardValidationListener)
+
+        cvc.requestFocus()
+
+        if (cvc.hasFocus()) {
+            cvc.clearFocus()
+        } else {
+            fail("could not gain focus")
+        }
+
+        verify(cardValidationListener).onCvcValidated(false)
+    }
+
+
+
+    @Test
+    fun `should notify validation result on focus lost where notification has not already been sent - expiry date`() {
+        expiryDate.setText("01/19")
+        verifyZeroInteractions(cardValidationListener)
+
+        expiryDate.requestFocus()
+
+        if (expiryDate.hasFocus()) {
+            expiryDate.clearFocus()
+        } else {
+            fail("could not gain focus")
+        }
+
+        verify(cardValidationListener).onExpiryDateValidated(false)
     }
 
     private fun transform(remoteCardBrand: RemoteCardBrand): CardBrand? {

@@ -37,15 +37,14 @@ class CvcValidationResultHandlerTest {
     }
 
     @Test
-    fun `should call listener when cvc is valid and was previously invalid`() {
-
+    fun `should call listener when cvc is valid and was previously invalid and set notification sent state`() {
         validationResultHandler.handleResult(true)
 
         verify(validationListener).onCvcValidated(true)
-        verify(validationListener).onValidationSuccess()
         verifyNoMoreInteractions(validationListener)
 
         assertTrue(validationStateManager.cvcValidationState.validationState)
+        assertTrue(validationStateManager.cvcValidationState.notificationSent)
     }
 
     @Test
@@ -59,6 +58,7 @@ class CvcValidationResultHandlerTest {
         verifyNoMoreInteractions(validationListener)
 
         assertFalse(validationStateManager.cvcValidationState.validationState)
+        assertTrue(validationStateManager.cvcValidationState.notificationSent)
     }
 
     @Test
@@ -92,6 +92,7 @@ class CvcValidationResultHandlerTest {
         verify(validationListener).onCvcValidated(false)
 
         assertFalse(validationStateManager.cvcValidationState.validationState)
+        assertTrue(validationStateManager.cvcValidationState.notificationSent)
     }
 
     @Test
@@ -121,11 +122,28 @@ class CvcValidationResultHandlerTest {
             validationStateManager,
             lifecycleOwner
         )
+
         validationResultHandler.handleResult(validationResult)
 
         verify(validationListener).onCvcValidated(true)
         verify(validationListener).onValidationSuccess()
         verifyNoMoreInteractions(validationListener)
+    }
+
+    @Test
+    fun `should notify listener if notification previously sent when lifecycle is started`() {
+        validationStateManager.cvcValidationState.notificationSent = true
+
+        validationResultHandler.onStart()
+
+        verify(validationListener).onCvcValidated(false)
+    }
+
+    @Test
+    fun `should not notify listener if notification not previously sent when lifecycle is started`() {
+        validationResultHandler.onStart()
+
+        verifyZeroInteractions(validationListener)
     }
 
 }
