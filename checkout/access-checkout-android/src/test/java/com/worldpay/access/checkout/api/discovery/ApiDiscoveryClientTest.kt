@@ -6,25 +6,17 @@ import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import kotlin.test.*
 
 class ApiDiscoveryClientTest {
 
     private val apiDiscoveryAsyncTaskFactoryMock: ApiDiscoveryAsyncTaskFactory = mock()
     private var discoverLinks: DiscoverLinks = DiscoverLinks(listOf(Endpoint("some-service"), Endpoint("some-endpoint")))
     private val apiDiscoveryAsyncTaskMock: ApiDiscoveryAsyncTask = mock()
-
-    @get:Rule
-    var expectedException: ExpectedException = ExpectedException.none()
 
     @Before
     fun setUp() {
@@ -33,10 +25,11 @@ class ApiDiscoveryClientTest {
 
     @Test
     fun `should throw an exception when base url is empty`() {
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("No URL supplied")
+        val exception = assertFailsWith<AccessCheckoutException> {
+            ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock).discover("", getEmptyCallback(), discoverLinks)
+        }
 
-        ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock).discover("", getEmptyCallback(), discoverLinks)
+        assertEquals("No URL supplied", exception.message)
     }
 
     @Test
