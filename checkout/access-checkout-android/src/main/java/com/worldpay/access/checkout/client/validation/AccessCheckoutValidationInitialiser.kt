@@ -6,7 +6,8 @@ import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.config.ValidationConfig
 import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
 import com.worldpay.access.checkout.validation.controller.CvcDetailsValidationController
-import com.worldpay.access.checkout.validation.controller.FieldDecoratorFactory
+import com.worldpay.access.checkout.validation.decorators.FieldDecoratorFactory
+import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
@@ -35,15 +36,20 @@ object AccessCheckoutValidationInitialiser {
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
         val focusChangeListenerFactory = FocusChangeListenerFactory(resultHandlerFactory)
-        val fieldDecoratorFactory = FieldDecoratorFactory(textWatcherFactory, focusChangeListenerFactory)
+        val lengthFilterFactory = LengthFilterFactory()
+
+        val fieldDecoratorFactory = FieldDecoratorFactory(
+            textWatcherFactory,
+            focusChangeListenerFactory,
+            lengthFilterFactory
+        )
 
         CardDetailsValidationController(
-            panEditText = validationConfig.pan,
-            expiryDateEditText = validationConfig.expiryDate,
-            cvcEditText = validationConfig.cvc,
+            panFieldDecorator = fieldDecoratorFactory.getPanDecorator(validationConfig.pan, validationConfig.cvc),
+            expiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(validationConfig.expiryDate),
+            cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, validationConfig.pan),
             baseUrl = validationConfig.baseUrl,
-            cardConfigurationClient = CardConfigurationClientFactory.createClient(),
-            fieldDecoratorFactory = fieldDecoratorFactory
+            cardConfigurationClient = CardConfigurationClientFactory.createClient()
         )
     }
 
@@ -58,11 +64,16 @@ object AccessCheckoutValidationInitialiser {
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
         val focusChangeListenerFactory = FocusChangeListenerFactory(resultHandlerFactory)
-        val fieldDecoratorFactory = FieldDecoratorFactory(textWatcherFactory, focusChangeListenerFactory)
+        val lengthFilterFactory = LengthFilterFactory()
+
+        val fieldDecoratorFactory = FieldDecoratorFactory(
+            textWatcherFactory,
+            focusChangeListenerFactory,
+            lengthFilterFactory
+        )
 
         CvcDetailsValidationController(
-            cvcEditText = validationConfig.cvc,
-            fieldDecoratorFactory = fieldDecoratorFactory
+            cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, null)
         )
     }
 

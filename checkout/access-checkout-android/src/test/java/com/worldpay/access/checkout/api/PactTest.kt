@@ -21,7 +21,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import java.net.URL
@@ -48,9 +47,6 @@ class PactTest {
 
     @get:Rule
     var mockProvider = PactProviderRuleMk2(provider, "localhost", 8080, this)
-
-    @get:Rule
-    val expectedException: ExpectedException = ExpectedException.none()
 
     private val sessionPath = "/verifiedTokens/sessions"
     private val discoveryPath = "/verifiedTokens"

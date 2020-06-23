@@ -1,19 +1,20 @@
 package com.worldpay.access.checkout.validation.controller
 
-import android.widget.EditText
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
+import com.worldpay.access.checkout.validation.decorators.CvcFieldDecorator
+import com.worldpay.access.checkout.validation.decorators.ExpiryDateFieldDecorator
+import com.worldpay.access.checkout.validation.decorators.PanFieldDecorator
 
 internal class CardDetailsValidationController(
-    private val panEditText: EditText,
-    private val expiryDateEditText: EditText,
-    private val cvcEditText: EditText,
-    baseUrl: String,
-    cardConfigurationClient: CardConfigurationClient,
-    private val fieldDecoratorFactory: FieldDecoratorFactory
+    private val panFieldDecorator : PanFieldDecorator,
+    private val expiryDateFieldDecorator : ExpiryDateFieldDecorator,
+    private val cvcFieldDecorator : CvcFieldDecorator,
+    baseUrl : String,
+    cardConfigurationClient : CardConfigurationClient
 ) {
 
     init {
@@ -24,9 +25,9 @@ internal class CardDetailsValidationController(
     }
 
     private fun decorateFields(cardConfiguration: CardConfiguration) {
-        fieldDecoratorFactory.decorateCvcField(cvcEditText, panEditText, cardConfiguration)
-        fieldDecoratorFactory.decoratePanField(panEditText, cvcEditText, cardConfiguration)
-        fieldDecoratorFactory.decorateExpiryDateFields(expiryDateEditText, cardConfiguration)
+        panFieldDecorator.decorate(cardConfiguration)
+        expiryDateFieldDecorator.decorate(cardConfiguration)
+        cvcFieldDecorator.decorate(cardConfiguration)
     }
 
     private fun getCardConfigurationCallback(): Callback<CardConfiguration> {
