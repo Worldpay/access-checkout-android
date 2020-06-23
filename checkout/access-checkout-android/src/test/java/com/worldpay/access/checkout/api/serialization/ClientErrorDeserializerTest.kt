@@ -3,41 +3,42 @@ package com.worldpay.access.checkout.api.serialization
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import org.junit.Assert.assertEquals
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
+import kotlin.test.assertFailsWith
 
 class ClientErrorDeserializerTest {
 
     private val clientErrorDeserializer = ClientErrorDeserializer()
 
-    @get:Rule
-    val expectedException: ExpectedException = ExpectedException.none()
-
     @Test
     fun givenEmptyResponseThenShouldThrowDeserializationException() {
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Cannot deserialize empty string")
+        val exception = assertFailsWith<AccessCheckoutException> {
+            clientErrorDeserializer.deserialize("")
+        }
 
-        clientErrorDeserializer.deserialize("")
+        assertEquals("Cannot deserialize empty string", exception.message)
     }
 
     @Test
     fun givenBadJsonStringThenShouldThrowDeserializationException() {
         val json = "abc"
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Cannot interpret json: $json")
 
-        clientErrorDeserializer.deserialize(json)
+        val exception = assertFailsWith<AccessCheckoutException> {
+            clientErrorDeserializer.deserialize(json)
+        }
+
+        assertEquals("Cannot interpret json: $json", exception.message)
     }
 
     @Test
     fun givenJsonStringWithMissingObjectThenShouldThrowDeserializationException() {
         val json = "{ }"
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Missing property: 'errorName'")
 
-        clientErrorDeserializer.deserialize(json)
+        val exception = assertFailsWith<AccessCheckoutException> {
+            clientErrorDeserializer.deserialize(json)
+        }
+
+        assertEquals("Missing property: 'errorName'", exception.message)
     }
 
     @Test
@@ -45,10 +46,12 @@ class ClientErrorDeserializerTest {
         val json = """{
                         "errorName": "methodNotAllowed"
                     }"""
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Missing property: 'message'")
 
-        clientErrorDeserializer.deserialize(json)
+        val exception = assertFailsWith<AccessCheckoutException> {
+            clientErrorDeserializer.deserialize(json)
+        }
+
+        assertEquals("Missing property: 'message'", exception.message)
     }
 
     @Test
@@ -58,11 +61,11 @@ class ClientErrorDeserializerTest {
                         "message": "Requested method is not allowed"
                     }"""
 
+        val exception = assertFailsWith<AccessCheckoutException> {
+            clientErrorDeserializer.deserialize(json)
+        }
 
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Invalid property type: 'errorName', expected 'String'")
-
-        clientErrorDeserializer.deserialize(json)
+        assertEquals("Invalid property type: 'errorName', expected 'String'", exception.message)
     }
 
     @Test

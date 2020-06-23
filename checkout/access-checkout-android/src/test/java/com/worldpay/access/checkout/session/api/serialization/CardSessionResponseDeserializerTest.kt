@@ -6,60 +6,64 @@ import com.worldpay.access.checkout.session.api.response.SessionResponse.Links
 import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.Curies
 import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.Endpoints
 import org.junit.Assert.assertEquals
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
+import kotlin.test.assertFailsWith
 
 class CardSessionResponseDeserializerTest {
 
-    private val sessionResponseDeserializer =
-        CardSessionResponseDeserializer()
-
-    @get:Rule
-    val expectedException: ExpectedException = ExpectedException.none()
+    private val sessionResponseDeserializer = CardSessionResponseDeserializer()
 
     @Test
     fun givenEmptyResponseThenShouldThrowDeserializationException() {
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Cannot deserialize empty string")
+        val exception = assertFailsWith<AccessCheckoutException> {
+            sessionResponseDeserializer.deserialize("")
+        }
 
-        sessionResponseDeserializer.deserialize("")
+        assertEquals("Cannot deserialize empty string", exception.message)
     }
 
     @Test
     fun givenBadJsonStringThenShouldThrowDeserializationException() {
         val json = "abc"
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Cannot interpret json: $json")
 
-        sessionResponseDeserializer.deserialize(json)
+        val exception = assertFailsWith<AccessCheckoutException> {
+            sessionResponseDeserializer.deserialize(json)
+        }
+
+        assertEquals("Cannot interpret json: $json", exception.message)
     }
 
     @Test
     fun givenJsonStringWithMissingObjectThenShouldThrowDeserializationException() {
         val json = "{ }"
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Missing object: '_links'")
 
-        sessionResponseDeserializer.deserialize(json)
+        val exception = assertFailsWith<AccessCheckoutException> {
+            sessionResponseDeserializer.deserialize(json)
+        }
+
+        assertEquals("Missing object: '_links'", exception.message)
     }
 
     @Test
     fun givenJsonStringWithMissingPropertyThenShouldThrowDeserializationException() {
         val json = "{ \"_links\": { \"verifiedTokens:session\": { } } }"
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Missing property: 'href'")
 
-        sessionResponseDeserializer.deserialize(json)
+        val exception = assertFailsWith<AccessCheckoutException> {
+            sessionResponseDeserializer.deserialize(json)
+        }
+
+        assertEquals("Missing property: 'href'", exception.message)
     }
 
     @Test
     fun givenJsonStringWithInvalidStringTypeThenShouldThrowDeserializationException() {
         val json = "{ \"_links\": { \"verifiedTokens:session\": { \"href\": true } } }"
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Invalid property type: 'href', expected 'String'")
 
-        sessionResponseDeserializer.deserialize(json)
+        val exception = assertFailsWith<AccessCheckoutException> {
+            sessionResponseDeserializer.deserialize(json)
+        }
+
+        assertEquals("Invalid property type: 'href', expected 'String'", exception.message)
     }
 
     @Test
@@ -79,10 +83,12 @@ class CardSessionResponseDeserializerTest {
                     ]
                   }
                 }"""
-        expectedException.expect(AccessCheckoutException::class.java)
-        expectedException.expectMessage("Invalid property type: 'templated'")
 
-        sessionResponseDeserializer.deserialize(badJson)
+        val exception = assertFailsWith<AccessCheckoutException> {
+            sessionResponseDeserializer.deserialize(badJson)
+        }
+
+        assertEquals("Invalid property type: 'templated', expected 'Boolean'", exception.message)
     }
 
     @Test

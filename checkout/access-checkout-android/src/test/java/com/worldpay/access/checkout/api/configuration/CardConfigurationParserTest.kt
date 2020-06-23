@@ -8,9 +8,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MAT
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN_RULE
 import org.junit.Assert.assertEquals
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
-import org.junit.rules.ExpectedException
 
 class CardConfigurationParserTest {
 
@@ -18,9 +16,6 @@ class CardConfigurationParserTest {
 
     private val validCardConfiguration: String =
         CardConfigurationParserTest::class.java.getResource("remote_card_config.json")?.readText()!!
-
-    @get:Rule
-    val expectedException: ExpectedException = ExpectedException.none()
 
     @Before
     fun setUp() {

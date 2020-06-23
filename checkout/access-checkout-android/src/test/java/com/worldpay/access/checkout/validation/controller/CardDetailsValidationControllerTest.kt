@@ -1,12 +1,14 @@
 package com.worldpay.access.checkout.validation.controller
 
-import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
+import com.worldpay.access.checkout.validation.decorators.CvcFieldDecorator
+import com.worldpay.access.checkout.validation.decorators.ExpiryDateFieldDecorator
+import com.worldpay.access.checkout.validation.decorators.PanFieldDecorator
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertNotNull
@@ -15,13 +17,9 @@ class CardDetailsValidationControllerTest {
 
     private val baseUrl: String = "base url"
 
-    // fields
-    private val pan = mock<EditText>()
-    private val expiryDate = mock<EditText>()
-    private val expiryYear = mock<EditText>()
-    private val cvc = mock<EditText>()
-
-    private val fieldDecoratorFactory = mock<FieldDecoratorFactory>()
+    private val panFieldDecorator = mock<PanFieldDecorator>()
+    private val cvcFieldDecorator = mock<CvcFieldDecorator>()
+    private val expiryDateFieldDecorator = mock<ExpiryDateFieldDecorator>()
 
     private val cardConfigurationClient = mock<CardConfigurationClient>()
 
@@ -45,36 +43,36 @@ class CardDetailsValidationControllerTest {
     fun `should decorate each field that is passed in upon initialisation`() {
         createAccessCheckoutValidationController()
 
-        verify(fieldDecoratorFactory).decorateCvcField(cvc, pan, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decoratePanField(pan, cvc, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryDate, CARD_CONFIG_NO_BRAND)
+        verify(panFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
+        verify(cvcFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
+        verify(expiryDateFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
     }
 
     @Test
     fun `should redecorate field when remote card configuration is retrieved`() {
         createAccessCheckoutValidationController()
 
-        verify(fieldDecoratorFactory).decorateCvcField(cvc, pan, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decoratePanField(pan, cvc, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryDate, CARD_CONFIG_NO_BRAND)
+        verify(panFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
+        verify(cvcFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
+        verify(expiryDateFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), callbackCaptor.capture())
         // call the callback with a successful card config
         assertNotNull(callbackCaptor.firstValue)
         callbackCaptor.firstValue.onResponse(null, CARD_CONFIG_BASIC)
 
-        verify(fieldDecoratorFactory).decorateCvcField(cvc, pan, CARD_CONFIG_BASIC)
-        verify(fieldDecoratorFactory).decoratePanField(pan, cvc, CARD_CONFIG_BASIC)
-        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryDate, CARD_CONFIG_BASIC)
+        verify(panFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
+        verify(cvcFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
+        verify(expiryDateFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
     }
 
     @Test
     fun `should not do anything when remote card configuration is errors`() {
         createAccessCheckoutValidationController()
 
-        verify(fieldDecoratorFactory).decorateCvcField(cvc, pan, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decoratePanField(pan, cvc, CARD_CONFIG_NO_BRAND)
-        verify(fieldDecoratorFactory).decorateExpiryDateFields(expiryDate, CARD_CONFIG_NO_BRAND)
+        verify(panFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
+        verify(cvcFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
+        verify(expiryDateFieldDecorator).decorate(CARD_CONFIG_NO_BRAND)
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), callbackCaptor.capture())
 
@@ -83,22 +81,17 @@ class CardDetailsValidationControllerTest {
         callbackCaptor.firstValue.onResponse(Exception(), null)
 
         verifyNoMoreInteractions(
-            fieldDecoratorFactory,
-            pan,
-            expiryDate,
-            expiryYear,
-            cvc
+            panFieldDecorator, expiryDateFieldDecorator, cvcFieldDecorator
         )
     }
 
     private fun createAccessCheckoutValidationController() {
         CardDetailsValidationController(
-            panEditText = pan,
-            expiryDateEditText = expiryDate,
-            cvcEditText = cvc,
+            panFieldDecorator = panFieldDecorator,
+            expiryDateFieldDecorator = expiryDateFieldDecorator,
+            cvcFieldDecorator = cvcFieldDecorator,
             baseUrl = baseUrl,
-            cardConfigurationClient = cardConfigurationClient,
-            fieldDecoratorFactory = fieldDecoratorFactory
+            cardConfigurationClient = cardConfigurationClient
         )
     }
 

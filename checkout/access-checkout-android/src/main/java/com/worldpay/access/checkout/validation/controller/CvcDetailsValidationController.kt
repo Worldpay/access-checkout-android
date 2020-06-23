@@ -1,17 +1,16 @@
 package com.worldpay.access.checkout.validation.controller
 
-import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CARD_DEFAULTS
+import com.worldpay.access.checkout.validation.decorators.CvcFieldDecorator
 
 internal class CvcDetailsValidationController(
-    cvcEditText: EditText,
-    fieldDecoratorFactory: FieldDecoratorFactory
+    cvcFieldDecorator : CvcFieldDecorator
 ) {
 
     init {
         val cardConfiguration = CardConfiguration(emptyList(), CARD_DEFAULTS)
-        fieldDecoratorFactory.decorateCvcField(cvcEditText, null, cardConfiguration)
+        cvcFieldDecorator.decorate(cardConfiguration)
     }
 
 }
