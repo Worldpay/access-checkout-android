@@ -7,15 +7,15 @@ import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.verify
 
-class CardConfigurationClientImplTest {
+class CardConfigurationClientTest {
 
     private lateinit var cardConfigurationAsyncTaskFactory: CardConfigurationAsyncTaskFactory
-    private lateinit var cardConfigurationClientImpl: CardConfigurationClientImpl
+    private lateinit var cardConfigurationClient: CardConfigurationClient
 
     @Before
     fun setup() {
         cardConfigurationAsyncTaskFactory = mock()
-        cardConfigurationClientImpl = CardConfigurationClientImpl(cardConfigurationAsyncTaskFactory)
+        cardConfigurationClient = CardConfigurationClient(cardConfigurationAsyncTaskFactory)
     }
 
     @Test
@@ -29,7 +29,7 @@ class CardConfigurationClientImplTest {
         given(cardConfigurationAsyncTaskFactory.getAsyncTask(callback)).willReturn(asyncTask)
 
         val baseURL = "http://localhost"
-        cardConfigurationClientImpl.getCardConfiguration(baseURL, callback)
+        cardConfigurationClient.getCardConfiguration(baseURL, callback)
 
         verify(asyncTask).execute(baseURL)
     }

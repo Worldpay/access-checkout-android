@@ -5,7 +5,6 @@ import android.text.InputFilter
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
@@ -39,7 +38,7 @@ class ExpiryDateFieldDecoratorTest {
     fun `should add new text watchers when decorating expiry date field each time`() {
         given(expiryDateEditText.filters).willReturn(emptyArray())
 
-        expiryDateFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText, never()).removeTextChangedListener(any())
         verify(expiryDateEditText).addTextChangedListener(expiryDateTextWatcher)
@@ -50,7 +49,7 @@ class ExpiryDateFieldDecoratorTest {
         given(expiryDateEditText.text).willReturn(mock())
         given(mock<Editable>().toString()).willReturn("")
 
-        expiryDateFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText).removeTextChangedListener(expiryDateTextWatcher)
         verify(expiryDateEditText).addTextChangedListener(expiryDateTextWatcher)
@@ -60,7 +59,7 @@ class ExpiryDateFieldDecoratorTest {
     fun `should add hint to expiry date field`() {
         given(expiryDateEditText.filters).willReturn(emptyArray())
 
-        expiryDateFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText).setHint(R.string.card_expiry_date_hint)
     }
@@ -71,7 +70,7 @@ class ExpiryDateFieldDecoratorTest {
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        expiryDateFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText).filters = captor.capture()
 
@@ -84,12 +83,12 @@ class ExpiryDateFieldDecoratorTest {
         given(expiryDateEditText.filters).willReturn(arrayOf(
             InputFilter.LengthFilter(1000),
             InputFilter.AllCaps(),
-            ExpiryDateLengthFilter(CARD_CONFIG_NO_BRAND)
+            ExpiryDateLengthFilter()
         ))
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        expiryDateFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText).filters = captor.capture()
 
@@ -106,7 +105,7 @@ class ExpiryDateFieldDecoratorTest {
         given(expiryDateEditText.text).willReturn(expiryDateEditable)
         given(expiryDateEditable.toString()).willReturn("12/21")
 
-        expiryDateFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText).isCursorVisible
         verify(expiryDateEditText).setText("12/21")
@@ -117,7 +116,7 @@ class ExpiryDateFieldDecoratorTest {
         given(expiryDateEditText.filters).willReturn(emptyArray())
         given(expiryDateEditText.isCursorVisible).willReturn(false)
 
-        expiryDateFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText).isCursorVisible
         verify(expiryDateEditText, never()).setText(any<String>())
@@ -128,7 +127,7 @@ class ExpiryDateFieldDecoratorTest {
         given(expiryDateEditText.filters).willReturn(emptyArray())
         given(expiryDateEditText.isCursorVisible).willReturn(false)
 
-        expiryDateFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText).onFocusChangeListener = expiryDateFocusChangeListener
     }

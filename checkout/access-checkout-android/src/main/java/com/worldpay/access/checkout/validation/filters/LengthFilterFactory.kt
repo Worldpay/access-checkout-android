@@ -1,20 +1,19 @@
 package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
 
 internal class LengthFilterFactory {
 
-    fun getCvcLengthFilter(panEditText : EditText?, cardConfiguration : CardConfiguration) : CvcLengthFilter {
-        return CvcLengthFilter(panEditText, cardConfiguration)
+    fun getCvcLengthFilter(panEditText : EditText?) : CvcLengthFilter {
+        return CvcLengthFilter(panEditText)
     }
 
-    fun getPanLengthFilter(cardConfiguration : CardConfiguration) : PanLengthFilter {
-        return PanLengthFilter(cardConfiguration)
+    fun getPanLengthFilter() : PanLengthFilter {
+        return PanLengthFilter()
     }
 
-    fun getExpiryDateLengthFilter(cardConfiguration : CardConfiguration) : ExpiryDateLengthFilter {
-        return ExpiryDateLengthFilter(cardConfiguration)
+    fun getExpiryDateLengthFilter() : ExpiryDateLengthFilter {
+        return ExpiryDateLengthFilter()
     }
 
 }

@@ -1,7 +1,15 @@
 package com.worldpay.access.checkout.testutils
 
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.configuration.*
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
+import kotlin.test.assertNotNull
 
 internal object CardConfigurationUtil {
 
@@ -220,6 +228,18 @@ internal object CardConfigurationUtil {
                     validLengths = listOf(12, 13, 14, 15, 16, 17, 18, 19)
                 )
             )
+    }
+
+    fun mockSuccessfulCardConfiguration() {
+        val cardConfigurationClient = mock<CardConfigurationClient>()
+        val baseUrl = "http://localhost-mock:8080"
+        val captor = argumentCaptor<Callback<CardConfiguration>>()
+
+        CardConfigurationProvider(baseUrl, cardConfigurationClient)
+
+        verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), captor.capture())
+
+        assertNotNull(captor.firstValue.onResponse(null, CARD_CONFIG_BASIC))
     }
 
 }

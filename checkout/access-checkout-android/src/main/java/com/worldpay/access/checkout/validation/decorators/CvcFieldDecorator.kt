@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.validation.decorators
 import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
 
@@ -17,7 +16,7 @@ internal class CvcFieldDecorator(
 
     private var addedCvcTextWatcher: TextWatcher? = null
 
-    fun decorate(cardConfiguration: CardConfiguration) {
+    fun decorate() {
         addTextWatcher()
 
         if (cvcEditText.isCursorVisible) {
@@ -26,7 +25,7 @@ internal class CvcFieldDecorator(
 
         cvcEditText.onFocusChangeListener = cvcFocusChangeListener
 
-        applyFilter(cvcEditText, lengthFilterFactory.getCvcLengthFilter(panEditText, cardConfiguration))
+        applyFilter(cvcEditText, lengthFilterFactory.getCvcLengthFilter(panEditText))
 
         cvcEditText.setHint(R.string.card_cvc_hint)
     }

@@ -3,8 +3,8 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
@@ -36,6 +36,8 @@ class PANTextWatcherIntegrationTest {
 
     @Before
     fun setup() {
+        mockSuccessfulCardConfiguration()
+
         val cvcTextWatcher = CVCTextWatcher(
             cvcValidator = cvcValidator
         )
@@ -43,7 +45,6 @@ class PANTextWatcherIntegrationTest {
         cvc.addTextChangedListener(cvcTextWatcher)
 
         val panTextWatcher = PANTextWatcher(
-            cardConfiguration = CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC,
             panValidator = NewPANValidator(),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,

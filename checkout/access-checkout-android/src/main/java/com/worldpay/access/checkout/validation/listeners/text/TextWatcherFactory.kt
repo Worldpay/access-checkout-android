@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.TextWatcher
 import android.widget.EditText
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CVCValidator
@@ -17,9 +16,8 @@ internal class TextWatcherFactory(
     private val panValidator = NewPANValidator()
     private val dateValidator = NewDateValidator()
 
-    fun createPanTextWatcher(cvcEditText: EditText, cardConfiguration: CardConfiguration): TextWatcher {
+    fun createPanTextWatcher(cvcEditText: EditText): TextWatcher {
         return PANTextWatcher(
-            cardConfiguration = cardConfiguration,
             panValidator = panValidator,
             cvcEditText =  cvcEditText,
             cvcValidator = CVCValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),

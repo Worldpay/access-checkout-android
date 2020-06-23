@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.validation.decorators
 import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
 
@@ -16,7 +15,7 @@ internal class ExpiryDateFieldDecorator(
 
     private var addedExpiryDateTextWatcher: TextWatcher? = null
 
-    fun decorate(cardConfiguration: CardConfiguration) {
+    fun decorate() {
         addTextWatcher()
 
         if (expiryDateEditText.isCursorVisible) {
@@ -25,7 +24,7 @@ internal class ExpiryDateFieldDecorator(
 
         expiryDateEditText.onFocusChangeListener = expiryDateFocusChangeListener
 
-        applyFilter(expiryDateEditText, lengthFilterFactory.getExpiryDateLengthFilter(cardConfiguration))
+        applyFilter(expiryDateEditText, lengthFilterFactory.getExpiryDateLengthFilter())
 
         expiryDateEditText.setHint(R.string.card_expiry_date_hint)
     }

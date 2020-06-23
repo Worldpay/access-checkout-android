@@ -29,7 +29,7 @@ class TextWatcherFactoryTest {
         given(resultHandlerFactory.getPanValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
-        assertTrue(textWatcherFactory.createPanTextWatcher(cvcEditText, cardConfiguration) is PANTextWatcher)
+        assertTrue(textWatcherFactory.createPanTextWatcher(cvcEditText) is PANTextWatcher)
     }
 
     @Test
