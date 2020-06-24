@@ -132,4 +132,16 @@ class ExpiryDateFieldDecoratorTest {
         verify(expiryDateEditText).onFocusChangeListener = expiryDateFocusChangeListener
     }
 
+    @Test
+    fun `should call decorate when calling update function`() {
+        given(expiryDateEditText.filters).willReturn(emptyArray())
+        given(expiryDateEditText.isCursorVisible).willReturn(false)
+
+        val fieldDecorator = spy(expiryDateFieldDecorator)
+
+        fieldDecorator.update()
+
+        verify(fieldDecorator).decorate()
+    }
+
 }

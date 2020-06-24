@@ -133,4 +133,16 @@ class PanFieldDecoratorTest {
         verify(panEditText).onFocusChangeListener = panFocusChangeListener
     }
 
+    @Test
+    fun `should call decorate when calling update function`() {
+        given(panEditText.filters).willReturn(emptyArray())
+        given(panEditText.isCursorVisible).willReturn(false)
+
+        val fieldDecorator = spy(panFieldDecorator)
+
+        fieldDecorator.update()
+
+        verify(fieldDecorator).decorate()
+    }
+
 }

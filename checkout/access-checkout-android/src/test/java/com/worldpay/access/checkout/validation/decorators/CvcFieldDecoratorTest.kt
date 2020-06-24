@@ -133,4 +133,16 @@ class CvcFieldDecoratorTest {
         verify(cvcEditText).onFocusChangeListener = cvcFocusChangeListener
     }
 
+    @Test
+    fun `should call decorate when calling update function`() {
+        given(cvcEditText.filters).willReturn(emptyArray())
+        given(cvcEditText.isCursorVisible).willReturn(false)
+
+        val fieldDecorator = spy(cvcFieldDecorator)
+
+        fieldDecorator.update()
+
+        verify(fieldDecorator).decorate()
+    }
+
 }

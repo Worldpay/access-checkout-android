@@ -25,11 +25,6 @@ object AccessCheckoutValidationInitialiser {
     }
 
     private fun initialiseCardValidation(validationConfig: CardValidationConfig) {
-        CardConfigurationProvider(
-            baseUrl = validationConfig.baseUrl,
-            cardConfigurationClient = CardConfigurationClient()
-        )
-
         val validationStateManager = CardValidationStateManager
 
         val resultHandlerFactory = ResultHandlerFactory(
@@ -51,6 +46,12 @@ object AccessCheckoutValidationInitialiser {
         val panFieldDecorator = fieldDecoratorFactory.getPanDecorator(validationConfig.pan, validationConfig.cvc)
         val expiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(validationConfig.expiryDate)
         val cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, validationConfig.pan)
+
+        CardConfigurationProvider(
+            baseUrl = validationConfig.baseUrl,
+            cardConfigurationClient = CardConfigurationClient(),
+            observers = listOf(panFieldDecorator, expiryDateFieldDecorator, cvcFieldDecorator)
+        )
 
         panFieldDecorator.decorate()
         expiryDateFieldDecorator.decorate()

@@ -1,20 +1,21 @@
 package com.worldpay.access.checkout.validation.utils
 
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
-import org.junit.Assert
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
-// todo: fix this test class
-class PropertyValidationUtilTest {
+class ValidationUtilTest {
 
     @Test
     fun `should be able to retrieve cvc validation rule given a brand`() {
@@ -70,17 +71,18 @@ class PropertyValidationUtilTest {
 
     @Test
     fun `should be able to find null brand for visa pan but where card config has no brands`() {
+        CardConfigurationProvider("", mock(), emptyList())
         assertNull(ValidationUtil.findBrandForPan(VISA_PAN))
     }
 
     @Test
     fun `given single numeric char then isNumeric should return true`() {
-        Assert.assertTrue(isNumeric("1"))
+        assertTrue(isNumeric("1"))
     }
 
     @Test
     fun `given all numeric chars then isNumeric should return true`() {
-        Assert.assertTrue(isNumeric("1234567890"))
+        assertTrue(isNumeric("1234567890"))
     }
 
     @Test

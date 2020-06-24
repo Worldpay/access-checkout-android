@@ -6,7 +6,11 @@ import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 
-internal class CardConfigurationProvider(baseUrl: String, cardConfigurationClient: CardConfigurationClient) {
+internal class CardConfigurationProvider(
+    baseUrl: String,
+    cardConfigurationClient: CardConfigurationClient,
+    private val observers: List<CardConfigurationObserver>
+) {
 
     companion object {
         private var cardConfiguration = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
@@ -17,6 +21,8 @@ internal class CardConfigurationProvider(baseUrl: String, cardConfigurationClien
     }
 
     init {
+        cardConfiguration = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+
         cardConfigurationClient.getCardConfiguration(
             baseUrl = baseUrl,
             callback = getCardConfigurationCallback()
@@ -29,6 +35,9 @@ internal class CardConfigurationProvider(baseUrl: String, cardConfigurationClien
                 response?.let { cardConfig ->
                     debugLog(javaClass.simpleName, "Retrieved remote card configuration")
                     cardConfiguration = cardConfig
+                    for (observer in observers) {
+                        observer.update()
+                    }
                 }
                 error?.let {
                     debugLog(javaClass.simpleName, "Error while fetching card configuration: $it")

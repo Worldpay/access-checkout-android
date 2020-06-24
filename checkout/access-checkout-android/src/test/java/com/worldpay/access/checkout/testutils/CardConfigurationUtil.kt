@@ -235,7 +235,7 @@ internal object CardConfigurationUtil {
         val baseUrl = "http://localhost-mock:8080"
         val captor = argumentCaptor<Callback<CardConfiguration>>()
 
-        CardConfigurationProvider(baseUrl, cardConfigurationClient)
+        CardConfigurationProvider(baseUrl, cardConfigurationClient, emptyList())
 
         verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), captor.capture())
 

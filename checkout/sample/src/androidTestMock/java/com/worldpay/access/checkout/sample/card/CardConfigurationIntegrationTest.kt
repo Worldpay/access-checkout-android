@@ -6,8 +6,6 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.simulateCardConfigurationServerError
-import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
-import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -16,11 +14,9 @@ class CardConfigurationIntegrationTest {
 
     private val luhnValidUnknownCard = "8888888888888888"
     private val luhnValidMastercardCard = "5555555555554444"
-    private val unknownCvc = "1234"
 
     @get:Rule
-    var cardConfigurationErrorRule: CardConfigurationErrorRule = CardConfigurationErrorRule(
-        MainActivity::class.java)
+    var cardConfigurationErrorRule: CardConfigurationErrorRule = CardConfigurationErrorRule(MainActivity::class.java)
 
     private lateinit var cardFragmentTestUtils: CardFragmentTestUtils
 
@@ -29,16 +25,11 @@ class CardConfigurationIntegrationTest {
         cardFragmentTestUtils = CardFragmentTestUtils(cardConfigurationErrorRule)
     }
 
-    @After
-    fun tearDown() {
-        stubCardConfiguration(cardConfigurationErrorRule.activity)
-    }
-
     @Test
     fun givenCardConfigCallFails_validKnownBrandCardDetails_returnsSuccessfulResponse() {
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidMastercardCard, cvc = unknownCvc, expiryDate = "1299")
-            .cardDetailsAre(pan = luhnValidMastercardCard, cvc = unknownCvc, expiryDate = "12/99")
+            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "1234", expiryDate = "1299")
+            .cardDetailsAre(pan = luhnValidMastercardCard, cvc = "1234", expiryDate = "12/99")
             .hasNoBrand()
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
@@ -52,8 +43,8 @@ class CardConfigurationIntegrationTest {
     @Test
     fun givenCardConfigCallFails_validUnknownBrandCardDetails_returnsSuccessfulResponse() {
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidUnknownCard, cvc = unknownCvc, expiryDate = "1299")
-            .cardDetailsAre(pan = luhnValidUnknownCard, cvc = unknownCvc, expiryDate = "12/99")
+            .enterCardDetails(pan = luhnValidUnknownCard, cvc = "1234", expiryDate = "1299")
+            .cardDetailsAre(pan = luhnValidUnknownCard, cvc = "1234", expiryDate = "12/99")
             .hasNoBrand()
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
