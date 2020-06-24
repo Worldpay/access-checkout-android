@@ -4,7 +4,7 @@ import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
 import com.worldpay.access.checkout.session.api.SessionRequestService
 import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
@@ -13,17 +13,17 @@ import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
- * [VerifiedTokensSessionRequestHandler] is responsible for handling requests for a [VERIFIED_TOKEN_SESSION]
+ * [VerifiedTokensSessionRequestHandler] is responsible for handling requests for a [VERIFIED_TOKENS]
  *
- * @property canHandle - returns true if list of [SessionType] contains a [VERIFIED_TOKEN_SESSION]
- * @property handle - handles the request for a [VERIFIED_TOKEN_SESSION]
+ * @property canHandle - returns true if list of [SessionType] contains a [VERIFIED_TOKENS]
+ * @property handle - handles the request for a [VERIFIED_TOKENS]
  */
 internal class VerifiedTokensSessionRequestHandler(
     private val sessionRequestHandlerConfig: SessionRequestHandlerConfig
 ) : SessionRequestHandler {
 
     override fun canHandle(sessionTypes: List<SessionType>): Boolean {
-        return sessionTypes.contains(VERIFIED_TOKEN_SESSION)
+        return sessionTypes.contains(VERIFIED_TOKENS)
     }
 
     override fun handle(cardDetails: CardDetails) {
@@ -36,7 +36,7 @@ internal class VerifiedTokensSessionRequestHandler(
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl(sessionRequestHandlerConfig.getBaseUrl())
             .requestBody(createCardSessionRequest(cardDetails))
-            .sessionType(VERIFIED_TOKEN_SESSION)
+            .sessionType(VERIFIED_TOKENS)
             .discoverLinks(DiscoverLinks.verifiedTokens)
             .build()
 

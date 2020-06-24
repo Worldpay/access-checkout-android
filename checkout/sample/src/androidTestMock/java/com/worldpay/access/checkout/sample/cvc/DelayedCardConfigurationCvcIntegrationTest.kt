@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.sample.cvc
 
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvc.testutil.CvcFragmentTestUtils
@@ -42,7 +42,7 @@ class DelayedCardConfigurationCvcIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(PAYMENTS_CVC_SESSION to cardConfigurationRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
+                mapOf(PAYMENTS_CVC to cardConfigurationRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
             )
             .closeDialog()
             .cardDetailsAre(cvc = "")

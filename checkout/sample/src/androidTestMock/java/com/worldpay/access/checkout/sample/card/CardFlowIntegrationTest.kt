@@ -5,8 +5,8 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
 import com.worldpay.access.checkout.sample.MockServer.Paths.VERIFIED_TOKENS_SESSIONS_PATH
 import com.worldpay.access.checkout.sample.MockServer.getCurrentContext
 import com.worldpay.access.checkout.sample.MockServer.stubFor
@@ -38,7 +38,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(VERIFIED_TOKENS to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -71,7 +71,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(VERIFIED_TOKENS to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -85,7 +85,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(VERIFIED_TOKENS to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -145,7 +145,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
         CardFragmentTestUtils(activityRule)
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(VERIFIED_TOKENS to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -164,7 +164,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
         CardFragmentTestUtils(activityRule)
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(VERIFIED_TOKENS to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -183,8 +183,8 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .hasResponseDialogWithMessage(
                 mapOf(
-                    PAYMENTS_CVC_SESSION to activityRule.activity.getString(R.string.payments_cvc_session_reference),
-                    VERIFIED_TOKEN_SESSION to activityRule.activity.getString(R.string.verified_token_session_reference)
+                    PAYMENTS_CVC to activityRule.activity.getString(R.string.payments_cvc_session_reference),
+                    VERIFIED_TOKENS to activityRule.activity.getString(R.string.verified_token_session_reference)
                 ).toString()
             )
             .closeDialog()

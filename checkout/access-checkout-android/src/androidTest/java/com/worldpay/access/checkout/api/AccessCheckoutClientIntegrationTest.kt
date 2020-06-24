@@ -19,7 +19,7 @@ import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
@@ -113,7 +113,7 @@ class AccessCheckoutClientIntegrationTest {
         var assertResponse = false
         val responseListener = object : SessionResponseListener {
             override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {
-                assertEquals(mapOf(VERIFIED_TOKEN_SESSION to expectedSessionReference), sessionResponseMap)
+                assertEquals(mapOf(VERIFIED_TOKENS to expectedSessionReference), sessionResponseMap)
                 assertResponse = true
             }
 
@@ -128,7 +128,7 @@ class AccessCheckoutClientIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
+        accessCheckoutClient.generateSessions(cardDetails, listOf(VERIFIED_TOKENS))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
     }
@@ -172,7 +172,7 @@ class AccessCheckoutClientIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
+        accessCheckoutClient.generateSessions(cardDetails, listOf(VERIFIED_TOKENS))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
     }
@@ -211,7 +211,7 @@ class AccessCheckoutClientIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
+        accessCheckoutClient.generateSessions(cardDetails, listOf(VERIFIED_TOKENS))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
     }
@@ -258,7 +258,7 @@ class AccessCheckoutClientIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
+        accessCheckoutClient.generateSessions(cardDetails, listOf(VERIFIED_TOKENS))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
     }
@@ -294,7 +294,7 @@ class AccessCheckoutClientIntegrationTest {
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN_SESSION))
+        accessCheckoutClient.generateSessions(cardDetails, listOf(VERIFIED_TOKENS))
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
     }

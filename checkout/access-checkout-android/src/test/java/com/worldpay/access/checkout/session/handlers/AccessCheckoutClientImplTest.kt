@@ -6,8 +6,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.worldpay.access.checkout.client.session.model.CardDetails
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
@@ -77,7 +77,7 @@ class AccessCheckoutClientImplTest {
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
 
-        accessCheckoutClient.generateSession(cardDetails, listOf(VERIFIED_TOKEN_SESSION, PAYMENTS_CVC_SESSION))
+        accessCheckoutClient.generateSessions(cardDetails, listOf(VERIFIED_TOKENS, PAYMENTS_CVC))
 
         verify(localBroadcastManagerMock).sendBroadcast(argument.capture())
 
@@ -108,7 +108,7 @@ class AccessCheckoutClientImplTest {
             .cvc("123")
             .build()
 
-        val tokenRequests = listOf(VERIFIED_TOKEN_SESSION, PAYMENTS_CVC_SESSION)
+        val tokenRequests = listOf(VERIFIED_TOKENS, PAYMENTS_CVC)
 
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
@@ -118,7 +118,7 @@ class AccessCheckoutClientImplTest {
                 contextMock
             )
 
-        accessCheckoutClient.generateSession(cardDetails, tokenRequests)
+        accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
 
         verify(sessionTokenRequestHandlerMock).canHandle(tokenRequests)
         verify(verifiedTokenRequestHandlerMock).canHandle(tokenRequests)
@@ -130,7 +130,7 @@ class AccessCheckoutClientImplTest {
             .cvc("123")
             .build()
 
-        val tokenRequests = listOf(PAYMENTS_CVC_SESSION)
+        val tokenRequests = listOf(PAYMENTS_CVC)
         given(sessionTokenRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
 
         val accessCheckoutClient =
@@ -141,7 +141,7 @@ class AccessCheckoutClientImplTest {
                 contextMock
             )
 
-        accessCheckoutClient.generateSession(cardDetails, tokenRequests)
+        accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
 
         verify(sessionTokenRequestHandlerMock).canHandle(tokenRequests)
         verify(sessionTokenRequestHandlerMock).handle(cardDetails)
@@ -156,7 +156,7 @@ class AccessCheckoutClientImplTest {
             .cvc("123")
             .build()
 
-        val tokenRequests = listOf(VERIFIED_TOKEN_SESSION)
+        val tokenRequests = listOf(VERIFIED_TOKENS)
         given(verifiedTokenRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
 
         val accessCheckoutClient =
@@ -167,7 +167,7 @@ class AccessCheckoutClientImplTest {
                 contextMock
             )
 
-        accessCheckoutClient.generateSession(cardDetails, tokenRequests)
+        accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
 
         verify(verifiedTokenRequestHandlerMock).canHandle(tokenRequests)
         verify(verifiedTokenRequestHandlerMock).handle(cardDetails)
@@ -190,7 +190,7 @@ class AccessCheckoutClientImplTest {
                 contextMock
             )
 
-        accessCheckoutClient.generateSession(cardDetails, emptyList())
+        accessCheckoutClient.generateSessions(cardDetails, emptyList())
 
         verify(verifiedTokenRequestHandlerMock, never()).handle(cardDetails)
         verify(sessionTokenRequestHandlerMock, never()).handle(cardDetails)

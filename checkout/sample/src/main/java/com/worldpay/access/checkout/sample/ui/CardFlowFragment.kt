@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.sample.ui
 
-import android.app.Application
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -12,13 +11,11 @@ import android.widget.ImageView
 import android.widget.Switch
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.ViewModel
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.sample.BuildConfig
@@ -90,9 +87,9 @@ class CardFlowFragment : Fragment() {
 
     private fun setSessionTypes(isChecked: Boolean) {
         sessionTypes = if (isChecked) {
-            listOf(VERIFIED_TOKEN_SESSION, PAYMENTS_CVC_SESSION)
+            listOf(VERIFIED_TOKENS, PAYMENTS_CVC)
         } else {
-            listOf(VERIFIED_TOKEN_SESSION)
+            listOf(VERIFIED_TOKENS)
         }
     }
 
@@ -117,7 +114,7 @@ class CardFlowFragment : Fragment() {
                 .cvc(cvcText.text.toString())
                 .build()
 
-            accessCheckoutClient.generateSession(cardDetails, sessionTypes)
+            accessCheckoutClient.generateSessions(cardDetails, sessionTypes)
         }
     }
 
