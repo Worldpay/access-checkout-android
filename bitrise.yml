@@ -9,10 +9,10 @@ workflows:
     - script@1.1.5:
         title: Get project version
         inputs:
-          - content: scripts/get_project_version.sh
+          - content: bitrise/scripts/get_project_version.sh
     - install-missing-android-tools@2.3.4:
         inputs:
-        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradlew_path: "gradlew"
     - android-lint@0.9.5:
         title: "Lint check on app module"
         inputs:
@@ -41,11 +41,11 @@ workflows:
         title: "Deploy pact file to pact broker"
         run_if: not .IsPR
         inputs:
-          - file_path: scripts/upload_pact.sh
+          - file_path: bitrise/scripts/upload_pact.sh
     - gradle-runner@1.8.4:
         title: "Code coverage check"
         inputs:
-        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradlew_path: "gradlew"
         - gradle_task: jacocoTestCoverageVerification
         - gradle_file: "$PROJECT_LOCATION/build.gradle"
     - deploy-to-bitrise-io@1.3.19:
@@ -162,16 +162,16 @@ workflows:
     - script@1.1.5:
         title: Get project version
         inputs:
-          - content: scripts/get_project_version.sh --allow-snapshots
+          - content: bitrise/scripts/get_project_version.sh --allow-snapshots
     - script-runner@0.9.3:
         title: "Deploy pact file to pact broker"
         run_if: not .IsPR
         inputs:
-          - file_path: scripts/upload_pact.sh
+          - file_path: bitrise/scripts/upload_pact.sh
     - gradle-runner@1.8.4:
         title: "Code coverage check"
         inputs:
-        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradlew_path: "gradlew"
         - gradle_task: jacocoTestCoverageVerification
         - gradle_file: "$PROJECT_LOCATION/build.gradle"
     - deploy-to-bitrise-io@1.3.19:
@@ -183,7 +183,7 @@ workflows:
     - gradle-runner@1.8.4:
         title: "Generate javadoc documentation"
         inputs:
-        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradlew_path: "gradlew"
         - gradle_task: dokka
         - gradle_file: "$PROJECT_LOCATION/build.gradle"
     - deploy-to-bitrise-io@1.3.19:
@@ -233,7 +233,7 @@ workflows:
         title: Do anything with Script step
     - install-missing-android-tools@2.3.4:
         inputs:
-          - gradlew_path: "$PROJECT_LOCATION/gradlew"
+          - gradlew_path: "gradlew"
     - android-build@0.9.5:
         title: "Build test APK"
         inputs:
@@ -276,7 +276,7 @@ workflows:
       - cache-pull@2.0.1: {}
       - install-missing-android-tools@2.3.4:
           inputs:
-            - gradlew_path: "$PROJECT_LOCATION/gradlew"
+            - gradlew_path: "gradlew"
       - android-build@0.9.5:
           title: "Build test APK"
           inputs:
@@ -308,8 +308,8 @@ workflows:
       - cache-push@2.0.5: {}
 app:
   envs:
-  - PROJECT_LOCATION: checkout
-  - LIBRARY_MODULE: access-checkout-android
+  - PROJECT_LOCATION: access-checkout
+  - LIBRARY_MODULE: access-checkout
     opts:
       is_expand: false
   - APP_MODULE: sample
