@@ -63,7 +63,7 @@ class AccessCheckoutClientBuilderTest {
                 .lifecycleOwner(lifecycleOwner)
                 .build()
         }
-        assertEquals("Expected merchant ID to be provided but was not", exception.message)
+        assertEquals("Expected merchant id to be provided but was not", exception.message)
     }
 
     @Test

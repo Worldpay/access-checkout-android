@@ -5,11 +5,10 @@ import android.text.InputFilter
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
-import com.worldpay.access.checkout.validation.listeners.text.CVCTextWatcher
+import com.worldpay.access.checkout.validation.listeners.text.CvcTextWatcher
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -20,7 +19,7 @@ class CvcFieldDecoratorTest {
     private val cvcEditText = mock<EditText>()
     private val panEditText = mock<EditText>()
 
-    private val cvcTextWatcher = mock<CVCTextWatcher>()
+    private val cvcTextWatcher = mock<CvcTextWatcher>()
     private val cvcFocusChangeListener = mock<CvcFocusChangeListener>()
     private val lengthFilterFactory = LengthFilterFactory()
 
@@ -31,9 +30,8 @@ class CvcFieldDecoratorTest {
         cvcFieldDecorator = CvcFieldDecorator(
             cvcTextWatcher = cvcTextWatcher,
             cvcFocusChangeListener = cvcFocusChangeListener,
-            lengthFilterFactory = lengthFilterFactory,
-            cvcEditText = cvcEditText,
-            panEditText = panEditText
+            cvcLengthFilter = lengthFilterFactory.getCvcLengthFilter(panEditText),
+            cvcEditText = cvcEditText
         )
     }
 
@@ -41,7 +39,7 @@ class CvcFieldDecoratorTest {
     fun `should add new text watchers when decorating cvc field each time`() {
         given(cvcEditText.filters).willReturn(emptyArray())
 
-        cvcFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        cvcFieldDecorator.decorate()
 
         verify(cvcEditText, never()).removeTextChangedListener(any())
         verify(cvcEditText).addTextChangedListener(cvcTextWatcher)
@@ -52,7 +50,7 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.text).willReturn(mock())
         given(mock<Editable>().toString()).willReturn("")
 
-        cvcFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        cvcFieldDecorator.decorate()
 
         verify(cvcEditText).removeTextChangedListener(cvcTextWatcher)
         verify(cvcEditText).addTextChangedListener(cvcTextWatcher)
@@ -62,7 +60,7 @@ class CvcFieldDecoratorTest {
     fun `should add hint to cvc field`() {
         given(cvcEditText.filters).willReturn(emptyArray())
 
-        cvcFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        cvcFieldDecorator.decorate()
 
         verify(cvcEditText).setHint(R.string.card_cvc_hint)
     }
@@ -73,7 +71,7 @@ class CvcFieldDecoratorTest {
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        cvcFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        cvcFieldDecorator.decorate()
 
         verify(cvcEditText).filters = captor.capture()
 
@@ -86,12 +84,12 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.filters).willReturn(arrayOf(
             InputFilter.LengthFilter(1000),
             InputFilter.AllCaps(),
-            CvcLengthFilter(panEditText, CARD_CONFIG_NO_BRAND)
+            CvcLengthFilter(panEditText)
         ))
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        cvcFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        cvcFieldDecorator.decorate()
 
         verify(cvcEditText).filters = captor.capture()
 
@@ -108,7 +106,7 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.text).willReturn(cvcEditable)
         given(cvcEditable.toString()).willReturn("123")
 
-        cvcFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        cvcFieldDecorator.decorate()
 
         verify(cvcEditText).isCursorVisible
         verify(cvcEditText).setText("123")
@@ -119,7 +117,7 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.filters).willReturn(emptyArray())
         given(cvcEditText.isCursorVisible).willReturn(false)
 
-        cvcFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        cvcFieldDecorator.decorate()
 
         verify(cvcEditText).isCursorVisible
         verify(cvcEditText, never()).setText(any<String>())
@@ -130,9 +128,21 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.filters).willReturn(emptyArray())
         given(cvcEditText.isCursorVisible).willReturn(false)
 
-        cvcFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        cvcFieldDecorator.decorate()
 
         verify(cvcEditText).onFocusChangeListener = cvcFocusChangeListener
+    }
+
+    @Test
+    fun `should call decorate when calling update function`() {
+        given(cvcEditText.filters).willReturn(emptyArray())
+        given(cvcEditText.isCursorVisible).willReturn(false)
+
+        val fieldDecorator = spy(cvcFieldDecorator)
+
+        fieldDecorator.update()
+
+        verify(fieldDecorator).decorate()
     }
 
 }

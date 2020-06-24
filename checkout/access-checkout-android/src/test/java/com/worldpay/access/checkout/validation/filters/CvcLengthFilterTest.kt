@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import org.junit.Before
 import org.junit.Test
@@ -20,7 +20,8 @@ class CvcLengthFilterTest {
 
     @Before
     fun setup() {
-        cvc.filters = arrayOf(CvcLengthFilter(pan, CARD_CONFIG_BASIC))
+        mockSuccessfulCardConfiguration()
+        cvc.filters = arrayOf(CvcLengthFilter(pan))
     }
 
     @Test
@@ -59,7 +60,7 @@ class CvcLengthFilterTest {
 
     @Test
     fun `should ignore pan if no pan edit text is passed to filter`() {
-        cvc.filters = arrayOf(CvcLengthFilter(null, CARD_CONFIG_BASIC))
+        cvc.filters = arrayOf(CvcLengthFilter(null))
 
         pan.setText("")
 

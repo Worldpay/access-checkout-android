@@ -1,15 +1,16 @@
 package com.worldpay.access.checkout.validation.utils
 
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
-import org.junit.Assert
 import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
@@ -18,25 +19,25 @@ class ValidationUtilTest {
 
     @Test
     fun `should be able to retrieve cvc validation rule given a brand`() {
-        val rule = ValidationUtil.getCvcValidationRule(VISA_BRAND, CARD_CONFIG_BASIC)
+        val rule = ValidationUtil.getCvcValidationRule(VISA_BRAND)
         assertEquals(VISA_BRAND.cvc, rule)
     }
 
     @Test
     fun `should be able to retrieve cvc validation rule given no brand`() {
-        val rule = ValidationUtil.getCvcValidationRule(null, CARD_CONFIG_BASIC)
+        val rule = ValidationUtil.getCvcValidationRule(null)
         assertEquals(CVC_DEFAULTS, rule)
     }
 
     @Test
     fun `should be able to retrieve pan validation rule given card brand`() {
-        val rule = ValidationUtil.getPanValidationRule(VISA_BRAND, CARD_CONFIG_BASIC)
+        val rule = ValidationUtil.getPanValidationRule(VISA_BRAND)
         assertEquals(VISA_BRAND.pan, rule)
     }
 
     @Test
     fun `should be able to retrieve pan validation rule given no card brand`() {
-        val rule = ValidationUtil.getPanValidationRule(null, CARD_CONFIG_BASIC)
+        val rule = ValidationUtil.getPanValidationRule(null)
         assertEquals(PAN_DEFAULTS, rule)
     }
 
@@ -54,32 +55,34 @@ class ValidationUtilTest {
 
     @Test
     fun `should be able to find brand for pan`() {
-        assertEquals(VISA_BRAND, ValidationUtil.findBrandForPan(CARD_CONFIG_BASIC, VISA_PAN))
+        mockSuccessfulCardConfiguration()
+        assertEquals(VISA_BRAND, ValidationUtil.findBrandForPan(VISA_PAN))
     }
 
     @Test
     fun `should be able to find null brand for unrecognised pan`() {
-        assertNull(ValidationUtil.findBrandForPan(CARD_CONFIG_BASIC, "0000"))
+        assertNull(ValidationUtil.findBrandForPan("0000"))
     }
 
     @Test
     fun `should be able to find null brand for empty pan`() {
-        assertNull(ValidationUtil.findBrandForPan(CARD_CONFIG_BASIC, ""))
+        assertNull(ValidationUtil.findBrandForPan(""))
     }
 
     @Test
     fun `should be able to find null brand for visa pan but where card config has no brands`() {
-        assertNull(ValidationUtil.findBrandForPan(CARD_CONFIG_NO_BRAND, VISA_PAN))
+        CardConfigurationProvider("", mock(), emptyList())
+        assertNull(ValidationUtil.findBrandForPan(VISA_PAN))
     }
 
     @Test
     fun `given single numeric char then isNumeric should return true`() {
-        Assert.assertTrue(isNumeric("1"))
+        assertTrue(isNumeric("1"))
     }
 
     @Test
     fun `given all numeric chars then isNumeric should return true`() {
-        Assert.assertTrue(isNumeric("1234567890"))
+        assertTrue(isNumeric("1234567890"))
     }
 
     @Test

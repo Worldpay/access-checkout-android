@@ -5,13 +5,11 @@ import android.text.InputFilter
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
-import com.worldpay.access.checkout.validation.listeners.text.PANTextWatcher
-import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
+import com.worldpay.access.checkout.validation.listeners.text.PanTextWatcher
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
@@ -19,10 +17,9 @@ import kotlin.test.assertTrue
 
 class PanFieldDecoratorTest {
 
-    private val cvcEditText = mock<EditText>()
     private val panEditText = mock<EditText>()
 
-    private val textWatcherFactory = mock<TextWatcherFactory>()
+    private val panTextWatcher = mock<PanTextWatcher>()
     private val panFocusChangeListener = mock<PanFocusChangeListener>()
     private val lengthFilterFactory = LengthFilterFactory()
 
@@ -31,21 +28,18 @@ class PanFieldDecoratorTest {
     @Before
     fun setup() {
         panFieldDecorator = PanFieldDecorator(
-            textWatcherFactory = textWatcherFactory,
+            panTextWatcher = panTextWatcher,
             panFocusChangeListener = panFocusChangeListener,
-            lengthFilterFactory = lengthFilterFactory,
-            panEditText = panEditText,
-            cvcEditText = cvcEditText
+            panLengthFilter = lengthFilterFactory.getPanLengthFilter(),
+            panEditText = panEditText
         )
     }
 
     @Test
     fun `should add new text watchers when decorating pan field each time`() {
-        val panTextWatcher = mock<PANTextWatcher>()
         given(panEditText.filters).willReturn(emptyArray())
-        given(textWatcherFactory.createPanTextWatcher(cvcEditText, CARD_CONFIG_NO_BRAND)).willReturn(panTextWatcher)
 
-        panFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        panFieldDecorator.decorate()
 
         verify(panEditText, never()).removeTextChangedListener(any())
         verify(panEditText).addTextChangedListener(panTextWatcher)
@@ -56,7 +50,7 @@ class PanFieldDecoratorTest {
         given(panEditText.text).willReturn(mock())
         given(mock<Editable>().toString()).willReturn("")
 
-        panFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        panFieldDecorator.decorate()
 
         verify(panEditText).removeTextChangedListener(panTextWatcher)
         verify(panEditText).addTextChangedListener(panTextWatcher)
@@ -66,7 +60,7 @@ class PanFieldDecoratorTest {
     fun `should add hint to pan field`() {
         given(panEditText.filters).willReturn(emptyArray())
 
-        panFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        panFieldDecorator.decorate()
 
         verify(panEditText).setHint(R.string.card_number_hint)
     }
@@ -77,7 +71,7 @@ class PanFieldDecoratorTest {
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        panFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        panFieldDecorator.decorate()
 
         verify(panEditText).filters = captor.capture()
 
@@ -90,12 +84,12 @@ class PanFieldDecoratorTest {
         given(panEditText.filters).willReturn(arrayOf(
             InputFilter.LengthFilter(1000),
             InputFilter.AllCaps(),
-            PanLengthFilter(CARD_CONFIG_NO_BRAND)
+            PanLengthFilter()
         ))
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
-        panFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        panFieldDecorator.decorate()
 
         verify(panEditText).filters = captor.capture()
 
@@ -112,7 +106,7 @@ class PanFieldDecoratorTest {
         given(panEditText.text).willReturn(panEditable)
         given(panEditable.toString()).willReturn(VISA_PAN)
 
-        panFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        panFieldDecorator.decorate()
 
         verify(panEditText).isCursorVisible
         verify(panEditText).setText(VISA_PAN)
@@ -123,7 +117,7 @@ class PanFieldDecoratorTest {
         given(panEditText.filters).willReturn(emptyArray())
         given(panEditText.isCursorVisible).willReturn(false)
 
-        panFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        panFieldDecorator.decorate()
 
         verify(panEditText).isCursorVisible
         verify(panEditText, never()).setText(any<String>())
@@ -134,9 +128,21 @@ class PanFieldDecoratorTest {
         given(panEditText.filters).willReturn(emptyArray())
         given(panEditText.isCursorVisible).willReturn(false)
 
-        panFieldDecorator.decorate(CARD_CONFIG_NO_BRAND)
+        panFieldDecorator.decorate()
 
         verify(panEditText).onFocusChangeListener = panFocusChangeListener
+    }
+
+    @Test
+    fun `should call decorate when calling update function`() {
+        given(panEditText.filters).willReturn(emptyArray())
+        given(panEditText.isCursorVisible).willReturn(false)
+
+        val fieldDecorator = spy(panFieldDecorator)
+
+        fieldDecorator.update()
+
+        verify(fieldDecorator).decorate()
     }
 
 }

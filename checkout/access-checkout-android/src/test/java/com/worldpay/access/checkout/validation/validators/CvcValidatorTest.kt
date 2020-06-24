@@ -8,18 +8,18 @@ import org.junit.Test
 import org.mockito.BDDMockito.verify
 import org.mockito.Mockito.mock
 
-class CVCValidatorTest {
+class CvcValidatorTest {
 
     private val cvcValidationResultHandler = mock(CvcValidationResultHandler::class.java)
 
-    private lateinit var cvcValidator: CVCValidator
+    private lateinit var cvcValidator: CvcValidator
     private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
 
     @Before
     fun setup() {
         cvcValidationRuleManager = CVCValidationRuleManager()
 
-        cvcValidator = CVCValidator(
+        cvcValidator = CvcValidator(
             cvcValidationResultHandler = cvcValidationResultHandler,
             cardValidationRuleProvider = cvcValidationRuleManager
         )

@@ -6,8 +6,8 @@ import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC_SESSION
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
@@ -69,7 +69,7 @@ class SessionBroadcastReceiverTest {
                 "some error"
             )
         )
-        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKEN_SESSION)
+        given(intent.getSerializableExtra("session_type")).willReturn(VERIFIED_TOKENS)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -82,12 +82,12 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(1)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("some reference", VERIFIED_TOKEN_SESSION))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("some reference", VERIFIED_TOKENS))
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        val response = mapOf(VERIFIED_TOKEN_SESSION to "some reference")
+        val response = mapOf(VERIFIED_TOKENS to "some reference")
 
         verify(externalSessionResponseListener, atMost(1)).onSuccess(response)
     }
@@ -97,20 +97,20 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(2)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKENS))
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         val sessionBroadcastReceiver = SessionBroadcastReceiver(externalSessionResponseListener)
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC))
 
         val sessionBroadcastReceiver2 = SessionBroadcastReceiver(externalSessionResponseListener)
         sessionBroadcastReceiver2.onReceive(context, intent)
 
         val response = mapOf(
-            PAYMENTS_CVC_SESSION to "payments-cvc-session-url",
-            VERIFIED_TOKEN_SESSION to "verified-token-session-url"
+            PAYMENTS_CVC to "payments-cvc-session-url",
+            VERIFIED_TOKENS to "verified-token-session-url"
         )
 
         verify(externalSessionResponseListener, atMost(1)).onSuccess(response)
@@ -121,18 +121,18 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(2)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKENS))
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC))
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
         val response = mapOf(
-            PAYMENTS_CVC_SESSION to "payments-cvc-session-url",
-            VERIFIED_TOKEN_SESSION to "verified-token-session-url"
+            PAYMENTS_CVC to "payments-cvc-session-url",
+            VERIFIED_TOKENS to "verified-token-session-url"
         )
 
         verify(externalSessionResponseListener, atMost(1)).onSuccess(response)
@@ -151,7 +151,7 @@ class SessionBroadcastReceiverTest {
 
         verify(externalSessionResponseListener, atMost(1)).onError(expectedEx)
 
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC_SESSION))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", PAYMENTS_CVC))
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -165,7 +165,7 @@ class SessionBroadcastReceiverTest {
         val expectedEx: AccessCheckoutException = mock()
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKEN_SESSION))
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", VERIFIED_TOKENS))
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -207,10 +207,10 @@ class SessionBroadcastReceiverTest {
     fun `should be able to add and retrieve responses from the data store`() {
         assertTrue(SessionBroadcastDataStore.getResponses().isEmpty())
 
-        SessionBroadcastDataStore.addResponse(VERIFIED_TOKEN_SESSION, "href")
+        SessionBroadcastDataStore.addResponse(VERIFIED_TOKENS, "href")
 
         assertFalse(SessionBroadcastDataStore.getResponses().isEmpty())
-        assertEquals("href", SessionBroadcastDataStore.getResponses()[VERIFIED_TOKEN_SESSION])
+        assertEquals("href", SessionBroadcastDataStore.getResponses()[VERIFIED_TOKENS])
     }
 
     @Test
@@ -218,21 +218,21 @@ class SessionBroadcastReceiverTest {
         SessionBroadcastDataStore.setNumberOfSessionTypes(2)
         assertFalse(SessionBroadcastDataStore.allRequestsCompleted())
 
-        SessionBroadcastDataStore.addResponse(VERIFIED_TOKEN_SESSION, "href")
+        SessionBroadcastDataStore.addResponse(VERIFIED_TOKENS, "href")
         assertFalse(SessionBroadcastDataStore.allRequestsCompleted())
 
-        SessionBroadcastDataStore.addResponse(PAYMENTS_CVC_SESSION, "href")
+        SessionBroadcastDataStore.addResponse(PAYMENTS_CVC, "href")
         assertTrue(SessionBroadcastDataStore.allRequestsCompleted())
     }
 
     @Test
     fun `should be able to clear values in data store`() {
         SessionBroadcastDataStore.setNumberOfSessionTypes(2)
-        SessionBroadcastDataStore.addResponse(VERIFIED_TOKEN_SESSION, "vt-href")
-        SessionBroadcastDataStore.addResponse(PAYMENTS_CVC_SESSION, "payments-cvc-href")
+        SessionBroadcastDataStore.addResponse(VERIFIED_TOKENS, "vt-href")
+        SessionBroadcastDataStore.addResponse(PAYMENTS_CVC, "payments-cvc-href")
 
-        assertEquals("vt-href", SessionBroadcastDataStore.getResponses()[VERIFIED_TOKEN_SESSION])
-        assertEquals("payments-cvc-href", SessionBroadcastDataStore.getResponses()[PAYMENTS_CVC_SESSION])
+        assertEquals("vt-href", SessionBroadcastDataStore.getResponses()[VERIFIED_TOKENS])
+        assertEquals("payments-cvc-href", SessionBroadcastDataStore.getResponses()[PAYMENTS_CVC])
         assertTrue(SessionBroadcastDataStore.allRequestsCompleted())
         assertTrue(SessionBroadcastDataStore.isExpectingResponse())
 

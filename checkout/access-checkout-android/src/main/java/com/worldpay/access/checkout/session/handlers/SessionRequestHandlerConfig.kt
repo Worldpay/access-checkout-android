@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
-import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
+import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
  * This class holds the configuration to be passed to [SessionRequestHandlerFactory] for constructing a [SessionRequestHandler]
@@ -45,7 +45,7 @@ internal class SessionRequestHandlerConfig private constructor(
 
         fun build(): SessionRequestHandlerConfig {
             validateNotNull(baseUrl, "base url")
-            validateNotNull(merchantId, "merchant ID")
+            validateNotNull(merchantId, "merchant id")
             validateNotNull(context, "context")
             validateNotNull(externalSessionResponseListener, "session response listener")
 

@@ -5,19 +5,19 @@ import android.widget.EditText
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
-import com.worldpay.access.checkout.validation.validators.CVCValidator
-import com.worldpay.access.checkout.validation.validators.NewPANValidator
+import com.worldpay.access.checkout.validation.validators.CvcValidator
+import com.worldpay.access.checkout.validation.validators.PanValidator
 import org.junit.Before
 import org.junit.Test
 import kotlin.test.assertEquals
 
-class PANTextWatcherTest {
+class PanTextWatcherTest {
 
     private lateinit var cvcValidationRuleManager: CVCValidationRuleManager
 
@@ -25,20 +25,21 @@ class PANTextWatcherTest {
     private val brandChangedHandler = mock<BrandChangedHandler>()
 
     private val cvcEditText = mock<EditText>()
-    private val cvcValidator = mock<CVCValidator>()
+    private val cvcValidator = mock<CvcValidator>()
 
     private val panEditable = mock<Editable>()
     private val cvcEditable = mock<Editable>()
 
-    private lateinit var panTextWatcher: PANTextWatcher
+    private lateinit var panTextWatcher: PanTextWatcher
 
     @Before
     fun setup() {
+        mockSuccessfulCardConfiguration()
+
         cvcValidationRuleManager = CVCValidationRuleManager()
 
-        panTextWatcher = PANTextWatcher(
-            cardConfiguration = CARD_CONFIG_BASIC,
-            panValidator = NewPANValidator(),
+        panTextWatcher = PanTextWatcher(
+            panValidator = PanValidator(),
             panValidationResultHandler = panValidationResultHandler,
             brandChangedHandler = brandChangedHandler,
             cvcEditText = cvcEditText,
@@ -133,10 +134,9 @@ class PANTextWatcherTest {
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val panValidator = mock<NewPANValidator>()
+        val panValidator = mock<PanValidator>()
 
-        val panTextWatcher = PANTextWatcher(
-            cardConfiguration = CARD_CONFIG_BASIC,
+        val panTextWatcher = PanTextWatcher(
             panValidator = panValidator,
             panValidationResultHandler = panValidationResultHandler,
             brandChangedHandler = brandChangedHandler,

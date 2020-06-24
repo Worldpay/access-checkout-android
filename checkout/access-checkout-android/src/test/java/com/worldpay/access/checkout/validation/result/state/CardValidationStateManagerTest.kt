@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.validation.result.state
 
 import org.junit.Test
-import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 

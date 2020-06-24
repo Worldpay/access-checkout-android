@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.session
 import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.client.session.AccessCheckoutClient
-import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
@@ -23,14 +22,7 @@ internal class AccessCheckoutClientImpl(
         activityLifecycleObserverInitialiser.initialise()
     }
 
-    /**
-     * Method which triggers a generate session state request to the Access Worldpay sessions API. The response will come back through the
-     * [SessionResponseListener]
-     *
-     * @param cardDetails the cardDetails to submit - see [CardDetailsBuilder]
-     * @param sessionTypes the list of tokens that is being requested
-     */
-    override fun generateSession(cardDetails: CardDetails, sessionTypes: List<SessionType>) {
+    override fun generateSessions(cardDetails: CardDetails, sessionTypes: List<SessionType>) {
         broadcastSessionTypeInfo(sessionTypes)
 
         val handlers = sessionHandlerFactory.getTokenHandlers()

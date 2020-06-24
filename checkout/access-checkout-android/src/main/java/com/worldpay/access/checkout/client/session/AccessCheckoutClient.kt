@@ -24,6 +24,6 @@ interface AccessCheckoutClient {
      * @param[cardDetails] Represents the [CardDetails] that is provided by the customer
      * @param[sessionTypes] Represents a [List] of [SessionType] that the client would like to retrieve
      */
-    fun generateSession(cardDetails: CardDetails, sessionTypes: List<SessionType>)
+    fun generateSessions(cardDetails: CardDetails, sessionTypes: List<SessionType>)
 
 }

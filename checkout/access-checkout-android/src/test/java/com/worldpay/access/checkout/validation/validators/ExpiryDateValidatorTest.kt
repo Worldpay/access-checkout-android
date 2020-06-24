@@ -6,9 +6,9 @@ import java.util.Calendar.*
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class NewDateValidatorTest {
+class ExpiryDateValidatorTest {
 
-    private val dateValidator = NewDateValidator()
+    private val dateValidator = ExpiryDateValidator()
 
     @Test
     fun `should be invalid if letters are entered`() {
@@ -68,7 +68,7 @@ class NewDateValidatorTest {
     @Test
     fun `should be invalid if month is in the past of current year`() {
         val now = setDate(10, 20)
-        val dateValidator = NewDateValidator(now)
+        val dateValidator = ExpiryDateValidator(now)
 
         assertFalse(dateValidator.validate("09/20"))
     }
@@ -76,7 +76,7 @@ class NewDateValidatorTest {
     @Test
     fun `should be valid if last day of current month of current year`() {
         val now = setDate(10, 20)
-        val dateValidator = NewDateValidator(now)
+        val dateValidator = ExpiryDateValidator(now)
 
         assertTrue(dateValidator.validate("10/20"))
     }

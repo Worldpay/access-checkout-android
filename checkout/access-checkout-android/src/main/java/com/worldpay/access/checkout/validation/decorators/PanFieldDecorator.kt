@@ -3,23 +3,22 @@ package com.worldpay.access.checkout.validation.decorators
 import android.text.TextWatcher
 import android.widget.EditText
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationObserver
+import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
-import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
+import com.worldpay.access.checkout.validation.listeners.text.PanTextWatcher
 
 internal class PanFieldDecorator(
-    private val textWatcherFactory : TextWatcherFactory,
-    private val panFocusChangeListener : PanFocusChangeListener,
-    private val lengthFilterFactory : LengthFilterFactory,
-    private val panEditText : EditText,
-    private val cvcEditText : EditText
-) : AbstractFieldDecorator() {
+    private val panTextWatcher: PanTextWatcher,
+    private val panFocusChangeListener: PanFocusChangeListener,
+    private val panLengthFilter: PanLengthFilter,
+    private val panEditText: EditText
+) : AbstractFieldDecorator(), CardConfigurationObserver {
 
     private var addedPanTextWatcher: TextWatcher? = null
 
-    fun decorate(cardConfiguration: CardConfiguration) {
-        addTextWatcher(cardConfiguration)
+    fun decorate() {
+        addTextWatcher()
 
         if (panEditText.isCursorVisible) {
             panEditText.setText(panEditText.text.toString())
@@ -27,17 +26,19 @@ internal class PanFieldDecorator(
 
         panEditText.onFocusChangeListener = panFocusChangeListener
 
-        applyFilter(panEditText, lengthFilterFactory.getPanLengthFilter(cardConfiguration))
+        applyFilter(panEditText, panLengthFilter)
 
         panEditText.setHint(R.string.card_number_hint)
     }
 
-    private fun addTextWatcher(cardConfiguration : CardConfiguration) {
+    private fun addTextWatcher() {
         if (addedPanTextWatcher != null) {
             panEditText.removeTextChangedListener(addedPanTextWatcher)
         }
-        addedPanTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText, cardConfiguration)
+        addedPanTextWatcher = panTextWatcher
         panEditText.addTextChangedListener(addedPanTextWatcher)
     }
+
+    override fun update() = decorate()
 
 }

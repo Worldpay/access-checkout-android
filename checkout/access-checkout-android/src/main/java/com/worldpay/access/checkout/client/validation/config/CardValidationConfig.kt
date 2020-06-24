@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.client.validation.config
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
-import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
+import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 class CardValidationConfig private constructor(
     val pan: EditText,

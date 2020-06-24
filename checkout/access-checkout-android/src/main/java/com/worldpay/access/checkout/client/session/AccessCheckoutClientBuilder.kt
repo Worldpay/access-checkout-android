@@ -9,7 +9,7 @@ import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFacto
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactory
-import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
+import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
  * A builder that returns an [AccessCheckoutClient] for the client to use for session generation
@@ -86,7 +86,7 @@ class AccessCheckoutClientBuilder {
      */
     fun build(): AccessCheckoutClient {
         validateNotNull(baseUrl, "base url")
-        validateNotNull(merchantId, "merchant ID")
+        validateNotNull(merchantId, "merchant id")
         validateNotNull(context, "context")
         validateNotNull(externalSessionResponseListener, "session response listener")
         validateNotNull(lifecycleOwner, "lifecycle owner")

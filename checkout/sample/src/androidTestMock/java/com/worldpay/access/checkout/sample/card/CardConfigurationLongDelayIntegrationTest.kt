@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.sample.card
 
 import android.widget.ImageView
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKEN_SESSION
+import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
@@ -63,12 +63,13 @@ class CardConfigurationLongDelayIntegrationTest {
 
         // Assert that with now configuration has come back that the CVC is invalid for mastercard
         cardFragmentTestUtils
-            .validationStateIs(pan = false, cvc = false, expiryDate = true)
+            .cardDetailsAre(pan = luhnInvalidMastercardCard, cvc = "123", expiryDate = "01/99")
+            .validationStateIs(pan = false, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
         // Re-enter a luhn valid, mastercard identified card and valid date and submit
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "123", expiryDate = "1299")
+            .enterCardDetails(pan = luhnValidMastercardCard, expiryDate = "1299")
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enterCardDetails(cvc = "12345")
             .cardDetailsAre(cvc = "123")
@@ -77,7 +78,7 @@ class CardConfigurationLongDelayIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKEN_SESSION to cardConfigRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(VERIFIED_TOKENS to cardConfigRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
     }
     

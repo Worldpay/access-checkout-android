@@ -1,11 +1,10 @@
 package com.worldpay.access.checkout.client.validation
 
-import com.worldpay.access.checkout.api.configuration.CardConfigurationClientFactory
+import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.config.ValidationConfig
-import com.worldpay.access.checkout.validation.controller.CardDetailsValidationController
-import com.worldpay.access.checkout.validation.controller.CvcDetailsValidationController
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import com.worldpay.access.checkout.validation.decorators.FieldDecoratorFactory
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
@@ -44,13 +43,19 @@ object AccessCheckoutValidationInitialiser {
             lengthFilterFactory
         )
 
-        CardDetailsValidationController(
-            panFieldDecorator = fieldDecoratorFactory.getPanDecorator(validationConfig.pan, validationConfig.cvc),
-            expiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(validationConfig.expiryDate),
-            cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, validationConfig.pan),
+        val panFieldDecorator = fieldDecoratorFactory.getPanDecorator(validationConfig.pan, validationConfig.cvc)
+        val expiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(validationConfig.expiryDate)
+        val cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, validationConfig.pan)
+
+        CardConfigurationProvider(
             baseUrl = validationConfig.baseUrl,
-            cardConfigurationClient = CardConfigurationClientFactory.createClient()
+            cardConfigurationClient = CardConfigurationClient(),
+            observers = listOf(panFieldDecorator, expiryDateFieldDecorator, cvcFieldDecorator)
         )
+
+        panFieldDecorator.decorate()
+        expiryDateFieldDecorator.decorate()
+        cvcFieldDecorator.decorate()
     }
 
     private fun initialiseCvcValidation(validationConfig: CvcValidationConfig) {
@@ -72,9 +77,9 @@ object AccessCheckoutValidationInitialiser {
             lengthFilterFactory
         )
 
-        CvcDetailsValidationController(
-            cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, null)
-        )
+        val cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, null)
+
+        cvcFieldDecorator.decorate()
     }
 
 }

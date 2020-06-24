@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,7 +17,7 @@ class PanLengthFilterTest {
 
     @Before
     fun setup() {
-        pan.filters += PanLengthFilter(CARD_CONFIG_BASIC)
+        pan.filters += PanLengthFilter()
     }
 
     @Test

@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.util
 
-import com.worldpay.access.checkout.util.ValidationUtil.validateNotNull
+import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 
-class ValidationUtilTest{
+class PropertyValidationUtilTest{
 
     @Test
     fun `should throw illegal argument exception with expected message when property is null`() {

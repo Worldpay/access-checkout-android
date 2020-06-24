@@ -6,9 +6,9 @@ import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class NewPANValidatorTest {
+class PanValidatorTest {
 
-    private val panValidator = NewPANValidator()
+    private val panValidator = PanValidator()
 
     @Test
     fun `should return false and no card brand if pan is empty`() {
