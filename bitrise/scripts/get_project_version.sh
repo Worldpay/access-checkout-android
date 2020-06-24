@@ -7,7 +7,7 @@ if [[ "$1" == "--allow-snapshots" ]]; then
   ALLOW_SNAPSHOTS=true
 fi
 
-VERSION=$($PROJECT_LOCATION/gradlew -b $PROJECT_LOCATION/build.gradle :$LIBRARY_MODULE:properties \
+VERSION=$(gradlew -b build.gradle :$LIBRARY_MODULE:properties \
   --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
 
 

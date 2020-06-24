@@ -16,25 +16,21 @@ workflows:
     - android-lint@0.9.5:
         title: "Lint check on app module"
         inputs:
-          - project_location: "$PROJECT_LOCATION"
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
     - android-unit-test@0.9.5:
         title: "Unit tests on app module"
         inputs:
-          - project_location: "$PROJECT_LOCATION"
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
     - android-lint@0.9.5:
         title: "Lint check on Library module"
         inputs:
-        - project_location: "$PROJECT_LOCATION"
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
     - android-unit-test@0.9.5:
         title: "Unit tests on Library module"
         inputs:
-        - project_location: "$PROJECT_LOCATION"
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
     - script-runner@0.9.3:
@@ -47,24 +43,23 @@ workflows:
         inputs:
         - gradlew_path: "gradlew"
         - gradle_task: jacocoTestCoverageVerification
-        - gradle_file: "$PROJECT_LOCATION/build.gradle"
+        - gradle_file: "$LIBRARY_MODULE/build.gradle"
     - deploy-to-bitrise-io@1.3.19:
         title: "Export code coverage results to Bitrise"
         inputs:
         - is_compress: 'true'
         - zip_name: jacoco-reports
-        - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
+        - deploy_path: "$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
     - gradle-runner@1.8.4:
         title: Build release artifacts
         inputs:
-          - gradlew_path: $PROJECT_LOCATION/gradlew
+          - gradlew_path: gradlew
           - gradle_task: ":$LIBRARY_MODULE:assembleRelease javadocJar sourcesJar"
-          - gradle_file: $PROJECT_LOCATION/build.gradle
+          - gradle_file: $LIBRARY_MODULE//build.gradle
 #    - android-build@0.9.5:
 #        title: "Build test APK"
 #        inputs:
 #        - variant: debugAndroidTest
-#        - project_location: "$PROJECT_LOCATION"
 #        - module: "$APP_MODULE"
 #    - script@1.1.5:
 #        title: "Set path to test APK"
@@ -77,7 +72,6 @@ workflows:
 #        inputs:
 #        - module: "$APP_MODULE"
 #        - variant: "$APP_MOCK_VARIANT"
-#        - project_location: "$PROJECT_LOCATION"
 #    - virtual-device-testing-for-android@1.0.5:
 #        title: "Run UI tests against app"
 #        inputs:
@@ -99,7 +93,7 @@ workflows:
 #        - notify_user_groups: none
     - file-downloader@1.0.1:
         inputs:
-          - destination: "$PROJECT_LOCATION/$LIBRARY_MODULE/secring.gpg"
+          - destination: "$LIBRARY_MODULE/secring.gpg"
           - source: "$BITRISEIO_GPG_SECRET_KEY_RING_FILE_URL"
     - github-release@0.10.0:
         title: "Deploy release to github"
@@ -109,9 +103,9 @@ workflows:
           - tag: "v$PROJECT_VERSION"
           - name: $PROJECT_VERSION
           - files_to_upload: |-
-              $PROJECT_LOCATION/$LIBRARY_MODULE/build/outputs/aar/$LIBRARY_MODULE-$PROJECT_VERSION.aar
-              $PROJECT_LOCATION/$LIBRARY_MODULE/build/libs/$LIBRARY_MODULE-$PROJECT_VERSION-javadoc.jar
-              $PROJECT_LOCATION/$LIBRARY_MODULE/build/libs/$LIBRARY_MODULE-$PROJECT_VERSION-sources.jar
+              $LIBRARY_MODULE/build/outputs/aar/$LIBRARY_MODULE-$PROJECT_VERSION.aar
+              $LIBRARY_MODULE/build/libs/$LIBRARY_MODULE-$PROJECT_VERSION-javadoc.jar
+              $LIBRARY_MODULE/build/libs/$LIBRARY_MODULE-$PROJECT_VERSION-sources.jar
           - commit: $GIT_CLONE_COMMIT_HASH
           - body: Release of SDK version $PROJECT_VERSION
           - api_token: $GITHUB_PERSONAL_ACCESS_TOKEN
@@ -120,9 +114,9 @@ workflows:
     - gradle-runner@1.8.4:
         title: "Deploy to Nexus"
         inputs:
-        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradlew_path: "gradlew"
         - gradle_task: "clean uploadArchives closeAndReleaseRepository --info -s -PnexusUrl=$NEXUS_URL -PnexusSnapshotUrl=$NEXUS_SNAPSHOT_URL -PossrhUsername=$NEXUS_USERNAME -PossrhPassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
-        - gradle_file: "$PROJECT_LOCATION/build.gradle"
+        - gradle_file: "$LIBRARY_MODULE/build.gradle"
     - cache-push@2.0.5: {}
   primary:
     steps:
@@ -134,29 +128,25 @@ workflows:
     - cache-pull@2.0.1: {}
     - install-missing-android-tools@2.3.4:
         inputs:
-        - gradlew_path: "$PROJECT_LOCATION/gradlew"
+        - gradlew_path: "gradlew"
     - android-lint@0.9.5:
         title: "Lint check on app module"
         inputs:
-          - project_location: "$PROJECT_LOCATION"
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
     - android-unit-test@0.9.5:
         title: "Unit tests on app module"
         inputs:
-          - project_location: "$PROJECT_LOCATION"
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
     - android-lint@0.9.5:
         title: "Lint check on Library module"
         inputs:
-        - project_location: "$PROJECT_LOCATION"
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
     - android-unit-test@0.9.5:
         title: "Unit tests on Library module"
         inputs:
-        - project_location: "$PROJECT_LOCATION"
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
     - script@1.1.5:
@@ -173,30 +163,29 @@ workflows:
         inputs:
         - gradlew_path: "gradlew"
         - gradle_task: jacocoTestCoverageVerification
-        - gradle_file: "$PROJECT_LOCATION/build.gradle"
+        - gradle_file: "$LIBRARY_MODULE/build.gradle"
     - deploy-to-bitrise-io@1.3.19:
         title: "Export code coverage results to Bitrise"
         inputs:
         - is_compress: 'true'
         - zip_name: jacoco-reports
-        - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
+        - deploy_path: "$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
     - gradle-runner@1.8.4:
         title: "Generate javadoc documentation"
         inputs:
         - gradlew_path: "gradlew"
         - gradle_task: dokka
-        - gradle_file: "$PROJECT_LOCATION/build.gradle"
+        - gradle_file: "$LIBRARY_MODULE/build.gradle"
     - deploy-to-bitrise-io@1.3.19:
         title: "Export javadoc to Bitrise"
         inputs:
         - is_compress: 'true'
         - zip_name: javadoc
-        - deploy_path: "$PROJECT_LOCATION/$LIBRARY_MODULE/build/javadoc"
+        - deploy_path: "$LIBRARY_MODULE/build/javadoc"
     - android-build@0.9.5:
         title: "Build test APK"
         inputs:
           - variant: "${LIBRARY_VARIANT}AndroidTest"
-          - project_location: "$PROJECT_LOCATION"
           - module: "$LIBRARY_MODULE"
     - script@1.1.5:
         title: "Set path to test APK"
@@ -209,7 +198,6 @@ workflows:
         inputs:
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
-          - project_location: "$PROJECT_LOCATION"
           - arguments: -PmerchantID=\"${MERCHANT_ID}\"
     - virtual-device-testing-for-android@1.0.5:
         title: "Run integration tests against app"
@@ -238,7 +226,6 @@ workflows:
         title: "Build test APK"
         inputs:
           - variant: "${APP_MOCK_VARIANT}AndroidTest"
-          - project_location: "$PROJECT_LOCATION"
           - module: "$APP_MODULE"
     - script@1.1.5:
         title: "Set path to test APK"
@@ -251,7 +238,6 @@ workflows:
         inputs:
           - module: "$APP_MODULE"
           - variant: "$APP_MOCK_VARIANT"
-          - project_location: "$PROJECT_LOCATION"
     - virtual-device-testing-for-android@1.0.5:
         title: "Run UI tests against app"
         inputs:
@@ -281,7 +267,6 @@ workflows:
           title: "Build test APK"
           inputs:
             - variant: "${APP_MOCK_VARIANT}AndroidTest"
-            - project_location: "$PROJECT_LOCATION"
             - module: "$APP_MODULE"
       - script@1.1.5:
           title: "Set path to test APK"
@@ -294,7 +279,6 @@ workflows:
           inputs:
             - module: "$APP_MODULE"
             - variant: "$APP_MOCK_VARIANT"
-            - project_location: "$PROJECT_LOCATION"
       - virtual-device-testing-for-android@1.0.5:
           title: "Run UI tests against app"
           inputs:
@@ -308,11 +292,10 @@ workflows:
       - cache-push@2.0.5: {}
 app:
   envs:
-  - PROJECT_LOCATION: access-checkout
   - LIBRARY_MODULE: access-checkout
     opts:
       is_expand: false
-  - APP_MODULE: sample
+  - APP_MODULE: demo-app
     opts:
       is_expand: false
   - LIBRARY_VARIANT: debug
