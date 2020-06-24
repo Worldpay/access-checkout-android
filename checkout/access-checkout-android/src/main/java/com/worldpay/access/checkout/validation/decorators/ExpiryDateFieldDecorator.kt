@@ -6,9 +6,10 @@ import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationObserver
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
+import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateTextWatcher
 
 internal class ExpiryDateFieldDecorator(
-    private val expiryDateTextWatcher: TextWatcher,
+    private val expiryDateTextWatcher: ExpiryDateTextWatcher,
     private val expiryDateFocusChangeListener: ExpiryDateFocusChangeListener,
     private val expiryDateLengthFilter: ExpiryDateLengthFilter,
     private val expiryDateEditText: EditText
