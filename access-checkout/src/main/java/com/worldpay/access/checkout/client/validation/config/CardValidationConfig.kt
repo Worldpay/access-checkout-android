@@ -5,6 +5,18 @@ import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
+/**
+ * An implementation of the [ValidationConfig] that represents the card validation configuration.
+ *
+ * This configuration should be build to register the relevant fields and the listeners.
+ *
+ * @property[pan] [EditText] that represents the pan ui element
+ * @property[expiryDate] [EditText] that represents the expiry date ui element
+ * @property[cvc] [EditText] that represents the cvc ui element
+ * @property[baseUrl] [String] that represents the base url to use when calling Worldpay services
+ * @property[validationListener] [AccessCheckoutCardValidationListener] that represents the validation listener that should be notified on validation changes
+ * @property[lifecycleOwner] [LifecycleOwner] of the application so that validation state can be handled during lifecycle changes
+ */
 class CardValidationConfig private constructor(
     val pan: EditText,
     val expiryDate: EditText,
@@ -23,36 +35,72 @@ class CardValidationConfig private constructor(
         private var validationListener: AccessCheckoutCardValidationListener? = null
         private var lifecycleOwner: LifecycleOwner? = null
 
+        /**
+         * Sets the pan ui element
+         *
+         * @param[pan] [EditText] that represents the pan ui element
+         */
         fun pan(pan: EditText): Builder {
             this.pan = pan
             return this
         }
 
+        /**
+         * Sets the expiry date ui element
+         *
+         * @param[expiryDate] [EditText] that represents the expiry date ui element
+         */
         fun expiryDate(expiryDate: EditText): Builder {
             this.expiryDate = expiryDate
             return this
         }
 
+        /**
+         * Sets the cvc ui element
+         *
+         * @param[cvc] [EditText] that represents the cvc ui element
+         */
         fun cvc(cvc: EditText): Builder {
             this.cvc = cvc
             return this
         }
 
+        /**
+         * Sets the base url to use when calling Worldpay services
+         *
+         * @param[baseUrl] [String] that represents the base url
+         */
         fun baseUrl(baseUrl: String): Builder {
             this.baseUrl = baseUrl
             return this
         }
 
+        /**
+         * Sets the validation listener that should be notified on validation changes
+         *
+         * @param[validationListener] [AccessCheckoutCardValidationListener] that represents the validation listener
+         */
         fun validationListener(validationListener: AccessCheckoutCardValidationListener): Builder {
             this.validationListener = validationListener
             return this
         }
 
+        /**
+         * Sets the lifecycle owner of the application so that validation state can be handled during lifecycle changes
+         *
+         * @param[lifecycleOwner] [LifecycleOwner] that represents the lifecycle owner of the application
+         */
         fun lifecycleOwner(lifecycleOwner : LifecycleOwner) : Builder {
             this.lifecycleOwner = lifecycleOwner
             return this
         }
 
+        /**
+         * Builds the validation configuration by returning an instance of the [CardValidationConfig]
+         *
+         * @return [CardValidationConfig] implementation that can be used to initialise validation
+         * @throws [IllegalArgumentException] is thrown when a property is missing
+         */
         fun build(): CardValidationConfig {
             validateNotNull(pan, "pan component")
             validateNotNull(expiryDate, "expiry date component")

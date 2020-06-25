@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.client.session.model
 
+import com.worldpay.access.checkout.client.session.model.CardDetails.ExpiryDate
+
 /**
  * This class is a representation of card information that can be constructed with a [CardDetails.Builder]
  *
@@ -13,22 +15,42 @@ class CardDetails private constructor(
     val cvc: String?
 ) {
 
+    /**
+     * This build helps building the [CardDetails] instance
+     */
     data class Builder(
         private var pan: String? = null,
         private var expiryDate: ExpiryDate? = null,
         private var cvc: String? = null
     ) {
 
+        /**
+         * Sets the pan number for the card
+         *
+         * @param[pan] [String] that represents the pan number
+         */
         fun pan(pan: String) = apply { this.pan = pan }
 
-        fun expiryDate(expiryDate: String) = apply {
-            this.expiryDate = ExpiryDate(expiryDate)
-        }
+        /**
+         * Sets the expiry date for the card
+         *
+         * @param[expiryDate] [String] that represents the expiry date
+         */
+        fun expiryDate(expiryDate: String) = apply { this.expiryDate = ExpiryDate(expiryDate) }
 
+        /**
+         * Sets the cvc for the card
+         *
+         * @param[cvc] [String] that represents the cvc
+         */
         fun cvc(cvc: String) = apply { this.cvc = cvc }
 
-        fun build() =
-            CardDetails(pan, expiryDate, cvc)
+        /**
+         * Builds the [CardDetails] instance
+         *
+         * @return [CardDetails] instance with the given details
+         */
+        fun build() = CardDetails(pan, expiryDate, cvc)
 
     }
 
