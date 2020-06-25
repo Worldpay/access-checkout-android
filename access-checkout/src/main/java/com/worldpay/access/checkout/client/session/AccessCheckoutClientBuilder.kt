@@ -79,7 +79,7 @@ class AccessCheckoutClientBuilder {
     }
 
     /**
-     * Builds the [AccessCheckoutClient] given all previous functions were called
+     * Builds the [AccessCheckoutClient] instance
      *
      * @return [AccessCheckoutClient] interface with a default internal implementation
      * @throws [IllegalArgumentException] is thrown when a property is missing

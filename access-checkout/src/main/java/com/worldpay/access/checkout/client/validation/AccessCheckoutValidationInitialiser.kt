@@ -13,8 +13,17 @@ import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFacto
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import com.worldpay.access.checkout.validation.result.state.CvcValidationStateManager
 
+/**
+ * Class that is responsible for initialising validation using a given [ValidationConfig]
+ */
 object AccessCheckoutValidationInitialiser {
 
+    /**
+     * This function should be used when wanting to initialise the validation using the [ValidationConfig]
+     * provided.
+     *
+     * @param[validationConfig] [ValidationConfig] represents the configuration that should be used to initialise validation
+     */
     @JvmStatic
     fun initialise(validationConfig: ValidationConfig) {
         if (validationConfig is CardValidationConfig) {
