@@ -6,9 +6,7 @@ import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTes
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.CVC
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.time.LocalDate
-import java.time.Year
-import kotlin.math.abs
+import java.util.*
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
@@ -116,15 +114,10 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
     }
 
     private fun getMonth(offset: Int = 0): String {
-        var month = LocalDate.now().month.value.toString()
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.MONTH, offset)
 
-        if (offset < 0) {
-            month = LocalDate.now().minusMonths(abs(offset).toLong()).monthValue.toString()
-        }
-
-        if (offset > 0) {
-            month = LocalDate.now().plusMonths(offset.toLong()).monthValue.toString()
-        }
+        var month = calendar.get(Calendar.MONTH).toString()
 
         if (month.length == 1) month = String.format("0%s", month)
 
@@ -132,8 +125,11 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
     }
 
     private fun getYear(offset: Int = 0): String {
-        val currentYear = Year.now().value
-        return (currentYear + offset).toString().drop(2)
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.YEAR, offset)
+
+        val currentYear = calendar.get(Calendar.YEAR).toString()
+        return (currentYear + offset).drop(2)
     }
 
 }
