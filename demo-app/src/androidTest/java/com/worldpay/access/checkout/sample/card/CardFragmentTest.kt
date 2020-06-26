@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.sample.card
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.VISA
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.CVC
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,7 +36,7 @@ class CardFragmentTest: AbstractCardFragmentTest() {
             .isInInitialState()
             .enterCardDetails(pan = "4111111111111111", cvc = "123", expiryDate = "6040")
             .cardDetailsAre(pan = "4111111111111111", cvc = "123", expiryDate = "06/04")
-            .focusOn(CardFragmentTestUtils.Input.CVC)
+            .focusOn(CVC)
             .hasBrand(VISA)
             .validationStateIs(pan = true, cvc = true, expiryDate = false)
             .enabledStateIs(submitButton = false)
@@ -82,17 +82,19 @@ class CardFragmentTest: AbstractCardFragmentTest() {
     fun shouldKeepValidationStateOnFieldsWhenAppIsReopened() {
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(pan = "4", cvc = "12", expiryDate = "1299")
-            .validationStateIs(pan = false, cvc = false, expiryDate = true)
+            .enterCardDetails(pan = "4", cvc = "12", expiryDate = "129")
+            .focusOn(CVC)
+            .validationStateIs(pan = false, cvc = false, expiryDate = false)
             .hasBrand(VISA)
             .enabledStateIs(submitButton = false)
 
         reopenApp()
 
         cardFragmentTestUtils
-            .validationStateIs(pan = false, cvc = false, expiryDate = true)
+            .validationStateIs(pan = false, cvc = false, expiryDate = false)
             .hasBrand(VISA)
             .enabledStateIs(submitButton = false)
     }
+
 
 }

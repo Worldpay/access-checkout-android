@@ -13,6 +13,8 @@ internal class CvcValidationResultHandler(
     lifecycleOwner : LifecycleOwner
 ) : LifecycleObserver {
 
+    private var inLifecycleEvent = false
+
     init {
         lifecycleOwner.lifecycle.addObserver(this)
     }
@@ -24,6 +26,17 @@ internal class CvcValidationResultHandler(
         }
     }
 
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    internal fun onResume() {
+        inLifecycleEvent = false
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    internal fun onPause() {
+        inLifecycleEvent = true
+    }
+
+
     fun handleResult(isValid: Boolean) {
         if (hasStateChanged(isValid)) {
             notifyListener(isValid)
@@ -31,7 +44,7 @@ internal class CvcValidationResultHandler(
     }
 
     fun handleFocusChange() {
-        if (!validationStateManager.cvcValidationState.notificationSent) {
+        if (!validationStateManager.cvcValidationState.notificationSent && !inLifecycleEvent) {
             notifyListener(validationStateManager.cvcValidationState.validationState)
         }
     }

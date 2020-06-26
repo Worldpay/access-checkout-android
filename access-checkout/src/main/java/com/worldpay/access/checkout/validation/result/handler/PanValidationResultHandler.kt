@@ -1,6 +1,9 @@
 package com.worldpay.access.checkout.validation.result.handler
 
-import androidx.lifecycle.*
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleObserver
+import androidx.lifecycle.LifecycleOwner
+import androidx.lifecycle.OnLifecycleEvent
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.validation.result.state.PanFieldValidationStateManager
 
@@ -14,12 +17,25 @@ internal class PanValidationResultHandler(
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
+    private var inLifecycleEvent = false
+
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     internal fun onStart() {
         if (validationStateManager.panValidationState.notificationSent) {
             notifyListener(validationStateManager.panValidationState.validationState)
         }
     }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    internal fun onResume() {
+        inLifecycleEvent = false
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    internal fun onPause() {
+        inLifecycleEvent = true
+    }
+
 
     fun handleResult(isValid: Boolean) {
         if (hasStateChanged(isValid)) {
@@ -28,7 +44,7 @@ internal class PanValidationResultHandler(
     }
 
     fun handleFocusChange() {
-        if (!validationStateManager.panValidationState.notificationSent) {
+        if (!validationStateManager.panValidationState.notificationSent && !inLifecycleEvent) {
             notifyListener(validationStateManager.panValidationState.validationState)
         }
     }
