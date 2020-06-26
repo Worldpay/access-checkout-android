@@ -255,14 +255,15 @@ workflows:
           - test_type: instrumentation
           - test_apk_path: "$BITRISE_TEST_APK"
           - test_devices: |-
-              Pixel2,28,en,landscape
-              Nexus6P,27,en,portrait
-              Nexus5X,26,en,landscape
-              NexusLowRes,25,en,portrait
-              Nexus9,24,en,landscape
-              NexusLowRes,23,en,portrait
-              Nexus10,22,en,portrait
-              Nexus4,21,en,portrait
+              Nexus6,21,en,portrait
+              Nexus6,22,en,portrait
+              Nexus6,23,en,portrait
+              Nexus6,24,en,portrait
+              Nexus6,25,en,portrait
+              Pixel2,26,en,portrait
+              Pixel2,27,en,portrait
+              Pixel2,28,en,portrait
+              Pixel2,29,en,portrait
     - deploy-to-bitrise-io@1.4.1:
         inputs:
           - notify_user_groups: testers, developers
