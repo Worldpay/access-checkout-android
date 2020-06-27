@@ -155,13 +155,6 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun validationStateIsUnknown(pan: Boolean? = null, cvc: Boolean? = null, expiryDate: Boolean? = null): CardFragmentTestUtils {
-        if (pan != null && pan) checkValidationStateIsUnknown(panInput(), "pan")
-        if (cvc != null && cvc) checkValidationStateIsUnknown(cvcInput(), "cvc")
-        if (expiryDate != null && expiryDate) checkValidationStateIsUnknown(expiryDateInput(), "expiry date")
-        return this
-    }
-
     fun hasNoBrand(): CardFragmentTestUtils {
         val resourceEntryName = activity().resources.getResourceEntryName(R.drawable.card_unknown_logo)
         wait { assertEquals(resourceEntryName, brandLogo().getTag(R.integer.card_tag)) }

@@ -52,9 +52,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
         val editTextUI = UITestUtils.uiObjectWithId(editText.id)
         editTextUI.click()
-        if (editTextUI.text != text) {
-            editTextUI.text = text
-        }
+        activityRule.activity.runOnUiThread{ editText.setText(text) }
 
         val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(editText.windowToken, 0)
@@ -66,9 +64,9 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
             .check(matches(isDisplayed()))
     }
 
-    protected fun activity() = activityRule.activity
+    protected fun activity(): MainActivity = activityRule.activity
 
-    protected fun color(colorId: Int) =
+    private fun color(colorId: Int) =
         ResourcesCompat.getColor(activity().resources, colorId, activity().theme)
 
     protected fun <T: View> findById(id: Int): T {
