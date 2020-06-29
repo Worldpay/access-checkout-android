@@ -50,7 +50,7 @@ object UITestUtils {
     fun rotateLandscape(activityRule: ActivityTestRule<MainActivity>) {
         activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-        await().atMost(5, TimeUnit.SECONDS).until {
+        await().atMost(10, TimeUnit.SECONDS).until {
 
             val drawerIsVisible = activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
             val progressBarIsVisible = activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
@@ -68,7 +68,7 @@ object UITestUtils {
     fun rotatePortrait(activityRule: ActivityTestRule<MainActivity>) {
         activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
-        await().atMost(5, TimeUnit.SECONDS).until {
+        await().atMost(10, TimeUnit.SECONDS).until {
 
             val drawerIsVisible = activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
             val progressBarIsVisible = activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
@@ -86,11 +86,10 @@ object UITestUtils {
     fun reopenApp() {
         val uiDevice = getInstance(getInstrumentation())
         uiDevice.pressRecentApps()
+        Thread.sleep(1000)
+        uiDevice.pressRecentApps()
 
-        await().atMost(5, TimeUnit.SECONDS).until {
-            Thread.sleep(500)
-            uiDevice.pressRecentApps()
-
+        await().atMost(10, TimeUnit.SECONDS).until {
             try {
                 onView(withId(R.id.drawer_layout))
                     .check(matches(isDisplayed()))
