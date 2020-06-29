@@ -147,4 +147,16 @@ class ExpiryDateValidationResultHandlerTest {
         verifyZeroInteractions(validationListener)
     }
 
+    @Test
+    fun `should not notify listener on focus change if in life cycle event`() {
+        validationResultHandler.onPause()
+
+        validationResultHandler.handleFocusChange()
+        verifyZeroInteractions(validationListener)
+
+        validationResultHandler.onResume()
+        validationResultHandler.handleFocusChange()
+        verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
+    }
+
 }

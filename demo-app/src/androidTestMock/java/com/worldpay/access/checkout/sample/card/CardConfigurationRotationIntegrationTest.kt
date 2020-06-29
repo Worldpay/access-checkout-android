@@ -26,7 +26,6 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .hasBrand(MASTERCARD)
             .enabledStateIs(submitButton = false)
 
-        // rotate landscape
         rotateLandscape(activityRule)
 
         // Re-enter a luhn valid, mastercard identified card and valid date
@@ -40,7 +39,6 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
 
-        // rotate portrait
         rotatePortrait(activityRule)
 
         CardFragmentTestUtils(activityRule)
@@ -52,7 +50,6 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .validationStateIs(pan = true, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
 
-        // rotate landscape
         rotateLandscape(activityRule)
 
         CardFragmentTestUtils(activityRule)
