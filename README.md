@@ -5,14 +5,14 @@ A lightweight library and sample app that generates a Worldpay session reference
 It includes, optionally, custom Android views that identifies card brands and validates payment cards and card expiry dates.
 
 
-<img width="300" alt="app02" src=https://github.com/Worldpay/access-checkout/blob/master/images/sample.png>
+<img width="300" alt="app02" src=https://github.com/Worldpay/access-checkout-android/blob/master/images/sample.png>
 
 
 ## Download
 
-Download the latest AAR from [Maven Central](https://search.maven.org/search?q=g:com.worldpay.access%20AND%20a:access-checkout) or include in your project's build dependencies via Gradle:
+Download the latest AAR from [Maven Central](https://search.maven.org/search?q=g:com.worldpay.access%20AND%20a:access-checkout-android) or include in your project's build dependencies via Gradle:
 
-`implementation 'com.worldpay.access:access-checkout:1.2.0`
+`implementation 'com.worldpay.access:access-checkout-android:1.2.0`
 
 
 or Maven:
@@ -20,7 +20,7 @@ or Maven:
 ```
 <dependency>
   <groupId>com.worldpay.access</groupId>
-  <artifactId>access-checkout</artifactId>
+  <artifactId>access-checkout-android</artifactId>
   <version>1.2.0</version>
 </dependency>
 ```
@@ -44,7 +44,7 @@ allprojects {
 Add the following lines to the app level dependency list (kotlin version can be changed):
 
 ``` 
-implementation (name:'access-checkout-1.2.0', ext:'aar')
+implementation (name:'access-checkout-android-1.2.0', ext:'aar')
 implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 ```
 
@@ -65,17 +65,17 @@ The SDK is fully customizable and provides default card views that implement the
 
 Firstly, a layout configuration file with the card views is defined as below:
 ```
-<com.worldpay.access.checkout.views.PANLayout
+<EditText
             android:id="@+id/panView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             .../>
-<com.worldpay.access.checkout.views.CardExpiryTextLayout
+<EditText
             android:id="@+id/cardExpiryText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             .../>
-<com.worldpay.access.checkout.views.CardCVVText
+<EditText
             android:id="@+id/cardCVVText"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -91,9 +91,9 @@ import com.worldpay.access.checkout.AccessCheckoutClient
 
 var accessCheckoutClient: AccessCheckoutClient
 
-val panView = findViewById<PANLayout>(R.id.panView)
-val cardCVVText = findViewById<CardCVVText>(R.id.cardCVVText)
-val cardExpiryText = findViewById<CardExpiryTextLayout>(R.id.cardExpiryText)
+val panView = findViewById<EditText>(R.id.panView)
+val cardCVVText = findViewById<EditText>(R.id.cardCVVText)
+val cardExpiryText = findViewById<EditText>(R.id.cardExpiryText)
 
 accessCheckoutClient = AccessCheckoutClientBuilder
                                 .baseUrl(getBaseUrl())                              // Base API URL

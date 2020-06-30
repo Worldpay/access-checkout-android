@@ -28,7 +28,7 @@ object SessionsMockStub {
             post(urlEqualTo("/$SESSIONS_PAYMENTS_CVC_PATH"))
                 .withHeader("Accept", equalTo(DEFAULT_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(DEFAULT_MEDIA_TYPE))
-                .withHeader("X-WP-SDK", matching("^access-checkout/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$"))
+                .withHeader("X-WP-SDK", matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$"))
                 .withRequestBody(AnythingPattern())
                 .willReturn(validResponseWithDelay(context, 2000))
         )
