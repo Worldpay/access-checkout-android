@@ -79,7 +79,7 @@ class MockCardFlowTest {
     fun shouldReturnLinkToSessionReference_whenCallingVerifiedTokenWithValidSDKHeaderForReleaseVersion() {
         val client = OkHttpClient()
 
-        val version = "access-checkout/${BuildConfig.VERSION_CODE}.0.0"
+        val version = "access-checkout-android/${BuildConfig.VERSION_CODE}.0.0"
 
         val request = Builder()
             .method("POST", create(parse(verifiedTokensContentType), "{}"))
@@ -103,7 +103,7 @@ class MockCardFlowTest {
     fun shouldReturnLinkToSessionReference_whenCallingVerifiedTokenWithValidSDKHeaderForSnapshotVersion() {
         val client = OkHttpClient()
 
-        val version = "access-checkout/${BuildConfig.VERSION_CODE}.0.0-SNAPSHOT"
+        val version = "access-checkout-android/${BuildConfig.VERSION_CODE}.0.0-SNAPSHOT"
 
         val request = Builder()
             .method("POST", create(parse(verifiedTokensContentType), "{}"))
@@ -130,7 +130,7 @@ class MockCardFlowTest {
         val request = Builder()
             .method("POST", create(parse(verifiedTokensContentType), "{}"))
             .header("Accept", verifiedTokensContentType)
-            .header("X-WP-SDK", "access-checkout/bad_version")
+            .header("X-WP-SDK", "access-checkout-android/bad_version")
             .url("$baseURL/verifiedTokens/sessions")
             .build()
 
@@ -190,7 +190,7 @@ class MockCardFlowTest {
         val relocatedRequest = Builder()
             .method("POST", create(parse(verifiedTokensContentType), "{}"))
             .header("Accept", verifiedTokensContentType)
-            .header("X-WP-SDK", "access-checkout/${BuildConfig.VERSION_CODE}.0.0")
+            .header("X-WP-SDK", "access-checkout-android/${BuildConfig.VERSION_CODE}.0.0")
             .url("$baseURL/newVerifiedTokensLocation/sessions")
             .build()
 

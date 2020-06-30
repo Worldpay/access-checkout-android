@@ -39,7 +39,7 @@ class VerifiedTokenSessionClientTest {
         val headers = hashMapOf(
             Pair("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json"),
             Pair("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json"),
-            Pair("X-WP-SDK", "access-checkout/" + BuildConfig.VERSION_NAME)
+            Pair("X-WP-SDK", "access-checkout-android/" + BuildConfig.VERSION_NAME)
         )
 
         val sessionRequest =

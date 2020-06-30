@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.session.api.client
 
-internal const val PRODUCT_NAME = "access-checkout/"
+internal const val PRODUCT_NAME = "access-checkout-android/"
 internal const val CONTENT_TYPE_HEADER = "Content-Type"
 internal const val ACCEPT_HEADER = "Accept"
 internal const val WP_SDK_PRODUCT_HEADER = "X-WP-SDK"
