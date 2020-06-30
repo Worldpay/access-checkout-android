@@ -27,7 +27,7 @@ import java.net.URL
 import kotlin.test.assertFailsWith
 import kotlin.test.fail
 
-class PactTest {
+class VerifiedTokensPactTest {
 
     companion object {
         private const val provider = "verified-tokens"
@@ -95,7 +95,7 @@ class PactTest {
         .closeObject()
         .closeObject()
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createSuccessfulGetRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A service discovery request")
@@ -133,7 +133,7 @@ class PactTest {
         assertEquals(verifiedTokensSessionEndpoint, response)
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createSuccessfulRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference")
@@ -157,7 +157,7 @@ class PactTest {
             .toPact()
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createInvalidIdentityRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with invalid identity")
@@ -180,7 +180,7 @@ class PactTest {
             .toPact()
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createInvalidLuhnRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with invalid luhn")
@@ -209,7 +209,7 @@ class PactTest {
             .toPact()
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createStringTooShortRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with string card property too short")
@@ -238,7 +238,7 @@ class PactTest {
             .toPact()
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createStringTooLongRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with string card property too long")
@@ -267,7 +267,7 @@ class PactTest {
             .toPact()
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createIntegerMonthTooSmallRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with month int too small")
@@ -296,7 +296,7 @@ class PactTest {
             .toPact()
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createIntegerMonthTooLargeRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with month int too large")
@@ -325,7 +325,7 @@ class PactTest {
             .toPact()
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createStringNonNumericalCvcRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with non-numerical CVV")
@@ -354,7 +354,7 @@ class PactTest {
             .toPact()
     }
 
-    @Pact(provider = "verified-tokens", consumer = "access-checkout-sdk")
+    @Pact(provider = "verified-tokens", consumer = "access-checkout-android-sdk")
     fun createEmptyBodyErrorInteractionRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with empty body")

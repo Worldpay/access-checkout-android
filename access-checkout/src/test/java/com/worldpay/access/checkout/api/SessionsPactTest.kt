@@ -95,7 +95,7 @@ class SessionsPactTest {
         .closeObject()
         .closeObject()
 
-    @Pact(provider = "sessions", consumer = "access-checkout-sdk")
+    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
     fun createSuccessfulGetRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A service discovery request")
@@ -130,7 +130,7 @@ class SessionsPactTest {
         Assert.assertEquals(paymentsCvcSessionEndpoint, response)
     }
 
-    @Pact(provider = "sessions", consumer = "access-checkout-sdk")
+    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
     fun createSuccessfulRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference")
@@ -154,7 +154,7 @@ class SessionsPactTest {
             .toPact()
     }
 
-    @Pact(provider = "sessions", consumer = "access-checkout-sdk")
+    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
     fun createInvalidIdentityRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with invalid identity")
@@ -177,7 +177,7 @@ class SessionsPactTest {
             .toPact()
     }
 
-    @Pact(provider = "sessions", consumer = "access-checkout-sdk")
+    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
     fun createStringNonNumericalCvcRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with non-numerical CVV")
@@ -206,7 +206,7 @@ class SessionsPactTest {
             .toPact()
     }
 
-    @Pact(provider = "sessions", consumer = "access-checkout-sdk")
+    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
     fun createEmptyBodyErrorInteractionRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with empty body")
