@@ -58,7 +58,8 @@ internal class ResultHandlerFactory(
         if (brandChangedHandler == null) {
             brandChangedHandler = BrandChangedHandler(
                 validationListener = accessCheckoutValidationListener as AccessCheckoutBrandChangedListener,
-                toCardBrandTransformer = ToCardBrandTransformer()
+                toCardBrandTransformer = ToCardBrandTransformer(),
+                lifecycleOwner = lifecycleOwner
             )
         }
         return brandChangedHandler as BrandChangedHandler
