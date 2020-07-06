@@ -280,9 +280,9 @@ class ExpiryDateTextWatcherIntegrationTest {
             expiryDateSanitiser = ExpiryDateSanitiser()
         )
 
-        val expiryYear = EditText(context)
+        val expiryDate = EditText(context)
 
-        expiryYear.addTextChangedListener(expiryYearTextWatcher)
+        expiryDate.addTextChangedListener(expiryYearTextWatcher)
 
         expiryDate.setText("06/20")
 
