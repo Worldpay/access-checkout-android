@@ -26,8 +26,8 @@ class SessionRequestHandlerFactoryTest {
         val handlers = tokenRequestHandlerFactory.getTokenHandlers()
 
         assertEquals(2, handlers.size)
-        assertTrue(handlers[0] is VerifiedTokensSessionRequestHandler)
-        assertTrue(handlers[1] is PaymentsCvcSessionRequestHandler)
+        assertTrue(handlers[0] is CardSessionRequestHandler)
+        assertTrue(handlers[1] is CvcSessionRequestHandler)
     }
 
 

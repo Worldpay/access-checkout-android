@@ -11,11 +11,11 @@ import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
- * [PaymentsCvcSessionRequestHandler] is responsible for handling requests for a [CVC]
+ * [CvcSessionRequestHandler] is responsible for handling requests for a [CVC]
  *
  * @property sessionRequestHandlerConfig The [SessionRequestHandlerConfig] that should be used to retrieve request information
  */
-internal class PaymentsCvcSessionRequestHandler(
+internal class CvcSessionRequestHandler(
     private val sessionRequestHandlerConfig: SessionRequestHandlerConfig
 ): SessionRequestHandler {
 

@@ -13,12 +13,12 @@ import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
- * [VerifiedTokensSessionRequestHandler] is responsible for handling requests for a [CARD]
+ * [CardSessionRequestHandler] is responsible for handling requests for a [CARD]
  *
  * @property canHandle - returns true if list of [SessionType] contains a [CARD]
  * @property handle - handles the request for a [CARD]
  */
-internal class VerifiedTokensSessionRequestHandler(
+internal class CardSessionRequestHandler(
     private val sessionRequestHandlerConfig: SessionRequestHandlerConfig
 ) : SessionRequestHandler {
 

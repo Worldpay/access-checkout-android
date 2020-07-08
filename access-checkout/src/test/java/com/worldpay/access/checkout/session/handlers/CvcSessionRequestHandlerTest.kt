@@ -23,17 +23,17 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-class PaymentsCvcSessionRequestHandlerTest {
+class CvcSessionRequestHandlerTest {
 
     private val context = Mockito.mock(Context::class.java)
     private val externalSessionResponseListener = Mockito.mock(SessionResponseListener::class.java)
 
-    private lateinit var paymentsCvcSessionRequestHandler: PaymentsCvcSessionRequestHandler
+    private lateinit var cvcSessionRequestHandler: CvcSessionRequestHandler
 
     @Before
     fun setup() {
-        paymentsCvcSessionRequestHandler =
-            PaymentsCvcSessionRequestHandler(
+        cvcSessionRequestHandler =
+            CvcSessionRequestHandler(
                 SessionRequestHandlerConfig.Builder()
                     .baseUrl("base-url")
                     .merchantId("merchant-id")
@@ -45,12 +45,12 @@ class PaymentsCvcSessionRequestHandlerTest {
 
     @Test
     fun `should be able to handle a session token request`() {
-        assertTrue { paymentsCvcSessionRequestHandler.canHandle(listOf(CVC)) }
+        assertTrue { cvcSessionRequestHandler.canHandle(listOf(CVC)) }
     }
 
     @Test
     fun `should not be able to handle a verified token request`() {
-        assertFalse { paymentsCvcSessionRequestHandler.canHandle(listOf(CARD)) }
+        assertFalse { cvcSessionRequestHandler.canHandle(listOf(CARD)) }
     }
 
     @Test
@@ -59,7 +59,7 @@ class PaymentsCvcSessionRequestHandlerTest {
             .expiryDate("1020")
             .cvc("123")
             .build()
-        paymentsCvcSessionRequestHandler.handle(cardDetails)
+        cvcSessionRequestHandler.handle(cardDetails)
     }
 
     @Test
@@ -68,7 +68,7 @@ class PaymentsCvcSessionRequestHandlerTest {
             .pan("123456789")
             .cvc("123")
             .build()
-        paymentsCvcSessionRequestHandler.handle(cardDetails)
+        cvcSessionRequestHandler.handle(cardDetails)
     }
 
     @Test
@@ -76,7 +76,7 @@ class PaymentsCvcSessionRequestHandlerTest {
         val cardDetails = CardDetails.Builder().build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            paymentsCvcSessionRequestHandler.handle(cardDetails)
+            cvcSessionRequestHandler.handle(cardDetails)
         }
 
         assertEquals("Expected cvc to be provided but was not", exception.message)
@@ -88,7 +88,7 @@ class PaymentsCvcSessionRequestHandlerTest {
             .cvc("123")
             .build()
 
-        paymentsCvcSessionRequestHandler.handle(cardDetails)
+        cvcSessionRequestHandler.handle(cardDetails)
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
 

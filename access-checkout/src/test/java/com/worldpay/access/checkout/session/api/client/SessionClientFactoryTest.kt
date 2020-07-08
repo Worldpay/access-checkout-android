@@ -28,7 +28,7 @@ class SessionClientFactoryTest {
         val sessionClient = sessionClientFactory.createClient(sessionRequest)
 
         assertNotNull(sessionClient)
-        assertTrue { sessionClient is VerifiedTokenSessionClient }
+        assertTrue { sessionClient is CardSessionClient }
     }
 
     @Test
@@ -42,7 +42,7 @@ class SessionClientFactoryTest {
         val sessionClient = sessionClientFactory.createClient(sessionRequest)
 
         assertNotNull(sessionClient)
-        assertTrue { sessionClient is PaymentsCvcSessionClient }
+        assertTrue { sessionClient is CvcSessionClient }
     }
 
     @Test

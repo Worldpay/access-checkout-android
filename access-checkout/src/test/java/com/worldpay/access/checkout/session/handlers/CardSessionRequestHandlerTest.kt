@@ -23,17 +23,17 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-class VerifiedTokensSessionRequestHandlerTest {
+class CardSessionRequestHandlerTest {
 
     private val context = mock(Context::class.java)
     private val externalSessionResponseListener = mock(SessionResponseListener::class.java)
 
-    private lateinit var verifiedTokensSessionRequestHandler: VerifiedTokensSessionRequestHandler
+    private lateinit var cardSessionRequestHandler: CardSessionRequestHandler
 
     @Before
     fun setup() {
-        verifiedTokensSessionRequestHandler =
-            VerifiedTokensSessionRequestHandler(
+        cardSessionRequestHandler =
+            CardSessionRequestHandler(
                 SessionRequestHandlerConfig.Builder()
                     .baseUrl("base-url")
                     .merchantId("merchant-id")
@@ -45,12 +45,12 @@ class VerifiedTokensSessionRequestHandlerTest {
 
     @Test
     fun `should be able to handle a verified token request`() {
-        assertTrue { verifiedTokensSessionRequestHandler.canHandle(listOf(CARD)) }
+        assertTrue { cardSessionRequestHandler.canHandle(listOf(CARD)) }
     }
 
     @Test
     fun `should not be able to handle a session token request`() {
-        assertFalse { verifiedTokensSessionRequestHandler.canHandle(listOf(CVC)) }
+        assertFalse { cardSessionRequestHandler.canHandle(listOf(CVC)) }
     }
 
     @Test
@@ -61,7 +61,7 @@ class VerifiedTokensSessionRequestHandlerTest {
             .build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            verifiedTokensSessionRequestHandler.handle(cardDetails)
+            cardSessionRequestHandler.handle(cardDetails)
         }
 
         assertEquals("Expected pan to be provided but was not", exception.message)
@@ -75,7 +75,7 @@ class VerifiedTokensSessionRequestHandlerTest {
             .build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            verifiedTokensSessionRequestHandler.handle(cardDetails)
+            cardSessionRequestHandler.handle(cardDetails)
         }
 
         assertEquals("Expected expiry date to be provided but was not", exception.message)
@@ -89,7 +89,7 @@ class VerifiedTokensSessionRequestHandlerTest {
             .build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            verifiedTokensSessionRequestHandler.handle(cardDetails)
+            cardSessionRequestHandler.handle(cardDetails)
         }
 
         assertEquals("Expected cvc to be provided but was not", exception.message)
@@ -103,7 +103,7 @@ class VerifiedTokensSessionRequestHandlerTest {
             .cvc("123")
             .build()
 
-        verifiedTokensSessionRequestHandler.handle(cardDetails)
+        cardSessionRequestHandler.handle(cardDetails)
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
 
