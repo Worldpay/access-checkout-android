@@ -6,8 +6,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.worldpay.access.checkout.client.session.model.CardDetails
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
@@ -77,7 +77,7 @@ class AccessCheckoutClientImplTest {
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
 
-        accessCheckoutClient.generateSessions(cardDetails, listOf(VERIFIED_TOKENS, PAYMENTS_CVC))
+        accessCheckoutClient.generateSessions(cardDetails, listOf(CARD, CVC))
 
         verify(localBroadcastManagerMock).sendBroadcast(argument.capture())
 
@@ -108,7 +108,7 @@ class AccessCheckoutClientImplTest {
             .cvc("123")
             .build()
 
-        val tokenRequests = listOf(VERIFIED_TOKENS, PAYMENTS_CVC)
+        val tokenRequests = listOf(CARD, CVC)
 
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
@@ -130,7 +130,7 @@ class AccessCheckoutClientImplTest {
             .cvc("123")
             .build()
 
-        val tokenRequests = listOf(PAYMENTS_CVC)
+        val tokenRequests = listOf(CVC)
         given(sessionTokenRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
 
         val accessCheckoutClient =
@@ -156,7 +156,7 @@ class AccessCheckoutClientImplTest {
             .cvc("123")
             .build()
 
-        val tokenRequests = listOf(VERIFIED_TOKENS)
+        val tokenRequests = listOf(CARD)
         given(verifiedTokenRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
 
         val accessCheckoutClient =

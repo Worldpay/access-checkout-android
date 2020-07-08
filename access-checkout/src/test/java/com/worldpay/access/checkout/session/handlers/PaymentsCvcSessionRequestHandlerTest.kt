@@ -5,8 +5,8 @@ import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
@@ -45,12 +45,12 @@ class PaymentsCvcSessionRequestHandlerTest {
 
     @Test
     fun `should be able to handle a session token request`() {
-        assertTrue { paymentsCvcSessionRequestHandler.canHandle(listOf(PAYMENTS_CVC)) }
+        assertTrue { paymentsCvcSessionRequestHandler.canHandle(listOf(CVC)) }
     }
 
     @Test
     fun `should not be able to handle a verified token request`() {
-        assertFalse { paymentsCvcSessionRequestHandler.canHandle(listOf(VERIFIED_TOKENS)) }
+        assertFalse { paymentsCvcSessionRequestHandler.canHandle(listOf(CARD)) }
     }
 
     @Test
@@ -104,7 +104,7 @@ class PaymentsCvcSessionRequestHandlerTest {
         assertEquals("base-url", sessionRequestInfo.baseUrl)
 
         assertEquals(DiscoverLinks.sessions, sessionRequestInfo.discoverLinks)
-        assertEquals(PAYMENTS_CVC, sessionRequestInfo.sessionType)
+        assertEquals(CVC, sessionRequestInfo.sessionType)
 
         assertEquals(1, argument.value.extras?.size())
     }

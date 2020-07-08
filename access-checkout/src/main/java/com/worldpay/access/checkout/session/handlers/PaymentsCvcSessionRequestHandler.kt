@@ -4,14 +4,14 @@ import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.session.api.SessionRequestService
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
- * [PaymentsCvcSessionRequestHandler] is responsible for handling requests for a [PAYMENTS_CVC]
+ * [PaymentsCvcSessionRequestHandler] is responsible for handling requests for a [CVC]
  *
  * @property sessionRequestHandlerConfig The [SessionRequestHandlerConfig] that should be used to retrieve request information
  */
@@ -20,12 +20,12 @@ internal class PaymentsCvcSessionRequestHandler(
 ): SessionRequestHandler {
 
     /**
-     * Returns True if the list contains a [PAYMENTS_CVC]
+     * Returns True if the list contains a [CVC]
      *
      * @param sessionTypes A [List] of [SessionType] requested
      */
     override fun canHandle(sessionTypes: List<SessionType>): Boolean {
-        return sessionTypes.contains(PAYMENTS_CVC)
+        return sessionTypes.contains(CVC)
     }
 
     /**
@@ -49,7 +49,7 @@ internal class PaymentsCvcSessionRequestHandler(
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl(sessionRequestHandlerConfig.getBaseUrl())
             .requestBody(cvcSessionRequest)
-            .sessionType(PAYMENTS_CVC)
+            .sessionType(CVC)
             .discoverLinks(DiscoverLinks.sessions)
             .build()
 

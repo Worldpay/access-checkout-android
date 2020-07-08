@@ -8,15 +8,15 @@ import java.io.Serializable
 enum class SessionType: Serializable {
 
     /**
-     * Payments cvc session type that represents a cvc session
+     * Session type that represents a session for the cvc details
      * This token can be further used with the Worldpay payments service.
      */
-    PAYMENTS_CVC,
+    CVC,
 
     /**
-     * Verified token session type that represents a card session
+     * Session type that represents a session for card details
      * This token can be further used with the Worldpay verified token service.
      */
-    VERIFIED_TOKENS
+    CARD
 
 }

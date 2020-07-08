@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session.api.request
 
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import org.junit.Test
@@ -15,11 +15,11 @@ class SessionRequestInfoTest {
 
         val sessionRequestInfo = SessionResponseInfo.Builder()
             .responseBody(responseBody)
-            .sessionType(VERIFIED_TOKENS)
+            .sessionType(CARD)
             .build()
 
         assertEquals(responseBody, sessionRequestInfo.responseBody)
-        assertEquals(VERIFIED_TOKENS, sessionRequestInfo.sessionType)
+        assertEquals(CARD, sessionRequestInfo.sessionType)
     }
 
 }
