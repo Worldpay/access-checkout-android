@@ -24,7 +24,6 @@ then
   https://$PACTBROKER_URL/pacticipants/access-checkout-android-sdk/versions/$PROJECT_VERSION+$HASH_CODE/tags/$BRANCH
 fi
 
-if [ "$BRANCH" != "master" ]
-then
-  echo $BRANCH
-fi
+echo "TEST"
+echo $BRANCH
+
