@@ -5,8 +5,8 @@ import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
@@ -23,17 +23,17 @@ import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-class VerifiedTokensSessionRequestHandlerTest {
+class CardSessionRequestHandlerTest {
 
     private val context = mock(Context::class.java)
     private val externalSessionResponseListener = mock(SessionResponseListener::class.java)
 
-    private lateinit var verifiedTokensSessionRequestHandler: VerifiedTokensSessionRequestHandler
+    private lateinit var cardSessionRequestHandler: CardSessionRequestHandler
 
     @Before
     fun setup() {
-        verifiedTokensSessionRequestHandler =
-            VerifiedTokensSessionRequestHandler(
+        cardSessionRequestHandler =
+            CardSessionRequestHandler(
                 SessionRequestHandlerConfig.Builder()
                     .baseUrl("base-url")
                     .merchantId("merchant-id")
@@ -45,12 +45,12 @@ class VerifiedTokensSessionRequestHandlerTest {
 
     @Test
     fun `should be able to handle a verified token request`() {
-        assertTrue { verifiedTokensSessionRequestHandler.canHandle(listOf(VERIFIED_TOKENS)) }
+        assertTrue { cardSessionRequestHandler.canHandle(listOf(CARD)) }
     }
 
     @Test
     fun `should not be able to handle a session token request`() {
-        assertFalse { verifiedTokensSessionRequestHandler.canHandle(listOf(PAYMENTS_CVC)) }
+        assertFalse { cardSessionRequestHandler.canHandle(listOf(CVC)) }
     }
 
     @Test
@@ -61,7 +61,7 @@ class VerifiedTokensSessionRequestHandlerTest {
             .build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            verifiedTokensSessionRequestHandler.handle(cardDetails)
+            cardSessionRequestHandler.handle(cardDetails)
         }
 
         assertEquals("Expected pan to be provided but was not", exception.message)
@@ -75,7 +75,7 @@ class VerifiedTokensSessionRequestHandlerTest {
             .build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            verifiedTokensSessionRequestHandler.handle(cardDetails)
+            cardSessionRequestHandler.handle(cardDetails)
         }
 
         assertEquals("Expected expiry date to be provided but was not", exception.message)
@@ -89,7 +89,7 @@ class VerifiedTokensSessionRequestHandlerTest {
             .build()
 
         val exception = assertFailsWith<IllegalArgumentException> {
-            verifiedTokensSessionRequestHandler.handle(cardDetails)
+            cardSessionRequestHandler.handle(cardDetails)
         }
 
         assertEquals("Expected cvc to be provided but was not", exception.message)
@@ -103,7 +103,7 @@ class VerifiedTokensSessionRequestHandlerTest {
             .cvc("123")
             .build()
 
-        verifiedTokensSessionRequestHandler.handle(cardDetails)
+        cardSessionRequestHandler.handle(cardDetails)
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
 
@@ -121,7 +121,7 @@ class VerifiedTokensSessionRequestHandlerTest {
         assertEquals("base-url", sessionRequestInfo.baseUrl)
 
         assertEquals(DiscoverLinks.verifiedTokens, sessionRequestInfo.discoverLinks)
-        assertEquals(VERIFIED_TOKENS, sessionRequestInfo.sessionType)
+        assertEquals(CARD, sessionRequestInfo.sessionType)
 
         assertEquals(1, argument.value.extras?.size())
     }

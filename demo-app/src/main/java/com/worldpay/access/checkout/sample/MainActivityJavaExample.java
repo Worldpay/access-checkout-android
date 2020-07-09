@@ -154,7 +154,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
                     .cvc(cvcText.getText().toString())
                     .build();
 
-            accessCheckoutClient.generateSessions(cardDetails, singletonList(SessionType.VERIFIED_TOKENS));
+            accessCheckoutClient.generateSessions(cardDetails, singletonList(SessionType.CARD));
         });
     }
 

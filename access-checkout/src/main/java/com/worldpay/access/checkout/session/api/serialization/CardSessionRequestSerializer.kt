@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.session.api.request.SessionRequest
 import org.json.JSONObject
 
 /**
- * This class is responsible for serialising the request data for a Verified Token Session
+ * This class is responsible for serialising the request data for a Card Session
  */
 internal class CardSessionRequestSerializer : Serializer<SessionRequest> {
 

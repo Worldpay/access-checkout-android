@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.session.api.request
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.client.SessionClient
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.response.SessionResponse
@@ -41,7 +41,7 @@ class RequestDispatcherTest {
     private val sessionRequestInfo = SessionRequestInfo.Builder()
         .baseUrl(baseUrl)
         .requestBody(sessionRequest)
-        .sessionType(VERIFIED_TOKENS)
+        .sessionType(CARD)
         .discoverLinks(DiscoverLinks.verifiedTokens)
         .build()
 

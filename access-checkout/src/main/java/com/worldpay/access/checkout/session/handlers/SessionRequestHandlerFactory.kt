@@ -8,10 +8,10 @@ package com.worldpay.access.checkout.session.handlers
 internal class SessionRequestHandlerFactory(sessionRequestHandlerConfig: SessionRequestHandlerConfig) {
 
     private val handlers = listOf(
-        VerifiedTokensSessionRequestHandler(
+        CardSessionRequestHandler(
             sessionRequestHandlerConfig
         ),
-        PaymentsCvcSessionRequestHandler(
+        CvcSessionRequestHandler(
             sessionRequestHandlerConfig
         )
     )

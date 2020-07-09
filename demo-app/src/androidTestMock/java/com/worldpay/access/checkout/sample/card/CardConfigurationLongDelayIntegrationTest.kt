@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.sample.card
 
 import android.widget.ImageView
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
@@ -78,7 +78,7 @@ class CardConfigurationLongDelayIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKENS to cardConfigRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to cardConfigRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
     }
     

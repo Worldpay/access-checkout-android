@@ -6,8 +6,8 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.worldpay.access.checkout.client.session.model.CardDetails
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
@@ -33,15 +33,15 @@ class AccessCheckoutClientImplTest {
     private val localBroadcastManagerFactoryMock = mock(LocalBroadcastManagerFactory::class.java)
     private val localBroadcastManagerMock = mock(LocalBroadcastManager::class.java)
 
-    private val sessionTokenRequestHandlerMock = mock(PaymentsCvcSessionRequestHandler::class.java)
-    private val verifiedTokenRequestHandlerMock = mock(VerifiedTokensSessionRequestHandler::class.java)
+    private val cvcSessionRequestHandlerMock = mock(CvcSessionRequestHandler::class.java)
+    private val cardSessionRequestHandlerMock = mock(CardSessionRequestHandler::class.java)
     private val tokenHandlerFactoryMock = mock(SessionRequestHandlerFactory::class.java)
     private val activityLifecycleEventHandlerFactory = mock(ActivityLifecycleObserverInitialiser::class.java)
 
     @Before
     fun setup() {
         given(lifecycleOwnerMock.lifecycle).willReturn(lifecycleMock)
-        val handlers = listOf(sessionTokenRequestHandlerMock, verifiedTokenRequestHandlerMock)
+        val handlers = listOf(cvcSessionRequestHandlerMock, cardSessionRequestHandlerMock)
         given(tokenHandlerFactoryMock.getTokenHandlers()).willReturn(handlers)
         given(localBroadcastManagerFactoryMock.createInstance()).willReturn(localBroadcastManagerMock)
     }
@@ -77,7 +77,7 @@ class AccessCheckoutClientImplTest {
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
 
-        accessCheckoutClient.generateSessions(cardDetails, listOf(VERIFIED_TOKENS, PAYMENTS_CVC))
+        accessCheckoutClient.generateSessions(cardDetails, listOf(CARD, CVC))
 
         verify(localBroadcastManagerMock).sendBroadcast(argument.capture())
 
@@ -108,7 +108,7 @@ class AccessCheckoutClientImplTest {
             .cvc("123")
             .build()
 
-        val tokenRequests = listOf(VERIFIED_TOKENS, PAYMENTS_CVC)
+        val tokenRequests = listOf(CARD, CVC)
 
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
@@ -120,8 +120,8 @@ class AccessCheckoutClientImplTest {
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
 
-        verify(sessionTokenRequestHandlerMock).canHandle(tokenRequests)
-        verify(verifiedTokenRequestHandlerMock).canHandle(tokenRequests)
+        verify(cvcSessionRequestHandlerMock).canHandle(tokenRequests)
+        verify(cardSessionRequestHandlerMock).canHandle(tokenRequests)
     }
 
     @Test
@@ -130,8 +130,8 @@ class AccessCheckoutClientImplTest {
             .cvc("123")
             .build()
 
-        val tokenRequests = listOf(PAYMENTS_CVC)
-        given(sessionTokenRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
+        val tokenRequests = listOf(CVC)
+        given(cvcSessionRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
 
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
@@ -143,21 +143,21 @@ class AccessCheckoutClientImplTest {
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
 
-        verify(sessionTokenRequestHandlerMock).canHandle(tokenRequests)
-        verify(sessionTokenRequestHandlerMock).handle(cardDetails)
-        verify(verifiedTokenRequestHandlerMock, never()).handle(cardDetails)
+        verify(cvcSessionRequestHandlerMock).canHandle(tokenRequests)
+        verify(cvcSessionRequestHandlerMock).handle(cardDetails)
+        verify(cardSessionRequestHandlerMock, never()).handle(cardDetails)
     }
 
     @Test
-    fun `should call handle method on the verifiedTokenRequestHandler when calling generate for verified token`() {
+    fun `should call handle method on the cardSessionRequestHandler when calling generate for verified token`() {
         val cardDetails = CardDetails.Builder()
             .pan("1234")
             .expiryDate("1220")
             .cvc("123")
             .build()
 
-        val tokenRequests = listOf(VERIFIED_TOKENS)
-        given(verifiedTokenRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
+        val tokenRequests = listOf(CARD)
+        given(cardSessionRequestHandlerMock.canHandle(tokenRequests)).willCallRealMethod()
 
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
@@ -169,9 +169,9 @@ class AccessCheckoutClientImplTest {
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
 
-        verify(verifiedTokenRequestHandlerMock).canHandle(tokenRequests)
-        verify(verifiedTokenRequestHandlerMock).handle(cardDetails)
-        verify(sessionTokenRequestHandlerMock, never()).handle(cardDetails)
+        verify(cardSessionRequestHandlerMock).canHandle(tokenRequests)
+        verify(cardSessionRequestHandlerMock).handle(cardDetails)
+        verify(cvcSessionRequestHandlerMock, never()).handle(cardDetails)
     }
 
     @Test
@@ -192,8 +192,8 @@ class AccessCheckoutClientImplTest {
 
         accessCheckoutClient.generateSessions(cardDetails, emptyList())
 
-        verify(verifiedTokenRequestHandlerMock, never()).handle(cardDetails)
-        verify(sessionTokenRequestHandlerMock, never()).handle(cardDetails)
+        verify(cardSessionRequestHandlerMock, never()).handle(cardDetails)
+        verify(cvcSessionRequestHandlerMock, never()).handle(cardDetails)
     }
 
 }

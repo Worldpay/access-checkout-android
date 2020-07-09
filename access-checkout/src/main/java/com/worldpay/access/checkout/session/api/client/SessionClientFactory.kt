@@ -26,14 +26,14 @@ internal class SessionClientFactory {
     fun createClient(sessionRequest: SessionRequest): SessionClient {
         when (sessionRequest) {
             is CardSessionRequest -> {
-                return VerifiedTokenSessionClient(
+                return CardSessionClient(
                     CardSessionResponseDeserializer(),
                     CardSessionRequestSerializer(),
                     HttpClient()
                 )
             }
             is CvcSessionRequest -> {
-                return PaymentsCvcSessionClient(
+                return CvcSessionClient(
                     CvcSessionResponseDeserializer(),
                     CvcSessionRequestSerializer(),
                     HttpClient()

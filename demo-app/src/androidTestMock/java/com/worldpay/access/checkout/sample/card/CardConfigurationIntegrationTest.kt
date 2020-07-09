@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.sample.card
 
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
@@ -36,7 +36,7 @@ class CardConfigurationIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKENS to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
     }
 
@@ -51,7 +51,7 @@ class CardConfigurationIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKENS to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
     }
 

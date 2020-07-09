@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.sample.cvc
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvc.testutil.CvcFragmentTestUtils
@@ -36,7 +36,7 @@ class CvcFlowIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(PAYMENTS_CVC to activityRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
+                mapOf(CVC to activityRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
             )
             .closeDialog()
             .cardDetailsAre(cvc = "")

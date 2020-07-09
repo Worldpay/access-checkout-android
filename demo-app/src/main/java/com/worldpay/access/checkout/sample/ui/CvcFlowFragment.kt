@@ -77,7 +77,7 @@ class CvcFlowFragment : Fragment() {
             submitBtn.disable()
 
             val cardDetails = CardDetails.Builder().cvc(cvcText.text.toString()).build()
-            accessCheckoutClient.generateSessions(cardDetails, listOf(SessionType.PAYMENTS_CVC))
+            accessCheckoutClient.generateSessions(cardDetails, listOf(SessionType.CVC))
         }
     }
 

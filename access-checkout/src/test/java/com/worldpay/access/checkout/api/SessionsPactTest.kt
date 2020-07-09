@@ -14,7 +14,7 @@ import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
 import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
-import com.worldpay.access.checkout.session.api.client.PaymentsCvcSessionClient
+import com.worldpay.access.checkout.session.api.client.CvcSessionClient
 import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
@@ -35,13 +35,13 @@ class SessionsPactTest {
         private const val provider = "sessions"
     }
 
-    private lateinit var paymentsCvcSessionClient: PaymentsCvcSessionClient
+    private lateinit var cvcSessionClient: CvcSessionClient
     private lateinit var discoveryClient: ApiDiscoveryClient
 
     @Before
     fun setup() {
-        paymentsCvcSessionClient =
-            PaymentsCvcSessionClient(
+        cvcSessionClient =
+            CvcSessionClient(
                 CvcSessionResponseDeserializer(),
                 CvcSessionRequestSerializer(),
                 HttpClient()
@@ -260,7 +260,7 @@ class SessionsPactTest {
 
         Assert.assertEquals(
             expectedSessionResponse,
-            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
         )
     }
 
@@ -274,7 +274,7 @@ class SessionsPactTest {
             )
 
         try {
-            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
@@ -302,7 +302,7 @@ class SessionsPactTest {
             )
 
         try {
-            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
@@ -337,15 +337,15 @@ class SessionsPactTest {
         BDDMockito.given(mockEmptySerializer.serialize(sessionRequest))
             .willReturn(emptyString)
 
-        paymentsCvcSessionClient =
-            PaymentsCvcSessionClient(
+        cvcSessionClient =
+            CvcSessionClient(
                 CvcSessionResponseDeserializer(),
                 mockEmptySerializer,
                 HttpClient()
             )
 
         try {
-            paymentsCvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
 
