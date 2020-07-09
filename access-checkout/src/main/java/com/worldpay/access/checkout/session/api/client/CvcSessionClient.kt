@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.session.api.request.SessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import java.net.URL
 
-internal class VerifiedTokenSessionClient(
+internal class CvcSessionClient(
     private val deserializer: Deserializer<SessionResponse>,
     private val serializer: Serializer<SessionRequest>,
     private val httpClient: HttpClient
@@ -16,8 +16,8 @@ internal class VerifiedTokenSessionClient(
 
     override fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse? {
         val headers = HashMap<String, String>()
-        headers[CONTENT_TYPE_HEADER] = VERIFIED_TOKENS_MEDIA_TYPE
-        headers[ACCEPT_HEADER] = VERIFIED_TOKENS_MEDIA_TYPE
+        headers[CONTENT_TYPE_HEADER] = SESSIONS_MEDIA_TYPE
+        headers[ACCEPT_HEADER] = SESSIONS_MEDIA_TYPE
         headers[WP_SDK_PRODUCT_HEADER] = PRODUCT_NAME + BuildConfig.VERSION_NAME
 
         return httpClient.doPost(url, request, headers, serializer, deserializer)

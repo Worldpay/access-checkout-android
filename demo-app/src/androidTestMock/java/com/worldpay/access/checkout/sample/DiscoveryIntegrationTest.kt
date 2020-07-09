@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.sample
 
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.client.session.model.SessionType.PAYMENTS_CVC
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.cvc.testutil.CvcFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.simulateRootResourceTemporaryServerError
@@ -38,7 +38,7 @@ class DiscoveryIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(VERIFIED_TOKENS to activityTestRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to activityTestRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -56,7 +56,7 @@ class DiscoveryIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(PAYMENTS_CVC to activityTestRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
+                mapOf(CVC to activityTestRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()

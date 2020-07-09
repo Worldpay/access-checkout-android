@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.api.HttpClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
-import com.worldpay.access.checkout.session.api.request.CardSessionRequest
+import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -17,10 +17,10 @@ import org.mockito.junit.MockitoJUnitRunner
 import java.net.URL
 
 @RunWith(MockitoJUnitRunner::class)
-class VerifiedTokenSessionClientTest {
+class CvcSessionClientTest {
 
     @InjectMocks
-    private lateinit var sessionClient: VerifiedTokenSessionClient
+    private lateinit var sessionClient: CvcSessionClient
 
     @Mock
     private lateinit var httpClient: HttpClient
@@ -29,7 +29,7 @@ class VerifiedTokenSessionClientTest {
     private lateinit var deserializer: Deserializer<SessionResponse>
 
     @Mock
-    private lateinit var serializer: Serializer<CardSessionRequest>
+    private lateinit var serializer: Serializer<CvcSessionRequest>
 
     @Test
     fun `should make expected http request when getting session response`() {
@@ -37,20 +37,15 @@ class VerifiedTokenSessionClientTest {
         val sessionResponse = mock(SessionResponse::class.java)
 
         val headers = hashMapOf(
-            Pair("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json"),
-            Pair("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json"),
+            Pair("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json"),
+            Pair("Accept", "application/vnd.worldpay.sessions-v1.hal+json"),
             Pair("X-WP-SDK", "access-checkout-android/" + BuildConfig.VERSION_NAME)
         )
 
         val sessionRequest =
-            CardSessionRequest(
-                cardNumber = "1111222233334444",
-                cardExpiryDate = CardSessionRequest.CardExpiryDate(
-                    12,
-                    2020
-                ),
+            CvcSessionRequest(
                 cvc = "123",
-                identity = "MERCHANT-123"
+                identity = "merchant-123"
             )
 
         given(httpClient.doPost(url, sessionRequest, headers, serializer, deserializer))

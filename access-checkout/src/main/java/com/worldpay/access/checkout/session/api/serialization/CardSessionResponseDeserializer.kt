@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.E
 import org.json.JSONObject
 
 /**
- * This class is responsible for deserialising the response json from a request for a Verified Token Session
+ * This class is responsible for deserialising the response json from a request for a Card Session
  */
 internal class CardSessionResponseDeserializer: Deserializer<SessionResponse>() {
 

@@ -7,7 +7,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
@@ -86,7 +86,7 @@ class SessionRequestServiceTest {
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl("http://localhost")
             .requestBody(sessionRequest)
-            .sessionType(VERIFIED_TOKENS)
+            .sessionType(CARD)
             .discoverLinks(DiscoverLinks.verifiedTokens)
             .build()
 
@@ -109,7 +109,7 @@ class SessionRequestServiceTest {
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl("http://localhost")
             .requestBody(sessionRequest)
-            .sessionType(VERIFIED_TOKENS)
+            .sessionType(CARD)
             .discoverLinks(DiscoverLinks.verifiedTokens)
             .build()
 
@@ -134,7 +134,7 @@ class SessionRequestServiceTest {
 
         val sessionResponseInfo = SessionResponseInfo.Builder()
             .responseBody(sessionResponse)
-            .sessionType(VERIFIED_TOKENS)
+            .sessionType(CARD)
             .build()
 
         val localBroadcastManager = mock(LocalBroadcastManager::class.java)

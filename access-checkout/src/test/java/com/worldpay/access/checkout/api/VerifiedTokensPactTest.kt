@@ -12,7 +12,7 @@ import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
 import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
 import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
-import com.worldpay.access.checkout.session.api.client.VerifiedTokenSessionClient
+import com.worldpay.access.checkout.session.api.client.CardSessionClient
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.serialization.CardSessionRequestSerializer
@@ -33,12 +33,12 @@ class VerifiedTokensPactTest {
         private const val provider = "verified-tokens"
     }
 
-    private lateinit var verifiedTokenSessionClient: VerifiedTokenSessionClient
+    private lateinit var cardSessionClient: CardSessionClient
 
     @Before
     fun setup() {
-        verifiedTokenSessionClient =
-            VerifiedTokenSessionClient(
+        cardSessionClient =
+            CardSessionClient(
                 CardSessionResponseDeserializer(),
                 CardSessionRequestSerializer(),
                 HttpClient()
@@ -415,7 +415,7 @@ class VerifiedTokensPactTest {
 
         assertEquals(
             expectedSessionResponse,
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
         )
     }
 
@@ -434,7 +434,7 @@ class VerifiedTokensPactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
@@ -463,7 +463,7 @@ class VerifiedTokensPactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
@@ -496,7 +496,7 @@ class VerifiedTokensPactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
@@ -529,7 +529,7 @@ class VerifiedTokensPactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
@@ -562,7 +562,7 @@ class VerifiedTokensPactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
@@ -595,7 +595,7 @@ class VerifiedTokensPactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
@@ -628,7 +628,7 @@ class VerifiedTokensPactTest {
             )
 
         try {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
@@ -667,8 +667,8 @@ class VerifiedTokensPactTest {
 
         given(mockEmptySerializer.serialize(sessionRequest)).willReturn(emptyString)
 
-        verifiedTokenSessionClient =
-            VerifiedTokenSessionClient(
+        cardSessionClient =
+            CardSessionClient(
                 CardSessionResponseDeserializer(),
                 mockEmptySerializer,
                 HttpClient()
@@ -677,7 +677,7 @@ class VerifiedTokensPactTest {
         val expectedException = AccessCheckoutException("bodyIsEmpty : The body within the request is empty")
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            verifiedTokenSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
         }
 
         assertEquals(expectedException, exception)

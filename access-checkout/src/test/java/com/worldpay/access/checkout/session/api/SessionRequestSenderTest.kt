@@ -7,9 +7,9 @@ import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import com.worldpay.access.checkout.client.session.model.SessionType.VERIFIED_TOKENS
+import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
-import com.worldpay.access.checkout.session.api.client.VerifiedTokenSessionClient
+import com.worldpay.access.checkout.session.api.client.CardSessionClient
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.RequestDispatcher
 import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
@@ -63,7 +63,7 @@ class SessionRequestSenderTest {
         }
 
         val requestDispatcher = mock(RequestDispatcher::class.java)
-        val sessionClient = mock(VerifiedTokenSessionClient::class.java)
+        val sessionClient = mock(CardSessionClient::class.java)
         val path = "$baseURL/verifiedTokens/sessions"
 
         given(sessionClientFactory.createClient(expectedSessionRequest)).willReturn(sessionClient)
@@ -73,7 +73,7 @@ class SessionRequestSenderTest {
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl(baseURL)
             .requestBody(expectedSessionRequest)
-            .sessionType(VERIFIED_TOKENS)
+            .sessionType(CARD)
             .discoverLinks(DiscoverLinks.verifiedTokens)
             .build()
 
@@ -112,7 +112,7 @@ class SessionRequestSenderTest {
         }
 
         val requestDispatcher = mock(RequestDispatcher::class.java)
-        val sessionClient = mock(VerifiedTokenSessionClient::class.java)
+        val sessionClient = mock(CardSessionClient::class.java)
         val path = "$baseURL/verifiedTokens/sessions"
 
         given(sessionClientFactory.createClient(expectedSessionRequest)).willReturn(sessionClient)
@@ -122,7 +122,7 @@ class SessionRequestSenderTest {
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl(baseURL)
             .requestBody(expectedSessionRequest)
-            .sessionType(VERIFIED_TOKENS)
+            .sessionType(CARD)
             .discoverLinks(DiscoverLinks.verifiedTokens)
             .build()
 
