@@ -17,9 +17,13 @@ curl --fail --show-error -v -XPUT \-H "Content-Type: application/json" \
   https://$PACTBROKER_URL/pacts/provider/sessions/consumer/access-checkout-android-sdk/version/$PROJECT_VERSION+$HASH_CODE
 
 
-if [ $BRANCH == "master" ]
+if [ "$BRANCH" == "master" ]
 then
   curl --fail --show-error -v -XPUT \-H "Content-Type: application/json" \
   -u $PACTBROKER_USERNAME:$PACTBROKER_PASSWORD \
-  https://$PACTBROKER_URL/pacticipants/access-checkout-android-sdk/versions/$PROJECT_VERSION+$HASH_CODE/tags/master
+  https://$PACTBROKER_URL/pacticipants/access-checkout-android-sdk/versions/$PROJECT_VERSION+$HASH_CODE/tags/$BRANCH
 fi
+
+echo "TEST"
+echo $BRANCH
+
