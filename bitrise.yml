@@ -33,6 +33,10 @@ workflows:
         inputs:
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
+    - script@1.1.5:
+        title: Install pact client
+        inputs:
+          - content: gem install pact_broker-client
     - script-runner@0.9.3:
         title: "Deploy pact file to pact broker"
         run_if: not .IsPR
@@ -159,6 +163,10 @@ workflows:
         title: Get project version
         inputs:
           - content: bitrise/scripts/get_project_version.sh --allow-snapshots
+    - script@1.1.5:
+        title: Install pact client
+        inputs:
+          - content: gem install pact_broker-client
     - script-runner@0.9.3:
         title: "Deploy pact file to pact broker"
         run_if: not .IsPR

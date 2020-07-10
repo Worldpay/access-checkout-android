@@ -3,6 +3,4 @@ set -e
 
 HASH_CODE=$(git rev-parse --short HEAD)
 
-curl --fail --show-error -v -XPUT \-H "Content-Type: application/json" \
-  -u $PACTBROKER_USERNAME:$PACTBROKER_PASSWORD \
-  https://$PACTBROKER_URL/pacticipants/access-checkout-android-sdk/versions/$PROJECT_VERSION+$HASH_CODE/tags/PROD
+pact-broker create-version-tag --pacticipant access-checkout-android-sdk --version $PROJECT_VERSION+$HASH_CODE --tag PROD --broker-base-url https://$PACTBROKER_URL -u $PACTBROKER_URL -p $PACTBROKER_PASSWORD
