@@ -38,7 +38,7 @@ workflows:
         inputs:
           - content: gem install pact_broker-client
     - script-runner@0.9.3:
-        title: "Tag pact with PROD"
+        title: "Tag pact with prod"
         inputs:
           - file_path: bitrise/scripts/tag_prod_pact_version.sh
     - gradle-runner@1.8.4:
