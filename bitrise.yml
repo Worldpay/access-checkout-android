@@ -33,11 +33,14 @@ workflows:
         inputs:
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
-    - script-runner@0.9.3:
-        title: "Deploy pact file to pact broker"
-        run_if: not .IsPR
+    - script@1.1.5:
+        title: Install pact client
         inputs:
-          - file_path: bitrise/scripts/upload_pact.sh
+          - content: gem install pact_broker-client
+    - script-runner@0.9.3:
+        title: "Tag pact with prod"
+        inputs:
+          - file_path: bitrise/scripts/tag_prod_pact_version.sh
     - gradle-runner@1.8.4:
         title: "Code coverage check"
         inputs:
@@ -154,11 +157,18 @@ workflows:
         title: Get project version
         inputs:
           - content: bitrise/scripts/get_project_version.sh --allow-snapshots
+    - script@1.1.5:
+        title: Install pact client
+        inputs:
+          - content: gem install pact_broker-client
     - script-runner@0.9.3:
         title: "Deploy pact file to pact broker"
-        run_if: not .IsPR
         inputs:
           - file_path: bitrise/scripts/upload_pact.sh
+    - script-runner@0.9.3:
+        title: "Verify pact tags on broker"
+        inputs:
+          - file_path: bitrise/scripts/verify_pact_tags.sh
     - gradle-runner@1.8.4:
         title: "Code coverage check"
         inputs:
