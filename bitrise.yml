@@ -75,7 +75,7 @@ workflows:
 #        inputs:
 #        - module: "$APP_MODULE"
 #        - variant: "$APP_MOCK_VARIANT"
-#    - virtual-device-testing-for-android@1.0.5:
+#    - virtual-device-testing-for-android@1.1.2:
 #        title: "Run UI tests against app"
 #        inputs:
 #        - test_type: instrumentation
@@ -210,7 +210,7 @@ workflows:
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
           - arguments: -PmerchantID=\"${MERCHANT_ID}\"
-    - virtual-device-testing-for-android@1.0.5:
+    - virtual-device-testing-for-android@1.1.2:
         title: "Run integration tests against app"
         inputs:
           - test_type: instrumentation
@@ -249,7 +249,7 @@ workflows:
         inputs:
           - module: "$APP_MODULE"
           - variant: "$APP_MOCK_VARIANT"
-    - virtual-device-testing-for-android@1.0.5:
+    - virtual-device-testing-for-android@1.1.2:
         title: "Run UI tests against app"
         inputs:
           - test_type: instrumentation
@@ -291,7 +291,7 @@ workflows:
           inputs:
             - module: "$APP_MODULE"
             - variant: "$APP_MOCK_VARIANT"
-      - virtual-device-testing-for-android@1.0.5:
+      - virtual-device-testing-for-android@1.1.2:
           title: "Run UI tests against app"
           inputs:
             - test_type: instrumentation

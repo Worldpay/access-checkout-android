@@ -61,6 +61,8 @@ object UITestUtils {
                     .check(matches(isDisplayed()))
             }
 
+            Thread.sleep(2000)
+
             true
         }
     }
@@ -79,27 +81,49 @@ object UITestUtils {
                     .check(matches(isDisplayed()))
             }
 
+            Thread.sleep(2000)
+
             true
         }
     }
 
     fun reopenApp() {
-        val uiDevice = getInstance(getInstrumentation())
-        uiDevice.pressRecentApps()
+        pressRecentApps()
         Thread.sleep(1000)
-        uiDevice.pressRecentApps()
+        pressRecentApps()
 
-        await().atMost(10, TimeUnit.SECONDS).until {
+        await().atMost(60, TimeUnit.SECONDS).until {
             try {
                 onView(withId(R.id.drawer_layout))
                     .check(matches(isDisplayed()))
             } catch (e: NoMatchingViewException) {
-                onView(withId(android.R.id.button1))
-                    .inRoot(isDialog())
-                    .check(matches(isDisplayed()))
+                try {
+                    onView(withId(R.id.loading_bar))
+                        .check(matches(isDisplayed()))
+                } catch (e: NoMatchingViewException) {
+                    onView(withId(android.R.id.button1))
+                        .inRoot(isDialog())
+                        .check(matches(isDisplayed()))
+                }
             }
 
             true
+        }
+    }
+
+    private fun pressRecentApps(currentRetryCount: Int = 1, maxTimes: Int = 3) {
+        val uiDevice = getInstance(getInstrumentation())
+        val pressedOnce = uiDevice.pressRecentApps()
+
+        if (pressedOnce) {
+            return
+        } else {
+            if (currentRetryCount < maxTimes) {
+                Thread.sleep(1000)
+                pressRecentApps(currentRetryCount = currentRetryCount + 1)
+            } else {
+                throw RuntimeException("Could not press recent apps button")
+            }
         }
     }
 
