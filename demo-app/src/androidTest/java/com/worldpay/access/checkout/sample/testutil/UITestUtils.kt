@@ -85,11 +85,9 @@ object UITestUtils {
 
     fun reopenApp() {
         val uiDevice = getInstance(getInstrumentation())
-        uiDevice.pressHome()
+        uiDevice.pressRecentApps()
         Thread.sleep(1000)
         uiDevice.pressRecentApps()
-        Thread.sleep((500))
-        uiDevice.click(uiDevice.displayWidth /2, uiDevice.displayHeight /2)
 
         await().atMost(10, TimeUnit.SECONDS).until {
             try {
