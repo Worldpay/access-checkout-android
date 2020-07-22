@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.util.Log
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
@@ -53,8 +54,13 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
     }
 
     private fun delay(broadcastIntent: Intent, maxRetry: Int = 5) {
+        if (!inLifeCycleState) {
+            localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
+            return
+        }
+
         Handler().postDelayed({
-            if (inLifeCycleState && maxRetry > 0) {
+            if (maxRetry > 0) {
                 delay(broadcastIntent, maxRetry - 1)
             } else {
                 localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
