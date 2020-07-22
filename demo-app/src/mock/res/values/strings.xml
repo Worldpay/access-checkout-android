@@ -2,6 +2,4 @@
 <resources>
     <string name="verified_token_session_reference">http://access.worldpay.com/verifiedTokens/sessions/&lt;encrypted-data&gt;</string>
     <string name="payments_cvc_session_reference">http://access.worldpay.com/sessions/&lt;encrypted-data&gt;</string>
-    <string name="error_response_card_number">7687655651111111113</string>
-    <string name="long_delay_card_number">5420597835928694</string>
 </resources>

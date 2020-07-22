@@ -5,10 +5,9 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
-import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.sample.MockServer.Paths.VERIFIED_TOKENS_SESSIONS_PATH
-import com.worldpay.access.checkout.sample.MockServer.getCurrentContext
 import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
@@ -46,9 +45,8 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     @Test
     fun shouldBeAbleToProcessSingleSessionAfterPreviousMultiSessionRequestFailed() {
-        simulateErrorResponse(activityRule.activity)
-
-        val unknownCardError = activityRule.activity.applicationContext.resources.getString(R.string.error_response_card_number)
+        val unknownCardError = "7687655651111111113"
+        simulateErrorResponse(unknownCardError)
 
         // failing scenario with payments cvc session
         cardFragmentTestUtils
@@ -93,9 +91,8 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     @Test
     fun shouldKeepFieldValuesUponIncorrectSubmission() {
-        simulateErrorResponse(activityRule.activity)
-
-        val unknownCardError = activityRule.activity.applicationContext.resources.getString(R.string.error_response_card_number)
+        val unknownCardError = "7687655651111111113"
+        simulateErrorResponse(unknownCardError)
 
         cardFragmentTestUtils
             .isInInitialState()
@@ -111,9 +108,8 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     @Test
     fun shouldKeepFieldValuesUponIncorrectSubmission_withToggleOn() {
-        simulateErrorResponse(activityRule.activity)
-
-        val unknownCardError = activityRule.activity.applicationContext.resources.getString(R.string.error_response_card_number)
+        val unknownCardError = "7687655651111111113"
+        simulateErrorResponse(unknownCardError)
 
         cardFragmentTestUtils
             .isInInitialState()
@@ -131,7 +127,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     @Test
     fun shouldContinueWithServiceCall_whenAppIsRotated_afterSubmission() {
-        simulateDelayedResponse(activityRule.activity)
+        simulateDelayedResponse(activityRule.activity, amexCard)
 
         cardFragmentTestUtils
             .isInInitialState()
@@ -153,7 +149,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     @Test
     fun shouldContinueWithServiceCall_whenAppIsReopened_afterSubmission() {
-        simulateDelayedResponse(activityRule.activity, 10000)
+        simulateDelayedResponse(activityRule.activity, amexCard)
 
         CardFragmentTestUtils(activityRule)
             .isInInitialState()
@@ -191,26 +187,22 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .isInInitialState()
     }
 
-    private fun simulateDelayedResponse(context: Context, delay: Int = 7000) {
+    private fun simulateDelayedResponse(context: Context, pan: String, delay: Int = 10000) {
         stubFor(
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
                 .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
                 .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${getCurrentContext().getString(
-                    R.string.long_delay_card_number
-                )}')]"))
+                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${pan}')]"))
                 .willReturn(validResponseWithDelay(context, delay))
         )
     }
 
-    private fun simulateErrorResponse(context: Context) {
+    private fun simulateErrorResponse(pan: String) {
         stubFor(
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
                 .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
                 .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${context.getString(
-                    R.string.error_response_card_number
-                )}')]"))
+                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${pan}')]"))
                 .willReturn(
                     aResponse()
                         .withFixedDelay(2000)

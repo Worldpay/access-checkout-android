@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.sample.stub
 
-import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -141,7 +140,8 @@ class MockCardFlowTest {
 
     @Test
     fun shouldReturn400Status_whenCallingVerifiedTokenWithInvalidCardNumber() {
-        simulateErrorResponse(activityRule.activity)
+        val pan = "7687655651111111113"
+        simulateErrorResponse(pan)
 
         val client = OkHttpClient()
 
@@ -161,7 +161,7 @@ class MockCardFlowTest {
             .method("POST",
                 create(
                     parse(verifiedTokensContentType),
-                    "{ \"cardNumber\":\"7687655651111111113\" }"
+                    "{ \"cardNumber\":\"${pan}\" }"
                 )
             )
             .header("Accept", verifiedTokensContentType)
@@ -231,12 +231,12 @@ class MockCardFlowTest {
 
     }
 
-    private fun simulateErrorResponse(context: Context) {
+    private fun simulateErrorResponse(pan: String) {
         stubFor(
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
                 .withHeader("Accept", WireMock.equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
                 .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${context.getString(R.string.error_response_card_number)}')]"))
+                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${pan}')]"))
                 .willReturn(
                     aResponse()
                         .withFixedDelay(2000)
