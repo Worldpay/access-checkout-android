@@ -19,8 +19,6 @@ internal class PanValidationResultHandler(
 
     private var inLifecycleEvent = false
 
-    private var deferredEvent: Boolean? = null
-
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
     internal fun onStart() {
         if (validationStateManager.panValidationState.notificationSent) {
@@ -31,9 +29,6 @@ internal class PanValidationResultHandler(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         inLifecycleEvent = false
-        if (deferredEvent != null) {
-            notifyListener(deferredEvent!!)
-        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -57,12 +52,6 @@ internal class PanValidationResultHandler(
     private fun hasStateChanged(isValid : Boolean) = isValid != validationStateManager.panValidationState.validationState
 
     private fun notifyListener(isValid : Boolean) {
-        if (inLifecycleEvent) {
-            deferredEvent = isValid
-            return
-        }
-
-        deferredEvent = null
         validationListener.onPanValidated(isValid)
         validationStateManager.panValidationState.validationState = isValid
 

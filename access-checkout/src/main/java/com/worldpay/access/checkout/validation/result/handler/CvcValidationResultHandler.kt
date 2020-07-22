@@ -15,8 +15,6 @@ internal class CvcValidationResultHandler(
 
     private var inLifecycleEvent = false
 
-    private var deferredEvent: Boolean? = null
-
     init {
         lifecycleOwner.lifecycle.addObserver(this)
     }
@@ -31,9 +29,6 @@ internal class CvcValidationResultHandler(
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         inLifecycleEvent = false
-        if (deferredEvent != null) {
-            notifyListener(deferredEvent!!)
-        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
@@ -57,12 +52,6 @@ internal class CvcValidationResultHandler(
     private fun hasStateChanged(isValid : Boolean) = isValid != validationStateManager.cvcValidationState.validationState
 
     private fun notifyListener(isValid : Boolean) {
-        if (inLifecycleEvent) {
-            deferredEvent = isValid
-            return
-        }
-
-        deferredEvent = null
         validationListener.onCvcValidated(isValid)
         validationStateManager.cvcValidationState.validationState = isValid
 
