@@ -297,7 +297,7 @@ workflows:
             - test_type: instrumentation
             - test_apk_path: "$BITRISE_TEST_APK"
             - test_devices: |-
-                Pixel2,28,en,portrait
+                Pixel2,29,en,portrait
       - deploy-to-bitrise-io@1.4.1:
           inputs:
             - notify_user_groups: testers, developers
