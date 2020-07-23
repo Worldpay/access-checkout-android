@@ -56,7 +56,7 @@ class SVGImageLoaderTest {
         val responseBody = mock(ResponseBody::class.java)
         val inputStream = mock(InputStream::class.java)
         given(responseBody.byteStream()).willReturn(inputStream)
-        given(response.body()).willReturn(responseBody)
+        given(response.body).willReturn(responseBody)
 
         svgImageLoader.fetchAndApplyCardLogo(cardBrand, targetImageView)
 
@@ -102,7 +102,7 @@ class SVGImageLoaderTest {
         val responseBody = mock(ResponseBody::class.java)
         val inputStream = mock(InputStream::class.java)
         given(responseBody.byteStream()).willReturn(inputStream)
-        given(response.body()).willReturn(responseBody)
+        given(response.body).willReturn(responseBody)
 
         svgImageLoader.fetchAndApplyCardLogo(cardBrandWithNoSVG, targetImageView)
 
@@ -120,7 +120,7 @@ class SVGImageLoaderTest {
         val responseBody = mock(ResponseBody::class.java)
         val inputStream = mock(InputStream::class.java)
         given(responseBody.byteStream()).willReturn(inputStream)
-        given(response.body()).willReturn(responseBody)
+        given(response.body).willReturn(responseBody)
 
         svgImageLoader.fetchAndApplyCardLogo(cardBrand, targetImageView)
 
