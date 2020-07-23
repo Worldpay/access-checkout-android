@@ -59,41 +59,6 @@ workflows:
           - gradlew_path: gradlew
           - gradle_task: ":$LIBRARY_MODULE:assembleRelease javadocJar sourcesJar"
           - gradle_file: $LIBRARY_MODULE//build.gradle
-#    - android-build@0.10.1:
-#        title: "Build test APK"
-#        inputs:
-#        - variant: debugAndroidTest
-#        - module: "$APP_MODULE"
-#    - script@1.1.6:
-#        title: "Set path to test APK"
-#        inputs:
-#        - content: |-
-#            #!/bin/bash
-#            envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
-#    - android-build:
-#        title: "Build app APK"
-#        inputs:
-#        - module: "$APP_MODULE"
-#        - variant: "$APP_MOCK_VARIANT"
-#    - virtual-device-testing-for-android@1.1.2:
-#        title: "Run UI tests against app"
-#        inputs:
-#        - test_type: instrumentation
-#        - test_apk_path: "$BITRISE_TEST_APK"
-#        - test_devices: |-
-#            Pixel2,28,en,portrait
-#            Nexus6P,27,en,portrait
-#            Nexus5X,26,en,landscape
-#            NexusLowRes,25,en,portrait
-#            Nexus9,24,en,landscape
-#            NexusLowRes,23,en,portrait
-#            Nexus10,22,en,portrait
-#            Nexus4,21,en,portrait
-#    - sign-apk@1.2.4:
-#        run_if: '{{getenv "BITRISEIO_ANDROID_KEYSTORE_URL" | ne ""}}'
-#    - deploy-to-bitrise-io@1.10.0:
-#        inputs:
-#        - notify_user_groups: none
     - file-downloader@1.0.1:
         inputs:
           - destination: "$LIBRARY_MODULE/secring.gpg"
@@ -225,50 +190,6 @@ workflows:
         inputs:
           - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
 
-  overnight-ui:
-    steps:
-    - cache-pull@2.1.4: {}
-    - script@1.1.6:
-        title: Do anything with Script step
-    - install-missing-android-tools@2.3.8:
-        inputs:
-          - gradlew_path: "gradlew"
-    - android-build@0.10.1:
-        title: "Build test APK"
-        inputs:
-          - variant: "${APP_MOCK_VARIANT}AndroidTest"
-          - module: "$APP_MODULE"
-    - script@1.1.6:
-        title: "Set path to test APK"
-        inputs:
-          - content: |-
-              #!/bin/bash
-              envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
-    - android-build:
-        title: "Build app APK"
-        inputs:
-          - module: "$APP_MODULE"
-          - variant: "$APP_MOCK_VARIANT"
-    - virtual-device-testing-for-android@1.1.2:
-        title: "Run UI tests against app"
-        inputs:
-          - test_type: instrumentation
-          - test_apk_path: "$BITRISE_TEST_APK"
-          - test_devices: |-
-              Nexus6,21,en,portrait
-              Nexus6,22,en,portrait
-              Nexus6,23,en,portrait
-              Nexus6,24,en,portrait
-              Nexus6,25,en,portrait
-              Pixel2,26,en,portrait
-              Pixel2,27,en,portrait
-              Pixel2,28,en,portrait
-              Pixel2,29,en,portrait
-    - deploy-to-bitrise-io@1.10.0:
-        inputs:
-          - notify_user_groups: testers, developers
-    - cache-push@2.3.0: {}
-
   primary-ui:
     steps:
       - cache-pull@2.1.4: {}
@@ -297,6 +218,14 @@ workflows:
             - test_type: instrumentation
             - test_apk_path: "$BITRISE_TEST_APK"
             - test_devices: |-
+                Nexus6,21,en,portrait
+                Nexus6,22,en,portrait
+                Nexus6,23,en,portrait
+                Nexus6,24,en,portrait
+                Nexus6,25,en,portrait
+                Pixel2,26,en,portrait
+                Pixel2,27,en,portrait
+                Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
       - deploy-to-bitrise-io@1.10.0:
           inputs:
