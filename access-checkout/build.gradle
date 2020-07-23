@@ -2,18 +2,19 @@ buildscript {
     repositories {
         google()
         jcenter()
+        mavenCentral()
     }
 
     dependencies {
         classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.10.1"
         classpath "org.jacoco:org.jacoco.core:0.8.5"
-        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.0"
+        classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.21.2"
     }
 }
 
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-android'
+apply plugin: 'kotlin-android-extensions'
 
 apply from: './gradle/android.gradle'
 apply from: './gradle/jacoco.gradle'

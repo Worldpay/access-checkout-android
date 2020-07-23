@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.worldpay.access.checkout.sample">
+    package="com.worldpay.access.checkout.sample"
+    android:versionCode="1"
+    android:versionName="1.0">
 
     <application
         android:name=".DemoApplication"
-        android:allowBackup="true"
+        android:allowBackup="false"
         android:icon="@mipmap/wp_logo"
         android:label="@string/app_name"
         android:networkSecurityConfig="@xml/network_security_config"
