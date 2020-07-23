@@ -20,6 +20,7 @@ import com.worldpay.access.checkout.client.session.listener.SessionResponseListe
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
+import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
@@ -37,8 +38,6 @@ class AccessCheckoutClientIntegrationTest {
     private val cardNumber = "1111222233334444"
     private val expiryDate = "1220"
     private val merchantId = "identity"
-
-    private val verifiedTokenMediaType = "application/vnd.worldpay.verified-tokens-v1.hal+json"
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
     private val lifecycleOwner: LifecycleOwner = mock(LifecycleOwner::class.java)
@@ -301,8 +300,8 @@ class AccessCheckoutClientIntegrationTest {
 
     private fun postRequest(request: String): MappingBuilder {
         return post(urlEqualTo("/$verifiedTokensEndpoint"))
-            .withHeader("Accept", equalTo(verifiedTokenMediaType))
-            .withHeader("Content-Type", equalTo(verifiedTokenMediaType))
+            .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
+            .withHeader("Content-Type", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
             .withRequestBody(EqualToJsonPattern(request, true, true))
     }
 

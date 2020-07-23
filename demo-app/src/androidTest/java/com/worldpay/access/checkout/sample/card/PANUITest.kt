@@ -227,7 +227,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .hasBrand(VISA)
 
         onView(withId(R.id.card_flow_text_pan))
-            .perform(click(), typeTextIntoFocusedView("1"), closeSoftKeyboard())
+            .perform(typeTextIntoFocusedView("1"), pressImeActionButton())
             .check(matches(withText(validVisaCardNumber)))
     }
 

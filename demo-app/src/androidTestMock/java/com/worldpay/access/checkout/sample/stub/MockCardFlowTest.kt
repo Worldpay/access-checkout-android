@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.sample.stub
 
-import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.github.tomakehurst.wiremock.client.WireMock
@@ -14,28 +13,25 @@ import com.worldpay.access.checkout.sample.MockServer.startWiremock
 import com.worldpay.access.checkout.sample.MockServer.stopWiremock
 import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VERIFIED_TOKENS_MEDIA_TYPE
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.simulateHttpRedirect
-import okhttp3.MediaType.parse
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.OkHttpClient
 import okhttp3.Request.Builder
-import okhttp3.RequestBody.create
-import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.containsString
-import org.hamcrest.Matchers.equalTo
-import org.junit.Assert.assertThat
+import okhttp3.RequestBody.Companion.toRequestBody
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class MockCardFlowTest {
 
     @get:Rule
-    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(
-        MainActivity::class.java)
-
-    private val verifiedTokensContentType = "application/vnd.worldpay.verified-tokens-v1.hal+json"
+    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
     private val baseURL = "http://localhost:8080"
 
@@ -55,10 +51,9 @@ class MockCardFlowTest {
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(
-                response.body()?.string(),
-                containsString("service:verifiedTokens")
-            )
+            val responseBody = response.body?.string()
+            assertNotNull(responseBody)
+            assertTrue(responseBody.contains("service:verifiedTokens"))
         }
     }
 
@@ -71,7 +66,9 @@ class MockCardFlowTest {
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.body()?.string(), containsString("verifiedTokens:sessions"))
+            val responseBody = response.body?.string()
+            assertNotNull(responseBody)
+            assertTrue(responseBody.contains("verifiedTokens:sessions"))
         }
     }
 
@@ -82,16 +79,18 @@ class MockCardFlowTest {
         val version = "access-checkout-android/${BuildConfig.VERSION_CODE}.0.0"
 
         val request = Builder()
-            .method("POST", create(parse(verifiedTokensContentType), "{}"))
-            .header("Accept", verifiedTokensContentType)
+            .method("POST", "{}".toRequestBody(VERIFIED_TOKENS_MEDIA_TYPE.toMediaTypeOrNull()))
+            .header("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .header("X-WP-SDK", version)
-            .url("$baseURL/verifiedTokens/sessions")
+            .url("$baseURL/$VERIFIED_TOKENS_SESSIONS_PATH")
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(
-                response.body()?.string(), containsString(
-                    activityRule.activity.resources.getString(
+            val responseBody = response.body?.string()
+            assertNotNull(responseBody)
+            assertTrue(
+                responseBody.contains(
+                activityRule.activity.resources.getString(
                         R.string.verified_token_session_reference
                     )
                 )
@@ -106,15 +105,17 @@ class MockCardFlowTest {
         val version = "access-checkout-android/${BuildConfig.VERSION_CODE}.0.0-SNAPSHOT"
 
         val request = Builder()
-            .method("POST", create(parse(verifiedTokensContentType), "{}"))
-            .header("Accept", verifiedTokensContentType)
+            .method("POST", "{}".toRequestBody(VERIFIED_TOKENS_MEDIA_TYPE.toMediaTypeOrNull()))
+            .header("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .header("X-WP-SDK", version)
-            .url("$baseURL/verifiedTokens/sessions")
+            .url("$baseURL/$VERIFIED_TOKENS_SESSIONS_PATH")
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(
-                response.body()?.string(), containsString(
+            val responseBody = response.body?.string()
+            assertNotNull(responseBody)
+            assertTrue(
+                responseBody.contains(
                     activityRule.activity.resources.getString(
                         R.string.verified_token_session_reference
                     )
@@ -128,20 +129,21 @@ class MockCardFlowTest {
         val client = OkHttpClient()
 
         val request = Builder()
-            .method("POST", create(parse(verifiedTokensContentType), "{}"))
-            .header("Accept", verifiedTokensContentType)
+            .method("POST", "{}".toRequestBody(VERIFIED_TOKENS_MEDIA_TYPE.toMediaTypeOrNull()))
+            .header("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .header("X-WP-SDK", "access-checkout-android/bad_version")
-            .url("$baseURL/verifiedTokens/sessions")
+            .url("$baseURL/$VERIFIED_TOKENS_SESSIONS_PATH")
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.code(), equalTo(404))
+            assertEquals(404, response.code)
         }
     }
 
     @Test
     fun shouldReturn400Status_whenCallingVerifiedTokenWithInvalidCardNumber() {
-        simulateErrorResponse(activityRule.activity)
+        val pan = "7687655651111111113"
+        simulateErrorResponse(pan)
 
         val client = OkHttpClient()
 
@@ -158,19 +160,14 @@ class MockCardFlowTest {
                             }""".trimIndent()
 
         val request = Builder()
-            .method("POST",
-                create(
-                    parse(verifiedTokensContentType),
-                    "{ \"cardNumber\":\"7687655651111111113\" }"
-                )
-            )
-            .header("Accept", verifiedTokensContentType)
-            .url("$baseURL/verifiedTokens/sessions")
+            .method("POST", "{ \"cardNumber\":\"${pan}\" }".toRequestBody(VERIFIED_TOKENS_MEDIA_TYPE.toMediaTypeOrNull()))
+            .header("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
+            .url("$baseURL/$VERIFIED_TOKENS_SESSIONS_PATH")
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.code(), equalTo(400))
-            assertThat(response.body()?.string(), equalTo(expectedResponse))
+            assertEquals(400, response.code)
+            assertEquals(expectedResponse, response.body?.string())
         }
     }
 
@@ -179,30 +176,36 @@ class MockCardFlowTest {
         simulateHttpRedirect(activityRule.activity)
 
         val client = OkHttpClient()
+            .newBuilder()
+            .followRedirects(false)
+            .build()
 
+        val body = "{}".toRequestBody(VERIFIED_TOKENS_MEDIA_TYPE.toMediaTypeOrNull())
+        
         val request = Builder()
-            .method("POST", create(parse(verifiedTokensContentType), "{}"))
-            .header("Accept", verifiedTokensContentType)
-            .header("X-WP-SDK", "access-checkout/${BuildConfig.VERSION_CODE}.0.0")
-            .url("$baseURL/verifiedTokens/sessions")
+            .method("POST", body)
+            .header("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
+            .header("X-WP-SDK", "access-checkout-android/${BuildConfig.VERSION_CODE}.0.0")
+            .url("$baseURL/$VERIFIED_TOKENS_SESSIONS_PATH")
             .build()
 
         val relocatedRequest = Builder()
-            .method("POST", create(parse(verifiedTokensContentType), "{}"))
-            .header("Accept", verifiedTokensContentType)
+            .method("POST", body)
+            .header("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .header("X-WP-SDK", "access-checkout-android/${BuildConfig.VERSION_CODE}.0.0")
             .url("$baseURL/newVerifiedTokensLocation/sessions")
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.header("Location"),
-                equalTo("$baseURL/newVerifiedTokensLocation/sessions")
-            )
-            assertThat(response.code(), equalTo(308))
+            assertEquals(308, response.code)
+            assertEquals("$baseURL/newVerifiedTokensLocation/sessions", response.header("Location"))
         }
 
         client.newCall(relocatedRequest).execute().use { response ->
-            assertThat(response.body()?.string(), containsString(activityRule.activity.resources.getString(
+            val responseBody = response.body?.string()
+            assertNotNull(responseBody)
+            assertTrue(
+                responseBody.contains(activityRule.activity.resources.getString(
                 R.string.verified_token_session_reference
             ))
             )
@@ -224,19 +227,19 @@ class MockCardFlowTest {
             val logoAsString = logoInputStream.reader(Charsets.UTF_8).readText()
 
             client.newCall(request).execute().use { response ->
-                assertThat(response.header("Content-Type"), equalTo("image/svg+xml"))
-                assertThat("Logo did not match expected for $it", response.body()?.string(), CoreMatchers.equalTo(logoAsString))
+                assertEquals("image/svg+xml", response.header("Content-Type"))
+                assertEquals(logoAsString, response.body?.string(), "Logo did not match expected for $it")
             }
         }
 
     }
 
-    private fun simulateErrorResponse(context: Context) {
+    private fun simulateErrorResponse(pan: String) {
         stubFor(
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
-                .withHeader("Accept", WireMock.equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${context.getString(R.string.error_response_card_number)}')]"))
+                .withHeader("Accept", WireMock.equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
+                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${pan}')]"))
                 .willReturn(
                     aResponse()
                         .withFixedDelay(2000)

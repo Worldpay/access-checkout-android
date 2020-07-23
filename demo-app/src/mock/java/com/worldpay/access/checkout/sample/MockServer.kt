@@ -64,10 +64,6 @@ object MockServer {
         wireMockServer.stubFor(mappingBuilder)
     }
 
-    fun getCurrentContext(): Context {
-        return context
-    }
-
     fun getBaseUrl(): String {
         return baseUrl
     }

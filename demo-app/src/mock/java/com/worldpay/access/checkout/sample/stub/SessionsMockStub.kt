@@ -14,7 +14,7 @@ import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsRespons
 
 object SessionsMockStub {
 
-    private const val DEFAULT_MEDIA_TYPE = "application/vnd.worldpay.sessions-v1.hal+json"
+    const val SESSIONS_MEDIA_TYPE = "application/vnd.worldpay.sessions-v1.hal+json"
 
     fun stubSessionsTokenRootRequest() {
         stubFor(
@@ -26,8 +26,8 @@ object SessionsMockStub {
     fun stubSessionsPaymentCvcRequest(context: Context) {
         stubFor(
             post(urlEqualTo("/$SESSIONS_PAYMENTS_CVC_PATH"))
-                .withHeader("Accept", equalTo(DEFAULT_MEDIA_TYPE))
-                .withHeader("Content-Type", containing(DEFAULT_MEDIA_TYPE))
+                .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
                 .withHeader("X-WP-SDK", matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$"))
                 .withRequestBody(AnythingPattern())
                 .willReturn(validResponseWithDelay(context, 2000))

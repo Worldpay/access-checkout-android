@@ -3,7 +3,10 @@ package com.worldpay.access.checkout.session.api
 import android.app.Service
 import android.content.Context
 import android.content.Intent
+import android.os.Handler
+import android.util.Log
 import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
@@ -47,7 +50,22 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
         broadcastIntent.putExtra(SessionBroadcastReceiver.ERROR_KEY, error)
         broadcastIntent.action = COMPLETED_SESSION_REQUEST
 
-        localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
+        delay(broadcastIntent)
+    }
+
+    private fun delay(broadcastIntent: Intent, maxRetry: Int = 5) {
+        if (!inLifeCycleState) {
+            localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
+            return
+        }
+
+        Handler().postDelayed({
+            if (maxRetry > 0) {
+                delay(broadcastIntent, maxRetry - 1)
+            } else {
+                localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
+            }
+        }, 500)
     }
 }
 

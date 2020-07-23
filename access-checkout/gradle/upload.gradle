@@ -63,7 +63,7 @@ nexusStaging {
 }
 
 artifacts {
-//    archives javadocJar, sourcesJar
+    archives javadocJar, sourcesJar
 }
 
 afterEvaluate {

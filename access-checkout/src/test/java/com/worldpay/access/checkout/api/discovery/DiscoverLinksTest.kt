@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.api.discovery
 
+import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
+import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
 import org.junit.Test
 import kotlin.test.assertEquals
 
@@ -26,19 +28,13 @@ class DiscoverLinksTest {
 
     @Test
     fun `discoverLinks sessions should return headers for sessions service`() {
-        val expectedAcceptHeader = "application/vnd.worldpay.sessions-v1.hal+json"
-        val expectedContentHeader = "application/vnd.worldpay.sessions-v1.hal+json"
-
-        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Accept"], expectedAcceptHeader)
-        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Content-Type"], expectedContentHeader)
+        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Accept"], SESSIONS_MEDIA_TYPE)
+        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Content-Type"], SESSIONS_MEDIA_TYPE)
     }
 
     @Test
     fun `discoverLinks verified tokens should return headers for verifiedTokens service`() {
-        val expectedAcceptHeader = "application/vnd.worldpay.verified-tokens-v1.hal+json"
-        val expectedContentHeader = "application/vnd.worldpay.verified-tokens-v1.hal+json"
-
-        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Accept"], expectedAcceptHeader)
-        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Content-Type"], expectedContentHeader)
+        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Accept"], VERIFIED_TOKENS_MEDIA_TYPE)
+        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Content-Type"], VERIFIED_TOKENS_MEDIA_TYPE)
     }
 }

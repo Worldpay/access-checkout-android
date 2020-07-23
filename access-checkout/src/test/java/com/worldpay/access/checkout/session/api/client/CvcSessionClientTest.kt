@@ -37,8 +37,8 @@ class CvcSessionClientTest {
         val sessionResponse = mock(SessionResponse::class.java)
 
         val headers = hashMapOf(
-            Pair("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json"),
-            Pair("Accept", "application/vnd.worldpay.sessions-v1.hal+json"),
+            Pair("Content-Type", SESSIONS_MEDIA_TYPE),
+            Pair("Accept", SESSIONS_MEDIA_TYPE),
             Pair("X-WP-SDK", "access-checkout-android/" + BuildConfig.VERSION_NAME)
         )
 

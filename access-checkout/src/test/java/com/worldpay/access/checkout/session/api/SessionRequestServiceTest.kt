@@ -8,6 +8,7 @@ import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
+import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
@@ -17,6 +18,7 @@ import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFacto
 import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.ERROR_KEY
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.RESPONSE_KEY
+import org.junit.After
 import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
@@ -25,6 +27,7 @@ import org.mockito.ArgumentCaptor
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.shadows.ShadowLooper
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
@@ -50,6 +53,11 @@ class SessionRequestServiceTest {
             SessionRequestService(
                 mockFactory
             )
+    }
+
+    @After
+    fun tearDown() {
+        inLifeCycleState = false
     }
 
     @Test
@@ -164,6 +172,66 @@ class SessionRequestServiceTest {
         sessionRequestService.onResponse(exception, null)
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
+
+        verify(localBroadcastManager).sendBroadcast(argument.capture())
+
+        assertNull(argument.value.getSerializableExtra(RESPONSE_KEY))
+        assertEquals(exception, argument.value.getSerializableExtra(ERROR_KEY))
+        assertEquals(2, argument.value.extras?.size())
+
+        assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
+    }
+
+    @Test
+    fun `should delay broadcast when in a lifecycle state`() {
+        val localBroadcastManager = mock(LocalBroadcastManager::class.java)
+        given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
+
+        val exception = AccessCheckoutException("some error")
+
+        inLifeCycleState = true
+
+        sessionRequestService.onResponse(exception, null)
+
+        verifyZeroInteractions(localBroadcastManager)
+
+        val argument = ArgumentCaptor.forClass(Intent::class.java)
+
+        inLifeCycleState = false
+
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+
+        verify(localBroadcastManager).sendBroadcast(argument.capture())
+
+        assertNull(argument.value.getSerializableExtra(RESPONSE_KEY))
+        assertEquals(exception, argument.value.getSerializableExtra(ERROR_KEY))
+        assertEquals(2, argument.value.extras?.size())
+
+        assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
+    }
+
+    @Test
+    fun `should delay broadcast when in a lifecycle state and does not return`() {
+        val localBroadcastManager = mock(LocalBroadcastManager::class.java)
+        given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
+
+        val exception = AccessCheckoutException("some error")
+
+        inLifeCycleState = true
+
+        sessionRequestService.onResponse(exception, null)
+
+        verifyZeroInteractions(localBroadcastManager)
+
+        val argument = ArgumentCaptor.forClass(Intent::class.java)
+
+        // keep calling this so we can test the recursive code
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
+        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
 
         verify(localBroadcastManager).sendBroadcast(argument.capture())
 

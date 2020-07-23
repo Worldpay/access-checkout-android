@@ -15,13 +15,13 @@ import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VerifiedTo
 
 object VerifiedTokenMockStub {
     
-    private const val DEFAULT_MEDIA_TYPE = "application/vnd.worldpay.verified-tokens-v1.hal+json"
+    const val VERIFIED_TOKENS_MEDIA_TYPE = "application/vnd.worldpay.verified-tokens-v1.hal+json"
 
     fun stubVerifiedTokenSessionRequest(context: Context) {
         stubFor(
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
-                .withHeader("Accept", equalTo(DEFAULT_MEDIA_TYPE))
-                .withHeader("Content-Type", containing(DEFAULT_MEDIA_TYPE))
+                .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
                 .withHeader("X-WP-SDK", matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$"))
                 .withRequestBody(AnythingPattern())
                 .willReturn(validResponseWithDelay(context, 2000))
@@ -39,8 +39,8 @@ object VerifiedTokenMockStub {
         val newLocation = "newVerifiedTokensLocation/sessions"
         stubFor(
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
-                .withHeader("Accept", equalTo(DEFAULT_MEDIA_TYPE))
-                .withHeader("Content-Type", containing(DEFAULT_MEDIA_TYPE))
+                .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
                 .willReturn(
                     aResponse()
                         .withFixedDelay(2000)
@@ -49,8 +49,8 @@ object VerifiedTokenMockStub {
 
         stubFor(
             post(urlEqualTo("/$newLocation"))
-                .withHeader("Accept", equalTo(DEFAULT_MEDIA_TYPE))
-                .withHeader("Content-Type", containing(DEFAULT_MEDIA_TYPE))
+                .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
                 .withHeader("X-WP-SDK", matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$"))
                 .withRequestBody(AnythingPattern())
                 .willReturn(validResponseWithDelay(context, 2000))

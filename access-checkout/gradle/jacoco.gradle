@@ -1,7 +1,7 @@
 apply plugin: 'jacoco'
 
 jacoco {
-    toolVersion = "0.8.3"
+    toolVersion = "0.8.5"
 }
 
 def loggingClasses = ['**/logging/LoggingUtils*', '**/logging/AccessCheckoutLogger*']
@@ -56,9 +56,9 @@ task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn:
         true
     }
 
-    sourceDirectories = sourceDirectoryFiles
-    classDirectories = classDirectoryFiles
-    executionData = executionDataFile
+    sourceDirectories.setFrom(sourceDirectoryFiles)
+    classDirectories.setFrom(classDirectoryFiles)
+    executionData.setFrom(executionDataFile)
 
 }
 
@@ -69,7 +69,7 @@ task jacocoTestReport(type: JacocoReport, dependsOn: unitTestTask) {
         html.enabled = true
     }
 
-    sourceDirectories = sourceDirectoryFiles
-    classDirectories = classDirectoryFiles
-    executionData = executionDataFile
+    sourceDirectories.setFrom(sourceDirectoryFiles)
+    classDirectories.setFrom(classDirectoryFiles)
+    executionData.setFrom(executionDataFile)
 }
