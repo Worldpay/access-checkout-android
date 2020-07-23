@@ -11,20 +11,19 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.simulateRootResourceTemporaryServerError
 import okhttp3.OkHttpClient
 import okhttp3.Request.Builder
-import org.hamcrest.CoreMatchers
-import org.hamcrest.CoreMatchers.containsString
-import org.junit.Assert.assertThat
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 @RunWith(AndroidJUnit4::class)
 class MockServerTest {
 
     @get:Rule
-    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(
-        MainActivity::class.java)
+    var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
     private val baseURL = "http://localhost:8080"
 
@@ -44,7 +43,9 @@ class MockServerTest {
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.body()?.string(), containsString("service:sessions"))
+            val responseBody = response.body?.string()
+            assertNotNull(responseBody)
+            assertTrue(responseBody.contains("service:sessions"))
         }
     }
 
@@ -57,7 +58,9 @@ class MockServerTest {
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.body()?.string(), containsString("sessions:paymentsCvc"))
+            val responseBody = response.body?.string()
+            assertNotNull(responseBody)
+            assertTrue(responseBody.contains("sessions:paymentsCvc"))
         }
     }
 
@@ -72,11 +75,13 @@ class MockServerTest {
             .build()
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.code(), CoreMatchers.equalTo(500))
+            assertEquals(500, response.code)
         }
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.body()?.string(), containsString("service:verifiedTokens"))
+            val responseBody = response.body?.string()
+            assertNotNull(responseBody)
+            assertTrue(responseBody.contains("service:verifiedTokens"))
         }
     }
 
@@ -95,7 +100,7 @@ class MockServerTest {
         val substitutedResponseTemplateString = cardConfigurationAsString.replace("{{request.requestLine.baseUrl}}", getBaseUrl())
 
         client.newCall(request).execute().use { response ->
-            assertThat(response.body()?.string(), CoreMatchers.equalTo(substitutedResponseTemplateString))
+            assertEquals(substitutedResponseTemplateString, response.body?.string())
         }
     }
 

@@ -13,6 +13,7 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.testutil.CardBrand
 import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VERIFIED_TOKENS_MEDIA_TYPE
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VerifiedTokenResponses.validResponseWithDelay
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.simulateHttpRedirect
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
@@ -190,8 +191,8 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
     private fun simulateDelayedResponse(context: Context, pan: String, delay: Int = 10000) {
         stubFor(
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
-                .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
+                .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
                 .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${pan}')]"))
                 .willReturn(validResponseWithDelay(context, delay))
         )
@@ -200,8 +201,8 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
     private fun simulateErrorResponse(pan: String) {
         stubFor(
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
-                .withHeader("Accept", equalTo("application/vnd.worldpay.verified-tokens-v1.hal+json"))
-                .withHeader("Content-Type", containing("application/vnd.worldpay.verified-tokens-v1.hal+json"))
+                .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
                 .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${pan}')]"))
                 .willReturn(
                     aResponse()

@@ -101,15 +101,15 @@ class SessionsPactTest {
             .uponReceiving("A service discovery request")
             .path(discoveryPath)
             .method("GET")
-            .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
+            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
+            .headers("Accept", SESSIONS_MEDIA_TYPE)
             .willRespondWith()
             .status(200)
             .headers(
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.sessions-v1.hal+json"
+                        SESSIONS_MEDIA_TYPE
                     )
                 )
             )
@@ -136,8 +136,8 @@ class SessionsPactTest {
             .uponReceiving("A request for a session reference")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
+            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
+            .headers("Accept", SESSIONS_MEDIA_TYPE)
             .body(generateRequest(identity))
             .willRespondWith()
             .status(201)
@@ -145,7 +145,7 @@ class SessionsPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.sessions-v1.hal+json"
+                        SESSIONS_MEDIA_TYPE
                     )
                 )
             )
@@ -160,8 +160,8 @@ class SessionsPactTest {
             .uponReceiving("A request for a session reference with invalid identity")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
+            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
+            .headers("Accept", SESSIONS_MEDIA_TYPE)
             .body(generateRequest(invalidIdentity))
             .willRespondWith()
             .status(400)
@@ -169,7 +169,7 @@ class SessionsPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.sessions-v1.hal+json"
+                        SESSIONS_MEDIA_TYPE
                     )
                 )
             )
@@ -183,8 +183,8 @@ class SessionsPactTest {
             .uponReceiving("A request for a session reference with non-numerical CVV")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
+            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
+            .headers("Accept", SESSIONS_MEDIA_TYPE)
             .body(generateRequest(cvc = cvcNonNumerical))
             .willRespondWith()
             .status(400)
@@ -192,7 +192,7 @@ class SessionsPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.sessions-v1.hal+json"
+                        SESSIONS_MEDIA_TYPE
                     )
                 )
             )
@@ -212,8 +212,8 @@ class SessionsPactTest {
             .uponReceiving("A request for a session reference with empty body")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.sessions-v1.hal+json")
+            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
+            .headers("Accept", SESSIONS_MEDIA_TYPE)
             .body("")
             .willRespondWith()
             .status(400)
@@ -221,7 +221,7 @@ class SessionsPactTest {
                 mapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.sessions-v1.hal+json"
+                        SESSIONS_MEDIA_TYPE
                     )
                 )
             )

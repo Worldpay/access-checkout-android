@@ -37,8 +37,8 @@ class CardSessionClientTest {
         val sessionResponse = mock(SessionResponse::class.java)
 
         val headers = hashMapOf(
-            Pair("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json"),
-            Pair("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json"),
+            Pair("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE),
+            Pair("Accept", VERIFIED_TOKENS_MEDIA_TYPE),
             Pair("X-WP-SDK", "access-checkout-android/" + BuildConfig.VERSION_NAME)
         )
 

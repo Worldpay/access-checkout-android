@@ -11,8 +11,8 @@ import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
 import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
-import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
 import com.worldpay.access.checkout.session.api.client.CardSessionClient
+import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.serialization.CardSessionRequestSerializer
@@ -139,8 +139,8 @@ class VerifiedTokensPactTest {
             .uponReceiving("A request for a session reference")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .body(generateRequest(identity))
             .willRespondWith()
             .status(201)
@@ -148,7 +148,7 @@ class VerifiedTokensPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
+                        VERIFIED_TOKENS_MEDIA_TYPE
                     )
                 )
             )
@@ -163,8 +163,8 @@ class VerifiedTokensPactTest {
             .uponReceiving("A request for a session reference with invalid identity")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .body(generateRequest(invalidIdentity))
             .willRespondWith()
             .status(400)
@@ -172,7 +172,7 @@ class VerifiedTokensPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
+                        VERIFIED_TOKENS_MEDIA_TYPE
                     )
                 )
             )
@@ -186,8 +186,8 @@ class VerifiedTokensPactTest {
             .uponReceiving("A request for a session reference with invalid luhn")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .body(generateRequest(pan = invalidLuhn))
             .willRespondWith()
             .status(400)
@@ -195,7 +195,7 @@ class VerifiedTokensPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
+                        VERIFIED_TOKENS_MEDIA_TYPE
                     )
                 )
             )
@@ -215,8 +215,8 @@ class VerifiedTokensPactTest {
             .uponReceiving("A request for a session reference with string card property too short")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .body(generateRequest(pan = cardStringTooShort))
             .willRespondWith()
             .status(400)
@@ -224,7 +224,7 @@ class VerifiedTokensPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
+                        VERIFIED_TOKENS_MEDIA_TYPE
                     )
                 )
             )
@@ -244,8 +244,8 @@ class VerifiedTokensPactTest {
             .uponReceiving("A request for a session reference with string card property too long")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .body(generateRequest(pan = cardStringTooLong))
             .willRespondWith()
             .status(400)
@@ -253,7 +253,7 @@ class VerifiedTokensPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
+                        VERIFIED_TOKENS_MEDIA_TYPE
                     )
                 )
             )
@@ -273,8 +273,8 @@ class VerifiedTokensPactTest {
             .uponReceiving("A request for a session reference with month int too small")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .body(generateRequest(month = integerMonthTooSmall))
             .willRespondWith()
             .status(400)
@@ -282,7 +282,7 @@ class VerifiedTokensPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
+                        VERIFIED_TOKENS_MEDIA_TYPE
                     )
                 )
             )
@@ -302,8 +302,8 @@ class VerifiedTokensPactTest {
             .uponReceiving("A request for a session reference with month int too large")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .body(generateRequest(month = integerMonthTooLarge))
             .willRespondWith()
             .status(400)
@@ -311,7 +311,7 @@ class VerifiedTokensPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
+                        VERIFIED_TOKENS_MEDIA_TYPE
                     )
                 )
             )
@@ -331,8 +331,8 @@ class VerifiedTokensPactTest {
             .uponReceiving("A request for a session reference with non-numerical CVV")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .body(generateRequest(cvc = cvcNonNumerical))
             .willRespondWith()
             .status(400)
@@ -340,7 +340,7 @@ class VerifiedTokensPactTest {
                 mutableMapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
+                        VERIFIED_TOKENS_MEDIA_TYPE
                     )
                 )
             )
@@ -360,8 +360,8 @@ class VerifiedTokensPactTest {
             .uponReceiving("A request for a session reference with empty body")
             .path(sessionPath)
             .method("POST")
-            .headers("Content-Type", "application/vnd.worldpay.verified-tokens-v1.hal+json")
-            .headers("Accept", "application/vnd.worldpay.verified-tokens-v1.hal+json")
+            .headers("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE)
+            .headers("Accept", VERIFIED_TOKENS_MEDIA_TYPE)
             .body("")
             .willRespondWith()
             .status(400)
@@ -369,7 +369,7 @@ class VerifiedTokensPactTest {
                 mapOf(
                     Pair(
                         "Content-Type",
-                        "application/vnd.worldpay.verified-tokens-v1.hal+json"
+                        VERIFIED_TOKENS_MEDIA_TYPE
                     )
                 )
             )
