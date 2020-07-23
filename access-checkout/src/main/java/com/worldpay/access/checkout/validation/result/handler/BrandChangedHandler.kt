@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransform
 
 internal class BrandChangedHandler(
     private val validationListener: AccessCheckoutBrandChangedListener,
-    private val toCardBrandTransformer: ToCardBrandTransformer = ToCardBrandTransformer()
+    private val toCardBrandTransformer: ToCardBrandTransformer
 ) {
 
     fun handle(remoteCardBrand : RemoteCardBrand?) {

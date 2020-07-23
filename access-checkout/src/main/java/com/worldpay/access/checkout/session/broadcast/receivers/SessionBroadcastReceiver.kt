@@ -71,7 +71,7 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
         externalSessionResponseListener.onSuccess(responses)
     }
 
-    private fun sendErrorCallback(errorSerializable: Serializable) {
+    private fun sendErrorCallback(errorSerializable: Serializable?) {
         try {
             Log.d(javaClass.simpleName, "Sending erred response: $errorSerializable")
             externalSessionResponseListener.onError(errorSerializable as AccessCheckoutException)

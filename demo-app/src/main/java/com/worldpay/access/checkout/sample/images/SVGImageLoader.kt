@@ -100,7 +100,7 @@ class SVGImageLoader @JvmOverloads constructor(
 
             @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
-                response.body()?.let { responseBody ->
+                response.body?.let { responseBody ->
                     run {
                         svgImageRenderer.renderImage(responseBody.byteStream(), target, brandName)
                         idleResCounter.decrement()
