@@ -22,7 +22,7 @@ uploadArchives {
             }
 
             pom.version = "${project.version}"
-            pom.artifactId = "access-checkout"
+            pom.artifactId = "${project.archivesBaseName}"
             pom.groupId = "com.worldpay.access"
 
             pom.project {
