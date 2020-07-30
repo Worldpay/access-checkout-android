@@ -71,9 +71,9 @@ workflows:
           - tag: "v$PROJECT_VERSION"
           - name: $PROJECT_VERSION
           - files_to_upload: |-
-              $LIBRARY_MODULE/build/outputs/aar/$LIBRARY_MODULE-$PROJECT_VERSION.aar
-              $LIBRARY_MODULE/build/libs/$LIBRARY_MODULE-$PROJECT_VERSION-javadoc.jar
-              $LIBRARY_MODULE/build/libs/$LIBRARY_MODULE-$PROJECT_VERSION-sources.jar
+              $LIBRARY_MODULE/build/outputs/aar/$ARTIFACT_NAME-$PROJECT_VERSION.aar
+              $LIBRARY_MODULE/build/libs/$ARTIFACT_NAME-$PROJECT_VERSION-javadoc.jar
+              $LIBRARY_MODULE/build/libs/$ARTIFACT_NAME-$PROJECT_VERSION-sources.jar
           - commit: $GIT_CLONE_COMMIT_HASH
           - body: Release of SDK version $PROJECT_VERSION
           - api_token: $GITHUB_PERSONAL_ACCESS_TOKEN
@@ -235,6 +235,9 @@ workflows:
 app:
   envs:
   - LIBRARY_MODULE: access-checkout
+    opts:
+      is_expand: false
+  - ARTIFACT_NAME: access-checkout-android
     opts:
       is_expand: false
   - APP_MODULE: demo-app
