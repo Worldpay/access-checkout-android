@@ -182,9 +182,13 @@ workflows:
           - test_apk_path: "$BITRISE_TEST_APK"
           - test_devices: |-
               Pixel2,28,en,portrait
-    - deploy-to-bitrise-io@1.10.0:
+    - slack@3.1.4:
+        run_if: |-
+          {{.IsBuildFailed | and (enveq "BITRISE_GIT_BRANCH" "master")}}
         inputs:
-          - notify_user_groups: testers, developers
+          - channel_on_error: "#access-checkout-build"
+          - text_on_error: "Primary build for Access Checkout Android Failed"
+          - webhook_url: "$SLACK_ACO_BUILD_WEBHOOK_URL"
     - cache-push@2.3.0: {}
     - build-router-wait@0.9.1:
         inputs:
@@ -227,9 +231,6 @@ workflows:
                 Pixel2,27,en,portrait
                 Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
-      - deploy-to-bitrise-io@1.10.0:
-          inputs:
-            - notify_user_groups: testers, developers
       - cache-push@2.3.0: {}
 
 app:
