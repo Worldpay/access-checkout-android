@@ -54,3 +54,6 @@ implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 For full integration instructions and code examples visit [Worldpay Developers](https://developer.worldpay.com/docs/access-worldpay/checkout/android)
 
 
+## Security
+
+Checkmarx scans are triggered on push via a webhook set up in GitHub, and CRs for new releases must have a valid Checkmarx report attached to the CR
