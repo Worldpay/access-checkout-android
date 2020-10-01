@@ -12,7 +12,7 @@ It includes, optionally, custom Android views that identifies card brands and va
 
 Download the latest AAR from [Maven Central](https://search.maven.org/search?q=g:com.worldpay.access%20AND%20a:access-checkout-android) or include in your project's build dependencies via Gradle:
 
-`implementation 'com.worldpay.access:access-checkout-android:1.2.0`
+`implementation 'com.worldpay.access:access-checkout-android:2.0.0`
 
 
 or Maven:
@@ -21,7 +21,7 @@ or Maven:
 <dependency>
   <groupId>com.worldpay.access</groupId>
   <artifactId>access-checkout-android</artifactId>
-  <version>1.2.0</version>
+  <version>2.0.0</version>
 </dependency>
 ```
 
@@ -43,8 +43,8 @@ allprojects {
 
 Add the following lines to the app level dependency list (kotlin version can be changed):
 
-``` 
-implementation (name:'access-checkout-android-1.2.0', ext:'aar')
+```
+implementation (name:'access-checkout-android-2.0.0', ext:'aar')
 implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
 ```
 
