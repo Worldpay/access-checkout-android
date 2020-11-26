@@ -18,13 +18,9 @@ internal class ExpiryDateValidator(private val now: Calendar = Calendar.getInsta
         val isValid = simpleValidator.validate(expiryDate, expiryDateRule)
 
         if (isValid) {
-            return try {
-                val month = parseInt(expiryDate.split("/")[0])
-                val year = parseInt(expiryDate.split("/")[1])
-                isExpiryDateValid(month, year)
-            } catch (e: NumberFormatException) {
-                false
-            }
+            val month = parseInt(expiryDate.split("/")[0])
+            val year = parseInt(expiryDate.split("/")[1])
+            return isExpiryDateValid(month, year)
         }
 
         return false
