@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
+import com.worldpay.access.checkout.sample.ssl.CustomHttpServerFactory
 import com.worldpay.access.checkout.sample.stub.BrandLogoMockStub.stubLogos
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.rootResourceMapping
@@ -14,6 +15,8 @@ import com.worldpay.access.checkout.sample.stub.SessionsMockStub.stubSessionsPay
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.stubSessionsTokenRootRequest
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifiedTokenRootRequest
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifiedTokenSessionRequest
+import java.io.File
+import java.io.FileOutputStream
 
 object MockServer {
 
@@ -34,15 +37,23 @@ object MockServer {
         const val CARD_CONFIGURATION_PATH = "access-checkout/cardTypes.json"
     }
 
-    fun startWiremock(context: Context, port: Int = 8080) {
+    fun startWiremock(context: Context, port: Int = 8443) {
         Log.d("MockServer", "Starting WireMock server!")
 
         MockServer.context = context
 
+        val keyStoreFile = File(context.cacheDir, "wiremock.bks")
+        context.assets.open("wiremock.bks").copyTo(FileOutputStream(keyStoreFile))
+
         wireMockServer = WireMockServer(WireMockConfiguration
             .options()
             .notifier(ConsoleNotifier(true))
-            .port(port)
+            .httpsPort(port)
+            .httpServerFactory(CustomHttpServerFactory())
+            .needClientAuth(true)
+            .keystorePath(keyStoreFile.absolutePath)
+            .keystoreType("BKS")
+            .keystorePassword("password")
             .extensions(ResponseTemplateTransformer(false)))
 
         Thread(Runnable {
