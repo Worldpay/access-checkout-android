@@ -28,7 +28,7 @@ class CardConfigurationClientTest {
         val asyncTask = mock<CardConfigurationAsyncTask>()
         given(cardConfigurationAsyncTaskFactory.getAsyncTask(callback)).willReturn(asyncTask)
 
-        val baseURL = "http://localhost"
+        val baseURL = "https://localhost:8443"
         cardConfigurationClient.getCardConfiguration(baseURL, callback)
 
         verify(asyncTask).execute(baseURL)

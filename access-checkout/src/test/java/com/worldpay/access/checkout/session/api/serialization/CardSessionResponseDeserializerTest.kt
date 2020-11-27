@@ -72,7 +72,7 @@ class CardSessionResponseDeserializerTest {
             """{
                   "_links": {
                     "verifiedTokens:session": {
-                      "href": "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                      "href": "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     },
                     "curies": [
                       {
@@ -97,7 +97,7 @@ class CardSessionResponseDeserializerTest {
             """{
                   "_links": {
                     "verifiedTokens:session": {
-                      "href": "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                      "href": "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     },
                     "curies": [
                       {
@@ -115,7 +115,7 @@ class CardSessionResponseDeserializerTest {
         val expectedCuries =
             arrayOf(Curies("https://access.worldpay.com/rels/verifiedTokens{rel}.json", "verifiedTokens", true))
         val expectedLinks = Links(
-            Endpoints("http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
+            Endpoints("https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"),
             expectedCuries
         )
         val expectedResponse =

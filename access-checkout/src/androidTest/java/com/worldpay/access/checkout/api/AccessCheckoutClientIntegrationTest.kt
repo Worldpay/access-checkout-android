@@ -76,7 +76,7 @@ class AccessCheckoutClientIntegrationTest {
         val request = getExpectedRequest(cardDetails)
 
         val expectedSessionReference =
-            """http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"""
+            """https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"""
 
         val response = (
                 """{
@@ -103,7 +103,7 @@ class AccessCheckoutClientIntegrationTest {
                         .withHeader("Content-Type", "application/json")
                         .withHeader(
                             "Location",
-                            "http://access.worldpay.com/$verifiedTokensEndpoint/sessions/<encrypted-data>"
+                            "https://access.worldpay.com/$verifiedTokensEndpoint/sessions/<encrypted-data>"
                         )
                         .withBody(response)
                 )

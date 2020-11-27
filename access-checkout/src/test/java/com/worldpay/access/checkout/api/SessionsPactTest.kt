@@ -66,13 +66,13 @@ class SessionsPactTest {
     private val invalidIdentity = "ABC"
 
     private val sessionReferenceRegex = "https?://[^/]+/sessions/[^/]+"
-    private val sessionReferenceExample = "http://access.worldpay.com/sessions/<encrypted-data>"
+    private val sessionReferenceExample = "https://access.worldpay.com/sessions/<encrypted-data>"
 
     private val sessionEndpointRegex = "https?://[^/]+/sessions/.+"
-    private val paymentsCvcSessionEndpoint = "http://access.worldpay.com/sessions/payments/cvc"
+    private val paymentsCvcSessionEndpoint = "https://access.worldpay.com/sessions/payments/cvc"
 
     private val curiesRegex = "https?://[^/]+/rels/sessions/\\{rel\\}.json"
-    private val curiesExample = "http://access.worldpay.com/rels/sessions/{rel}.json"
+    private val curiesExample = "https://access.worldpay.com/rels/sessions/{rel}.json"
 
     private val responseBody = PactDslJsonBody()
         .`object`("_links")

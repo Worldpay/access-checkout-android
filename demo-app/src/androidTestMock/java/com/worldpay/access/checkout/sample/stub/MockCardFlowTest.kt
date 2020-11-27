@@ -33,7 +33,7 @@ class MockCardFlowTest {
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
-    private val baseURL = "http://localhost:8080"
+    private val baseURL = "https://localhost:8443"
 
     @Before
     fun setup() {

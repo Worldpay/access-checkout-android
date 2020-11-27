@@ -240,7 +240,7 @@ class HttpClientTest {
         val testResponse  = TestResponse("abcdef")
 
 
-        val relocatedUrl = "http://localhost/someotherURL"
+        val relocatedUrl = "https://localhost:8443/someotherURL"
         val relocatedUrlMock: URL = mock()
         given(urlFactory.getURL(relocatedUrl)).willReturn(relocatedUrlMock)
         val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location",
@@ -439,7 +439,7 @@ class HttpClientTest {
 
         val testResponse  = TestResponse("abcdef")
 
-        val relocatedUrl = "http://localhost/someotherURL"
+        val relocatedUrl = "https://localhost:8443/someotherURL"
         val relocatedUrlMock: URL = mock()
         given(urlFactory.getURL(relocatedUrl)).willReturn(relocatedUrlMock)
         val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location",

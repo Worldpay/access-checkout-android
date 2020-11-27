@@ -8,8 +8,8 @@ import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
-import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.client.CardSessionClient
+import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.RequestDispatcher
 import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
@@ -31,7 +31,7 @@ class SessionRequestSenderTest {
     private lateinit var apiDiscoveryClient: ApiDiscoveryClient
     private lateinit var sessionRequestSender: SessionRequestSender
 
-    private val baseURL = "http://localhost"
+    private val baseURL = "https://localhost:8443"
 
     @Before
     fun setup() {

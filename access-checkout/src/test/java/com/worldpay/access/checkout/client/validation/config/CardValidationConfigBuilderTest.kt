@@ -14,7 +14,7 @@ class CardValidationConfigBuilderTest {
     private val pan = mock<EditText>()
     private val expiryDate = mock<EditText>()
     private val cvc = mock<EditText>()
-    private val baseUrl = "http://localhost"
+    private val baseUrl = "https://localhost:8443"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
 

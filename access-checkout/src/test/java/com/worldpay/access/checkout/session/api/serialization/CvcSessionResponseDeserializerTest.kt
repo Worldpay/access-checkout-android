@@ -71,7 +71,7 @@ class CvcSessionResponseDeserializerTest {
             """{
                   "_links": {
                     "sessions:session": {
-                      "href": "http://access.worldpay.com/sessions/<encrypted-data>"
+                      "href": "https://access.worldpay.com/sessions/<encrypted-data>"
                     },
                     "curies": [
                       {
@@ -96,7 +96,7 @@ class CvcSessionResponseDeserializerTest {
             """{
                   "_links": {
                     "sessions:session": {
-                      "href": "http://access.worldpay.com/sessions/<encrypted-data>"
+                      "href": "https://access.worldpay.com/sessions/<encrypted-data>"
                     },
                     "curies": [
                       {
@@ -120,7 +120,7 @@ class CvcSessionResponseDeserializerTest {
                 )
             )
         val expectedLinks = Links(
-            Endpoints("http://access.worldpay.com/sessions/<encrypted-data>"),
+            Endpoints("https://access.worldpay.com/sessions/<encrypted-data>"),
             expectedCuries
         )
         val expectedResponse =

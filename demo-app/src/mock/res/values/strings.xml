@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="verified_token_session_reference">http://access.worldpay.com/verifiedTokens/sessions/&lt;encrypted-data&gt;</string>
-    <string name="payments_cvc_session_reference">http://access.worldpay.com/sessions/&lt;encrypted-data&gt;</string>
+    <string name="verified_token_session_reference">https://access.worldpay.com/verifiedTokens/sessions/&lt;encrypted-data&gt;</string>
+    <string name="payments_cvc_session_reference">https://access.worldpay.com/sessions/&lt;encrypted-data&gt;</string>
 </resources>

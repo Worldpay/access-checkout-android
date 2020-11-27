@@ -33,7 +33,7 @@ class CvcSessionClientTest {
 
     @Test
     fun `should make expected http request when getting session response`() {
-        val url = URL("http://localhost")
+        val url = URL("https://localhost:8443")
         val sessionResponse = mock(SessionResponse::class.java)
 
         val headers = hashMapOf(

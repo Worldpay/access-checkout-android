@@ -232,7 +232,7 @@ internal object CardConfigurationUtil {
 
     fun mockSuccessfulCardConfiguration() {
         val cardConfigurationClient = mock<CardConfigurationClient>()
-        val baseUrl = "http://localhost-mock:8080"
+        val baseUrl = "https://localhost:8443-mock:8080"
         val captor = argumentCaptor<Callback<CardConfiguration>>()
 
         CardConfigurationProvider(baseUrl, cardConfigurationClient, emptyList())

@@ -95,7 +95,7 @@ class CardConfigurationAsyncTaskTest {
                 asserted = true
             }
         }
-        val baseURL = "http://localhost"
+        val baseURL = "https://localhost:8443"
 
         val urlFactory = mock<URLFactory>()
         val url = URL(baseURL)
@@ -124,7 +124,7 @@ class CardConfigurationAsyncTaskTest {
             }
         }
 
-        val baseURL = "http://localhost"
+        val baseURL = "https://localhost:8443"
 
         val httpClient = mock<HttpClient>()
         val cardConfigurationParser = mock<CardConfigurationParser>()

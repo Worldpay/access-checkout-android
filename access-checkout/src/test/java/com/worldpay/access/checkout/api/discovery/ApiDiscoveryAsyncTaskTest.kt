@@ -73,7 +73,7 @@ class ApiDiscoveryAsyncTaskTest {
             }
         }
 
-        val rootURL = URL("http://localhost")
+        val rootURL = URL("https://localhost:8443")
         given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(expectedException)
 
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
@@ -82,7 +82,7 @@ class ApiDiscoveryAsyncTaskTest {
             httpClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -99,7 +99,7 @@ class ApiDiscoveryAsyncTaskTest {
             }
         }
 
-        val rootURL = URL("http://localhost")
+        val rootURL = URL("https://localhost:8443")
         given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(expectedException)
 
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
@@ -108,7 +108,7 @@ class ApiDiscoveryAsyncTaskTest {
             httpClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -125,8 +125,8 @@ class ApiDiscoveryAsyncTaskTest {
             }
         }
 
-        val serviceUrl = "http://localhost/verifiedTokens"
-        val rootURL = URL("http://localhost")
+        val serviceUrl = "https://localhost:8443/verifiedTokens"
+        val rootURL = URL("https://localhost:8443")
         given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willReturn(serviceUrl)
         given(httpClientMock.doGet(URL(serviceUrl), secondLinkDiscoveryDeserializerMock)).willThrow(expectedException)
 
@@ -136,7 +136,7 @@ class ApiDiscoveryAsyncTaskTest {
             httpClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -153,7 +153,7 @@ class ApiDiscoveryAsyncTaskTest {
             }
         }
 
-        val rootURL = URL("http://localhost")
+        val rootURL = URL("https://localhost:8443")
         given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(IllegalStateException("Some message"))
 
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
@@ -162,7 +162,7 @@ class ApiDiscoveryAsyncTaskTest {
             httpClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -179,7 +179,7 @@ class ApiDiscoveryAsyncTaskTest {
             }
         }
 
-        val rootURL = URL("http://localhost")
+        val rootURL = URL("https://localhost:8443")
         given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willThrow(IllegalStateException())
 
         val accessCheckoutDiscoveryAsyncTask = ApiDiscoveryAsyncTask(
@@ -188,7 +188,7 @@ class ApiDiscoveryAsyncTaskTest {
             httpClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -207,7 +207,7 @@ class ApiDiscoveryAsyncTaskTest {
             }
         }
 
-        val rootURL = URL("http://localhost")
+        val rootURL = URL("https://localhost:8443")
 
         BDDMockito.given(httpClientMock.doGet(rootURL, linkDiscoveryDeserializerMock)).willReturn(rubbishResponse)
 
@@ -217,7 +217,7 @@ class ApiDiscoveryAsyncTaskTest {
             httpClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("http://localhost")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
@@ -226,7 +226,7 @@ class ApiDiscoveryAsyncTaskTest {
     @Test
     fun `should discover resource when given a valid url and two levels discovery required`() {
 
-        val baseURL = "http://localhost"
+        val baseURL = "https://localhost:8443"
         var asserted = false
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
@@ -256,7 +256,7 @@ class ApiDiscoveryAsyncTaskTest {
     @Test
     fun `should discover resource when given valid base url and one level discovery required`() {
 
-        val baseURL = "http://localhost"
+        val baseURL = "https://localhost:8443"
         var asserted = false
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
@@ -285,7 +285,7 @@ class ApiDiscoveryAsyncTaskTest {
 
     fun `should discover resource when given valid base url and three levels of discovery required`() {
 
-        val baseURL = "http://localhost"
+        val baseURL = "https://localhost:8443"
         var asserted = false
         val callback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {

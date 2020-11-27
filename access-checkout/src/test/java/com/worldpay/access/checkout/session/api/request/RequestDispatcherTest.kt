@@ -25,7 +25,7 @@ import kotlin.test.assertTrue
 class RequestDispatcherTest {
 
     private val verifiedTokensEndpoint = "verifiedTokens"
-    private val baseUrl = "http://localhost"
+    private val baseUrl = "https://localhost:8443"
 
     private val sessionRequest =
         CardSessionRequest(
@@ -68,7 +68,7 @@ class RequestDispatcherTest {
         val expectedLinks =
             SessionResponse.Links(
                 SessionResponse.Links.Endpoints(
-                    "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                    "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                 ),
                 expectedCuries
             )

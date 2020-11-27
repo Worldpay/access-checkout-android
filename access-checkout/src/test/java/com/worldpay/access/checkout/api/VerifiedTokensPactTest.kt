@@ -68,12 +68,12 @@ class VerifiedTokensPactTest {
     private val invalidIdentity = "ABC"
 
     private val discoveryEndpointRegex = "https?://[^/]+/verifiedTokens/.+"
-    private val verifiedTokensSessionEndpoint = "http://access.worldpay.com/verifiedTokens/sessions"
+    private val verifiedTokensSessionEndpoint = "https://access.worldpay.com/verifiedTokens/sessions"
 
     private val sessionReferenceRegex = "https?://[^/]+/verifiedTokens/sessions/[^/]+"
-    private val sessionReferenceExample = "http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+    private val sessionReferenceExample = "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
     private val curiesRegex = "https?://[^/]+/rels/verifiedTokens/\\{rel\\}.json"
-    private val curiesExample = "http://access.worldpay.com/rels/verifiedTokens/{rel}.json"
+    private val curiesExample = "https://access.worldpay.com/rels/verifiedTokens/{rel}.json"
     private val responseBody = PactDslJsonBody()
         .`object`("_links")
         .`object`("verifiedTokens:session")
