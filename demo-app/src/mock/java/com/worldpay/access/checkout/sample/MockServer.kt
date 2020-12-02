@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.sample
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.MappingBuilder
@@ -8,6 +9,7 @@ import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.worldpay.access.checkout.sample.ssl.CustomHttpServerFactory
+import com.worldpay.access.checkout.sample.ssl.TrustAllSSLSocketFactory
 import com.worldpay.access.checkout.sample.stub.BrandLogoMockStub.stubLogos
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.rootResourceMapping
@@ -17,6 +19,7 @@ import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifi
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifiedTokenSessionRequest
 import java.io.File
 import java.io.FileOutputStream
+import javax.net.ssl.HttpsURLConnection
 
 object MockServer {
 
@@ -43,7 +46,12 @@ object MockServer {
         MockServer.context = context
 
         val keyStoreFile = File(context.cacheDir, "wiremock.bks")
-        context.assets.open("wiremock.bks").copyTo(FileOutputStream(keyStoreFile))
+        val keystoreInputStream = context.assets.open("wiremock.bks")
+        keystoreInputStream.copyTo(FileOutputStream(keyStoreFile))
+
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.N) {
+            HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
+        }
 
         wireMockServer = WireMockServer(WireMockConfiguration
             .options()

@@ -6,6 +6,8 @@ import android.widget.ImageView
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.sample.ssl.TrustAllSSLSocketFactory
+import com.worldpay.access.checkout.sample.ssl.TrustAllSSLSocketFactory.Companion.X509_TRUST_MANAGER
 import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
 import okhttp3.*
 import java.io.File
@@ -51,6 +53,7 @@ class SVGImageLoader @JvmOverloads constructor(
 
         private fun buildDefaultClient(cacheDir: File?): OkHttpClient {
             val builder = OkHttpClient.Builder()
+                .sslSocketFactory(TrustAllSSLSocketFactory(), X509_TRUST_MANAGER)
             cacheDir?.let { builder.cache(Cache(cacheDir, 5 * 1024 * 1014)) }
             return builder
                 .build()
@@ -91,6 +94,8 @@ class SVGImageLoader @JvmOverloads constructor(
 
     private fun applyBrandImage(brandName: String, image: CardBrandImage, target: ImageView) {
         idleResCounter.increment()
+
+        Log.d("SVGImageLoader", "Requesting brand image: ${image.url}")
 
         val request = Request.Builder().url(image.url).build()
         val newCall = client.newCall(request)
