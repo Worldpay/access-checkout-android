@@ -9,10 +9,10 @@ import com.github.tomakehurst.wiremock.http.StubRequestHandler
 class CustomHttpServerFactory : HttpServerFactory {
 
     override fun buildHttpServer(
-        options: Options?,
-        adminRequestHandler: AdminRequestHandler?,
-        stubRequestHandler: StubRequestHandler?
-    ): HttpServer? {
+        options: Options,
+        adminRequestHandler: AdminRequestHandler,
+        stubRequestHandler: StubRequestHandler
+    ): HttpServer {
         return CustomHttpServer(
             options,
             adminRequestHandler,

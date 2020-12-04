@@ -8,10 +8,9 @@ import com.github.tomakehurst.wiremock.jetty92.Jetty92MultipartRequestConfigurer
 import com.github.tomakehurst.wiremock.servlet.MultipartRequestConfigurer
 import org.eclipse.jetty.util.ssl.SslContextFactory
 
-
-class CustomHttpServer(options: Options?,
-                       adminRequestHandler: AdminRequestHandler?,
-                       stubRequestHandler: StubRequestHandler?
+class CustomHttpServer(options: Options,
+                       adminRequestHandler: AdminRequestHandler,
+                       stubRequestHandler: StubRequestHandler
 ) : JettyHttpServer(options, adminRequestHandler, stubRequestHandler) {
 
     override fun buildSslContextFactory(): SslContextFactory {
