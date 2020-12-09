@@ -6,8 +6,8 @@ import android.widget.ImageView
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.ssl.TrustAllSSLSocketFactory
-import com.worldpay.access.checkout.sample.ssl.TrustAllSSLSocketFactory.Companion.X509_TRUST_MANAGER
+import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory
+import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory.Companion.X509_TRUST_MANAGER
 import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
 import okhttp3.*
 import java.io.File

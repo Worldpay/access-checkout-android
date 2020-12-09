@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.ssl
+package com.worldpay.access.checkout.sample.ssl.client
 
 import android.annotation.SuppressLint
 import java.io.IOException

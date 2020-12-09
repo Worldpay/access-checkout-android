@@ -8,8 +8,9 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.common.ConsoleNotifier
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-import com.worldpay.access.checkout.sample.ssl.CustomHttpServerFactory
-import com.worldpay.access.checkout.sample.ssl.TrustAllSSLSocketFactory
+import com.google.android.gms.security.ProviderInstaller
+import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory
+import com.worldpay.access.checkout.sample.ssl.server.CustomHttpServerFactory
 import com.worldpay.access.checkout.sample.stub.BrandLogoMockStub.stubLogos
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.rootResourceMapping
@@ -41,6 +42,8 @@ object MockServer {
     }
 
     fun startWiremock(context: Context, port: Int = 8443) {
+        ProviderInstaller.installIfNeeded(context)
+
         Log.d("MockServer", "Starting WireMock server!")
 
         MockServer.context = context
@@ -58,7 +61,6 @@ object MockServer {
             .notifier(ConsoleNotifier(true))
             .httpsPort(port)
             .httpServerFactory(CustomHttpServerFactory())
-            .needClientAuth(true)
             .keystorePath(keyStoreFile.absolutePath)
             .keystoreType("BKS")
             .keystorePassword("password")

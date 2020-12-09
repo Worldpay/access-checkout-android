@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.ssl
+package com.worldpay.access.checkout.sample.ssl.server
 
 import com.github.tomakehurst.wiremock.core.Options
 import com.github.tomakehurst.wiremock.http.AdminRequestHandler
