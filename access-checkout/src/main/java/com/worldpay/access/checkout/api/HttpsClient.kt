@@ -8,8 +8,8 @@ import java.io.*
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
-internal class HttpClient(private val urlFactory: URLFactory = URLFactoryImpl(),
-                          private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer()) {
+internal class HttpsClient(private val urlFactory: URLFactory = URLFactoryImpl(),
+                           private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer()) {
 
     @Throws(AccessCheckoutException::class)
     fun <Request : Serializable, Response> doPost(

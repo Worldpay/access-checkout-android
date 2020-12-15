@@ -252,7 +252,14 @@ class ExpiryDateTextWatcherIntegrationTest {
 
     @Test
     fun `should validate expiry date as false where month is in the past`() {
-        expiryDate.setText("${getMonth(-1)}/${getYear()}")
+        val monthInPast = getMonth(-1)
+
+        if (monthInPast == "12") {
+            // in the month of january, -1 on the year as well
+            expiryDate.setText("${monthInPast}/${getYear(-1)}")
+        } else {
+            expiryDate.setText("${monthInPast}/${getYear()}")
+        }
 
         verify(expiryDateValidationResultHandler).handleResult(false)
     }

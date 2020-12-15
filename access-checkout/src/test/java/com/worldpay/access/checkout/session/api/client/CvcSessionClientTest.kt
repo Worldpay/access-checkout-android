@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session.api.client
 
 import com.worldpay.access.checkout.BuildConfig
-import com.worldpay.access.checkout.api.HttpClient
+import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
@@ -23,7 +23,7 @@ class CvcSessionClientTest {
     private lateinit var sessionClient: CvcSessionClient
 
     @Mock
-    private lateinit var httpClient: HttpClient
+    private lateinit var httpsClient: HttpsClient
 
     @Mock
     private lateinit var deserializer: Deserializer<SessionResponse>
@@ -48,7 +48,7 @@ class CvcSessionClientTest {
                 identity = "merchant-123"
             )
 
-        given(httpClient.doPost(url, sessionRequest, headers, serializer, deserializer))
+        given(httpsClient.doPost(url, sessionRequest, headers, serializer, deserializer))
             .willReturn(sessionResponse)
 
         val actualResponse = sessionClient.getSessionResponse(url, sessionRequest)

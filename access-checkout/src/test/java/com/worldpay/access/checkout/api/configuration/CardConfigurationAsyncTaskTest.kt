@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.api.configuration
 
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.HttpClient
+import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
@@ -100,7 +100,7 @@ class CardConfigurationAsyncTaskTest {
         val urlFactory = mock<URLFactory>()
         val url = URL(baseURL)
         given(urlFactory.getURL("$baseURL/access-checkout/cardTypes.json")).willReturn(url)
-        val httpClient = mock<HttpClient>()
+        val httpClient = mock<HttpsClient>()
         val cardConfigurationParser = mock<CardConfigurationParser>()
         given(httpClient.doGet(url, cardConfigurationParser)).willReturn(CARD_CONFIG_NO_BRAND)
         val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, urlFactory, httpClient,
@@ -126,7 +126,7 @@ class CardConfigurationAsyncTaskTest {
 
         val baseURL = "https://localhost:8443"
 
-        val httpClient = mock<HttpClient>()
+        val httpClient = mock<HttpsClient>()
         val cardConfigurationParser = mock<CardConfigurationParser>()
         val urlFactory = mock<URLFactory>()
         val url = URL(baseURL)

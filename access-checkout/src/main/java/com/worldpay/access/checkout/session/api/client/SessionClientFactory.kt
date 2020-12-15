@@ -1,13 +1,13 @@
 package com.worldpay.access.checkout.session.api.client
 
-import com.worldpay.access.checkout.api.HttpClient
+import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
-import com.worldpay.access.checkout.session.api.serialization.CvcSessionRequestSerializer
-import com.worldpay.access.checkout.session.api.serialization.CvcSessionResponseDeserializer
 import com.worldpay.access.checkout.session.api.serialization.CardSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
+import com.worldpay.access.checkout.session.api.serialization.CvcSessionRequestSerializer
+import com.worldpay.access.checkout.session.api.serialization.CvcSessionResponseDeserializer
 
 /**
  * Factory class that is used to create instances of [SessionClient]
@@ -29,14 +29,14 @@ internal class SessionClientFactory {
                 return CardSessionClient(
                     CardSessionResponseDeserializer(),
                     CardSessionRequestSerializer(),
-                    HttpClient()
+                    HttpsClient()
                 )
             }
             is CvcSessionRequest -> {
                 return CvcSessionClient(
                     CvcSessionResponseDeserializer(),
                     CvcSessionRequestSerializer(),
-                    HttpClient()
+                    HttpsClient()
                 )
             }
             else -> {
