@@ -50,7 +50,13 @@ dependencies {
     testImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
     testImplementation 'junit:junit:4.13'
     testImplementation 'com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0'
-    testImplementation 'org.robolectric:robolectric:4.3.1'
+
+    // override the version of bcprov-jdk15on to avoid the ssl internal errors
+    testImplementation('org.robolectric:robolectric:4.3.1') {
+        exclude group: 'org.bouncycastle', module: 'bcprov-jdk15on'
+    }
+    testImplementation 'org.bouncycastle:bcprov-jdk15on:1.65'
+
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
     testImplementation 'au.com.dius:pact-jvm-consumer-junit:4.0.10'
 }
