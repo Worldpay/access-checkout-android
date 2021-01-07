@@ -20,11 +20,11 @@ import java.net.URL
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
 
-class HttpClientTest {
+class HttpsClientTest {
 
     private lateinit var urlFactory: URLFactory
 
-    private lateinit var httpClient: HttpClient
+    private lateinit var httpsClient: HttpsClient
 
     private lateinit var deserializer: Deserializer<TestResponse>
 
@@ -45,7 +45,7 @@ class HttpClientTest {
         serializer = mock()
         clientErrorDeserializer = mock()
         url = mock()
-        httpClient = HttpClient(urlFactory, clientErrorDeserializer)
+        httpsClient = HttpsClient(urlFactory, clientErrorDeserializer)
     }
 
     @Test
@@ -65,7 +65,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
         given(deserializer.deserialize(testResponseAsString)).willReturn(testResponse)
 
-        val response = httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+        val response = httpsClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
 
         assertEquals(testResponse, response)
         assertEquals(1, httpURLConnection.requestProperties.size)
@@ -85,7 +85,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
         assertEquals(errorMessage, exception.message)
@@ -101,7 +101,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
         assertEquals(errorMessage, exception.message)
@@ -114,7 +114,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
         assertEquals("Error message was: Some http message. Error response was: Some exception occurred", exception.message)
@@ -144,7 +144,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
         assertEquals(expectedException, exception)
@@ -166,7 +166,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
         assertEquals(expectedException, exception)
@@ -180,7 +180,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
         assertEquals(expectedException, exception)
@@ -192,7 +192,7 @@ class HttpClientTest {
         given(url.openConnection()).willThrow(ConnectException())
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
         assertTrue(exception.cause is ConnectException)
@@ -204,7 +204,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willThrow(RuntimeException())
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
         assertEquals("An exception was thrown when trying to establish a connection", exception.message)
@@ -221,7 +221,7 @@ class HttpClientTest {
         given(deserializer.deserialize(responseBody)).willThrow(RuntimeException())
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
         }
 
         assertEquals("An exception was thrown when trying to establish a connection", exception.message)
@@ -240,20 +240,20 @@ class HttpClientTest {
         val testResponse  = TestResponse("abcdef")
 
 
-        val relocatedUrl = "http://localhost/someotherURL"
+        val relocatedUrl = "https://localhost:8443/someotherURL"
         val relocatedUrlMock: URL = mock()
         given(urlFactory.getURL(relocatedUrl)).willReturn(relocatedUrlMock)
-        val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location",
+        val mockHttpRedirectURLConnection = MockHttpsURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location",
             relocatedUrl
         ))))
-        val mockHttpSuccessURLConnection = MockHttpURLConnection(url, MockedResponse(200, testResponseAsString.byteInputStream(), ""))
+        val mockHttpSuccessURLConnection = MockHttpsURLConnection(url, MockedResponse(200, testResponseAsString.byteInputStream(), ""))
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
         given(relocatedUrlMock.openConnection()).willReturn(mockHttpSuccessURLConnection)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
         given(deserializer.deserialize(testResponseAsString)).willReturn(testResponse)
 
-        val response = httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+        val response = httpsClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
 
         assertEquals(testResponse, response)
     }
@@ -262,13 +262,13 @@ class HttpClientTest {
     fun givenRedirectSentWithNoLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnPost() {
         val redirectResponseCode = 301
 
-        val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(redirectResponseCode, null, ""))
+        val mockHttpRedirectURLConnection = MockHttpsURLConnection(url, MockedResponse(redirectResponseCode, null, ""))
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
         }
 
         assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
@@ -278,14 +278,14 @@ class HttpClientTest {
     fun givenRedirectSentWithEmptyLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnPost() {
         val redirectResponseCode = 301
 
-        val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location", ""))))
+        val mockHttpRedirectURLConnection = MockHttpsURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location", ""))))
 
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+            httpsClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
         }
 
         assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
@@ -306,7 +306,7 @@ class HttpClientTest {
 
         given(deserializer.deserialize(testResponseAsString)).willReturn(testResponse)
 
-        val response = httpClient.doGet(url, deserializer)
+        val response = httpsClient.doGet(url, deserializer)
 
         assertEquals(testResponse, response)
     }
@@ -322,7 +322,7 @@ class HttpClientTest {
         stubResponse(MockedResponse(201, inputStream, ""))
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertEquals(errorMessage, exception.message)
@@ -334,7 +334,7 @@ class HttpClientTest {
         stubResponse(buildMockedResponse(500, null, null))
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertEquals("A server error occurred when trying to make the request", exception.message)
@@ -347,7 +347,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertEquals("Error message was: Some http message. Error response was: Some exception occurred", exception.message)
@@ -371,7 +371,7 @@ class HttpClientTest {
         stubResponse(buildMockedResponse(400, responseBody, errorMessage))
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertEquals("Error message was: ${errorMessage}. Error response was: ${responseBody.replace("\n", "")}", exception.message)
@@ -384,7 +384,7 @@ class HttpClientTest {
         stubResponse(buildMockedResponse(400, "", errorMessage))
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertEquals("Error message was: $errorMessage", exception.message)
@@ -397,7 +397,7 @@ class HttpClientTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertEquals("Error message was: Some Client Error", exception.message)
@@ -408,7 +408,7 @@ class HttpClientTest {
         given(url.openConnection()).willThrow(ConnectException())
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertTrue(exception.cause is ConnectException)
@@ -422,7 +422,7 @@ class HttpClientTest {
         given(deserializer.deserialize(responseBody)).willThrow(RuntimeException())
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertEquals("An exception was thrown when trying to establish a connection", exception.message)
@@ -439,19 +439,19 @@ class HttpClientTest {
 
         val testResponse  = TestResponse("abcdef")
 
-        val relocatedUrl = "http://localhost/someotherURL"
+        val relocatedUrl = "https://localhost:8443/someotherURL"
         val relocatedUrlMock: URL = mock()
         given(urlFactory.getURL(relocatedUrl)).willReturn(relocatedUrlMock)
-        val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location",
+        val mockHttpRedirectURLConnection = MockHttpsURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location",
             relocatedUrl
         ))))
-        val mockHttpSuccessURLConnection = MockHttpURLConnection(url, MockedResponse(200, testResponseAsString.byteInputStream(), ""))
+        val mockHttpSuccessURLConnection = MockHttpsURLConnection(url, MockedResponse(200, testResponseAsString.byteInputStream(), ""))
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
         given(relocatedUrlMock.openConnection()).willReturn(mockHttpSuccessURLConnection)
 
         given(deserializer.deserialize(testResponseAsString)).willReturn(testResponse)
 
-        val response = httpClient.doGet(url, deserializer)
+        val response = httpsClient.doGet(url, deserializer)
 
         assertEquals(testResponse, response)
     }
@@ -460,13 +460,13 @@ class HttpClientTest {
     fun givenRedirectSentWithNoLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnGet() {
         val redirectResponseCode = 301
 
-        val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(redirectResponseCode, null, ""))
+        val mockHttpRedirectURLConnection = MockHttpsURLConnection(url, MockedResponse(redirectResponseCode, null, ""))
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
@@ -476,14 +476,14 @@ class HttpClientTest {
     fun givenRedirectSentWithEmptyLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnGet() {
         val redirectResponseCode = 301
 
-        val mockHttpRedirectURLConnection = MockHttpURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location", ""))))
+        val mockHttpRedirectURLConnection = MockHttpsURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location", ""))))
 
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
         val exception = assertFailsWith<AccessCheckoutException> {
-            httpClient.doGet(url, deserializer)
+            httpsClient.doGet(url, deserializer)
         }
 
         assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
@@ -498,7 +498,7 @@ class HttpClientTest {
     }
 
     private fun stubResponse(response: MockedResponse): HttpURLConnection {
-        val mockHttpURLConnection = MockHttpURLConnection(url, response)
+        val mockHttpURLConnection = MockHttpsURLConnection(url, response)
         given(url.openConnection()).willReturn(mockHttpURLConnection)
         return mockHttpURLConnection
     }

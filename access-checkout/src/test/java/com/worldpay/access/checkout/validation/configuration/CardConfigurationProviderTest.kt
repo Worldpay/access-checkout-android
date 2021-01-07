@@ -54,7 +54,7 @@ class CardConfigurationProviderTest {
         assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
 
         val cardConfigurationClient = mock<CardConfigurationClient>()
-        val baseUrl = "http://localhost-mock:8080"
+        val baseUrl = "https://localhost-mock:8443"
         val captor = argumentCaptor<Callback<CardConfiguration>>()
 
         CardConfigurationProvider(baseUrl, cardConfigurationClient, emptyList())
@@ -72,7 +72,7 @@ class CardConfigurationProviderTest {
 
         val cardConfigObserver = mock<CardConfigurationObserver>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
-        val baseUrl = "http://localhost-mock:8080"
+        val baseUrl = "https://localhost-mock:8443"
         val captor = argumentCaptor<Callback<CardConfiguration>>()
 
         CardConfigurationProvider(baseUrl, cardConfigurationClient, listOf(cardConfigObserver))
@@ -91,7 +91,7 @@ class CardConfigurationProviderTest {
 
         val cardConfigObserver = mock<CardConfigurationObserver>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
-        val baseUrl = "http://localhost-mock:8080"
+        val baseUrl = "https://localhost-mock:8443"
         val captor = argumentCaptor<Callback<CardConfiguration>>()
 
         CardConfigurationProvider(baseUrl, cardConfigurationClient, listOf(cardConfigObserver))

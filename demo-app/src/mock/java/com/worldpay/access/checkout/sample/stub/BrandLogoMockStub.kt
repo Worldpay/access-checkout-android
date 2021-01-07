@@ -12,7 +12,8 @@ object BrandLogoMockStub {
         val images = listOf("visa.svg", "mastercard.svg", "amex.svg", "maestro.svg", "diners.svg", "discover.svg", "jcb.svg")
         images.forEach {
             stubFor(
-                WireMock.get("/$CARD_LOGO_PATH/$it")
+                WireMock
+                    .get("/$CARD_LOGO_PATH/$it")
                     .willReturn(
                         WireMock.aResponse()
                             .withStatus(200)

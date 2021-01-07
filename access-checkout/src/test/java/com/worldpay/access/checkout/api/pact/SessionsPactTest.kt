@@ -1,17 +1,20 @@
-package com.worldpay.access.checkout.api
+package com.worldpay.access.checkout.api.pact
 
-import au.com.dius.pact.consumer.Pact
-import au.com.dius.pact.consumer.PactProviderRuleMk2
-import au.com.dius.pact.consumer.PactVerification
 import au.com.dius.pact.consumer.dsl.PactDslJsonBody
 import au.com.dius.pact.consumer.dsl.PactDslWithProvider
-import au.com.dius.pact.model.RequestResponsePact
+import au.com.dius.pact.consumer.junit.PactHttpsProviderRule
+import au.com.dius.pact.consumer.junit.PactVerification
+import au.com.dius.pact.core.model.PactSpecVersion
+import au.com.dius.pact.core.model.RequestResponsePact
+import au.com.dius.pact.core.model.annotations.Pact
+import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
+import com.worldpay.access.checkout.client.testutil.TrustAllSSLSocketFactory
 import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
 import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
 import com.worldpay.access.checkout.session.api.client.CvcSessionClient
@@ -27,12 +30,22 @@ import org.junit.Test
 import org.mockito.BDDMockito
 import org.mockito.Mockito
 import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlin.test.assertEquals
 import kotlin.test.fail
 
 class SessionsPactTest {
 
     companion object {
         private const val provider = "sessions"
+        private const val consumer = "access-checkout-android-sdk"
+
+        private const val POST = "POST"
+        private const val GET = "GET"
+
+        private val SESSIONS_CONTENT_TYPE_HEADER = mapOf(Pair(CONTENT_TYPE_HEADER, SESSIONS_MEDIA_TYPE))
+        private val SESSIONS_ACCEPT_HEADER = mapOf(Pair(ACCEPT_HEADER, SESSIONS_MEDIA_TYPE))
+
     }
 
     private lateinit var cvcSessionClient: CvcSessionClient
@@ -40,11 +53,12 @@ class SessionsPactTest {
 
     @Before
     fun setup() {
+        HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
         cvcSessionClient =
             CvcSessionClient(
                 CvcSessionResponseDeserializer(),
                 CvcSessionRequestSerializer(),
-                HttpClient()
+                HttpsClient()
             )
 
         discoveryClient = ApiDiscoveryClient(
@@ -54,8 +68,7 @@ class SessionsPactTest {
     }
 
     @get:Rule
-    var mockProvider = PactProviderRuleMk2(provider, "localhost", 8080, this)
-
+    var mockProvider = PactHttpsProviderRule(provider, "localhost", 8443, true, PactSpecVersion.V3, this)
 
     private val sessionPath = "/sessions/payments/cvc"
     private val discoveryPath = "/sessions"
@@ -66,13 +79,13 @@ class SessionsPactTest {
     private val invalidIdentity = "ABC"
 
     private val sessionReferenceRegex = "https?://[^/]+/sessions/[^/]+"
-    private val sessionReferenceExample = "http://access.worldpay.com/sessions/<encrypted-data>"
+    private val sessionReferenceExample = "https://access.worldpay.com/sessions/<encrypted-data>"
 
     private val sessionEndpointRegex = "https?://[^/]+/sessions/.+"
-    private val paymentsCvcSessionEndpoint = "http://access.worldpay.com/sessions/payments/cvc"
+    private val paymentsCvcSessionEndpoint = "https://access.worldpay.com/sessions/payments/cvc"
 
     private val curiesRegex = "https?://[^/]+/rels/sessions/\\{rel\\}.json"
-    private val curiesExample = "http://access.worldpay.com/rels/sessions/{rel}.json"
+    private val curiesExample = "https://access.worldpay.com/rels/sessions/{rel}.json"
 
     private val responseBody = PactDslJsonBody()
         .`object`("_links")
@@ -95,107 +108,70 @@ class SessionsPactTest {
         .closeObject()
         .closeObject()
 
-    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
+    @Pact(provider = provider, consumer = consumer)
+    @SuppressWarnings("unused")
     fun createSuccessfulGetRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A service discovery request")
             .path(discoveryPath)
-            .method("GET")
-            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
-            .headers("Accept", SESSIONS_MEDIA_TYPE)
+            .method(GET)
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
+            .headers(SESSIONS_ACCEPT_HEADER)
             .willRespondWith()
             .status(200)
-            .headers(
-                mutableMapOf(
-                    Pair(
-                        "Content-Type",
-                        SESSIONS_MEDIA_TYPE
-                    )
-                )
-            )
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
             .body(getResponseBody)
             .toPact()
     }
 
-    @Test
-    @PactVerification("sessions", fragment = "createSuccessfulGetRequestInteraction")
-    fun `should receive a valid response when a valid GET request is sent`() {
-        val httpClient  = HttpClient()
-        val url = URL(mockProvider.url + discoveryPath)
-        val headers = mapOf(ACCEPT_HEADER to SESSIONS_MEDIA_TYPE, CONTENT_TYPE_HEADER to SESSIONS_MEDIA_TYPE )
-
-        val deserializer = DiscoverLinks.sessions.endpoints[1].getDeserializer()
-
-        val response = httpClient.doGet(url, deserializer, headers)
-        Assert.assertEquals(paymentsCvcSessionEndpoint, response)
-    }
-
-    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
+    @Pact(provider = provider, consumer = consumer)
+    @SuppressWarnings("unused")
     fun createSuccessfulRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference")
             .path(sessionPath)
-            .method("POST")
-            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
-            .headers("Accept", SESSIONS_MEDIA_TYPE)
+            .method(POST)
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
+            .headers(SESSIONS_ACCEPT_HEADER)
             .body(generateRequest(identity))
             .willRespondWith()
             .status(201)
-            .headers(
-                mutableMapOf(
-                    Pair(
-                        "Content-Type",
-                        SESSIONS_MEDIA_TYPE
-                    )
-                )
-            )
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
             .matchHeader("Location", sessionReferenceRegex, sessionReferenceExample)
             .body(responseBody)
             .toPact()
     }
 
-    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
+    @Pact(provider = provider, consumer = consumer)
+    @SuppressWarnings("unused")
     fun createInvalidIdentityRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with invalid identity")
             .path(sessionPath)
-            .method("POST")
-            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
-            .headers("Accept", SESSIONS_MEDIA_TYPE)
+            .method(POST)
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
+            .headers(SESSIONS_ACCEPT_HEADER)
             .body(generateRequest(invalidIdentity))
             .willRespondWith()
             .status(400)
-            .headers(
-                mutableMapOf(
-                    Pair(
-                        "Content-Type",
-                        SESSIONS_MEDIA_TYPE
-                    )
-                )
-            )
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
             .body(generateResponse("fieldHasInvalidValue", "Identity is invalid", "\$.identity"))
             .toPact()
     }
 
-    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
+    @Pact(provider = provider, consumer = consumer)
+    @SuppressWarnings("unused")
     fun createStringNonNumericalCvcRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with non-numerical CVV")
             .path(sessionPath)
-            .method("POST")
-            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
-            .headers("Accept", SESSIONS_MEDIA_TYPE)
+            .method(POST)
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
+            .headers(SESSIONS_ACCEPT_HEADER)
             .body(generateRequest(cvc = cvcNonNumerical))
             .willRespondWith()
             .status(400)
-            .headers(
-                mutableMapOf(
-                    Pair(
-                        "Content-Type",
-                        SESSIONS_MEDIA_TYPE
-                    )
-                )
-            )
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
             .body(
                 generateResponse(
                     "fieldMustBeNumber",
@@ -206,32 +182,38 @@ class SessionsPactTest {
             .toPact()
     }
 
-    @Pact(provider = "sessions", consumer = "access-checkout-android-sdk")
+    @Pact(provider = provider, consumer = consumer)
+    @SuppressWarnings("unused")
     fun createEmptyBodyErrorInteractionRequestInteraction(builder: PactDslWithProvider): RequestResponsePact {
         return builder
             .uponReceiving("A request for a session reference with empty body")
             .path(sessionPath)
-            .method("POST")
-            .headers("Content-Type", SESSIONS_MEDIA_TYPE)
-            .headers("Accept", SESSIONS_MEDIA_TYPE)
+            .method(POST)
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
+            .headers(SESSIONS_ACCEPT_HEADER)
             .body("")
             .willRespondWith()
             .status(400)
-            .headers(
-                mapOf(
-                    Pair(
-                        "Content-Type",
-                        SESSIONS_MEDIA_TYPE
-                    )
-                )
-            )
+            .headers(SESSIONS_CONTENT_TYPE_HEADER)
             .body(
-                generateResponseVariation1(
-                    "bodyIsEmpty",
-                    "The body within the request is empty"
-                )
+                PactDslJsonBody()
+                    .stringValue("errorName", "bodyIsEmpty")
+                    .stringValue("message", "The body within the request is empty")
             )
             .toPact()
+    }
+
+    @Test
+    @PactVerification("sessions", fragment = "createSuccessfulGetRequestInteraction")
+    fun `should receive a valid response when a valid GET request is sent`() {
+        val httpClient  = HttpsClient()
+        val url = URL(mockProvider.url + discoveryPath)
+        val headers = mapOf(ACCEPT_HEADER to SESSIONS_MEDIA_TYPE, CONTENT_TYPE_HEADER to SESSIONS_MEDIA_TYPE )
+
+        val deserializer = DiscoverLinks.sessions.endpoints[1].getDeserializer()
+
+        val response = httpClient.doGet(url, deserializer, headers)
+        Assert.assertEquals(paymentsCvcSessionEndpoint, response)
     }
 
     @Test
@@ -258,7 +240,7 @@ class SessionsPactTest {
                 expectedLinks
             )
 
-        Assert.assertEquals(
+        assertEquals(
             expectedSessionResponse,
             cvcSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
         )
@@ -323,7 +305,6 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "createEmptyBodyErrorInteractionRequestInteraction")
     fun `should receive a 400 response with error when body of request is empty`() {
-
         val mockEmptySerializer = Mockito.mock(CvcSessionRequestSerializer::class.java)
 
         val emptyString = ""
@@ -341,7 +322,7 @@ class SessionsPactTest {
             CvcSessionClient(
                 CvcSessionResponseDeserializer(),
                 mockEmptySerializer,
-                HttpClient()
+                HttpsClient()
             )
 
         try {
@@ -378,8 +359,4 @@ class SessionsPactTest {
             .closeObject()
             .closeArray()
 
-    private fun generateResponseVariation1(errorName: String, message: String) =
-        PactDslJsonBody()
-            .stringValue("errorName", errorName)
-            .stringValue("message", message)
 }

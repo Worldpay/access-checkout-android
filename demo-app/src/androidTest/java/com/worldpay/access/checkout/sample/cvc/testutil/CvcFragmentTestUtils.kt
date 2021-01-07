@@ -37,11 +37,6 @@ class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
         return this
     }
 
-    fun hasErrorDialogWithMessage(error: String): CvcFragmentTestUtils {
-        dialogHasText(error)
-        return this
-    }
-
     fun closeDialog(): CvcFragmentTestUtils {
         onView(withId(android.R.id.button1)).perform(click())
         return this

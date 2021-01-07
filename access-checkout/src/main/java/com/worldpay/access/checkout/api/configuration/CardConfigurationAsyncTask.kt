@@ -9,7 +9,7 @@ import java.net.URL
 
 internal class CardConfigurationAsyncTask(private val callback: Callback<CardConfiguration>,
                                           private val urlFactory: URLFactory = URLFactoryImpl(),
-                                          private val httpClient: HttpClient = HttpClient(),
+                                          private val httpsClient: HttpsClient = HttpsClient(),
                                           private val cardConfigurationParser: CardConfigurationParser = CardConfigurationParser()
 ) :
     AsyncTask<String, Void, AsyncTaskResult<CardConfiguration>>() {
@@ -23,7 +23,7 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
         return try {
             validateURL(params)
             val url = urlFactory.getURL("${params[0]}/$CARD_CONFIGURATION_RESOURCE")
-            val cardConfiguration = httpClient.doGet(url, cardConfigurationParser)
+            val cardConfiguration = httpsClient.doGet(url, cardConfigurationParser)
             debugLog(TAG, "Received card configuration: $cardConfiguration")
             AsyncTaskResult(cardConfiguration)
         } catch (ex: AccessCheckoutException) {

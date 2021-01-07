@@ -2,23 +2,21 @@ package com.worldpay.access.checkout.api
 
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.github.tomakehurst.wiremock.common.ConsoleNotifier
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.github.tomakehurst.wiremock.stubbing.Scenario
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.rootResponseMapping
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.verifiedTokensMapping
+import com.worldpay.access.checkout.api.MockServer.getBaseUrl
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.awaitility.Awaitility.await
+import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
@@ -28,18 +26,17 @@ import kotlin.test.assertNull
 @RunWith(AndroidJUnit4::class)
 class ApiDiscoveryIntegrationTest {
 
-    @get:Rule
-    var wireMockRule = WireMockRule(
-        WireMockConfiguration
-            .options()
-            .port(8090)
-            .extensions(ResponseTemplateTransformer(false))
-            .notifier(ConsoleNotifier(true))
-    )
+    private val applicationContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
     @Before
     fun setUp() {
         DiscoveryCache.results.clear()
+        MockServer.startWiremock(applicationContext, 8443)
+    }
+
+    @After
+    fun tearDown() {
+        MockServer.stopWiremock()
     }
 
     @Test
@@ -56,11 +53,11 @@ class ApiDiscoveryIntegrationTest {
 
         val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
 
-        client.discover(wireMockRule.baseUrl(), callback, DiscoverLinks.verifiedTokens)
+        client.discover(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             Log.d("AccessCheckoutDiscoveryIntegrationTest", "Discovered endpoint: $url")
-            url != null && url.equals("${wireMockRule.baseUrl()}/verifiedTokens/sessions")
+            url != null && url.equals("${getBaseUrl()}/verifiedTokens/sessions")
         }
     }
 
@@ -87,7 +84,7 @@ class ApiDiscoveryIntegrationTest {
 
         val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
 
-        client.discover(wireMockRule.baseUrl(), callback, DiscoverLinks.verifiedTokens)
+        client.discover(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionDone }
     }
@@ -122,10 +119,10 @@ class ApiDiscoveryIntegrationTest {
         }
 
         val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
-        client.discover(wireMockRule.baseUrl(), callback, DiscoverLinks.verifiedTokens)
+        client.discover(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
-            url != null && url.equals("${wireMockRule.baseUrl()}/verifiedTokens/sessions") && exception == null
+            url != null && url.equals("${getBaseUrl()}/verifiedTokens/sessions") && exception == null
         }
     }
 }

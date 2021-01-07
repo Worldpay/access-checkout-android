@@ -7,12 +7,8 @@ import androidx.lifecycle.LifecycleRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.*
-import com.github.tomakehurst.wiremock.common.ConsoleNotifier
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-import com.github.tomakehurst.wiremock.junit.WireMockRule
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
-import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
+import com.worldpay.access.checkout.api.MockServer.getBaseUrl
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
@@ -24,7 +20,6 @@ import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYP
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
@@ -42,32 +37,21 @@ class AccessCheckoutClientIntegrationTest {
     private val applicationContext: Context = getInstrumentation().context.applicationContext
     private val lifecycleOwner: LifecycleOwner = mock(LifecycleOwner::class.java)
 
-    private var lifecycleRegistry: LifecycleRegistry
-
-    @get:Rule
-    val wireMockRule = WireMockRule(
-        WireMockConfiguration
-            .options()
-            .port(8090)
-            .notifier(ConsoleNotifier(true))
-            .extensions(ResponseTemplateTransformer(false))
-    )
-
-    init {
-        lifecycleRegistry = LifecycleRegistry(lifecycleOwner)
-        given(lifecycleOwner.lifecycle).willReturn(lifecycleRegistry)
-    }
+    private var lifecycleRegistry = LifecycleRegistry(lifecycleOwner)
 
     @Before
     fun setup() {
+        given(lifecycleOwner.lifecycle).willReturn(lifecycleRegistry)
+
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-        stubServiceDiscoveryResponses()
+
+        MockServer.startWiremock(applicationContext, 8443)
     }
 
     @After
     fun tearDown() {
         lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-        wireMockRule.resetAll()
+        MockServer.stopWiremock()
     }
 
     @Test
@@ -75,8 +59,7 @@ class AccessCheckoutClientIntegrationTest {
         val cardDetails = getCardDetails()
         val request = getExpectedRequest(cardDetails)
 
-        val expectedSessionReference =
-            """http://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"""
+        val expectedSessionReference = "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
 
         val response = (
                 """{
@@ -103,7 +86,7 @@ class AccessCheckoutClientIntegrationTest {
                         .withHeader("Content-Type", "application/json")
                         .withHeader(
                             "Location",
-                            "http://access.worldpay.com/$verifiedTokensEndpoint/sessions/<encrypted-data>"
+                            "https://access.worldpay.com/$verifiedTokensEndpoint/sessions/<encrypted-data>"
                         )
                         .withBody(response)
                 )
@@ -120,7 +103,7 @@ class AccessCheckoutClientIntegrationTest {
         }
 
         val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(wireMockRule.baseUrl())
+            .baseUrl(getBaseUrl())
             .merchantId(merchantId)
             .sessionResponseListener(responseListener)
             .context(applicationContext)
@@ -164,7 +147,7 @@ class AccessCheckoutClientIntegrationTest {
         }
 
         val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(wireMockRule.baseUrl())
+            .baseUrl(getBaseUrl())
             .merchantId(merchantId)
             .sessionResponseListener(responseListener)
             .context(applicationContext)
@@ -203,7 +186,7 @@ class AccessCheckoutClientIntegrationTest {
         }
 
         val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(wireMockRule.baseUrl())
+            .baseUrl(getBaseUrl())
             .merchantId(merchantId)
             .sessionResponseListener(errorListener)
             .context(applicationContext)
@@ -250,7 +233,7 @@ class AccessCheckoutClientIntegrationTest {
         }
 
         val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(wireMockRule.baseUrl())
+            .baseUrl(getBaseUrl())
             .merchantId(merchantId)
             .sessionResponseListener(errorListener)
             .context(applicationContext)
@@ -286,7 +269,7 @@ class AccessCheckoutClientIntegrationTest {
         }
 
         val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(wireMockRule.baseUrl())
+            .baseUrl(getBaseUrl())
             .merchantId(merchantId)
             .sessionResponseListener(errorListener)
             .context(applicationContext)

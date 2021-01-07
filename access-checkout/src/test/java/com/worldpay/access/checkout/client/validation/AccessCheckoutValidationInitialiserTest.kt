@@ -25,7 +25,7 @@ class AccessCheckoutValidationInitialiserTest {
     private val cvc = EditText(context)
     private val pan = EditText(context)
 
-    private val baseUrl = "http://localhost"
+    private val baseUrl = "https://localhost:8443"
     private val cardValidationListener: AccessCheckoutCardValidationListener = mock()
     private val cvcValidationListener: AccessCheckoutCvcValidationListener = mock()
     private val lifecycleOwner = mock<LifecycleOwner>()

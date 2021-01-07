@@ -2,18 +2,17 @@ package com.worldpay.access.checkout.api
 
 import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import androidx.test.platform.app.InstrumentationRegistry
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
-import com.github.tomakehurst.wiremock.common.ConsoleNotifier
-import com.github.tomakehurst.wiremock.core.WireMockConfiguration
-import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
-import com.github.tomakehurst.wiremock.junit.WireMockRule
+import com.worldpay.access.checkout.api.MockServer.getBaseUrl
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationAsyncTask
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import org.awaitility.Awaitility.await
-import org.junit.Rule
+import org.junit.After
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import java.util.concurrent.TimeUnit
@@ -22,6 +21,8 @@ import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class CardConfigurationIntegrationTest {
+
+    private val applicationContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
     private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"
 
@@ -86,14 +87,15 @@ class CardConfigurationIntegrationTest {
                 ]
             """.trimIndent()
 
-    @get:Rule
-    var wireMockRule = WireMockRule(
-        WireMockConfiguration
-            .options()
-            .port(8090)
-            .extensions(ResponseTemplateTransformer(false))
-            .notifier(ConsoleNotifier(true))
-    )
+    @Before
+    fun setUp() {
+        MockServer.startWiremock(applicationContext, 8443)
+    }
+
+    @After
+    fun tearDown() {
+        MockServer.stopWiremock()
+    }
 
     @Test
     fun givenCardConfigurationAvailable_ThenCardConfigurationAsyncTaskCanFetchCardConfiguration() {
@@ -115,7 +117,7 @@ class CardConfigurationIntegrationTest {
 
         val asyncTask = CardConfigurationAsyncTask(callback)
 
-        asyncTask.execute(wireMockRule.baseUrl())
+        asyncTask.execute(getBaseUrl())
 
         await().atMost(5, TimeUnit.SECONDS).until {
             Log.d("CardConfigurationIntegrationTest", "Got card configuration: $cardConfiguration")
@@ -146,7 +148,7 @@ class CardConfigurationIntegrationTest {
 
         val asyncTask = CardConfigurationAsyncTask(callback)
 
-        asyncTask.execute(wireMockRule.baseUrl())
+        asyncTask.execute(getBaseUrl())
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionDone }
     }

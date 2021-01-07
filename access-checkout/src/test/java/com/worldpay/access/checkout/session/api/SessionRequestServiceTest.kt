@@ -92,7 +92,7 @@ class SessionRequestServiceTest {
             )
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
-            .baseUrl("http://localhost")
+            .baseUrl("https://localhost:8443")
             .requestBody(sessionRequest)
             .sessionType(CARD)
             .discoverLinks(DiscoverLinks.verifiedTokens)
@@ -115,7 +115,7 @@ class SessionRequestServiceTest {
             )
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
-            .baseUrl("http://localhost")
+            .baseUrl("https://localhost:8443")
             .requestBody(sessionRequest)
             .sessionType(CARD)
             .discoverLinks(DiscoverLinks.verifiedTokens)

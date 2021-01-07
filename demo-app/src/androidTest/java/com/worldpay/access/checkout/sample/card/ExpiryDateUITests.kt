@@ -98,9 +98,17 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
 
     @Test
     fun shouldReturnInvalidStateWhenMonthIsInPast() {
+        val monthInPast = getMonth(-1)
+        var year = getYear()
+
+        if (monthInPast == "12") {
+            // in the month of january, -1 on the year as well
+            year = getYear(-1)
+        }
+
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(expiryDate = "${getMonth(-1)}${getYear()}")
+            .enterCardDetails(expiryDate = "${monthInPast}${year}")
             .focusOn(CVC)
             .validationStateIs(expiryDate = false)
     }
@@ -117,7 +125,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, offset)
 
-        var month = calendar.get(Calendar.MONTH).toString()
+        var month = (calendar.get(Calendar.MONTH) + 1).toString()
 
         if (month.length == 1) month = String.format("0%s", month)
 
@@ -127,9 +135,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
     private fun getYear(offset: Int = 0): String {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.YEAR, offset)
-
-        val currentYear = calendar.get(Calendar.YEAR).toString()
-        return (currentYear + offset).drop(2)
+        return calendar.get(Calendar.YEAR).toString().drop(2)
     }
 
 }

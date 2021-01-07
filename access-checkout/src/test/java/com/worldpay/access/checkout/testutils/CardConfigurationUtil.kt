@@ -57,7 +57,7 @@ internal object CardConfigurationUtil {
 
         val EXP_DATE_DEFAULTS =
             CardValidationRule(
-                matcher = "^0[1-9]|1[0-2]\\/\\d{2}\$",
+                matcher = "^(0[1-9]|1[0-2])\\/([0-9][0-9])\$",
                 validLengths = listOf(5)
             )
 
@@ -232,7 +232,7 @@ internal object CardConfigurationUtil {
 
     fun mockSuccessfulCardConfiguration() {
         val cardConfigurationClient = mock<CardConfigurationClient>()
-        val baseUrl = "http://localhost-mock:8080"
+        val baseUrl = "https://localhost-mock:8443"
         val captor = argumentCaptor<Callback<CardConfiguration>>()
 
         CardConfigurationProvider(baseUrl, cardConfigurationClient, emptyList())

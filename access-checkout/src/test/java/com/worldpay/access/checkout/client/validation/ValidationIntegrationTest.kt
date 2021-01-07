@@ -6,6 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.client.testutil.TrustAllSSLSocketFactory
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.model.CardBrand
@@ -36,6 +37,11 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
+import java.security.KeyStore
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 import kotlin.test.fail
 
 @RunWith(RobolectricTestRunner::class)
@@ -47,27 +53,39 @@ class ValidationIntegrationTest {
 
     private val cardConfigJson = CardConfiguration::class.java.getResource("remote_card_config.json")?.readText()!!
 
-    private val pan = EditText(context)
-    private val cvc = EditText(context)
-    private val expiryDate = EditText(context)
+    private lateinit var pan: EditText
+    private lateinit var cvc: EditText
+    private lateinit var expiryDate: EditText
+
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
 
     private val toCardBrandTransformer = ToCardBrandTransformer()
 
+    private val server = MockWebServer()
+
     private lateinit var cardValidationListener: CardValidationListener
+
+    private val defaultSSLSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory();
 
     @Before
     fun setup() {
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
-        val server = MockWebServer()
+
+        HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
+
         server.enqueue(MockResponse().setBody(cardConfigJson))
+        server.useHttps(getSslContext().socketFactory, false)
         server.start()
 
         val url = server.url(cardConfigurationEndpoint)
         val baseUrl = "${url.scheme}://${url.host}:${url.port}/"
 
         cardValidationListener = spy(CardValidationListener())
+
+        pan = EditText(context)
+        cvc = EditText(context)
+        expiryDate = EditText(context)
 
         val cardValidationConfig = CardValidationConfig.Builder()
             .pan(pan)
@@ -83,6 +101,23 @@ class ValidationIntegrationTest {
         reset(cardValidationListener)
     }
 
+    private fun getSslContext(): SSLContext {
+        val stream = TrustAllSSLSocketFactory::class.java.getResource("wiremock.bks")?.openStream()
+        val serverKeyStore = KeyStore.getInstance("BKS")
+        serverKeyStore.load(stream, "".toCharArray())
+
+        val kmfAlgorithm = KeyManagerFactory.getDefaultAlgorithm()
+        val kmf = KeyManagerFactory.getInstance(kmfAlgorithm)
+        kmf.init(serverKeyStore, "password".toCharArray())
+
+        val trustManagerFactory = TrustManagerFactory.getInstance(kmfAlgorithm)
+        trustManagerFactory.init(serverKeyStore)
+
+        val sslContext = SSLContext.getInstance("SSL")
+        sslContext.init(kmf.keyManagers, trustManagerFactory.trustManagers, null)
+        return sslContext
+    }
+
     @After
     fun tearDown() {
         val stateManager = CardValidationStateManager
@@ -92,6 +127,8 @@ class ValidationIntegrationTest {
         stateManager.expiryDateValidationState.validationState = false
         stateManager.cvcValidationState.notificationSent = false
         stateManager.cvcValidationState.validationState = false
+        server.shutdown()
+        HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory)
     }
 
     @Test

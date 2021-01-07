@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.api.discovery
 
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.HttpClient
+import com.worldpay.access.checkout.api.HttpsClient
 
 internal class ApiDiscoveryAsyncTaskFactory {
 
@@ -9,7 +9,7 @@ internal class ApiDiscoveryAsyncTaskFactory {
         return ApiDiscoveryAsyncTask(
             callback,
             discoverLinks.endpoints,
-            HttpClient()
+            HttpsClient()
         )
     }
 

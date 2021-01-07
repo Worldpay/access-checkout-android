@@ -40,9 +40,9 @@ class ApiDiscoveryClientTest {
 
         val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
 
-        serviceDiscoveryClient.discover("http://localhost", getEmptyCallback(), discoverLinks)
+        serviceDiscoveryClient.discover("https://localhost:8443", getEmptyCallback(), discoverLinks)
 
-        verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("http://localhost")
+        verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("https://localhost:8443")
     }
 
     @Test
@@ -62,13 +62,13 @@ class ApiDiscoveryClientTest {
         val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
         given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(apiDiscoveryAsyncTaskMock)
 
-        serviceDiscoveryClient.discover("http://localhost", callback, discoverLinks)
+        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
 
         val argumentCaptor = argumentCaptor<Callback<String>>()
         verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(null, sessionResponse)
 
-        verify(apiDiscoveryAsyncTaskMock, times(1)).execute("http://localhost")
+        verify(apiDiscoveryAsyncTaskMock, times(1)).execute("https://localhost:8443")
         assertTrue(assertionsRan, "Did not run callback assertions - callback was never invoked")
     }
 
@@ -90,13 +90,13 @@ class ApiDiscoveryClientTest {
         val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
         given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(apiDiscoveryAsyncTaskMock)
 
-        serviceDiscoveryClient.discover("http://localhost", callback, discoverLinks)
+        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
 
         val argumentCaptor = argumentCaptor<Callback<String>>()
         verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(null, sessionResponse)
 
-        verify(apiDiscoveryAsyncTaskMock, times(1)).execute("http://localhost")
+        verify(apiDiscoveryAsyncTaskMock, times(1)).execute("https://localhost:8443")
         assertTrue(assertionsRan, "Did not run callback assertions - callback was never invoked")
     }
 
@@ -129,13 +129,13 @@ class ApiDiscoveryClientTest {
         val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
         given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(apiDiscoveryAsyncTaskMock)
 
-        serviceDiscoveryClient.discover("http://localhost", callback, discoverLinks)
+        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
         verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
 
         argumentCaptor.firstValue.onResponse(null, sessionResponse)
-        serviceDiscoveryClient.discover("http://localhost", secondCallback, discoverLinks)
+        serviceDiscoveryClient.discover("https://localhost:8443", secondCallback, discoverLinks)
 
-        verify(apiDiscoveryAsyncTaskMock, times(1)).execute("http://localhost")
+        verify(apiDiscoveryAsyncTaskMock, times(1)).execute("https://localhost:8443")
 
         assertTrue(assertionsRan1, "Did not run callback 1 assertions - callback 1 was never invoked")
         assertTrue(assertionsRan2, "Did not run callback 2 assertions - callback 2 was never invoked")
@@ -159,13 +159,13 @@ class ApiDiscoveryClientTest {
         given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(argumentCaptor.capture(), any())).willReturn(apiDiscoveryAsyncTaskMock)
 
         val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
-        serviceDiscoveryClient.discover("http://localhost", callback, discoverLinks)
+        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
 
         verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
-        verify(apiDiscoveryAsyncTaskMock, times(2)).execute("http://localhost")
+        verify(apiDiscoveryAsyncTaskMock, times(2)).execute("https://localhost:8443")
         assertTrue(assertionsRan, "Did not run callback assertions - callback was never invoked")
     }
 
@@ -188,15 +188,15 @@ class ApiDiscoveryClientTest {
 
         val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
 
-        serviceDiscoveryClient.discover("http://localhost", callback, discoverLinks)
+        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
 
         verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
         argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
 
-        serviceDiscoveryClient.discover("http://localhost", callback, discoverLinks)
+        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
 
-        verify(apiDiscoveryAsyncTaskMock, times(2)).execute("http://localhost")
+        verify(apiDiscoveryAsyncTaskMock, times(2)).execute("https://localhost:8443")
         assertEquals(2, assertionsRan, "Did not run callback assertions - callback was never invoked")
     }
 

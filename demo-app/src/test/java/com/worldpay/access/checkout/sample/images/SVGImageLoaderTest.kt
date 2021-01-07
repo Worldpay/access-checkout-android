@@ -22,7 +22,7 @@ class SVGImageLoaderTest {
     private val cardBrand =
         CardBrand(
             name = "visa",
-            images = listOf(CardBrandImage(type = "image/svg+xml", url = "http://localhost/test.svg"))
+            images = listOf(CardBrandImage(type = "image/svg+xml", url = "https://localhost:8443/test.svg"))
         )
 
     private lateinit var activity: Activity
@@ -88,7 +88,7 @@ class SVGImageLoaderTest {
         val cardBrandWithNoSVG =
             CardBrand(
                 name = "visa",
-                images = listOf(CardBrandImage(type = "image/png", url = "http://localhost/test.png"))
+                images = listOf(CardBrandImage(type = "image/png", url = "https://localhost:8443/test.png"))
             )
 
         val mockHttpCall = mock(Call::class.java)
