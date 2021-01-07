@@ -125,7 +125,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.MONTH, offset)
 
-        var month = calendar.get(Calendar.MONTH).toString()
+        var month = (calendar.get(Calendar.MONTH) + 1).toString()
 
         if (month.length == 1) month = String.format("0%s", month)
 
@@ -135,9 +135,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
     private fun getYear(offset: Int = 0): String {
         val calendar = Calendar.getInstance()
         calendar.add(Calendar.YEAR, offset)
-
-        val currentYear = calendar.get(Calendar.YEAR).toString()
-        return (currentYear + offset).drop(2)
+        return calendar.get(Calendar.YEAR).toString().drop(2)
     }
 
 }
