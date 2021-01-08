@@ -1,56 +1,22 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.worldpay.access/access-checkout-android/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.worldpay.access/access-checkout-android)
+[![Build Status](https://app.bitrise.io/app/70d419e86c91a8b6/status.svg?token=PiRRusMO6rZNofgN93wOyQ&branch=master)](https://app.bitrise.io/app/70d419e86c91a8b6)
+
 # Access Checkout Android SDK
 
+Access Checkout Android SDK allows you to secure your customer's card details by creating a session.
 
-A lightweight library and sample app that generates a Worldpay session reference from payment card data.
-It includes, optionally, custom Android views that identifies card brands and validates payment cards and card expiry dates.
+The session can be used to then create a verified token using the [Access Worldpay APIs](https://developer.worldpay.com/docs/access-worldpay/get-started).
 
+A sample demo application is also available to provide an example integration of the SDK.
 
-<img width="300" alt="app02" src=https://github.com/Worldpay/access-checkout-android/blob/master/images/sample.png>
+## Getting Started
 
-
-## Download
-
-Download the latest AAR from [Maven Central](https://search.maven.org/search?q=g:com.worldpay.access%20AND%20a:access-checkout-android) or include in your project's build dependencies via Gradle:
-
-`implementation 'com.worldpay.access:access-checkout-android:1.2.0`
-
-
-or Maven:
-
-```
-<dependency>
-  <groupId>com.worldpay.access</groupId>
-  <artifactId>access-checkout-android</artifactId>
-  <version>1.2.0</version>
-</dependency>
-```
-
-or Local AAR library integration:
-
-Copy the library file into your `app/libs` folder
-
-Add the `flatDir` repo to the project level `build.gradle` file:
-```
-allprojects {
-    repositories {
-        //...
-        flatDir {
-            dirs 'libs'
-        }
-    }
-}
-```
-
-Add the following lines to the app level dependency list (kotlin version can be changed):
-
-``` 
-implementation (name:'access-checkout-android-1.2.0', ext:'aar')
-implementation "org.jetbrains.kotlin:kotlin-stdlib:1.3.31"
-```
-
+To learn how to integrate with the latest version of the Access Checkout Android SDK - [click here](https://maven-badges.herokuapp.com/maven-central/com.worldpay.access/access-checkout-android).
 
 ## Integration
 
 For full integration instructions and code examples visit [Worldpay Developers](https://developer.worldpay.com/docs/access-worldpay/checkout/android)
 
+## Changelog
 
+Full changelog can be found [here](CHANGELOG.md)
