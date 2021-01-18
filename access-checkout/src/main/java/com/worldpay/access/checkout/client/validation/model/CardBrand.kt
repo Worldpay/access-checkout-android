@@ -1,6 +1,19 @@
 package com.worldpay.access.checkout.client.validation.model
 
 /**
+ * This enum represents all supported card brands by Access Checkout
+ */
+enum class CardBrands {
+    AMEX,
+    DINERS,
+    DISCOVER,
+    JCB,
+    MAESTRO,
+    MASTERCARD,
+    VISA
+}
+
+/**
  * This class represents a Card brand that can be found for an associated pan
  *
  * @property[name] The [String] property that represents the name of the card brand

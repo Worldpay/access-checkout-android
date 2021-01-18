@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.client.validation.config.CardValidationConfi
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
+import com.worldpay.access.checkout.client.validation.model.CardBrands.VISA
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,6 +25,7 @@ class AccessCheckoutValidationInitialiserTest {
     private val expiryDate = EditText(context)
     private val cvc = EditText(context)
     private val pan = EditText(context)
+    private val acceptedCardBrands = arrayOf(VISA)
 
     private val baseUrl = "https://localhost:8443"
     private val cardValidationListener: AccessCheckoutCardValidationListener = mock()
@@ -43,6 +45,7 @@ class AccessCheckoutValidationInitialiserTest {
             .pan(pan)
             .expiryDate(expiryDate)
             .cvc(cvc)
+            .acceptedCardBrands(acceptedCardBrands)
             .validationListener(cardValidationListener)
             .lifecycleOwner(lifecycleOwner)
             .build()
@@ -62,6 +65,7 @@ class AccessCheckoutValidationInitialiserTest {
     fun `should be able to initialise the validation for cvc validation`() {
         val config = CvcValidationConfig.Builder()
             .cvc(cvc)
+            .validationListener(cardValidationListener)
             .validationListener(cvcValidationListener)
             .lifecycleOwner(lifecycleOwner)
             .build()
