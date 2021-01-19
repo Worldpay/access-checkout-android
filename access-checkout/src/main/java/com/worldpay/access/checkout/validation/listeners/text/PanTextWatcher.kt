@@ -29,9 +29,9 @@ internal class PanTextWatcher(
 
         handleCardBrandChange(newCardBrand)
 
-        val cardValidationRule = getPanValidationRule(cardBrand)
+        val cardValidationRule = getPanValidationRule(newCardBrand)
 
-        val isValid = panValidator.validate(panText, cardValidationRule)
+        val isValid = panValidator.validate(panText, cardValidationRule, newCardBrand)
 
         panValidationResultHandler.handleResult(isValid)
     }

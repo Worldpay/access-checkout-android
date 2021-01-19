@@ -1,18 +1,16 @@
 package com.worldpay.access.checkout.validation.decorators
 
 import android.widget.EditText
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
+import com.worldpay.access.checkout.client.validation.model.CardBrands.AMEX
+import com.worldpay.access.checkout.client.validation.model.CardBrands.VISA
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
-import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
-import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
+import org.mockito.BDDMockito.verify
 import kotlin.test.assertNotNull
 
 class FieldDecoratorFactoryTest {
@@ -20,19 +18,15 @@ class FieldDecoratorFactoryTest {
     private val cvcEditText = mock<EditText>()
     private val panEditText = mock<EditText>()
     private val expiryDateEditText = mock<EditText>()
-    private val lifecycleOwner = mock<LifecycleOwner>()
-    private val lifecycle = mock<Lifecycle>()
 
-    private val resultHandlerFactory = ResultHandlerFactory(mock<AccessCheckoutCardValidationListener>(), mock<CardValidationStateManager>(), lifecycleOwner)
-    private val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
-    private val focusChangeListenerFactory = FocusChangeListenerFactory(resultHandlerFactory)
-    private val lengthFilterFactory = LengthFilterFactory()
+    private val textWatcherFactory = mock<TextWatcherFactory>()
+    private val focusChangeListenerFactory = mock<FocusChangeListenerFactory>()
+    private val lengthFilterFactory = mock<LengthFilterFactory>()
 
     private lateinit var fieldDecoratorFactory: FieldDecoratorFactory
 
     @Before
     fun setup() {
-        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
         fieldDecoratorFactory = FieldDecoratorFactory(
             textWatcherFactory = textWatcherFactory,
             focusChangeListenerFactory = focusChangeListenerFactory,
@@ -42,26 +36,64 @@ class FieldDecoratorFactoryTest {
 
     @Test
     fun `should get cvc field decorator when pan is not null`() {
+        given(textWatcherFactory.createCvcTextWatcher()).willReturn(mock())
+        given(focusChangeListenerFactory.createCvcFocusChangeListener()).willReturn(mock())
+        given(lengthFilterFactory.getCvcLengthFilter(panEditText)).willReturn(mock())
+
         val decorator: CvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(cvcEditText, panEditText)
+
         assertNotNull(decorator)
+        verify(textWatcherFactory).createCvcTextWatcher()
+        verify(focusChangeListenerFactory).createCvcFocusChangeListener()
+        verify(lengthFilterFactory).getCvcLengthFilter(panEditText)
     }
 
     @Test
     fun `should get cvc field decorator when pan is null`() {
+        given(textWatcherFactory.createCvcTextWatcher()).willReturn(mock())
+        given(focusChangeListenerFactory.createCvcFocusChangeListener()).willReturn(mock())
+        given(lengthFilterFactory.getCvcLengthFilter(null)).willReturn(mock())
+
         val decorator: CvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(cvcEditText, null)
+
         assertNotNull(decorator)
+        verify(textWatcherFactory).createCvcTextWatcher()
+        verify(focusChangeListenerFactory).createCvcFocusChangeListener()
+        verify(lengthFilterFactory).getCvcLengthFilter(null)
     }
 
     @Test
     fun `should get pan field decorator`() {
-        val decorator: PanFieldDecorator = fieldDecoratorFactory.getPanDecorator(panEditText, cvcEditText)
+        val acceptedCardBrands = arrayOf(VISA, AMEX)
+
+        given(textWatcherFactory.createPanTextWatcher(cvcEditText, acceptedCardBrands)).willReturn(mock())
+        given(focusChangeListenerFactory.createPanFocusChangeListener()).willReturn(mock())
+        given(lengthFilterFactory.getPanLengthFilter()).willReturn(mock())
+
+        val decorator: PanFieldDecorator = fieldDecoratorFactory.getPanDecorator(
+            panEditText,
+            cvcEditText,
+            acceptedCardBrands
+        )
+
         assertNotNull(decorator)
+        verify(textWatcherFactory).createPanTextWatcher(cvcEditText, acceptedCardBrands)
+        verify(focusChangeListenerFactory).createPanFocusChangeListener()
+        verify(lengthFilterFactory).getPanLengthFilter()
     }
 
     @Test
     fun `should get expiry date field decorator`() {
+        given(textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)).willReturn(mock())
+        given(focusChangeListenerFactory.createExpiryDateFocusChangeListener()).willReturn(mock())
+        given(lengthFilterFactory.getExpiryDateLengthFilter()).willReturn(mock())
+
         val decorator: ExpiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(expiryDateEditText)
+
         assertNotNull(decorator)
+        verify(textWatcherFactory).createExpiryDateTextWatcher(expiryDateEditText)
+        verify(focusChangeListenerFactory).createExpiryDateFocusChangeListener()
+        verify(lengthFilterFactory).getExpiryDateLengthFilter()
     }
 
 }
