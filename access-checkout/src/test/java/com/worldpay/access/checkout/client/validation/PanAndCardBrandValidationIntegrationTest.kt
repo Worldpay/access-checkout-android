@@ -1,18 +1,7 @@
 package com.worldpay.access.checkout.client.validation
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
-import com.worldpay.access.checkout.client.validation.model.CardBrands.AMEX
-import com.worldpay.access.checkout.client.validation.model.CardBrands.DINERS
-import com.worldpay.access.checkout.client.validation.model.CardBrands.DISCOVER
-import com.worldpay.access.checkout.client.validation.model.CardBrands.JCB
-import com.worldpay.access.checkout.client.validation.model.CardBrands.MAESTRO
-import com.worldpay.access.checkout.client.validation.model.CardBrands.MASTERCARD
-import com.worldpay.access.checkout.client.validation.model.CardBrands.VISA
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DINERS_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DISCOVER_BRAND
@@ -50,7 +39,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should accept an unknown valid luhn pan when all cards are accepted`() {
-        initialiseWithAcceptedCardBrands(arrayOf(AMEX, DINERS, DISCOVER, JCB, MAESTRO, MASTERCARD, VISA))
+        initialiseWithAcceptedCardBrands(arrayOf("AMEX", "DINERS", "DISCOVER", "JCB", "MAESTRO", "MASTERCARD", "VISA"))
 
         pan.setText(VALID_UNKNOWN_LUHN)
 
@@ -198,7 +187,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should accept amex card when amex is the only accepted card brand`() {
-        initialiseWithAcceptedCardBrands(arrayOf(AMEX))
+        initialiseWithAcceptedCardBrands(arrayOf("AMEX"))
 
         pan.setText(AMEX_PAN)
 
@@ -208,7 +197,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should not accept diners card when diners is not accepted`() {
-        initialiseWithAcceptedCardBrands(arrayOf(AMEX))
+        initialiseWithAcceptedCardBrands(arrayOf("AMEX"))
 
         pan.setText(DINERS_PAN)
 

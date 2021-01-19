@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.validation.decorators
 
 import android.widget.EditText
-import com.worldpay.access.checkout.client.validation.model.CardBrands
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
@@ -24,7 +23,7 @@ internal class FieldDecoratorFactory(
     fun getPanDecorator(
         panEditText: EditText,
         cvcEditText: EditText,
-        acceptedCardBrands: Array<CardBrands>
+        acceptedCardBrands: Array<String>
     ) : PanFieldDecorator {
         return PanFieldDecorator(
             panTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText, acceptedCardBrands),

@@ -6,8 +6,6 @@ import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
-import com.worldpay.access.checkout.client.validation.model.CardBrands.MASTERCARD
-import com.worldpay.access.checkout.client.validation.model.CardBrands.VISA
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -88,7 +86,7 @@ class PanTextWatcherIntegrationTest {
     @Test
     fun `should validate pan as true when visa pan is entered and visa pan is an accepted card brand`() {
         val panTextWatcher = PanTextWatcher(
-            panValidator = PanValidator(arrayOf(VISA)),
+            panValidator = PanValidator(arrayOf("VISA")),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
@@ -108,7 +106,7 @@ class PanTextWatcherIntegrationTest {
     @Test
     fun `should validate pan as true when unknown valid luhn pan is entered and there are some accepted cards specified`() {
         val panTextWatcher = PanTextWatcher(
-            panValidator = PanValidator(arrayOf(VISA, MASTERCARD)),
+            panValidator = PanValidator(arrayOf("VISA", "MASTERCARD")),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
@@ -128,7 +126,7 @@ class PanTextWatcherIntegrationTest {
     @Test
     fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand`() {
         val panTextWatcher = PanTextWatcher(
-            panValidator = PanValidator(arrayOf(MASTERCARD)),
+            panValidator = PanValidator(arrayOf("MASTERCARD")),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,

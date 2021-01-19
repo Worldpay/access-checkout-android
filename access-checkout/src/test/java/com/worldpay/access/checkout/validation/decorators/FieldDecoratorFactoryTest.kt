@@ -2,8 +2,6 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.client.validation.model.CardBrands.AMEX
-import com.worldpay.access.checkout.client.validation.model.CardBrands.VISA
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
@@ -64,7 +62,7 @@ class FieldDecoratorFactoryTest {
 
     @Test
     fun `should get pan field decorator`() {
-        val acceptedCardBrands = arrayOf(VISA, AMEX)
+        val acceptedCardBrands = arrayOf("VISA", "AMEX")
 
         given(textWatcherFactory.createPanTextWatcher(cvcEditText, acceptedCardBrands)).willReturn(mock())
         given(focusChangeListenerFactory.createPanFocusChangeListener()).willReturn(mock())

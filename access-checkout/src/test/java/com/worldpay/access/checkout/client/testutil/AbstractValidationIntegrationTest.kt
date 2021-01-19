@@ -10,7 +10,6 @@ import com.nhaarman.mockitokotlin2.spy
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
-import com.worldpay.access.checkout.client.validation.model.CardBrands
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
@@ -94,7 +93,7 @@ open class AbstractValidationIntegrationTest {
         )
     }
 
-    protected fun initialiseWithAcceptedCardBrands(cardBrands: Array<CardBrands>) {
+    protected fun initialiseWithAcceptedCardBrands(cardBrands: Array<String>) {
         val url = server.url(cardConfigurationEndpoint)
         val baseUrl = "${url.scheme}://${url.host}:${url.port}/"
 

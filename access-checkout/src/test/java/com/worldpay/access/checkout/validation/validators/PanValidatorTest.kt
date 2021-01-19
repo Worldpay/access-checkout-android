@@ -1,7 +1,5 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.worldpay.access.checkout.client.validation.model.CardBrands.MASTERCARD
-import com.worldpay.access.checkout.client.validation.model.CardBrands.VISA
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN_RULE
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -52,13 +50,19 @@ class PanValidatorTest {
 
     @Test
     fun `should return false if the pan is not one of the accepted card brands`() {
-        val panValidator = PanValidator(arrayOf(MASTERCARD))
+        val panValidator = PanValidator(arrayOf("MASTERCARD"))
         assertFalse(panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
     }
 
     @Test
     fun `should return true if the pan is of one of the accepted card brands and everything else is valid`() {
-        val panValidator = PanValidator(arrayOf(VISA, MASTERCARD))
+        val panValidator = PanValidator(arrayOf("VISA", "MASTERCARD"))
+        assertTrue(panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
+    }
+
+    @Test
+    fun `should return true if the pan is of one of the accepted card brands and everything else is valid - ignore case`() {
+        val panValidator = PanValidator(arrayOf("VisA", "MASTERCARD"))
         assertTrue(panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
     }
 

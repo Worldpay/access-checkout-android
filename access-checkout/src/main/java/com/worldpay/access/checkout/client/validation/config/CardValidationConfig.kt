@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.client.validation.config
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
-import com.worldpay.access.checkout.client.validation.model.CardBrands
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
@@ -22,7 +21,7 @@ class CardValidationConfig private constructor(
     val pan: EditText,
     val expiryDate: EditText,
     val cvc: EditText,
-    val acceptedCardBrands: Array<CardBrands>,
+    val acceptedCardBrands: Array<String>,
     val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener,
     val lifecycleOwner : LifecycleOwner
@@ -33,7 +32,7 @@ class CardValidationConfig private constructor(
         private var pan: EditText? = null
         private var expiryDate: EditText? = null
         private var cvc: EditText? = null
-        private var acceptedCardBrands: Array<CardBrands> = emptyArray()
+        private var acceptedCardBrands: Array<String> = emptyArray()
         private var baseUrl: String? = null
         private var validationListener: AccessCheckoutCardValidationListener? = null
         private var lifecycleOwner: LifecycleOwner? = null
@@ -69,12 +68,11 @@ class CardValidationConfig private constructor(
         }
 
         /**
-         * Sets the list of card brands to accept for validation. Any unrecognised card brand
-         * (one that is not in the enum [CardBrands]) will be accepted at all times.
+         * Sets the list of card brands to accept for validation. Any unrecognised card brand will be accepted at all times.
          *
-         * @param[acceptedCardBrands] [Array] of all the [CardBrands] enums to accept
+         * @param[acceptedCardBrands] [Array] of [String] representing the card brands to accept
          */
-        fun acceptedCardBrands(acceptedCardBrands: Array<CardBrands>): Builder {
+        fun acceptedCardBrands(acceptedCardBrands: Array<String>): Builder {
             this.acceptedCardBrands = acceptedCardBrands
             return this
         }
