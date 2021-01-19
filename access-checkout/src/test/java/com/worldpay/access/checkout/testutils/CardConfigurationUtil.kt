@@ -5,10 +5,17 @@ import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.configuration.*
+import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
+import com.worldpay.access.checkout.api.configuration.CardDefaults
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrandImage
+import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
+import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import kotlin.test.assertNotNull
 
 internal object CardConfigurationUtil {
@@ -240,6 +247,10 @@ internal object CardConfigurationUtil {
         verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), captor.capture())
 
         assertNotNull(captor.firstValue.onResponse(null, CARD_CONFIG_BASIC))
+    }
+
+    fun toCardBrand(remoteCardBrand: RemoteCardBrand): CardBrand? {
+        return ToCardBrandTransformer().transform(remoteCardBrand)
     }
 
 }

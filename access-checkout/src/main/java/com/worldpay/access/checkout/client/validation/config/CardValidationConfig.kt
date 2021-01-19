@@ -21,6 +21,7 @@ class CardValidationConfig private constructor(
     val pan: EditText,
     val expiryDate: EditText,
     val cvc: EditText,
+    val acceptedCardBrands: Array<String>,
     val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener,
     val lifecycleOwner : LifecycleOwner
@@ -31,6 +32,7 @@ class CardValidationConfig private constructor(
         private var pan: EditText? = null
         private var expiryDate: EditText? = null
         private var cvc: EditText? = null
+        private var acceptedCardBrands: Array<String> = emptyArray()
         private var baseUrl: String? = null
         private var validationListener: AccessCheckoutCardValidationListener? = null
         private var lifecycleOwner: LifecycleOwner? = null
@@ -62,6 +64,16 @@ class CardValidationConfig private constructor(
          */
         fun cvc(cvc: EditText): Builder {
             this.cvc = cvc
+            return this
+        }
+
+        /**
+         * Sets the list of card brands to accept for validation. Any unrecognised card brand will be accepted at all times.
+         *
+         * @param[acceptedCardBrands] [Array] of [String] representing the card brands to accept
+         */
+        fun acceptedCardBrands(acceptedCardBrands: Array<String>): Builder {
+            this.acceptedCardBrands = acceptedCardBrands
             return this
         }
 
@@ -113,6 +125,7 @@ class CardValidationConfig private constructor(
                 pan = pan as EditText,
                 expiryDate = expiryDate as EditText,
                 cvc = cvc as EditText,
+                acceptedCardBrands = acceptedCardBrands,
                 baseUrl = baseUrl as String,
                 validationListener = validationListener as AccessCheckoutCardValidationListener,
                 lifecycleOwner = lifecycleOwner as LifecycleOwner

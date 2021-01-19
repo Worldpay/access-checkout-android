@@ -42,7 +42,7 @@ class CvcTextWatcherIntegrationTest {
         cvc.addTextChangedListener(cvcTextWatcher)
 
         val panTextWatcher = PanTextWatcher(
-            panValidator = PanValidator(),
+            panValidator = PanValidator(emptyArray()),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = mock(),

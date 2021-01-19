@@ -14,12 +14,34 @@ class CardValidationConfigBuilderTest {
     private val pan = mock<EditText>()
     private val expiryDate = mock<EditText>()
     private val cvc = mock<EditText>()
+    private val acceptedCardBrands = arrayOf("AMEX", "DINERS", "DISCOVER", "JCB", "MAESTRO", "MASTERCARD", "VISA")
     private val baseUrl = "https://localhost:8443"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
 
     @Test
     fun `should build card validation config`() {
+        val config = CardValidationConfig.Builder()
+            .baseUrl(baseUrl)
+            .pan(pan)
+            .expiryDate(expiryDate)
+            .cvc(cvc)
+            .acceptedCardBrands(acceptedCardBrands)
+            .validationListener(validationListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertNotNull(config)
+        assertEquals(baseUrl, config.baseUrl)
+        assertEquals(pan, config.pan)
+        assertEquals(expiryDate, config.expiryDate)
+        assertEquals(cvc, config.cvc)
+        assertEquals(acceptedCardBrands, config.acceptedCardBrands)
+        assertEquals(validationListener, config.validationListener)
+    }
+
+    @Test
+    fun `should not throw any exceptions if accepted card brands is not called in the builder and defaults to empty array`() {
         val config = CardValidationConfig.Builder()
             .baseUrl(baseUrl)
             .pan(pan)
@@ -34,6 +56,7 @@ class CardValidationConfigBuilderTest {
         assertEquals(pan, config.pan)
         assertEquals(expiryDate, config.expiryDate)
         assertEquals(cvc, config.cvc)
+        assertEquals(0, config.acceptedCardBrands.size)
         assertEquals(validationListener, config.validationListener)
     }
 
@@ -44,6 +67,7 @@ class CardValidationConfigBuilderTest {
                 .pan(pan)
                 .expiryDate(expiryDate)
                 .cvc(cvc)
+                .acceptedCardBrands(acceptedCardBrands)
                 .validationListener(validationListener)
                 .lifecycleOwner(lifecycleOwner)
                 .build()
@@ -59,6 +83,7 @@ class CardValidationConfigBuilderTest {
                 .baseUrl(baseUrl)
                 .expiryDate(expiryDate)
                 .cvc(cvc)
+                .acceptedCardBrands(acceptedCardBrands)
                 .validationListener(validationListener)
                 .lifecycleOwner(lifecycleOwner)
                 .build()
@@ -74,6 +99,7 @@ class CardValidationConfigBuilderTest {
                 .baseUrl(baseUrl)
                 .pan(pan)
                 .cvc(cvc)
+                .acceptedCardBrands(acceptedCardBrands)
                 .validationListener(validationListener)
                 .lifecycleOwner(lifecycleOwner)
                 .build()
@@ -90,6 +116,7 @@ class CardValidationConfigBuilderTest {
                 .baseUrl(baseUrl)
                 .pan(pan)
                 .expiryDate(expiryDate)
+                .acceptedCardBrands(acceptedCardBrands)
                 .validationListener(validationListener)
                 .lifecycleOwner(lifecycleOwner)
                 .build()
@@ -106,6 +133,7 @@ class CardValidationConfigBuilderTest {
                 .pan(pan)
                 .expiryDate(expiryDate)
                 .cvc(cvc)
+                .acceptedCardBrands(acceptedCardBrands)
                 .lifecycleOwner(lifecycleOwner)
                 .build()
         }
@@ -121,6 +149,7 @@ class CardValidationConfigBuilderTest {
                 .pan(pan)
                 .expiryDate(expiryDate)
                 .cvc(cvc)
+                .acceptedCardBrands(acceptedCardBrands)
                 .validationListener(validationListener)
                 .build()
         }

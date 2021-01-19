@@ -1,12 +1,19 @@
 package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 
-internal class PanValidator {
+internal class PanValidator(private val acceptedCardBrands: Array<String>) {
 
     private val simpleValidator = SimpleValidator()
 
-    fun validate(text: String, cardValidationRule: CardValidationRule): Boolean {
+    fun validate(text: String, cardValidationRule: CardValidationRule, cardBrand: RemoteCardBrand?): Boolean {
+        val isAcceptedCardBrand = isAcceptedCardBrand(cardBrand)
+
+        if (!isAcceptedCardBrand) {
+            return false
+        }
+
         val isValid = simpleValidator.validate(text, cardValidationRule)
 
         if (isValid) {
@@ -14,6 +21,20 @@ internal class PanValidator {
         }
 
         return isValid
+    }
+
+    private fun isAcceptedCardBrand(cardBrand: RemoteCardBrand?): Boolean {
+        if (acceptedCardBrands.isEmpty() || cardBrand == null) {
+            return true
+        }
+
+        for (acceptedCardBrand in acceptedCardBrands) {
+            if (acceptedCardBrand.equals(cardBrand.name, true)) {
+                return true
+            }
+        }
+
+        return false
     }
 
     private fun isLuhnValid(pan: String): Boolean {

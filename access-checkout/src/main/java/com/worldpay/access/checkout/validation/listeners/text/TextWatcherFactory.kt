@@ -12,12 +12,11 @@ internal class TextWatcherFactory(
 ) {
 
     private val cvcValidationRuleManager = CVCValidationRuleManager()
-    private val panValidator = PanValidator()
     private val dateValidator = ExpiryDateValidator()
 
-    fun createPanTextWatcher(cvcEditText: EditText): PanTextWatcher {
+    fun createPanTextWatcher(cvcEditText: EditText, acceptedCardBrands: Array<String>): PanTextWatcher {
         return PanTextWatcher(
-            panValidator = panValidator,
+            panValidator = PanValidator(acceptedCardBrands),
             cvcEditText =  cvcEditText,
             cvcValidator = CvcValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
