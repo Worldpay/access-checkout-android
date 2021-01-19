@@ -8,8 +8,11 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import kotlin.test.fail
 
+@RunWith(RobolectricTestRunner::class)
 class FocusChangeIntegrationTest: AbstractValidationIntegrationTest() {
 
     @Test

@@ -16,8 +16,6 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.junit.Before
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
@@ -25,7 +23,6 @@ import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
 
-@RunWith(RobolectricTestRunner::class)
 open class AbstractValidationIntegrationTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
