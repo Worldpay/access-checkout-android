@@ -2,7 +2,13 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.reset
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -54,7 +60,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidator).validate(VISA_PAN, VISA_BRAND.pan)
+        verify(panValidator).validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND)
     }
 
     @Test
@@ -184,7 +190,7 @@ class PanTextWatcherTest {
 
     private fun mockPan(pan: String, isValid: Boolean) {
         given(panEditable.toString()).willReturn(pan)
-        given(panValidator.validate(eq(pan), any())).willReturn(isValid)
+        given(panValidator.validate(eq(pan), any(), any())).willReturn(isValid)
     }
 
 }

@@ -22,7 +22,7 @@ internal class FieldDecoratorFactory(
 
     fun getPanDecorator(panEditText: EditText, cvcEditText: EditText) : PanFieldDecorator {
         return PanFieldDecorator(
-            panTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText),
+            panTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText, emptyArray()),
             panFocusChangeListener = focusChangeListenerFactory.createPanFocusChangeListener(),
             panLengthFilter = lengthFilterFactory.getPanLengthFilter(),
             panEditText = panEditText

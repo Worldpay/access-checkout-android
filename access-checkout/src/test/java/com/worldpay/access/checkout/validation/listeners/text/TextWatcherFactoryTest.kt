@@ -28,7 +28,7 @@ class TextWatcherFactoryTest {
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
 
-        val textWatcher : PanTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText)
+        val textWatcher : PanTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText, emptyArray())
         assertNotNull(textWatcher)
     }
 
