@@ -37,6 +37,19 @@ class PanValidationResultHandlerTest {
     }
 
     @Test
+    fun `should call listener regardless of last state when forcing the notify`() {
+        validationResultHandler.handleResult(isValid = false)
+
+        validationResultHandler.handleResult(isValid = false, forceNotify = true)
+
+        verify(validationListener).onPanValidated(false)
+        verifyNoMoreInteractions(validationListener)
+
+        assertFalse(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
+    }
+
+    @Test
     fun `should call listener when pan is valid and was previously invalid`() {
         validationResultHandler.handleResult(false)
 

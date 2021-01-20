@@ -11,6 +11,8 @@ import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValida
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
 
 internal class PanTextWatcher(
     private var panValidator: PanValidator,
@@ -31,9 +33,12 @@ internal class PanTextWatcher(
 
         val cardValidationRule = getPanValidationRule(newCardBrand)
 
-        val isValid = panValidator.validate(panText, cardValidationRule, newCardBrand)
+        val validationState = panValidator.validate(panText, cardValidationRule, newCardBrand)
 
-        panValidationResultHandler.handleResult(isValid)
+        val isValid = validationState == VALID
+        val forceNotify = validationState == CARD_BRAND_NOT_ACCEPTED
+
+        panValidationResultHandler.handleResult(isValid, forceNotify)
     }
 
     private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {

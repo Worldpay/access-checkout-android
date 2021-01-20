@@ -37,8 +37,8 @@ internal class PanValidationResultHandler(
     }
 
 
-    fun handleResult(isValid: Boolean) {
-        if (hasStateChanged(isValid)) {
+    fun handleResult(isValid: Boolean, forceNotify: Boolean = false) {
+        if (forceNotify || hasStateChanged(isValid)) {
             notifyListener(isValid)
         }
     }
