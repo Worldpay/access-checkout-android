@@ -14,10 +14,7 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
     private val validColor = getColor(activity.resources, R.color.SUCCESS, null)
     private val invalidColor = getColor(activity.resources, R.color.FAIL, null)
 
-    override fun onCvcValidated(isValid: Boolean) {
-        val cvc = activity.findViewById<EditText>(R.id.restricted_card_flow_text_cvc)
-        throwException(cvc)
-    }
+    override fun onCvcValidated(isValid: Boolean) {}
 
     override fun onPanValidated(isValid: Boolean) {
         val pan = activity.findViewById<EditText>(R.id.restricted_card_flow_text_pan)
@@ -29,16 +26,9 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
         getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
     }
 
-    override fun onExpiryDateValidated(isValid: Boolean) {
-        val exp = activity.findViewById<EditText>(R.id.restricted_card_flow_expiry_date)
-        throwException(exp)
-    }
+    override fun onExpiryDateValidated(isValid: Boolean) {}
 
-    override fun onValidationSuccess() = throw NotImplementedError("This validation success method should never be called.")
-
-    private fun throwException(editText: EditText) {
-        throw NotImplementedError("This method should never be called. Text value is: " + editText.text)
-    }
+    override fun onValidationSuccess() {}
 
     private fun changeFont(editText: EditText, isValid: Boolean) {
         if (isValid) {
