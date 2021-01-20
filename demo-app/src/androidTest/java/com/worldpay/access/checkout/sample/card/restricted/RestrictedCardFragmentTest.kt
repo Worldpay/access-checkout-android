@@ -16,7 +16,7 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUH
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.restricted.testutil.RestrictedCardFragmentTestUtils
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.*
-import com.worldpay.access.checkout.sample.testutil.UITestUtils
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Before
 import org.junit.Rule
@@ -35,7 +35,7 @@ class RestrictedCardFragmentTest {
     fun setup() {
         restrictedCardFragmentTestUtils = RestrictedCardFragmentTestUtils(activityRule)
         defaultStubMappings(activityRule.activity)
-        UITestUtils.navigateTo(R.id.nav_restricted_card_flow)
+        navigateTo(R.id.nav_restricted_card_flow)
         closeSoftKeyboard()
         rotatePortrait(activityRule)
     }

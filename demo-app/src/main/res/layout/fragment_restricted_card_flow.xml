@@ -62,6 +62,7 @@
         android:ems="4"
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="number"
+        android:text=""
         android:textColor="@color/DEFAULT"
         android:visibility="gone"
         android:enabled="false"
