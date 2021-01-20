@@ -8,7 +8,6 @@ import com.worldpay.access.checkout.validation.result.state.CardValidationStateM
 import com.worldpay.access.checkout.validation.result.state.FieldValidationState
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
@@ -17,23 +16,19 @@ class CvcValidationResultHandlerTest {
     private val validationListener = mock<AccessCheckoutCvcValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
-    private val validationStateManager = CardValidationStateManager
+    private val validationStateManager = CardValidationStateManager()
 
     private lateinit var validationResultHandler: CvcValidationResultHandler
 
     @Before
     fun setup() {
-        BDDMockito.given(lifecycleOwner.lifecycle).willReturn(lifecycle)
-        validationStateManager.cvcValidationState.validationState = false
-        validationStateManager.cvcValidationState.notificationSent = false
-        reset(validationListener)
+        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
 
         validationResultHandler = CvcValidationResultHandler(
             validationListener,
             validationStateManager,
             lifecycleOwner
         )
-
     }
 
     @Test

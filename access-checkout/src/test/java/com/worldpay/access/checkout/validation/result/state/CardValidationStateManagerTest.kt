@@ -6,8 +6,7 @@ import kotlin.test.assertTrue
 
 class CardValidationStateManagerTest {
 
-    private val validationStateManager =
-        CardValidationStateManager
+    private val validationStateManager = CardValidationStateManager()
 
     @Test
     fun `should return true when all is valid`() {

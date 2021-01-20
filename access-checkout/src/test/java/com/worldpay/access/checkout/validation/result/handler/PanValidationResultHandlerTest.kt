@@ -17,16 +17,13 @@ class PanValidationResultHandlerTest {
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
 
-    private val validationStateManager = CardValidationStateManager
+    private val validationStateManager = CardValidationStateManager()
     private val fieldValidationState = mock<FieldValidationState>()
 
     private lateinit var validationResultHandler: PanValidationResultHandler
 
     @Before
     fun setup() {
-        validationStateManager.panValidationState.validationState = false
-        validationStateManager.panValidationState.notificationSent = false
-
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
 
         validationResultHandler = PanValidationResultHandler(

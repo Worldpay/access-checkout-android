@@ -16,16 +16,13 @@ class ExpiryDateValidationResultHandlerTest {
     private val validationListener = mock<AccessCheckoutExpiryDateValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
-    private val validationStateManager = CardValidationStateManager
+    private val validationStateManager = CardValidationStateManager()
     private val fieldValidationState = mock<FieldValidationState>()
 
     private lateinit var validationResultHandler: ExpiryDateValidationResultHandler
 
     @Before
     fun setup() {
-        validationStateManager.expiryDateValidationState.validationState = false
-        validationStateManager.expiryDateValidationState.notificationSent = false
-
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
 
         validationResultHandler = ExpiryDateValidationResultHandler(

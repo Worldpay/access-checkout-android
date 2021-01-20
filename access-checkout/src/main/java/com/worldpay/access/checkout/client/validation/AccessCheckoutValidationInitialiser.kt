@@ -34,11 +34,9 @@ object AccessCheckoutValidationInitialiser {
     }
 
     private fun initialiseCardValidation(validationConfig: CardValidationConfig) {
-        val validationStateManager = CardValidationStateManager
-
         val resultHandlerFactory = ResultHandlerFactory(
             accessCheckoutValidationListener = validationConfig.validationListener,
-            fieldValidationStateManager = validationStateManager,
+            fieldValidationStateManager = CardValidationStateManager(),
             lifecycleOwner = validationConfig.lifecycleOwner
         )
 

@@ -5,6 +5,7 @@ object CardNumberUtil {
     const val PARTIAL_VISA = "4111"
     const val PARTIAL_MASTERCARD = "22"
     const val PARTIAL_AMEX = "34"
+    const val PARTIAL_MAESTRO = "676"
 
     const val VISA_PAN = "4111111111111111"
     const val MASTERCARD_PAN = "5292892193835234"
