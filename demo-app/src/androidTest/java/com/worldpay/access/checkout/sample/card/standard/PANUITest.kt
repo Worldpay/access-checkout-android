@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.card
+package com.worldpay.access.checkout.sample.card.standard
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -8,10 +8,23 @@ import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
-import com.worldpay.access.checkout.sample.card.testutil.CardBrand.*
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.CVC
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.AMEX_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.DINERS_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.DISCOVER_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_LUHN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.JCB_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.MAESTRO_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_AMEX
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_MASTERCARD
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_UNKNOWN_LUHN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_VISA
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.*
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -24,7 +37,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "1111111")
+            .enterCardDetails(pan = PARTIAL_UNKNOWN_LUHN)
             .hasNoBrand()
             .focusOn(CVC)
             .validationStateIs(pan = false)
@@ -36,7 +49,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "4026344341791618")
+            .enterCardDetails(pan = VISA_PAN)
             .validationStateIs(pan = true)
             .hasBrand(VISA)
     }
@@ -46,7 +59,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "1800")
+            .enterCardDetails(pan = JCB_PAN)
             .hasBrand(JCB)
     }
 
@@ -55,7 +68,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "6011")
+            .enterCardDetails(pan = DISCOVER_PAN)
             .hasBrand(DISCOVER)
     }
 
@@ -64,7 +77,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "493698")
+            .enterCardDetails(pan = MAESTRO_PAN)
             .hasBrand(MAESTRO)
     }
 
@@ -73,11 +86,9 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "305")
+            .enterCardDetails(pan = DINERS_PAN)
             .hasBrand(DINERS)
     }
-
-    
 
     @Test
     fun givenUserLongClicksAndPastesTooLongStringIntoPanFieldThenTheMaximumAcceptedLengthShouldBeApplied() {
@@ -105,7 +116,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "5555555555554444")
+            .enterCardDetails(pan = MASTERCARD_PAN)
             .validationStateIs(pan = true)
             .hasBrand(MASTERCARD)
     }
@@ -126,7 +137,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "343434343434343")
+            .enterCardDetails(pan = AMEX_PAN)
             .validationStateIs(pan = true)
             .hasBrand(AMEX)
     }
@@ -147,7 +158,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "1111111111111117")
+            .enterCardDetails(pan = VALID_UNKNOWN_LUHN)
             .validationStateIs(pan = true)
             .hasNoBrand()
     }
@@ -157,7 +168,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "1111111111111111112")
+            .enterCardDetails(pan = INVALID_UNKNOWN_LUHN)
             .hasNoBrand()
             .focusOn(CVC)
             .validationStateIs(pan = false)
@@ -168,7 +179,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "44")
+            .enterCardDetails(pan = PARTIAL_VISA)
             .hasBrand(VISA)
     }
 
@@ -177,7 +188,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "22")
+            .enterCardDetails(pan = PARTIAL_MASTERCARD)
             .hasBrand(MASTERCARD)
     }
 
@@ -186,7 +197,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "34")
+            .enterCardDetails(pan = PARTIAL_AMEX)
             .hasBrand(AMEX)
     }
 
@@ -195,11 +206,11 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "44000000")
+            .enterCardDetails(pan = PARTIAL_VISA)
             .hasBrand(VISA)
             .enterCardDetails(pan = "")
             .hasNoBrand()
-            .enterCardDetails(pan = "55000000")
+            .enterCardDetails(pan = PARTIAL_MASTERCARD)
             .hasBrand(MASTERCARD)
     }
 
@@ -208,7 +219,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "40")
+            .enterCardDetails(pan = PARTIAL_VISA)
             .hasBrand(VISA)
             .focusOn(EXPIRY_DATE)
             .validationStateIs(pan = false)
@@ -233,50 +244,44 @@ class PANUITest: AbstractCardFragmentTest() {
 
     @Test
     fun givenUserClicksCardViewAndInsertsMastercardIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
-        val validMastercardCardNumber = "5555555555554444"
-
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = validMastercardCardNumber)
+            .enterCardDetails(pan = MASTERCARD_PAN)
             .validationStateIs(pan = true)
             .hasBrand(MASTERCARD)
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("4"), pressImeActionButton())
-            .check(matches(withText(validMastercardCardNumber)))
+            .check(matches(withText(MASTERCARD_PAN)))
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsAmexIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
-        val validAmexCardNumber = "343434343434343"
-
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = validAmexCardNumber)
+            .enterCardDetails(pan = AMEX_PAN)
             .validationStateIs(pan = true)
             .hasBrand(AMEX)
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("4"), closeSoftKeyboard())
-            .check(matches(withText(validAmexCardNumber)))
+            .check(matches(withText(AMEX_PAN)))
     }
 
     @Test
     fun givenUserClicksCardViewAndInsertsUnidentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
-        val validUnidentifiedCardNumber = "0000000000000000000"
-
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = validUnidentifiedCardNumber)
+            .enterCardDetails(pan = VALID_UNKNOWN_LUHN)
             .validationStateIs(pan = true)
             .hasNoBrand()
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("0"), closeSoftKeyboard())
-            .check(matches(withText(validUnidentifiedCardNumber)))
+            .check(matches(withText(VALID_UNKNOWN_LUHN)))
     }
 
 }

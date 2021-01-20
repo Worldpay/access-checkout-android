@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.sample.card
 
 import com.worldpay.access.checkout.sample.MainActivity
-import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
-import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MASTERCARD
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Test

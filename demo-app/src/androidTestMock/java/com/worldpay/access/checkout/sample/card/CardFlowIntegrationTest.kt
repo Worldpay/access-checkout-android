@@ -10,9 +10,9 @@ import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.sample.MockServer.Paths.VERIFIED_TOKENS_SESSIONS_PATH
 import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
-import com.worldpay.access.checkout.sample.card.testutil.CardBrand
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VERIFIED_TOKENS_MEDIA_TYPE
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VerifiedTokenResponses.validResponseWithDelay
 import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.simulateHttpRedirect

@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.sample
 
 import androidx.test.rule.ActivityTestRule
-import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.cvc.testutil.CvcFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.simulateRootResourceTemporaryServerError
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo

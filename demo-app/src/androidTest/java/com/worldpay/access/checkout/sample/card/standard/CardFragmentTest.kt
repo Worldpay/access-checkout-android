@@ -1,9 +1,9 @@
-package com.worldpay.access.checkout.sample.card
+package com.worldpay.access.checkout.sample.card.standard
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
-import com.worldpay.access.checkout.sample.card.testutil.CardBrand.VISA
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.CVC
+import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import org.junit.Test
 import org.junit.runner.RunWith

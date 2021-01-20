@@ -3,6 +3,7 @@
     <string name="submit_text">Submit</string>
 
     <string name="card_flow_nav_text">Card Flow</string>
+    <string name="restricted_card_flow_nav_text">Restricted Card Flow</string>
     <string name="cvc_flow_nav_text">CVC Flow</string>
 
     <string name="nav_header_desc">Navigation header</string>
@@ -11,6 +12,8 @@
 
     <string name="enable_multi_token_title">CVC Session</string>
     <string name="enable_multi_token_desc">Retrieve card and cvc sessions</string>
+
+    <string name="supported_card_brands_text">Supported Card Brands: Visa, Mastercard &amp; Amex</string>
 
     <integer name="card_tag">7348</integer>
 </resources>

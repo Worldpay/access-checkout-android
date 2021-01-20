@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.card.testutil
+package com.worldpay.access.checkout.sample.card.standard.testutil
 
 enum class CardBrand(val cardBrandName: String) {
     AMEX("amex"),
