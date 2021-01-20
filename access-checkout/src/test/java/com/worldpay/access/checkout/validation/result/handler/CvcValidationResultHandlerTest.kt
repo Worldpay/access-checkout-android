@@ -153,6 +153,52 @@ class CvcValidationResultHandlerTest {
         verify(validationListener).onCvcValidated(validationStateManager.cvcValidationState.validationState)
     }
 
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is valid`() {
+        validationStateManager.cvcValidationState.validationState = true
+        validationStateManager.cvcValidationState.notificationSent = true
 
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onCvcValidated(validationStateManager.cvcValidationState.validationState)
+        assertTrue(validationStateManager.cvcValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is not valid`() {
+        validationStateManager.cvcValidationState.validationState = false
+        validationStateManager.cvcValidationState.notificationSent = true
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onCvcValidated(validationStateManager.cvcValidationState.validationState)
+        assertTrue(validationStateManager.cvcValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is valid`() {
+        validationStateManager.cvcValidationState.validationState = true
+        validationStateManager.cvcValidationState.notificationSent = false
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onCvcValidated(validationStateManager.cvcValidationState.validationState)
+        assertTrue(validationStateManager.cvcValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is not valid`() {
+        validationStateManager.cvcValidationState.validationState = false
+        validationStateManager.cvcValidationState.notificationSent = false
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onCvcValidated(validationStateManager.cvcValidationState.validationState)
+        assertTrue(validationStateManager.cvcValidationState.notificationSent)
+    }
 
 }

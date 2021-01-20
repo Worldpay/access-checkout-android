@@ -169,4 +169,52 @@ class PanValidationResultHandlerTest {
         verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
     }
 
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is valid`() {
+        validationStateManager.panValidationState.validationState = true
+        validationStateManager.panValidationState.notificationSent = true
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is not valid`() {
+        validationStateManager.panValidationState.validationState = false
+        validationStateManager.panValidationState.notificationSent = true
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is valid`() {
+        validationStateManager.panValidationState.validationState = true
+        validationStateManager.panValidationState.notificationSent = false
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is not valid`() {
+        validationStateManager.panValidationState.validationState = false
+        validationStateManager.panValidationState.notificationSent = false
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
+        assertTrue(validationStateManager.panValidationState.notificationSent)
+    }
+
 }

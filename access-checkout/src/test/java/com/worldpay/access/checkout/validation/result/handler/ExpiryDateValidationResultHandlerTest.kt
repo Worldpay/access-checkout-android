@@ -156,4 +156,52 @@ class ExpiryDateValidationResultHandlerTest {
         verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
     }
 
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is valid`() {
+        validationStateManager.expiryDateValidationState.validationState = true
+        validationStateManager.expiryDateValidationState.notificationSent = true
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
+        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is not valid`() {
+        validationStateManager.expiryDateValidationState.validationState = false
+        validationStateManager.expiryDateValidationState.notificationSent = true
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
+        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is valid`() {
+        validationStateManager.expiryDateValidationState.validationState = true
+        validationStateManager.expiryDateValidationState.notificationSent = false
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
+        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
+    }
+
+    @Test
+    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is not valid`() {
+        validationStateManager.expiryDateValidationState.validationState = false
+        validationStateManager.expiryDateValidationState.notificationSent = false
+
+        validationResultHandler.onPause()
+        validationResultHandler.onResume()
+
+        verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
+        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
+    }
+
 }
