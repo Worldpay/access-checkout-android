@@ -17,7 +17,7 @@ class PanValidationResultHandlerTest {
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
 
-    private val validationStateManager = CardValidationStateManager()
+    private val validationStateManager = CardValidationStateManager(mock(), mock(), mock())
     private val fieldValidationState = mock<FieldValidationState>()
 
     private lateinit var validationResultHandler: PanValidationResultHandler
@@ -141,18 +141,18 @@ class PanValidationResultHandlerTest {
     }
 
     @Test
-    fun `should notify listener if notification previously sent when lifecycle is started`() {
+    fun `should notify listener if notification previously sent when lifecycle is resumed`() {
         validationStateManager.panValidationState.notificationSent = true
 
-        validationResultHandler.onStart()
+        validationResultHandler.onResume()
 
         verify(validationListener).onPanValidated(false)
         assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
     @Test
-    fun `should not notify listener if notification not previously sent when lifecycle is started`() {
-        validationResultHandler.onStart()
+    fun `should not notify listener if notification not previously sent when lifecycle is resumed`() {
+        validationResultHandler.onResume()
 
         verifyZeroInteractions(validationListener)
     }
@@ -167,54 +167,6 @@ class PanValidationResultHandlerTest {
         validationResultHandler.onResume()
         validationResultHandler.handleFocusChange()
         verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
-    }
-
-    @Test
-    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is valid`() {
-        validationStateManager.panValidationState.validationState = true
-        validationStateManager.panValidationState.notificationSent = true
-
-        validationResultHandler.onPause()
-        validationResultHandler.onResume()
-
-        verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
-        assertTrue(validationStateManager.panValidationState.notificationSent)
-    }
-
-    @Test
-    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is not valid`() {
-        validationStateManager.panValidationState.validationState = false
-        validationStateManager.panValidationState.notificationSent = true
-
-        validationResultHandler.onPause()
-        validationResultHandler.onResume()
-
-        verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
-        assertTrue(validationStateManager.panValidationState.notificationSent)
-    }
-
-    @Test
-    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is valid`() {
-        validationStateManager.panValidationState.validationState = true
-        validationStateManager.panValidationState.notificationSent = false
-
-        validationResultHandler.onPause()
-        validationResultHandler.onResume()
-
-        verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
-        assertTrue(validationStateManager.panValidationState.notificationSent)
-    }
-
-    @Test
-    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is not valid`() {
-        validationStateManager.panValidationState.validationState = false
-        validationStateManager.panValidationState.notificationSent = false
-
-        validationResultHandler.onPause()
-        validationResultHandler.onResume()
-
-        verify(validationListener).onPanValidated(validationStateManager.panValidationState.validationState)
-        assertTrue(validationStateManager.panValidationState.notificationSent)
     }
 
 }

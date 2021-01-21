@@ -45,8 +45,11 @@ open class AbstractValidationIntegrationTest {
     @Before
     fun setup() {
         pan = EditText(context)
-        cvc = EditText(context)
+        pan.id = 1
         expiryDate = EditText(context)
+        expiryDate.id = 2
+        cvc = EditText(context)
+        cvc.id = 3
 
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
 

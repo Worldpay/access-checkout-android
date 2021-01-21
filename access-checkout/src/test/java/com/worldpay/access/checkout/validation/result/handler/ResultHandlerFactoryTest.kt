@@ -15,7 +15,7 @@ import kotlin.test.assertNotNull
 class ResultHandlerFactoryTest {
 
     private val accessCheckoutValidationListener = mock<AccessCheckoutCardValidationListener>()
-    private val fieldValidationStateManager = CardValidationStateManager()
+    private val fieldValidationStateManager = CardValidationStateManager(mock(), mock(), mock())
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
 

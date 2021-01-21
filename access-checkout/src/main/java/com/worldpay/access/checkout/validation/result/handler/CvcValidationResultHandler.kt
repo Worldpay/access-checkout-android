@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.validation.result.handler
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import com.worldpay.access.checkout.validation.result.state.CvcFieldValidationStateManager
+import com.worldpay.access.checkout.validation.result.state.FieldValidationState
 
 internal class CvcValidationResultHandler(
     private val validationListener: AccessCheckoutCvcValidationListener,
@@ -12,13 +13,23 @@ internal class CvcValidationResultHandler(
 
     override fun notifyListener(isValid : Boolean) {
         validationListener.onCvcValidated(isValid)
-        validationStateManager.cvcValidationState.validationState = isValid
+        getState().validationState = isValid
 
         if (validationStateManager.isAllValid()) {
             validationListener.onValidationSuccess()
         }
 
-        validationStateManager.cvcValidationState.notificationSent = true
+        getState().notificationSent = true
+    }
+
+    override fun hasStateChanged(isValid: Boolean): Boolean {
+        return validationStateManager.cvcValidationState.validationState != isValid
+    }
+
+    override fun getState() = validationStateManager.cvcValidationState
+
+    override fun setState(fieldValidationState: FieldValidationState) {
+        validationStateManager.cvcValidationState = fieldValidationState
     }
 
 }

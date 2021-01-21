@@ -5,18 +5,18 @@ internal interface FieldValidationStateManager {
 }
 
 internal interface ExpiryDateFieldValidationStateManager : FieldValidationStateManager {
-    val expiryDateValidationState : FieldValidationState
+    var expiryDateValidationState : FieldValidationState
 }
 
 internal interface PanFieldValidationStateManager : FieldValidationStateManager {
-    val panValidationState : FieldValidationState
+    var panValidationState : FieldValidationState
 }
 
 internal interface CvcFieldValidationStateManager : FieldValidationStateManager {
-    val cvcValidationState : FieldValidationState
+    var cvcValidationState : FieldValidationState
 }
 
-internal class FieldValidationState {
+internal class FieldValidationState(val id: Int) {
     var validationState = false
     var notificationSent = false
 }

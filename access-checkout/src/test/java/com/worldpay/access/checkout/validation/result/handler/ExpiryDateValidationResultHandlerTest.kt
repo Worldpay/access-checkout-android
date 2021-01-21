@@ -16,7 +16,7 @@ class ExpiryDateValidationResultHandlerTest {
     private val validationListener = mock<AccessCheckoutExpiryDateValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
-    private val validationStateManager = CardValidationStateManager()
+    private val validationStateManager = CardValidationStateManager(mock(), mock(), mock())
     private val fieldValidationState = mock<FieldValidationState>()
 
     private lateinit var validationResultHandler: ExpiryDateValidationResultHandler
@@ -128,18 +128,18 @@ class ExpiryDateValidationResultHandlerTest {
     }
 
     @Test
-    fun `should notify listener if notification previously sent when lifecycle is started`() {
+    fun `should notify listener if notification previously sent when lifecycle is resumed`() {
         validationStateManager.expiryDateValidationState.notificationSent = true
 
-        validationResultHandler.onStart()
+        validationResultHandler.onResume()
 
         verify(validationListener).onExpiryDateValidated(false)
         assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
     }
 
     @Test
-    fun `should not notify listener if notification not previously sent when lifecycle is started`() {
-        validationResultHandler.onStart()
+    fun `should not notify listener if notification not previously sent when lifecycle is resumed`() {
+        validationResultHandler.onResume()
 
         verifyZeroInteractions(validationListener)
     }
@@ -154,54 +154,6 @@ class ExpiryDateValidationResultHandlerTest {
         validationResultHandler.onResume()
         validationResultHandler.handleFocusChange()
         verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
-    }
-
-    @Test
-    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is valid`() {
-        validationStateManager.expiryDateValidationState.validationState = true
-        validationStateManager.expiryDateValidationState.notificationSent = true
-
-        validationResultHandler.onPause()
-        validationResultHandler.onResume()
-
-        verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
-        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
-    }
-
-    @Test
-    fun `should notify listener regardless of state when lifecycle has finished - notification previously sent and is not valid`() {
-        validationStateManager.expiryDateValidationState.validationState = false
-        validationStateManager.expiryDateValidationState.notificationSent = true
-
-        validationResultHandler.onPause()
-        validationResultHandler.onResume()
-
-        verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
-        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
-    }
-
-    @Test
-    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is valid`() {
-        validationStateManager.expiryDateValidationState.validationState = true
-        validationStateManager.expiryDateValidationState.notificationSent = false
-
-        validationResultHandler.onPause()
-        validationResultHandler.onResume()
-
-        verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
-        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
-    }
-
-    @Test
-    fun `should notify listener regardless of state when lifecycle has finished - notification previously not sent and is not valid`() {
-        validationStateManager.expiryDateValidationState.validationState = false
-        validationStateManager.expiryDateValidationState.notificationSent = false
-
-        validationResultHandler.onPause()
-        validationResultHandler.onResume()
-
-        verify(validationListener).onExpiryDateValidated(validationStateManager.expiryDateValidationState.validationState)
-        assertTrue(validationStateManager.expiryDateValidationState.notificationSent)
     }
 
 }

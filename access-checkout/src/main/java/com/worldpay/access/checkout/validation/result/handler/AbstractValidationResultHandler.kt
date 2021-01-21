@@ -7,44 +7,43 @@ import androidx.lifecycle.OnLifecycleEvent
 import com.worldpay.access.checkout.validation.result.state.FieldValidationState
 
 internal abstract class AbstractValidationResultHandler(
-    private val fieldValidationState: FieldValidationState,
+    private var fieldValidationState: FieldValidationState,
     lifecycleOwner : LifecycleOwner
 ) : LifecycleObserver {
+
+    companion object {
+        private val state = mutableMapOf<Int, FieldValidationState>()
+    }
 
     init {
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
-    companion object {
-        private var validationState = false
-        private var notificationSent = false
-    }
-
     private var inLifecycleEvent = false
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    internal fun onStart() {
-        if (fieldValidationState.notificationSent) {
-            notifyListener(fieldValidationState.validationState)
-        }
+    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
+    internal fun onDestroy() {
+        getState().validationState = false
+        getState().notificationSent = false
+        state.remove(fieldValidationState.id)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
     internal fun onResume() {
         inLifecycleEvent = false
-        fieldValidationState.validationState = validationState
-        fieldValidationState.notificationSent = notificationSent
-        handleResult(
-            isValid = fieldValidationState.validationState,
-            forceNotify = true
-        )
+        if (state[fieldValidationState.id] != null) {
+            setState(state[fieldValidationState.id]!!)
+            state.remove(fieldValidationState.id)
+        }
+        if (getState().notificationSent) {
+            notifyListener(getState().validationState)
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
     internal fun onPause() {
         inLifecycleEvent = true
-        validationState = fieldValidationState.validationState
-        notificationSent = fieldValidationState.notificationSent
+        state[fieldValidationState.id] = getState()
     }
 
     fun handleResult(isValid: Boolean, forceNotify: Boolean = false) {
@@ -54,12 +53,16 @@ internal abstract class AbstractValidationResultHandler(
     }
 
     fun handleFocusChange() {
-        if (!fieldValidationState.notificationSent && !inLifecycleEvent) {
-            notifyListener(fieldValidationState.validationState)
+        if (!getState().notificationSent && !inLifecycleEvent) {
+            notifyListener(getState().validationState)
         }
     }
 
-    private fun hasStateChanged(isValid : Boolean) = isValid != fieldValidationState.validationState
+    abstract fun hasStateChanged(isValid: Boolean): Boolean
 
     abstract fun notifyListener(isValid: Boolean)
+
+    abstract fun getState(): FieldValidationState
+
+    abstract fun setState(fieldValidationState: FieldValidationState)
 }
