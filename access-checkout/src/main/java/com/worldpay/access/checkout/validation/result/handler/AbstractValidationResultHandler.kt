@@ -1,68 +1,78 @@
 package com.worldpay.access.checkout.validation.result.handler
 
-import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.Lifecycle.Event.*
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.worldpay.access.checkout.validation.result.state.FieldValidationState
 
 internal abstract class AbstractValidationResultHandler(
-    private var fieldValidationState: FieldValidationState,
-    lifecycleOwner : LifecycleOwner
+    lifecycleOwner: LifecycleOwner
 ) : LifecycleObserver {
-
-    companion object {
-        private val state = mutableMapOf<Int, FieldValidationState>()
-    }
 
     init {
         lifecycleOwner.lifecycle.addObserver(this)
     }
 
+    companion object {
+        private var VALIDITY_STATE_MAP = mutableMapOf<Int, FieldValidationState?>()
+    }
+
     private var inLifecycleEvent = false
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
-    internal fun onDestroy() {
-        getState().validationState = false
-        getState().notificationSent = false
-        state.remove(fieldValidationState.id)
-    }
-
-    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    @OnLifecycleEvent(ON_RESUME)
     internal fun onResume() {
         inLifecycleEvent = false
-        if (state[fieldValidationState.id] != null) {
-            setState(state[fieldValidationState.id]!!)
-            state.remove(fieldValidationState.id)
-        }
-        if (getState().notificationSent) {
-            notifyListener(getState().validationState)
+
+        if (!VALIDITY_STATE_MAP.containsKey(getState().id)) {
+            VALIDITY_STATE_MAP[getState().id] = null
         }
     }
 
-    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    @OnLifecycleEvent(ON_PAUSE)
     internal fun onPause() {
         inLifecycleEvent = true
-        state[fieldValidationState.id] = getState()
+    }
+
+    @OnLifecycleEvent(ON_STOP)
+    internal fun onStop() {
+        val stateFromStore = getStateFromStore()
+        if (stateFromStore != null) {
+            stateFromStore.notificationSent = false
+        }
     }
 
     fun handleResult(isValid: Boolean, forceNotify: Boolean = false) {
-        if (forceNotify || hasStateChanged(isValid)) {
-            notifyListener(isValid)
+        val stateHasChanged = getState().validationState != isValid
+
+        if (getStateFromStore() != null && !getStateFromStore()!!.notificationSent) {
+            notify(isValid)
+        } else if (stateHasChanged) {
+            notify(isValid)
+        } else if (forceNotify) {
+            notify(isValid)
         }
     }
 
     fun handleFocusChange() {
         if (!getState().notificationSent && !inLifecycleEvent) {
-            notifyListener(getState().validationState)
+            notify(getState().validationState)
         }
     }
 
-    abstract fun hasStateChanged(isValid: Boolean): Boolean
+    private fun notify(isValid: Boolean) {
+        getState().validationState = isValid
+        getState().notificationSent = true
+        VALIDITY_STATE_MAP[getState().id] = getState()
+        notifyListener(isValid)
+    }
+
+    private fun getStateFromStore(): FieldValidationState? {
+        return VALIDITY_STATE_MAP[getState().id]
+    }
 
     abstract fun notifyListener(isValid: Boolean)
 
     abstract fun getState(): FieldValidationState
 
-    abstract fun setState(fieldValidationState: FieldValidationState)
 }
