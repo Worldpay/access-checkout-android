@@ -44,8 +44,9 @@ internal abstract class AbstractValidationResultHandler(
 
     fun handleResult(isValid: Boolean, forceNotify: Boolean = false) {
         val stateHasChanged = getState().validationState != isValid
+        val storedState = getStateFromStore()
 
-        if (getStateFromStore() != null && !getStateFromStore()!!.notificationSent) {
+        if (storedState != null && !storedState.notificationSent) {
             notify(isValid)
         } else if (stateHasChanged) {
             notify(isValid)

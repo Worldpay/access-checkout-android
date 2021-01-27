@@ -7,11 +7,14 @@ import com.worldpay.access.checkout.validation.result.state.FieldValidationState
 import org.junit.Before
 import org.junit.Test
 import kotlin.random.Random
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
+
 
 class AbstractValidationResultHandlerTest {
 
     private val lifeCycleOwner = mock<LifecycleOwner>()
-    private val fieldValidationState = mock<FieldValidationState>()
+    private lateinit var fieldValidationState: FieldValidationState
 
     private lateinit var testResultHandler: TestResultHandler
 
@@ -20,7 +23,7 @@ class AbstractValidationResultHandlerTest {
         val lifecycle = mock<Lifecycle>()
         given(lifeCycleOwner.lifecycle).willReturn(lifecycle)
 
-        given(fieldValidationState.id).willReturn(Random.nextInt())
+        fieldValidationState = spy(FieldValidationState(Random.nextInt()))
 
         testResultHandler = spy(TestResultHandler(fieldValidationState, lifeCycleOwner))
         verify(lifecycle).addObserver(any<TestResultHandler>())
@@ -28,101 +31,98 @@ class AbstractValidationResultHandlerTest {
 
     @Test
     fun `should notify listener when isValid is true and forceNotify is true and validation state was previously valid`() {
-        setInitialValidationStateAs(true)
+        fieldValidationState.validationState = true
 
         testResultHandler.handleResult(isValid = true, forceNotify = true)
 
         verify(testResultHandler).notifyListener(true)
 
-        verifyFieldValidationStateInvokedWith(validationState = true)
+        assertTrue(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should notify listener when isValid is true and forceNotify is true and validation state was previously invalid`() {
-        setInitialValidationStateAs(false)
-
         testResultHandler.handleResult(isValid = true, forceNotify = true)
 
         verify(testResultHandler).notifyListener(true)
 
-        verify(fieldValidationState).validationState = true
-        verify(fieldValidationState).notificationSent = true
+        assertTrue(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should notify listener when isValid is false and forceNotify is true and validation state was previously valid`() {
-        setInitialValidationStateAs(true)
+        fieldValidationState.validationState = true
 
         testResultHandler.handleResult(isValid = false, forceNotify = true)
 
         verify(testResultHandler).notifyListener(false)
 
-        verifyFieldValidationStateInvokedWith(validationState = false)
+        assertFalse(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should notify listener when isValid is false and forceNotify is true and validation state was previously invalid`() {
-        setInitialValidationStateAs(false)
-
         testResultHandler.handleResult(isValid = false, forceNotify = true)
 
         verify(testResultHandler).notifyListener(false)
 
-        verifyFieldValidationStateInvokedWith(validationState = false)
+        assertFalse(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should notify when isValid is true and forceNotify is false and validation state was previously false`() {
-        setInitialValidationStateAs(false)
-
         testResultHandler.handleResult(isValid = true, forceNotify = false)
 
         verify(testResultHandler).notifyListener(true)
 
-        verifyFieldValidationStateInvokedWith(validationState = true)
+        assertTrue(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should notify when isValid is true and forceNotify is false and validation state was previously false - without specifying the forceNotify argument`() {
-        setInitialValidationStateAs(false)
-
         testResultHandler.handleResult(isValid = true)
 
         verify(testResultHandler).notifyListener(true)
 
-        verifyFieldValidationStateInvokedWith(validationState = true)
+        assertTrue(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should not notify when isValid is true and forceNotify is false and validation state was previously true`() {
-        setInitialValidationStateAs(true)
+        fieldValidationState.validationState = true
 
         testResultHandler.handleResult(isValid = true, forceNotify = false)
 
         verify(testResultHandler, never()).notifyListener(any())
 
-        verifyFieldValidationStateNotInvoked()
+        assertTrue(fieldValidationState.validationState)
+        assertFalse(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should not notify when isValid is false and forceNotify is false and validation state was previously false`() {
-        setInitialValidationStateAs(false)
-
         testResultHandler.handleResult(isValid = false, forceNotify = false)
 
         verify(testResultHandler, never()).notifyListener(any())
 
-        verifyFieldValidationStateNotInvoked()
+        assertFalse(fieldValidationState.validationState)
+        assertFalse(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should notify when isValid is true and forceNotify is false and onStop has been called and with a previous notification sent`() {
         // given
-        setInitialValidationStateAs(false)
         testResultHandler.handleResult(isValid = true, forceNotify = false)
         verify(testResultHandler).notifyListener(true)
-        verifyFieldValidationStateInvokedWith(validationState = true)
-        reset(testResultHandler, fieldValidationState)
+        assertTrue(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
+        reset(testResultHandler)
 
         // when
         testResultHandler.onStop()
@@ -130,17 +130,19 @@ class AbstractValidationResultHandlerTest {
 
         // then
         verify(testResultHandler).notifyListener(true)
-        verifyFieldValidationStateInvokedWith(validationState = true)
+        assertTrue(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should notify when isValid is false and forceNotify is false and onStop has been called and with a previous notification sent`() {
         // given
-        setInitialValidationStateAs(true)
+        fieldValidationState.validationState = true
         testResultHandler.handleResult(isValid = false, forceNotify = false)
         verify(testResultHandler).notifyListener(false)
-        verifyFieldValidationStateInvokedWith(validationState = false)
-        reset(testResultHandler, fieldValidationState)
+        assertFalse(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
+        reset(testResultHandler)
 
         // when
         testResultHandler.onStop()
@@ -148,84 +150,116 @@ class AbstractValidationResultHandlerTest {
 
         // then
         verify(testResultHandler).notifyListener(false)
-        verifyFieldValidationStateInvokedWith(validationState = false)
+        assertFalse(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should notify listener when handle focus change is called and a notification has not been sent before and not in lifecycle event`() {
-        setInitialValidationStateAs(false)
-        given(fieldValidationState.notificationSent).willReturn(false)
-
         testResultHandler.handleFocusChange()
 
         verify(testResultHandler).notifyListener(false)
 
-        verifyFieldValidationStateInvokedWith(validationState = false)
+        assertFalse(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should not notify listener when handle focus change is called and a notification has been sent before`() {
-        setInitialValidationStateAs(false)
-        given(fieldValidationState.notificationSent).willReturn(true)
+        fieldValidationState.notificationSent = true
 
         testResultHandler.handleFocusChange()
 
         verify(testResultHandler, never()).notifyListener(any())
 
-        verifyFieldValidationStateNotInvoked()
+        assertFalse(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should not notify listener when handle focus change is called and currently in a lifecycle event`() {
-        setInitialValidationStateAs(false)
-        given(fieldValidationState.notificationSent).willReturn(false)
-
         testResultHandler.onPause()
         testResultHandler.handleFocusChange()
 
         verify(testResultHandler, never()).notifyListener(any())
 
-        verifyFieldValidationStateNotInvoked()
+        assertFalse(fieldValidationState.validationState)
+        assertFalse(fieldValidationState.notificationSent)
     }
 
     @Test
     fun `should notify listener when handle focus change is called and not in a lifecycle event after leaving one`() {
-        setInitialValidationStateAs(false)
-        given(fieldValidationState.notificationSent).willReturn(false)
-
         testResultHandler.onPause()
         testResultHandler.handleFocusChange()
 
         verify(testResultHandler, never()).notifyListener(any())
 
-        verifyFieldValidationStateNotInvoked()
+        assertFalse(fieldValidationState.validationState)
+        assertFalse(fieldValidationState.notificationSent)
 
         testResultHandler.onResume()
         testResultHandler.handleFocusChange()
 
         verify(testResultHandler).notifyListener(false)
 
-        verifyFieldValidationStateInvokedWith(validationState = false)
+        assertFalse(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
-    private fun verifyFieldValidationStateInvokedWith(validationState: Boolean) {
-        verify(fieldValidationState).validationState = validationState
-        verify(fieldValidationState).notificationSent = true
+    @Test
+    fun `should notify when restarting the application`() {
+        val fieldValidationState = FieldValidationState(Random.nextInt())
+        val testResultHandler = spy(TestResultHandler(fieldValidationState, lifeCycleOwner))
+
+        testResultHandler.handleResult(isValid = true, forceNotify = false)
+        verify(testResultHandler).notifyListener(true)
+
+        assertTrue(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
+
+        reset(testResultHandler)
+        testResultHandler.onStop()
+        assertTrue(fieldValidationState.validationState)
+        assertFalse(fieldValidationState.notificationSent)
+
+        reset(testResultHandler)
+        testResultHandler.onResume()
+
+        testResultHandler.handleResult(isValid = true, forceNotify = false)
+        verify(testResultHandler).notifyListener(true)
+
+        assertTrue(fieldValidationState.validationState)
+        assertTrue(fieldValidationState.notificationSent)
     }
 
-    private fun verifyFieldValidationStateNotInvoked() {
-        verify(fieldValidationState, never()).validationState = any()
-        verify(fieldValidationState, never()).notificationSent = any()
+    @Test
+    fun `should not notify twice if handled twice`() {
+        val fieldValidationState = FieldValidationState(123)
+        val testResultHandler = spy(TestResultHandler(fieldValidationState, lifeCycleOwner))
+
+        testResultHandler.handleResult(isValid = true, forceNotify = false)
+        assertTrue(fieldValidationState.notificationSent)
+        assertTrue(fieldValidationState.validationState)
+        verify(testResultHandler).notifyListener(true)
+        reset(testResultHandler)
+
+        testResultHandler.handleResult(isValid = true, forceNotify = false)
+
+        verify(testResultHandler, never()).notifyListener(true)
     }
 
-    private fun setInitialValidationStateAs(isValid: Boolean) {
-        given(fieldValidationState.validationState).willReturn(isValid)
+    @Test
+    fun `should not fail when there is no stored state`() {
+        testResultHandler.onResume()
+        testResultHandler.onStop()
+        assertFalse(fieldValidationState.validationState)
+        assertFalse(fieldValidationState.notificationSent)
     }
 
     internal class TestResultHandler(
         private val fieldValidationState: FieldValidationState,
         lifecycleOwner: LifecycleOwner
-    ): AbstractValidationResultHandler(lifecycleOwner) {
+    ) : AbstractValidationResultHandler(lifecycleOwner) {
 
         override fun notifyListener(isValid: Boolean) {
         }

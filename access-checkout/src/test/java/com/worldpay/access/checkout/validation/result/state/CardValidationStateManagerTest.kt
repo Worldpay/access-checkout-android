@@ -38,4 +38,13 @@ class CardValidationStateManagerTest {
         assertFalse(validationStateManager.isAllValid())
     }
 
+    @Test
+    fun `should return false when isAllValid and expiry date is invalid`() {
+        validationStateManager.panValidationState.validationState = true
+        validationStateManager.expiryDateValidationState.validationState = false
+        validationStateManager.cvcValidationState.validationState = true
+
+        assertFalse(validationStateManager.isAllValid())
+    }
+
 }
