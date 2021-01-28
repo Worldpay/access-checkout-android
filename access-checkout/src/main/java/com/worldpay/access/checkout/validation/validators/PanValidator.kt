@@ -2,25 +2,30 @@ package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
 
 internal class PanValidator(private val acceptedCardBrands: Array<String>) {
 
     private val simpleValidator = SimpleValidator()
 
-    fun validate(text: String, cardValidationRule: CardValidationRule, cardBrand: RemoteCardBrand?): Boolean {
+    fun validate(text: String, cardValidationRule: CardValidationRule, cardBrand: RemoteCardBrand?): PanValidationResult {
         val isAcceptedCardBrand = isAcceptedCardBrand(cardBrand)
 
         if (!isAcceptedCardBrand) {
-            return false
+            return CARD_BRAND_NOT_ACCEPTED
         }
 
         val isValid = simpleValidator.validate(text, cardValidationRule)
 
-        if (isValid) {
-            return isLuhnValid(text)
+        if (!isValid) {
+            return INVALID
         }
 
-        return isValid
+        if (!isLuhnValid(text)) {
+            return INVALID_LUHN
+        }
+
+        return VALID
     }
 
     private fun isAcceptedCardBrand(cardBrand: RemoteCardBrand?): Boolean {
@@ -52,6 +57,13 @@ internal class PanValidator(private val acceptedCardBrands: Array<String>) {
             alternate = !alternate
         }
         return sum % 10 == 0
+    }
+
+    internal enum class PanValidationResult {
+        VALID,
+        INVALID,
+        CARD_BRAND_NOT_ACCEPTED,
+        INVALID_LUHN
     }
 
 }

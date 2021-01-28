@@ -27,6 +27,7 @@ class NavigationUITest {
         MainActivity::class.java)
 
     private val cardFlowTitle = "Card Flow"
+    private val restrictedCardFlowTitle = "Restricted Card Flow"
     private val cvcFlowTitle = "CVC Flow"
 
     @Test
@@ -65,6 +66,23 @@ class NavigationUITest {
             .check(matches(isDisplayed()))
 
         assertToolbarTitle(cvcFlowTitle)
+
+        navigateTo(R.id.nav_card_flow)
+
+        onView(withId(R.id.fragment_card_flow))
+            .check(matches(isDisplayed()))
+
+        assertToolbarTitle(cardFlowTitle)
+    }
+
+    @Test
+    fun shouldBeAbleToNavigateBackToCardFlow_fromRestrictedCardFlow() {
+        navigateTo(R.id.nav_restricted_card_flow)
+
+        onView(withId(R.id.fragment_restricted_card_flow))
+            .check(matches(isDisplayed()))
+
+        assertToolbarTitle(restrictedCardFlowTitle)
 
         navigateTo(R.id.nav_card_flow)
 

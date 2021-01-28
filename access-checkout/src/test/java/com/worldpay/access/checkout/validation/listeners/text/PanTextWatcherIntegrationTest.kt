@@ -63,7 +63,7 @@ class PanTextWatcherIntegrationTest {
     fun `should validate pan as false when partial unknown pan is entered`() {
         pan.setText("00000")
 
-        verify(panValidationResultHandler).handleResult(false)
+        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
         verifyZeroInteractions(brandChangedHandler)
     }
 
@@ -71,7 +71,7 @@ class PanTextWatcherIntegrationTest {
     fun `should validate pan as false when partial visa pan is entered`() {
         pan.setText(PARTIAL_VISA)
 
-        verify(panValidationResultHandler).handleResult(false)
+        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
         verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
@@ -79,7 +79,7 @@ class PanTextWatcherIntegrationTest {
     fun `should validate pan as true when full visa pan is entered`() {
         pan.setText(VISA_PAN)
 
-        verify(panValidationResultHandler).handleResult(true)
+        verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
         verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
@@ -99,7 +99,7 @@ class PanTextWatcherIntegrationTest {
 
         pan.setText(VISA_PAN)
 
-        verify(panValidationResultHandler).handleResult(true)
+        verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
         verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
@@ -119,12 +119,12 @@ class PanTextWatcherIntegrationTest {
 
         pan.setText(VALID_UNKNOWN_LUHN)
 
-        verify(panValidationResultHandler).handleResult(true)
+        verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
         verifyZeroInteractions(brandChangedHandler)
     }
 
     @Test
-    fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand`() {
+    fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand and force notify`() {
         val panTextWatcher = PanTextWatcher(
             panValidator = PanValidator(arrayOf("MASTERCARD")),
             cvcValidator = cvcValidator,
@@ -139,7 +139,7 @@ class PanTextWatcherIntegrationTest {
 
         pan.setText(VISA_PAN)
 
-        verify(panValidationResultHandler).handleResult(false)
+        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = true)
         verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
@@ -147,7 +147,7 @@ class PanTextWatcherIntegrationTest {
     fun `should validate pan as true when 19 character unknown valid luhn is entered`() {
         pan.setText(VALID_UNKNOWN_LUHN)
 
-        verify(panValidationResultHandler).handleResult(true)
+        verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
         verifyZeroInteractions(brandChangedHandler)
     }
 
@@ -155,7 +155,7 @@ class PanTextWatcherIntegrationTest {
     fun `should validate pan as true when 19 character unknown invalid luhn is entered`() {
         pan.setText(INVALID_UNKNOWN_LUHN)
 
-        verify(panValidationResultHandler).handleResult(false)
+        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
         verifyZeroInteractions(brandChangedHandler)
     }
 
@@ -171,7 +171,7 @@ class PanTextWatcherIntegrationTest {
         assertEquals(VISA_BRAND.cvc, cvcValidationRuleManager.getRule())
 
         verify(cvcValidator).validate("123")
-        verify(panValidationResultHandler).handleResult(true)
+        verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
         verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
@@ -184,7 +184,7 @@ class PanTextWatcherIntegrationTest {
         assertEquals(VISA_BRAND.cvc, cvcValidationRuleManager.getRule())
 
         verifyZeroInteractions(cvcValidator)
-        verify(panValidationResultHandler).handleResult(true)
+        verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
         verify(brandChangedHandler).handle(VISA_BRAND)
     }
 

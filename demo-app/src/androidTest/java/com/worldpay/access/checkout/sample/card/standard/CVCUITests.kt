@@ -1,10 +1,10 @@
-package com.worldpay.access.checkout.sample.card
+package com.worldpay.access.checkout.sample.card.standard
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.worldpay.access.checkout.sample.card.testutil.AbstractCardFragmentTest
-import com.worldpay.access.checkout.sample.card.testutil.CardBrand.*
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
+import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.*
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
 import org.junit.Test
 import org.junit.runner.RunWith
 

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.card.testutil
+package com.worldpay.access.checkout.sample.card.standard.testutil
 
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.rule.ActivityTestRule

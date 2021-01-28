@@ -14,8 +14,8 @@ import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.sample.BuildConfig

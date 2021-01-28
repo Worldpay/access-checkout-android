@@ -9,6 +9,11 @@
         android:title="@string/card_flow_nav_text" />
 
     <item
+        android:id="@+id/nav_restricted_card_flow"
+        android:icon="@drawable/ic_card_flow"
+        android:title="@string/restricted_card_flow_nav_text" />
+
+    <item
         android:id="@+id/nav_cvc_flow"
         android:icon="@drawable/ic_cvc_flow"
         android:title="@string/cvc_flow_nav_text" />

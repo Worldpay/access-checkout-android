@@ -4,7 +4,7 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.simulateCardConfigurationServerError
 import org.junit.Before
 import org.junit.Rule

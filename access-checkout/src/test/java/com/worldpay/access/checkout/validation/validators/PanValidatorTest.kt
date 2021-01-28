@@ -5,65 +5,60 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
 import org.junit.Test
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
+import kotlin.test.assertEquals
 
 class PanValidatorTest {
 
     private val panValidator = PanValidator(emptyArray())
 
     @Test
-    fun `should return false if pan is empty`() {
-        assertFalse(panValidator.validate("", PAN_RULE, null))
+    fun `should return INVALID if pan is empty`() {
+        assertEquals(INVALID, panValidator.validate("", PAN_RULE, null))
     }
 
     @Test
-    fun `should return false if pan is unrecognised and shorter than default valid lengths`() {
-        assertFalse(panValidator.validate("11111", PAN_RULE, null))
+    fun `should return INVALID if pan is unrecognised and shorter than default valid lengths`() {
+        assertEquals(INVALID, panValidator.validate("11111", PAN_RULE, null))
     }
 
     @Test
-    fun `should return false if unknown pan is valid length and an invalid luhn`() {
-        assertFalse(panValidator.validate(INVALID_UNKNOWN_LUHN, PAN_RULE, null))
+    fun `should return INVALID_LUHN if unknown pan is valid length and an invalid luhn`() {
+        assertEquals(INVALID_LUHN, panValidator.validate(INVALID_UNKNOWN_LUHN, PAN_RULE, null))
     }
 
     @Test
-    fun `should return true if unrecognised pan is valid luhn and valid length`() {
-        assertTrue(panValidator.validate(VALID_UNKNOWN_LUHN, PAN_RULE, null))
+    fun `should return VALID if unrecognised pan is valid luhn and valid length`() {
+        assertEquals(VALID, panValidator.validate(VALID_UNKNOWN_LUHN, PAN_RULE, null))
     }
 
     @Test
-    fun `should return false if known pan is shorter than valid length`() {
-        assertFalse(panValidator.validate("4111", VISA_BRAND.pan, null))
+    fun `should return INVALID if known pan is shorter than valid length`() {
+        assertEquals(INVALID, panValidator.validate("4111", VISA_BRAND.pan, VISA_BRAND))
     }
 
     @Test
-    fun `should return false if known pan is valid length but invalid luhn`() {
-        assertFalse(panValidator.validate("44444444444444444", VISA_BRAND.pan, null))
+    fun `should return VALID if known pan is valid length and valid luhn`() {
+        assertEquals(VALID, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
     }
 
     @Test
-    fun `should return true if known pan is valid length and valid luhn`() {
-        assertTrue(panValidator.validate(VISA_PAN, VISA_BRAND.pan, null))
-    }
-
-    @Test
-    fun `should return false if the pan is not one of the accepted card brands`() {
+    fun `should return CARD_BRAND_NOT_ACCEPTED if the pan is not one of the accepted card brands`() {
         val panValidator = PanValidator(arrayOf("MASTERCARD"))
-        assertFalse(panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
+        assertEquals(CARD_BRAND_NOT_ACCEPTED, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
     }
 
     @Test
-    fun `should return true if the pan is of one of the accepted card brands and everything else is valid`() {
+    fun `should return VALID if the pan is of one of the accepted card brands and everything else is valid`() {
         val panValidator = PanValidator(arrayOf("VISA", "MASTERCARD"))
-        assertTrue(panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
+        assertEquals(VALID, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
     }
 
     @Test
-    fun `should return true if the pan is of one of the accepted card brands and everything else is valid - ignore case`() {
+    fun `should return VALID if the pan is of one of the accepted card brands and everything else is valid - ignore case`() {
         val panValidator = PanValidator(arrayOf("VisA", "MASTERCARD"))
-        assertTrue(panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
+        assertEquals(VALID, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
     }
 
 }

@@ -10,7 +10,6 @@ import com.nhaarman.mockitokotlin2.spy
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
-import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -46,8 +45,11 @@ open class AbstractValidationIntegrationTest {
     @Before
     fun setup() {
         pan = EditText(context)
-        cvc = EditText(context)
+        pan.id = 1
         expiryDate = EditText(context)
+        expiryDate.id = 2
+        cvc = EditText(context)
+        cvc.id = 3
 
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
 
@@ -64,13 +66,6 @@ open class AbstractValidationIntegrationTest {
 
     @After
     fun tearDown() {
-        val stateManager = CardValidationStateManager
-        stateManager.panValidationState.notificationSent = false
-        stateManager.panValidationState.validationState = false
-        stateManager.expiryDateValidationState.notificationSent = false
-        stateManager.expiryDateValidationState.validationState = false
-        stateManager.cvcValidationState.notificationSent = false
-        stateManager.cvcValidationState.validationState = false
         server.shutdown()
         HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory)
     }

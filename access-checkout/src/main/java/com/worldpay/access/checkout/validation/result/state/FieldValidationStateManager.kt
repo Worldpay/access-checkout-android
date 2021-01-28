@@ -16,7 +16,7 @@ internal interface CvcFieldValidationStateManager : FieldValidationStateManager 
     val cvcValidationState : FieldValidationState
 }
 
-internal class FieldValidationState {
+internal class FieldValidationState(val id: Int) {
     var validationState = false
     var notificationSent = false
 }

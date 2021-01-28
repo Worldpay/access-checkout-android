@@ -6,23 +6,47 @@
 
     <fragment
         android:id="@+id/nav_card_flow"
-        android:label="Card Flow"
+        android:label="@string/card_flow_nav_text"
         android:name="com.worldpay.access.checkout.sample.ui.CardFlowFragment"
         tools:layout="@layout/fragment_card_flow">
 
         <action
             android:id="@+id/action_card_flow_to_cvc_flow"
             app:destination="@id/nav_cvc_flow" />
+
+        <action
+            android:id="@+id/action_card_flow_to_restricted_card_flow"
+            app:destination="@id/nav_restricted_card_flow" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/nav_restricted_card_flow"
+        android:label="@string/restricted_card_flow_nav_text"
+        android:name="com.worldpay.access.checkout.sample.ui.RestrictedCardFlowFragment"
+        tools:layout="@layout/fragment_restricted_card_flow">
+
+        <action
+            android:id="@+id/action_restricted_card_flow_to_cvc_flow"
+            app:destination="@id/nav_cvc_flow" />
+
+        <action
+            android:id="@+id/action_restricted_card_flow_to_card_flow"
+            app:destination="@id/nav_card_flow" />
     </fragment>
 
     <fragment
         android:id="@+id/nav_cvc_flow"
-        android:label="CVC Flow"
+        android:label="@string/cvc_flow_nav_text"
         android:name="com.worldpay.access.checkout.sample.ui.CvcFlowFragment"
         tools:layout="@layout/fragment_cvc_flow" >
+
         <action
             android:id="@+id/action_cvc_flow_to_card_flow"
             app:destination="@id/nav_card_flow" />
+
+        <action
+            android:id="@+id/action_cvc_flow_to_restricted_card_flow"
+            app:destination="@id/nav_restricted_card_flow" />
     </fragment>
 
 </navigation>

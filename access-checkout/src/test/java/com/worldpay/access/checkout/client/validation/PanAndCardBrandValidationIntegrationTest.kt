@@ -201,7 +201,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
         pan.setText(DINERS_PAN)
 
-        verify(cardValidationListener, never()).onPanValidated(any())
+        verify(cardValidationListener).onPanValidated(false)
         verify(cardValidationListener).onBrandChange(toCardBrand(DINERS_BRAND))
     }
 

@@ -1,13 +1,13 @@
 package com.worldpay.access.checkout.validation.result.state
 
+import com.nhaarman.mockitokotlin2.mock
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CardValidationStateManagerTest {
 
-    private val validationStateManager =
-        CardValidationStateManager
+    private val validationStateManager = CardValidationStateManager(mock(), mock(), mock())
 
     @Test
     fun `should return true when all is valid`() {
@@ -34,6 +34,15 @@ class CardValidationStateManagerTest {
         validationStateManager.panValidationState.validationState = true
         validationStateManager.expiryDateValidationState.validationState = true
         validationStateManager.cvcValidationState.validationState = false
+
+        assertFalse(validationStateManager.isAllValid())
+    }
+
+    @Test
+    fun `should return false when isAllValid and expiry date is invalid`() {
+        validationStateManager.panValidationState.validationState = true
+        validationStateManager.expiryDateValidationState.validationState = false
+        validationStateManager.cvcValidationState.validationState = true
 
         assertFalse(validationStateManager.isAllValid())
     }

@@ -5,8 +5,8 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.card.testutil.CardBrand.MASTERCARD
-import com.worldpay.access.checkout.sample.card.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MASTERCARD
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
 import org.awaitility.Awaitility

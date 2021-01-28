@@ -1,12 +1,13 @@
 package com.worldpay.access.checkout.validation.result.state
 
+import com.nhaarman.mockitokotlin2.mock
 import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CvcValidationStateManagerTest {
 
-    private val validationStateManager = CvcValidationStateManager
+    private val validationStateManager = CvcValidationStateManager(mock())
 
     @Test
     fun `should return true when cvc is valid`() {
