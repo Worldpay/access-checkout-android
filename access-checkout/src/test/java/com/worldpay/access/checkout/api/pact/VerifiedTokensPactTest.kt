@@ -72,7 +72,7 @@ class VerifiedTokensPactTest {
     private val expiryMonth = 12
     private val integerMonthTooSmall = 0
     private val integerMonthTooLarge = 13
-    private val expiryYear = 2020
+    private val expiryYear = 2030
 
     private val cvc = "123"
     private val cvcNonNumerical = "aaa"
