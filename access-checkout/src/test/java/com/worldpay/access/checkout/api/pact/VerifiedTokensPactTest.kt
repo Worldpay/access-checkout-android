@@ -9,6 +9,7 @@ import au.com.dius.pact.core.model.RequestResponsePact
 import au.com.dius.pact.core.model.annotations.Pact
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.api.pact.PactUtils.Companion.escapeColonsInMatchingRules
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.client.testutil.TrustAllSSLSocketFactory
@@ -71,7 +72,7 @@ class VerifiedTokensPactTest {
     private val expiryMonth = 12
     private val integerMonthTooSmall = 0
     private val integerMonthTooLarge = 13
-    private val expiryYear = 2020
+    private val expiryYear = 2030
 
     private val cvc = "123"
     private val cvcNonNumerical = "aaa"
@@ -87,7 +88,7 @@ class VerifiedTokensPactTest {
     private val curiesRegex = "https?://[^/]+/rels/verifiedTokens/\\{rel\\}.json"
     private val curiesExample = "https://access.worldpay.com/rels/verifiedTokens/{rel}.json"
     
-    private val responseBody = PactDslJsonBody()
+    private val responseBody = escapeColonsInMatchingRules(PactDslJsonBody()
         .`object`("_links")
         .`object`("verifiedTokens:session")
         .stringMatcher("href", sessionReferenceRegex, sessionReferenceExample)
@@ -99,14 +100,14 @@ class VerifiedTokensPactTest {
         .booleanValue("templated", true)
         .closeObject()
         .closeArray()
-        .closeObject()
+        .closeObject())
 
-    private val getResponseBody = PactDslJsonBody()
+    private val getResponseBody = escapeColonsInMatchingRules(PactDslJsonBody()
         .`object`("_links")
         .`object`("verifiedTokens:sessions")
         .stringMatcher("href", discoveryEndpointRegex, verifiedTokensSessionEndpoint)
         .closeObject()
-        .closeObject()
+        .closeObject())
 
     @Pact(provider = provider, consumer = consumer)
     @SuppressWarnings("unused")

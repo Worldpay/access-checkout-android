@@ -12,6 +12,7 @@ import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
+import com.worldpay.access.checkout.api.pact.PactUtils.Companion.escapeColonsInMatchingRules
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.client.testutil.TrustAllSSLSocketFactory
@@ -87,7 +88,7 @@ class SessionsPactTest {
     private val curiesRegex = "https?://[^/]+/rels/sessions/\\{rel\\}.json"
     private val curiesExample = "https://access.worldpay.com/rels/sessions/{rel}.json"
 
-    private val responseBody = PactDslJsonBody()
+    private val responseBody = escapeColonsInMatchingRules(PactDslJsonBody()
         .`object`("_links")
         .`object`("sessions:session")
         .stringMatcher("href", sessionReferenceRegex, sessionReferenceExample)
@@ -99,14 +100,14 @@ class SessionsPactTest {
         .booleanValue("templated", true)
         .closeObject()
         .closeArray()
-        .closeObject()
+        .closeObject())
 
-    private val getResponseBody = PactDslJsonBody()
+    private val getResponseBody = escapeColonsInMatchingRules(PactDslJsonBody()
         .`object`("_links")
         .`object`("sessions:paymentsCvc")
         .stringMatcher("href", sessionEndpointRegex, paymentsCvcSessionEndpoint )
         .closeObject()
-        .closeObject()
+        .closeObject())
 
     @Pact(provider = provider, consumer = consumer)
     @SuppressWarnings("unused")
