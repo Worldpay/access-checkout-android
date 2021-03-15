@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Unreleased
+### [v2.1.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.1.0) - 2020-03-15
 #### Added
 - Ability to specify the card brands to support for validation, all other card brands will no longer be valid during card validation
 
