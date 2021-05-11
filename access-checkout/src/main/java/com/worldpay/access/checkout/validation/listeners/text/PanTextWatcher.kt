@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.text.Editable
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
@@ -15,13 +16,15 @@ import com.worldpay.access.checkout.validation.validators.PanValidator.PanValida
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
 
 internal class PanTextWatcher(
+    private val panEditText: EditText,
     private var panValidator: PanValidator,
+    private val panFormatter: PanFormatter,
     private val cvcValidator: CvcValidator,
     private val cvcEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler,
-    private val brandChangedHandler : BrandChangedHandler,
+    private val brandChangedHandler: BrandChangedHandler,
     private val cvcValidationRuleManager: CVCValidationRuleManager
-) : AbstractCardDetailTextWatcher() {
+): AbstractCardDetailTextWatcher() {
 
     private var cardBrand: RemoteCardBrand? = null
 
@@ -29,11 +32,17 @@ internal class PanTextWatcher(
         val panText = pan.toString()
         val newCardBrand = findBrandForPan(panText)
 
+        val formattedPan = panFormatter.format(panText, newCardBrand)
+        if (formattedPan != panText) {
+            updateText(formattedPan)
+            return
+        }
+
         handleCardBrandChange(newCardBrand)
 
         val cardValidationRule = getPanValidationRule(newCardBrand)
 
-        val validationState = panValidator.validate(panText, cardValidationRule, newCardBrand)
+        val validationState = panValidator.validate(formattedPan, cardValidationRule, newCardBrand)
 
         val isValid = validationState == VALID
         val forceNotify = validationState == CARD_BRAND_NOT_ACCEPTED
@@ -59,6 +68,11 @@ internal class PanTextWatcher(
     private fun updateCvcValidationRule() {
         val cardValidationRule = getCvcValidationRule(cardBrand)
         cvcValidationRuleManager.updateRule(cardValidationRule)
+    }
+
+    private fun updateText(text: String) {
+        panEditText.setText(text)
+        panEditText.setSelection(text.length)
     }
 
 }

@@ -64,20 +64,33 @@ class FieldDecoratorFactoryTest {
     fun `should get pan field decorator`() {
         val acceptedCardBrands = arrayOf("VISA", "AMEX")
 
-        given(textWatcherFactory.createPanTextWatcher(cvcEditText, acceptedCardBrands)).willReturn(mock())
+        given(textWatcherFactory.createPanTextWatcher(
+            panEditText = panEditText,
+            cvcEditText = cvcEditText,
+            acceptedCardBrands = acceptedCardBrands,
+            disablePanFormatting = false
+
+        )).willReturn(mock())
         given(focusChangeListenerFactory.createPanFocusChangeListener()).willReturn(mock())
-        given(lengthFilterFactory.getPanLengthFilter()).willReturn(mock())
+        given(lengthFilterFactory.getPanLengthFilter(false)).willReturn(mock())
 
         val decorator: PanFieldDecorator = fieldDecoratorFactory.getPanDecorator(
-            panEditText,
-            cvcEditText,
-            acceptedCardBrands
+            panEditText = panEditText,
+            cvcEditText = cvcEditText,
+            acceptedCardBrands = acceptedCardBrands,
+            disablePanFormatting = false
         )
 
         assertNotNull(decorator)
-        verify(textWatcherFactory).createPanTextWatcher(cvcEditText, acceptedCardBrands)
+        verify(textWatcherFactory).createPanTextWatcher(
+            panEditText = panEditText,
+            cvcEditText = cvcEditText,
+            acceptedCardBrands = acceptedCardBrands,
+            disablePanFormatting = false
+        )
+
         verify(focusChangeListenerFactory).createPanFocusChangeListener()
-        verify(lengthFilterFactory).getPanLengthFilter()
+        verify(lengthFilterFactory).getPanLengthFilter(false)
     }
 
     @Test

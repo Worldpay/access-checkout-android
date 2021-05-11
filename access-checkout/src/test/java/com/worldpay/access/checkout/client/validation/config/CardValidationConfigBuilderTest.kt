@@ -8,6 +8,7 @@ import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class CardValidationConfigBuilderTest {
 
@@ -108,7 +109,6 @@ class CardValidationConfigBuilderTest {
         assertEquals("Expected expiry date component to be provided but was not", exception.message)
     }
 
-
     @Test
     fun `should throw exception where cvc is not provided`() {
         val exception = assertFailsWith<IllegalArgumentException> {
@@ -155,6 +155,29 @@ class CardValidationConfigBuilderTest {
         }
 
         assertEquals("Expected lifecycle owner to be provided but was not", exception.message)
+    }
+
+    @Test
+    fun `should be able to call disable pan number formatting`() {
+        val config = CardValidationConfig.Builder()
+            .baseUrl(baseUrl)
+            .pan(pan)
+            .expiryDate(expiryDate)
+            .cvc(cvc)
+            .acceptedCardBrands(acceptedCardBrands)
+            .validationListener(validationListener)
+            .lifecycleOwner(lifecycleOwner)
+            .disablePanFormatting()
+            .build()
+
+        assertNotNull(config)
+        assertEquals(baseUrl, config.baseUrl)
+        assertEquals(pan, config.pan)
+        assertEquals(expiryDate, config.expiryDate)
+        assertEquals(cvc, config.cvc)
+        assertEquals(acceptedCardBrands, config.acceptedCardBrands)
+        assertEquals(validationListener, config.validationListener)
+        assertTrue(config.disablePanFormatting)
     }
 
 }

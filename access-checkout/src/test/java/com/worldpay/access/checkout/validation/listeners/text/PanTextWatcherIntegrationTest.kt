@@ -12,6 +12,8 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUH
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN_FORMATTED
+import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
@@ -48,7 +50,9 @@ class PanTextWatcherIntegrationTest {
         cvc.addTextChangedListener(cvcTextWatcher)
 
         val panTextWatcher = PanTextWatcher(
+            panEditText = pan,
             panValidator = PanValidator(emptyArray()),
+            panFormatter = PanFormatter(false),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
@@ -85,8 +89,12 @@ class PanTextWatcherIntegrationTest {
 
     @Test
     fun `should validate pan as true when visa pan is entered and visa pan is an accepted card brand`() {
+        val pan = EditText(context)
+
         val panTextWatcher = PanTextWatcher(
+            panEditText = pan,
             panValidator = PanValidator(arrayOf("VISA")),
+            panFormatter = PanFormatter(false),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
@@ -94,7 +102,6 @@ class PanTextWatcherIntegrationTest {
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 
-        val pan = EditText(context)
         pan.addTextChangedListener(panTextWatcher)
 
         pan.setText(VISA_PAN)
@@ -105,8 +112,12 @@ class PanTextWatcherIntegrationTest {
 
     @Test
     fun `should validate pan as true when unknown valid luhn pan is entered and there are some accepted cards specified`() {
+        val pan = EditText(context)
+
         val panTextWatcher = PanTextWatcher(
+            panEditText = pan,
             panValidator = PanValidator(arrayOf("VISA", "MASTERCARD")),
+            panFormatter = PanFormatter(false),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
@@ -114,7 +125,6 @@ class PanTextWatcherIntegrationTest {
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 
-        val pan = EditText(context)
         pan.addTextChangedListener(panTextWatcher)
 
         pan.setText(VALID_UNKNOWN_LUHN)
@@ -125,8 +135,12 @@ class PanTextWatcherIntegrationTest {
 
     @Test
     fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand and force notify`() {
+        val pan = EditText(context)
+
         val panTextWatcher = PanTextWatcher(
+            panEditText = pan,
             panValidator = PanValidator(arrayOf("MASTERCARD")),
+            panFormatter = PanFormatter(false),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
@@ -134,7 +148,6 @@ class PanTextWatcherIntegrationTest {
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 
-        val pan = EditText(context)
         pan.addTextChangedListener(panTextWatcher)
 
         pan.setText(VISA_PAN)
@@ -186,6 +199,56 @@ class PanTextWatcherIntegrationTest {
         verifyZeroInteractions(cvcValidator)
         verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
         verify(brandChangedHandler).handle(VISA_BRAND)
+    }
+
+    @Test
+    fun `should format pan when formatting is enabled`() {
+        val pan = EditText(context)
+
+        val panTextWatcher = PanTextWatcher(
+            panEditText = pan,
+            panValidator = PanValidator(arrayOf("MASTERCARD")),
+            panFormatter = PanFormatter(false),
+            cvcValidator = cvcValidator,
+            cvcEditText = cvc,
+            panValidationResultHandler = panValidationResultHandler,
+            brandChangedHandler = brandChangedHandler,
+            cvcValidationRuleManager = cvcValidationRuleManager
+        )
+
+        pan.addTextChangedListener(panTextWatcher)
+
+        pan.setText(VISA_PAN)
+
+        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = true)
+        verify(brandChangedHandler).handle(VISA_BRAND)
+
+        assertEquals(VISA_PAN_FORMATTED, pan.text.toString())
+    }
+
+    @Test
+    fun `should not format pan when formatting is disabled`() {
+        val pan = EditText(context)
+
+        val panTextWatcher = PanTextWatcher(
+            panEditText = pan,
+            panValidator = PanValidator(arrayOf("MASTERCARD")),
+            panFormatter = PanFormatter(true),
+            cvcValidator = cvcValidator,
+            cvcEditText = cvc,
+            panValidationResultHandler = panValidationResultHandler,
+            brandChangedHandler = brandChangedHandler,
+            cvcValidationRuleManager = cvcValidationRuleManager
+        )
+
+        pan.addTextChangedListener(panTextWatcher)
+
+        pan.setText(VISA_PAN)
+
+        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = true)
+        verify(brandChangedHandler).handle(VISA_BRAND)
+
+        assertEquals(VISA_PAN, pan.text.toString())
     }
 
 }

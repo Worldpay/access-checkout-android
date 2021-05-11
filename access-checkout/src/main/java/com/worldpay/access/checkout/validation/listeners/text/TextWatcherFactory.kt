@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.widget.EditText
+import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CvcValidator
@@ -14,11 +15,18 @@ internal class TextWatcherFactory(
     private val cvcValidationRuleManager = CVCValidationRuleManager()
     private val dateValidator = ExpiryDateValidator()
 
-    fun createPanTextWatcher(cvcEditText: EditText, acceptedCardBrands: Array<String>): PanTextWatcher {
+    fun createPanTextWatcher(
+        panEditText: EditText,
+        cvcEditText: EditText,
+        acceptedCardBrands: Array<String>,
+        disablePanFormatting: Boolean
+    ): PanTextWatcher {
         return PanTextWatcher(
+            panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),
-            cvcEditText =  cvcEditText,
+            panFormatter = PanFormatter(disablePanFormatting),
             cvcValidator = CvcValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
+            cvcEditText =  cvcEditText,
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager

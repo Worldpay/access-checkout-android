@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CvcValidator
@@ -41,8 +42,10 @@ class CvcTextWatcherIntegrationTest {
 
         cvc.addTextChangedListener(cvcTextWatcher)
 
-        val panTextWatcher = PanTextWatcher(
+        val panValidationTextWatcher = PanTextWatcher(
+            panEditText = pan,
             panValidator = PanValidator(emptyArray()),
+            panFormatter = PanFormatter(false),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = mock(),
@@ -50,7 +53,7 @@ class CvcTextWatcherIntegrationTest {
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 
-        pan.addTextChangedListener(panTextWatcher)
+        pan.addTextChangedListener(panValidationTextWatcher)
     }
 
     @Test

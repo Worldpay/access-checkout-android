@@ -19,7 +19,7 @@ class LengthFilterFactoryTest {
 
     @Test
     fun `should get pan length filter`() {
-        val filter : PanLengthFilter = lengthFilterFactory.getPanLengthFilter()
+        val filter : PanLengthFilter = lengthFilterFactory.getPanLengthFilter(false)
         assertNotNull(filter)
     }
 

@@ -15,13 +15,15 @@ internal class PanValidator(private val acceptedCardBrands: Array<String>) {
             return CARD_BRAND_NOT_ACCEPTED
         }
 
-        val isValid = simpleValidator.validate(text, cardValidationRule)
+        val unformattedText = text.replace("\\s+".toRegex(), "")
+
+        val isValid = simpleValidator.validate(unformattedText, cardValidationRule)
 
         if (!isValid) {
             return INVALID
         }
 
-        if (!isLuhnValid(text)) {
+        if (!isLuhnValid(unformattedText)) {
             return INVALID_LUHN
         }
 

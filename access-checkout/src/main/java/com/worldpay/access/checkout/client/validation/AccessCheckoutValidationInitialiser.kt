@@ -50,7 +50,13 @@ object AccessCheckoutValidationInitialiser {
             lengthFilterFactory
         )
 
-        val panFieldDecorator = fieldDecoratorFactory.getPanDecorator(validationConfig.pan, validationConfig.cvc, validationConfig.acceptedCardBrands)
+        val panFieldDecorator = fieldDecoratorFactory.getPanDecorator(
+            validationConfig.pan,
+            validationConfig.cvc,
+            validationConfig.acceptedCardBrands,
+            validationConfig.disablePanFormatting
+        )
+
         val expiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(validationConfig.expiryDate)
         val cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, validationConfig.pan)
 

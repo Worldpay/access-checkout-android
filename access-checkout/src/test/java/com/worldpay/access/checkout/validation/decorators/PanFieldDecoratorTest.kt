@@ -30,7 +30,7 @@ class PanFieldDecoratorTest {
         panFieldDecorator = PanFieldDecorator(
             panTextWatcher = panTextWatcher,
             panFocusChangeListener = panFocusChangeListener,
-            panLengthFilter = lengthFilterFactory.getPanLengthFilter(),
+            panLengthFilter = lengthFilterFactory.getPanLengthFilter(false),
             panEditText = panEditText
         )
     }
@@ -84,7 +84,7 @@ class PanFieldDecoratorTest {
         given(panEditText.filters).willReturn(arrayOf(
             InputFilter.LengthFilter(1000),
             InputFilter.AllCaps(),
-            PanLengthFilter()
+            PanLengthFilter(false)
         ))
 
         val captor = argumentCaptor<Array<InputFilter>>()

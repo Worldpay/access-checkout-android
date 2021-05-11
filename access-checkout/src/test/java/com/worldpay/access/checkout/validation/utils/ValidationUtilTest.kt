@@ -8,6 +8,10 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValidationRule
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.getMaxLength
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -19,60 +23,60 @@ class ValidationUtilTest {
 
     @Test
     fun `should be able to retrieve cvc validation rule given a brand`() {
-        val rule = ValidationUtil.getCvcValidationRule(VISA_BRAND)
+        val rule = getCvcValidationRule(VISA_BRAND)
         assertEquals(VISA_BRAND.cvc, rule)
     }
 
     @Test
     fun `should be able to retrieve cvc validation rule given no brand`() {
-        val rule = ValidationUtil.getCvcValidationRule(null)
+        val rule = getCvcValidationRule(null)
         assertEquals(CVC_DEFAULTS, rule)
     }
 
     @Test
     fun `should be able to retrieve pan validation rule given card brand`() {
-        val rule = ValidationUtil.getPanValidationRule(VISA_BRAND)
+        val rule = getPanValidationRule(VISA_BRAND)
         assertEquals(VISA_BRAND.pan, rule)
     }
 
     @Test
     fun `should be able to retrieve pan validation rule given no card brand`() {
-        val rule = ValidationUtil.getPanValidationRule(null)
+        val rule = getPanValidationRule(null)
         assertEquals(PAN_DEFAULTS, rule)
     }
 
     @Test
     fun `should return default max length when no valid lengths are found`() {
-        val maxLength = ValidationUtil.getMaxLength(CardValidationRule("", emptyList()))
+        val maxLength = getMaxLength(CardValidationRule("", emptyList()))
         assertEquals(100, maxLength)
-    }
-
-    @Test
-    fun `should return max length when valid lengths are found`() {
-        val maxLength = ValidationUtil.getMaxLength(CardValidationRule("", listOf(10, 11)))
-        assertEquals(11, maxLength)
     }
 
     @Test
     fun `should be able to find brand for pan`() {
         mockSuccessfulCardConfiguration()
-        assertEquals(VISA_BRAND, ValidationUtil.findBrandForPan(VISA_PAN))
+        assertEquals(VISA_BRAND, findBrandForPan(VISA_PAN))
+    }
+
+    @Test
+    fun `should be able to find brand for formatted pan`() {
+        mockSuccessfulCardConfiguration()
+        assertEquals(VISA_BRAND, findBrandForPan("4111 1111 1111 1111"))
     }
 
     @Test
     fun `should be able to find null brand for unrecognised pan`() {
-        assertNull(ValidationUtil.findBrandForPan("0000"))
+        assertNull(findBrandForPan("0000"))
     }
 
     @Test
     fun `should be able to find null brand for empty pan`() {
-        assertNull(ValidationUtil.findBrandForPan(""))
+        assertNull(findBrandForPan(""))
     }
 
     @Test
     fun `should be able to find null brand for visa pan but where card config has no brands`() {
         CardConfigurationProvider("", mock(), emptyList())
-        assertNull(ValidationUtil.findBrandForPan(VISA_PAN))
+        assertNull(findBrandForPan(VISA_PAN))
     }
 
     @Test
