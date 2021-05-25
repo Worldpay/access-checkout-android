@@ -58,6 +58,10 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         im.hideSoftInputFromWindow(editText.windowToken, 0)
     }
 
+    protected fun setCursorPosition(editText: EditText, startSelection: Int, endSelection: Int) {
+        activityRule.activity.runOnUiThread{ editText.setSelection(startSelection, endSelection) }
+    }
+
     protected fun dialogHasText(text: String) {
         onView(withText(text))
             .inRoot(isDialog())

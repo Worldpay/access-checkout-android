@@ -44,18 +44,21 @@ internal class PanFormatter(
         val splitPan = pan.trim().split(" ")
 
         if (isAmex(brand)) {
-            if (splitPan[0].length > 4) {
+            if (splitPan[0].length != 4 && pan.length > 4) {
                 return true
             }
-            if (splitPan.size >= 2 && splitPan[1].length > 6) {
+            if (splitPan.size >= 2 && splitPan[1].length != 6) {
                 return true
             }
-            if (splitPan.size >= 3 && splitPan[2].length > 5) {
+            if (splitPan.size >= 3 && splitPan[2].length != 5) {
+                return true
+            }
+            if(splitPan.size > 3) {
                 return true
             }
         } else {
             for (s in splitPan) {
-                if (s.length > 4) {
+                if (s.length != 4) {
                     requiresFormatting = true
                 }
             }

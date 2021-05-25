@@ -24,30 +24,29 @@ internal class PanTextWatcher(
     private val panValidationResultHandler: PanValidationResultHandler,
     private val brandChangedHandler: BrandChangedHandler,
     private val cvcValidationRuleManager: CVCValidationRuleManager
-): AbstractCardDetailTextWatcher() {
+) : AbstractCardDetailTextWatcher() {
 
     private var cardBrand: RemoteCardBrand? = null
 
     override fun afterTextChanged(pan: Editable?) {
+        val cursorPosition = panEditText.selectionEnd
         val panText = pan.toString()
         val newCardBrand = findBrandForPan(panText)
 
         val formattedPan = panFormatter.format(panText, newCardBrand)
-        if (formattedPan != panText) {
-            updateText(formattedPan)
-            return
-        }
 
         handleCardBrandChange(newCardBrand)
 
         val cardValidationRule = getPanValidationRule(newCardBrand)
-
         val validationState = panValidator.validate(formattedPan, cardValidationRule, newCardBrand)
 
         val isValid = validationState == VALID
         val forceNotify = validationState == CARD_BRAND_NOT_ACCEPTED
 
         panValidationResultHandler.handleResult(isValid, forceNotify)
+        if (formattedPan != panText) {
+            updatePanText(formattedPan, panText, cursorPosition)
+        }
     }
 
     private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
@@ -70,9 +69,39 @@ internal class PanTextWatcher(
         cvcValidationRuleManager.updateRule(cardValidationRule)
     }
 
-    private fun updateText(text: String) {
-        panEditText.setText(text)
-        panEditText.setSelection(text.length)
+    private fun updatePanText(
+        formattedPan: String,
+        panText: String,
+        originalCursorPosition: Int
+    ) {
+        setText(formattedPan)
+        setCursorPosition(panText, originalCursorPosition, formattedPan)
     }
 
+    private fun setCursorPosition(
+        panText: String,
+        originalCursorPosition: Int,
+        formattedPan: String
+    ) {
+        val previousSpacesToLeft = spacesToLeft(panText, originalCursorPosition - 1)
+        val newSpacesToLeft = spacesToLeft(formattedPan, originalCursorPosition - 1)
+        panEditText.setSelection(originalCursorPosition + newSpacesToLeft - previousSpacesToLeft)
+    }
+
+    private fun setText(text: String) {
+        panEditText.removeTextChangedListener(this)
+        panEditText.setText(text)
+        panEditText.addTextChangedListener(this)
+    }
+
+    private fun spacesToLeft(pan: String, limit: Int): Int {
+        var spacesToLeft = 0
+        val substr = pan.substring(0..limit)
+        for (char in substr) {
+            if (Regex("\\s+").matches(char.toString())) {
+                spacesToLeft += 1
+            }
+        }
+        return spacesToLeft
+    }
 }
