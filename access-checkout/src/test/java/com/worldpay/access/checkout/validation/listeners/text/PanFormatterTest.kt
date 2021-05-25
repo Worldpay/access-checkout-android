@@ -64,6 +64,34 @@ class PanFormatterTest {
     }
 
     @Test
+    fun `should reformat an amex pan that has been incorrectly formatted - too many groups`() {
+        val pan = panFormatter.format("5151 012393 333 33", AMEX_BRAND)
+
+        assertEquals("5151 012393 33333", pan)
+    }
+
+    @Test
+    fun `should not reformat an amex pan that has correctly formatted - two groups`() {
+        val pan = panFormatter.format("5151 012393", AMEX_BRAND)
+
+        assertEquals("5151 012393", pan)
+    }
+
+    @Test
+    fun `should not reformat an amex pan that has correctly formatted - three groups`() {
+        val pan = panFormatter.format("5151 012393 4", AMEX_BRAND)
+
+        assertEquals("5151 012393 4", pan)
+    }
+
+    @Test
+    fun `should not reformat an amex pan that has correctly formatted - less than 10 digits`() {
+        val pan = panFormatter.format("5151 01239", AMEX_BRAND)
+
+        assertEquals("5151 01239", pan)
+    }
+
+    @Test
     fun `should reformat a pan that has 5 digits`() {
         val pan = panFormatter.format("51501", VISA_BRAND)
 
