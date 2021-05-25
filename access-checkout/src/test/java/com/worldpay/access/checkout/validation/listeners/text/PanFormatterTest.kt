@@ -64,13 +64,6 @@ class PanFormatterTest {
     }
 
     @Test
-    fun `should reformat an amex pan that has been incorrectly formatted - too many groups`() {
-        val pan = panFormatter.format("5151 0123 9333 333", AMEX_BRAND)
-
-        assertEquals("5151 012393 33333", pan)
-    }
-
-    @Test
     fun `should reformat a pan that has 5 digits`() {
         val pan = panFormatter.format("51501", VISA_BRAND)
 
