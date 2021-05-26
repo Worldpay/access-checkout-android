@@ -47,6 +47,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
     @Test
     fun shouldBeAbleToProcessSingleSessionAfterPreviousMultiSessionRequestFailed() {
         val unknownCardError = "7687655651111111113"
+        val unknownCardErrorFormatted = "7687 6556 5111 1111 113"
         simulateErrorResponse(unknownCardError)
 
         // failing scenario with payments cvc session
@@ -60,7 +61,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
                 "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             )
             .closeDialog()
-            .isInErrorState(pan = unknownCardError, cvc = amexCvc, expiryDate = "12/99")
+            .isInErrorState(pan = unknownCardErrorFormatted, cvc = amexCvc, expiryDate = "12/99")
             .paymentsCvcSessionCheckedState(checked = true)
 
         // passing scenario with single session
@@ -93,6 +94,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
     @Test
     fun shouldKeepFieldValuesUponIncorrectSubmission() {
         val unknownCardError = "7687655651111111113"
+        val unknownCardErrorFormatted = "7687 6556 5111 1111 113"
         simulateErrorResponse(unknownCardError)
 
         cardFragmentTestUtils
@@ -104,12 +106,13 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
                 "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             )
             .closeDialog()
-            .isInErrorState(pan = unknownCardError, cvc = amexCvc, expiryDate = "12/99")
+            .isInErrorState(pan = unknownCardErrorFormatted, cvc = amexCvc, expiryDate = "12/99")
     }
 
     @Test
     fun shouldKeepFieldValuesUponIncorrectSubmission_withToggleOn() {
         val unknownCardError = "7687655651111111113"
+        val unknownCardErrorFormatted = "7687 6556 5111 1111 113"
         simulateErrorResponse(unknownCardError)
 
         cardFragmentTestUtils
@@ -122,7 +125,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
                 "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             )
             .closeDialog()
-            .isInErrorState(pan = unknownCardError, cvc = amexCvc, expiryDate = "12/99")
+            .isInErrorState(pan = unknownCardErrorFormatted, cvc = amexCvc, expiryDate = "12/99")
             .paymentsCvcSessionCheckedState(checked = true)
     }
 
@@ -172,7 +175,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .enterCardDetails(pan = "4111111111111111", cvc = "123", expiryDate = "1140")
-            .cardDetailsAre(pan = "4111111111111111", cvc = "123", expiryDate = "11/40")
+            .cardDetailsAre(pan = "4111 1111 1111 1111", cvc = "123", expiryDate = "11/40")
             .hasBrand(CardBrand.VISA)
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)

@@ -27,7 +27,9 @@ class CardConfigurationLongDelayIntegrationTest {
     private lateinit var cardFragmentTestUtils: CardFragmentTestUtils
 
     private val luhnValidMastercardCard = "5555555555554444"
+    private val luhnValidMastercardCardWithSpaces = "5555 5555 5555 4444"
     private val luhnInvalidMastercardCard = "55555555555111"
+    private val luhnInvalidMastercardCardWithSpaces = "5555 5555 5551 11"
 
     @Before
     fun setup() {
@@ -63,7 +65,7 @@ class CardConfigurationLongDelayIntegrationTest {
 
         // Assert that with now configuration has come back that the CVC is invalid for mastercard
         cardFragmentTestUtils
-            .cardDetailsAre(pan = luhnInvalidMastercardCard, cvc = "123", expiryDate = "01/99")
+            .cardDetailsAre(pan = luhnInvalidMastercardCardWithSpaces, cvc = "123", expiryDate = "01/99")
             .validationStateIs(pan = false, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = false)
 

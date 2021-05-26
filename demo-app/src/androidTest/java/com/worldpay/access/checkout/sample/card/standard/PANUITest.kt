@@ -19,6 +19,7 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_L
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.JCB_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MAESTRO_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN_WITH_SPACES
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_AMEX
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_MASTERCARD
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_UNKNOWN_LUHN
@@ -261,7 +262,7 @@ class PANUITest: AbstractCardFragmentTest() {
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("4"), pressImeActionButton())
-            .check(matches(withText(MASTERCARD_PAN)))
+            .check(matches(withText(MASTERCARD_PAN_WITH_SPACES)))
     }
 
     @Test
@@ -275,7 +276,7 @@ class PANUITest: AbstractCardFragmentTest() {
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("4"), closeSoftKeyboard())
-            .check(matches(withText(AMEX_PAN)))
+            .check(matches(withText(AMEX_PAN_WITH_SPACES)))
     }
 
     @Test
@@ -289,7 +290,7 @@ class PANUITest: AbstractCardFragmentTest() {
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("0"), closeSoftKeyboard())
-            .check(matches(withText(VALID_UNKNOWN_LUHN)))
+            .check(matches(withText(VALID_UNKNOWN_LUHN_WITH_SPACES)))
     }
 
     @Test
@@ -365,7 +366,7 @@ class PANUITest: AbstractCardFragmentTest() {
 
         cardFragmentTestUtils
             .cardDetailsAre(pan = "3716 7877")
-            .cursorPositionIs(4)
+            .cursorPositionIs(3)
     }
 
     @Test
