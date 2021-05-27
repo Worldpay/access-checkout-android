@@ -222,15 +222,16 @@ workflows:
             - test_type: instrumentation
             - test_apk_path: "$BITRISE_TEST_APK"
             - test_devices: |-
-                Nexus6,21,en,portrait
-                Nexus6,22,en,portrait
-                Nexus6,23,en,portrait
-                Nexus6,24,en,portrait
-                Nexus6,25,en,portrait
+                NexusS,21,en,portrait
+                NexusS,22,en,portrait
+                NexusS,23,en,portrait
+                NexusS,24,en,portrait
+                NexusS,25,en,portrait
                 Pixel2,26,en,portrait
                 Pixel2,27,en,portrait
                 Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
+                Pixel2,30,en,portrait
       - cache-push@2.3.0: {}
 
 app:
