@@ -29,7 +29,7 @@ internal class PanTextWatcher(
     private var cardBrand: RemoteCardBrand? = null
 
     override fun afterTextChanged(pan: Editable?) {
-        val cursorPosition = panEditText.selectionEnd
+        val originalCursorPosition = panEditText.selectionEnd
         val panText = pan.toString()
         val newCardBrand = findBrandForPan(panText)
 
@@ -45,7 +45,8 @@ internal class PanTextWatcher(
 
         panValidationResultHandler.handleResult(isValid, forceNotify)
         if (formattedPan != panText) {
-            updatePanText(formattedPan, panText, cursorPosition)
+            setText(formattedPan)
+            setCursorPosition(panText, originalCursorPosition, formattedPan)
         }
     }
 
@@ -67,15 +68,6 @@ internal class PanTextWatcher(
     private fun updateCvcValidationRule() {
         val cardValidationRule = getCvcValidationRule(cardBrand)
         cvcValidationRuleManager.updateRule(cardValidationRule)
-    }
-
-    private fun updatePanText(
-        formattedPan: String,
-        panText: String,
-        originalCursorPosition: Int
-    ) {
-        setText(formattedPan)
-        setCursorPosition(panText, originalCursorPosition, formattedPan)
     }
 
     private fun setCursorPosition(

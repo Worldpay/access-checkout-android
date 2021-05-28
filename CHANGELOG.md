@@ -8,7 +8,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 - Ability to disable Pan formatting by calling `disablePanFormatting()` when building `CardValidationConfig`
 
 #### Changed
-- All Pans that are entered will be formatted by default. All card brands except for Amex will be formatted as `XXXX-XXXX-XXXX-XXXX`. Amex will be formatted as `XXXX-XXXXX-XXXXXX`.
+- All Pans that are entered will be formatted by default. All card brands except for Amex will be formatted as `XXXX-XXXX-XXXX-XXXX`. Amex will be formatted as `XXXX-XXXXXX-XXXXX`.
 
 ### [v2.1.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.1.0) - 2020-03-15
 #### Added

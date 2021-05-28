@@ -62,8 +62,8 @@ class PanLengthFilterTest {
         val pan = EditText(context)
         pan.filters += PanLengthFilter(false)
 
-        pan.setText("3427 93178 931249")
-        assertEquals("3427 93178 931249", pan.text.toString())
+        pan.setText("3427 931789 31249")
+        assertEquals("3427 931789 31249", pan.text.toString())
     }
 
 }
