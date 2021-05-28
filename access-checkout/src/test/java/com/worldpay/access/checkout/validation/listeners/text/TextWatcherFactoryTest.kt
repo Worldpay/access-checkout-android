@@ -13,6 +13,7 @@ class TextWatcherFactoryTest {
     private val resultHandlerFactory = mock<ResultHandlerFactory>()
 
     private val cvcEditText = mock<EditText>()
+    private val panEditText = mock<EditText>()
     private val expiryDateEditText = mock<EditText>()
 
     private lateinit var textWatcherFactory: TextWatcherFactory
@@ -28,7 +29,12 @@ class TextWatcherFactoryTest {
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
 
-        val textWatcher : PanTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText, emptyArray())
+        val textWatcher : PanTextWatcher = textWatcherFactory.createPanTextWatcher(
+            panEditText = panEditText,
+            cvcEditText = cvcEditText,
+            acceptedCardBrands = emptyArray(),
+            disablePanFormatting = false
+        )
         assertNotNull(textWatcher)
     }
 

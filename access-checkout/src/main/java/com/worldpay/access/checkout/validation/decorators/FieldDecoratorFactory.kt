@@ -23,12 +23,18 @@ internal class FieldDecoratorFactory(
     fun getPanDecorator(
         panEditText: EditText,
         cvcEditText: EditText,
-        acceptedCardBrands: Array<String>
+        acceptedCardBrands: Array<String>,
+        disablePanFormatting: Boolean
     ) : PanFieldDecorator {
         return PanFieldDecorator(
-            panTextWatcher = textWatcherFactory.createPanTextWatcher(cvcEditText, acceptedCardBrands),
+            panTextWatcher = textWatcherFactory.createPanTextWatcher(
+                panEditText,
+                cvcEditText,
+                acceptedCardBrands,
+                disablePanFormatting
+            ),
             panFocusChangeListener = focusChangeListenerFactory.createPanFocusChangeListener(),
-            panLengthFilter = lengthFilterFactory.getPanLengthFilter(),
+            panLengthFilter = lengthFilterFactory.getPanLengthFilter(disablePanFormatting),
             panEditText = panEditText
         )
     }

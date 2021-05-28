@@ -27,7 +27,8 @@ internal object ValidationUtil {
 
     fun findBrandForPan(pan: String) : RemoteCardBrand? {
         for (brand in getCardConfiguration().brands) {
-            if (brand.pan.matcher.toPattern().matcher(pan).find()) {
+            val unformattedPan = pan.replace("\\s+".toRegex(), "")
+            if (brand.pan.matcher.toPattern().matcher(unformattedPan).find()) {
                 return brand
             }
         }

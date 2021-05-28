@@ -5,6 +5,8 @@ import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.github.tomakehurst.wiremock.matching.AnythingPattern
+import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
+import com.github.tomakehurst.wiremock.matching.StringValuePattern
 import com.worldpay.access.checkout.sample.MockServer.Paths.VERIFIED_TOKENS_ROOT_PATH
 import com.worldpay.access.checkout.sample.MockServer.Paths.VERIFIED_TOKENS_SESSIONS_PATH
 import com.worldpay.access.checkout.sample.MockServer.getBaseUrl
@@ -23,7 +25,7 @@ object VerifiedTokenMockStub {
                 .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
                 .withHeader("X-WP-SDK", matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$"))
-                .withRequestBody(AnythingPattern())
+                .withRequestBody(MatchesJsonPathPattern("cardNumber", matching("^[\\d]+$")))
                 .willReturn(validResponseWithDelay(context, 2000))
         )
     }

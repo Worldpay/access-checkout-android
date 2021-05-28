@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,7 +18,8 @@ class PanLengthFilterTest {
 
     @Before
     fun setup() {
-        pan.filters += PanLengthFilter()
+        mockSuccessfulCardConfiguration()
+        pan.filters += PanLengthFilter(true)
     }
 
     @Test
@@ -44,6 +46,24 @@ class PanLengthFilterTest {
         // mastercard
         pan.setText("529212345678901234567890")
         assertEquals("5292123456789012", pan.text.toString())
+    }
+
+    @Test
+    fun `should allow for spaces in length when formatting is enabled - 19 digits`() {
+        val pan = EditText(context)
+        pan.filters += PanLengthFilter(false)
+
+        pan.setText("4111 1111 1111 1111 111")
+        assertEquals("4111 1111 1111 1111 111", pan.text.toString())
+    }
+
+    @Test
+    fun `should allow for only 2 spaces in length when formatting is enabled - amex brand`() {
+        val pan = EditText(context)
+        pan.filters += PanLengthFilter(false)
+
+        pan.setText("3427 931789 31249")
+        assertEquals("3427 931789 31249", pan.text.toString())
     }
 
 }

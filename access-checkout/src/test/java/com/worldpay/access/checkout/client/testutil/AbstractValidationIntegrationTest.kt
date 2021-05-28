@@ -51,6 +51,8 @@ open class AbstractValidationIntegrationTest {
         cvc = EditText(context)
         cvc.id = 3
 
+        reset(lifecycle, lifecycleOwner)
+
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
 
         HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())

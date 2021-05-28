@@ -13,6 +13,8 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
+import org.eclipse.jetty.io.AbstractEndPoint
+import java.text.FieldPosition
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -138,6 +140,16 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
             cardDetailsAre(pan, cvc, expiryDate)
         }
 
+        return this
+    }
+
+    fun setCursorPositionOnPan(position: Int): CardFragmentTestUtils {
+        setCursorPosition(panInput(), position, position)
+        return this
+    }
+
+    fun cursorPositionIs(position: Int): CardFragmentTestUtils {
+        assertEquals(position, panInput().selectionEnd)
         return this
     }
 

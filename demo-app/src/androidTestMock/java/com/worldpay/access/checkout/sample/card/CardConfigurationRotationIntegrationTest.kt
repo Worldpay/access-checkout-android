@@ -11,6 +11,7 @@ import org.junit.Test
 class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
 
     private val luhnValidMastercardCard = "5555555555554444"
+    private val luhnValidMastercardCardWithSpaces = "5555 5555 5555 4444"
     private val luhnInvalidMastercardCard = "55555555555111"
     private val unknownCvc = "12"
 
@@ -34,7 +35,7 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .hasBrand(MASTERCARD)
             .enabledStateIs(submitButton = false)
             .enterCardDetails(pan = luhnValidMastercardCard, cvc = "123", expiryDate = "1299")
-            .cardDetailsAre(pan = luhnValidMastercardCard, cvc = "123", expiryDate = "12/99")
+            .cardDetailsAre(pan = luhnValidMastercardCardWithSpaces, cvc = "123", expiryDate = "12/99")
             .hasBrand(MASTERCARD)
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)

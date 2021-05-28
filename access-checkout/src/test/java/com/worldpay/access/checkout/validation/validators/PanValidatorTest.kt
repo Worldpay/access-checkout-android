@@ -44,6 +44,11 @@ class PanValidatorTest {
     }
 
     @Test
+    fun `should return VALID if known pan is valid length and valid luhn and is formatted`() {
+        assertEquals(VALID, panValidator.validate("4111 1111 1111 1111", VISA_BRAND.pan, VISA_BRAND))
+    }
+
+    @Test
     fun `should return CARD_BRAND_NOT_ACCEPTED if the pan is not one of the accepted card brands`() {
         val panValidator = PanValidator(arrayOf("MASTERCARD"))
         assertEquals(CARD_BRAND_NOT_ACCEPTED, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))

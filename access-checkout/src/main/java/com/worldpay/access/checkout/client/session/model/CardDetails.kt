@@ -29,7 +29,7 @@ class CardDetails private constructor(
          *
          * @param[pan] [String] that represents the pan number
          */
-        fun pan(pan: String) = apply { this.pan = pan }
+        fun pan(pan: String) = apply { this.pan = pan.replace("\\s+".toRegex(), "") }
 
         /**
          * Sets the expiry date for the card
