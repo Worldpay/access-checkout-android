@@ -72,7 +72,7 @@ open class AbstractValidationIntegrationTest {
         HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory)
     }
 
-    protected fun initialiseWithoutAcceptedCardBrands() {
+    protected fun initialiseWithoutAcceptedCardBrands(disablePanFormatting: Boolean = false) {
         val url = server.url(cardConfigurationEndpoint)
         val baseUrl = "${url.scheme}://${url.host}:${url.port}/"
 
@@ -83,10 +83,13 @@ open class AbstractValidationIntegrationTest {
             .validationListener(cardValidationListener)
             .baseUrl(baseUrl)
             .lifecycleOwner(lifecycleOwner)
-            .build()
+
+        if (disablePanFormatting) {
+            cardValidationConfig.disablePanFormatting()
+        }
 
         AccessCheckoutValidationInitialiser.initialise(
-            cardValidationConfig
+            cardValidationConfig.build()
         )
     }
 

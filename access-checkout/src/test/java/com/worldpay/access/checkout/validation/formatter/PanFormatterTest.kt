@@ -1,10 +1,9 @@
-package com.worldpay.access.checkout.validation.listeners.text
+package com.worldpay.access.checkout.validation.formatter
 
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import org.junit.Test
 import kotlin.test.assertEquals
 
