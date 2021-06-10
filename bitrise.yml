@@ -150,14 +150,14 @@ workflows:
         title: "Generate javadoc documentation"
         inputs:
         - gradlew_path: "gradlew"
-        - gradle_task: dokka
+        - gradle_task: dokkaJavadoc
         - gradle_file: "$LIBRARY_MODULE/build.gradle"
     - deploy-to-bitrise-io@1.11.1:
         title: "Export javadoc to Bitrise"
         inputs:
         - is_compress: 'true'
         - zip_name: javadoc
-        - deploy_path: "$LIBRARY_MODULE/build/javadoc"
+        - deploy_path: "$LIBRARY_MODULE/build/dokka/javadoc"
     - android-build@0.10.3:
         title: "Build test APK"
         inputs:
