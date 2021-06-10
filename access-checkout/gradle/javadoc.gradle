@@ -1,19 +1,17 @@
 apply plugin: 'org.jetbrains.dokka'
 
-dokka {
-    outputFormat = 'javadoc'
-    outputDirectory = "$buildDir/javadoc"
-
-    configuration {
-        // Use to include or exclude non public members.
-        includeNonPublic = false
-
-        // Do not create index pages for empty packages
-        skipEmptyPackages = true
+dokkaJavadoc.configure {
+    dokkaSourceSets {
+        named("main") {
+            noAndroidSdkLink.set(false)
+            outputDirectory.set(buildDir.resolve("javadoc"))
+            skipEmptyPackages.set(true)
+            includeNonPublic.set(false)
+        }
     }
 }
 
-task javadocJar(type: Jar, dependsOn: dokka) {
+task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
     classifier "javadoc"
     from "$buildDir/javadoc"
     appendix "android"
