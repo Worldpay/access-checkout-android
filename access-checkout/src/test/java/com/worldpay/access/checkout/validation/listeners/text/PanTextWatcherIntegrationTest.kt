@@ -208,7 +208,7 @@ class PanTextWatcherIntegrationTest {
         val panTextWatcher = PanTextWatcher(
             panEditText = pan,
             panValidator = PanValidator(arrayOf("MASTERCARD")),
-            panFormatter = PanFormatter(false),
+            panFormatter = PanFormatter(true),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
@@ -233,7 +233,7 @@ class PanTextWatcherIntegrationTest {
         val panTextWatcher = PanTextWatcher(
             panEditText = pan,
             panValidator = PanValidator(arrayOf("MASTERCARD")),
-            panFormatter = PanFormatter(true),
+            panFormatter = PanFormatter(false),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,

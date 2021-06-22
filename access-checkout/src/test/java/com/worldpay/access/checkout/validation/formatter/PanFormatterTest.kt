@@ -9,11 +9,11 @@ import kotlin.test.assertEquals
 
 class PanFormatterTest {
     
-    private val panFormatter = PanFormatter(false)
+    private val panFormatter = PanFormatter(true)
 
     @Test
     fun `should not do any formatting when formatting is disabled`() {
-        val panFormatter = PanFormatter(true)
+        val panFormatter = PanFormatter(false)
 
         val pan = panFormatter.format(VISA_PAN, VISA_BRAND)
 

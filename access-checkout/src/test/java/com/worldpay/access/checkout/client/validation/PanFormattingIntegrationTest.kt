@@ -11,7 +11,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should be formatting pan with a space between every 4 digits - visa`() {
-        initialiseWithoutAcceptedCardBrands()
+        initialiseWithoutAcceptedCardBrands(enablePanFormatting = true)
 
         pan.setText("4111111111111111")
 
@@ -20,7 +20,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should be formatting pan with a space between after 4, 6 and 5 digits`() {
-        initialiseWithoutAcceptedCardBrands()
+        initialiseWithoutAcceptedCardBrands(enablePanFormatting = true)
 
         pan.setText("342793178931249")
 
@@ -29,7 +29,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should not be formatting pan when formatting is disabled`() {
-        initialiseWithoutAcceptedCardBrands(disablePanFormatting = true)
+        initialiseWithoutAcceptedCardBrands(enablePanFormatting = false)
 
         pan.setText("4111111111111111")
 

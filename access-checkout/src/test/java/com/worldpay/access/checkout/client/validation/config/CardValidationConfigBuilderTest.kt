@@ -158,7 +158,7 @@ class CardValidationConfigBuilderTest {
     }
 
     @Test
-    fun `should be able to call disable pan number formatting`() {
+    fun `should be able to call enable pan number formatting`() {
         val config = CardValidationConfig.Builder()
             .baseUrl(baseUrl)
             .pan(pan)
@@ -167,7 +167,7 @@ class CardValidationConfigBuilderTest {
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
-            .disablePanFormatting()
+            .enablePanFormatting()
             .build()
 
         assertNotNull(config)
@@ -177,7 +177,7 @@ class CardValidationConfigBuilderTest {
         assertEquals(cvc, config.cvc)
         assertEquals(acceptedCardBrands, config.acceptedCardBrands)
         assertEquals(validationListener, config.validationListener)
-        assertTrue(config.disablePanFormatting)
+        assertTrue(config.enablePanFormatting)
     }
 
 }

@@ -1,7 +1,5 @@
 package com.worldpay.access.checkout.sample.card.standard
 
-import android.inputmethodservice.Keyboard.KEYCODE_DELETE
-import android.view.KeyEvent
 import android.view.KeyEvent.KEYCODE_DEL
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.*
@@ -12,22 +10,21 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.AMEX_PAN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.AMEX_PAN_WITH_SPACES
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.AMEX_PAN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.DINERS_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.DISCOVER_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.JCB_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MAESTRO_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN_WITH_SPACES
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_AMEX
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_MASTERCARD
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN_WITH_SPACES
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN_WITH_SPACES
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.*
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
@@ -262,7 +259,7 @@ class PANUITest: AbstractCardFragmentTest() {
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("4"), pressImeActionButton())
-            .check(matches(withText(MASTERCARD_PAN_WITH_SPACES)))
+            .check(matches(withText(MASTERCARD_PAN_FORMATTED)))
     }
 
     @Test
@@ -276,7 +273,7 @@ class PANUITest: AbstractCardFragmentTest() {
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("4"), closeSoftKeyboard())
-            .check(matches(withText(AMEX_PAN_WITH_SPACES)))
+            .check(matches(withText(AMEX_PAN_FORMATTED)))
     }
 
     @Test
@@ -290,7 +287,7 @@ class PANUITest: AbstractCardFragmentTest() {
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(typeTextIntoFocusedView("0"), closeSoftKeyboard())
-            .check(matches(withText(VALID_UNKNOWN_LUHN_WITH_SPACES)))
+            .check(matches(withText(VALID_UNKNOWN_LUHN_FORMATTED)))
     }
 
     @Test
@@ -303,7 +300,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .cardDetailsAre(pan = "4111 1")
             .enterCardDetails(pan = VISA_PAN)
             .validationStateIs(pan = true)
-            .cardDetailsAre(pan = VISA_PAN_WITH_SPACES)
+            .cardDetailsAre(pan = "4111 1111 1111 1111")
     }
 
     @Test
@@ -317,7 +314,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .enterCardDetails(pan = VALID_UNKNOWN_LUHN)
             .validationStateIs(pan = true)
             .hasNoBrand()
-            .cardDetailsAre(pan = VALID_UNKNOWN_LUHN_WITH_SPACES)
+            .cardDetailsAre(pan = VALID_UNKNOWN_LUHN_FORMATTED)
     }
 
     @Test
@@ -330,7 +327,7 @@ class PANUITest: AbstractCardFragmentTest() {
             .cardDetailsAre(pan = "3717 8")
             .enterCardDetails(pan = AMEX_PAN)
             .validationStateIs(pan = true)
-            .cardDetailsAre(pan = AMEX_PAN_WITH_SPACES)
+            .cardDetailsAre(pan = AMEX_PAN_FORMATTED)
     }
 
     @Test

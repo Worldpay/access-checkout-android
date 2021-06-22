@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValida
 import kotlin.math.ceil
 
 internal class PanLengthFilter(
-    private val disablePanFormatting: Boolean
+    private val enablePanFormatting: Boolean
 ) : AbstractVariableLengthFilter() {
 
     private val spacesAfterEveryXChars = 4.0
@@ -19,7 +19,7 @@ internal class PanLengthFilter(
         val maxLength = ValidationUtil.getMaxLength(cardValidationRule)
         var numberOfSpaces = 0
 
-        if (!disablePanFormatting) {
+        if (enablePanFormatting) {
             numberOfSpaces = if (isAmex(cardBrand)) {
                 2
             } else {

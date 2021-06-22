@@ -25,7 +25,7 @@ class CardValidationConfig private constructor(
     val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener,
     val lifecycleOwner : LifecycleOwner,
-    val disablePanFormatting: Boolean
+    val enablePanFormatting: Boolean
 ) : ValidationConfig {
 
     class Builder {
@@ -37,7 +37,7 @@ class CardValidationConfig private constructor(
         private var baseUrl: String? = null
         private var validationListener: AccessCheckoutCardValidationListener? = null
         private var lifecycleOwner: LifecycleOwner? = null
-        private var disablePanFormatting: Boolean = false
+        private var enablePanFormatting: Boolean = false
 
         /**
          * Sets the pan ui element
@@ -110,10 +110,10 @@ class CardValidationConfig private constructor(
         }
 
         /**
-         * Disables the pan formatting on the view
+         * Enables the pan formatting on the view
          */
-        fun disablePanFormatting(): Builder {
-            this.disablePanFormatting = true
+        fun enablePanFormatting(): Builder {
+            this.enablePanFormatting = true
             return this
         }
 
@@ -139,7 +139,7 @@ class CardValidationConfig private constructor(
                 baseUrl = baseUrl as String,
                 validationListener = validationListener as AccessCheckoutCardValidationListener,
                 lifecycleOwner = lifecycleOwner as LifecycleOwner,
-                disablePanFormatting = disablePanFormatting
+                enablePanFormatting = enablePanFormatting
             )
         }
 

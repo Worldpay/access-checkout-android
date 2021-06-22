@@ -8,8 +8,8 @@ internal class LengthFilterFactory {
         return CvcLengthFilter(panEditText)
     }
 
-    fun getPanLengthFilter(disablePanFormatting: Boolean): PanLengthFilter {
-        return PanLengthFilter(disablePanFormatting)
+    fun getPanLengthFilter(enablePanFormatting: Boolean): PanLengthFilter {
+        return PanLengthFilter(enablePanFormatting)
     }
 
     fun getExpiryDateLengthFilter() : ExpiryDateLengthFilter {

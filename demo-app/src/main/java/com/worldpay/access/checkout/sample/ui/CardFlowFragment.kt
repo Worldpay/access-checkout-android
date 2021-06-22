@@ -126,6 +126,7 @@ class CardFlowFragment : Fragment() {
             .cvc(cvcText)
             .validationListener(cardValidationListener)
             .lifecycleOwner(this)
+            .enablePanFormatting()
             .build()
 
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)

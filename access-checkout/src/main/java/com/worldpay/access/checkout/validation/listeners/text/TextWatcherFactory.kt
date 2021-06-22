@@ -19,12 +19,12 @@ internal class TextWatcherFactory(
         panEditText: EditText,
         cvcEditText: EditText,
         acceptedCardBrands: Array<String>,
-        disablePanFormatting: Boolean
+        enablePanFormatting: Boolean
     ): PanTextWatcher {
         return PanTextWatcher(
             panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),
-            panFormatter = PanFormatter(disablePanFormatting),
+            panFormatter = PanFormatter(enablePanFormatting),
             cvcValidator = CvcValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
             cvcEditText =  cvcEditText,
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),

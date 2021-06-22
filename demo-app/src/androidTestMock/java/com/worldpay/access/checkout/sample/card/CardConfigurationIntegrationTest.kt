@@ -4,6 +4,10 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN_FORMATTED
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.simulateCardConfigurationServerError
 import org.junit.Before
@@ -11,11 +15,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class CardConfigurationIntegrationTest {
-
-    private val luhnValidUnknownCard = "8888888888888888"
-    private val luhnValidUnknownCardWithSpaces = "8888 8888 8888 8888"
-    private val luhnValidMastercardCard = "5555555555554444"
-    private val luhnValidMastercardCardWithSpaces = "5555 5555 5555 4444"
 
     @get:Rule
     var cardConfigurationErrorRule: CardConfigurationErrorRule = CardConfigurationErrorRule(MainActivity::class.java)
@@ -30,8 +29,8 @@ class CardConfigurationIntegrationTest {
     @Test
     fun givenCardConfigCallFails_validKnownBrandCardDetails_returnsSuccessfulResponse() {
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "1234", expiryDate = "1299")
-            .cardDetailsAre(pan = luhnValidMastercardCardWithSpaces, cvc = "1234", expiryDate = "12/99")
+            .enterCardDetails(pan = MASTERCARD_PAN, cvc = "1234", expiryDate = "1299")
+            .cardDetailsAre(pan = MASTERCARD_PAN_FORMATTED, cvc = "1234", expiryDate = "12/99")
             .hasNoBrand()
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
@@ -45,8 +44,8 @@ class CardConfigurationIntegrationTest {
     @Test
     fun givenCardConfigCallFails_validUnknownBrandCardDetails_returnsSuccessfulResponse() {
         cardFragmentTestUtils
-            .enterCardDetails(pan = luhnValidUnknownCard, cvc = "1234", expiryDate = "1299")
-            .cardDetailsAre(pan = luhnValidUnknownCardWithSpaces, cvc = "1234", expiryDate = "12/99")
+            .enterCardDetails(pan = VALID_UNKNOWN_LUHN, cvc = "1234", expiryDate = "1299")
+            .cardDetailsAre(pan = VALID_UNKNOWN_LUHN_FORMATTED, cvc = "1234", expiryDate = "12/99")
             .hasNoBrand()
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)

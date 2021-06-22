@@ -33,7 +33,7 @@ class TextWatcherFactoryTest {
             panEditText = panEditText,
             cvcEditText = cvcEditText,
             acceptedCardBrands = emptyArray(),
-            disablePanFormatting = false
+            enablePanFormatting = false
         )
         assertNotNull(textWatcher)
     }
