@@ -24,7 +24,9 @@ object BrandLogoMockStub {
                                     context,
                                     it
                                 )
-                            )))
+                            )
+                    )
+            )
         }
     }
 
@@ -36,5 +38,4 @@ object BrandLogoMockStub {
             throw RuntimeException(e)
         }
     }
-
 }

@@ -1,6 +1,10 @@
 package com.worldpay.access.checkout.client.validation
 
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.reset
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DINERS_BRAND
@@ -204,5 +208,4 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         verify(cardValidationListener).onPanValidated(false)
         verify(cardValidationListener).onBrandChange(toCardBrand(DINERS_BRAND))
     }
-
 }

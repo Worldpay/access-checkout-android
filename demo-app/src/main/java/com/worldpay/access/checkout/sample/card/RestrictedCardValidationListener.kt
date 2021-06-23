@@ -21,7 +21,7 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
         changeFont(pan, isValid)
     }
 
-    override fun onBrandChange(cardBrand : CardBrand?) {
+    override fun onBrandChange(cardBrand: CardBrand?) {
         val brandLogo = activity.findViewById<ImageView>(R.id.restricted_card_flow_brand_logo)
         getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
     }
@@ -37,5 +37,4 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
             editText.setTextColor(invalidColor)
         }
     }
-
 }

@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules
 import java.lang.Integer.parseInt
-import java.util.*
+import java.util.Calendar
 
 internal class ExpiryDateValidator(private val now: Calendar = Calendar.getInstance()) {
 
@@ -10,7 +10,7 @@ internal class ExpiryDateValidator(private val now: Calendar = Calendar.getInsta
 
     private val simpleValidator = SimpleValidator()
 
-    fun validate(expiryDate: String) : Boolean {
+    fun validate(expiryDate: String): Boolean {
         if (!expiryDate.contains("/")) {
             return false
         }
@@ -49,5 +49,4 @@ internal class ExpiryDateValidator(private val now: Calendar = Calendar.getInsta
     private fun getYearPrefix(calendar: Calendar) = getYear(calendar).toString().substring(0, 2)
 
     private fun getYear(calendar: Calendar) = calendar.get(Calendar.YEAR)
-
 }

@@ -3,7 +3,11 @@ package com.worldpay.access.checkout.sample.card
 import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.containing
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
+import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.client.session.model.SessionType.CVC
@@ -196,7 +200,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
                 .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
-                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${pan}')]"))
+                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='$pan')]"))
                 .willReturn(validResponseWithDelay(context, delay))
         )
     }
@@ -206,7 +210,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
                 .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
-                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='${pan}')]"))
+                .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='$pan')]"))
                 .willReturn(
                     aResponse()
                         .withFixedDelay(2000)
@@ -222,10 +226,10 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
                                         "jsonPath": "$.cardNumber"
                                     }
                                 ]
-                            }""".trimIndent()
+                            }
+                            """.trimIndent()
                         )
                 )
         )
     }
-
 }

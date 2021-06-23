@@ -25,7 +25,7 @@ class CvcFlowFragment : Fragment() {
     private lateinit var submitBtn: SubmitButton
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var cvcValidationListener : CvcValidationListener
+    private lateinit var cvcValidationListener: CvcValidationListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -48,7 +48,6 @@ class CvcFlowFragment : Fragment() {
 
             initialisePaymentFlow(activity, view)
         }
-
     }
 
     override fun onResume() {
@@ -61,7 +60,7 @@ class CvcFlowFragment : Fragment() {
         }
     }
 
-    private fun initialisePaymentFlow(activity : FragmentActivity, view : View) {
+    private fun initialisePaymentFlow(activity: FragmentActivity, view: View) {
         val accessCheckoutClient = AccessCheckoutClientBuilder()
             .baseUrl(getBaseUrl())
             .merchantId(getMerchantID())

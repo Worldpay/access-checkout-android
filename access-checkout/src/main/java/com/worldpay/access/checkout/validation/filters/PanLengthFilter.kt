@@ -33,5 +33,4 @@ internal class PanLengthFilter(
 
     private fun isAmex(cardBrand: RemoteCardBrand?) =
         cardBrand != null && cardBrand.name.equals("amex", true)
-
 }

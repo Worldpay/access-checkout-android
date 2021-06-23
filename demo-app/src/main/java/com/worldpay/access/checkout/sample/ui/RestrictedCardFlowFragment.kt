@@ -22,7 +22,7 @@ class RestrictedCardFlowFragment : Fragment() {
     private lateinit var expiryText: EditText
     private lateinit var progressBar: ProgressBar
 
-    private lateinit var cardValidationListener : AccessCheckoutCardValidationListener
+    private lateinit var cardValidationListener: AccessCheckoutCardValidationListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -58,7 +58,9 @@ class RestrictedCardFlowFragment : Fragment() {
         }
     }
 
-    private fun initialiseCardValidation(cardValidationListener : AccessCheckoutCardValidationListener) {
+    private fun initialiseCardValidation(
+        cardValidationListener: AccessCheckoutCardValidationListener
+    ) {
         val cardValidationConfig = CardValidationConfig.Builder()
             .baseUrl(getBaseUrl())
             .pan(panText)
@@ -75,5 +77,4 @@ class RestrictedCardFlowFragment : Fragment() {
     private fun getMerchantID() = BuildConfig.MERCHANT_ID
 
     private fun getBaseUrl() = getString(R.string.endpoint)
-
 }

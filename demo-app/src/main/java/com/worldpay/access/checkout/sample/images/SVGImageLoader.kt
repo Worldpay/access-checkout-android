@@ -9,9 +9,14 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory
 import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory.Companion.X509_TRUST_MANAGER
 import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
-import okhttp3.*
 import java.io.File
 import java.io.IOException
+import okhttp3.Cache
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Request
+import okhttp3.Response
 
 /**
  * This class is responsible for fetching a remote SVG file and applying it to a target view
@@ -122,5 +127,4 @@ class SVGImageLoader @JvmOverloads constructor(
         val resourceEntryName = target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
         target.setTag(R.integer.card_tag, resourceEntryName)
     }
-
 }

@@ -8,5 +8,4 @@ internal class ExpiryDateLengthFilter : AbstractVariableLengthFilter() {
     override fun getMaxLength(source: CharSequence?): Int {
         return ValidationUtil.getMaxLength(getCardConfiguration().defaults.expiryDate)
     }
-
 }

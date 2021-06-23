@@ -49,17 +49,17 @@ class DelayedCardConfigurationCvcIntegrationTest {
             .enabledStateIs(submitButton = false)
     }
 
-class DelayedCardConfigurationRule(private val timeoutMillis: Long,
-                                     activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
+    class DelayedCardConfigurationRule(
+        private val timeoutMillis: Long,
+        activityClass: Class<MainActivity>
+    ) : ActivityTestRule<MainActivity>(activityClass) {
 
-    override fun beforeActivityLaunched() {
-        super.beforeActivityLaunched()
-        // This card configuration rule adds stubs to mockserver to simulate a long delay condition on the card configuration endpoint.
-        // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this delayed
-        // response.
-        stubCardConfigurationWithDelay(timeoutMillis.toInt())
+        override fun beforeActivityLaunched() {
+            super.beforeActivityLaunched()
+            // This card configuration rule adds stubs to mockserver to simulate a long delay condition on the card configuration endpoint.
+            // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this delayed
+            // response.
+            stubCardConfigurationWithDelay(timeoutMillis.toInt())
+        }
     }
-
-    }
-
 }

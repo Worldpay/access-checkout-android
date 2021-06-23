@@ -8,5 +8,4 @@ internal class SessionBroadcastManagerFactory(
 ) {
 
     fun createInstance(): SessionBroadcastManager = SessionBroadcastManager(localBroadcastManagerFactory, externalSessionResponseListener)
-
 }

@@ -56,5 +56,4 @@ class SessionResponseListenerImpl(
         Log.d(javaClass.simpleName, "Setting enabled state for cvc to : true")
         activity.findViewById<TextView>(R.id.cvc_flow_text_cvc).isEnabled = true
     }
-
 }

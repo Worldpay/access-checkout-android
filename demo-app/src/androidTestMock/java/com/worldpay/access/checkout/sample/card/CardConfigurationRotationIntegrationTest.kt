@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Test
 
-class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
+class CardConfigurationRotationIntegrationTest : AbstractCardFragmentTest() {
 
     private val luhnInvalidMastercardCard = "55555555555111"
     private val unknownCvc = "12"
@@ -61,5 +61,4 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
     }
-
 }

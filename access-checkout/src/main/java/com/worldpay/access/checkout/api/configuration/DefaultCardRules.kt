@@ -42,5 +42,4 @@ internal object DefaultCardRules {
             YEAR_DEFAULTS,
             EXPIRY_DATE_DEFAULTS
         )
-
 }

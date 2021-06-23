@@ -12,14 +12,16 @@ import com.worldpay.access.checkout.sample.R
 object CardConfigurationMockStub {
 
     fun stubCardConfiguration(context: Context) {
-        stubFor(get("/$CARD_CONFIGURATION_PATH")
-            .willReturn(
-                aResponse()
-                    .withStatus(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(context.resources.openRawResource(R.raw.card_types).reader(Charsets.UTF_8).readText())
-                    .withTransformers(ResponseTemplateTransformer.NAME)
-            ))
+        stubFor(
+            get("/$CARD_CONFIGURATION_PATH")
+                .willReturn(
+                    aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(context.resources.openRawResource(R.raw.card_types).reader(Charsets.UTF_8).readText())
+                        .withTransformers(ResponseTemplateTransformer.NAME)
+                )
+        )
     }
 
     fun stubCardConfigurationWithDelay(delay: Int = 0) {
@@ -40,24 +42,27 @@ object CardConfigurationMockStub {
                         ]
                       }
                 ]
-            """.trimIndent()
+        """.trimIndent()
 
-        stubFor(get("/$CARD_CONFIGURATION_PATH")
-            .willReturn(
-                aResponse()
-                    .withFixedDelay(delay)
-                    .withStatus(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(json)
-            ))
+        stubFor(
+            get("/$CARD_CONFIGURATION_PATH")
+                .willReturn(
+                    aResponse()
+                        .withFixedDelay(delay)
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(json)
+                )
+        )
     }
 
     fun simulateCardConfigurationServerError() {
-        stubFor(get("/$CARD_CONFIGURATION_PATH")
-            .willReturn(
-                aResponse()
-                    .withStatus(500)
-            ))
+        stubFor(
+            get("/$CARD_CONFIGURATION_PATH")
+                .willReturn(
+                    aResponse()
+                        .withStatus(500)
+                )
+        )
     }
-
 }

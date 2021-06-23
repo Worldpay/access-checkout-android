@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.api.configuration.CardValidationRule
 
 internal class SimpleValidator {
 
-    fun validate(text: String, cardValidationRule: CardValidationRule) : Boolean {
+    fun validate(text: String, cardValidationRule: CardValidationRule): Boolean {
         if (text.isBlank()) {
             return false
         }
@@ -19,5 +19,4 @@ internal class SimpleValidator {
 
         return cardValidationRule.validLengths.contains(text.length)
     }
-
 }

@@ -10,21 +10,21 @@ interface AccessCheckoutValidationListener
 /**
  * Interface that should be used when validation is successful
  */
-interface AccessCheckoutValidationSuccessListener: AccessCheckoutValidationListener {
+interface AccessCheckoutValidationSuccessListener : AccessCheckoutValidationListener {
     fun onValidationSuccess()
 }
 
 /**
  * Interface that should be used when cvc validation state changes
  */
-interface AccessCheckoutCvcValidationListener: AccessCheckoutValidationSuccessListener {
+interface AccessCheckoutCvcValidationListener : AccessCheckoutValidationSuccessListener {
     fun onCvcValidated(isValid: Boolean)
 }
 
 /**
  * Interface that should be used when pan validation state changes
  */
-interface AccessCheckoutPanValidationListener: AccessCheckoutValidationSuccessListener {
+interface AccessCheckoutPanValidationListener : AccessCheckoutValidationSuccessListener {
     fun onPanValidated(isValid: Boolean)
 }
 
@@ -38,14 +38,14 @@ interface AccessCheckoutBrandChangedListener {
 /**
  * Interface that should be used when expiry date validation state changes
  */
-interface AccessCheckoutExpiryDateValidationListener: AccessCheckoutValidationSuccessListener {
+interface AccessCheckoutExpiryDateValidationListener : AccessCheckoutValidationSuccessListener {
     fun onExpiryDateValidated(isValid: Boolean)
 }
 
 /**
  * Interface that should be used by clients to amalgamate all relevant listeners for the card details
  */
-interface AccessCheckoutCardValidationListener:
+interface AccessCheckoutCardValidationListener :
     AccessCheckoutCvcValidationListener,
     AccessCheckoutPanValidationListener,
     AccessCheckoutExpiryDateValidationListener,

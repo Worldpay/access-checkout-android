@@ -26,6 +26,5 @@ class SubmitButton(private val activity: Activity, private val id: Int) {
         submitBtn.setBackgroundColor(submitBtnColor)
     }
 
-    fun get() : Button = activity.findViewById(id)
-
+    fun get(): Button = activity.findViewById(id)
 }

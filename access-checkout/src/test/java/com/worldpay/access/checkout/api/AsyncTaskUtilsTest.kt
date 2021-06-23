@@ -33,5 +33,4 @@ class AsyncTaskUtilsTest {
     fun canBeCalledWithoutCallbackFromAsyncTask() {
         AsyncTaskUtils.callbackOnTaskResult(null, AsyncTaskResult<String>(IllegalStateException("error_message")))
     }
-
 }

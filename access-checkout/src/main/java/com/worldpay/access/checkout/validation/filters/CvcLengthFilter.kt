@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValida
 
 internal class CvcLengthFilter(
     private val panEditText: EditText?
-): AbstractVariableLengthFilter() {
+) : AbstractVariableLengthFilter() {
 
     override fun getMaxLength(source: CharSequence?): Int {
         var validationRule = getCardConfiguration().defaults.cvc
@@ -18,5 +18,4 @@ internal class CvcLengthFilter(
         }
         return ValidationUtil.getMaxLength(validationRule)
     }
-
 }

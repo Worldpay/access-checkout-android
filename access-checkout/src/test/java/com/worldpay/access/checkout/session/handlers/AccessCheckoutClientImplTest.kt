@@ -6,12 +6,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.worldpay.access.checkout.client.session.model.CardDetails
-import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
+import kotlin.test.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
@@ -22,7 +23,6 @@ import org.mockito.BDDMockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
-import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class AccessCheckoutClientImplTest {
@@ -45,7 +45,6 @@ class AccessCheckoutClientImplTest {
         given(tokenHandlerFactoryMock.getTokenHandlers()).willReturn(handlers)
         given(localBroadcastManagerFactoryMock.createInstance()).willReturn(localBroadcastManagerMock)
     }
-
 
     @Test
     fun `given AccessCheckoutClient is initialised with mandatory arguments then an instance of SDK is returned`() {
@@ -98,7 +97,6 @@ class AccessCheckoutClientImplTest {
 
         verify(activityLifecycleEventHandlerFactory).initialise()
     }
-
 
     @Test
     fun `should be able to call each handler's canHandle method when calling generate`() {
@@ -195,5 +193,4 @@ class AccessCheckoutClientImplTest {
         verify(cardSessionRequestHandlerMock, never()).handle(cardDetails)
         verify(cvcSessionRequestHandlerMock, never()).handle(cardDetails)
     }
-
 }

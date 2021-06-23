@@ -22,5 +22,4 @@ internal class CvcSessionClient(
 
         return httpsClient.doPost(url, request, headers, serializer, deserializer)
     }
-
 }

@@ -42,5 +42,4 @@ class CvcFlowIntegrationTest {
             .cardDetailsAre(cvc = "")
             .enabledStateIs(submitButton = false)
     }
-
 }

@@ -18,5 +18,4 @@ class CustomIdlingResourceCounter(idlingResName: String) : IdleResourceCounter {
     override fun unregisterIdleResCounter() {
         IdlingRegistry.getInstance().unregister(counter)
     }
-
 }

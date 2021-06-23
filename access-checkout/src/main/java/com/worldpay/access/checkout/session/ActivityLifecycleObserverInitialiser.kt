@@ -18,5 +18,4 @@ internal class ActivityLifecycleObserverInitialiser(
     fun initialise(): ActivityLifecycleObserver {
         return activityLifecycleObserver
     }
-
 }

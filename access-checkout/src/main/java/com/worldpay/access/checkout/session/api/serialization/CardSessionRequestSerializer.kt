@@ -27,5 +27,4 @@ internal class CardSessionRequestSerializer : Serializer<SessionRequest> {
         root.put("identity", instance.identity)
         return root.toString()
     }
-
 }

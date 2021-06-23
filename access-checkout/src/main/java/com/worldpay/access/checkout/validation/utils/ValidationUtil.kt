@@ -25,7 +25,7 @@ internal object ValidationUtil {
     fun getMaxLength(cardValidationRule: CardValidationRule) =
         cardValidationRule.validLengths.max() ?: defaultMaxLength
 
-    fun findBrandForPan(pan: String) : RemoteCardBrand? {
+    fun findBrandForPan(pan: String): RemoteCardBrand? {
         for (brand in getCardConfiguration().brands) {
             val unformattedPan = pan.replace("\\s+".toRegex(), "")
             if (brand.pan.matcher.toPattern().matcher(unformattedPan).find()) {
@@ -36,5 +36,4 @@ internal object ValidationUtil {
     }
 
     fun isNumeric(number: String) = number.isNotBlank() && number.toCharArray().none { !it.isDigit() }
-
 }

@@ -51,7 +51,6 @@ class CardDetails private constructor(
          * @return [CardDetails] instance with the given details
          */
         fun build() = CardDetails(pan, expiryDate, cvc)
-
     }
 
     /**
@@ -87,7 +86,6 @@ class CardDetails private constructor(
                 month = expiryDate.dropLast(2).toInt()
                 year = 2000 + expiryDate.substring(2).toInt()
             }
-
         }
 
         private fun isNumeric(text: String): Boolean {
@@ -98,7 +96,5 @@ class CardDetails private constructor(
                 false
             }
         }
-
     }
-
 }

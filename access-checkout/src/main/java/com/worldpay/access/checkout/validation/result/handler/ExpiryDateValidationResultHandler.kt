@@ -7,10 +7,10 @@ import com.worldpay.access.checkout.validation.result.state.ExpiryDateFieldValid
 internal class ExpiryDateValidationResultHandler(
     private val validationListener: AccessCheckoutExpiryDateValidationListener,
     private val validationStateManager: ExpiryDateFieldValidationStateManager,
-    lifecycleOwner : LifecycleOwner
+    lifecycleOwner: LifecycleOwner
 ) : AbstractValidationResultHandler(lifecycleOwner) {
 
-    override fun notifyListener(isValid : Boolean) {
+    override fun notifyListener(isValid: Boolean) {
         validationListener.onExpiryDateValidated(isValid)
 
         if (isValid && validationStateManager.isAllValid()) {
@@ -19,5 +19,4 @@ internal class ExpiryDateValidationResultHandler(
     }
 
     override fun getState() = validationStateManager.expiryDateValidationState
-
 }

@@ -47,5 +47,4 @@ internal class ActivityLifecycleObserver(
         Log.d(tag, "On Pause")
         inLifeCycleState = true
     }
-
 }

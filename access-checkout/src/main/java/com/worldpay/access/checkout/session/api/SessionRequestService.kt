@@ -4,7 +4,6 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
-import android.util.Log
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
@@ -16,7 +15,8 @@ import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSIO
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 
-internal class SessionRequestService(factory: Factory = DefaultFactory()) : Service(),
+internal class SessionRequestService(factory: Factory = DefaultFactory()) :
+    Service(),
     Callback<SessionResponseInfo> {
 
     internal companion object {
@@ -59,13 +59,16 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) : Serv
             return
         }
 
-        Handler().postDelayed({
-            if (maxRetry > 0) {
-                delay(broadcastIntent, maxRetry - 1)
-            } else {
-                localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
-            }
-        }, 500)
+        Handler().postDelayed(
+            {
+                if (maxRetry > 0) {
+                    delay(broadcastIntent, maxRetry - 1)
+                } else {
+                    localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
+                }
+            },
+            500
+        )
     }
 }
 
@@ -74,7 +77,7 @@ internal interface Factory {
     fun getSessionRequestSender(context: Context): SessionRequestSender
 }
 
-internal class DefaultFactory: Factory {
+internal class DefaultFactory : Factory {
 
     override fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory =
         LocalBroadcastManagerFactory(context)
@@ -84,5 +87,4 @@ internal class DefaultFactory: Factory {
             SessionClientFactory(),
             RequestDispatcherFactory()
         )
-
 }

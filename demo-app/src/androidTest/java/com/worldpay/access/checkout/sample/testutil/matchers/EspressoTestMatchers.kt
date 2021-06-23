@@ -10,5 +10,4 @@ object EspressoTestMatchers {
             resourceId
         )
     }
-
 }

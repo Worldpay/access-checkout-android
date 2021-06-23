@@ -28,7 +28,7 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
         if (!isValid) submitButton.disable()
     }
 
-    override fun onBrandChange(cardBrand : CardBrand?) {
+    override fun onBrandChange(cardBrand: CardBrand?) {
         val brandLogo = activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
         getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
     }
@@ -48,5 +48,4 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
             editText.setTextColor(invalidColor)
         }
     }
-
 }

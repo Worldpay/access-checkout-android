@@ -11,7 +11,7 @@ internal class ExpiryDateTextWatcher(
     private val expiryDateEditText: EditText,
     private val expiryDateValidationResultHandler: ExpiryDateValidationResultHandler,
     private val expiryDateSanitiser: ExpiryDateSanitiser
-): AbstractCardDetailTextWatcher() {
+) : AbstractCardDetailTextWatcher() {
 
     private var textBefore = ""
 
@@ -51,5 +51,4 @@ internal class ExpiryDateTextWatcher(
         expiryDateEditText.setText(text)
         expiryDateEditText.setSelection(text.length)
     }
-
 }

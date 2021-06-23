@@ -5,8 +5,8 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.request.SessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class SessionResponseInfoTest {
 
@@ -26,5 +26,4 @@ class SessionResponseInfoTest {
         assertEquals(CARD, sessionRequestInfo.sessionType)
         assertEquals(DiscoverLinks.verifiedTokens, sessionRequestInfo.discoverLinks)
     }
-
 }

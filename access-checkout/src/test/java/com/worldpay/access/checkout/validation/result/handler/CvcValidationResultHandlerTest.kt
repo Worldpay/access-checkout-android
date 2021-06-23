@@ -2,7 +2,11 @@ package com.worldpay.access.checkout.validation.result.handler
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import com.worldpay.access.checkout.validation.result.state.CvcFieldValidationStateManager
 import org.junit.Before

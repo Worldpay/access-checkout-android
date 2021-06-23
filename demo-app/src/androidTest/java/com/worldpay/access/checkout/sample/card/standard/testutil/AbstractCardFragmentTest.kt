@@ -22,5 +22,4 @@ abstract class AbstractCardFragmentTest {
         closeSoftKeyboard()
         rotatePortrait(activityRule)
     }
-
 }

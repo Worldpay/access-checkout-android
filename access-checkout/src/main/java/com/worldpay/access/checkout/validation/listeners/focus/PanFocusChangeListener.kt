@@ -4,13 +4,12 @@ import android.view.View
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 
 internal class PanFocusChangeListener(
-    private val panValidationResultHandler : PanValidationResultHandler
-): View.OnFocusChangeListener {
+    private val panValidationResultHandler: PanValidationResultHandler
+) : View.OnFocusChangeListener {
 
-    override fun onFocusChange(v : View?, hasFocus : Boolean) {
+    override fun onFocusChange(v: View?, hasFocus: Boolean) {
         if (!hasFocus) {
             panValidationResultHandler.handleFocusChange()
         }
     }
-
 }

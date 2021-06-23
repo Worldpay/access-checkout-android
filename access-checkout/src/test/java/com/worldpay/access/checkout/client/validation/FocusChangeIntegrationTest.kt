@@ -7,13 +7,13 @@ import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import kotlin.test.fail
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import kotlin.test.fail
 
 @RunWith(RobolectricTestRunner::class)
-class FocusChangeIntegrationTest: AbstractValidationIntegrationTest() {
+class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - pan`() {
@@ -123,5 +123,4 @@ class FocusChangeIntegrationTest: AbstractValidationIntegrationTest() {
 
         verify(cardValidationListener).onExpiryDateValidated(false)
     }
-
 }

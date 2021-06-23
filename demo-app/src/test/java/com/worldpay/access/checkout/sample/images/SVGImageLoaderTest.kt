@@ -9,13 +9,19 @@ import com.nhaarman.mockitokotlin2.given
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
-import okhttp3.*
-import org.junit.Before
-import org.junit.Test
-import org.mockito.Mockito.*
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.OkHttpClient
+import okhttp3.Response
+import okhttp3.ResponseBody
+import org.junit.Before
+import org.junit.Test
+import org.mockito.Mockito.mock
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyZeroInteractions
 
 class SVGImageLoaderTest {
 
@@ -133,6 +139,4 @@ class SVGImageLoaderTest {
         verifyZeroInteractions(svgImageRenderer)
         verifyZeroInteractions(targetImageView)
     }
-
-
 }

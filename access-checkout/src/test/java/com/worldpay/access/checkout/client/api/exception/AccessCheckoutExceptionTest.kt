@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.client.api.exception
 
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
+import org.junit.Test
 
 class AccessCheckoutExceptionTest {
 
@@ -42,5 +42,4 @@ class AccessCheckoutExceptionTest {
         assertEquals(0, exception.validationRules.size)
         assertEquals(cause, exception.cause)
     }
-
 }

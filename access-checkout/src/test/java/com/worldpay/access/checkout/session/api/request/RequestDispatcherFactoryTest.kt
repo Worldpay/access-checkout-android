@@ -23,5 +23,4 @@ class RequestDispatcherFactoryTest {
 
         assertNotNull(instance)
     }
-
 }

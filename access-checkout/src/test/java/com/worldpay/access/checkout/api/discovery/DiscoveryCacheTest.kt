@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.api.discovery
 
 import com.worldpay.access.checkout.api.AsyncTaskResult
-import org.junit.Before
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import org.junit.Before
+import org.junit.Test
 
 class DiscoveryCacheTest {
 
@@ -17,7 +17,7 @@ class DiscoveryCacheTest {
     @Test
     fun `should be a singleton`() {
         val cache1 = DiscoveryCache
-        val cache2 =  DiscoveryCache
+        val cache2 = DiscoveryCache
         assertEquals(cache1, cache2)
     }
 

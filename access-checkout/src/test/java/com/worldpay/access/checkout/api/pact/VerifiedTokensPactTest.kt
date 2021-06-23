@@ -21,16 +21,16 @@ import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.serialization.CardSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlin.test.assertFailsWith
+import kotlin.test.fail
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
-import kotlin.test.assertFailsWith
-import kotlin.test.fail
 
 class VerifiedTokensPactTest {
 
@@ -87,27 +87,31 @@ class VerifiedTokensPactTest {
     private val sessionReferenceExample = "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
     private val curiesRegex = "https?://[^/]+/rels/verifiedTokens/\\{rel\\}.json"
     private val curiesExample = "https://access.worldpay.com/rels/verifiedTokens/{rel}.json"
-    
-    private val responseBody = escapeColonsInMatchingRules(PactDslJsonBody()
-        .`object`("_links")
-        .`object`("verifiedTokens:session")
-        .stringMatcher("href", sessionReferenceRegex, sessionReferenceExample)
-        .closeObject()
-        .array("curies")
-        .`object`()
-        .stringMatcher("href", curiesRegex, curiesExample)
-        .stringValue("name", "verifiedTokens")
-        .booleanValue("templated", true)
-        .closeObject()
-        .closeArray()
-        .closeObject())
 
-    private val getResponseBody = escapeColonsInMatchingRules(PactDslJsonBody()
-        .`object`("_links")
-        .`object`("verifiedTokens:sessions")
-        .stringMatcher("href", discoveryEndpointRegex, verifiedTokensSessionEndpoint)
-        .closeObject()
-        .closeObject())
+    private val responseBody = escapeColonsInMatchingRules(
+        PactDslJsonBody()
+            .`object`("_links")
+            .`object`("verifiedTokens:session")
+            .stringMatcher("href", sessionReferenceRegex, sessionReferenceExample)
+            .closeObject()
+            .array("curies")
+            .`object`()
+            .stringMatcher("href", curiesRegex, curiesExample)
+            .stringValue("name", "verifiedTokens")
+            .booleanValue("templated", true)
+            .closeObject()
+            .closeArray()
+            .closeObject()
+    )
+
+    private val getResponseBody = escapeColonsInMatchingRules(
+        PactDslJsonBody()
+            .`object`("_links")
+            .`object`("verifiedTokens:sessions")
+            .stringMatcher("href", discoveryEndpointRegex, verifiedTokensSessionEndpoint)
+            .closeObject()
+            .closeObject()
+    )
 
     @Pact(provider = provider, consumer = consumer)
     @SuppressWarnings("unused")
@@ -322,7 +326,7 @@ class VerifiedTokensPactTest {
     @Test
     @PactVerification("verified-tokens", fragment = "createSuccessfulGetRequestInteraction")
     fun `should receive a valid response when a valid GET request is sent`() {
-        val httpClient  = HttpsClient()
+        val httpClient = HttpsClient()
         val url = URL(mockProvider.url + discoveryPath)
         val headers = mapOf(
             ACCEPT_HEADER to VERIFIED_TOKENS_MEDIA_TYPE,
@@ -616,7 +620,6 @@ class VerifiedTokensPactTest {
                 emptyString
             )
 
-
         given(mockEmptySerializer.serialize(sessionRequest)).willReturn(emptyString)
 
         cardSessionClient =
@@ -653,7 +656,11 @@ class VerifiedTokensPactTest {
             .stringValue("identity", identity)
     }
 
-    private fun generateResponse(brokenRuleErrorName: String, brokenRuleMessage: String, jsonPath: String) =
+    private fun generateResponse(
+        brokenRuleErrorName: String,
+        brokenRuleMessage: String,
+        jsonPath: String
+    ) =
         PactDslJsonBody()
             .stringValue("errorName", "bodyDoesNotMatchSchema")
             .stringValue("message", "The json body provided does not match the expected schema")
@@ -664,5 +671,4 @@ class VerifiedTokensPactTest {
             .stringValue("jsonPath", jsonPath)
             .closeObject()
             .closeArray()
-
 }

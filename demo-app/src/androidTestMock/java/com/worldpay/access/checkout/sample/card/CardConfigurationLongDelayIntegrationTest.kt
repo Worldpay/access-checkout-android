@@ -9,13 +9,13 @@ import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MAST
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
+import java.util.concurrent.TimeUnit.MILLISECONDS
+import kotlin.test.assertEquals
 import org.awaitility.Awaitility
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import java.util.concurrent.TimeUnit.MILLISECONDS
-import kotlin.test.assertEquals
 
 class CardConfigurationLongDelayIntegrationTest {
 
@@ -54,7 +54,7 @@ class CardConfigurationLongDelayIntegrationTest {
             .hasNoBrand()
 
         // Wait until the server replies so we can successfully identify the card as mastercard based on current input
-         Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
+        Awaitility.await().atMost(timeoutInMillis, MILLISECONDS).until {
             try {
                 assertExpectedLogo(MASTERCARD.cardBrandName)
                 true
@@ -83,16 +83,17 @@ class CardConfigurationLongDelayIntegrationTest {
                 mapOf(CARD to cardConfigRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
     }
-    
+
     private fun assertExpectedLogo(logoResName: String) {
         val logoView = cardConfigRule.activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
         assertEquals(logoResName, logoView.getTag(R.integer.card_tag))
     }
-
 }
 
-class CardConfigurationLongDelayRule(private val timeoutMillis: Long,
-                                     activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
+class CardConfigurationLongDelayRule(
+    private val timeoutMillis: Long,
+    activityClass: Class<MainActivity>
+) : ActivityTestRule<MainActivity>(activityClass) {
 
     override fun beforeActivityLaunched() {
         super.beforeActivityLaunched()
@@ -100,5 +101,4 @@ class CardConfigurationLongDelayRule(private val timeoutMillis: Long,
         // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this delayed response.
         stubCardConfigurationWithDelay(timeoutMillis.toInt())
     }
-
 }

@@ -2,9 +2,9 @@ package com.worldpay.access.checkout.sample
 
 import com.github.fge.jackson.JsonLoader
 import com.github.fge.jsonschema.main.JsonSchemaFactory
+import java.net.URL
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import java.net.URL
 
 class CardConfigurationSchemaTest {
 

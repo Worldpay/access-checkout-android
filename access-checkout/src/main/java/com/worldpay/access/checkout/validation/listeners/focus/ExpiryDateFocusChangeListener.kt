@@ -4,13 +4,12 @@ import android.view.View
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 
 internal class ExpiryDateFocusChangeListener(
-    private val expiryDateValidationResultHandler : ExpiryDateValidationResultHandler
-): View.OnFocusChangeListener {
+    private val expiryDateValidationResultHandler: ExpiryDateValidationResultHandler
+) : View.OnFocusChangeListener {
 
-    override fun onFocusChange(v : View?, hasFocus : Boolean) {
+    override fun onFocusChange(v: View?, hasFocus: Boolean) {
         if (!hasFocus) {
             expiryDateValidationResultHandler.handleFocusChange()
         }
     }
-
 }

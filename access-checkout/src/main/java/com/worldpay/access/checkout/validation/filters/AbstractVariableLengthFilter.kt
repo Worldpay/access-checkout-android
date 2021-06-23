@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.filters
 import android.text.InputFilter
 import android.text.Spanned
 
-internal abstract class AbstractVariableLengthFilter: InputFilter {
+internal abstract class AbstractVariableLengthFilter : InputFilter {
 
     override fun filter(
         source: CharSequence?,
@@ -19,6 +19,4 @@ internal abstract class AbstractVariableLengthFilter: InputFilter {
     }
 
     abstract fun getMaxLength(source: CharSequence?): Int
-
 }
-

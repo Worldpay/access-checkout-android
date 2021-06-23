@@ -43,7 +43,6 @@ internal object CardConfigurationUtil {
                 brands = emptyList(),
                 defaults = Defaults.CARD_DEFAULTS
             )
-
     }
 
     object Defaults {
@@ -114,7 +113,6 @@ internal object CardConfigurationUtil {
 
             val MAESTRO_PNG = RemoteCardBrandImage(type = "image/png", url = "$BASE_PATH/maestro.png")
             val MAESTRO_SVG = RemoteCardBrandImage(type = "image/svg+xml", url = "$BASE_PATH/maestro.svg")
-
         }
 
         val VISA_BRAND =
@@ -252,5 +250,4 @@ internal object CardConfigurationUtil {
     fun toCardBrand(remoteCardBrand: RemoteCardBrand): CardBrand? {
         return ToCardBrandTransformer().transform(remoteCardBrand)
     }
-
 }

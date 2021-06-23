@@ -18,8 +18,8 @@ import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 class CvcValidationConfig private constructor(
     val cvc: EditText,
     val validationListener: AccessCheckoutCvcValidationListener,
-    val lifecycleOwner : LifecycleOwner
-): ValidationConfig {
+    val lifecycleOwner: LifecycleOwner
+) : ValidationConfig {
 
     class Builder {
 
@@ -52,7 +52,7 @@ class CvcValidationConfig private constructor(
          *
          * @param[lifecycleOwner] [LifecycleOwner] that represents the lifecycle owner of the application
          */
-        fun lifecycleOwner(lifecycleOwner : LifecycleOwner) : Builder {
+        fun lifecycleOwner(lifecycleOwner: LifecycleOwner): Builder {
             this.lifecycleOwner = lifecycleOwner
             return this
         }
@@ -74,6 +74,5 @@ class CvcValidationConfig private constructor(
                 lifecycleOwner = lifecycleOwner as LifecycleOwner
             )
         }
-
     }
 }

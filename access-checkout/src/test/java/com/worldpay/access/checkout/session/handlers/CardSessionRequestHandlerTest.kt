@@ -5,11 +5,15 @@ import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
-import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,10 +21,6 @@ import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 import org.robolectric.RobolectricTestRunner
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 class CardSessionRequestHandlerTest {
@@ -125,5 +125,4 @@ class CardSessionRequestHandlerTest {
 
         assertEquals(1, argument.value.extras?.size())
     }
-
 }

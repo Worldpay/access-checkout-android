@@ -5,10 +5,9 @@ import com.worldpay.access.checkout.validation.validators.CvcValidator
 
 internal class CvcTextWatcher(
     private val cvcValidator: CvcValidator
-): AbstractCardDetailTextWatcher() {
+) : AbstractCardDetailTextWatcher() {
 
     override fun afterTextChanged(cvc: Editable) {
         cvcValidator.validate(cvc.toString())
     }
-
 }

@@ -55,7 +55,6 @@ class CardConfigurationIntegrationTest {
                 mapOf(CARD to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
             )
     }
-
 }
 
 class CardConfigurationErrorRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {

@@ -24,7 +24,7 @@ class CardValidationConfig private constructor(
     val acceptedCardBrands: Array<String>,
     val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener,
-    val lifecycleOwner : LifecycleOwner,
+    val lifecycleOwner: LifecycleOwner,
     val enablePanFormatting: Boolean
 ) : ValidationConfig {
 
@@ -104,7 +104,7 @@ class CardValidationConfig private constructor(
          *
          * @param[lifecycleOwner] [LifecycleOwner] that represents the lifecycle owner of the application
          */
-        fun lifecycleOwner(lifecycleOwner : LifecycleOwner) : Builder {
+        fun lifecycleOwner(lifecycleOwner: LifecycleOwner): Builder {
             this.lifecycleOwner = lifecycleOwner
             return this
         }
@@ -142,6 +142,5 @@ class CardValidationConfig private constructor(
                 enablePanFormatting = enablePanFormatting
             )
         }
-
     }
 }

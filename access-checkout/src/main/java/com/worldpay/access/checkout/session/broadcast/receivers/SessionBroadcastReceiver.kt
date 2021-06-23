@@ -14,7 +14,7 @@ import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcast
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.isExpectingResponse
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastDataStore.setNumberOfSessionTypes
 import java.io.Serializable
-import java.util.*
+import java.util.EnumMap
 import java.util.concurrent.atomic.AtomicInteger
 
 internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
@@ -89,7 +89,6 @@ internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
         intentFilter.addAction(COMPLETED_SESSION_REQUEST)
         return intentFilter
     }
-
 }
 
 internal object SessionBroadcastDataStore {
@@ -115,5 +114,4 @@ internal object SessionBroadcastDataStore {
         storedResponses.clear()
         numOfSessionTypes.set(0)
     }
-
 }

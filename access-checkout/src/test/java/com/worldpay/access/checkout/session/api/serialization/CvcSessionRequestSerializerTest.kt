@@ -5,9 +5,9 @@ import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest.CardExpiryDate
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
+import kotlin.test.assertFailsWith
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 class CvcSessionRequestSerializerTest {
 

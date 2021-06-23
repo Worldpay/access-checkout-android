@@ -2,7 +2,11 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
 import org.junit.Before
@@ -33,7 +37,7 @@ class ExpiryDateTextWatcherTest {
 
     @Test
     fun `should attempt to format text when deleting characters`() {
-        expiryDateTextWatcher.beforeTextChanged("13",0,0,0)
+        expiryDateTextWatcher.beforeTextChanged("13", 0, 0, 0)
         given(expiryDateEditable.toString()).willReturn("1")
 
         expiryDateTextWatcher.afterTextChanged(expiryDateEditable)
@@ -46,7 +50,7 @@ class ExpiryDateTextWatcherTest {
 
     @Test
     fun `should not attempt to format text when deleting separator characters`() {
-        expiryDateTextWatcher.beforeTextChanged("13/",0,0,0)
+        expiryDateTextWatcher.beforeTextChanged("13/", 0, 0, 0)
         given(expiryDateEditable.toString()).willReturn("13")
 
         expiryDateTextWatcher.afterTextChanged(expiryDateEditable)
@@ -104,13 +108,12 @@ class ExpiryDateTextWatcherTest {
 
     @Test
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        expiryDateTextWatcher.beforeTextChanged("", 1, 2,3)
-        expiryDateTextWatcher.onTextChanged("", 1, 2,3)
+        expiryDateTextWatcher.beforeTextChanged("", 1, 2, 3)
+        expiryDateTextWatcher.onTextChanged("", 1, 2, 3)
 
         verifyZeroInteractions(
             dateValidator,
             expiryDateValidationResultHandler
         )
     }
-
 }

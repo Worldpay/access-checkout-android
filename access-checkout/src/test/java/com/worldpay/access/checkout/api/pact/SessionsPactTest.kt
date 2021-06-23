@@ -24,16 +24,16 @@ import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.serialization.CvcSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CvcSessionResponseDeserializer
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlin.test.assertEquals
+import kotlin.test.fail
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito
 import org.mockito.Mockito
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
-import kotlin.test.assertEquals
-import kotlin.test.fail
 
 class SessionsPactTest {
 
@@ -46,7 +46,6 @@ class SessionsPactTest {
 
         private val SESSIONS_CONTENT_TYPE_HEADER = mapOf(Pair(CONTENT_TYPE_HEADER, SESSIONS_MEDIA_TYPE))
         private val SESSIONS_ACCEPT_HEADER = mapOf(Pair(ACCEPT_HEADER, SESSIONS_MEDIA_TYPE))
-
     }
 
     private lateinit var cvcSessionClient: CvcSessionClient
@@ -88,26 +87,30 @@ class SessionsPactTest {
     private val curiesRegex = "https?://[^/]+/rels/sessions/\\{rel\\}.json"
     private val curiesExample = "https://access.worldpay.com/rels/sessions/{rel}.json"
 
-    private val responseBody = escapeColonsInMatchingRules(PactDslJsonBody()
-        .`object`("_links")
-        .`object`("sessions:session")
-        .stringMatcher("href", sessionReferenceRegex, sessionReferenceExample)
-        .closeObject()
-        .array("curies")
-        .`object`()
-        .stringMatcher("href", curiesRegex, curiesExample)
-        .stringValue("name", "sessions")
-        .booleanValue("templated", true)
-        .closeObject()
-        .closeArray()
-        .closeObject())
+    private val responseBody = escapeColonsInMatchingRules(
+        PactDslJsonBody()
+            .`object`("_links")
+            .`object`("sessions:session")
+            .stringMatcher("href", sessionReferenceRegex, sessionReferenceExample)
+            .closeObject()
+            .array("curies")
+            .`object`()
+            .stringMatcher("href", curiesRegex, curiesExample)
+            .stringValue("name", "sessions")
+            .booleanValue("templated", true)
+            .closeObject()
+            .closeArray()
+            .closeObject()
+    )
 
-    private val getResponseBody = escapeColonsInMatchingRules(PactDslJsonBody()
-        .`object`("_links")
-        .`object`("sessions:paymentsCvc")
-        .stringMatcher("href", sessionEndpointRegex, paymentsCvcSessionEndpoint )
-        .closeObject()
-        .closeObject())
+    private val getResponseBody = escapeColonsInMatchingRules(
+        PactDslJsonBody()
+            .`object`("_links")
+            .`object`("sessions:paymentsCvc")
+            .stringMatcher("href", sessionEndpointRegex, paymentsCvcSessionEndpoint)
+            .closeObject()
+            .closeObject()
+    )
 
     @Pact(provider = provider, consumer = consumer)
     @SuppressWarnings("unused")
@@ -207,9 +210,9 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "createSuccessfulGetRequestInteraction")
     fun `should receive a valid response when a valid GET request is sent`() {
-        val httpClient  = HttpsClient()
+        val httpClient = HttpsClient()
         val url = URL(mockProvider.url + discoveryPath)
-        val headers = mapOf(ACCEPT_HEADER to SESSIONS_MEDIA_TYPE, CONTENT_TYPE_HEADER to SESSIONS_MEDIA_TYPE )
+        val headers = mapOf(ACCEPT_HEADER to SESSIONS_MEDIA_TYPE, CONTENT_TYPE_HEADER to SESSIONS_MEDIA_TYPE)
 
         val deserializer = DiscoverLinks.sessions.endpoints[1].getDeserializer()
 
@@ -261,10 +264,10 @@ class SessionsPactTest {
             fail("Should not have reached here!")
         } catch (ex: AccessCheckoutException) {
             val validationRule = ValidationRule(
-                    "fieldHasInvalidValue",
-                    "Identity is invalid",
-                    "\$.identity"
-                )
+                "fieldHasInvalidValue",
+                "Identity is invalid",
+                "\$.identity"
+            )
             val accessCheckoutClientError = AccessCheckoutException(
                 message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
                 validationRules = listOf(validationRule)
@@ -315,7 +318,6 @@ class SessionsPactTest {
                 emptyString
             )
 
-
         BDDMockito.given(mockEmptySerializer.serialize(sessionRequest))
             .willReturn(emptyString)
 
@@ -348,7 +350,11 @@ class SessionsPactTest {
             .stringValue("identity", identity)
     }
 
-    private fun generateResponse(brokenRuleErrorName: String, brokenRuleMessage: String, jsonPath: String) =
+    private fun generateResponse(
+        brokenRuleErrorName: String,
+        brokenRuleMessage: String,
+        jsonPath: String
+    ) =
         PactDslJsonBody()
             .stringValue("errorName", "bodyDoesNotMatchSchema")
             .stringValue("message", "The json body provided does not match the expected schema")
@@ -359,5 +365,4 @@ class SessionsPactTest {
             .stringValue("jsonPath", jsonPath)
             .closeObject()
             .closeArray()
-
 }

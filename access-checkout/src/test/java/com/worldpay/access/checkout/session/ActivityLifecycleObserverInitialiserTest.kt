@@ -4,9 +4,9 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.given
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
+import kotlin.test.assertNotNull
 import org.junit.Test
 import org.mockito.Mockito.mock
-import kotlin.test.assertNotNull
 
 class ActivityLifecycleObserverInitialiserTest {
 
@@ -26,5 +26,4 @@ class ActivityLifecycleObserverInitialiserTest {
 
         assertNotNull(observer)
     }
-
 }

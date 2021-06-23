@@ -23,5 +23,4 @@ internal interface SessionRequestHandler {
      * @param cardDetails the [CardDetails] to be processed
      */
     fun handle(cardDetails: CardDetails)
-
 }

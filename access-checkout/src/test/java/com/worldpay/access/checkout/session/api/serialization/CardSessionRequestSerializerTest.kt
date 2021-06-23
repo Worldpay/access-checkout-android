@@ -5,11 +5,11 @@ import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest.CardExpiryDate
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
+import kotlin.test.assertFailsWith
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import kotlin.test.assertFailsWith
 
 @RunWith(RobolectricTestRunner::class)
 class CardSessionRequestSerializerTest {

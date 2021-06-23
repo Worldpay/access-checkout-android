@@ -2,7 +2,10 @@ package com.worldpay.access.checkout.sample.card.standard
 
 import android.view.KeyEvent.KEYCODE_DEL
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.*
+import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
+import androidx.test.espresso.action.ViewActions.pressKey
+import androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withText
@@ -26,7 +29,13 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUH
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.*
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DINERS
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DISCOVER
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.JCB
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MAESTRO
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MASTERCARD
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
 import org.junit.Test
@@ -34,7 +43,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
-class PANUITest: AbstractCardFragmentTest() {
+class PANUITest : AbstractCardFragmentTest() {
 
     @Test
     fun givenUserClicksCardViewAndInsertsUnknownPartialCardNumberThenTextShouldOnlyShowInvalidWhenFocusIsLostDisplayUnknownCardIcon() {
@@ -295,7 +304,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan= "41111")
+            .enterCardDetails(pan = "41111")
             .hasBrand(VISA)
             .cardDetailsAre(pan = "4111 1")
             .enterCardDetails(pan = VISA_PAN)
@@ -308,7 +317,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan= "11111")
+            .enterCardDetails(pan = "11111")
             .hasNoBrand()
             .cardDetailsAre(pan = "1111 1")
             .enterCardDetails(pan = VALID_UNKNOWN_LUHN)
@@ -322,7 +331,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan= "37178")
+            .enterCardDetails(pan = "37178")
             .hasBrand(AMEX)
             .cardDetailsAre(pan = "3717 8")
             .enterCardDetails(pan = AMEX_PAN)
@@ -335,7 +344,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan ="37177")
+            .enterCardDetails(pan = "37177")
             .setCursorPositionOnPan(3)
 
         onView(withId(R.id.card_flow_text_pan))
@@ -371,7 +380,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan ="1234")
+            .enterCardDetails(pan = "1234")
             .setCursorPositionOnPan(3)
 
         onView(withId(R.id.card_flow_text_pan))
@@ -407,7 +416,7 @@ class PANUITest: AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan ="12345")
+            .enterCardDetails(pan = "12345")
             .setCursorPositionOnPan(5)
             .cardDetailsAre(pan = "1234 5")
 

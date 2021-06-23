@@ -7,14 +7,21 @@ import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.hasSibling
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withParent
+import androidx.test.espresso.matcher.ViewMatchers.withTagKey
+import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.sample.testutil.matchers.EspressoTestMatchers.withDrawable
-import org.hamcrest.CoreMatchers.*
+import org.hamcrest.CoreMatchers.allOf
+import org.hamcrest.CoreMatchers.instanceOf
+import org.hamcrest.CoreMatchers.not
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -24,7 +31,8 @@ class NavigationUITest {
 
     @get:Rule
     val activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(
-        MainActivity::class.java)
+        MainActivity::class.java
+    )
 
     private val cardFlowTitle = "Card Flow"
     private val restrictedCardFlowTitle = "Restricted Card Flow"
@@ -112,5 +120,4 @@ class NavigationUITest {
         onView(allOf(instanceOf(TextView::class.java), withParent(withId(R.id.toolbar_main))))
             .check(matches(withText(title)))
     }
-
 }

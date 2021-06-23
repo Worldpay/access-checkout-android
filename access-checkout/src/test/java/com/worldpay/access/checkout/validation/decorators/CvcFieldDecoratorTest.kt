@@ -3,16 +3,23 @@ package com.worldpay.access.checkout.validation.decorators
 import android.text.Editable
 import android.text.InputFilter
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.reset
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.CvcTextWatcher
-import org.junit.Before
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import org.junit.Before
+import org.junit.Test
 
 class CvcFieldDecoratorTest {
 
@@ -23,7 +30,7 @@ class CvcFieldDecoratorTest {
     private val cvcFocusChangeListener = mock<CvcFocusChangeListener>()
     private val lengthFilterFactory = LengthFilterFactory()
 
-    private lateinit var cvcFieldDecorator : CvcFieldDecorator
+    private lateinit var cvcFieldDecorator: CvcFieldDecorator
 
     @Before
     fun setup() {
@@ -81,11 +88,13 @@ class CvcFieldDecoratorTest {
 
     @Test
     fun `should replace any length filters when decorating cvc field multiple times`() {
-        given(cvcEditText.filters).willReturn(arrayOf(
-            InputFilter.LengthFilter(1000),
-            InputFilter.AllCaps(),
-            CvcLengthFilter(panEditText)
-        ))
+        given(cvcEditText.filters).willReturn(
+            arrayOf(
+                InputFilter.LengthFilter(1000),
+                InputFilter.AllCaps(),
+                CvcLengthFilter(panEditText)
+            )
+        )
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
@@ -144,5 +153,4 @@ class CvcFieldDecoratorTest {
 
         verify(fieldDecorator).decorate()
     }
-
 }

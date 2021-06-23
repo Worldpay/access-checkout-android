@@ -3,17 +3,24 @@ package com.worldpay.access.checkout.validation.decorators
 import android.text.Editable
 import android.text.InputFilter
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.reset
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.filters.PanLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.PanTextWatcher
-import org.junit.Before
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import org.junit.Before
+import org.junit.Test
 
 class PanFieldDecoratorTest {
 
@@ -81,11 +88,13 @@ class PanFieldDecoratorTest {
 
     @Test
     fun `should replace any length filters when decorating pan field multiple times`() {
-        given(panEditText.filters).willReturn(arrayOf(
-            InputFilter.LengthFilter(1000),
-            InputFilter.AllCaps(),
-            PanLengthFilter(false)
-        ))
+        given(panEditText.filters).willReturn(
+            arrayOf(
+                InputFilter.LengthFilter(1000),
+                InputFilter.AllCaps(),
+                PanLengthFilter(false)
+            )
+        )
 
         val captor = argumentCaptor<Array<InputFilter>>()
 
@@ -144,5 +153,4 @@ class PanFieldDecoratorTest {
 
         verify(fieldDecorator).decorate()
     }
-
 }

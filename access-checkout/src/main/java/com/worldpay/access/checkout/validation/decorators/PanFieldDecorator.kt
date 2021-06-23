@@ -40,5 +40,4 @@ internal class PanFieldDecorator(
     }
 
     override fun update() = decorate()
-
 }

@@ -2,14 +2,19 @@ package com.worldpay.access.checkout.validation.result.handler
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.reset
+import com.nhaarman.mockitokotlin2.spy
+import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.validation.result.state.FieldValidationState
-import org.junit.Before
-import org.junit.Test
 import kotlin.random.Random
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
-
+import org.junit.Before
+import org.junit.Test
 
 class AbstractValidationResultHandlerTest {
 
@@ -267,6 +272,5 @@ class AbstractValidationResultHandlerTest {
         override fun getState(): FieldValidationState {
             return fieldValidationState
         }
-
     }
 }

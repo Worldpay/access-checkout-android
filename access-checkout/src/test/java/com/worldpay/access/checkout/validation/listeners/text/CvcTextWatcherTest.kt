@@ -44,13 +44,12 @@ class CvcTextWatcherTest {
     fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
         val cvcValidator = mock<CvcValidator>()
 
-        cvcTextWatcher.beforeTextChanged("", 1, 2,3)
-        cvcTextWatcher.onTextChanged("", 1, 2,3)
+        cvcTextWatcher.beforeTextChanged("", 1, 2, 3)
+        cvcTextWatcher.onTextChanged("", 1, 2, 3)
 
         verifyZeroInteractions(
             cvcValidator,
             cvcValidationResultHandler
         )
     }
-
 }

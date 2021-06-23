@@ -16,7 +16,13 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_MAESTRO
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.restricted.testutil.RestrictedCardFragmentTestUtils
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.*
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DINERS
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DISCOVER
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.JCB
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MAESTRO
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MASTERCARD
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Before
@@ -121,5 +127,4 @@ class RestrictedCardFragmentTest {
             .hasBrand(MAESTRO)
             .validationStateIs(false)
     }
-
 }

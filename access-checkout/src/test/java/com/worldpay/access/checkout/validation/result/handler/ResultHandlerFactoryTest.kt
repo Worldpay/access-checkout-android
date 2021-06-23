@@ -5,12 +5,12 @@ import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
-import org.junit.Before
-import org.junit.Test
-import org.mockito.BDDMockito.given
 import kotlin.test.assertEquals
 import kotlin.test.assertNotEquals
 import kotlin.test.assertNotNull
+import org.junit.Before
+import org.junit.Test
+import org.mockito.BDDMockito.given
 
 class ResultHandlerFactoryTest {
 
@@ -19,7 +19,7 @@ class ResultHandlerFactoryTest {
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
 
-    private lateinit var resultHandlerFactory : ResultHandlerFactory
+    private lateinit var resultHandlerFactory: ResultHandlerFactory
 
     @Before
     fun setup() {
@@ -117,5 +117,4 @@ class ResultHandlerFactoryTest {
 
         assertNotEquals(handler2, handler3)
     }
-
 }

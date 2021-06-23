@@ -7,8 +7,8 @@ import com.worldpay.access.checkout.api.configuration.DefaultCardRules.EXPIRY_DA
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.MONTH_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.YEAR_DEFAULTS
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class DefaultCardRulesTest {
 
@@ -85,5 +85,4 @@ class DefaultCardRulesTest {
         assertEquals(YEAR_DEFAULTS, CARD_DEFAULTS.year)
         assertEquals(EXPIRY_DATE_DEFAULTS, CARD_DEFAULTS.expiryDate)
     }
-
 }

@@ -11,8 +11,7 @@ class CardValidationListener : AccessCheckoutCardValidationListener {
 
     override fun onPanValidated(isValid: Boolean) {}
 
-    override fun onBrandChange(cardBrand : CardBrand?) {}
+    override fun onBrandChange(cardBrand: CardBrand?) {}
 
     override fun onExpiryDateValidated(isValid: Boolean) {}
-
 }

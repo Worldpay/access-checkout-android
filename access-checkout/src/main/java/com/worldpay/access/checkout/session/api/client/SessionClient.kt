@@ -23,6 +23,4 @@ internal interface SessionClient {
      * @return [SessionResponse] representation of response from the service (nullable)
      */
     fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse?
-
 }
-

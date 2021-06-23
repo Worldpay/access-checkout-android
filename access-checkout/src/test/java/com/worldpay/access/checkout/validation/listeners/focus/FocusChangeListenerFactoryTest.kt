@@ -3,15 +3,15 @@ package com.worldpay.access.checkout.validation.listeners.focus
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
+import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertNotNull
 
 class FocusChangeListenerFactoryTest {
 
     private val resultHandlerFactory = mock<ResultHandlerFactory>()
 
-    private lateinit var focusChangeListenerFactory : FocusChangeListenerFactory
+    private lateinit var focusChangeListenerFactory: FocusChangeListenerFactory
 
     @Before
     fun setup() {
@@ -35,5 +35,4 @@ class FocusChangeListenerFactoryTest {
         given(resultHandlerFactory.getExpiryDateValidationResultHandler()).willReturn(mock())
         assertNotNull(focusChangeListenerFactory.createExpiryDateFocusChangeListener())
     }
-
 }

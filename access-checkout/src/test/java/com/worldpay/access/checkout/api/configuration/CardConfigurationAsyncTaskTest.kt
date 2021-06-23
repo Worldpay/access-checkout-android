@@ -6,11 +6,6 @@ import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
-import org.awaitility.Awaitility
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.BDDMockito.given
-import org.robolectric.RobolectricTestRunner
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -18,6 +13,11 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.awaitility.Awaitility
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.BDDMockito.given
+import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class CardConfigurationAsyncTaskTest {
@@ -103,7 +103,8 @@ class CardConfigurationAsyncTaskTest {
         val httpClient = mock<HttpsClient>()
         val cardConfigurationParser = mock<CardConfigurationParser>()
         given(httpClient.doGet(url, cardConfigurationParser)).willReturn(CARD_CONFIG_NO_BRAND)
-        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, urlFactory, httpClient,
+        val cardConfigurationAsyncTask = CardConfigurationAsyncTask(
+            callback, urlFactory, httpClient,
             cardConfigurationParser
         )
 
@@ -160,7 +161,4 @@ class CardConfigurationAsyncTaskTest {
 
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
-
-
-
 }

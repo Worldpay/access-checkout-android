@@ -4,13 +4,13 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
+import java.util.Calendar
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.*
 
 @LargeTest
 @RunWith(AndroidJUnit4::class)
-class ExpiryDateUITests: AbstractCardFragmentTest() {
+class ExpiryDateUITests : AbstractCardFragmentTest() {
 
     @Test
     fun shouldReformatAllMonthValues() {
@@ -21,7 +21,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
         for (month in months) {
             cardFragmentTestUtils
                 .enterCardDetails(expiryDate = month)
-                .cardDetailsAre(expiryDate = "${month}/")
+                .cardDetailsAre(expiryDate = "$month/")
                 .focusOn(CVC)
                 .validationStateIs(expiryDate = false)
         }
@@ -42,7 +42,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
         for (month in months) {
             cardFragmentTestUtils
                 .enterCardDetails(expiryDate = month)
-                .cardDetailsAre(expiryDate = "0${month}/")
+                .cardDetailsAre(expiryDate = "0$month/")
                 .focusOn(CVC)
                 .validationStateIs(expiryDate = false)
         }
@@ -108,7 +108,7 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
 
         cardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(expiryDate = "${monthInPast}${year}")
+            .enterCardDetails(expiryDate = "${monthInPast}$year")
             .focusOn(CVC)
             .validationStateIs(expiryDate = false)
     }
@@ -137,5 +137,4 @@ class ExpiryDateUITests: AbstractCardFragmentTest() {
         calendar.add(Calendar.YEAR, offset)
         return calendar.get(Calendar.YEAR).toString().drop(2)
     }
-
 }

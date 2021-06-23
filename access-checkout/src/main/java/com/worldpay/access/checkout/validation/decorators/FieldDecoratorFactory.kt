@@ -7,11 +7,11 @@ import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 
 internal class FieldDecoratorFactory(
     private val textWatcherFactory: TextWatcherFactory,
-    private val focusChangeListenerFactory : FocusChangeListenerFactory,
-    private val lengthFilterFactory : LengthFilterFactory
+    private val focusChangeListenerFactory: FocusChangeListenerFactory,
+    private val lengthFilterFactory: LengthFilterFactory
 ) {
 
-    fun getCvcDecorator(cvcEditText : EditText, panEditText : EditText?) : CvcFieldDecorator {
+    fun getCvcDecorator(cvcEditText: EditText, panEditText: EditText?): CvcFieldDecorator {
         return CvcFieldDecorator(
             cvcTextWatcher = textWatcherFactory.createCvcTextWatcher(),
             cvcFocusChangeListener = focusChangeListenerFactory.createCvcFocusChangeListener(),
@@ -25,7 +25,7 @@ internal class FieldDecoratorFactory(
         cvcEditText: EditText,
         acceptedCardBrands: Array<String>,
         enablePanFormatting: Boolean
-    ) : PanFieldDecorator {
+    ): PanFieldDecorator {
         return PanFieldDecorator(
             panTextWatcher = textWatcherFactory.createPanTextWatcher(
                 panEditText,
@@ -39,7 +39,7 @@ internal class FieldDecoratorFactory(
         )
     }
 
-    fun getExpiryDateDecorator(expiryDateEditText: EditText) : ExpiryDateFieldDecorator {
+    fun getExpiryDateDecorator(expiryDateEditText: EditText): ExpiryDateFieldDecorator {
         return ExpiryDateFieldDecorator(
             expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText),
             expiryDateFocusChangeListener = focusChangeListenerFactory.createExpiryDateFocusChangeListener(),
@@ -47,5 +47,4 @@ internal class FieldDecoratorFactory(
             expiryDateEditText = expiryDateEditText
         )
     }
-
 }

@@ -6,6 +6,7 @@ import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
+import java.net.URL
 import org.junit.Assert.assertEquals
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,7 +15,6 @@ import org.mockito.InjectMocks
 import org.mockito.Mock
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
-import java.net.URL
 
 @RunWith(MockitoJUnitRunner::class)
 class CardSessionClientTest {
@@ -60,5 +60,4 @@ class CardSessionClientTest {
 
         assertEquals(sessionResponse, actualResponse)
     }
-
 }

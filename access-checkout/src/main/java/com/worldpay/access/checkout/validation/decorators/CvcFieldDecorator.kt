@@ -40,5 +40,4 @@ internal class CvcFieldDecorator(
     }
 
     override fun update() = decorate()
-
 }

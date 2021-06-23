@@ -7,5 +7,4 @@ internal class CardConfigurationAsyncTaskFactory {
     fun getAsyncTask(callback: Callback<CardConfiguration>): CardConfigurationAsyncTask {
         return CardConfigurationAsyncTask(callback)
     }
-
 }

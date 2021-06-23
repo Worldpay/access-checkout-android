@@ -7,5 +7,4 @@ internal object PropertyValidationUtil {
             throw IllegalArgumentException("Expected $propertyKey to be provided but was not")
         }
     }
-
 }

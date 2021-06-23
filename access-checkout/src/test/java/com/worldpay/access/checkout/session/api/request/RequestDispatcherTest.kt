@@ -8,6 +8,11 @@ import com.worldpay.access.checkout.session.api.client.SessionClient
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
+import java.net.URL
+import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.awaitility.Awaitility.await
 import org.junit.Before
 import org.junit.Test
@@ -15,11 +20,6 @@ import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
-import java.net.URL
-import java.util.concurrent.TimeUnit
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 class RequestDispatcherTest {
@@ -153,7 +153,6 @@ class RequestDispatcherTest {
         ).execute(sessionRequestInfo)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
-
     }
 
     @Test
@@ -178,7 +177,6 @@ class RequestDispatcherTest {
         ).execute(sessionRequestInfo)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
-
     }
 
     @Test
@@ -205,7 +203,6 @@ class RequestDispatcherTest {
         ).execute(sessionRequestInfo)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
-
     }
 
     @Test
@@ -230,5 +227,4 @@ class RequestDispatcherTest {
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
     }
-
 }

@@ -4,10 +4,10 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
+import org.junit.Test
 
 class CvcValidationConfigBuilderTest {
 
@@ -63,5 +63,4 @@ class CvcValidationConfigBuilderTest {
 
         assertEquals("Expected validation listener to be provided but was not", exception.message)
     }
-
 }

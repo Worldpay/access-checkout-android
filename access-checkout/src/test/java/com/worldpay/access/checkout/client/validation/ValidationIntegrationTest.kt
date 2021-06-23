@@ -10,7 +10,7 @@ import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
-class ValidationIntegrationTest: AbstractValidationIntegrationTest() {
+class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should call each listener function as each input is filled and then finally call the onValidationSuccess function`() {
@@ -28,5 +28,4 @@ class ValidationIntegrationTest: AbstractValidationIntegrationTest() {
 
         verify(cardValidationListener).onValidationSuccess()
     }
-
 }

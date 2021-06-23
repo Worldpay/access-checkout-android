@@ -4,9 +4,9 @@ import android.widget.EditText
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
+import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertNotNull
 
 class TextWatcherFactoryTest {
 
@@ -29,7 +29,7 @@ class TextWatcherFactoryTest {
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
 
-        val textWatcher : PanTextWatcher = textWatcherFactory.createPanTextWatcher(
+        val textWatcher: PanTextWatcher = textWatcherFactory.createPanTextWatcher(
             panEditText = panEditText,
             cvcEditText = cvcEditText,
             acceptedCardBrands = emptyArray(),
@@ -42,7 +42,7 @@ class TextWatcherFactoryTest {
     fun `should get expiry date text watcher`() {
         given(resultHandlerFactory.getExpiryDateValidationResultHandler()).willReturn(mock())
 
-        val textWatcher : ExpiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
+        val textWatcher: ExpiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
         assertNotNull(textWatcher)
     }
 
@@ -50,8 +50,7 @@ class TextWatcherFactoryTest {
     fun `should get cvc text watcher`() {
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
 
-        val textWatcher : CvcTextWatcher = textWatcherFactory.createCvcTextWatcher()
+        val textWatcher: CvcTextWatcher = textWatcherFactory.createCvcTextWatcher()
         assertNotNull(textWatcher)
     }
-
 }

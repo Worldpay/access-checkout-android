@@ -4,11 +4,11 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class CardValidationConfigBuilderTest {
 
@@ -179,5 +179,4 @@ class CardValidationConfigBuilderTest {
         assertEquals(validationListener, config.validationListener)
         assertTrue(config.enablePanFormatting)
     }
-
 }

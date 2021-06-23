@@ -18,6 +18,8 @@ import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFacto
 import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.ERROR_KEY
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.RESPONSE_KEY
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import org.junit.After
 import org.junit.Assert.assertNull
 import org.junit.Before
@@ -28,8 +30,6 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowLooper
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 @RunWith(RobolectricTestRunner::class)
 class SessionRequestServiceTest {
@@ -241,6 +241,4 @@ class SessionRequestServiceTest {
 
         assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
     }
-
 }
-

@@ -61,7 +61,12 @@ class TrustAllSSLSocketFactory : SSLSocketFactory() {
         return sslContext.socketFactory.createSocket(host, port)
     }
 
-    override fun createSocket(address: InetAddress?, port: Int, localAddress: InetAddress?, localPort: Int): Socket {
+    override fun createSocket(
+        address: InetAddress?,
+        port: Int,
+        localAddress: InetAddress?,
+        localPort: Int
+    ): Socket {
         return sslContext.socketFactory.createSocket(address, port, localAddress, localPort)
     }
 

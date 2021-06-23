@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.session.broadcast
 
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import kotlin.test.assertNotNull
 import org.junit.Test
 import org.mockito.Mockito.mock
-import kotlin.test.assertNotNull
 
 class SessionBroadcastManagerFactoryTest {
 
@@ -19,5 +19,4 @@ class SessionBroadcastManagerFactoryTest {
 
         assertNotNull(sessionBroadcastManagerFactory.createInstance())
     }
-
 }

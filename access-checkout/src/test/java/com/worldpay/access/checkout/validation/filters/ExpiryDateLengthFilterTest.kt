@@ -1,12 +1,12 @@
 package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
-import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class ExpiryDateLengthFilterTest {
@@ -34,5 +34,4 @@ class ExpiryDateLengthFilterTest {
         expiryDate.setText("12")
         assertEquals("12", expiryDate.text.toString())
     }
-
 }

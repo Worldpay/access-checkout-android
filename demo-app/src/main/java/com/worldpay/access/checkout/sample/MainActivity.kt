@@ -32,7 +32,8 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_card_flow,
                 R.id.nav_restricted_card_flow,
                 R.id.nav_cvc_flow
-            ), drawerLayout
+            ),
+            drawerLayout
         )
 
         toolbar.setupWithNavController(navController, appBarConfiguration)
@@ -71,5 +72,4 @@ class MainActivity : AppCompatActivity() {
             .findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         return navHostFragment.navController
     }
-
 }

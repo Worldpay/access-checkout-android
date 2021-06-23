@@ -6,12 +6,6 @@ import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.serialization.LinkDiscoveryDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import org.awaitility.Awaitility
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.BDDMockito
-import org.robolectric.RobolectricTestRunner
 import java.net.MalformedURLException
 import java.net.URL
 import java.util.concurrent.TimeUnit
@@ -19,6 +13,12 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
+import org.awaitility.Awaitility
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.BDDMockito
+import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class ApiDiscoveryAsyncTaskTest {
@@ -26,7 +26,7 @@ class ApiDiscoveryAsyncTaskTest {
     private val endpointMock: Endpoint = mock()
     private val secondEndpointMock: Endpoint = mock()
 
-    private val endpointsMock = listOf(endpointMock,secondEndpointMock)
+    private val endpointsMock = listOf(endpointMock, secondEndpointMock)
     private val httpsClientMock: HttpsClient = mock()
     private val linkDiscoveryDeserializerMock: LinkDiscoveryDeserializer = mock()
     private val secondLinkDiscoveryDeserializerMock: LinkDiscoveryDeserializer = mock()
@@ -88,7 +88,7 @@ class ApiDiscoveryAsyncTaskTest {
     }
 
     @Test
-    fun  `should throw an AccessCheckoutException when service discovery throws a server error`() {
+    fun `should throw an AccessCheckoutException when service discovery throws a server error`() {
         var asserted = false
         val expectedException = AccessCheckoutException("Some message")
 
@@ -222,7 +222,6 @@ class ApiDiscoveryAsyncTaskTest {
         Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
     }
 
-
     @Test
     fun `should discover resource when given a valid url and two levels discovery required`() {
 
@@ -297,7 +296,7 @@ class ApiDiscoveryAsyncTaskTest {
 
         val rootURL = URL(baseURL)
         val thirdEndpointMock: Endpoint = mock()
-        val threeLevelEndpointsMock = listOf(endpointMock,secondEndpointMock,thirdEndpointMock)
+        val threeLevelEndpointsMock = listOf(endpointMock, secondEndpointMock, thirdEndpointMock)
 
         given(endpointMock.getDeserializer()).willReturn(linkDiscoveryDeserializerMock)
         given(secondEndpointMock.getDeserializer()).willReturn(secondLinkDiscoveryDeserializerMock)

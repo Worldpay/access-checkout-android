@@ -13,11 +13,11 @@ import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValida
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getMaxLength
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Test
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class ValidationUtilTest {
 
@@ -133,5 +133,4 @@ class ValidationUtilTest {
     fun `given all numeric chars with a space in the middle then isNumeric should return false`() {
         assertFalse(isNumeric("1 4"))
     }
-
 }

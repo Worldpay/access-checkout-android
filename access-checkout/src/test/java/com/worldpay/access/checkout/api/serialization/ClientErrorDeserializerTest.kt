@@ -2,9 +2,9 @@ package com.worldpay.access.checkout.api.serialization
 
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
+import kotlin.test.assertFailsWith
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 class ClientErrorDeserializerTest {
 
@@ -134,7 +134,6 @@ class ClientErrorDeserializerTest {
                 ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
             )
 
-
         val expectedErrorObject = AccessCheckoutException(
             message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
             validationRules = expectedValidationRuleList
@@ -151,9 +150,7 @@ class ClientErrorDeserializerTest {
                 "message": "The body within the request is not valid json"
             }"""
 
-
         val deserializedError = clientErrorDeserializer.deserialize(jsonResponse)
-
 
         val expectedErrorObject = AccessCheckoutException("bodyIsNotJson : The body within the request is not valid json")
 
@@ -189,7 +186,6 @@ class ClientErrorDeserializerTest {
             )
 
         assertEquals(expectedException, deserializedError)
-
     }
 
     @Test
@@ -222,7 +218,6 @@ class ClientErrorDeserializerTest {
             )
 
         assertEquals(expectedException, deserializedError)
-
     }
 
     @Test
@@ -317,5 +312,4 @@ class ClientErrorDeserializerTest {
 
         assertEquals(expectedException, error)
     }
-
 }

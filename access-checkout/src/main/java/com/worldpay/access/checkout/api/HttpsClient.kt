@@ -4,16 +4,26 @@ import com.worldpay.access.checkout.api.serialization.ClientErrorDeserializer
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import java.io.*
+import java.io.BufferedOutputStream
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.OutputStream
+import java.io.OutputStreamWriter
+import java.io.Serializable
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
-internal class HttpsClient(private val urlFactory: URLFactory = URLFactoryImpl(),
-                           private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer()) {
+internal class HttpsClient(
+    private val urlFactory: URLFactory = URLFactoryImpl(),
+    private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer()
+) {
 
     @Throws(AccessCheckoutException::class)
     fun <Request : Serializable, Response> doPost(
-        url: URL, request: Request, headers: Map<String, String>,
+        url: URL,
+        request: Request,
+        headers: Map<String, String>,
         serializer: Serializer<Request>,
         deserializer: Deserializer<Response>
     ): Response {
@@ -29,7 +39,6 @@ internal class HttpsClient(private val urlFactory: URLFactory = URLFactoryImpl()
             httpsUrlConn.connectTimeout = CONNECT_TIMEOUT
             httpsUrlConn.readTimeout = READ_TIMEOUT
             httpsUrlConn.setChunkedStreamingMode(0)
-
 
             val outputStream: OutputStream = BufferedOutputStream(httpsUrlConn.outputStream)
             OutputStreamWriter(outputStream).use {
@@ -57,7 +66,8 @@ internal class HttpsClient(private val urlFactory: URLFactory = URLFactoryImpl()
 
     @Throws(AccessCheckoutException::class)
     fun <Response> doGet(
-        url: URL, deserializer: Deserializer<Response>,
+        url: URL,
+        deserializer: Deserializer<Response>,
         headers: Map<String, String> = mapOf()
     ): Response {
         var httpsUrlConn: HttpsURLConnection? = null
@@ -77,7 +87,6 @@ internal class HttpsClient(private val urlFactory: URLFactory = URLFactoryImpl()
             }
 
             return deserializer.deserialize(responseData)
-
         } catch (ex: AccessCheckoutException) {
             throw ex
         } catch (ex: Exception) {
@@ -88,7 +97,10 @@ internal class HttpsClient(private val urlFactory: URLFactory = URLFactoryImpl()
         }
     }
 
-    private fun setRequestProperties(HttpsURLConnection: HttpsURLConnection, headers: Map<String, String>) {
+    private fun setRequestProperties(
+        HttpsURLConnection: HttpsURLConnection,
+        headers: Map<String, String>
+    ) {
         headers.forEach { HttpsURLConnection.setRequestProperty(it.key, it.value) }
     }
 
@@ -145,12 +157,18 @@ internal class HttpsClient(private val urlFactory: URLFactory = URLFactoryImpl()
         return handleRedirect(httpsUrlConn, ::postFunc)
     }
 
-    private fun <Response> handleRedirect(httpsUrlConn: HttpsURLConnection, deserializer: Deserializer<Response>): Response {
+    private fun <Response> handleRedirect(
+        httpsUrlConn: HttpsURLConnection,
+        deserializer: Deserializer<Response>
+    ): Response {
         fun getFunc(url: String) = doGet(urlFactory.getURL(url), deserializer)
         return handleRedirect(httpsUrlConn, ::getFunc)
     }
 
-    private fun <Response> handleRedirect(httpsUrlConn: HttpsURLConnection, exec: (String) -> Response): Response {
+    private fun <Response> handleRedirect(
+        httpsUrlConn: HttpsURLConnection,
+        exec: (String) -> Response
+    ): Response {
         val location = httpsUrlConn.getHeaderField(LOCATION)
         if (location.isNullOrBlank()) {
             throw AccessCheckoutException("Response from server was a redirect HTTP response code: ${httpsUrlConn.responseCode} but did not include a Location header")
@@ -176,6 +194,6 @@ internal interface URLFactory {
     fun getURL(url: String): URL
 }
 
-internal class URLFactoryImpl: URLFactory {
+internal class URLFactoryImpl : URLFactory {
     override fun getURL(url: String): URL = URL(url)
 }

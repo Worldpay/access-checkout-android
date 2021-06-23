@@ -5,9 +5,12 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
-import org.junit.Test
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class PanValidatorTest {
 
@@ -65,5 +68,4 @@ class PanValidatorTest {
         val panValidator = PanValidator(arrayOf("VisA", "MASTERCARD"))
         assertEquals(VALID, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
     }
-
 }

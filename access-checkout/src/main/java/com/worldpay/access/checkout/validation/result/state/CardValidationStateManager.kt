@@ -17,7 +17,4 @@ internal class CardValidationStateManager(
     override fun isAllValid(): Boolean {
         return panValidationState.validationState && expiryDateValidationState.validationState && cvcValidationState.validationState
     }
-
 }
-
-

@@ -20,5 +20,4 @@ class LocalBroadcastManagerFactoryTest {
         val localBroadcastManagerFactory = LocalBroadcastManagerFactory(contextMock)
         assertNotNull(localBroadcastManagerFactory.createInstance())
     }
-
 }

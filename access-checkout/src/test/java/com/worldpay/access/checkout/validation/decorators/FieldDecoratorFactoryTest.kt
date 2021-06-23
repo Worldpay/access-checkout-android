@@ -5,11 +5,11 @@ import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
+import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.verify
-import kotlin.test.assertNotNull
 
 class FieldDecoratorFactoryTest {
 
@@ -64,13 +64,15 @@ class FieldDecoratorFactoryTest {
     fun `should get pan field decorator`() {
         val acceptedCardBrands = arrayOf("VISA", "AMEX")
 
-        given(textWatcherFactory.createPanTextWatcher(
-            panEditText = panEditText,
-            cvcEditText = cvcEditText,
-            acceptedCardBrands = acceptedCardBrands,
-            enablePanFormatting = false
+        given(
+            textWatcherFactory.createPanTextWatcher(
+                panEditText = panEditText,
+                cvcEditText = cvcEditText,
+                acceptedCardBrands = acceptedCardBrands,
+                enablePanFormatting = false
 
-        )).willReturn(mock())
+            )
+        ).willReturn(mock())
         given(focusChangeListenerFactory.createPanFocusChangeListener()).willReturn(mock())
         given(lengthFilterFactory.getPanLengthFilter(false)).willReturn(mock())
 
@@ -106,5 +108,4 @@ class FieldDecoratorFactoryTest {
         verify(focusChangeListenerFactory).createExpiryDateFocusChangeListener()
         verify(lengthFilterFactory).getExpiryDateLengthFilter()
     }
-
 }

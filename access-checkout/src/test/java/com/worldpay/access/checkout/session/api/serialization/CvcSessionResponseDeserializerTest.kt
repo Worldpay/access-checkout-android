@@ -4,9 +4,9 @@ import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponse.Links
 import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.Endpoints
+import kotlin.test.assertFailsWith
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 class CvcSessionResponseDeserializerTest {
 
@@ -109,7 +109,6 @@ class CvcSessionResponseDeserializerTest {
                 }"""
 
         val deserializedResponse = sessionResponseDeserializer.deserialize(jsonResponse)
-
 
         val expectedCuries =
             arrayOf(
