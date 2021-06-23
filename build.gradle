@@ -28,6 +28,7 @@ subprojects {
     ktlint {
         android.set(true)
         outputColorName.set('RED')
+        disabledRules = ['max-line-length']
     }
 }
 
