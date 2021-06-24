@@ -6,6 +6,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import org.junit.Test
@@ -21,7 +22,7 @@ class CardValidationConfigBuilderTest {
     private val lifecycleOwner = mock<LifecycleOwner>()
 
     @Test
-    fun `should build card validation config`() {
+    fun `should build card validation config with pan formatting disabled by default`() {
         val config = CardValidationConfig.Builder()
             .baseUrl(baseUrl)
             .pan(pan)
@@ -39,6 +40,7 @@ class CardValidationConfigBuilderTest {
         assertEquals(cvc, config.cvc)
         assertEquals(acceptedCardBrands, config.acceptedCardBrands)
         assertEquals(validationListener, config.validationListener)
+        assertFalse(config.enablePanFormatting)
     }
 
     @Test
