@@ -35,21 +35,25 @@ object MockServer {
 
         HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
 
-        wireMockServer = WireMockServer(WireMockConfiguration
-            .options()
-            .notifier(ConsoleNotifier(true))
-            .httpsPort(port)
-            .httpServerFactory(CustomHttpServerFactory())
-            .keystorePath(keyStoreFile.absolutePath)
-            .keystoreType("BKS")
-            .keystorePassword("password")
-            .extensions(ResponseTemplateTransformer(false)))
+        wireMockServer = WireMockServer(
+            WireMockConfiguration
+                .options()
+                .notifier(ConsoleNotifier(true))
+                .httpsPort(port)
+                .httpServerFactory(CustomHttpServerFactory())
+                .keystorePath(keyStoreFile.absolutePath)
+                .keystoreType("BKS")
+                .keystorePassword("password")
+                .extensions(ResponseTemplateTransformer(false))
+        )
 
-        Thread(Runnable {
-            wireMockServer.start()
-            stubServiceDiscoveryResponses()
-            hasStarted = true
-        }).start()
+        Thread(
+            Runnable {
+                wireMockServer.start()
+                stubServiceDiscoveryResponses()
+                hasStarted = true
+            }
+        ).start()
 
         waitForWiremock()
     }
@@ -70,5 +74,4 @@ object MockServer {
         Log.d("MockServer", "Started wiremock!!")
         baseUrl = wireMockServer.baseUrl()
     }
-
 }

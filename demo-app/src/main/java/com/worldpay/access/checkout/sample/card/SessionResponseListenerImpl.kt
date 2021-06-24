@@ -49,7 +49,6 @@ class SessionResponseListenerImpl(
             .create()
             .show()
 
-
         enableFields()
         submitBtn.enable()
     }
@@ -69,5 +68,4 @@ class SessionResponseListenerImpl(
         activity.findViewById<EditText>(R.id.card_flow_expiry_date).text.clear()
         activity.findViewById<Switch>(R.id.card_flow_payments_cvc_switch).isChecked = false
     }
-
 }

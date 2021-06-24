@@ -61,5 +61,4 @@ class DiscoveryIntegrationTest {
             .closeDialog()
             .isInInitialState()
     }
-
 }

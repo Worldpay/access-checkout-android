@@ -6,21 +6,24 @@ import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
+import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.mockito.BDDMockito.given
-import org.mockito.Mockito.*
-import org.robolectric.RobolectricTestRunner
 import java.io.Serializable
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.mockito.BDDMockito.given
+import org.mockito.Mockito.atMost
+import org.mockito.Mockito.verify
+import org.mockito.Mockito.verifyNoMoreInteractions
+import org.mockito.Mockito.verifyZeroInteractions
+import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
 class SessionBroadcastReceiverTest {
@@ -29,7 +32,7 @@ class SessionBroadcastReceiverTest {
     private lateinit var sessionBroadcastReceiver: SessionBroadcastReceiver
     private lateinit var intent: Intent
     private lateinit var context: Context
-    
+
     @Before
     fun setup() {
         externalSessionResponseListener = mock()
@@ -249,7 +252,8 @@ class SessionBroadcastReceiverTest {
                 SessionResponse.Links(
                     SessionResponse.Links.Endpoints(
                         href
-                    ), emptyArray()
+                    ),
+                    emptyArray()
                 )
             )
 
@@ -264,7 +268,6 @@ class SessionBroadcastReceiverTest {
         given(intent.getIntExtra(NUMBER_OF_SESSION_TYPE_KEY, 0)).willReturn(numSessionTypes)
         sessionBroadcastReceiver.onReceive(context, intent)
     }
-
 }
 
 data class TestObject(val property: String) : Serializable

@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class ExpiryDateSanitiserTest {
 
@@ -90,17 +90,17 @@ class ExpiryDateSanitiserTest {
 
         for (char in characters.split(".")) {
             assertEquals("02/29", expiryDateSanitiser.sanitise("${char}2/29"))
-            assertEquals("02/9", expiryDateSanitiser.sanitise("0${char}/29"))
+            assertEquals("02/9", expiryDateSanitiser.sanitise("0$char/29"))
             assertEquals("02/9", expiryDateSanitiser.sanitise("02/${char}9"))
-            assertEquals("02/2", expiryDateSanitiser.sanitise("02/2${char}"))
+            assertEquals("02/2", expiryDateSanitiser.sanitise("02/2$char"))
 
-            assertEquals("02/", expiryDateSanitiser.sanitise("02/${char}${char}"))
-            assertEquals("02/", expiryDateSanitiser.sanitise("0${char}/2${char}"))
-            assertEquals("02/2", expiryDateSanitiser.sanitise("${char}2/2${char}"))
-            assertEquals("02/9", expiryDateSanitiser.sanitise("${char}${char}/29"))
+            assertEquals("02/", expiryDateSanitiser.sanitise("02/${char}$char"))
+            assertEquals("02/", expiryDateSanitiser.sanitise("0$char/2$char"))
+            assertEquals("02/2", expiryDateSanitiser.sanitise("${char}2/2$char"))
+            assertEquals("02/9", expiryDateSanitiser.sanitise("${char}$char/29"))
             assertEquals("02/9", expiryDateSanitiser.sanitise("${char}2/${char}9"))
-            assertEquals("", expiryDateSanitiser.sanitise("${char}${char}/${char}${char}"))
-            assertEquals("", expiryDateSanitiser.sanitise("${char}${char}${char}${char}"))
+            assertEquals("", expiryDateSanitiser.sanitise("${char}$char/${char}$char"))
+            assertEquals("", expiryDateSanitiser.sanitise("${char}${char}${char}$char"))
         }
     }
 
@@ -112,5 +112,4 @@ class ExpiryDateSanitiserTest {
         assertEquals("02/23", expiryDateSanitiser.sanitise("223"))
         assertEquals("02/24", expiryDateSanitiser.sanitise("2240"))
     }
-
 }

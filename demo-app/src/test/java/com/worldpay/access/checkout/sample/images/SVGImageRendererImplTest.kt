@@ -9,13 +9,13 @@ import com.caverock.androidsvg.SVG
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.sample.R
+import java.io.InputStream
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentMatchers
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.mock
 import org.mockito.Mockito.verify
-import java.io.InputStream
 
 class SVGImageRendererImplTest {
 

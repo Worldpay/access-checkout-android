@@ -38,5 +38,4 @@ internal object DiscoveryCache {
     fun clearResult(discoverLinks: DiscoverLinks) {
         results.remove(discoverLinks.endpoints[0].endpoint)
     }
-
 }

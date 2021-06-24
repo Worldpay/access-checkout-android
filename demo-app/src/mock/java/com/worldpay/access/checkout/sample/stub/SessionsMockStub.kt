@@ -2,7 +2,13 @@ package com.worldpay.access.checkout.sample.stub
 
 import android.content.Context
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.containing
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
+import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.matching
+import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.github.tomakehurst.wiremock.matching.AnythingPattern
 import com.worldpay.access.checkout.sample.MockServer.Paths.SESSIONS_PAYMENTS_CVC_PATH
@@ -14,11 +20,11 @@ import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsRespons
 
 object SessionsMockStub {
 
-    const val SESSIONS_MEDIA_TYPE = "application/vnd.worldpay.sessions-v1.hal+json"
+    private const val SESSIONS_MEDIA_TYPE = "application/vnd.worldpay.sessions-v1.hal+json"
 
     fun stubSessionsTokenRootRequest() {
         stubFor(
-            get("/${SESSIONS_ROOT_PATH}")
+            get("/$SESSIONS_ROOT_PATH")
                 .willReturn(defaultResponse())
         )
     }
@@ -90,7 +96,5 @@ object SessionsMockStub {
                     )
                 )
         }
-
     }
-
 }

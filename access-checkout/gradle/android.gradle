@@ -15,9 +15,12 @@ android {
             zipAlignEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
         }
         debug {
             testCoverageEnabled = true
+            buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
+
         }
     }
 
@@ -25,12 +28,6 @@ android {
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true
-        }
-
-        unitTests.all {
-            jacoco {
-                includeNoLocationClasses = true
-            }
         }
     }
 

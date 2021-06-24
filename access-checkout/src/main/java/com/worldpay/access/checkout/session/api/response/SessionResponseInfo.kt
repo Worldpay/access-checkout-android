@@ -12,7 +12,7 @@ import java.io.Serializable
 internal class SessionResponseInfo private constructor(
     val responseBody: SessionResponse,
     val sessionType: SessionType
-): Serializable {
+) : Serializable {
 
     internal data class Builder(
         private var responseBody: SessionResponse? = null,
@@ -29,5 +29,4 @@ internal class SessionResponseInfo private constructor(
                 sessionType as SessionType
             )
     }
-
 }

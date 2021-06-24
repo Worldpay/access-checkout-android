@@ -5,16 +5,16 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
+import java.time.LocalDate
+import java.time.Year
+import java.util.Calendar
+import kotlin.math.abs
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
-import java.time.LocalDate
-import java.time.Year
-import java.util.*
-import kotlin.math.abs
-import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class ExpiryDateTextWatcherIntegrationTest {
@@ -256,9 +256,9 @@ class ExpiryDateTextWatcherIntegrationTest {
 
         if (monthInPast == "12") {
             // in the month of january, -1 on the year as well
-            expiryDate.setText("${monthInPast}/${getYear(-1)}")
+            expiryDate.setText("$monthInPast/${getYear(-1)}")
         } else {
-            expiryDate.setText("${monthInPast}/${getYear()}")
+            expiryDate.setText("$monthInPast/${getYear()}")
         }
 
         verify(expiryDateValidationResultHandler).handleResult(false)
@@ -324,7 +324,7 @@ class ExpiryDateTextWatcherIntegrationTest {
         verify(expiryDateValidationResultHandler).handleResult(false)
     }
 
-    private fun enterAndGetText(string: String) : String {
+    private fun enterAndGetText(string: String): String {
         expiryDate.setText(string)
         return expiryDate.text.toString()
     }
@@ -349,5 +349,4 @@ class ExpiryDateTextWatcherIntegrationTest {
         val currentYear = Year.now().value
         return (currentYear + offset).toString().drop(2)
     }
-
 }

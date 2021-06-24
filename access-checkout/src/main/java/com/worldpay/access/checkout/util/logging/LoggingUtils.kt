@@ -11,5 +11,4 @@ internal object LoggingUtils {
     fun debugLog(tag: String, msg: String) {
         accessCheckoutLogger.debugLog(tag, msg)
     }
-
 }

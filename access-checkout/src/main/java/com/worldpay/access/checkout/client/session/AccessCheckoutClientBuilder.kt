@@ -123,5 +123,4 @@ class AccessCheckoutClientBuilder {
             SessionBroadcastManagerFactory(localBroadcastManagerFactory, externalSessionResponseListener)
         )
     }
-
 }

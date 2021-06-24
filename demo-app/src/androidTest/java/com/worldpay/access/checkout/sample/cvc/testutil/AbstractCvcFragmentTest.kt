@@ -25,5 +25,4 @@ abstract class AbstractCvcFragmentTest {
         closeSoftKeyboard()
         rotatePortrait(activityRule)
     }
-
 }

@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
 import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
 import java.io.Serializable
 
-internal class DiscoverLinks(val endpoints: List<Endpoint>): Serializable {
+internal class DiscoverLinks(val endpoints: List<Endpoint>) : Serializable {
 
     internal companion object {
         val verifiedTokens = DiscoverLinks(
@@ -22,7 +22,7 @@ internal class DiscoverLinks(val endpoints: List<Endpoint>): Serializable {
             )
         )
 
-        val sessions =  DiscoverLinks(
+        val sessions = DiscoverLinks(
             listOf(
                 Endpoint("service:sessions"),
                 Endpoint(
@@ -35,6 +35,4 @@ internal class DiscoverLinks(val endpoints: List<Endpoint>): Serializable {
             )
         )
     }
-
 }
-

@@ -138,5 +138,4 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         }
         return validLengthsList
     }
-
 }

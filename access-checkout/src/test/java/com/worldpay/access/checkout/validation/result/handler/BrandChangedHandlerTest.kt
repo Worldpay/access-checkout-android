@@ -13,7 +13,7 @@ class BrandChangedHandlerTest {
     private lateinit var brandChangedHandler: BrandChangedHandler
 
     private lateinit var validationListener: AccessCheckoutBrandChangedListener
-    private lateinit var toCardBrandTransformer : ToCardBrandTransformer
+    private lateinit var toCardBrandTransformer: ToCardBrandTransformer
 
     @Before
     fun setup() {
@@ -41,5 +41,4 @@ class BrandChangedHandlerTest {
 
         verify(validationListener).onBrandChange(cardBrand)
     }
-
 }

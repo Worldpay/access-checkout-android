@@ -2,11 +2,11 @@ package com.worldpay.access.checkout.validation.transformers
 
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import org.junit.Before
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
+import org.junit.Before
+import org.junit.Test
 
 class ToCardBrandTransformerTest {
 
@@ -47,5 +47,4 @@ class ToCardBrandTransformerTest {
     fun `should return null when null is passed into transformer`() {
         assertNull(toCardBrandTransformer.transform(null))
     }
-
 }

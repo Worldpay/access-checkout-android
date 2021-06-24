@@ -9,9 +9,8 @@ internal class BrandChangedHandler(
     private val toCardBrandTransformer: ToCardBrandTransformer
 ) {
 
-    fun handle(remoteCardBrand : RemoteCardBrand?) {
+    fun handle(remoteCardBrand: RemoteCardBrand?) {
         val cardBrand = toCardBrandTransformer.transform(remoteCardBrand)
         validationListener.onBrandChange(cardBrand)
     }
-
 }

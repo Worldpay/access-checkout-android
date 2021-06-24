@@ -17,7 +17,7 @@ import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
  */
 internal class CvcSessionRequestHandler(
     private val sessionRequestHandlerConfig: SessionRequestHandlerConfig
-): SessionRequestHandler {
+) : SessionRequestHandler {
 
     /**
      * Returns True if the list contains a [CVC]
@@ -57,5 +57,4 @@ internal class CvcSessionRequestHandler(
 
         sessionRequestHandlerConfig.getContext().startService(serviceIntent)
     }
-
 }

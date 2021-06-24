@@ -25,5 +25,4 @@ internal class RequestDispatcherFactory {
     ): RequestDispatcher {
         return RequestDispatcher(path, sessionResponseCallback, sessionClient)
     }
-
 }

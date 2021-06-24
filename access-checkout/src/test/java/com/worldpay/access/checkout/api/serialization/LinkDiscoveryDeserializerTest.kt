@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.api.serialization
 
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import kotlin.test.assertFailsWith
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import kotlin.test.assertFailsWith
 
 class LinkDiscoveryDeserializerTest {
 

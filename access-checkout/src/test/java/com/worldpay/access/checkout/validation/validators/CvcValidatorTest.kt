@@ -56,5 +56,4 @@ class CvcValidatorTest {
         verify(cvcValidationResultHandler).handleResult(false)
         reset(cvcValidationResultHandler)
     }
-
 }

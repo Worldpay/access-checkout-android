@@ -11,7 +11,7 @@ class ExpiryDateFocusChangeListenerTest {
 
     private val expiryDateValidationResultHandler = mock<ExpiryDateValidationResultHandler>()
 
-    private lateinit var expiryDateFocusChangeListener : ExpiryDateFocusChangeListener
+    private lateinit var expiryDateFocusChangeListener: ExpiryDateFocusChangeListener
 
     @Before
     fun setup() {
@@ -31,5 +31,4 @@ class ExpiryDateFocusChangeListenerTest {
 
         verifyZeroInteractions(expiryDateValidationResultHandler)
     }
-
 }

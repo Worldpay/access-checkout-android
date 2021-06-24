@@ -40,7 +40,9 @@ internal class SessionRequestHandlerConfig private constructor(
 
         fun context(context: Context) = apply { this.context = context }
 
-        fun externalSessionResponseListener(externalSessionResponseListener: SessionResponseListener) =
+        fun externalSessionResponseListener(
+            externalSessionResponseListener: SessionResponseListener
+        ) =
             apply { this.externalSessionResponseListener = externalSessionResponseListener }
 
         fun build(): SessionRequestHandlerConfig {
@@ -56,7 +58,5 @@ internal class SessionRequestHandlerConfig private constructor(
                 externalSessionResponseListener = externalSessionResponseListener as SessionResponseListener
             )
         }
-
     }
-
 }

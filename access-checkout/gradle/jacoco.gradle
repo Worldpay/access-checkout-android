@@ -1,75 +1,39 @@
 apply plugin: 'jacoco'
 
 jacoco {
-    toolVersion = "0.8.5"
+    toolVersion = '0.8.7'
 }
 
-def loggingClasses = ['**/logging/LoggingUtils*', '**/logging/AccessCheckoutLogger*']
-def fileFilter = ['**/R.class', '**/R$*.class', '**/BuildConfig.*', '**/Manifest*.*', '**/*Test*.*', 'android/**/*.*'] + loggingClasses
+def fileFilter = [
+        '**/R.class',
+        '**/R$*.class',
+        '**/BuildConfig.*',
+        '**/Manifest*.*',
+        '**/*Test*.*',
+        'android/**/*.*',
+        '**/logging/LoggingUtils*',
+        '**/logging/AccessCheckoutLogger*'
+]
 def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
-def mainSrc = "${project.projectDir}/src/main/java"
-
 def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
 
-def sourceDirectoryFiles = files([mainSrc])
-def classDirectoryFiles = files([debugTree], [kotlinDebugTree])
-def unitTestTask = "testDebugUnitTest"
-def executionDataFile = files("${buildDir}/jacoco/" + unitTestTask + ".exec")
+task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+    executionData.from = files("$project.projectDir/jacoco.exec")
+    classDirectories.setFrom(files([debugTree], [kotlinDebugTree]))
+    sourceDirectories.setFrom(files(["${project.projectDir}/src/main/java"]))
+
+    reports {
+        html.enabled true
+    }
+}
 
 task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
     violationRules {
         rule {
             element = 'CLASS'
             limit {
-                counter = 'LINE'
-                value = 'COVEREDRATIO'
-                minimum = 1.00
-            }
-
-            limit {
-                counter = 'BRANCH'
-                value = 'COVEREDRATIO'
-                minimum = 1.00
-            }
-
-            limit {
-                counter = 'CLASS'
-                value = 'COVEREDRATIO'
-                minimum = 1.00
-            }
-
-            limit {
-                counter = 'INSTRUCTION'
-                value = 'COVEREDRATIO'
-                minimum = 1.00
-            }
-
-            limit {
-                counter = 'METHOD'
-                value = 'COVEREDRATIO'
-                minimum = 1.00
+                minimum = 1.0
             }
         }
     }
-
-    onlyIf = {
-        true
-    }
-
-    sourceDirectories.setFrom(sourceDirectoryFiles)
-    classDirectories.setFrom(classDirectoryFiles)
-    executionData.setFrom(executionDataFile)
-
-}
-
-task jacocoTestReport(type: JacocoReport, dependsOn: unitTestTask) {
-
-    reports {
-        xml.enabled = true
-        html.enabled = true
-    }
-
-    sourceDirectories.setFrom(sourceDirectoryFiles)
-    classDirectories.setFrom(classDirectoryFiles)
-    executionData.setFrom(executionDataFile)
 }

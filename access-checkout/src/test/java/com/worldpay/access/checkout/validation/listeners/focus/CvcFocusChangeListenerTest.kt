@@ -11,7 +11,7 @@ class CvcFocusChangeListenerTest {
 
     private val cvcValidationResultHandler = mock<CvcValidationResultHandler>()
 
-    private lateinit var cvcFocusChangeListener : CvcFocusChangeListener
+    private lateinit var cvcFocusChangeListener: CvcFocusChangeListener
 
     @Before
     fun setup() {
@@ -31,5 +31,4 @@ class CvcFocusChangeListenerTest {
 
         verifyZeroInteractions(cvcValidationResultHandler)
     }
-
 }

@@ -54,7 +54,7 @@ object AccessCheckoutValidationInitialiser {
             validationConfig.pan,
             validationConfig.cvc,
             validationConfig.acceptedCardBrands,
-            validationConfig.disablePanFormatting
+            validationConfig.enablePanFormatting
         )
 
         val expiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(validationConfig.expiryDate)
@@ -92,5 +92,4 @@ object AccessCheckoutValidationInitialiser {
 
         cvcFieldDecorator.decorate()
     }
-
 }

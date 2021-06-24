@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
-import org.junit.Test
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class SimpleValidatorTest {
 
@@ -35,5 +35,4 @@ class SimpleValidatorTest {
     fun `should return invalid result if text meets matcher but not valid lengths`() {
         assertFalse(simpleValidator.validate("1234", defaultRule))
     }
-
 }

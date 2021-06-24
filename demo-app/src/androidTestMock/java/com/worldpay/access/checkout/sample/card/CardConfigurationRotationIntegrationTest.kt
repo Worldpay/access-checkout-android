@@ -1,6 +1,8 @@
 package com.worldpay.access.checkout.sample.card
 
 import com.worldpay.access.checkout.sample.MainActivity
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN_FORMATTED
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
@@ -8,10 +10,8 @@ import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.junit.Test
 
-class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
+class CardConfigurationRotationIntegrationTest : AbstractCardFragmentTest() {
 
-    private val luhnValidMastercardCard = "5555555555554444"
-    private val luhnValidMastercardCardWithSpaces = "5555 5555 5555 4444"
     private val luhnInvalidMastercardCard = "55555555555111"
     private val unknownCvc = "12"
 
@@ -34,8 +34,8 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .validationStateIs(pan = false, cvc = false, expiryDate = true)
             .hasBrand(MASTERCARD)
             .enabledStateIs(submitButton = false)
-            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "123", expiryDate = "1299")
-            .cardDetailsAre(pan = luhnValidMastercardCardWithSpaces, cvc = "123", expiryDate = "12/99")
+            .enterCardDetails(pan = MASTERCARD_PAN, cvc = "123", expiryDate = "1299")
+            .cardDetailsAre(pan = MASTERCARD_PAN_FORMATTED, cvc = "123", expiryDate = "12/99")
             .hasBrand(MASTERCARD)
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
@@ -46,7 +46,7 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .hasBrand(MASTERCARD)
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
-            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "12", expiryDate = "1299")
+            .enterCardDetails(pan = MASTERCARD_PAN, cvc = "12", expiryDate = "1299")
             .hasBrand(MASTERCARD)
             .validationStateIs(pan = true, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
@@ -57,9 +57,8 @@ class CardConfigurationRotationIntegrationTest: AbstractCardFragmentTest() {
             .hasBrand(MASTERCARD)
             .validationStateIs(pan = true, cvc = false, expiryDate = true)
             .enabledStateIs(submitButton = false)
-            .enterCardDetails(pan = luhnValidMastercardCard, cvc = "123", expiryDate = "1299")
+            .enterCardDetails(pan = MASTERCARD_PAN, cvc = "123", expiryDate = "1299")
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
     }
-
 }

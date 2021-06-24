@@ -2,10 +2,10 @@ package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
-import org.junit.Test
-import org.mockito.Mockito.mock
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.junit.Test
+import org.mockito.Mockito.mock
 
 class SessionRequestHandlerConfigTest {
 
@@ -79,6 +79,4 @@ class SessionRequestHandlerConfigTest {
         }
         assertEquals("Expected session response listener to be provided but was not", exception.message)
     }
-
-
 }

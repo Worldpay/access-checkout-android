@@ -5,12 +5,16 @@ import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.times
 import org.mockito.Mockito.verify
-import kotlin.test.*
 
 class ApiDiscoveryClientTest {
 
@@ -36,7 +40,7 @@ class ApiDiscoveryClientTest {
     fun `should execute async task when valid url is provided without callback for first time discovery`() {
         val accessCheckoutDiscoveryAsyncTask = mock<ApiDiscoveryAsyncTask>()
 
-        given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(),any())).willReturn(accessCheckoutDiscoveryAsyncTask)
+        given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(accessCheckoutDiscoveryAsyncTask)
 
         val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
 
@@ -57,7 +61,6 @@ class ApiDiscoveryClientTest {
                 assertionsRan = true
             }
         }
-
 
         val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
         given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(apiDiscoveryAsyncTaskMock)
@@ -113,7 +116,6 @@ class ApiDiscoveryClientTest {
                 assertionsRan1 = true
             }
         }
-
 
         val secondCallback = object : Callback<String> {
             override fun onResponse(error: Exception?, response: String?) {
@@ -206,5 +208,4 @@ class ApiDiscoveryClientTest {
             }
         }
     }
-
 }

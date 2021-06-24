@@ -4,13 +4,13 @@ import android.content.IntentFilter
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
+import kotlin.test.assertEquals
 import org.junit.Test
 import org.mockito.ArgumentCaptor
 import org.mockito.BDDMockito.any
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import kotlin.test.assertEquals
 
 class SessionBroadcastManagerTest {
 
@@ -54,5 +54,4 @@ class SessionBroadcastManagerTest {
 
         verify(localBroadcastManagerMock).unregisterReceiver(any(SessionBroadcastReceiver::class.java))
     }
-
 }

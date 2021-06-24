@@ -6,12 +6,6 @@ import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.removeWhitespace
-import org.junit.Assert.assertEquals
-import org.junit.Before
-import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.mockito.Mock
-import org.mockito.Mockito
 import java.io.InputStream
 import java.io.Serializable
 import java.net.ConnectException
@@ -19,6 +13,12 @@ import java.net.HttpURLConnection
 import java.net.URL
 import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Before
+import org.junit.Test
+import org.mockito.BDDMockito.given
+import org.mockito.Mock
+import org.mockito.Mockito
 
 class HttpsClientTest {
 
@@ -57,7 +57,7 @@ class HttpsClientTest {
                 }"""
         )
 
-        val testResponse  = TestResponse("abcdef")
+        val testResponse = TestResponse("abcdef")
 
         val httpURLConnection = stubResponse(buildMockedResponse(201, testResponseAsString, ""))
         assertTrue(httpURLConnection.requestProperties.isEmpty())
@@ -125,7 +125,8 @@ class HttpsClientTest {
         val errorMessage = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
         val expectedException = AccessCheckoutException(errorMessage)
         val responseBody =
-            removeWhitespace("""{
+            removeWhitespace(
+                """{
                         "errorName": "bodyDoesNotMatchSchema",
                         "message": "The json body provided does not match the expected schema",
                         "validationErrors": [
@@ -135,8 +136,8 @@ class HttpsClientTest {
                                 "jsonPath": "${'$'}.identity"
                             }
                         ]
-                    }""")
-
+                    }"""
+            )
 
         stubResponse(buildMockedResponse(400, responseBody, errorMessage))
         given(clientErrorDeserializer.deserialize(responseBody)).willReturn(expectedException)
@@ -155,10 +156,12 @@ class HttpsClientTest {
         val errorMessage = "bodyIsEmpty : The body within the request is empty"
         val expectedException = AccessCheckoutException(errorMessage)
 
-        val jsonResponse =  removeWhitespace("""{
+        val jsonResponse = removeWhitespace(
+            """{
                                 "errorName": "bodyIsEmpty",
                                 "message": "$errorMessage"
-                            }""")
+                            }"""
+        )
 
         stubResponse(buildMockedResponse(400, jsonResponse, errorMessage))
         given(clientErrorDeserializer.deserialize(jsonResponse)).willReturn(expectedException)
@@ -196,7 +199,6 @@ class HttpsClientTest {
         }
 
         assertTrue(exception.cause is ConnectException)
-
     }
 
     @Test
@@ -209,7 +211,6 @@ class HttpsClientTest {
 
         assertEquals("An exception was thrown when trying to establish a connection", exception.message)
         assertTrue(exception.cause is java.lang.RuntimeException)
-
     }
 
     @Test
@@ -226,7 +227,6 @@ class HttpsClientTest {
 
         assertEquals("An exception was thrown when trying to establish a connection", exception.message)
         assertTrue(exception.cause is java.lang.RuntimeException)
-
     }
 
     @Test
@@ -237,15 +237,23 @@ class HttpsClientTest {
                 }"""
         )
 
-        val testResponse  = TestResponse("abcdef")
-
+        val testResponse = TestResponse("abcdef")
 
         val relocatedUrl = "https://localhost:8443/someotherURL"
         val relocatedUrlMock: URL = mock()
         given(urlFactory.getURL(relocatedUrl)).willReturn(relocatedUrlMock)
-        val mockHttpRedirectURLConnection = MockHttpsURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location",
-            relocatedUrl
-        ))))
+        val mockHttpRedirectURLConnection = MockHttpsURLConnection(
+            url,
+            MockedResponse(
+                301, null, "",
+                mutableMapOf(
+                    Pair(
+                        "Location",
+                        relocatedUrl
+                    )
+                )
+            )
+        )
         val mockHttpSuccessURLConnection = MockHttpsURLConnection(url, MockedResponse(200, testResponseAsString.byteInputStream(), ""))
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
         given(relocatedUrlMock.openConnection()).willReturn(mockHttpSuccessURLConnection)
@@ -300,7 +308,7 @@ class HttpsClientTest {
                 }"""
         )
 
-        val testResponse  = TestResponse("abcdef")
+        val testResponse = TestResponse("abcdef")
 
         stubResponse(buildMockedResponse(201, testResponseAsString, ""))
 
@@ -374,7 +382,7 @@ class HttpsClientTest {
             httpsClient.doGet(url, deserializer)
         }
 
-        assertEquals("Error message was: ${errorMessage}. Error response was: ${responseBody.replace("\n", "")}", exception.message)
+        assertEquals("Error message was: $errorMessage. Error response was: ${responseBody.replace("\n", "")}", exception.message)
     }
 
     @Test
@@ -437,14 +445,23 @@ class HttpsClientTest {
                 }"""
         )
 
-        val testResponse  = TestResponse("abcdef")
+        val testResponse = TestResponse("abcdef")
 
         val relocatedUrl = "https://localhost:8443/someotherURL"
         val relocatedUrlMock: URL = mock()
         given(urlFactory.getURL(relocatedUrl)).willReturn(relocatedUrlMock)
-        val mockHttpRedirectURLConnection = MockHttpsURLConnection(url, MockedResponse(301, null, "", mutableMapOf(Pair("Location",
-            relocatedUrl
-        ))))
+        val mockHttpRedirectURLConnection = MockHttpsURLConnection(
+            url,
+            MockedResponse(
+                301, null, "",
+                mutableMapOf(
+                    Pair(
+                        "Location",
+                        relocatedUrl
+                    )
+                )
+            )
+        )
         val mockHttpSuccessURLConnection = MockHttpsURLConnection(url, MockedResponse(200, testResponseAsString.byteInputStream(), ""))
         given(url.openConnection()).willReturn(mockHttpRedirectURLConnection)
         given(relocatedUrlMock.openConnection()).willReturn(mockHttpSuccessURLConnection)
@@ -502,7 +519,6 @@ class HttpsClientTest {
         given(url.openConnection()).willReturn(mockHttpURLConnection)
         return mockHttpURLConnection
     }
-
 }
 
 data class TestRequest(val property: String) : Serializable

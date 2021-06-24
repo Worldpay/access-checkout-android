@@ -51,7 +51,11 @@ internal class ApiDiscoveryAsyncTask(
         callbackOnTaskResult(callback, result)
     }
 
-    private fun fetchLinkFromUrl(url: String?, deserializer: Deserializer<String>, headers: Map<String, String>): String {
+    private fun fetchLinkFromUrl(
+        url: String?,
+        deserializer: Deserializer<String>,
+        headers: Map<String, String>
+    ): String {
         val httpUrl = try {
             URL(url)
         } catch (e: MalformedURLException) {
@@ -60,5 +64,4 @@ internal class ApiDiscoveryAsyncTask(
         }
         return httpsClient.doGet(httpUrl, deserializer, headers)
     }
-
 }

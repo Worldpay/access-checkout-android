@@ -2,10 +2,10 @@ package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
-import org.junit.Test
-import org.mockito.Mockito
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
+import org.junit.Test
+import org.mockito.Mockito
 
 class SessionRequestHandlerFactoryTest {
 
@@ -29,6 +29,4 @@ class SessionRequestHandlerFactoryTest {
         assertTrue(handlers[0] is CardSessionRequestHandler)
         assertTrue(handlers[1] is CvcSessionRequestHandler)
     }
-
-
 }

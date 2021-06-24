@@ -4,16 +4,15 @@ import android.widget.EditText
 
 internal class LengthFilterFactory {
 
-    fun getCvcLengthFilter(panEditText : EditText?) : CvcLengthFilter {
+    fun getCvcLengthFilter(panEditText: EditText?): CvcLengthFilter {
         return CvcLengthFilter(panEditText)
     }
 
-    fun getPanLengthFilter(disablePanFormatting: Boolean): PanLengthFilter {
-        return PanLengthFilter(disablePanFormatting)
+    fun getPanLengthFilter(enablePanFormatting: Boolean): PanLengthFilter {
+        return PanLengthFilter(enablePanFormatting)
     }
 
-    fun getExpiryDateLengthFilter() : ExpiryDateLengthFilter {
+    fun getExpiryDateLengthFilter(): ExpiryDateLengthFilter {
         return ExpiryDateLengthFilter()
     }
-
 }

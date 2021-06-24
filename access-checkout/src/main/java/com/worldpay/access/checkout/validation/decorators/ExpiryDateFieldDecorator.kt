@@ -40,5 +40,4 @@ internal class ExpiryDateFieldDecorator(
     }
 
     override fun update() = decorate()
-
 }

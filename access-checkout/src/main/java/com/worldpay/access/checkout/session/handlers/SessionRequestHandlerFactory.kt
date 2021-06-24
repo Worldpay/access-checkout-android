@@ -5,7 +5,9 @@ package com.worldpay.access.checkout.session.handlers
  *
  * @property sessionRequestHandlerConfig The [SessionRequestHandlerConfig] that should be used in the handler implementations
  */
-internal class SessionRequestHandlerFactory(sessionRequestHandlerConfig: SessionRequestHandlerConfig) {
+internal class SessionRequestHandlerFactory(
+    sessionRequestHandlerConfig: SessionRequestHandlerConfig
+) {
 
     private val handlers = listOf(
         CardSessionRequestHandler(
@@ -19,5 +21,4 @@ internal class SessionRequestHandlerFactory(sessionRequestHandlerConfig: Session
     fun getTokenHandlers(): List<SessionRequestHandler> {
         return handlers
     }
-
 }

@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session.api.request
 
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class SessionRequestTest {
 
@@ -40,5 +40,4 @@ class SessionRequestTest {
         assertEquals(cvc, cvcSessionRequest.cvc)
         assertEquals(identity, cvcSessionRequest.identity)
     }
-
 }

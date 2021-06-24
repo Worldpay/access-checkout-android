@@ -2,8 +2,8 @@ package com.worldpay.access.checkout.api.discovery
 
 import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
 import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class DiscoverLinksTest {
 
@@ -14,7 +14,6 @@ class DiscoverLinksTest {
 
         assertEquals(DiscoverLinks.sessions.endpoints[0].endpoint, expectedService)
         assertEquals(DiscoverLinks.sessions.endpoints[1].endpoint, expectedEndpoint)
-
     }
 
     @Test

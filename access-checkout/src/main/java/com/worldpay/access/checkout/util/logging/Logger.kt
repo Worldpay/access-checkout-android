@@ -22,5 +22,4 @@ internal class AccessCheckoutLogger : Logger {
             Log.e(tag, message)
         }
     }
-
 }

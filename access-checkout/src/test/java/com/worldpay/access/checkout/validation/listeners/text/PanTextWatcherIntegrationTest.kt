@@ -19,12 +19,12 @@ import com.worldpay.access.checkout.validation.result.handler.PanValidationResul
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
-import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class PanTextWatcherIntegrationTest {
@@ -208,7 +208,7 @@ class PanTextWatcherIntegrationTest {
         val panTextWatcher = PanTextWatcher(
             panEditText = pan,
             panValidator = PanValidator(arrayOf("MASTERCARD")),
-            panFormatter = PanFormatter(false),
+            panFormatter = PanFormatter(true),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
@@ -233,7 +233,7 @@ class PanTextWatcherIntegrationTest {
         val panTextWatcher = PanTextWatcher(
             panEditText = pan,
             panValidator = PanValidator(arrayOf("MASTERCARD")),
-            panFormatter = PanFormatter(true),
+            panFormatter = PanFormatter(false),
             cvcValidator = cvcValidator,
             cvcEditText = cvc,
             panValidationResultHandler = panValidationResultHandler,
@@ -250,5 +250,4 @@ class PanTextWatcherIntegrationTest {
 
         assertEquals(VISA_PAN, pan.text.toString())
     }
-
 }

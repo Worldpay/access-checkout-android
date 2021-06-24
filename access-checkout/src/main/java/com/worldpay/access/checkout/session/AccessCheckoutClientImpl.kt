@@ -39,6 +39,4 @@ internal class AccessCheckoutClientImpl(
         broadcastIntent.action = NUM_OF_SESSION_TYPES_REQUESTED
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
     }
-
 }
-

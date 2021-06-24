@@ -4,22 +4,22 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class PanFormatterTest {
-    
-    private val panFormatter = PanFormatter(false)
+
+    private val panFormatter = PanFormatter(true)
 
     @Test
     fun `should not do any formatting when formatting is disabled`() {
-        val panFormatter = PanFormatter(true)
+        val panFormatter = PanFormatter(false)
 
         val pan = panFormatter.format(VISA_PAN, VISA_BRAND)
 
         assertEquals(VISA_PAN, pan)
     }
-    
+
     @Test
     fun `should not reformat a pan that is less than 4 digits`() {
         val pan = panFormatter.format("411", VISA_BRAND)

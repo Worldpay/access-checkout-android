@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.api.serialization
 
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import kotlin.reflect.KClass
 import org.json.JSONArray
 import org.json.JSONException
 import org.json.JSONObject
-import kotlin.reflect.KClass
 
 internal typealias Parser<T> = (String) -> T
 

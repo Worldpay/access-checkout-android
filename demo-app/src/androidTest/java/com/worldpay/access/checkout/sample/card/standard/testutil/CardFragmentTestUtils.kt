@@ -13,8 +13,6 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
-import org.eclipse.jetty.io.AbstractEndPoint
-import java.text.FieldPosition
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
@@ -82,9 +80,13 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun enabledStateIs(pan: Boolean? = null, cvc: Boolean? = null, expiryDate: Boolean? = null,
-                       paymentsCvcSwitch: Boolean? = null,
-                       submitButton: Boolean? = null): CardFragmentTestUtils {
+    fun enabledStateIs(
+        pan: Boolean? = null,
+        cvc: Boolean? = null,
+        expiryDate: Boolean? = null,
+        paymentsCvcSwitch: Boolean? = null,
+        submitButton: Boolean? = null
+    ): CardFragmentTestUtils {
         val visibleMsg = "visibility state"
         val enableMsg = "enabled state"
 
@@ -131,7 +133,12 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun enterCardDetails(pan: String? = null, cvc: String? = null, expiryDate: String? = null, assertText: Boolean = false): CardFragmentTestUtils {
+    fun enterCardDetails(
+        pan: String? = null,
+        cvc: String? = null,
+        expiryDate: String? = null,
+        assertText: Boolean = false
+    ): CardFragmentTestUtils {
         if (pan != null) enterText(panInput(), pan)
         if (cvc != null) enterText(cvcInput(), cvc)
         if (expiryDate != null) enterText(expiryDateInput(), expiryDate)
@@ -177,5 +184,4 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
         return this
     }
-
 }

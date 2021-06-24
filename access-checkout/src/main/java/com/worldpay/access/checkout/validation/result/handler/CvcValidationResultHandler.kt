@@ -7,10 +7,10 @@ import com.worldpay.access.checkout.validation.result.state.CvcFieldValidationSt
 internal class CvcValidationResultHandler(
     private val validationListener: AccessCheckoutCvcValidationListener,
     private val validationStateManager: CvcFieldValidationStateManager,
-    lifecycleOwner : LifecycleOwner
+    lifecycleOwner: LifecycleOwner
 ) : AbstractValidationResultHandler(lifecycleOwner) {
 
-    override fun notifyListener(isValid : Boolean) {
+    override fun notifyListener(isValid: Boolean) {
         validationListener.onCvcValidated(isValid)
 
         if (isValid && validationStateManager.isAllValid()) {
@@ -19,5 +19,4 @@ internal class CvcValidationResultHandler(
     }
 
     override fun getState() = validationStateManager.cvcValidationState
-
 }

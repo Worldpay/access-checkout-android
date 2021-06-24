@@ -52,14 +52,14 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
         val editTextUI = UITestUtils.uiObjectWithId(editText.id)
         editTextUI.click()
-        activityRule.activity.runOnUiThread{ editText.setText(text) }
+        activityRule.activity.runOnUiThread { editText.setText(text) }
 
         val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(editText.windowToken, 0)
     }
 
     protected fun setCursorPosition(editText: EditText, startSelection: Int, endSelection: Int) {
-        activityRule.activity.runOnUiThread{ editText.setSelection(startSelection, endSelection) }
+        activityRule.activity.runOnUiThread { editText.setSelection(startSelection, endSelection) }
     }
 
     protected fun dialogHasText(text: String) {
@@ -73,7 +73,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
     private fun color(colorId: Int) =
         ResourcesCompat.getColor(activity().resources, colorId, activity().theme)
 
-    protected fun <T: View> findById(id: Int): T {
+    protected fun <T : View> findById(id: Int): T {
         wait { assertNotNull(activity().findViewById<T>(id)) }
         return activity().findViewById(id)
     }
@@ -98,5 +98,4 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
             break
         }
     }
-
 }

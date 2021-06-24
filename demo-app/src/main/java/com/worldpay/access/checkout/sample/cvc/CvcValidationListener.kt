@@ -28,5 +28,4 @@ class CvcValidationListener(private val activity: FragmentActivity) : AccessChec
             editText.setTextColor(invalidColor)
         }
     }
-
 }

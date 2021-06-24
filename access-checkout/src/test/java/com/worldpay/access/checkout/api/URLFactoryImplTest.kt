@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.api
 
+import java.net.URL
 import org.junit.Assert.assertEquals
 import org.junit.Test
-import java.net.URL
 
 class URLFactoryImplTest {
 

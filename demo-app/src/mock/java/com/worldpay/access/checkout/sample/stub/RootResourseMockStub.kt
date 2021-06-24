@@ -65,5 +65,4 @@ object RootResourseMockStub {
                     .withTransformers(ResponseTemplateTransformer.NAME)
             )
     }
-
 }

@@ -13,5 +13,4 @@ class SVGWrapper {
     fun getSVGFromInputStream(inputStream: InputStream): SVG {
         return SVG.getFromInputStream(inputStream)
     }
-
 }

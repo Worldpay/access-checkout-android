@@ -8,13 +8,13 @@ import com.worldpay.access.checkout.client.validation.config.CardValidationConfi
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
-import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class AccessCheckoutValidationInitialiserTest {
@@ -75,5 +75,4 @@ class AccessCheckoutValidationInitialiserTest {
 
         assertEquals(1, cvc.filters.size)
     }
-
 }

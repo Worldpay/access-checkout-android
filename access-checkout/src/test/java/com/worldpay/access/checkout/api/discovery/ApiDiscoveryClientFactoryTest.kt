@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.api.discovery
 
-import org.junit.Test
 import kotlin.test.assertNotEquals
+import org.junit.Test
 
 class ApiDiscoveryClientFactoryTest {
 
@@ -11,5 +11,4 @@ class ApiDiscoveryClientFactoryTest {
         val client2 = ApiDiscoveryClientFactory.getClient()
         assertNotEquals(client1, client2)
     }
-
 }

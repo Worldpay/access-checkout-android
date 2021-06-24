@@ -3,11 +3,11 @@ package com.worldpay.access.checkout.validation.formatter
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 
 internal class PanFormatter(
-    private val disablePanFormatting: Boolean
+    private val enablePanFormatting: Boolean
 ) {
 
     fun format(pan: String, brand: RemoteCardBrand?): String {
-        if (disablePanFormatting) {
+        if (!enablePanFormatting) {
             return pan
         }
 

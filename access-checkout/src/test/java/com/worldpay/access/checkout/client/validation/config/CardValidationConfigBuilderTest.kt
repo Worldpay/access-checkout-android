@@ -4,11 +4,12 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class CardValidationConfigBuilderTest {
 
@@ -21,7 +22,7 @@ class CardValidationConfigBuilderTest {
     private val lifecycleOwner = mock<LifecycleOwner>()
 
     @Test
-    fun `should build card validation config`() {
+    fun `should build card validation config with pan formatting disabled by default`() {
         val config = CardValidationConfig.Builder()
             .baseUrl(baseUrl)
             .pan(pan)
@@ -39,6 +40,7 @@ class CardValidationConfigBuilderTest {
         assertEquals(cvc, config.cvc)
         assertEquals(acceptedCardBrands, config.acceptedCardBrands)
         assertEquals(validationListener, config.validationListener)
+        assertFalse(config.enablePanFormatting)
     }
 
     @Test
@@ -158,7 +160,7 @@ class CardValidationConfigBuilderTest {
     }
 
     @Test
-    fun `should be able to call disable pan number formatting`() {
+    fun `should be able to call enable pan number formatting`() {
         val config = CardValidationConfig.Builder()
             .baseUrl(baseUrl)
             .pan(pan)
@@ -167,7 +169,7 @@ class CardValidationConfigBuilderTest {
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
-            .disablePanFormatting()
+            .enablePanFormatting()
             .build()
 
         assertNotNull(config)
@@ -177,7 +179,6 @@ class CardValidationConfigBuilderTest {
         assertEquals(cvc, config.cvc)
         assertEquals(acceptedCardBrands, config.acceptedCardBrands)
         assertEquals(validationListener, config.validationListener)
-        assertTrue(config.disablePanFormatting)
+        assertTrue(config.enablePanFormatting)
     }
-
 }

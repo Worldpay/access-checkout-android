@@ -57,7 +57,5 @@ class FailedCardConfigurationCvcIntegrationTest {
             // response.
             simulateCardConfigurationServerError()
         }
-
     }
-
 }

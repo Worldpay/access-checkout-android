@@ -17,6 +17,30 @@ To learn how to integrate with the latest version of the Access Checkout Android
 
 For full integration instructions and code examples visit [Worldpay Developers](https://developer.worldpay.com/docs/access-worldpay/checkout/android)
 
+## Developers
+
+Some useful commands to know during development:
+
+```
+# Running unit tests 
+./gradlew :access-checkout:testDebugUnitTest
+
+# Generate jacoco code coverage report
+./gradlew :access-checkout:jacocoTestReport
+
+# Verify jacoco code coverage
+./gradlew :access-checkout:jacocoTestCoverageVerification
+
+# Run unit tests and code coverage checks
+./gradlew :access-checkout:testDebugUnitTest :access-checkout:jacocoTestReport :access-checkout:jacocoTestCoverageVerification
+
+# Check ktlint formatting
+./gradlew ktlintCheck
+
+# Run the ktlint formatter
+./gradlew ktlintFormat
+```
+
 ## Changelog
 
 Full changelog can be found [here](CHANGELOG.md)

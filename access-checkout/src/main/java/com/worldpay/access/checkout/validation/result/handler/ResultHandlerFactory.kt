@@ -1,7 +1,11 @@
 package com.worldpay.access.checkout.validation.result.handler
 
 import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.client.validation.listener.*
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutBrandChangedListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutValidationListener
 import com.worldpay.access.checkout.validation.result.state.CvcFieldValidationStateManager
 import com.worldpay.access.checkout.validation.result.state.ExpiryDateFieldValidationStateManager
 import com.worldpay.access.checkout.validation.result.state.FieldValidationStateManager
@@ -9,17 +13,17 @@ import com.worldpay.access.checkout.validation.result.state.PanFieldValidationSt
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 
 internal class ResultHandlerFactory(
-    private val accessCheckoutValidationListener : AccessCheckoutValidationListener,
-    private val fieldValidationStateManager : FieldValidationStateManager,
-    private val lifecycleOwner : LifecycleOwner
+    private val accessCheckoutValidationListener: AccessCheckoutValidationListener,
+    private val fieldValidationStateManager: FieldValidationStateManager,
+    private val lifecycleOwner: LifecycleOwner
 ) {
 
-    private var cvcValidationResultHandler : CvcValidationResultHandler? = null
-    private var panValidationResultHandler : PanValidationResultHandler? = null
-    private var expiryDateValidationResultHandler : ExpiryDateValidationResultHandler? = null
-    private var brandChangedHandler : BrandChangedHandler? = null
+    private var cvcValidationResultHandler: CvcValidationResultHandler? = null
+    private var panValidationResultHandler: PanValidationResultHandler? = null
+    private var expiryDateValidationResultHandler: ExpiryDateValidationResultHandler? = null
+    private var brandChangedHandler: BrandChangedHandler? = null
 
-    fun getCvcValidationResultHandler() : CvcValidationResultHandler {
+    fun getCvcValidationResultHandler(): CvcValidationResultHandler {
         if (cvcValidationResultHandler == null) {
             cvcValidationResultHandler = CvcValidationResultHandler(
                 validationListener = accessCheckoutValidationListener as AccessCheckoutCvcValidationListener,
@@ -30,7 +34,7 @@ internal class ResultHandlerFactory(
         return cvcValidationResultHandler as CvcValidationResultHandler
     }
 
-    fun getPanValidationResultHandler() : PanValidationResultHandler {
+    fun getPanValidationResultHandler(): PanValidationResultHandler {
         if (panValidationResultHandler == null) {
             panValidationResultHandler = PanValidationResultHandler(
                 validationListener = accessCheckoutValidationListener as AccessCheckoutPanValidationListener,
@@ -42,7 +46,7 @@ internal class ResultHandlerFactory(
         return panValidationResultHandler as PanValidationResultHandler
     }
 
-    fun getExpiryDateValidationResultHandler() : ExpiryDateValidationResultHandler {
+    fun getExpiryDateValidationResultHandler(): ExpiryDateValidationResultHandler {
         if (expiryDateValidationResultHandler == null) {
             expiryDateValidationResultHandler =
                 ExpiryDateValidationResultHandler(
@@ -54,7 +58,7 @@ internal class ResultHandlerFactory(
         return expiryDateValidationResultHandler as ExpiryDateValidationResultHandler
     }
 
-    fun getBrandChangedHandler() : BrandChangedHandler {
+    fun getBrandChangedHandler(): BrandChangedHandler {
         if (brandChangedHandler == null) {
             brandChangedHandler = BrandChangedHandler(
                 validationListener = accessCheckoutValidationListener as AccessCheckoutBrandChangedListener,
@@ -63,5 +67,4 @@ internal class ResultHandlerFactory(
         }
         return brandChangedHandler as BrandChangedHandler
     }
-
 }

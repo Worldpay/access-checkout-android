@@ -2,12 +2,12 @@ package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
-import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class PanLengthFilterTest {
@@ -19,7 +19,7 @@ class PanLengthFilterTest {
     @Before
     fun setup() {
         mockSuccessfulCardConfiguration()
-        pan.filters += PanLengthFilter(true)
+        pan.filters += PanLengthFilter(false)
     }
 
     @Test
@@ -51,7 +51,7 @@ class PanLengthFilterTest {
     @Test
     fun `should allow for spaces in length when formatting is enabled - 19 digits`() {
         val pan = EditText(context)
-        pan.filters += PanLengthFilter(false)
+        pan.filters += PanLengthFilter(true)
 
         pan.setText("4111 1111 1111 1111 111")
         assertEquals("4111 1111 1111 1111 111", pan.text.toString())
@@ -60,10 +60,9 @@ class PanLengthFilterTest {
     @Test
     fun `should allow for only 2 spaces in length when formatting is enabled - amex brand`() {
         val pan = EditText(context)
-        pan.filters += PanLengthFilter(false)
+        pan.filters += PanLengthFilter(true)
 
         pan.setText("3427 931789 31249")
         assertEquals("3427 931789 31249", pan.text.toString())
     }
-
 }

@@ -18,7 +18,7 @@ internal class SessionRequestInfo private constructor(
     val requestBody: SessionRequest,
     val sessionType: SessionType,
     val discoverLinks: DiscoverLinks
-): Serializable {
+) : Serializable {
 
     /**
      * A builder for constructing a [SessionRequestInfo]
@@ -46,5 +46,4 @@ internal class SessionRequestInfo private constructor(
                 discoverLinks as DiscoverLinks
             )
     }
-
 }

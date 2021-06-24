@@ -9,7 +9,7 @@ import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
 
 internal class TextWatcherFactory(
-    private val resultHandlerFactory : ResultHandlerFactory
+    private val resultHandlerFactory: ResultHandlerFactory
 ) {
 
     private val cvcValidationRuleManager = CVCValidationRuleManager()
@@ -19,14 +19,14 @@ internal class TextWatcherFactory(
         panEditText: EditText,
         cvcEditText: EditText,
         acceptedCardBrands: Array<String>,
-        disablePanFormatting: Boolean
+        enablePanFormatting: Boolean
     ): PanTextWatcher {
         return PanTextWatcher(
             panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),
-            panFormatter = PanFormatter(disablePanFormatting),
+            panFormatter = PanFormatter(enablePanFormatting),
             cvcValidator = CvcValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
-            cvcEditText =  cvcEditText,
+            cvcEditText = cvcEditText,
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager
@@ -50,5 +50,4 @@ internal class TextWatcherFactory(
 
         return CvcTextWatcher(cvcValidator)
     }
-
 }

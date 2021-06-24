@@ -1,16 +1,21 @@
 package com.worldpay.access.checkout.api.configuration
 
 import android.os.AsyncTask
-import com.worldpay.access.checkout.api.*
+import com.worldpay.access.checkout.api.AsyncTaskResult
 import com.worldpay.access.checkout.api.AsyncTaskUtils.callbackOnTaskResult
+import com.worldpay.access.checkout.api.Callback
+import com.worldpay.access.checkout.api.HttpsClient
+import com.worldpay.access.checkout.api.URLFactory
+import com.worldpay.access.checkout.api.URLFactoryImpl
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 import java.net.URL
 
-internal class CardConfigurationAsyncTask(private val callback: Callback<CardConfiguration>,
-                                          private val urlFactory: URLFactory = URLFactoryImpl(),
-                                          private val httpsClient: HttpsClient = HttpsClient(),
-                                          private val cardConfigurationParser: CardConfigurationParser = CardConfigurationParser()
+internal class CardConfigurationAsyncTask(
+    private val callback: Callback<CardConfiguration>,
+    private val urlFactory: URLFactory = URLFactoryImpl(),
+    private val httpsClient: HttpsClient = HttpsClient(),
+    private val cardConfigurationParser: CardConfigurationParser = CardConfigurationParser()
 ) :
     AsyncTask<String, Void, AsyncTaskResult<CardConfiguration>>() {
 
@@ -52,5 +57,4 @@ internal class CardConfigurationAsyncTask(private val callback: Callback<CardCon
             throw AccessCheckoutException("Invalid URL specified", ex)
         }
     }
-
 }

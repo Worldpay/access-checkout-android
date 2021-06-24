@@ -12,7 +12,4 @@ internal class ApiDiscoveryAsyncTaskFactory {
             HttpsClient()
         )
     }
-
-
 }
-

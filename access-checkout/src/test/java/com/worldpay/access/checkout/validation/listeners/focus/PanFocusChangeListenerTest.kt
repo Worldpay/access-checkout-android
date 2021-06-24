@@ -11,7 +11,7 @@ class PanFocusChangeListenerTest {
 
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
 
-    private lateinit var panFocusChangeListener : PanFocusChangeListener
+    private lateinit var panFocusChangeListener: PanFocusChangeListener
 
     @Before
     fun setup() {
@@ -31,5 +31,4 @@ class PanFocusChangeListenerTest {
 
         verifyZeroInteractions(panValidationResultHandler)
     }
-
 }

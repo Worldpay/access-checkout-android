@@ -19,5 +19,4 @@ internal class CVCValidationRuleManager : CardValidationRuleProvider {
     override fun getRule(): CardValidationRule {
         return cvcValidationRule.get()
     }
-
 }

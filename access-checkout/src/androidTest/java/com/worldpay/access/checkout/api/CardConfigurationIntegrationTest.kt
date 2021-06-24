@@ -10,14 +10,14 @@ import com.worldpay.access.checkout.api.MockServer.getBaseUrl
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationAsyncTask
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.util.concurrent.TimeUnit
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 @RunWith(AndroidJUnit4::class)
 class CardConfigurationIntegrationTest {
@@ -85,7 +85,7 @@ class CardConfigurationIntegrationTest {
                         ]
                       }
                 ]
-            """.trimIndent()
+    """.trimIndent()
 
     @Before
     fun setUp() {
@@ -99,13 +99,15 @@ class CardConfigurationIntegrationTest {
 
     @Test
     fun givenCardConfigurationAvailable_ThenCardConfigurationAsyncTaskCanFetchCardConfiguration() {
-        stubFor(get(cardConfigurationEndpoint)
-            .willReturn(
-                WireMock.aResponse()
-                    .withStatus(200)
-                    .withHeader("Content-Type", "application/json")
-                    .withBody(cardConfigJson)
-            ))
+        stubFor(
+            get(cardConfigurationEndpoint)
+                .willReturn(
+                    WireMock.aResponse()
+                        .withStatus(200)
+                        .withHeader("Content-Type", "application/json")
+                        .withBody(cardConfigJson)
+                )
+        )
 
         var cardConfiguration: CardConfiguration? = null
 

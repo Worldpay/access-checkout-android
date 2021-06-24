@@ -3,10 +3,10 @@ package com.worldpay.access.checkout.session.api.client
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
-import org.junit.Test
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class SessionClientFactoryTest {
 
@@ -54,5 +54,4 @@ class SessionClientFactoryTest {
 
     class InvalidSessionRequest :
         SessionRequest
-
 }

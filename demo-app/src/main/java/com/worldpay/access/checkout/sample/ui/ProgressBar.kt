@@ -33,5 +33,4 @@ class ProgressBar(private val activity: Activity) {
             rootLayout.alpha = 1.0f
         }
     }
-
 }

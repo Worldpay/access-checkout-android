@@ -2,7 +2,14 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.*
+import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.reset
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -17,7 +24,10 @@ import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManag
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
 import org.junit.Before
 import org.junit.Test
 
@@ -140,7 +150,6 @@ class PanTextWatcherTest {
 
         verify(brandChangedHandler).handle(VISA_BRAND)
     }
-
 
     @Test
     fun `should handle validation when formatting has taken place`() {
@@ -352,5 +361,4 @@ class PanTextWatcherTest {
         given(panEditable.toString()).willReturn(pan)
         given(panValidator.validate(eq(pan), any(), any())).willReturn(isValid)
     }
-
 }

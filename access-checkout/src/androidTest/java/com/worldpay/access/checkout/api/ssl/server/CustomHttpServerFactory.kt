@@ -19,6 +19,4 @@ class CustomHttpServerFactory : HttpServerFactory {
             stubRequestHandler
         )
     }
-
-
 }

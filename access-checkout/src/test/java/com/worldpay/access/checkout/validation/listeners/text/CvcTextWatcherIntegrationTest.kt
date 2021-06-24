@@ -122,5 +122,4 @@ class CvcTextWatcherIntegrationTest {
 
         verify(cvcValidationResultHandler).handleResult(false)
     }
-
 }

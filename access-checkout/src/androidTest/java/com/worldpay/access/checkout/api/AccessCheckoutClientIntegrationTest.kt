@@ -6,7 +6,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
+import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.stubFor
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
@@ -17,14 +21,14 @@ import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
+import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
-import java.util.concurrent.TimeUnit
-import kotlin.test.assertEquals
 
 class AccessCheckoutClientIntegrationTest {
 
@@ -62,7 +66,7 @@ class AccessCheckoutClientIntegrationTest {
         val expectedSessionReference = "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
 
         val response = (
-                """{
+            """{
                   "_links": {
                     "verifiedTokens:session": {
                       "href": "$expectedSessionReference"
@@ -76,7 +80,7 @@ class AccessCheckoutClientIntegrationTest {
                     ]
                   }
                 }"""
-                )
+            )
 
         stubFor(
             postRequest(request)
@@ -129,12 +133,13 @@ class AccessCheckoutClientIntegrationTest {
                         "jsonPath": "\$.cvv"
                     }]}"""
 
-
-        stubFor(postRequest(request).willReturn(
-            aResponse()
-                .withStatus(400)
-                .withBody(response)
-        ))
+        stubFor(
+            postRequest(request).willReturn(
+                aResponse()
+                    .withStatus(400)
+                    .withBody(response)
+            )
+        )
 
         var assertionsRan = false
         val responseListener = object : SessionResponseListener {
@@ -169,11 +174,13 @@ class AccessCheckoutClientIntegrationTest {
                 "message": "The body within the request is not valid json"
             }"""
 
-        stubFor(postRequest(request).willReturn(
-            aResponse()
-                .withStatus(400)
-                .withBody(response)
-        ))
+        stubFor(
+            postRequest(request).willReturn(
+                aResponse()
+                    .withStatus(400)
+                    .withBody(response)
+            )
+        )
 
         var assertionsRan = false
         val errorListener = object : SessionResponseListener {
@@ -212,11 +219,13 @@ class AccessCheckoutClientIntegrationTest {
                         "jsonPath": "\$.cvv"
                     }]}"""
 
-        stubFor(postRequest(request).willReturn(
-            aResponse()
-                .withStatus(400)
-                .withBody(response)
-        ))
+        stubFor(
+            postRequest(request).willReturn(
+                aResponse()
+                    .withStatus(400)
+                    .withBody(response)
+            )
+        )
 
         var assertionsRan = false
         val errorListener = object : SessionResponseListener {
@@ -250,7 +259,8 @@ class AccessCheckoutClientIntegrationTest {
         val cardDetails = getCardDetails()
         val request = getExpectedRequest(cardDetails)
 
-        stubFor(postRequest(request)
+        stubFor(
+            postRequest(request)
                 .willReturn(
                     aResponse()
                         .withStatus(500)
@@ -307,5 +317,4 @@ class AccessCheckoutClientIntegrationTest {
                 "identity": "$merchantId"
             }"""
     }
-
 }

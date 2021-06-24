@@ -22,5 +22,4 @@ internal class CardSessionClient(
 
         return httpsClient.doPost(url, request, headers, serializer, deserializer)
     }
-
 }

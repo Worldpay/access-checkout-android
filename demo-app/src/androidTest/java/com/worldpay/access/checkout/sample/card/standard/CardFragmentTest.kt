@@ -9,7 +9,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
-class CardFragmentTest: AbstractCardFragmentTest() {
+class CardFragmentTest : AbstractCardFragmentTest() {
 
     @Test
     fun shouldDisplayAllExpectedElementsInCorrectEnabledState() {
@@ -95,6 +95,4 @@ class CardFragmentTest: AbstractCardFragmentTest() {
             .hasBrand(VISA)
             .enabledStateIs(submitButton = false)
     }
-
-
 }

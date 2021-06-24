@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.client.session.model
 
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
+import org.junit.Test
 
 class CardDetailsTest {
 
@@ -107,5 +107,4 @@ class CardDetailsTest {
 
         assertNotNull(cardDetails)
     }
-
 }

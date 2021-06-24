@@ -26,5 +26,4 @@ internal class SessionBroadcastManager(
             localBroadcastManager.unregisterReceiver(receiver)
         }
     }
-
 }

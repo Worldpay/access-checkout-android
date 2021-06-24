@@ -35,7 +35,6 @@ internal class RequestDispatcher constructor(
                 .responseBody(responseBody)
                 .sessionType(sessionRequestInfo.sessionType)
                 .build()
-
         } catch (ex: AccessCheckoutException) {
             exception = ex
             return null
@@ -65,5 +64,4 @@ internal class RequestDispatcher constructor(
             callback.onResponse(it, null)
         }
     }
-
 }

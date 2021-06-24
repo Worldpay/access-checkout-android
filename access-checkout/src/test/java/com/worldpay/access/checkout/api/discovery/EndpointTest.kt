@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.api.discovery
 
-import org.junit.Test
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import org.junit.Test
 
 class EndpointTest {
 
@@ -19,5 +19,4 @@ class EndpointTest {
     fun `should be able to return a string value for endpoint`() {
         assertEquals(endpoint.endpoint, expectedEndpoint)
     }
-
 }

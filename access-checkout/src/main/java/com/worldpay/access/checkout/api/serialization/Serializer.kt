@@ -7,7 +7,7 @@ import java.io.Serializable
  *
  * The instance of [T] should implement [Serializable]
  */
-internal interface Serializer<T: Serializable> {
+internal interface Serializer<T : Serializable> {
 
     /**
      * Serialises the instance of type [T] to a [String]
@@ -15,5 +15,4 @@ internal interface Serializer<T: Serializable> {
      * @param[instance] The instance that needs to be serialised to a [String]
      */
     fun serialize(instance: T): String
-
 }

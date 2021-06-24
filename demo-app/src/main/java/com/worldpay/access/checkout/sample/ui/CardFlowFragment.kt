@@ -35,7 +35,7 @@ class CardFlowFragment : Fragment() {
 
     private lateinit var sessionTypes: List<SessionType>
 
-    private lateinit var cardValidationListener : CardValidationListener
+    private lateinit var cardValidationListener: CardValidationListener
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -93,7 +93,7 @@ class CardFlowFragment : Fragment() {
         }
     }
 
-    private fun initialisePaymentFlow(activity : FragmentActivity, view : View) {
+    private fun initialisePaymentFlow(activity: FragmentActivity, view: View) {
         val accessCheckoutClient = AccessCheckoutClientBuilder()
             .baseUrl(getBaseUrl())
             .merchantId(getMerchantID())
@@ -118,7 +118,7 @@ class CardFlowFragment : Fragment() {
         }
     }
 
-    private fun initialiseCardValidation(cardValidationListener : CardValidationListener) {
+    private fun initialiseCardValidation(cardValidationListener: CardValidationListener) {
         val cardValidationConfig = CardValidationConfig.Builder()
             .baseUrl(getBaseUrl())
             .pan(panText)
@@ -126,6 +126,7 @@ class CardFlowFragment : Fragment() {
             .cvc(cvcText)
             .validationListener(cardValidationListener)
             .lifecycleOwner(this)
+            .enablePanFormatting()
             .build()
 
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
@@ -141,5 +142,4 @@ class CardFlowFragment : Fragment() {
     private fun getMerchantID() = BuildConfig.MERCHANT_ID
 
     private fun getBaseUrl() = getString(R.string.endpoint)
-
 }

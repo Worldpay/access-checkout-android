@@ -64,7 +64,7 @@ class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
         return this
     }
 
-    fun focusOff() :CvcFragmentTestUtils {
+    fun focusOff(): CvcFragmentTestUtils {
         cvcInput().onFocusChangeListener.onFocusChange(cvcInput(), false)
         return this
     }
@@ -89,5 +89,4 @@ class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
         wait { assertEquals(cvc, cvcInput().text.toString()) }
         return this
     }
-
 }

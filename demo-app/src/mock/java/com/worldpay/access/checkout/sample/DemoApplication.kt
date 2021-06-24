@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.sample
 
 import android.app.Application
 
-class DemoApplication: Application() {
+class DemoApplication : Application() {
 
     override fun onCreate() {
         super.onCreate()
@@ -13,5 +13,4 @@ class DemoApplication: Application() {
         MockServer.stopWiremock()
         super.onTerminate()
     }
-
 }

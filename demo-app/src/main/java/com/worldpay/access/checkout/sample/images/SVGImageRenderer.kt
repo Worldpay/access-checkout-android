@@ -17,9 +17,10 @@ interface SVGImageRenderer {
  * @param runOnUiThreadFunc the reference to a runOnUiThread function
  * @param svgWrapper the [SVGWrapper]
  */
-class SVGImageRendererImpl(private val runOnUiThreadFunc: (Runnable) -> Unit,
-                           private val svgWrapper: SVGWrapper = SVGWrapper.svgWrapper
-): SVGImageRenderer {
+class SVGImageRendererImpl(
+    private val runOnUiThreadFunc: (Runnable) -> Unit,
+    private val svgWrapper: SVGWrapper = SVGWrapper.svgWrapper
+) : SVGImageRenderer {
 
     /**
      * Renders a stream of SVG data into a target view
@@ -32,12 +33,14 @@ class SVGImageRendererImpl(private val runOnUiThreadFunc: (Runnable) -> Unit,
         try {
             val svg = svgWrapper.getSVGFromInputStream(inputStream)
             val drawable = PictureDrawable(svg.renderToPicture(targetView.measuredWidth, targetView.measuredHeight))
-            runOnUiThreadFunc(Runnable {
-                Log.d("SVGImageRendererImpl", "Applying $brandName logo to target view")
-                targetView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-                targetView.setImageDrawable(drawable)
-                targetView.setTag(R.integer.card_tag, brandName)
-            })
+            runOnUiThreadFunc(
+                Runnable {
+                    Log.d("SVGImageRendererImpl", "Applying $brandName logo to target view")
+                    targetView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
+                    targetView.setImageDrawable(drawable)
+                    targetView.setTag(R.integer.card_tag, brandName)
+                }
+            )
         } catch (e: Exception) {
             Log.e("SVGImageRendererImpl", "Failed to parse SVG image: ${e.message}")
         }

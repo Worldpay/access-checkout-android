@@ -58,5 +58,4 @@ internal class CardSessionRequestHandler(
             sessionRequestHandlerConfig.getMerchantId()
         )
     }
-
 }

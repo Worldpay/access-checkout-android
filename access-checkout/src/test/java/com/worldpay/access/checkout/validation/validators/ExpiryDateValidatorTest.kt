@@ -1,10 +1,17 @@
 package com.worldpay.access.checkout.validation.validators
 
-import org.junit.Test
-import java.util.*
-import java.util.Calendar.*
+import java.util.Calendar
+import java.util.Calendar.DAY_OF_MONTH
+import java.util.Calendar.HOUR_OF_DAY
+import java.util.Calendar.MILLISECOND
+import java.util.Calendar.MINUTE
+import java.util.Calendar.MONTH
+import java.util.Calendar.SECOND
+import java.util.Calendar.YEAR
+import java.util.Calendar.getInstance
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Test
 
 class ExpiryDateValidatorTest {
 
@@ -12,52 +19,52 @@ class ExpiryDateValidatorTest {
 
     @Test
     fun `should be invalid if letters are entered`() {
-        assertFalse(dateValidator.validate( "ab"))
+        assertFalse(dateValidator.validate("ab"))
     }
 
     @Test
     fun `should be invalid if month and year are empty`() {
-        assertFalse(dateValidator.validate( ""))
+        assertFalse(dateValidator.validate(""))
     }
 
     @Test
     fun `should be invalid if month is empty`() {
-        assertFalse(dateValidator.validate( "99"))
+        assertFalse(dateValidator.validate("99"))
     }
 
     @Test
     fun `should be invalid if month is null`() {
-        assertFalse(dateValidator.validate( "99"))
+        assertFalse(dateValidator.validate("99"))
     }
 
     @Test
     fun `should be invalid if year is empty`() {
-        assertFalse(dateValidator.validate( "12"))
+        assertFalse(dateValidator.validate("12"))
     }
 
     @Test
     fun `should be invalid if year is null`() {
-        assertFalse(dateValidator.validate( "12"))
+        assertFalse(dateValidator.validate("12"))
     }
 
     @Test
     fun `should be invalid if month is invalid`() {
-        assertFalse(dateValidator.validate( "aa/99"))
+        assertFalse(dateValidator.validate("aa/99"))
     }
 
     @Test
     fun `should be invalid if month is too short`() {
-        assertFalse(dateValidator.validate( "1/99"))
+        assertFalse(dateValidator.validate("1/99"))
     }
 
     @Test
     fun `should be invalid if year is invalid`() {
-        assertFalse(dateValidator.validate( "12/aa"))
+        assertFalse(dateValidator.validate("12/aa"))
     }
 
     @Test
     fun `should be invalid if year is too short`() {
-        assertFalse(dateValidator.validate( "12/1"))
+        assertFalse(dateValidator.validate("12/1"))
     }
 
     @Test

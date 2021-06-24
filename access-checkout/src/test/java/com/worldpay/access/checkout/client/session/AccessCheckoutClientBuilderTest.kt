@@ -4,13 +4,13 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.mock
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 
 class AccessCheckoutClientBuilderTest {
 
@@ -44,11 +44,11 @@ class AccessCheckoutClientBuilderTest {
     fun `should throw an illegal argument exception when no baseUrl is passed to builder`() {
         val exception = assertFailsWith<IllegalArgumentException> {
             AccessCheckoutClientBuilder()
-            .merchantId(merchantId)
-            .context(context)
-            .sessionResponseListener(sessionResponseListener)
-            .lifecycleOwner(lifecycleOwner)
-            .build()
+                .merchantId(merchantId)
+                .context(context)
+                .sessionResponseListener(sessionResponseListener)
+                .lifecycleOwner(lifecycleOwner)
+                .build()
         }
         assertEquals("Expected base url to be provided but was not", exception.message)
     }
@@ -95,14 +95,13 @@ class AccessCheckoutClientBuilderTest {
     @Test
     fun `should throw an illegal argument exception when no lifecycle owner is passed to builder`() {
         val exception = assertFailsWith<IllegalArgumentException> {
-        AccessCheckoutClientBuilder()
-            .baseUrl(baseUrl)
-            .merchantId(merchantId)
-            .context(context)
-            .sessionResponseListener(sessionResponseListener)
-            .build()
+            AccessCheckoutClientBuilder()
+                .baseUrl(baseUrl)
+                .merchantId(merchantId)
+                .context(context)
+                .sessionResponseListener(sessionResponseListener)
+                .build()
         }
         assertEquals("Expected lifecycle owner to be provided but was not", exception.message)
     }
-
 }

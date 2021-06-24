@@ -2,7 +2,10 @@ package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
 
 internal class PanValidator(private val acceptedCardBrands: Array<String>) {
 
@@ -67,5 +70,4 @@ internal class PanValidator(private val acceptedCardBrands: Array<String>) {
         CARD_BRAND_NOT_ACCEPTED,
         INVALID_LUHN
     }
-
 }

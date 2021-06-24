@@ -2,9 +2,9 @@ package com.worldpay.access.checkout.validation.validators
 
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
-import kotlin.test.assertEquals
 
 class CVCValidationRuleProviderTest {
 
@@ -28,5 +28,4 @@ class CVCValidationRuleProviderTest {
 
         assertEquals(VISA_BRAND.cvc, cvcValidationRuleManager.getRule())
     }
-
 }

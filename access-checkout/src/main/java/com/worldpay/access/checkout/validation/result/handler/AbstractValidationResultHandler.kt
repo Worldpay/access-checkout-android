@@ -1,6 +1,8 @@
 package com.worldpay.access.checkout.validation.result.handler
 
-import androidx.lifecycle.Lifecycle.Event.*
+import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
+import androidx.lifecycle.Lifecycle.Event.ON_RESUME
+import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
@@ -75,5 +77,4 @@ internal abstract class AbstractValidationResultHandler(
     abstract fun notifyListener(isValid: Boolean)
 
     abstract fun getState(): FieldValidationState
-
 }

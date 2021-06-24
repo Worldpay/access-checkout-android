@@ -61,5 +61,4 @@ class RestrictedCardFragmentTestUtils(activityRule: ActivityTestRule<MainActivit
         wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
         return this
     }
-
 }

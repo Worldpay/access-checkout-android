@@ -25,5 +25,4 @@ object CardNumberUtil {
             else -> throw IllegalArgumentException("valid lengths are 16, 18, 19")
         }
     }
-
 }

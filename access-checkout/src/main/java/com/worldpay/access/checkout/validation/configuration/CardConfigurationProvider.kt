@@ -15,7 +15,7 @@ internal class CardConfigurationProvider(
     companion object {
         private var cardConfiguration = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
 
-        fun getCardConfiguration() : CardConfiguration {
+        fun getCardConfiguration(): CardConfiguration {
             return cardConfiguration
         }
     }
@@ -45,6 +45,4 @@ internal class CardConfigurationProvider(
             }
         }
     }
-
-
 }

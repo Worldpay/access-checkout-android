@@ -8,9 +8,9 @@ package com.worldpay.access.checkout.client.api.exception
  * @property[validationRules] any validation rules that were erred upon request
  */
 data class AccessCheckoutException(
-    override val message : String,
-    override val cause : Exception? = null,
-    val validationRules : List<ValidationRule> = emptyList()
+    override val message: String,
+    override val cause: Exception? = null,
+    val validationRules: List<ValidationRule> = emptyList()
 ) : RuntimeException()
 
 /**
@@ -20,4 +20,4 @@ data class AccessCheckoutException(
  * @property[message] the error message
  * @property[jsonPath] the json path to the error point
  */
-data class ValidationRule(val errorName : String, val message : String, val jsonPath : String)
+data class ValidationRule(val errorName: String, val message: String, val jsonPath: String)

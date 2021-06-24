@@ -10,16 +10,16 @@ import com.nhaarman.mockitokotlin2.spy
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.junit.Before
-import org.robolectric.shadows.ShadowInstrumentation
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.junit.Before
+import org.robolectric.shadows.ShadowInstrumentation
 
 open class AbstractValidationIntegrationTest {
 
@@ -72,7 +72,7 @@ open class AbstractValidationIntegrationTest {
         HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory)
     }
 
-    protected fun initialiseWithoutAcceptedCardBrands(disablePanFormatting: Boolean = false) {
+    protected fun initialiseWithoutAcceptedCardBrands(enablePanFormatting: Boolean = false) {
         val url = server.url(cardConfigurationEndpoint)
         val baseUrl = "${url.scheme}://${url.host}:${url.port}/"
 
@@ -84,8 +84,8 @@ open class AbstractValidationIntegrationTest {
             .baseUrl(baseUrl)
             .lifecycleOwner(lifecycleOwner)
 
-        if (disablePanFormatting) {
-            cardValidationConfig.disablePanFormatting()
+        if (enablePanFormatting) {
+            cardValidationConfig.enablePanFormatting()
         }
 
         AccessCheckoutValidationInitialiser.initialise(
@@ -128,5 +128,4 @@ open class AbstractValidationIntegrationTest {
         sslContext.init(kmf.keyManagers, trustManagerFactory.trustManagers, null)
         return sslContext
     }
-
 }

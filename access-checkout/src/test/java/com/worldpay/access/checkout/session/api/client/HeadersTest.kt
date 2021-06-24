@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.session.api.client
 
-import org.junit.Test
 import kotlin.test.assertEquals
+import org.junit.Test
 
 class HeadersTest {
 
@@ -12,5 +12,4 @@ class HeadersTest {
         assertEquals("Accept", ACCEPT_HEADER)
         assertEquals("X-WP-SDK", WP_SDK_PRODUCT_HEADER)
     }
-
 }

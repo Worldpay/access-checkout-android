@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.api.discovery
 
 import com.nhaarman.mockitokotlin2.mock
-import org.junit.Test
 import kotlin.test.assertNotNull
+import org.junit.Test
 
 class ApiDiscoveryAsyncTaskFactoryTest {
 
@@ -11,5 +11,4 @@ class ApiDiscoveryAsyncTaskFactoryTest {
         val task = ApiDiscoveryAsyncTaskFactory().getAsyncTask(mock(), DiscoverLinks.verifiedTokens)
         assertNotNull(task)
     }
-
 }

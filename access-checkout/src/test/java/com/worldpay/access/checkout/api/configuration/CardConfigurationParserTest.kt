@@ -784,5 +784,4 @@ class CardConfigurationParserTest {
 
         assertEquals(expectedConfig, cardConfigurationParser.deserialize(json))
     }
-
 }

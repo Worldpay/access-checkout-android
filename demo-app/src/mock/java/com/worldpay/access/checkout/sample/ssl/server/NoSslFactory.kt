@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.sample.ssl.server
 
-import org.eclipse.jetty.util.ssl.SslContextFactory
 import javax.net.ssl.SSLEngine
+import org.eclipse.jetty.util.ssl.SslContextFactory
 
-class NoSslFactory: SslContextFactory() {
+class NoSslFactory : SslContextFactory() {
 
     override fun customize(sslEngine: SSLEngine) {}
 }

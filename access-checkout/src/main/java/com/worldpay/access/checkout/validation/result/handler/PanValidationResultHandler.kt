@@ -7,10 +7,10 @@ import com.worldpay.access.checkout.validation.result.state.PanFieldValidationSt
 internal class PanValidationResultHandler(
     private val validationListener: AccessCheckoutPanValidationListener,
     private val validationStateManager: PanFieldValidationStateManager,
-    lifecycleOwner : LifecycleOwner
+    lifecycleOwner: LifecycleOwner
 ) : AbstractValidationResultHandler(lifecycleOwner) {
 
-    override fun notifyListener(isValid : Boolean) {
+    override fun notifyListener(isValid: Boolean) {
         validationListener.onPanValidated(isValid)
 
         if (isValid && validationStateManager.isAllValid()) {
@@ -19,5 +19,4 @@ internal class PanValidationResultHandler(
     }
 
     override fun getState() = validationStateManager.panValidationState
-
 }

@@ -22,6 +22,4 @@ interface SessionResponseListener {
      * @param[error] The [AccessCheckoutException] that was raised
      */
     fun onError(error: AccessCheckoutException)
-
 }
-
