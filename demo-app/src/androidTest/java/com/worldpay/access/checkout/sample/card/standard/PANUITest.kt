@@ -412,13 +412,13 @@ class PANUITest : AbstractCardFragmentTest() {
     }
 
     @Test
-    fun givenPanFormattingEnabledShouldMoveCursorButNotEditPanWhenDeletingSpace() {
+    fun givenPanFormattingEnabledShouldDeleteDigitBeforeSpaceWhenDeletingSpace() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "12345")
-            .setCursorPositionOnPan(5)
             .cardDetailsAre(pan = "1234 5")
+            .setCursorPositionOnPan(5)
 
         onView(withId(R.id.card_flow_text_pan))
             .perform(
@@ -427,7 +427,7 @@ class PANUITest : AbstractCardFragmentTest() {
             )
 
         cardFragmentTestUtils
-            .cardDetailsAre(pan = "1234 5")
+            .cardDetailsAre(pan = "1235")
             .cursorPositionIs(4)
     }
 }
