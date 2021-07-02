@@ -201,4 +201,14 @@ class PanFormatterTest {
 
         assertEquals("", pan)
     }
+
+    @Test
+    fun `should limit to max length when pan is too long and then reformat`() {
+        val pastedText = "123456789012345678901234567890"
+        val pastedTextWith19DigitsAndSpaces = "1234 5678 9012 3456 789"
+
+        val pan = panFormatter.format(pastedText, null)
+
+        assertEquals(pastedTextWith19DigitsAndSpaces, pan)
+    }
 }
