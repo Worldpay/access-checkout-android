@@ -250,4 +250,27 @@ class PanTextWatcherIntegrationTest {
 
         assertEquals(VISA_PAN, pan.text.toString())
     }
+
+    @Test
+    fun `should update the pan and set cursor position when formatted`() {
+        val pan = EditText(context)
+
+        val panTextWatcher = PanTextWatcher(
+            panEditText = pan,
+            panValidator = PanValidator(arrayOf("MASTERCARD")),
+            panFormatter = PanFormatter(true),
+            cvcValidator = cvcValidator,
+            cvcEditText = cvc,
+            panValidationResultHandler = panValidationResultHandler,
+            brandChangedHandler = brandChangedHandler,
+            cvcValidationRuleManager = cvcValidationRuleManager
+        )
+
+        pan.addTextChangedListener(panTextWatcher)
+
+        pan.setText(VISA_PAN)
+
+        assertEquals(VISA_PAN_FORMATTED, pan.text.toString())
+        assertEquals(VISA_PAN_FORMATTED.length, pan.selectionEnd)
+    }
 }

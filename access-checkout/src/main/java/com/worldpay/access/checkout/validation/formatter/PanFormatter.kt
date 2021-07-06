@@ -1,6 +1,8 @@
 package com.worldpay.access.checkout.validation.formatter
 
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.validation.utils.ValidationUtil
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
 
 internal class PanFormatter(
     private val enablePanFormatting: Boolean
@@ -12,10 +14,18 @@ internal class PanFormatter(
         }
 
         if (requiresFormatting(pan, brand)) {
+            val cardValidationRule = getPanValidationRule(brand)
+            val maxLength = ValidationUtil.getMaxLength(cardValidationRule)
+
+            var panToFormat = pan
+            if (pan.replace("\\s+".toRegex(), "").length > maxLength) {
+                panToFormat = pan.substring(0, maxLength)
+            }
+
             return if (isAmex(brand)) {
-                formatAmexPan(pan)
+                formatAmexPan(panToFormat)
             } else {
-                pan
+                panToFormat
                     .replace("\\s+".toRegex(), "")
                     .replace("(.{4})".toRegex(), "$1 ")
                     .trim()
@@ -25,10 +35,16 @@ internal class PanFormatter(
         return pan
     }
 
+    fun isFormattingEnabled() = enablePanFormatting
+
     private fun formatAmexPan(pan: String): String {
         val panWithNoSpaces = pan.replace("\\s+".toRegex(), "")
         var formattedPan = panWithNoSpaces.chunked(4)[0]
         val chunksOfSix = panWithNoSpaces.removeRange(0, 4).chunked(6)
+
+        if (chunksOfSix.isEmpty()) {
+            return formattedPan
+        }
 
         formattedPan += " ${chunksOfSix[0].trim()}"
 

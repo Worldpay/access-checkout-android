@@ -8,7 +8,6 @@ import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
@@ -70,65 +69,6 @@ class PanTextWatcherTest {
     }
 
     @Test
-    fun `should update the pan and set cursor position when formatted`() {
-        given(panEditable.toString()).willReturn(VISA_PAN)
-        given(panFormatter.format(VISA_PAN, VISA_BRAND)).willReturn(VISA_PAN_FORMATTED)
-        given(panEditText.selectionEnd).willReturn(VISA_PAN.length)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panEditText).setText(VISA_PAN_FORMATTED)
-        verify(panEditText).setSelection(VISA_PAN_FORMATTED.length)
-    }
-
-    @Test
-    fun `should set cursor position correctly when formatted after typing in middle of pan and cursor does not jump`() {
-        given(panEditable.toString()).willReturn("41111")
-        given(panFormatter.format("41111", VISA_BRAND)).willReturn("4111 1")
-        given(panEditText.selectionEnd).willReturn(3)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panEditText).setText("4111 1")
-        verify(panEditText).setSelection(3)
-    }
-
-    @Test
-    fun `should set cursor position correctly when formatted after typing at the end of pan and cursor does jump`() {
-        given(panEditable.toString()).willReturn("41111")
-        given(panFormatter.format("41111", VISA_BRAND)).willReturn("4111 1")
-        given(panEditText.selectionEnd).willReturn(5)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panEditText).setText("4111 1")
-        verify(panEditText).setSelection(6)
-    }
-
-    @Test
-    fun `should set cursor position correctly when formatted after typing in middle of pan and cursor does jump`() {
-        given(panEditable.toString()).willReturn("41111 11")
-        given(panFormatter.format("41111 11", VISA_BRAND)).willReturn("4111 111")
-        given(panEditText.selectionEnd).willReturn(5)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panEditText).setText("4111 111")
-        verify(panEditText).setSelection(6)
-    }
-
-    @Test
-    fun `should not update the pan when it is not formatted`() {
-        given(panEditable.toString()).willReturn(VISA_PAN)
-        given(panFormatter.format(VISA_PAN, VISA_BRAND)).willReturn(VISA_PAN)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panEditText).selectionEnd
-        verifyNoMoreInteractions(panEditText)
-    }
-
-    @Test
     fun `should call the pan formatter with correct pan and brand`() {
         given(panEditable.toString()).willReturn(VISA_PAN)
 
@@ -146,8 +86,6 @@ class PanTextWatcherTest {
         panTextWatcher.afterTextChanged(panEditable)
 
         verify(panEditText).setText(VISA_PAN_FORMATTED)
-        verify(panEditText).setSelection(VISA_PAN_FORMATTED.length)
-
         verify(brandChangedHandler).handle(VISA_BRAND)
     }
 
@@ -160,7 +98,6 @@ class PanTextWatcherTest {
         panTextWatcher.afterTextChanged(panEditable)
 
         verify(panEditText).setText(VISA_PAN_FORMATTED)
-        verify(panEditText).setSelection(VISA_PAN_FORMATTED.length)
 
         verify(panValidator).validate(VISA_PAN_FORMATTED, VISA_BRAND.pan, VISA_BRAND)
         verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
