@@ -35,6 +35,8 @@ internal class PanFormatter(
         return pan
     }
 
+    fun isFormattingEnabled() = enablePanFormatting
+
     private fun formatAmexPan(pan: String): String {
         val panWithNoSpaces = pan.replace("\\s+".toRegex(), "")
         var formattedPan = panWithNoSpaces.chunked(4)[0]

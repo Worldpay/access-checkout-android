@@ -45,9 +45,8 @@ internal class PanTextWatcher(
     override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
         super.onTextChanged(s, start, before, count)
 
-        if (s.isNullOrEmpty()) {
-            return
-        }
+        if (s.isNullOrEmpty()) return
+        if (!panFormatter.isFormattingEnabled()) return
 
         val panText = s.toString()
 

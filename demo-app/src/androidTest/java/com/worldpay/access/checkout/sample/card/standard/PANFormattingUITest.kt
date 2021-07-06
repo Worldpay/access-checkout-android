@@ -15,7 +15,7 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUH
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand .AMEX
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -65,7 +65,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
     }
 
     @Test
-    fun shouldFormatAmexPanAndPlaceCursorWhenTyping() {
+    fun shouldFormatAmexPanAndPlaceCursor_whenTyping() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
@@ -99,7 +99,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
     }
 
     @Test
-    fun shouldFormatNonAmexPanAndPlaceCursorWhenTyping() {
+    fun shouldFormatNonAmexPanAndPlaceCursor_whenTyping() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
@@ -132,7 +132,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
     }
 
     @Test
-    fun shouldDeleteDigitBeforeSpaceWhenDeletingSpace() {
+    fun shouldDeleteDigitBeforeSpace_whenDeletingSpace() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
@@ -206,6 +206,4 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .cardDetailsAre(pan = "1234 58")
             .cursorPositionIs("1234 58".length)
     }
-
-    // TODO: Write test for formatting disabled and entering digits should have cursor at end of string
 }

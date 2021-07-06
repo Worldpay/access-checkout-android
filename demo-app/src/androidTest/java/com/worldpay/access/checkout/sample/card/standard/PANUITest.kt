@@ -110,6 +110,7 @@ class PANUITest : AbstractCardFragmentTest() {
             .isInInitialState()
             .enterCardDetails(pan = pastedText)
             .cardDetailsAre(pan = pastedTextWith19DigitsAndSpaces)
+            .cursorPositionIs(23)
     }
 
     @Test
