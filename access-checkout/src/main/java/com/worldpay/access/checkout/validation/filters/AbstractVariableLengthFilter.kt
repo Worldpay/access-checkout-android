@@ -13,10 +13,14 @@ internal abstract class AbstractVariableLengthFilter : InputFilter {
         dstart: Int,
         dend: Int
     ): CharSequence? {
-        val maxLength = this.getMaxLength(dest.toString() + source.toString())
+        val text = getTextValue(dest.toString() + source.toString())
+        val maxLength = this.getMaxLength(text)
         val lengthFilter = InputFilter.LengthFilter(maxLength)
-        return lengthFilter.filter(source, start, end, dest, dstart, dend)
+        return lengthFilter.filter(text, start, text.length, dest, dstart, dend)
     }
 
     abstract fun getMaxLength(source: CharSequence?): Int
+
+    open fun getTextValue(source: String) = source
+
 }

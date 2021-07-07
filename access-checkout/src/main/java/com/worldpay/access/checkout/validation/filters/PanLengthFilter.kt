@@ -31,6 +31,10 @@ internal class PanLengthFilter(
         return maxLength + numberOfSpaces
     }
 
+    override fun getTextValue(source: String): String {
+        return source.replace(Regex("\\D"), "")
+    }
+
     private fun isAmex(cardBrand: RemoteCardBrand?) =
         cardBrand != null && cardBrand.name.equals("amex", true)
 }
