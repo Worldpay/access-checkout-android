@@ -82,6 +82,9 @@ internal class PanTextWatcher(
     }
 
     override fun afterTextChanged(pan: Editable?) {
+        if (pan.toString() == "") {
+            return
+        }
         var panText = pan.toString()
 
         if (isSpaceDeleted) {
@@ -137,9 +140,11 @@ internal class PanTextWatcher(
 
     private fun setText(text: String, cursorPosition: Int = text.length) {
         panEditText.removeTextChangedListener(this)
+        val inputFilters = panEditText.filters
+        panEditText.filters = emptyArray()
         panEditText.setText(text)
         panEditText.addTextChangedListener(this)
-
+        panEditText.filters = inputFilters
         panEditText.setSelection(cursorPosition)
     }
 }
