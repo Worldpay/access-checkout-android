@@ -22,5 +22,4 @@ internal abstract class AbstractVariableLengthFilter : InputFilter {
     abstract fun getMaxLength(source: CharSequence?): Int
 
     open fun getTextValue(source: String) = source
-
 }

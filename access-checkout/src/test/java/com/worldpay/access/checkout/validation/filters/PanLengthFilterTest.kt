@@ -49,38 +49,46 @@ class PanLengthFilterTest {
     }
 
     @Test
-    fun `should allow for spaces in length when formatting is enabled - 19 digits`() {
+    fun `should remove spaces in length filter when formatting is enabled - 19 digits`() {
         val pan = EditText(context)
         pan.filters += PanLengthFilter(true)
 
         pan.setText("4111 1111 1111 1111 111")
-        assertEquals("4111 1111 1111 1111 111", pan.text.toString())
+        assertEquals("4111111111111111111", pan.text.toString())
     }
 
     @Test
-    fun `should allow for only 2 spaces in length when formatting is enabled - amex brand`() {
+    fun `should remove spaces in length filter when formatting is enabled - amex brand`() {
         val pan = EditText(context)
         pan.filters += PanLengthFilter(true)
 
         pan.setText("3427 931789 31249")
-        assertEquals("3427 931789 31249", pan.text.toString())
+        assertEquals("342793178931249", pan.text.toString())
     }
 
     @Test
     fun `should strip out non digits before applying max length on pan - formatting enabled`() {
         val pan = EditText(context)
-        pan.filters += PanLengthFilter(true)
+        val panLengthFilter = PanLengthFilter(true)
+        pan.filters += panLengthFilter
+        val maxLength = panLengthFilter.getMaxLength("888abc888abc888abc888abc888abc888abc888abc")
 
         pan.setText("888abc888abc888abc888abc888abc888abc888abc")
-        assertEquals("8888 8888 8888 8888 888", pan.text.toString())
+
+        assertEquals(23, maxLength)
+        assertEquals("8888888888888888888", pan.text.toString())
     }
 
     @Test
     fun `should strip out non digits before applying max length on pan - formatting disabled`() {
         val pan = EditText(context)
-        pan.filters += PanLengthFilter(false)
+        val panLengthFilter = PanLengthFilter(false)
+        pan.filters += panLengthFilter
+        val maxLength = panLengthFilter.getMaxLength("888abc888abc888abc888abc888abc888abc888abc")
 
         pan.setText("888abc888abc888abc888abc888abc888abc888abc")
+
+        assertEquals(19, maxLength)
         assertEquals("8888888888888888888", pan.text.toString())
     }
 }
