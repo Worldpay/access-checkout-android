@@ -82,9 +82,7 @@ internal class PanTextWatcher(
     }
 
     override fun afterTextChanged(pan: Editable?) {
-        if (pan.toString() == "") {
-            return
-        }
+
         var panText = pan.toString()
 
         if (isSpaceDeleted) {
