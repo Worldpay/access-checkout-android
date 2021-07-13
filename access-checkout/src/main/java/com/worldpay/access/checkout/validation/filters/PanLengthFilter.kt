@@ -30,10 +30,16 @@ internal class PanLengthFilter(
         val numberOfSpaces = getExpectedNumberOfSpaces(text)
         val maxLengthWithoutSpaces = totalMaxLength - numberOfSpaces
 
-        return if (text.length > maxLengthWithoutSpaces) {
-            text.subSequence(0, maxLengthWithoutSpaces)
-        } else {
-            text
+        return when {
+            !text.contains(" ") && text.length > maxLengthWithoutSpaces -> {
+                text.substring(0, maxLengthWithoutSpaces)
+            }
+            text.contains(" ") && text.length > totalMaxLength -> {
+                text.substring(0, totalMaxLength)
+            }
+            else -> {
+                text
+            }
         }
     }
 
@@ -46,7 +52,7 @@ internal class PanLengthFilter(
     }
 
     override fun getTextValue(source: String): String {
-        return source.replace(Regex("\\D"), "")
+        return source.replace(Regex("[^0-9\\s]"), "")
     }
 
     private fun getExpectedNumberOfSpaces(source: CharSequence?): Int {

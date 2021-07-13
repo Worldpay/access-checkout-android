@@ -49,21 +49,21 @@ class PanLengthFilterTest {
     }
 
     @Test
-    fun `should remove spaces in length filter when formatting is enabled - 19 digits`() {
+    fun `should allow for spaces in length when formatting is enabled - 19 digits`() {
         val pan = EditText(context)
         pan.filters += PanLengthFilter(true)
 
         pan.setText("4111 1111 1111 1111 111")
-        assertEquals("4111111111111111111", pan.text.toString())
+        assertEquals("4111 1111 1111 1111 111", pan.text.toString())
     }
 
     @Test
-    fun `should remove spaces in length filter when formatting is enabled - amex brand`() {
+    fun `should allow for only 2 spaces in length when formatting is enabled - amex brand`() {
         val pan = EditText(context)
         pan.filters += PanLengthFilter(true)
 
         pan.setText("3427 931789 31249")
-        assertEquals("342793178931249", pan.text.toString())
+        assertEquals("3427 931789 31249", pan.text.toString())
     }
 
     @Test
