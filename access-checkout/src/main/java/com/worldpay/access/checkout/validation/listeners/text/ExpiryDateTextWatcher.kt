@@ -15,7 +15,7 @@ internal class ExpiryDateTextWatcher(
 
     private var textBefore = ""
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         textBefore = s.toString()
         super.beforeTextChanged(s, start, count, after)
     }

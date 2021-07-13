@@ -1,5 +1,8 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
+import android.view.KeyEvent
+import android.view.KeyEvent.ACTION_UP
+import android.view.KeyEvent.KEYCODE_DEL
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.reset
@@ -19,12 +22,13 @@ import com.worldpay.access.checkout.validation.result.handler.PanValidationResul
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
-import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
+import kotlin.test.assertEquals
+
 
 @RunWith(RobolectricTestRunner::class)
 class PanTextWatcherIntegrationTest {
@@ -49,16 +53,7 @@ class PanTextWatcherIntegrationTest {
 
         cvc.addTextChangedListener(cvcTextWatcher)
 
-        val panTextWatcher = PanTextWatcher(
-            panEditText = pan,
-            panValidator = PanValidator(emptyArray()),
-            panFormatter = PanFormatter(false),
-            cvcValidator = cvcValidator,
-            cvcEditText = cvc,
-            panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager
-        )
+        val panTextWatcher = createPanTextWatcher(pan = pan)
 
         pan.addTextChangedListener(panTextWatcher)
     }
@@ -91,15 +86,9 @@ class PanTextWatcherIntegrationTest {
     fun `should validate pan as true when visa pan is entered and visa pan is an accepted card brand`() {
         val pan = EditText(context)
 
-        val panTextWatcher = PanTextWatcher(
-            panEditText = pan,
-            panValidator = PanValidator(arrayOf("VISA")),
-            panFormatter = PanFormatter(false),
-            cvcValidator = cvcValidator,
-            cvcEditText = cvc,
-            panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager
+        val panTextWatcher = createPanTextWatcher(
+            pan = pan,
+            acceptedCardBrands = arrayOf("VISA")
         )
 
         pan.addTextChangedListener(panTextWatcher)
@@ -114,15 +103,9 @@ class PanTextWatcherIntegrationTest {
     fun `should validate pan as true when unknown valid luhn pan is entered and there are some accepted cards specified`() {
         val pan = EditText(context)
 
-        val panTextWatcher = PanTextWatcher(
-            panEditText = pan,
-            panValidator = PanValidator(arrayOf("VISA", "MASTERCARD")),
-            panFormatter = PanFormatter(false),
-            cvcValidator = cvcValidator,
-            cvcEditText = cvc,
-            panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager
+        val panTextWatcher = createPanTextWatcher(
+            pan = pan,
+            acceptedCardBrands = arrayOf("VISA", "MASTERCARD")
         )
 
         pan.addTextChangedListener(panTextWatcher)
@@ -137,15 +120,9 @@ class PanTextWatcherIntegrationTest {
     fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand and force notify`() {
         val pan = EditText(context)
 
-        val panTextWatcher = PanTextWatcher(
-            panEditText = pan,
-            panValidator = PanValidator(arrayOf("MASTERCARD")),
-            panFormatter = PanFormatter(false),
-            cvcValidator = cvcValidator,
-            cvcEditText = cvc,
-            panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager
+        val panTextWatcher = createPanTextWatcher(
+            pan = pan,
+            acceptedCardBrands = arrayOf("MASTERCARD")
         )
 
         pan.addTextChangedListener(panTextWatcher)
@@ -205,15 +182,10 @@ class PanTextWatcherIntegrationTest {
     fun `should format pan when formatting is enabled`() {
         val pan = EditText(context)
 
-        val panTextWatcher = PanTextWatcher(
-            panEditText = pan,
-            panValidator = PanValidator(arrayOf("MASTERCARD")),
-            panFormatter = PanFormatter(true),
-            cvcValidator = cvcValidator,
-            cvcEditText = cvc,
-            panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager
+        val panTextWatcher = createPanTextWatcher(
+            pan = pan,
+            acceptedCardBrands = arrayOf("MASTERCARD"),
+            enablePanFormatting = true
         )
 
         pan.addTextChangedListener(panTextWatcher)
@@ -230,40 +202,111 @@ class PanTextWatcherIntegrationTest {
     fun `should not format pan when formatting is disabled`() {
         val pan = EditText(context)
 
-        val panTextWatcher = PanTextWatcher(
-            panEditText = pan,
-            panValidator = PanValidator(arrayOf("MASTERCARD")),
-            panFormatter = PanFormatter(false),
-            cvcValidator = cvcValidator,
-            cvcEditText = cvc,
-            panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager
-        )
+        val panTextWatcher = createPanTextWatcher(pan = pan)
 
         pan.addTextChangedListener(panTextWatcher)
 
         pan.setText(VISA_PAN)
 
-        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = true)
+        verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
         verify(brandChangedHandler).handle(VISA_BRAND)
 
         assertEquals(VISA_PAN, pan.text.toString())
     }
 
     @Test
+    fun `should do nothing when text is empty`() {
+        val pan = EditText(context)
+
+        val panTextWatcher = createPanTextWatcher(pan = pan)
+
+        pan.addTextChangedListener(panTextWatcher)
+
+        pan.setText("")
+
+        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
+        verifyZeroInteractions(brandChangedHandler)
+
+        assertEquals("", pan.text.toString())
+    }
+
+    @Test
+    fun `should do nothing when text is blank`() {
+        val pan = EditText(context)
+
+        val panTextWatcher = createPanTextWatcher(pan = pan)
+
+        pan.addTextChangedListener(panTextWatcher)
+
+        pan.setText(" ")
+
+        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
+        verifyZeroInteractions(brandChangedHandler)
+
+        assertEquals("", pan.text.toString())
+    }
+
+    @Test
+    fun `should delete character before space when deleting space in pan`() {
+        val pan = EditText(context)
+
+        val panTextWatcher = createPanTextWatcher(
+            pan = pan,
+            enablePanFormatting = true
+        )
+
+        pan.addTextChangedListener(panTextWatcher)
+
+        pan.setText("1234 5678 9012")
+        pan.pressBackspaceAtIndex(5)
+
+        assertEquals("1235 6789 012", pan.text.toString())
+        assertEquals(3, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should not delete anymore characters when deleting character and a space in pan`() {
+        val pan = EditText(context)
+
+        val panTextWatcher = createPanTextWatcher(
+            pan = pan,
+            enablePanFormatting = true
+        )
+
+        pan.addTextChangedListener(panTextWatcher)
+
+        pan.setText("1234 5678 9012")
+        pan.pressBackspaceAtSelection(3, 5)
+
+        assertEquals("1235 6789 012", pan.text.toString())
+        assertEquals(3, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should be able to delete character that is not a space in pan`() {
+        val pan = EditText(context)
+
+        val panTextWatcher = createPanTextWatcher(
+            pan = pan,
+            enablePanFormatting = true
+        )
+
+        pan.addTextChangedListener(panTextWatcher)
+
+        pan.setText("1234 5678 9012")
+        pan.pressBackspaceAtIndex(2)
+
+        assertEquals("1345 6789 012", pan.text.toString())
+        assertEquals(1, pan.selectionEnd)
+    }
+
+    @Test
     fun `should update the pan and set cursor position when formatted`() {
         val pan = EditText(context)
 
-        val panTextWatcher = PanTextWatcher(
-            panEditText = pan,
-            panValidator = PanValidator(arrayOf("MASTERCARD")),
-            panFormatter = PanFormatter(true),
-            cvcValidator = cvcValidator,
-            cvcEditText = cvc,
-            panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager
+        val panTextWatcher = createPanTextWatcher(
+            pan = pan,
+            enablePanFormatting = true
         )
 
         pan.addTextChangedListener(panTextWatcher)
@@ -272,5 +315,34 @@ class PanTextWatcherIntegrationTest {
 
         assertEquals(VISA_PAN_FORMATTED, pan.text.toString())
         assertEquals(VISA_PAN_FORMATTED.length, pan.selectionEnd)
+    }
+
+    private fun createPanTextWatcher(
+        pan: EditText,
+        acceptedCardBrands: Array<String> = emptyArray(),
+        enablePanFormatting: Boolean = false
+    ): PanTextWatcher {
+        return PanTextWatcher(
+            panEditText = pan,
+            panValidator = PanValidator(acceptedCardBrands),
+            panFormatter = PanFormatter(enablePanFormatting),
+            cvcValidator = cvcValidator,
+            cvcEditText = cvc,
+            panValidationResultHandler = panValidationResultHandler,
+            brandChangedHandler = brandChangedHandler,
+            cvcValidationRuleManager = cvcValidationRuleManager
+        )
+    }
+
+    private fun EditText.pressBackspaceAtIndex(selection: Int) {
+        this.setSelection(selection)
+        this.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KEYCODE_DEL, 0))
+        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+    }
+
+    private fun EditText.pressBackspaceAtSelection(start: Int, end: Int) {
+        this.setSelection(start, end)
+        this.dispatchKeyEvent(KeyEvent(0, 0, KeyEvent.ACTION_DOWN, KEYCODE_DEL, 0))
+        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 }

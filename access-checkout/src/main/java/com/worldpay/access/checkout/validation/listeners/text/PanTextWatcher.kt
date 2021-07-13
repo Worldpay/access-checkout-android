@@ -32,7 +32,7 @@ internal class PanTextWatcher(
     private var expectedCursorPosition = 0
     private var isSpaceDeleted = false
 
-    override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+    override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         super.beforeTextChanged(s, start, count, after)
         panBefore = s.toString()
     }
@@ -42,10 +42,10 @@ internal class PanTextWatcher(
      * @param before - the number of characters changed
      * @param count - number of characters added
      */
-    override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+    override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         super.onTextChanged(s, start, before, count)
 
-        if (s.isNullOrEmpty()) return
+        if (s.isBlank()) return
         if (!panFormatter.isFormattingEnabled()) return
 
         val panText = s.toString()
