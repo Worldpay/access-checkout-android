@@ -65,4 +65,43 @@ class PanLengthFilterTest {
         pan.setText("3427 931789 31249")
         assertEquals("3427 931789 31249", pan.text.toString())
     }
+
+    @Test
+    fun `should strip out non digits before applying max length on pan - formatting enabled`() {
+        val pan = EditText(context)
+        val panLengthFilter = PanLengthFilter(true)
+        pan.filters += panLengthFilter
+        val maxLength = panLengthFilter.getMaxLength("888abc888abc888abc888abc888abc888abc888abc")
+
+        pan.setText("888abc888abc888abc888abc888abc888abc888abc")
+
+        assertEquals(23, maxLength)
+        assertEquals("8888888888888888888", pan.text.toString())
+    }
+
+    @Test
+    fun `should strip out non digits before applying max length on pan - formatting disabled`() {
+        val pan = EditText(context)
+        val panLengthFilter = PanLengthFilter(false)
+        pan.filters += panLengthFilter
+        val maxLength = panLengthFilter.getMaxLength("888abc888abc888abc888abc888abc888abc888abc")
+
+        pan.setText("888abc888abc888abc888abc888abc888abc888abc")
+
+        assertEquals(19, maxLength)
+        assertEquals("8888888888888888888", pan.text.toString())
+    }
+
+    @Test
+    fun `should limit to max length on formatted pan`() {
+        val pan = EditText(context)
+        val panLengthFilter = PanLengthFilter(true)
+        pan.filters += panLengthFilter
+        val maxLength = panLengthFilter.getMaxLength("8888 8888 8888 8888 8888 8888 8888")
+
+        pan.setText("8888 8888 8888 8888 8888 8888 8888")
+
+        assertEquals(23, maxLength)
+        assertEquals("8888 8888 8888 8888 888", pan.text.toString())
+    }
 }

@@ -268,32 +268,6 @@ class PanTextWatcherTest {
         verifyZeroInteractions(cvcValidator)
     }
 
-    @Test
-    fun `should do nothing when beforeTextChanged or onTextChanged is called`() {
-        val panValidator = mock<PanValidator>()
-        val panFormatter = mock<PanFormatter>()
-
-        val panTextWatcher = PanTextWatcher(
-            panEditText = panEditText,
-            panValidator = panValidator,
-            panFormatter = panFormatter,
-            cvcValidator = cvcValidator,
-            cvcEditText = cvcEditText,
-            panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager
-        )
-
-        panTextWatcher.beforeTextChanged("", 1, 2, 3)
-        panTextWatcher.onTextChanged("", 1, 2, 3)
-
-        verifyZeroInteractions(
-            panValidator,
-            panFormatter,
-            panValidationResultHandler
-        )
-    }
-
     private fun mockPan(pan: String, isValid: PanValidationResult) {
         given(panEditable.toString()).willReturn(pan)
         given(panValidator.validate(eq(pan), any(), any())).willReturn(isValid)

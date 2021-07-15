@@ -1,5 +1,10 @@
 package com.worldpay.access.checkout.client.testutil
 
+import android.content.Context
+import android.view.KeyEvent
+import android.view.KeyEvent.ACTION_DOWN
+import android.view.KeyEvent.ACTION_UP
+import android.view.KeyEvent.KEYCODE_DEL
 import android.widget.EditText
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -10,20 +15,19 @@ import com.nhaarman.mockitokotlin2.spy
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.robolectric.shadows.ShadowInstrumentation
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.junit.Before
-import org.robolectric.shadows.ShadowInstrumentation
 
 open class AbstractValidationIntegrationTest {
 
-    private val context = ShadowInstrumentation.getInstrumentation().context
+    protected val context: Context = ShadowInstrumentation.getInstrumentation().context
 
     private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"
 
@@ -36,35 +40,11 @@ open class AbstractValidationIntegrationTest {
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
 
-    private val server = MockWebServer()
+    private lateinit var server: MockWebServer
 
     protected lateinit var cardValidationListener: CardValidationListener
 
     private val defaultSSLSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
-
-    @Before
-    fun setup() {
-        pan = EditText(context)
-        pan.id = 1
-        expiryDate = EditText(context)
-        expiryDate.id = 2
-        cvc = EditText(context)
-        cvc.id = 3
-
-        reset(lifecycle, lifecycleOwner)
-
-        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
-
-        HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
-
-        server.enqueue(MockResponse().setBody(cardConfigJson))
-        server.useHttps(getSslContext().socketFactory, false)
-        server.start()
-
-        cardValidationListener = spy(CardValidationListener())
-
-        reset(cardValidationListener)
-    }
 
     @After
     fun tearDown() {
@@ -72,20 +52,25 @@ open class AbstractValidationIntegrationTest {
         HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory)
     }
 
-    protected fun initialiseWithoutAcceptedCardBrands(enablePanFormatting: Boolean = false) {
+    protected fun initialiseValidation(enablePanFormatting: Boolean = false, acceptedCardBrands: Array<String>? = null) {
+        resetValidation()
+
         val url = server.url(cardConfigurationEndpoint)
-        val baseUrl = "${url.scheme}://${url.host}:${url.port}/"
 
         val cardValidationConfig = CardValidationConfig.Builder()
             .pan(pan)
             .cvc(cvc)
             .expiryDate(expiryDate)
             .validationListener(cardValidationListener)
-            .baseUrl(baseUrl)
+            .baseUrl("${url.scheme}://${url.host}:${url.port}/")
             .lifecycleOwner(lifecycleOwner)
 
         if (enablePanFormatting) {
             cardValidationConfig.enablePanFormatting()
+        }
+
+        if (acceptedCardBrands != null) {
+            cardValidationConfig.acceptedCardBrands(acceptedCardBrands)
         }
 
         AccessCheckoutValidationInitialiser.initialise(
@@ -93,23 +78,26 @@ open class AbstractValidationIntegrationTest {
         )
     }
 
-    protected fun initialiseWithAcceptedCardBrands(cardBrands: Array<String>) {
-        val url = server.url(cardConfigurationEndpoint)
-        val baseUrl = "${url.scheme}://${url.host}:${url.port}/"
+    private fun resetValidation() {
+        pan = EditText(context)
+        pan.id = 1
+        expiryDate = EditText(context)
+        expiryDate.id = 2
+        cvc = EditText(context)
+        cvc.id = 3
 
-        val cardValidationConfig = CardValidationConfig.Builder()
-            .pan(pan)
-            .cvc(cvc)
-            .expiryDate(expiryDate)
-            .acceptedCardBrands(cardBrands)
-            .validationListener(cardValidationListener)
-            .baseUrl(baseUrl)
-            .lifecycleOwner(lifecycleOwner)
-            .build()
+        cardValidationListener = spy(CardValidationListener())
+        reset(cardValidationListener)
 
-        AccessCheckoutValidationInitialiser.initialise(
-            cardValidationConfig
-        )
+        reset(lifecycle, lifecycleOwner)
+        given(lifecycleOwner.lifecycle).willReturn(lifecycle)
+
+        HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
+
+        server = MockWebServer()
+        server.enqueue(MockResponse().setBody(cardConfigJson))
+        server.useHttps(getSslContext().socketFactory, false)
+        server.start()
     }
 
     private fun getSslContext(): SSLContext {
@@ -127,5 +115,23 @@ open class AbstractValidationIntegrationTest {
         val sslContext = SSLContext.getInstance("SSL")
         sslContext.init(kmf.keyManagers, trustManagerFactory.trustManagers, null)
         return sslContext
+    }
+
+    protected fun EditText.pressBackspaceAtIndex(selection: Int) {
+        this.setSelection(selection)
+        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
+        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+    }
+
+    protected fun EditText.pressBackspaceAtSelection(start: Int, end: Int) {
+        this.setSelection(start, end)
+        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
+        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+    }
+
+    protected fun EditText.typeAtIndex(selection: Int, code: Int) {
+        this.setSelection(selection)
+        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
+        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 }

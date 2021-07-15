@@ -42,10 +42,6 @@ internal class PanFormatter(
         var formattedPan = panWithNoSpaces.chunked(4)[0]
         val chunksOfSix = panWithNoSpaces.removeRange(0, 4).chunked(6)
 
-        if (chunksOfSix.isEmpty()) {
-            return formattedPan
-        }
-
         formattedPan += " ${chunksOfSix[0].trim()}"
 
         if (chunksOfSix.drop(1).isNotEmpty()) {
