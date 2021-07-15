@@ -69,10 +69,6 @@ internal class PanTextWatcher(
                 else -> currentCursorPosition
             }
 
-            if (expectedCursorPosition > formattedPan.length) {
-                expectedCursorPosition = formattedPan.length
-            }
-
             if (formattedPan.length > expectedCursorPosition && formattedPan[expectedCursorPosition] == ' ') {
                 expectedCursorPosition += 1
             }
@@ -81,8 +77,7 @@ internal class PanTextWatcher(
         }
     }
 
-    override fun afterTextChanged(pan: Editable?) {
-
+    override fun afterTextChanged(pan: Editable) {
         var panText = pan.toString()
 
         if (isSpaceDeleted) {
@@ -138,11 +133,8 @@ internal class PanTextWatcher(
 
     private fun setText(text: String, cursorPosition: Int = text.length) {
         panEditText.removeTextChangedListener(this)
-        val inputFilters = panEditText.filters
-        panEditText.filters = emptyArray()
         panEditText.setText(text)
         panEditText.addTextChangedListener(this)
-        panEditText.filters = inputFilters
         panEditText.setSelection(cursorPosition)
     }
 }

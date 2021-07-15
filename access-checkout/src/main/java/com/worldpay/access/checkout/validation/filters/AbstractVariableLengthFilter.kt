@@ -6,10 +6,10 @@ import android.text.Spanned
 internal abstract class AbstractVariableLengthFilter : InputFilter {
 
     override fun filter(
-        source: CharSequence?,
+        source: CharSequence,
         start: Int,
         end: Int,
-        dest: Spanned?,
+        dest: Spanned,
         dstart: Int,
         dend: Int
     ): CharSequence? {

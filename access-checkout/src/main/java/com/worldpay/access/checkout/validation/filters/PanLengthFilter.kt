@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.validation.filters
 
+import android.text.InputFilter
 import android.text.Spanned
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.utils.ValidationUtil
@@ -14,17 +15,13 @@ internal class PanLengthFilter(
     private val spacesAfterEveryXChars = 4.0
 
     override fun filter(
-        source: CharSequence?,
+        source: CharSequence,
         start: Int,
         end: Int,
-        dest: Spanned?,
+        dest: Spanned,
         dstart: Int,
         dend: Int
     ): CharSequence? {
-        if (source == null || dest == null) {
-            return null
-        }
-
         val text = getTextValue(dest.toString() + source.toString())
         val totalMaxLength = getMaxLength(text)
         val numberOfSpaces = getExpectedNumberOfSpaces(text)
@@ -32,13 +29,15 @@ internal class PanLengthFilter(
 
         return when {
             !text.contains(" ") && text.length > maxLengthWithoutSpaces -> {
-                text.substring(0, maxLengthWithoutSpaces)
+                val lengthFilter = InputFilter.LengthFilter(maxLengthWithoutSpaces)
+                lengthFilter.filter(text, start, text.length, dest, dstart, dend)
             }
             text.contains(" ") && text.length > totalMaxLength -> {
-                text.substring(0, totalMaxLength)
+                val lengthFilter = InputFilter.LengthFilter(totalMaxLength)
+                lengthFilter.filter(text, start, text.length, dest, dstart, dend)
             }
             else -> {
-                text
+                null
             }
         }
     }

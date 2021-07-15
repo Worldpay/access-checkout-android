@@ -1,10 +1,14 @@
 package com.worldpay.access.checkout.client.validation
 
+import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
+import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -12,10 +16,13 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
+    @Before
+    fun setup() {
+        initialiseValidation()
+    }
+
     @Test
     fun `should call each listener function as each input is filled and then finally call the onValidationSuccess function`() {
-        initialiseWithoutAcceptedCardBrands()
-
         pan.setText(VISA_PAN)
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -27,5 +34,23 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         verify(cardValidationListener).onExpiryDateValidated(true)
 
         verify(cardValidationListener).onValidationSuccess()
+    }
+
+    @Test
+    fun `should revalidate cvc when brand changes`() {
+        cvc.setText("123")
+
+        verify(cardValidationListener).onCvcValidated(true)
+
+        pan.setText(AMEX_PAN)
+
+        verify(cardValidationListener).onCvcValidated(false)
+        verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
+
+        reset(cardValidationListener)
+        pan.setText(VISA_PAN)
+
+        verify(cardValidationListener).onCvcValidated(true)
+        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
     }
 }

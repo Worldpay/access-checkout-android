@@ -91,4 +91,17 @@ class PanLengthFilterTest {
         assertEquals(19, maxLength)
         assertEquals("8888888888888888888", pan.text.toString())
     }
+
+    @Test
+    fun `should limit to max length on formatted pan`() {
+        val pan = EditText(context)
+        val panLengthFilter = PanLengthFilter(true)
+        pan.filters += panLengthFilter
+        val maxLength = panLengthFilter.getMaxLength("8888 8888 8888 8888 8888 8888 8888")
+
+        pan.setText("8888 8888 8888 8888 8888 8888 8888")
+
+        assertEquals(23, maxLength)
+        assertEquals("8888 8888 8888 8888 888", pan.text.toString())
+    }
 }
