@@ -80,6 +80,10 @@ internal class PanTextWatcher(
     override fun afterTextChanged(pan: Editable) {
         var panText = pan.toString()
 
+        if (panText.isBlank()) {
+            return
+        }
+
         if (isSpaceDeleted) {
             panText = StringBuilder(panText).deleteCharAt(expectedCursorPosition).toString()
             setText(panText, expectedCursorPosition)
@@ -99,8 +103,13 @@ internal class PanTextWatcher(
         val forceNotify = validationState == CARD_BRAND_NOT_ACCEPTED
 
         panValidationResultHandler.handleResult(isValid, forceNotify)
+
         if (formattedPan != panText) {
             setText(formattedPan, expectedCursorPosition)
+        }
+
+        if (panEditText.selectionEnd != expectedCursorPosition && panEditText.length() >= expectedCursorPosition) {
+            panEditText.setSelection(expectedCursorPosition)
         }
     }
 

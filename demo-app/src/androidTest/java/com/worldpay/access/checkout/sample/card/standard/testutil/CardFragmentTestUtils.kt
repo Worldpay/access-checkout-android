@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.sample.card.standard.testutil
 
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -7,7 +9,14 @@ import android.widget.Switch
 import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
+import androidx.test.espresso.action.ViewActions.longClick
+import androidx.test.espresso.assertion.ViewAssertions.matches
+import androidx.test.espresso.matcher.RootMatchers
+import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
@@ -156,7 +165,18 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun cursorPositionIs(position: Int): CardFragmentTestUtils {
-        assertEquals(position, panInput().selectionEnd)
+        wait { assertEquals(position, panInput().selectionEnd) }
+        return this
+    }
+
+    fun setSelection(start: Int, end: Int): CardFragmentTestUtils {
+        setCursorPosition(panInput(), start, end)
+        return this
+    }
+
+    fun selectionIs(start: Int, end: Int): CardFragmentTestUtils {
+        wait { assertEquals(start, panInput().selectionStart) }
+        wait { assertEquals(end, panInput().selectionEnd) }
         return this
     }
 
@@ -182,6 +202,42 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
         wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
+        return this
+    }
+
+    fun copyAll(): CardFragmentTestUtils {
+        onView(withId(R.id.card_flow_text_pan))
+            .perform(longClick())
+
+        onView(withText("Select all"))
+            .inRoot(isPlatformPopup())
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        onView(withText("Copy"))
+            .inRoot(isPlatformPopup())
+            .check(matches(isDisplayed()))
+            .perform(click())
+
+        return this
+    }
+
+    fun assertCopiedTextIs(text: String): CardFragmentTestUtils {
+        val clipboard = getInstrumentation().context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val actual = clipboard.primaryClip?.getItemAt(0)?.text.toString()
+        assertEquals(text, actual)
+        return this
+    }
+
+    fun paste(): CardFragmentTestUtils {
+        onView(withId(R.id.card_flow_text_pan))
+            .perform(longClick())
+
+        onView(withText("Paste"))
+            .inRoot(isPlatformPopup())
+            .check(matches(isDisplayed()))
+            .perform(click())
+
         return this
     }
 }

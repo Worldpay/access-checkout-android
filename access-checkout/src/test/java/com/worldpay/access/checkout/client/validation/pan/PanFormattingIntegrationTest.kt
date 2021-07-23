@@ -65,6 +65,15 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
+    fun `should delete previous digit when selecting space and pressing backspace`() {
+        pan.setText("1234 5678 90")
+        pan.pressBackspaceAtSelection(4, 5)
+
+        assertEquals("1235 6789 0", pan.text.toString())
+        assertEquals(3, pan.selectionEnd)
+    }
+
+    @Test
     fun `should not delete anymore characters when deleting space and a character in pan`() {
         pan.setText("1234 5678 9012")
         pan.pressBackspaceAtSelection(4, 6)
@@ -83,11 +92,71 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
+    fun `should be able to delete digit, space and a digit together`() {
+        pan.setText("1234 5678 90")
+        pan.pressBackspaceAtSelection(3, 6)
+
+        assertEquals("1236 7890", pan.text.toString())
+        assertEquals(3, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should be able to delete space and a digit together`() {
+        pan.setText("1234 5678 90")
+        pan.pressBackspaceAtSelection(4, 6)
+
+        assertEquals("1234 6789 0", pan.text.toString())
+        assertEquals(4, pan.selectionEnd)
+    }
+
+    @Test
     fun `should update the pan and set cursor position when formatted`() {
         pan.setText(VISA_PAN)
 
         assertEquals(VISA_PAN_FORMATTED, pan.text.toString())
         assertEquals(VISA_PAN_FORMATTED.length, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should switch from amex format to visa format when different pan is pasted over`() {
+        pan.setText(AMEX_PAN_FORMATTED)
+
+        assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
+
+        pan.setText("3528 0007 0000 0000 267")
+
+        assertEquals("3528 0007 0000 0000 267", pan.text.toString())
+        assertEquals(23, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should switch from visa format to amex format when different pan is pasted over`() {
+        pan.setText(VISA_PAN_FORMATTED)
+
+        assertEquals(VISA_PAN_FORMATTED, pan.text.toString())
+
+        pan.setText(AMEX_PAN_FORMATTED)
+
+        assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
+        assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should be able to paste in an entire pan into a blank pan field and cursor goes to the end of the pan`() {
+        pan.setText(AMEX_PAN_FORMATTED)
+
+        assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
+        assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should shift digits to right by the number of pasted digits`() {
+        pan.copyText("8888")
+        pan.setText("4444 3333 2222 1111 000")
+
+        pan.pasteAtSelection(8, 9)
+
+        assertEquals("4444 3338 8882 2211 11 0", pan.text.toString())
     }
 
     @Test
