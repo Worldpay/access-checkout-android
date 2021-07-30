@@ -1,21 +1,21 @@
 package com.worldpay.access.checkout.validation.decorators
 
 import android.widget.EditText
-import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
+import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 
 internal class FieldDecoratorFactory(
     private val textWatcherFactory: TextWatcherFactory,
     private val focusChangeListenerFactory: FocusChangeListenerFactory,
-    private val lengthFilterFactory: LengthFilterFactory
+    private val accessCheckoutInputFilterFactory: AccessCheckoutInputFilterFactory
 ) {
 
     fun getCvcDecorator(cvcEditText: EditText, panEditText: EditText?): CvcFieldDecorator {
         return CvcFieldDecorator(
             cvcTextWatcher = textWatcherFactory.createCvcTextWatcher(),
             cvcFocusChangeListener = focusChangeListenerFactory.createCvcFocusChangeListener(),
-            cvcLengthFilter = lengthFilterFactory.getCvcLengthFilter(panEditText),
+            cvcLengthFilter = accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText),
             cvcEditText = cvcEditText
         )
     }
@@ -34,7 +34,7 @@ internal class FieldDecoratorFactory(
                 enablePanFormatting
             ),
             panFocusChangeListener = focusChangeListenerFactory.createPanFocusChangeListener(),
-            panLengthFilter = lengthFilterFactory.getPanLengthFilter(enablePanFormatting),
+            panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),
             panEditText = panEditText
         )
     }
@@ -43,7 +43,7 @@ internal class FieldDecoratorFactory(
         return ExpiryDateFieldDecorator(
             expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText),
             expiryDateFocusChangeListener = focusChangeListenerFactory.createExpiryDateFocusChangeListener(),
-            expiryDateLengthFilter = lengthFilterFactory.getExpiryDateLengthFilter(),
+            expiryDateLengthFilter = accessCheckoutInputFilterFactory.getExpiryDateLengthFilter(),
             expiryDateEditText = expiryDateEditText
         )
     }

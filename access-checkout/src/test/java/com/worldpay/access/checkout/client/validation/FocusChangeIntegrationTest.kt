@@ -6,9 +6,9 @@ import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import org.junit.Before
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import kotlin.test.fail
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -23,7 +23,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - pan`() {
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 

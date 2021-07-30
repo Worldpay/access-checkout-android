@@ -4,17 +4,17 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
-import org.junit.Before
-import org.junit.Test
-import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
-import org.robolectric.shadows.ShadowSystemClock
 import java.lang.System.currentTimeMillis
 import java.time.Duration
 import java.time.Instant.ofEpochMilli
 import java.time.LocalDate
 import java.time.Year
 import kotlin.math.abs
+import org.junit.Before
+import org.junit.Test
+import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
+import org.robolectric.shadows.ShadowSystemClock
 
 @RunWith(RobolectricTestRunner::class)
 class ExpiryValidationIntegrationTest : AbstractValidationIntegrationTest() {
@@ -62,10 +62,12 @@ class ExpiryValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should validate expiry date as true where month and year is valid and current day is last day of month`() {
         val future = 2222028000000 // 23:00:00 UTC May 30 2040
-        ShadowSystemClock.advanceBy(Duration.between(
-            ofEpochMilli(currentTimeMillis()),
-            ofEpochMilli(future)
-        ))
+        ShadowSystemClock.advanceBy(
+            Duration.between(
+                ofEpochMilli(currentTimeMillis()),
+                ofEpochMilli(future)
+            )
+        )
 
         expiryDate.setText("06/40")
 

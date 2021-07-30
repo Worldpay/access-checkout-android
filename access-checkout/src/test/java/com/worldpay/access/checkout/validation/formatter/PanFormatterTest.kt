@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.formatter
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import kotlin.test.assertEquals
 import org.junit.Test
 
@@ -15,9 +15,9 @@ class PanFormatterTest {
     fun `should not do any formatting when formatting is disabled`() {
         val panFormatter = PanFormatter(false)
 
-        val pan = panFormatter.format(VISA_PAN, VISA_BRAND)
+        val pan = panFormatter.format(visaPan(), VISA_BRAND)
 
-        assertEquals(VISA_PAN, pan)
+        assertEquals(visaPan(), pan)
     }
 
     @Test

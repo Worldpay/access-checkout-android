@@ -2,10 +2,12 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
+import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
+import com.worldpay.access.checkout.validation.utils.ValidationUtil
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
@@ -46,66 +48,40 @@ internal class PanTextWatcher(
         super.onTextChanged(s, start, before, count)
 
         if (s.isBlank()) return
-        if (!panFormatter.isFormattingEnabled()) return
+//        if (!panFormatter.isFormattingEnabled()) return
 
         val panText = s.toString()
 
         if (count == 0) {
             isSpaceDeleted = panBefore[start] == ' ' && before == 1
-            expectedCursorPosition = if (isSpaceDeleted) {
-                start - 1
-            } else {
-                start
-            }
+            expectedCursorPosition = getExpectedCursorPositionOnDelete(start)
         } else {
-            val currentCursorPosition = count + start
-
-            val formattedPan = getFormattedPan(panText)
-
-            val spaceDiffLeft = formattedPan.substring(0, currentCursorPosition).count { it == ' ' } - panText.substring(0, currentCursorPosition).count { it == ' ' }
-
-            expectedCursorPosition = when {
-                spaceDiffLeft > 0 -> currentCursorPosition + spaceDiffLeft
-                else -> currentCursorPosition
-            }
-
-            if (formattedPan.length > expectedCursorPosition && formattedPan[expectedCursorPosition] == ' ') {
-                expectedCursorPosition += 1
-            }
-
             isSpaceDeleted = false
+            val currentCursorPosition = count + start
+            expectedCursorPosition = getExpectedCursorPositionOnInsert(panText, currentCursorPosition)
         }
     }
 
     override fun afterTextChanged(pan: Editable) {
         var panText = pan.toString()
 
-        if (panText.isBlank()) {
-            return
-        }
-
         if (isSpaceDeleted) {
             panText = StringBuilder(panText).deleteCharAt(expectedCursorPosition).toString()
             setText(panText, expectedCursorPosition)
-        } else if (panText.endsWith(" ")) {
-            setText(panText.dropLast(1))
         }
 
-        val newCardBrand = findBrandForPan(panText)
-        val formattedPan = getFormattedPan(panText, newCardBrand)
+        val brand = findBrandForPan(panText)
+        val newPan = if (panFormatter.isFormattingEnabled()) getFormattedPan(panText, brand) else panText
+        val cardValidationRule = getPanValidationRule(brand)
 
-        handleCardBrandChange(newCardBrand)
+        trimToMaxLength(cardValidationRule, newPan)
 
-        val cardValidationRule = getPanValidationRule(newCardBrand)
-        val validationState = panValidator.validate(formattedPan, cardValidationRule, newCardBrand)
+        handleCardBrandChange(brand)
 
-        val isValid = validationState == VALID
-        val forceNotify = validationState == CARD_BRAND_NOT_ACCEPTED
+        validate(newPan, cardValidationRule, brand)
 
-        panValidationResultHandler.handleResult(isValid, forceNotify)
-
-        if (formattedPan != panText) {
-            setText(formattedPan, expectedCursorPosition)
+        if (newPan != panText) {
+            setText(newPan, expectedCursorPosition)
         }
 
         if (panEditText.selectionEnd != expectedCursorPosition && panEditText.length() >= expectedCursorPosition) {
@@ -113,12 +89,61 @@ internal class PanTextWatcher(
         }
     }
 
+    private fun getExpectedCursorPositionOnDelete(start: Int): Int {
+        return if (isSpaceDeleted) {
+            start - 1
+        } else {
+            start
+        }
+    }
+
+    private fun getExpectedCursorPositionOnInsert(panText: String, currentCursorPosition: Int): Int {
+        val pan = if (panFormatter.isFormattingEnabled()) getFormattedPan(panText) else panText
+
+        if (panBefore.isBlank()) return pan.length
+
+        val spaceDiffLeft = pan.substring(0, currentCursorPosition).count { it == ' ' } - panText.substring(0, currentCursorPosition).count { it == ' ' }
+
+        val expectedCursorPosition = when {
+            spaceDiffLeft > 0 -> currentCursorPosition + spaceDiffLeft
+            else -> currentCursorPosition
+        }
+
+        // jump over the space is the expected cursor is on a space
+        if (pan.length > expectedCursorPosition && pan[expectedCursorPosition] == ' ') {
+            return expectedCursorPosition + 1
+        }
+
+        return expectedCursorPosition
+    }
+
+    private fun validate(
+        formattedPan: String,
+        cardValidationRule: CardValidationRule,
+        newCardBrand: RemoteCardBrand?
+    ) {
+        val validationState = panValidator.validate(formattedPan, cardValidationRule, newCardBrand)
+        val isValid = validationState == VALID
+        val forceNotify = validationState == CARD_BRAND_NOT_ACCEPTED
+
+        panValidationResultHandler.handleResult(isValid, forceNotify)
+    }
+
+    private fun trimToMaxLength(cardValidationRule: CardValidationRule, pan: String) {
+        val maxLength = ValidationUtil.getMaxLength(cardValidationRule)
+        val expectedNumberOfSpaces = panFormatter.getExpectedNumberOfSpaces(pan)
+        val totalMaxLength = maxLength + expectedNumberOfSpaces
+
+        if (pan.length > totalMaxLength) {
+            val charsToDrop = pan.length - totalMaxLength
+            setText(pan.dropLast(charsToDrop), expectedCursorPosition - charsToDrop)
+        }
+    }
+
     private fun getFormattedPan(
         panText: String,
         cardBrand: RemoteCardBrand? = findBrandForPan(panText)
-    ): String {
-        return panFormatter.format(panText, cardBrand)
-    }
+    ) = panFormatter.format(panText, cardBrand)
 
     private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
         if (cardBrand != newCardBrand) {

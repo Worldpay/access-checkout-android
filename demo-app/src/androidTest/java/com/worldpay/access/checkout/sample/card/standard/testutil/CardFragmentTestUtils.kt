@@ -9,13 +9,7 @@ import android.widget.Switch
 import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
-import androidx.test.espresso.action.ViewActions.longClick
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.RootMatchers
-import androidx.test.espresso.matcher.RootMatchers.isPlatformPopup
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
@@ -205,20 +199,13 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun copyAll(): CardFragmentTestUtils {
-        onView(withId(R.id.card_flow_text_pan))
-            .perform(longClick())
+    fun copy(): CardFragmentTestUtils {
+        copy(panInput())
+        return this
+    }
 
-        onView(withText("Select all"))
-            .inRoot(isPlatformPopup())
-            .check(matches(isDisplayed()))
-            .perform(click())
-
-        onView(withText("Copy"))
-            .inRoot(isPlatformPopup())
-            .check(matches(isDisplayed()))
-            .perform(click())
-
+    fun paste(): CardFragmentTestUtils {
+        paste(panInput())
         return this
     }
 
@@ -226,18 +213,6 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         val clipboard = getInstrumentation().context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
         val actual = clipboard.primaryClip?.getItemAt(0)?.text.toString()
         assertEquals(text, actual)
-        return this
-    }
-
-    fun paste(): CardFragmentTestUtils {
-        onView(withId(R.id.card_flow_text_pan))
-            .perform(longClick())
-
-        onView(withText("Paste"))
-            .inRoot(isPlatformPopup())
-            .check(matches(isDisplayed()))
-            .perform(click())
-
         return this
     }
 }

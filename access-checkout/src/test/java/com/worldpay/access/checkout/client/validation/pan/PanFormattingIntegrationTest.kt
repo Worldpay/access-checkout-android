@@ -10,13 +10,12 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN_FORMATTED
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN_FORMATTED
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
-import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
@@ -27,7 +26,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should be formatting pan with a space between every 4 digits - visa`() {
+    fun `should be formatting pan with a space between every 4 digits and detecting correct brand - visa`() {
         pan.setText("4111111111111111")
 
         assertEquals("4111 1111 1111 1111", pan.text.toString())
@@ -36,7 +35,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should be formatting pan with a space between after 4, 6 and 5 digits`() {
+    fun `should be formatting pan with a space between after 4, 6 and 5 digits and detected correct brand`() {
         pan.setText("342793178931249")
 
         assertEquals("3427 931789 31249", pan.text.toString())
@@ -111,10 +110,12 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should update the pan and set cursor position when formatted`() {
-        pan.setText(VISA_PAN)
+        val visaPan = visaPan(formatted = true)
 
-        assertEquals(VISA_PAN_FORMATTED, pan.text.toString())
-        assertEquals(VISA_PAN_FORMATTED.length, pan.selectionEnd)
+        pan.setText(visaPan())
+
+        assertEquals(visaPan, pan.text.toString())
+        assertEquals(19, pan.selectionEnd)
     }
 
     @Test
@@ -131,9 +132,11 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should switch from visa format to amex format when different pan is pasted over`() {
-        pan.setText(VISA_PAN_FORMATTED)
+        val visaPan = visaPan(formatted = true)
 
-        assertEquals(VISA_PAN_FORMATTED, pan.text.toString())
+        pan.setText(visaPan)
+
+        assertEquals(visaPan, pan.text.toString())
 
         pan.setText(AMEX_PAN_FORMATTED)
 
@@ -147,16 +150,6 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
         assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
-    }
-
-    @Test
-    fun `should shift digits to right by the number of pasted digits`() {
-        pan.copyText("8888")
-        pan.setText("4444 3333 2222 1111 000")
-
-        pan.pasteAtSelection(8, 9)
-
-        assertEquals("4444 3338 8882 2211 11 0", pan.text.toString())
     }
 
     @Test
@@ -189,10 +182,12 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should move the cursor to the end of the pan when pan is pasted over and reduces the max length`() {
-        pan.setText(VISA_PAN)
+        val visaPan = visaPan(formatted = true)
 
-        assertEquals(VISA_PAN_FORMATTED, pan.text.toString())
-        assertEquals(VISA_PAN_FORMATTED.length, pan.selectionEnd)
+        pan.setText(visaPan(formatted = false))
+
+        assertEquals(visaPan, pan.text.toString())
+        assertEquals(19, pan.selectionEnd)
 
         pan.setText(AMEX_PAN)
 
@@ -203,16 +198,6 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should do nothing when text is empty`() {
         pan.setText("")
-
-        verify(cardValidationListener, never()).onBrandChange(any())
-        verify(cardValidationListener, never()).onPanValidated(any())
-
-        assertEquals("", pan.text.toString())
-    }
-
-    @Test
-    fun `should do nothing when text is blank`() {
-        pan.setText(" ")
 
         verify(cardValidationListener, never()).onBrandChange(any())
         verify(cardValidationListener, never()).onPanValidated(any())

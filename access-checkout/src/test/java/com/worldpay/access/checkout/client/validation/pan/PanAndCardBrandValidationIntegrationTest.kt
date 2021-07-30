@@ -23,7 +23,7 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.MAESTRO_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -86,7 +86,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should only notify pan validated on validation state change and notify brand change each time the brand changes - without accepted card brands`() {
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 
@@ -137,7 +137,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
     fun `should only notify pan validated on validation state change and notify brand change each time the brand changes - with empty array of accepted card brands`() {
         initialiseValidation(acceptedCardBrands = emptyArray())
 
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 
@@ -189,7 +189,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         cvc.setText("1234")
         verify(cardValidationListener).onCvcValidated(true)
 
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
         verify(cardValidationListener).onCvcValidated(false)

@@ -2,17 +2,14 @@ package com.worldpay.access.checkout.client.validation.pan
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.times
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
-import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -44,7 +41,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should validate pan as true when full visa pan is entered`() {
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
 
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -52,7 +49,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should validate pan as true when visa pan is entered and visa pan is an accepted card brand`() {
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
 
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -68,7 +65,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand and force notify`() {
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
 
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -92,7 +89,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should not validate cvc when pan brand is recognised and cvc is empty`() {
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
 
         verify(cardValidationListener, never()).onCvcValidated(any())
         verify(cardValidationListener).onPanValidated(true)

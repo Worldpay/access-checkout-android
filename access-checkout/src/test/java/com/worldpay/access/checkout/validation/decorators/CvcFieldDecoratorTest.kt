@@ -12,8 +12,8 @@ import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
-import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.CvcTextWatcher
 import kotlin.test.assertEquals
@@ -28,7 +28,7 @@ class CvcFieldDecoratorTest {
 
     private val cvcTextWatcher = mock<CvcTextWatcher>()
     private val cvcFocusChangeListener = mock<CvcFocusChangeListener>()
-    private val lengthFilterFactory = LengthFilterFactory()
+    private val accessCheckoutInputFilterFactory = AccessCheckoutInputFilterFactory()
 
     private lateinit var cvcFieldDecorator: CvcFieldDecorator
 
@@ -37,7 +37,7 @@ class CvcFieldDecoratorTest {
         cvcFieldDecorator = CvcFieldDecorator(
             cvcTextWatcher = cvcTextWatcher,
             cvcFocusChangeListener = cvcFocusChangeListener,
-            cvcLengthFilter = lengthFilterFactory.getCvcLengthFilter(panEditText),
+            cvcLengthFilter = accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText),
             cvcEditText = cvcEditText
         )
     }

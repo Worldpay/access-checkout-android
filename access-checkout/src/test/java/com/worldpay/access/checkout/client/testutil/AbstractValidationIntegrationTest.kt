@@ -4,9 +4,7 @@ import android.content.Context
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.ACTION_UP
-import android.view.KeyEvent.KEYCODE_COPY
 import android.view.KeyEvent.KEYCODE_DEL
-import android.view.KeyEvent.KEYCODE_PASTE
 import android.widget.EditText
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
@@ -17,15 +15,15 @@ import com.nhaarman.mockitokotlin2.spy
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 
 open class AbstractValidationIntegrationTest {
 
@@ -54,7 +52,10 @@ open class AbstractValidationIntegrationTest {
         HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory)
     }
 
-    protected fun initialiseValidation(enablePanFormatting: Boolean = false, acceptedCardBrands: Array<String>? = null) {
+    protected fun initialiseValidation(
+        enablePanFormatting: Boolean = false,
+        acceptedCardBrands: Array<String>? = null
+    ) {
         resetValidation()
 
         val url = server.url(cardConfigurationEndpoint)
@@ -135,25 +136,5 @@ open class AbstractValidationIntegrationTest {
         this.setSelection(selection)
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
-    }
-
-    //todo: juned - remove this method and the next one
-    protected fun EditText.copyText(text: String) {
-        val oldText = this.text.toString()
-        this.setText(text)
-        this.selectAll()
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_COPY, 0))
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_COPY, 0))
-        this.setText(oldText)
-    }
-
-    protected fun EditText.pasteAtSelection(start: Int, end: Int) {
-        val oldText = this.text.toString()
-        this.setSelection(start, end)
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_PASTE, 0))
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_PASTE, 0))
-
-        val oldText2 = this.text.toString()
-        val oldText3 = this.text.toString()
     }
 }

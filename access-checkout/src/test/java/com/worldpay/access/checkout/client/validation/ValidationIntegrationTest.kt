@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -23,7 +23,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should call each listener function as each input is filled and then finally call the onValidationSuccess function`() {
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 
@@ -48,7 +48,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
 
         reset(cardValidationListener)
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
 
         verify(cardValidationListener).onCvcValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))

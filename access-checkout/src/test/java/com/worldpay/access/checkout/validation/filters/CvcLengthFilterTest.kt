@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -52,7 +52,7 @@ class CvcLengthFilterTest {
         cvc.setText("123456")
         assertEquals("1234", cvc.text.toString())
 
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
 
         cvc.setText("123456")
         assertEquals("123", cvc.text.toString())
@@ -67,7 +67,7 @@ class CvcLengthFilterTest {
         cvc.setText("123456")
         assertEquals("1234", cvc.text.toString())
 
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
 
         cvc.setText("123456")
         assertEquals("1234", cvc.text.toString())

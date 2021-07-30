@@ -1,8 +1,11 @@
 package com.worldpay.access.checkout.sample.card.restricted.testutil
 
+import android.content.ClipboardManager
+import android.content.Context.CLIPBOARD_SERVICE
 import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.view.isVisible
+import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
@@ -59,6 +62,39 @@ class RestrictedCardFragmentTestUtils(activityRule: ActivityTestRule<MainActivit
 
     fun hasBrand(cardBrand: CardBrand): RestrictedCardFragmentTestUtils {
         wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
+        return this
+    }
+
+    fun setSelection(start: Int, end: Int): RestrictedCardFragmentTestUtils {
+        setCursorPosition(panInput(), start, end)
+        return this
+    }
+
+    fun cursorPositionIs(position: Int): RestrictedCardFragmentTestUtils {
+        wait { assertEquals(position, panInput().selectionEnd) }
+        return this
+    }
+
+    fun selectionIs(start: Int, end: Int): RestrictedCardFragmentTestUtils {
+        wait { assertEquals(start, panInput().selectionStart) }
+        wait { assertEquals(end, panInput().selectionEnd) }
+        return this
+    }
+
+    fun copy(): RestrictedCardFragmentTestUtils {
+        copy(panInput())
+        return this
+    }
+
+    fun paste(): RestrictedCardFragmentTestUtils {
+        paste(panInput())
+        return this
+    }
+
+    fun assertCopiedTextIs(text: String): RestrictedCardFragmentTestUtils {
+        val clipboard = getInstrumentation().context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+        val actual = clipboard.primaryClip?.getItemAt(0)?.text.toString()
+        assertEquals(text, actual)
         return this
     }
 }

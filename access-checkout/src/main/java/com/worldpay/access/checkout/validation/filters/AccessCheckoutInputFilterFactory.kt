@@ -2,14 +2,14 @@ package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
 
-internal class LengthFilterFactory {
+internal class AccessCheckoutInputFilterFactory {
 
     fun getCvcLengthFilter(panEditText: EditText?): CvcLengthFilter {
         return CvcLengthFilter(panEditText)
     }
 
-    fun getPanLengthFilter(enablePanFormatting: Boolean): PanLengthFilter {
-        return PanLengthFilter(enablePanFormatting)
+    fun getPanNumericFilter(): PanNumericFilter {
+        return PanNumericFilter()
     }
 
     fun getExpiryDateLengthFilter(): ExpiryDateLengthFilter {

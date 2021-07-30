@@ -14,8 +14,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessf
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN_FORMATTED
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
@@ -65,56 +64,21 @@ class PanTextWatcherTest {
 
         given(cvcEditText.text).willReturn(cvcEditable)
         given(cvcEditable.toString()).willReturn("")
-        given(panFormatter.format(VISA_PAN, VISA_BRAND)).willReturn(VISA_PAN)
-    }
-
-    @Test
-    fun `should call the pan formatter with correct pan and brand`() {
-        given(panEditable.toString()).willReturn(VISA_PAN)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panFormatter).format(VISA_PAN, VISA_BRAND)
-    }
-
-    @Test
-    fun `should handle brand changes when formatting has taken place`() {
-        given(panEditable.toString()).willReturn(VISA_PAN)
-        given(panFormatter.format(VISA_PAN, VISA_BRAND)).willReturn(VISA_PAN_FORMATTED)
-        given(panEditText.selectionEnd).willReturn(VISA_PAN.length)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panEditText).setText(VISA_PAN_FORMATTED)
-        verify(brandChangedHandler).handle(VISA_BRAND)
-    }
-
-    @Test
-    fun `should handle validation when formatting has taken place`() {
-        mockPan(VISA_PAN_FORMATTED, VALID)
-        given(panEditable.toString()).willReturn(VISA_PAN)
-        given(panFormatter.format(VISA_PAN, VISA_BRAND)).willReturn(VISA_PAN_FORMATTED)
-        given(panEditText.selectionEnd).willReturn(VISA_PAN.length)
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panEditText).setText(VISA_PAN_FORMATTED)
-
-        verify(panValidator).validate(VISA_PAN_FORMATTED, VISA_BRAND.pan, VISA_BRAND)
-        verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
+        given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
     }
 
     @Test
     fun `should call the pan validator with the correct validation rule and brand`() {
-        given(panEditable.toString()).willReturn(VISA_PAN)
+        given(panEditable.toString()).willReturn(visaPan())
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidator).validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND)
+        verify(panValidator).validate(visaPan(), VISA_BRAND.pan, VISA_BRAND)
     }
 
     @Test
     fun `should call the pan result handler with valid result and not force notify when the pan validator returns VALID`() {
-        mockPan(VISA_PAN, VALID)
+        mockPan(visaPan(), VALID)
 
         panTextWatcher.afterTextChanged(panEditable)
 
@@ -133,7 +97,7 @@ class PanTextWatcherTest {
 
     @Test
     fun `should call the pan result handler with invalid result and force notify when the pan validator returns CARD_BRAND_NOT_ACCEPTED`() {
-        mockPan(VISA_PAN, CARD_BRAND_NOT_ACCEPTED)
+        mockPan(visaPan(), CARD_BRAND_NOT_ACCEPTED)
 
         panTextWatcher.afterTextChanged(panEditable)
 
@@ -152,8 +116,8 @@ class PanTextWatcherTest {
 
     @Test
     fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID`() {
-        mockPan(VISA_PAN, VALID)
-        given(panFormatter.format(VISA_PAN, VISA_BRAND)).willReturn(VISA_PAN)
+        mockPan(visaPan(), VALID)
+        given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandChangedHandler).handle(VISA_BRAND)
@@ -167,8 +131,8 @@ class PanTextWatcherTest {
 
     @Test
     fun `should call the brand changed handler with visa brand regardless of the pan validation result being CARD_BRAND_NOT_ACCEPTED`() {
-        mockPan(VISA_PAN, VALID)
-        given(panFormatter.format(VISA_PAN, VISA_BRAND)).willReturn(VISA_PAN)
+        mockPan(visaPan(), VALID)
+        given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandChangedHandler).handle(VISA_BRAND)
@@ -182,8 +146,8 @@ class PanTextWatcherTest {
 
     @Test
     fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID_LUHN`() {
-        mockPan(VISA_PAN, VALID)
-        given(panFormatter.format(VISA_PAN, VISA_BRAND)).willReturn(VISA_PAN)
+        mockPan(visaPan(), VALID)
+        given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandChangedHandler).handle(VISA_BRAND)
@@ -208,21 +172,21 @@ class PanTextWatcherTest {
     @Test
     fun `should not call the brand changed handler if the brand has not actually changed from the previous one`() {
         // set the visa pan so that the brand changed handler is called with visa
-        mockPan(VISA_PAN, VALID)
+        mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandChangedHandler).handle(VISA_BRAND)
 
         reset(brandChangedHandler)
 
         // set the visa pan again so that the brand changed handler is no longer called
-        mockPan(VISA_PAN, VALID)
+        mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
         verifyZeroInteractions(brandChangedHandler)
     }
 
     @Test
     fun `should update the cvc validation rule when the brand changes`() {
-        mockPan(VISA_PAN, VALID)
+        mockPan(visaPan(), VALID)
 
         panTextWatcher.afterTextChanged(panEditable)
 
@@ -232,7 +196,7 @@ class PanTextWatcherTest {
 
     @Test
     fun `should re-validate the cvc when the brand changes`() {
-        mockPan(VISA_PAN, VALID)
+        mockPan(visaPan(), VALID)
         given(cvcEditable.toString()).willReturn("123")
 
         panTextWatcher.afterTextChanged(panEditable)
@@ -244,14 +208,14 @@ class PanTextWatcherTest {
     @Test
     fun `should not interact with the cvc validator at all if the brand has not changed`() {
         // set the visa pan so that the brand changed handler is called with visa
-        mockPan(VISA_PAN, VALID)
+        mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandChangedHandler).handle(VISA_BRAND)
 
         reset(brandChangedHandler)
 
         // set the visa pan again so that the brand changed handler is no longer called
-        mockPan(VISA_PAN, VALID)
+        mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
         verifyZeroInteractions(brandChangedHandler)
         verifyZeroInteractions(cvcValidator)
@@ -259,7 +223,7 @@ class PanTextWatcherTest {
 
     @Test
     fun `should not interact with the cvc validator at all if the cvc is empty`() {
-        mockPan(VISA_PAN, VALID)
+        mockPan(visaPan(), VALID)
         given(cvcEditable.toString()).willReturn("")
 
         panTextWatcher.afterTextChanged(panEditable)

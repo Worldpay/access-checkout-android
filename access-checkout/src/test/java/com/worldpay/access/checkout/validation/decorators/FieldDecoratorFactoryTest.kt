@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
+import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 import kotlin.test.assertNotNull
@@ -19,7 +19,7 @@ class FieldDecoratorFactoryTest {
 
     private val textWatcherFactory = mock<TextWatcherFactory>()
     private val focusChangeListenerFactory = mock<FocusChangeListenerFactory>()
-    private val lengthFilterFactory = mock<LengthFilterFactory>()
+    private val accessCheckoutInputFilterFactory = mock<AccessCheckoutInputFilterFactory>()
 
     private lateinit var fieldDecoratorFactory: FieldDecoratorFactory
 
@@ -28,7 +28,7 @@ class FieldDecoratorFactoryTest {
         fieldDecoratorFactory = FieldDecoratorFactory(
             textWatcherFactory = textWatcherFactory,
             focusChangeListenerFactory = focusChangeListenerFactory,
-            lengthFilterFactory = lengthFilterFactory
+            accessCheckoutInputFilterFactory = accessCheckoutInputFilterFactory
         )
     }
 
@@ -36,28 +36,28 @@ class FieldDecoratorFactoryTest {
     fun `should get cvc field decorator when pan is not null`() {
         given(textWatcherFactory.createCvcTextWatcher()).willReturn(mock())
         given(focusChangeListenerFactory.createCvcFocusChangeListener()).willReturn(mock())
-        given(lengthFilterFactory.getCvcLengthFilter(panEditText)).willReturn(mock())
+        given(accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText)).willReturn(mock())
 
         val decorator: CvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(cvcEditText, panEditText)
 
         assertNotNull(decorator)
         verify(textWatcherFactory).createCvcTextWatcher()
         verify(focusChangeListenerFactory).createCvcFocusChangeListener()
-        verify(lengthFilterFactory).getCvcLengthFilter(panEditText)
+        verify(accessCheckoutInputFilterFactory).getCvcLengthFilter(panEditText)
     }
 
     @Test
     fun `should get cvc field decorator when pan is null`() {
         given(textWatcherFactory.createCvcTextWatcher()).willReturn(mock())
         given(focusChangeListenerFactory.createCvcFocusChangeListener()).willReturn(mock())
-        given(lengthFilterFactory.getCvcLengthFilter(null)).willReturn(mock())
+        given(accessCheckoutInputFilterFactory.getCvcLengthFilter(null)).willReturn(mock())
 
         val decorator: CvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(cvcEditText, null)
 
         assertNotNull(decorator)
         verify(textWatcherFactory).createCvcTextWatcher()
         verify(focusChangeListenerFactory).createCvcFocusChangeListener()
-        verify(lengthFilterFactory).getCvcLengthFilter(null)
+        verify(accessCheckoutInputFilterFactory).getCvcLengthFilter(null)
     }
 
     @Test
@@ -74,7 +74,7 @@ class FieldDecoratorFactoryTest {
             )
         ).willReturn(mock())
         given(focusChangeListenerFactory.createPanFocusChangeListener()).willReturn(mock())
-        given(lengthFilterFactory.getPanLengthFilter(false)).willReturn(mock())
+        given(accessCheckoutInputFilterFactory.getPanNumericFilter()).willReturn(mock())
 
         val decorator: PanFieldDecorator = fieldDecoratorFactory.getPanDecorator(
             panEditText = panEditText,
@@ -92,20 +92,20 @@ class FieldDecoratorFactoryTest {
         )
 
         verify(focusChangeListenerFactory).createPanFocusChangeListener()
-        verify(lengthFilterFactory).getPanLengthFilter(false)
+        verify(accessCheckoutInputFilterFactory).getPanNumericFilter()
     }
 
     @Test
     fun `should get expiry date field decorator`() {
         given(textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)).willReturn(mock())
         given(focusChangeListenerFactory.createExpiryDateFocusChangeListener()).willReturn(mock())
-        given(lengthFilterFactory.getExpiryDateLengthFilter()).willReturn(mock())
+        given(accessCheckoutInputFilterFactory.getExpiryDateLengthFilter()).willReturn(mock())
 
         val decorator: ExpiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(expiryDateEditText)
 
         assertNotNull(decorator)
         verify(textWatcherFactory).createExpiryDateTextWatcher(expiryDateEditText)
         verify(focusChangeListenerFactory).createExpiryDateFocusChangeListener()
-        verify(lengthFilterFactory).getExpiryDateLengthFilter()
+        verify(accessCheckoutInputFilterFactory).getExpiryDateLengthFilter()
     }
 }

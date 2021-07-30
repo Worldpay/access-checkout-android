@@ -127,4 +127,21 @@ class RestrictedCardFragmentTest {
             .hasBrand(MAESTRO)
             .validationStateIs(false)
     }
+
+    @Test
+    fun shouldShiftDigitsToRightByTheNumberOfPastedDigits() {
+        restrictedCardFragmentTestUtils
+            .isInInitialState()
+            .enterCardDetails(pan = "8888")
+            .setSelection(0, 4)
+            .copy()
+            .enterCardDetails(pan = "4444333322221111000")
+            .cursorPositionIs(19)
+            .setSelection(7, 8)
+            .selectionIs(7, 8)
+            .assertCopiedTextIs(text = "8888")
+            .paste()
+            .cardDetailsAre(pan = "4444333888822221111")
+            .cursorPositionIs(11)
+    }
 }
