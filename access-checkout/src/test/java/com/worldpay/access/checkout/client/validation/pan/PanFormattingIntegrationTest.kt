@@ -16,6 +16,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import kotlin.test.asserter
 
 @RunWith(RobolectricTestRunner::class)
 class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
@@ -203,5 +204,25 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         verify(cardValidationListener, never()).onPanValidated(any())
 
         assertEquals("", pan.text.toString())
+    }
+
+    @Test
+    fun `should shift digits to right by the number of pasted digits`() {
+        pan.setText("8888")
+        pan.copySelection(0, 4)
+
+        pan.setText("4444 3333 2222 1111 000")
+        assertEquals(23, pan.selectionEnd)
+
+        pan.setSelection(8, 9)
+        assertEquals(8, pan.selectionStart)
+        assertEquals(9, pan.selectionEnd)
+
+        assertEquals("8888", getCopiedText())
+
+        pan.paste()
+
+        assertEquals("4444 3338 8882 2221 111", pan.text.toString())
+        assertEquals(13, pan.selectionEnd)
     }
 }

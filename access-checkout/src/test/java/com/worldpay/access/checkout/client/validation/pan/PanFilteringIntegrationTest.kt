@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.client.validation.pan
 
+import android.view.KeyEvent
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN_FORMATTED
@@ -98,5 +99,27 @@ class PanFilteringIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.setText(MASTERCARD_PAN_FORMATTED.plus(" 3456 7890"))
         assertEquals(MASTERCARD_PAN_FORMATTED, pan.text.toString())
+    }
+
+    @Test
+    fun `should trim digits at the end of pan when entering a digit in middle of pan that has reached max length`() {
+        val visaPan = visaPan(19, true)
+
+        pan.setText(visaPan)
+        assertEquals(visaPan, pan.text.toString())
+
+        pan.typeAtIndex(6, KeyEvent.KEYCODE_5)
+        assertEquals("4111 1511 1111 1111 111", pan.text.toString())
+    }
+
+    @Test
+    fun `should not allow typing extra digits at end of pan that has reached max length`() {
+        val visaPan = visaPan(19, true)
+
+        pan.setText(visaPan)
+        assertEquals(visaPan, pan.text.toString())
+
+        pan.typeAtIndex(visaPan.length, KeyEvent.KEYCODE_5)
+        assertEquals(visaPan, pan.text.toString())
     }
 }

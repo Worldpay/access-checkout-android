@@ -48,7 +48,6 @@ internal class PanTextWatcher(
         super.onTextChanged(s, start, before, count)
 
         if (s.isBlank()) return
-//        if (!panFormatter.isFormattingEnabled()) return
 
         val panText = s.toString()
 
@@ -165,7 +164,7 @@ internal class PanTextWatcher(
         cvcValidationRuleManager.updateRule(cardValidationRule)
     }
 
-    private fun setText(text: String, cursorPosition: Int = text.length) {
+    private fun setText(text: String, cursorPosition: Int) {
         panEditText.removeTextChangedListener(this)
         panEditText.setText(text)
         panEditText.addTextChangedListener(this)
