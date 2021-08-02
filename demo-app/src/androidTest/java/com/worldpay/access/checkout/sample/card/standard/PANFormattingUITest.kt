@@ -206,21 +206,4 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .cardDetailsAre(pan = "1234 58")
             .cursorPositionIs("1234 58".length)
     }
-
-    @Test
-    fun shouldShiftDigitsToRightByTheNumberOfPastedDigits() {
-        cardFragmentTestUtils
-            .isInInitialState()
-            .enterCardDetails(pan = "8888")
-            .setSelection(0, 4)
-            .copy()
-            .enterCardDetails(pan = "4444 3333 2222 1111 000")
-            .cursorPositionIs(23)
-            .setSelection(8, 9)
-            .selectionIs(8, 9)
-            .assertCopiedTextIs(text = "8888")
-            .paste()
-            .cardDetailsAre(pan = "4444 3338 8882 2221 111")
-            .cursorPositionIs(13)
-    }
 }

@@ -1,8 +1,6 @@
 package com.worldpay.access.checkout.client.testutil
 
-import android.content.ClipboardManager
 import android.content.Context
-import android.content.Context.CLIPBOARD_SERVICE
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.ACTION_UP
@@ -122,11 +120,6 @@ open class AbstractValidationIntegrationTest {
         return sslContext
     }
 
-    protected fun getCopiedText(): String {
-        val clipboard = getInstrumentation().context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        return clipboard.primaryClip?.getItemAt(0)?.text.toString()
-    }
-
     protected fun EditText.pressBackspaceAtIndex(selection: Int) {
         this.setSelection(selection)
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
@@ -143,14 +136,5 @@ open class AbstractValidationIntegrationTest {
         this.setSelection(selection)
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
-    }
-
-    protected fun EditText.copySelection(start: Int, end: Int) {
-        this.setSelection(start, end)
-        this.onTextContextMenuItem(android.R.id.copy)
-    }
-
-    protected fun EditText.paste() {
-        this.onTextContextMenuItem(android.R.id.paste)
     }
 }
