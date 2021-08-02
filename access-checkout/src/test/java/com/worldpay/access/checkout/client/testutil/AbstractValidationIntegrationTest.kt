@@ -137,4 +137,8 @@ open class AbstractValidationIntegrationTest {
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
+
+    protected fun EditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
+        this.text.replace(selectionStart, selectionEnd, text)
+    }
 }

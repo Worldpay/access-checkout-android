@@ -1,6 +1,11 @@
 package com.worldpay.access.checkout.client.validation.pan
 
 import android.view.KeyEvent.KEYCODE_1
+import android.view.KeyEvent.KEYCODE_2
+import android.view.KeyEvent.KEYCODE_3
+import android.view.KeyEvent.KEYCODE_8
+import android.view.KeyEvent.KEYCODE_D
+import android.view.KeyEvent.KEYCODE_SPACE
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
@@ -214,9 +219,107 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         assertEquals(8, pan.selectionStart)
         assertEquals(9, pan.selectionEnd)
 
-        pan.text.replace(pan.selectionStart, pan.selectionEnd, "8888")
+        pan.paste(pan.selectionStart, pan.selectionEnd, "8888")
 
         assertEquals("4444 3338 8882 2221 111", pan.text.toString())
         assertEquals(13, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should shift digits and trim if pasted characters change brand type`() {
+        pan.setText("4444 3333 2222 1111 000")
+        assertEquals(23, pan.selectionEnd)
+
+        pan.paste(0, 14, "3434 3434 3434")
+
+        assertEquals("3434 343434 34111", pan.text.toString())
+        assertEquals(14, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should be able to add extra character at the end of valid pan`() {
+        pan.setText("4444 3333 2222 1111")
+        assertEquals(19, pan.selectionEnd)
+        pan.typeAtIndex(19, KEYCODE_1)
+
+        assertEquals("4444 3333 2222 1111 1", pan.text.toString())
+        assertEquals(21, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should be able to add two characters at the end of valid pan`() {
+        pan.setText("4444 3333 2222 1111")
+        assertEquals(19, pan.selectionEnd)
+        pan.typeAtIndex(19, KEYCODE_1)
+
+        pan.typeAtIndex(21, KEYCODE_8)
+
+        assertEquals("4444 3333 2222 1111 18", pan.text.toString())
+        assertEquals(22, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should be able to add three characters at the end of valid pan`() {
+        pan.setText("4444 3333 2222 1111")
+        assertEquals(19, pan.selectionEnd)
+        pan.typeAtIndex(19, KEYCODE_1)
+        pan.typeAtIndex(21, KEYCODE_8)
+        pan.typeAtIndex(22, KEYCODE_2)
+
+        assertEquals("4444 3333 2222 1111 182", pan.text.toString())
+        assertEquals(23, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should trim one character if we reach the max number of characters in pan`() {
+        pan.setText("4444 3333 2222 1111")
+        assertEquals(19, pan.selectionEnd)
+        pan.typeAtIndex(19, KEYCODE_1)
+        pan.typeAtIndex(21, KEYCODE_8)
+        pan.typeAtIndex(22, KEYCODE_2)
+        pan.typeAtIndex(23, KEYCODE_3)
+
+        assertEquals("4444 3333 2222 1111 182", pan.text.toString())
+        assertEquals(23, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should not be able to insert anything else than digits`() {
+        pan.setText("4554 3333 2222 1111 000")
+        assertEquals(23, pan.selectionEnd)
+        pan.typeAtIndex(23, KEYCODE_SPACE)
+
+        assertEquals("4554 3333 2222 1111 000", pan.text.toString())
+        assertEquals(23, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should not be able to insert nondigit`() {
+        pan.setText("4554 3333 2222 1111 000")
+        assertEquals(23, pan.selectionEnd)
+        pan.typeAtIndex(4, KEYCODE_D)
+
+        assertEquals("4554 3333 2222 1111 000", pan.text.toString())
+        assertEquals(4, pan.selectionEnd)
+    }
+
+    @Test
+    fun `should not be able to insert nondigit and space`() {
+        pan.setText("4554 3333 2222 1111 000")
+        assertEquals(23, pan.selectionEnd)
+        pan.typeAtIndex(3, KEYCODE_SPACE)
+
+        assertEquals("4554 3333 2222 1111 000", pan.text.toString())
+        assertEquals(3, pan.selectionEnd)
+    }
+
+    @Test
+    fun `Allows to insert the 8 and shifts the rest of the pan to the right by 1 digit`() {
+        pan.setText("4444 3333 2222 1111 000")
+        assertEquals(23, pan.selectionEnd)
+        pan.typeAtIndex(5, KEYCODE_8)
+
+        assertEquals("4444 8333 3222 2111 100", pan.text.toString())
+        assertEquals(6, pan.selectionEnd)
     }
 }

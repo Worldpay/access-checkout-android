@@ -33,6 +33,7 @@ internal class PanTextWatcher(
 
     private var expectedCursorPosition = 0
     private var isSpaceDeleted = false
+    private var onlySpaceWasAdded = false
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         super.beforeTextChanged(s, start, count, after)
@@ -49,6 +50,9 @@ internal class PanTextWatcher(
 
         if (s.isBlank()) return
 
+        if (count > 0 && s.subSequence(start, start + count).isBlank()) {
+            onlySpaceWasAdded = true
+        }
         val panText = s.toString()
 
         if (count == 0) {
@@ -56,7 +60,11 @@ internal class PanTextWatcher(
             expectedCursorPosition = getExpectedCursorPositionOnDelete(start)
         } else {
             isSpaceDeleted = false
-            val currentCursorPosition = count + start
+            val currentCursorPosition = if (onlySpaceWasAdded) {
+                start
+            } else {
+                count + start
+            }
             expectedCursorPosition = getExpectedCursorPositionOnInsert(panText, currentCursorPosition)
         }
     }
@@ -100,11 +108,19 @@ internal class PanTextWatcher(
         val pan = if (panFormatter.isFormattingEnabled()) getFormattedPan(panText) else panText
 
         if (panBefore.isBlank()) return pan.length
+        if (onlySpaceWasAdded) return currentCursorPosition
+        // guard against outOfBounds exception if new pan has space added at the end
+        val panCursorPosition = if (currentCursorPosition == panText.length) {
+            pan.length
+        } else {
+            currentCursorPosition
+        }
 
-        val spaceDiffLeft = pan.substring(0, currentCursorPosition).count { it == ' ' } - panText.substring(0, currentCursorPosition).count { it == ' ' }
+        val spaceDiffLeft = pan.substring(0, panCursorPosition).count { it == ' ' } - panText.substring(0, currentCursorPosition).count { it == ' ' }
 
         val expectedCursorPosition = when {
             spaceDiffLeft > 0 -> currentCursorPosition + spaceDiffLeft
+            spaceDiffLeft < 0 -> pan.length
             else -> currentCursorPosition
         }
 
