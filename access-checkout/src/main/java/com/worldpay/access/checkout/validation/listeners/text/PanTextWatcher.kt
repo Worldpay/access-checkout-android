@@ -66,7 +66,7 @@ internal class PanTextWatcher(
     }
 
     override fun afterTextChanged(pan: Editable) {
-        var panText = removeNonDigits(pan.toString())
+        var panText = pan.toString()
 
         if (isSpaceDeleted) {
             panText = StringBuilder(panText).deleteCharAt(expectedCursorPosition).toString()
