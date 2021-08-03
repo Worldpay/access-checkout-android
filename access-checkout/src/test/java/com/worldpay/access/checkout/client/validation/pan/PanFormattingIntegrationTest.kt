@@ -304,7 +304,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should not be able to insert nondigit and space`() {
+    fun `should not be able to insert non-digit and space`() {
         pan.setText("4554 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
         pan.typeAtIndex(3, KEYCODE_SPACE)
@@ -314,7 +314,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `Allows to insert the 8 and shifts the rest of the pan to the right by 1 digit`() {
+    fun `should allow to insert the 8 and shifts the rest of the pan to the right by 1 digit`() {
         pan.setText("4444 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
         pan.typeAtIndex(5, KEYCODE_8)

@@ -50,9 +50,9 @@ internal class PanTextWatcher(
 
         if (s.isBlank()) return
 
-        if (count > 0 && s.subSequence(start, start + count).isBlank()) {
-            onlySpaceWasAdded = true
-        }
+//        if (count > 0 && s.subSequence(start, start + count).isBlank()) {
+//            onlySpaceWasAdded = true
+//        }
         val panText = s.toString()
 
         if (count == 0) {
@@ -60,11 +60,7 @@ internal class PanTextWatcher(
             expectedCursorPosition = getExpectedCursorPositionOnDelete(start)
         } else {
             isSpaceDeleted = false
-            val currentCursorPosition = if (onlySpaceWasAdded) {
-                start
-            } else {
-                count + start
-            }
+            val currentCursorPosition = count + start
             expectedCursorPosition = getExpectedCursorPositionOnInsert(panText, currentCursorPosition)
         }
     }
@@ -108,7 +104,7 @@ internal class PanTextWatcher(
         val pan = if (panFormatter.isFormattingEnabled()) getFormattedPan(panText) else panText
 
         if (panBefore.isBlank()) return pan.length
-        if (onlySpaceWasAdded) return currentCursorPosition
+
         // guard against outOfBounds exception if new pan has space added at the end
         val panCursorPosition = if (currentCursorPosition == panText.length) {
             pan.length

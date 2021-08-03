@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.client.testutil
 
 import android.content.Context
+import android.text.InputType
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.ACTION_UP
@@ -84,6 +85,7 @@ open class AbstractValidationIntegrationTest {
     private fun resetValidation() {
         pan = EditText(context)
         pan.id = 1
+        pan.inputType = InputType.TYPE_CLASS_NUMBER
         expiryDate = EditText(context)
         expiryDate.id = 2
         cvc = EditText(context)
