@@ -66,7 +66,7 @@ internal class PanTextWatcher(
     }
 
     override fun afterTextChanged(pan: Editable) {
-        var panText = pan.toString()
+        var panText = removeNonDigits(pan.toString())
 
         if (isSpaceDeleted) {
             panText = StringBuilder(panText).deleteCharAt(expectedCursorPosition).toString()
@@ -155,6 +155,13 @@ internal class PanTextWatcher(
         panText: String,
         cardBrand: RemoteCardBrand? = findBrandForPan(panText)
     ) = panFormatter.format(panText, cardBrand)
+
+    private fun removeNonDigits(pan: String): String {
+        val regex = Regex("[^0-9]")
+        val charsRemovedLeftOfCursor = pan.substring(0, expectedCursorPosition).count { regex.matches(it.toString()) }
+        expectedCursorPosition =- charsRemovedLeftOfCursor
+        return pan.replace(regex, "")
+    }
 
     private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
         if (cardBrand != newCardBrand) {

@@ -12,6 +12,6 @@ internal class PanNumericFilter : AccessCheckoutInputFilter {
         dstart: Int,
         dend: Int
     ): CharSequence {
-        return source.replace(Regex("[^0-9\\s]"), "")
+        return source
     }
 }

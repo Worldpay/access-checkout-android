@@ -85,7 +85,6 @@ open class AbstractValidationIntegrationTest {
     private fun resetValidation() {
         pan = EditText(context)
         pan.id = 1
-        pan.inputType = InputType.TYPE_CLASS_NUMBER
         expiryDate = EditText(context)
         expiryDate.id = 2
         cvc = EditText(context)
