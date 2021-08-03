@@ -50,9 +50,6 @@ internal class PanTextWatcher(
 
         if (s.isBlank()) return
 
-//        if (count > 0 && s.subSequence(start, start + count).isBlank()) {
-//            onlySpaceWasAdded = true
-//        }
         val panText = s.toString()
 
         if (count == 0) {
@@ -155,13 +152,6 @@ internal class PanTextWatcher(
         panText: String,
         cardBrand: RemoteCardBrand? = findBrandForPan(panText)
     ) = panFormatter.format(panText, cardBrand)
-
-    private fun removeNonDigits(pan: String): String {
-        val regex = Regex("[^0-9]")
-        val charsRemovedLeftOfCursor = pan.substring(0, expectedCursorPosition).count { regex.matches(it.toString()) }
-        expectedCursorPosition =- charsRemovedLeftOfCursor
-        return pan.replace(regex, "")
-    }
 
     private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
         if (cardBrand != newCardBrand) {

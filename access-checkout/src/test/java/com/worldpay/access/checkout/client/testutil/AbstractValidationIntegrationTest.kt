@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.client.testutil
 
 import android.content.Context
+import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.ACTION_UP
@@ -24,9 +25,6 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
-import android.text.method.DigitsKeyListener
-import android.view.inputmethod.EditorInfo
-
 
 open class AbstractValidationIntegrationTest {
 
@@ -87,8 +85,6 @@ open class AbstractValidationIntegrationTest {
     private fun resetValidation() {
         pan = EditText(context)
         pan.id = 1
-//        pan.setRawInputType(EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_SIGNED)
-        pan.inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_SIGNED
         pan.keyListener = DigitsKeyListener.getInstance("0123456789")
         expiryDate = EditText(context)
         expiryDate.id = 2
