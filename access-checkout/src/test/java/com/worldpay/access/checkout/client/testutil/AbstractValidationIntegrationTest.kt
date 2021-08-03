@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.client.testutil
 
 import android.content.Context
-import android.text.InputType
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
 import android.view.KeyEvent.ACTION_UP
@@ -25,6 +24,9 @@ import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
 import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
+import android.text.method.DigitsKeyListener
+import android.view.inputmethod.EditorInfo
+
 
 open class AbstractValidationIntegrationTest {
 
@@ -85,6 +87,9 @@ open class AbstractValidationIntegrationTest {
     private fun resetValidation() {
         pan = EditText(context)
         pan.id = 1
+//        pan.setRawInputType(EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_SIGNED)
+        pan.inputType = EditorInfo.TYPE_CLASS_NUMBER or EditorInfo.TYPE_NUMBER_FLAG_SIGNED
+        pan.keyListener = DigitsKeyListener.getInstance("0123456789")
         expiryDate = EditText(context)
         expiryDate.id = 2
         cvc = EditText(context)
@@ -133,10 +138,11 @@ open class AbstractValidationIntegrationTest {
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
-    protected fun EditText.typeAtIndex(selection: Int, code: Int) {
+    protected fun EditText.typeAtIndex(selection: Int, text: String) {
         this.setSelection(selection)
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
+        this.text.insert(selection, text)
+//        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
+//        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 
     protected fun EditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {

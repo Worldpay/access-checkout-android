@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.client.validation.pan
 
-import android.view.KeyEvent
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN_FORMATTED
@@ -108,7 +107,7 @@ class PanFilteringIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText(visaPan)
         assertEquals(visaPan, pan.text.toString())
 
-        pan.typeAtIndex(6, KeyEvent.KEYCODE_5)
+        pan.typeAtIndex(6, "5")
         assertEquals("4111 1511 1111 1111 111", pan.text.toString())
     }
 
@@ -119,7 +118,7 @@ class PanFilteringIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText(visaPan)
         assertEquals(visaPan, pan.text.toString())
 
-        pan.typeAtIndex(visaPan.length, KeyEvent.KEYCODE_5)
+        pan.typeAtIndex(visaPan.length, "5")
         assertEquals(visaPan, pan.text.toString())
     }
 }

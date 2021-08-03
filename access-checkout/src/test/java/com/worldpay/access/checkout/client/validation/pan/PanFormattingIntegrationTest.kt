@@ -1,11 +1,5 @@
 package com.worldpay.access.checkout.client.validation.pan
 
-import android.view.KeyEvent.KEYCODE_1
-import android.view.KeyEvent.KEYCODE_2
-import android.view.KeyEvent.KEYCODE_3
-import android.view.KeyEvent.KEYCODE_8
-import android.view.KeyEvent.KEYCODE_D
-import android.view.KeyEvent.KEYCODE_SPACE
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
@@ -160,7 +154,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should move the cursor to after space and digit if a digit has been entered in pan immediately before a space`() {
         pan.setText("1234 5678 90")
-        pan.typeAtIndex(4, KEYCODE_1)
+        pan.typeAtIndex(4, "1")
 
         assertEquals("1234 1567 890", pan.text.toString())
         assertEquals(6, pan.selectionEnd)
@@ -169,7 +163,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should move the cursor to after space if digit is entered in pan that forces a space after newly entered digit`() {
         pan.setText("1234 5678 90")
-        pan.typeAtIndex(3, KEYCODE_1)
+        pan.typeAtIndex(3, "1")
 
         assertEquals("1231 4567 890", pan.text.toString())
         assertEquals(5, pan.selectionEnd)
@@ -179,7 +173,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should not allow entering any more digits at the end of pan when limit is reached`() {
         pan.setText("1234 5678 9012 3456 789")
 
-        pan.typeAtIndex(23, KEYCODE_1)
+        pan.typeAtIndex(23, "1")
 
         assertEquals("1234 5678 9012 3456 789", pan.text.toString())
         assertEquals(23, pan.selectionEnd)
@@ -240,7 +234,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should be able to add extra character at the end of valid pan`() {
         pan.setText("4444 3333 2222 1111")
         assertEquals(19, pan.selectionEnd)
-        pan.typeAtIndex(19, KEYCODE_1)
+        pan.typeAtIndex(19, "1")
 
         assertEquals("4444 3333 2222 1111 1", pan.text.toString())
         assertEquals(21, pan.selectionEnd)
@@ -250,9 +244,9 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should be able to add two characters at the end of valid pan`() {
         pan.setText("4444 3333 2222 1111")
         assertEquals(19, pan.selectionEnd)
-        pan.typeAtIndex(19, KEYCODE_1)
+        pan.typeAtIndex(19, "1")
 
-        pan.typeAtIndex(21, KEYCODE_8)
+        pan.typeAtIndex(21, "8")
 
         assertEquals("4444 3333 2222 1111 18", pan.text.toString())
         assertEquals(22, pan.selectionEnd)
@@ -262,9 +256,9 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should be able to add three characters at the end of valid pan`() {
         pan.setText("4444 3333 2222 1111")
         assertEquals(19, pan.selectionEnd)
-        pan.typeAtIndex(19, KEYCODE_1)
-        pan.typeAtIndex(21, KEYCODE_8)
-        pan.typeAtIndex(22, KEYCODE_2)
+        pan.typeAtIndex(19, "1")
+        pan.typeAtIndex(21, "8")
+        pan.typeAtIndex(22, "2")
 
         assertEquals("4444 3333 2222 1111 182", pan.text.toString())
         assertEquals(23, pan.selectionEnd)
@@ -274,10 +268,10 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should trim one character if we reach the max number of characters in pan`() {
         pan.setText("4444 3333 2222 1111")
         assertEquals(19, pan.selectionEnd)
-        pan.typeAtIndex(19, KEYCODE_1)
-        pan.typeAtIndex(21, KEYCODE_8)
-        pan.typeAtIndex(22, KEYCODE_2)
-        pan.typeAtIndex(23, KEYCODE_3)
+        pan.typeAtIndex(19, "1")
+        pan.typeAtIndex(21, "8")
+        pan.typeAtIndex(22, "2")
+        pan.typeAtIndex(23, "3")
 
         assertEquals("4444 3333 2222 1111 182", pan.text.toString())
         assertEquals(23, pan.selectionEnd)
@@ -287,7 +281,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should not be able to insert anything else than digits`() {
         pan.setText("4554 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
-        pan.typeAtIndex(23, KEYCODE_SPACE)
+        pan.typeAtIndex(23, " ")
 
         assertEquals("4554 3333 2222 1111 000", pan.text.toString())
         assertEquals(23, pan.selectionEnd)
@@ -297,17 +291,17 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should not be able to insert nondigit`() {
         pan.setText("4554 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
-        pan.typeAtIndex(4, KEYCODE_D)
+        pan.typeAtIndex(4, "d")
 
         assertEquals("4554 3333 2222 1111 000", pan.text.toString())
         assertEquals(4, pan.selectionEnd)
     }
 
     @Test
-    fun `should not be able to insert non-digit and space`() {
+    fun `should not be able to insert space`() {
         pan.setText("4554 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
-        pan.typeAtIndex(3, KEYCODE_SPACE)
+        pan.typeAtIndex(3, " ")
 
         assertEquals("4554 3333 2222 1111 000", pan.text.toString())
         assertEquals(3, pan.selectionEnd)
@@ -317,7 +311,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should allow to insert the 8 and shifts the rest of the pan to the right by 1 digit`() {
         pan.setText("4444 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
-        pan.typeAtIndex(5, KEYCODE_8)
+        pan.typeAtIndex(5, "8")
 
         assertEquals("4444 8333 3222 2111 100", pan.text.toString())
         assertEquals(6, pan.selectionEnd)
