@@ -112,7 +112,6 @@ internal class PanTextWatcher(
 
         val expectedCursorPosition = when {
             spaceDiffLeft > 0 -> currentCursorPosition + spaceDiffLeft
-            spaceDiffLeft < 0 -> pan.length
             else -> currentCursorPosition
         }
 
