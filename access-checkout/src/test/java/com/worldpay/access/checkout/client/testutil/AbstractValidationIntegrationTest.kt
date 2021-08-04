@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.client.testutil
 
 import android.content.Context
+import android.text.InputType
 import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN

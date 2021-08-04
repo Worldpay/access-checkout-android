@@ -1,7 +1,5 @@
 package com.worldpay.access.checkout.sample.card.standard.testutil
 
-import android.content.ClipboardManager
-import android.content.Context.CLIPBOARD_SERVICE
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
@@ -10,7 +8,6 @@ import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
@@ -168,12 +165,6 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun selectionIs(start: Int, end: Int): CardFragmentTestUtils {
-        wait { assertEquals(start, panInput().selectionStart) }
-        wait { assertEquals(end, panInput().selectionEnd) }
-        return this
-    }
-
     fun cardDetailsAre(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
         if (pan != null) wait { assertEquals(pan, panInput().text.toString()) }
         if (cvc != null) wait { assertEquals(cvc, cvcInput().text.toString()) }
@@ -196,23 +187,6 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
         wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
-        return this
-    }
-
-    fun copy(): CardFragmentTestUtils {
-        copy(panInput())
-        return this
-    }
-
-    fun paste(): CardFragmentTestUtils {
-        paste(panInput())
-        return this
-    }
-
-    fun assertCopiedTextIs(text: String): CardFragmentTestUtils {
-        val clipboard = getInstrumentation().context.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
-        val actual = clipboard.primaryClip?.getItemAt(0)?.text.toString()
-        assertEquals(text, actual)
         return this
     }
 }
