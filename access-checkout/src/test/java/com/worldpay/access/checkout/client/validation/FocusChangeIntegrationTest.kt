@@ -6,8 +6,9 @@ import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import kotlin.test.fail
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -15,11 +16,14 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
 
+    @Before
+    fun setup() {
+        initialiseValidation()
+    }
+
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - pan`() {
-        initialiseWithoutAcceptedCardBrands()
-
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 
@@ -36,8 +40,6 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - cvc`() {
-        initialiseWithoutAcceptedCardBrands()
-
         cvc.setText("123")
         verify(cardValidationListener).onCvcValidated(true)
 
@@ -54,8 +56,6 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - expiry date`() {
-        initialiseWithoutAcceptedCardBrands()
-
         expiryDate.setText("12/99")
         verify(cardValidationListener).onExpiryDateValidated(true)
 
@@ -72,8 +72,6 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should notify validation result on focus lost where notification has not already been sent - pan`() {
-        initialiseWithoutAcceptedCardBrands()
-
         pan.setText("0000")
         verifyZeroInteractions(cardValidationListener)
 
@@ -90,8 +88,6 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should notify validation result on focus lost where notification has not already been sent - cvc`() {
-        initialiseWithoutAcceptedCardBrands()
-
         cvc.setText("")
         verifyZeroInteractions(cardValidationListener)
 
@@ -108,8 +104,6 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should notify validation result on focus lost where notification has not already been sent - expiry date`() {
-        initialiseWithoutAcceptedCardBrands()
-
         expiryDate.setText("01/19")
         verifyZeroInteractions(cardValidationListener)
 

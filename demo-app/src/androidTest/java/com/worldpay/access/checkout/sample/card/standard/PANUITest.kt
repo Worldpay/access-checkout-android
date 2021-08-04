@@ -1,30 +1,19 @@
 package com.worldpay.access.checkout.sample.card.standard
 
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView
-import androidx.test.espresso.assertion.ViewAssertions.matches
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withText
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.AMEX_PAN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.AMEX_PAN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.DINERS_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.DISCOVER_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.JCB_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MAESTRO_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_AMEX
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_MASTERCARD
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
@@ -237,64 +226,5 @@ class PANUITest : AbstractCardFragmentTest() {
             .focusOn(EXPIRY_DATE)
             .validationStateIs(pan = false)
             .hasBrand(VISA)
-    }
-
-    @Test
-    fun givenUserClicksCardViewAndInsertsVisaIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
-        val validVisaCardNumber = "4929867126833626469"
-        val validVisaCardNumberWithSpaces = "4929 8671 2683 3626 469"
-
-        cardFragmentTestUtils
-            .isInInitialState()
-            .hasNoBrand()
-            .enterCardDetails(pan = validVisaCardNumber)
-            .validationStateIs(pan = true)
-            .hasBrand(VISA)
-
-        onView(withId(R.id.card_flow_text_pan))
-            .perform(typeTextIntoFocusedView("1"), pressImeActionButton())
-            .check(matches(withText(validVisaCardNumberWithSpaces)))
-    }
-
-    @Test
-    fun givenUserClicksCardViewAndInsertsMastercardIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
-        cardFragmentTestUtils
-            .isInInitialState()
-            .hasNoBrand()
-            .enterCardDetails(pan = MASTERCARD_PAN)
-            .validationStateIs(pan = true)
-            .hasBrand(MASTERCARD)
-
-        onView(withId(R.id.card_flow_text_pan))
-            .perform(typeTextIntoFocusedView("4"), pressImeActionButton())
-            .check(matches(withText(MASTERCARD_PAN_FORMATTED)))
-    }
-
-    @Test
-    fun givenUserClicksCardViewAndInsertsAmexIdentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
-        cardFragmentTestUtils
-            .isInInitialState()
-            .hasNoBrand()
-            .enterCardDetails(pan = AMEX_PAN)
-            .validationStateIs(pan = true)
-            .hasBrand(AMEX)
-
-        onView(withId(R.id.card_flow_text_pan))
-            .perform(typeTextIntoFocusedView("4"), closeSoftKeyboard())
-            .check(matches(withText(AMEX_PAN_FORMATTED)))
-    }
-
-    @Test
-    fun givenUserClicksCardViewAndInsertsUnidentifiedCardNumberThenTextFieldShouldRestrictBasedOnMaxLength() {
-        cardFragmentTestUtils
-            .isInInitialState()
-            .hasNoBrand()
-            .enterCardDetails(pan = VALID_UNKNOWN_LUHN)
-            .validationStateIs(pan = true)
-            .hasNoBrand()
-
-        onView(withId(R.id.card_flow_text_pan))
-            .perform(typeTextIntoFocusedView("0"), closeSoftKeyboard())
-            .check(matches(withText(VALID_UNKNOWN_LUHN_FORMATTED)))
     }
 }

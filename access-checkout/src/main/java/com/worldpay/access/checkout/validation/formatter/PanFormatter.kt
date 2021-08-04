@@ -2,11 +2,15 @@ package com.worldpay.access.checkout.validation.formatter
 
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.utils.ValidationUtil
+import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
+import kotlin.math.ceil
 
 internal class PanFormatter(
     private val enablePanFormatting: Boolean
 ) {
+
+    private val spacesAfterEveryXChars = 4.0
 
     fun format(pan: String, brand: RemoteCardBrand?): String {
         if (!enablePanFormatting) {
@@ -17,16 +21,15 @@ internal class PanFormatter(
             val cardValidationRule = getPanValidationRule(brand)
             val maxLength = ValidationUtil.getMaxLength(cardValidationRule)
 
-            var panToFormat = pan
-            if (pan.replace("\\s+".toRegex(), "").length > maxLength) {
-                panToFormat = pan.substring(0, maxLength)
+            var panWithNoSpaces = removeSpaces(pan)
+            if (panWithNoSpaces.length > maxLength) {
+                panWithNoSpaces = panWithNoSpaces.substring(0, maxLength)
             }
 
             return if (isAmex(brand)) {
-                formatAmexPan(panToFormat)
+                formatAmexPan(panWithNoSpaces)
             } else {
-                panToFormat
-                    .replace("\\s+".toRegex(), "")
+                panWithNoSpaces
                     .replace("(.{4})".toRegex(), "$1 ")
                     .trim()
             }
@@ -35,16 +38,28 @@ internal class PanFormatter(
         return pan
     }
 
+    fun getExpectedNumberOfSpaces(pan: String): Int {
+        if (enablePanFormatting) {
+            val cardBrand = findBrandForPan(pan)
+            val cardValidationRule = getPanValidationRule(cardBrand)
+
+            return if (isAmex(cardBrand)) {
+                2
+            } else {
+                val groups: Double = ValidationUtil.getMaxLength(cardValidationRule) / spacesAfterEveryXChars
+                (ceil(groups) - 1).toInt()
+            }
+        }
+
+        return 0
+    }
+
     fun isFormattingEnabled() = enablePanFormatting
 
     private fun formatAmexPan(pan: String): String {
-        val panWithNoSpaces = pan.replace("\\s+".toRegex(), "")
+        val panWithNoSpaces = removeSpaces(pan)
         var formattedPan = panWithNoSpaces.chunked(4)[0]
         val chunksOfSix = panWithNoSpaces.removeRange(0, 4).chunked(6)
-
-        if (chunksOfSix.isEmpty()) {
-            return formattedPan
-        }
 
         formattedPan += " ${chunksOfSix[0].trim()}"
 
@@ -54,6 +69,8 @@ internal class PanFormatter(
 
         return formattedPan
     }
+
+    private fun removeSpaces(pan: String) = pan.replace("\\s+".toRegex(), "")
 
     private fun requiresFormatting(pan: String, brand: RemoteCardBrand?): Boolean {
         var requiresFormatting = false

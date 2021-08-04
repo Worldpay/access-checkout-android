@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.config.ValidationConfig
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import com.worldpay.access.checkout.validation.decorators.FieldDecoratorFactory
-import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
+import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
@@ -42,12 +42,12 @@ object AccessCheckoutValidationInitialiser {
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
         val focusChangeListenerFactory = FocusChangeListenerFactory(resultHandlerFactory)
-        val lengthFilterFactory = LengthFilterFactory()
+        val accessCheckoutInputFilterFactory = AccessCheckoutInputFilterFactory()
 
         val fieldDecoratorFactory = FieldDecoratorFactory(
             textWatcherFactory,
             focusChangeListenerFactory,
-            lengthFilterFactory
+            accessCheckoutInputFilterFactory
         )
 
         val panFieldDecorator = fieldDecoratorFactory.getPanDecorator(
@@ -80,12 +80,12 @@ object AccessCheckoutValidationInitialiser {
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
         val focusChangeListenerFactory = FocusChangeListenerFactory(resultHandlerFactory)
-        val lengthFilterFactory = LengthFilterFactory()
+        val accessCheckoutInputFilterFactory = AccessCheckoutInputFilterFactory()
 
         val fieldDecoratorFactory = FieldDecoratorFactory(
             textWatcherFactory,
             focusChangeListenerFactory,
-            lengthFilterFactory
+            accessCheckoutInputFilterFactory
         )
 
         val cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, null)

@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAU
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValidationRule
@@ -54,7 +54,7 @@ class ValidationUtilTest {
     @Test
     fun `should be able to find brand for pan`() {
         mockSuccessfulCardConfiguration()
-        assertEquals(VISA_BRAND, findBrandForPan(VISA_PAN))
+        assertEquals(VISA_BRAND, findBrandForPan(visaPan()))
     }
 
     @Test
@@ -76,7 +76,7 @@ class ValidationUtilTest {
     @Test
     fun `should be able to find null brand for visa pan but where card config has no brands`() {
         CardConfigurationProvider("", mock(), emptyList())
-        assertNull(findBrandForPan(VISA_PAN))
+        assertNull(findBrandForPan(visaPan()))
     }
 
     @Test

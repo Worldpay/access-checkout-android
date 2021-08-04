@@ -12,8 +12,8 @@ import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
-import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateTextWatcher
 import kotlin.test.assertEquals
@@ -27,7 +27,7 @@ class ExpiryDateFieldDecoratorTest {
 
     private val expiryDateTextWatcher = mock<ExpiryDateTextWatcher>()
     private val expiryDateFocusChangeListener = mock<ExpiryDateFocusChangeListener>()
-    private val lengthFilterFactory = LengthFilterFactory()
+    private val accessCheckoutInputFilterFactory = AccessCheckoutInputFilterFactory()
 
     private lateinit var expiryDateFieldDecorator: ExpiryDateFieldDecorator
 
@@ -36,7 +36,7 @@ class ExpiryDateFieldDecoratorTest {
         expiryDateFieldDecorator = ExpiryDateFieldDecorator(
             expiryDateTextWatcher = expiryDateTextWatcher,
             expiryDateFocusChangeListener = expiryDateFocusChangeListener,
-            expiryDateLengthFilter = lengthFilterFactory.getExpiryDateLengthFilter(),
+            expiryDateLengthFilter = accessCheckoutInputFilterFactory.getExpiryDateLengthFilter(),
             expiryDateEditText = expiryDateEditText
         )
     }

@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.client.validation
+package com.worldpay.access.checkout.client.validation.pan
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
@@ -23,7 +23,8 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.MAESTRO_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -31,10 +32,13 @@ import org.robolectric.RobolectricTestRunner
 @RunWith(RobolectricTestRunner::class)
 class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
+    @Before
+    fun setup() {
+        initialiseValidation()
+    }
+
     @Test
     fun `should accept an unknown valid luhn pan when no accepted cards have been specified`() {
-        initialiseWithoutAcceptedCardBrands()
-
         pan.setText(VALID_UNKNOWN_LUHN)
 
         verify(cardValidationListener).onPanValidated(true)
@@ -43,7 +47,17 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should accept an unknown valid luhn pan when all cards are accepted`() {
-        initialiseWithAcceptedCardBrands(arrayOf("AMEX", "DINERS", "DISCOVER", "JCB", "MAESTRO", "MASTERCARD", "VISA"))
+        initialiseValidation(
+            acceptedCardBrands = arrayOf(
+                "AMEX",
+                "DINERS",
+                "DISCOVER",
+                "JCB",
+                "MAESTRO",
+                "MASTERCARD",
+                "VISA"
+            )
+        )
 
         pan.setText(VALID_UNKNOWN_LUHN)
 
@@ -53,22 +67,18 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should not call listener at all when pan is complete but invalid and unrecognised`() {
-        initialiseWithoutAcceptedCardBrands()
         pan.setText(INVALID_UNKNOWN_LUHN)
         verifyZeroInteractions(cardValidationListener)
     }
 
     @Test
     fun `should not call listener at all when pan is partial but invalid and unrecognised`() {
-        initialiseWithoutAcceptedCardBrands()
         pan.setText("000")
         verifyZeroInteractions(cardValidationListener)
     }
 
     @Test
     fun `should not validate pan for partial visa pan but should call brand changed with visa brand`() {
-        initialiseWithoutAcceptedCardBrands()
-
         pan.setText(PARTIAL_VISA)
         verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -76,9 +86,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should only notify pan validated on validation state change and notify brand change each time the brand changes - without accepted card brands`() {
-        initialiseWithoutAcceptedCardBrands()
-
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 
@@ -127,9 +135,9 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should only notify pan validated on validation state change and notify brand change each time the brand changes - with empty array of accepted card brands`() {
-        initialiseWithAcceptedCardBrands(emptyArray())
+        initialiseValidation(acceptedCardBrands = emptyArray())
 
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 
@@ -178,12 +186,10 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should invalidate the cvc after the pan has been validated with a brand and the cvc is now incorrect`() {
-        initialiseWithoutAcceptedCardBrands()
-
         cvc.setText("1234")
         verify(cardValidationListener).onCvcValidated(true)
 
-        pan.setText(VISA_PAN)
+        pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
         verify(cardValidationListener).onCvcValidated(false)
@@ -191,7 +197,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should accept amex card when amex is the only accepted card brand`() {
-        initialiseWithAcceptedCardBrands(arrayOf("AMEX"))
+        initialiseValidation(acceptedCardBrands = arrayOf("AMEX"))
 
         pan.setText(AMEX_PAN)
 
@@ -201,7 +207,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should not accept diners card when diners is not accepted`() {
-        initialiseWithAcceptedCardBrands(arrayOf("AMEX"))
+        initialiseValidation(acceptedCardBrands = arrayOf("AMEX"))
 
         pan.setText(DINERS_PAN)
 

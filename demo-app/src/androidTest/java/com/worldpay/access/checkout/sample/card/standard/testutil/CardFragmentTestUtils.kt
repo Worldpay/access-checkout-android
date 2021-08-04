@@ -156,7 +156,12 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun cursorPositionIs(position: Int): CardFragmentTestUtils {
-        assertEquals(position, panInput().selectionEnd)
+        wait { assertEquals(position, panInput().selectionEnd) }
+        return this
+    }
+
+    fun setSelection(start: Int, end: Int): CardFragmentTestUtils {
+        setCursorPosition(panInput(), start, end)
         return this
     }
 

@@ -61,4 +61,9 @@ class RestrictedCardFragmentTestUtils(activityRule: ActivityTestRule<MainActivit
         wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
         return this
     }
+
+    fun setSelection(start: Int, end: Int): RestrictedCardFragmentTestUtils {
+        setCursorPosition(panInput(), start, end)
+        return this
+    }
 }

@@ -12,9 +12,9 @@ import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
-import com.worldpay.access.checkout.validation.filters.LengthFilterFactory
-import com.worldpay.access.checkout.validation.filters.PanLengthFilter
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
+import com.worldpay.access.checkout.validation.filters.PanNumericFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.PanTextWatcher
 import kotlin.test.assertEquals
@@ -28,7 +28,7 @@ class PanFieldDecoratorTest {
 
     private val panTextWatcher = mock<PanTextWatcher>()
     private val panFocusChangeListener = mock<PanFocusChangeListener>()
-    private val lengthFilterFactory = LengthFilterFactory()
+    private val accessCheckoutInputFilterFactory = AccessCheckoutInputFilterFactory()
 
     private lateinit var panFieldDecorator: PanFieldDecorator
 
@@ -37,7 +37,7 @@ class PanFieldDecoratorTest {
         panFieldDecorator = PanFieldDecorator(
             panTextWatcher = panTextWatcher,
             panFocusChangeListener = panFocusChangeListener,
-            panLengthFilter = lengthFilterFactory.getPanLengthFilter(false),
+            panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),
             panEditText = panEditText
         )
     }
@@ -83,7 +83,7 @@ class PanFieldDecoratorTest {
         verify(panEditText).filters = captor.capture()
 
         assertEquals(1, captor.firstValue.size)
-        assertTrue(captor.firstValue[0] is PanLengthFilter)
+        assertTrue(captor.firstValue[0] is PanNumericFilter)
     }
 
     @Test
@@ -92,7 +92,7 @@ class PanFieldDecoratorTest {
             arrayOf(
                 InputFilter.LengthFilter(1000),
                 InputFilter.AllCaps(),
-                PanLengthFilter(false)
+                PanNumericFilter()
             )
         )
 
@@ -104,7 +104,7 @@ class PanFieldDecoratorTest {
 
         assertEquals(2, captor.firstValue.size)
         assertTrue(captor.firstValue[0] is InputFilter.AllCaps)
-        assertTrue(captor.firstValue[1] is PanLengthFilter)
+        assertTrue(captor.firstValue[1] is PanNumericFilter)
     }
 
     @Test
@@ -113,12 +113,12 @@ class PanFieldDecoratorTest {
         given(panEditText.filters).willReturn(emptyArray())
         given(panEditText.isCursorVisible).willReturn(true)
         given(panEditText.text).willReturn(panEditable)
-        given(panEditable.toString()).willReturn(VISA_PAN)
+        given(panEditable.toString()).willReturn(visaPan())
 
         panFieldDecorator.decorate()
 
         verify(panEditText).isCursorVisible
-        verify(panEditText).setText(VISA_PAN)
+        verify(panEditText).setText(visaPan())
     }
 
     @Test

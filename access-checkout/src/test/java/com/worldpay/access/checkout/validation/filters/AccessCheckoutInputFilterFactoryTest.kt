@@ -6,32 +6,32 @@ import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
 
-class LengthFilterFactoryTest {
+class AccessCheckoutInputFilterFactoryTest {
 
     private val panEditText = mock<EditText>()
 
-    private lateinit var lengthFilterFactory: LengthFilterFactory
+    private lateinit var accessCheckoutInputFilterFactory: AccessCheckoutInputFilterFactory
 
     @Before
     fun setup() {
-        lengthFilterFactory = LengthFilterFactory()
+        accessCheckoutInputFilterFactory = AccessCheckoutInputFilterFactory()
     }
 
     @Test
     fun `should get pan length filter`() {
-        val filter: PanLengthFilter = lengthFilterFactory.getPanLengthFilter(false)
+        val filter: PanNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter()
         assertNotNull(filter)
     }
 
     @Test
     fun `should get expiry date length filter`() {
-        val filter: ExpiryDateLengthFilter = lengthFilterFactory.getExpiryDateLengthFilter()
+        val filter: ExpiryDateLengthFilter = accessCheckoutInputFilterFactory.getExpiryDateLengthFilter()
         assertNotNull(filter)
     }
 
     @Test
     fun `should get cvc length filter`() {
-        val filter: CvcLengthFilter = lengthFilterFactory.getCvcLengthFilter(panEditText)
+        val filter: CvcLengthFilter = accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText)
         assertNotNull(filter)
     }
 }

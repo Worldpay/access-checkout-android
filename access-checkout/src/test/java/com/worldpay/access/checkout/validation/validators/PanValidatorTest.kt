@@ -4,7 +4,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.PAN_RULE
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
-import com.worldpay.access.checkout.testutils.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
@@ -43,7 +43,7 @@ class PanValidatorTest {
 
     @Test
     fun `should return VALID if known pan is valid length and valid luhn`() {
-        assertEquals(VALID, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
+        assertEquals(VALID, panValidator.validate(visaPan(), VISA_BRAND.pan, VISA_BRAND))
     }
 
     @Test
@@ -54,18 +54,18 @@ class PanValidatorTest {
     @Test
     fun `should return CARD_BRAND_NOT_ACCEPTED if the pan is not one of the accepted card brands`() {
         val panValidator = PanValidator(arrayOf("MASTERCARD"))
-        assertEquals(CARD_BRAND_NOT_ACCEPTED, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
+        assertEquals(CARD_BRAND_NOT_ACCEPTED, panValidator.validate(visaPan(), VISA_BRAND.pan, VISA_BRAND))
     }
 
     @Test
     fun `should return VALID if the pan is of one of the accepted card brands and everything else is valid`() {
         val panValidator = PanValidator(arrayOf("VISA", "MASTERCARD"))
-        assertEquals(VALID, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
+        assertEquals(VALID, panValidator.validate(visaPan(), VISA_BRAND.pan, VISA_BRAND))
     }
 
     @Test
     fun `should return VALID if the pan is of one of the accepted card brands and everything else is valid - ignore case`() {
         val panValidator = PanValidator(arrayOf("VisA", "MASTERCARD"))
-        assertEquals(VALID, panValidator.validate(VISA_PAN, VISA_BRAND.pan, VISA_BRAND))
+        assertEquals(VALID, panValidator.validate(visaPan(), VISA_BRAND.pan, VISA_BRAND))
     }
 }
