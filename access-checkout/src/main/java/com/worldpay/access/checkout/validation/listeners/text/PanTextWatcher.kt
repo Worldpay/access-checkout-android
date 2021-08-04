@@ -33,7 +33,6 @@ internal class PanTextWatcher(
 
     private var expectedCursorPosition = 0
     private var isSpaceDeleted = false
-    private var onlySpaceWasAdded = false
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         super.beforeTextChanged(s, start, count, after)
