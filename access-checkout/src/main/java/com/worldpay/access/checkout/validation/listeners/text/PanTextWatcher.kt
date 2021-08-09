@@ -40,6 +40,9 @@ internal class PanTextWatcher(
     }
 
     /**
+     * This function is called whenever the text is being changed in the UI.
+     * The override is responsible for calculating where the cursor position should be after the text changes
+     *
      * @param start - the position of cursor when text changed
      * @param before - the number of characters changed
      * @param count - number of characters added
@@ -73,7 +76,9 @@ internal class PanTextWatcher(
         val newPan = if (panFormatter.isFormattingEnabled()) getFormattedPan(panText, brand) else panText
         val cardValidationRule = getPanValidationRule(brand)
 
-        trimToMaxLength(cardValidationRule, newPan)
+        if (trimToMaxLength(cardValidationRule, newPan)) {
+            return
+        }
 
         handleCardBrandChange(brand)
 
@@ -88,6 +93,11 @@ internal class PanTextWatcher(
         }
     }
 
+    /**
+     * Calculates where the expected cursor should be when character(s) has been deleted
+     *
+     * @return Int - the expected cursor position
+     */
     private fun getExpectedCursorPositionOnDelete(start: Int): Int {
         return if (isSpaceDeleted) {
             start - 1
@@ -96,6 +106,12 @@ internal class PanTextWatcher(
         }
     }
 
+    /**
+     * Calculates where the expected cursor should be when character(s) has been added
+     * This will shift the cursor position by taking into account the spaces in the pan (when formatting is enabled)
+     *
+     * @return Int - the expected cursor position
+     */
     private fun getExpectedCursorPositionOnInsert(panText: String, currentCursorPosition: Int): Int {
         val pan = if (panFormatter.isFormattingEnabled()) getFormattedPan(panText) else panText
 
@@ -123,19 +139,28 @@ internal class PanTextWatcher(
         return expectedCursorPosition
     }
 
+    /**
+     * Validates the given pan and calls the validation result handler to handle the validation
+     * result
+     */
     private fun validate(
-        formattedPan: String,
+        pan: String,
         cardValidationRule: CardValidationRule,
-        newCardBrand: RemoteCardBrand?
+        brand: RemoteCardBrand?
     ) {
-        val validationState = panValidator.validate(formattedPan, cardValidationRule, newCardBrand)
+        val validationState = panValidator.validate(pan, cardValidationRule, brand)
         val isValid = validationState == VALID
         val forceNotify = validationState == CARD_BRAND_NOT_ACCEPTED
 
         panValidationResultHandler.handleResult(isValid, forceNotify)
     }
 
-    private fun trimToMaxLength(cardValidationRule: CardValidationRule, pan: String) {
+    /**
+     * Trims the given pan to the max length allowed by the given card validation rule
+     *
+     * @return Boolean - true if the pan has been trimmed otherwise false
+     */
+    private fun trimToMaxLength(cardValidationRule: CardValidationRule, pan: String): Boolean {
         val maxLength = ValidationUtil.getMaxLength(cardValidationRule)
         val expectedNumberOfSpaces = panFormatter.getExpectedNumberOfSpaces(pan)
         val totalMaxLength = maxLength + expectedNumberOfSpaces
@@ -143,7 +168,9 @@ internal class PanTextWatcher(
         if (pan.length > totalMaxLength) {
             val charsToDrop = pan.length - totalMaxLength
             setText(pan.dropLast(charsToDrop), expectedCursorPosition - charsToDrop)
+            return true
         }
+        return false
     }
 
     private fun getFormattedPan(
@@ -151,24 +178,24 @@ internal class PanTextWatcher(
         cardBrand: RemoteCardBrand? = findBrandForPan(panText)
     ) = panFormatter.format(panText, cardBrand)
 
+    /**
+     * Handles the card brand if it is different to the previous one.
+     * This function also revalidates the cvc using the cvc validation
+     * rule of the new card brand
+     */
     private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
-        if (cardBrand != newCardBrand) {
-            cardBrand = newCardBrand
+        if (cardBrand == newCardBrand) return
 
-            brandChangedHandler.handle(newCardBrand)
+        cardBrand = newCardBrand
 
-            updateCvcValidationRule()
+        brandChangedHandler.handle(newCardBrand)
 
-            val cvcText = cvcEditText.text.toString()
-            if (cvcText.isNotBlank()) {
-                cvcValidator.validate(cvcText)
-            }
+        cvcValidationRuleManager.updateRule(getCvcValidationRule(cardBrand))
+
+        val cvcText = cvcEditText.text.toString()
+        if (cvcText.isNotBlank()) {
+            cvcValidator.validate(cvcText)
         }
-    }
-
-    private fun updateCvcValidationRule() {
-        val cardValidationRule = getCvcValidationRule(cardBrand)
-        cvcValidationRuleManager.updateRule(cardValidationRule)
     }
 
     private fun setText(text: String, cursorPosition: Int) {

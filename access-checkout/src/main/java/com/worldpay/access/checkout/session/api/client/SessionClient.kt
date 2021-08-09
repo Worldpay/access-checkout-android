@@ -7,10 +7,6 @@ import java.net.URL
 /**
  * This interface represents a contract for a client that retrieves a [SessionResponse] by making a
  * post request to Access Worldpay services.
- *
- * @property[deserializer] Used to deserialise the [SessionResponse]
- * @property[serializer] Used to serialise [SessionRequest]
- * @property[httpClient] Responsible for carrying out the HTTP request
  */
 internal interface SessionClient {
 

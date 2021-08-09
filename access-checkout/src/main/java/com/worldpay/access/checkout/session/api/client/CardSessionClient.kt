@@ -8,6 +8,13 @@ import com.worldpay.access.checkout.session.api.request.SessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import java.net.URL
 
+/**
+ * Retrieves session for card flow
+ *
+ * @property[deserializer] Used to deserialize the [SessionResponse]
+ * @property[serializer] Used to serialise [SessionRequest]
+ * @property[httpsClient] Responsible for carrying out the HTTPS request
+ */
 internal class CardSessionClient(
     private val deserializer: Deserializer<SessionResponse>,
     private val serializer: Serializer<SessionRequest>,

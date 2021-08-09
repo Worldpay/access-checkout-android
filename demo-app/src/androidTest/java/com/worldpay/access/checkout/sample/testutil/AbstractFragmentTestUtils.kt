@@ -58,14 +58,6 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         activityRule.activity.runOnUiThread { editText.setSelection(startSelection, endSelection) }
     }
 
-    protected fun copy(editText: EditText) {
-        activityRule.activity.runOnUiThread { editText.onTextContextMenuItem(android.R.id.copy) }
-    }
-
-    protected fun paste(editText: EditText) {
-        activityRule.activity.runOnUiThread { editText.onTextContextMenuItem(android.R.id.paste) }
-    }
-
     protected fun dialogHasText(text: String) {
         onView(withText(text))
             .inRoot(isDialog())
