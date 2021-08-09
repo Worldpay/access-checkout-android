@@ -4,6 +4,7 @@ import android.app.Service
 import android.content.Context
 import android.content.Intent
 import android.os.Handler
+import android.os.IBinder
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
@@ -34,7 +35,7 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) :
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onBind(intent: Intent) = null
+    override fun onBind(intent: Intent): IBinder? = null
 
     override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
         debugLog(javaClass.simpleName, "onResponse received: resp:${response?.responseBody} for session type:${response?.sessionType}/ error: $error")
