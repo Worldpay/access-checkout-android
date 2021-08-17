@@ -108,7 +108,7 @@ class PanFilteringIntegrationTest : AbstractValidationIntegrationTest() {
         assertEquals(visaPan, pan.text.toString())
 
         pan.typeAtIndex(6, "5")
-        assertEquals("4111 1511 1111 1111 111", pan.text.toString())
+        assertEquals("4444 3533 3222 2111 100", pan.text.toString())
     }
 
     @Test

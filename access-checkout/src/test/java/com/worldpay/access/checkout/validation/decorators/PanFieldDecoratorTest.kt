@@ -20,8 +20,11 @@ import com.worldpay.access.checkout.validation.listeners.text.PanTextWatcher
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class PanFieldDecoratorTest {
 
     private val panEditText = mock<EditText>()
@@ -34,19 +37,15 @@ class PanFieldDecoratorTest {
 
     @Before
     fun setup() {
-        panFieldDecorator = PanFieldDecorator(
-            panTextWatcher = panTextWatcher,
-            panFocusChangeListener = panFocusChangeListener,
-            panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),
-            panEditText = panEditText
-        )
+        panFieldDecorator = createFieldDecorator()
     }
 
+    // test name starts with 0 so that it is always run first
     @Test
-    fun `should add new text watchers when decorating pan field each time`() {
+    fun `0 - should add new text watchers when decorating pan field each time`() {
         given(panEditText.filters).willReturn(emptyArray())
 
-        panFieldDecorator.decorate()
+        createFieldDecorator().decorate()
 
         verify(panEditText, never()).removeTextChangedListener(any())
         verify(panEditText).addTextChangedListener(panTextWatcher)
@@ -57,7 +56,7 @@ class PanFieldDecoratorTest {
         given(panEditText.text).willReturn(mock())
         given(mock<Editable>().toString()).willReturn("")
 
-        panFieldDecorator.decorate()
+        createFieldDecorator().decorate()
 
         verify(panEditText).removeTextChangedListener(panTextWatcher)
         verify(panEditText).addTextChangedListener(panTextWatcher)
@@ -153,4 +152,11 @@ class PanFieldDecoratorTest {
 
         verify(fieldDecorator).decorate()
     }
+
+    private fun createFieldDecorator() = PanFieldDecorator(
+        panTextWatcher = panTextWatcher,
+        panFocusChangeListener = panFocusChangeListener,
+        panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),
+        panEditText = panEditText
+    )
 }

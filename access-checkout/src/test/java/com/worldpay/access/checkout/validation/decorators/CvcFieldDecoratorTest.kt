@@ -19,8 +19,11 @@ import com.worldpay.access.checkout.validation.listeners.text.CvcTextWatcher
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class CvcFieldDecoratorTest {
 
     private val cvcEditText = mock<EditText>()
@@ -34,18 +37,15 @@ class CvcFieldDecoratorTest {
 
     @Before
     fun setup() {
-        cvcFieldDecorator = CvcFieldDecorator(
-            cvcTextWatcher = cvcTextWatcher,
-            cvcFocusChangeListener = cvcFocusChangeListener,
-            cvcLengthFilter = accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText),
-            cvcEditText = cvcEditText
-        )
+        cvcFieldDecorator = createFieldDecorator()
     }
 
+    // test name starts with 0 so that it is always run first
     @Test
-    fun `should add new text watchers when decorating cvc field each time`() {
+    fun `0 - should add new text watchers when decorating cvc field each time`() {
         given(cvcEditText.filters).willReturn(emptyArray())
 
+        var cvcFieldDecorator = createFieldDecorator()
         cvcFieldDecorator.decorate()
 
         verify(cvcEditText, never()).removeTextChangedListener(any())
@@ -57,6 +57,7 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.text).willReturn(mock())
         given(mock<Editable>().toString()).willReturn("")
 
+        cvcFieldDecorator = createFieldDecorator()
         cvcFieldDecorator.decorate()
 
         verify(cvcEditText).removeTextChangedListener(cvcTextWatcher)
@@ -153,4 +154,11 @@ class CvcFieldDecoratorTest {
 
         verify(fieldDecorator).decorate()
     }
+
+    private fun createFieldDecorator() = CvcFieldDecorator(
+        cvcTextWatcher = cvcTextWatcher,
+        cvcFocusChangeListener = cvcFocusChangeListener,
+        cvcLengthFilter = accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText),
+        cvcEditText = cvcEditText
+    )
 }
