@@ -15,7 +15,9 @@ internal class ExpiryDateFieldDecorator(
     private val expiryDateEditText: EditText
 ) : AbstractFieldDecorator(), CardConfigurationObserver {
 
-    private var addedExpiryDateTextWatcher: TextWatcher? = null
+    companion object {
+        private var addedExpiryDateTextWatcher: TextWatcher? = null
+    }
 
     fun decorate() {
         addTextWatcher()

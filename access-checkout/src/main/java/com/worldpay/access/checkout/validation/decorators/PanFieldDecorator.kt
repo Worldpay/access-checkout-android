@@ -15,7 +15,9 @@ internal class PanFieldDecorator(
     private val panEditText: EditText
 ) : AbstractFieldDecorator(), CardConfigurationObserver {
 
-    private var addedPanTextWatcher: TextWatcher? = null
+    internal companion object {
+        private var addedPanTextWatcher: TextWatcher? = null
+    }
 
     fun decorate() {
         addTextWatcher()

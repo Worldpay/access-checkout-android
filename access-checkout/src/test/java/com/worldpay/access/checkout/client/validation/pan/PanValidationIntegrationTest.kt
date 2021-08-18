@@ -2,7 +2,9 @@ package com.worldpay.access.checkout.client.validation.pan
 
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
+import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
@@ -10,6 +12,7 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUH
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -45,6 +48,23 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+    }
+
+    @Test
+    fun `should trim and not revalidate pan when pan is over max length`() {
+        initialiseValidation(enablePanFormatting = true)
+
+        pan.setText(visaPan(19, true))
+
+        verify(cardValidationListener).onPanValidated(true)
+        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+
+        reset(cardValidationListener)
+
+        pan.typeAtIndex(23, "5")
+
+        verifyZeroInteractions(cardValidationListener)
+        assertEquals(visaPan(19, true), pan.text.toString())
     }
 
     @Test
