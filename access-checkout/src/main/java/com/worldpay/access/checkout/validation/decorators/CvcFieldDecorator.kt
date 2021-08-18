@@ -15,7 +15,9 @@ internal class CvcFieldDecorator(
     private val cvcEditText: EditText
 ) : AbstractFieldDecorator(), CardConfigurationObserver {
 
-    private var addedCvcTextWatcher: TextWatcher? = null
+    companion object {
+        private var addedCvcTextWatcher: TextWatcher? = null
+    }
 
     fun decorate() {
         addTextWatcher()

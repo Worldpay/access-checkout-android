@@ -19,8 +19,11 @@ import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateTextWatc
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.junit.Before
+import org.junit.FixMethodOrder
 import org.junit.Test
+import org.junit.runners.MethodSorters
 
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ExpiryDateFieldDecoratorTest {
 
     private val expiryDateEditText = mock<EditText>()
@@ -33,18 +36,15 @@ class ExpiryDateFieldDecoratorTest {
 
     @Before
     fun setup() {
-        expiryDateFieldDecorator = ExpiryDateFieldDecorator(
-            expiryDateTextWatcher = expiryDateTextWatcher,
-            expiryDateFocusChangeListener = expiryDateFocusChangeListener,
-            expiryDateLengthFilter = accessCheckoutInputFilterFactory.getExpiryDateLengthFilter(),
-            expiryDateEditText = expiryDateEditText
-        )
+        expiryDateFieldDecorator = createFieldDecorator()
     }
 
+    // test name starts with 0 so that it is always run first
     @Test
-    fun `should add new text watchers when decorating expiry date field each time`() {
+    fun `0 - should add new text watchers when decorating expiry date field each time`() {
         given(expiryDateEditText.filters).willReturn(emptyArray())
 
+        var expiryDateFieldDecorator = createFieldDecorator()
         expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText, never()).removeTextChangedListener(any())
@@ -56,6 +56,7 @@ class ExpiryDateFieldDecoratorTest {
         given(expiryDateEditText.text).willReturn(mock())
         given(mock<Editable>().toString()).willReturn("")
 
+        expiryDateFieldDecorator = createFieldDecorator()
         expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText).removeTextChangedListener(expiryDateTextWatcher)
@@ -152,4 +153,11 @@ class ExpiryDateFieldDecoratorTest {
 
         verify(fieldDecorator).decorate()
     }
+
+    private fun createFieldDecorator() = ExpiryDateFieldDecorator(
+        expiryDateTextWatcher = expiryDateTextWatcher,
+        expiryDateFocusChangeListener = expiryDateFocusChangeListener,
+        expiryDateLengthFilter = accessCheckoutInputFilterFactory.getExpiryDateLengthFilter(),
+        expiryDateEditText = expiryDateEditText
+    )
 }
