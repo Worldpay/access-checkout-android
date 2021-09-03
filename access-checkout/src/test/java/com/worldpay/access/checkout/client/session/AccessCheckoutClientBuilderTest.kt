@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import java.lang.reflect.Field
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import org.junit.Assert.assertNotNull
@@ -38,6 +39,23 @@ class AccessCheckoutClientBuilderTest {
             .build()
 
         assertNotNull(accessCheckoutClient)
+    }
+
+    @Test
+    fun `should successfully sanitise baseUrl if it has a trailing forward slash`() {
+        given(context.applicationContext).willReturn(context)
+
+        val baseUrlWithTrailingSlash = "$baseUrl/"
+
+        val accessCheckoutClientBuilder = AccessCheckoutClientBuilder()
+            .baseUrl(baseUrlWithTrailingSlash)
+
+        val builderPrivateField: Field =
+            AccessCheckoutClientBuilder::class.java.getDeclaredField("baseUrl")
+        builderPrivateField.isAccessible = true
+        val baseUrlValueInBuilder = builderPrivateField[accessCheckoutClientBuilder] as String
+
+        assertEquals(baseUrlValueInBuilder, baseUrl)
     }
 
     @Test
@@ -89,7 +107,10 @@ class AccessCheckoutClientBuilderTest {
                 .lifecycleOwner(lifecycleOwner)
                 .build()
         }
-        assertEquals("Expected session response listener to be provided but was not", exception.message)
+        assertEquals(
+            "Expected session response listener to be provided but was not",
+            exception.message
+        )
     }
 
     @Test
