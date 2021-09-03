@@ -44,6 +44,23 @@ class CardValidationConfigBuilderTest {
     }
 
     @Test
+    fun `should build card validation config while sanitising baseurl`() {
+        val baseUrlWithTrailingSlash = "$baseUrl/"
+        val config = CardValidationConfig.Builder()
+            .baseUrl(baseUrlWithTrailingSlash)
+            .pan(pan)
+            .expiryDate(expiryDate)
+            .cvc(cvc)
+            .acceptedCardBrands(acceptedCardBrands)
+            .validationListener(validationListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertNotNull(config)
+        assertEquals(baseUrl, config.baseUrl)
+    }
+
+    @Test
     fun `should not throw any exceptions if accepted card brands is not called in the builder and defaults to empty array`() {
         val config = CardValidationConfig.Builder()
             .baseUrl(baseUrl)

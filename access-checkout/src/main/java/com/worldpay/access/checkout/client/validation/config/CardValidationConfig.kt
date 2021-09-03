@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
@@ -85,7 +86,7 @@ class CardValidationConfig private constructor(
          * @param[baseUrl] [String] that represents the base url
          */
         fun baseUrl(baseUrl: String): Builder {
-            this.baseUrl = baseUrl
+            this.baseUrl = sanitise(baseUrl)
             return this
         }
 
