@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.client.session
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
@@ -30,7 +31,7 @@ class AccessCheckoutClientBuilder {
      * @param[baseUrl] [String] that represents the base url
      */
     fun baseUrl(baseUrl: String): AccessCheckoutClientBuilder {
-        this.baseUrl = baseUrl
+        this.baseUrl = sanitise(baseUrl)
         return this
     }
 
