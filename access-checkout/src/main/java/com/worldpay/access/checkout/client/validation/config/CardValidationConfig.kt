@@ -86,7 +86,7 @@ class CardValidationConfig private constructor(
          * @param[baseUrl] [String] that represents the base url
          */
         fun baseUrl(baseUrl: String): Builder {
-            this.baseUrl = sanitise(baseUrl)
+            this.baseUrl = baseUrl
             return this
         }
 
@@ -132,12 +132,14 @@ class CardValidationConfig private constructor(
             validateNotNull(validationListener, "validation listener")
             validateNotNull(lifecycleOwner, "lifecycle owner")
 
+            val sanitisedBaseUrl = sanitise(baseUrl) as String
+
             return CardValidationConfig(
                 pan = pan as EditText,
                 expiryDate = expiryDate as EditText,
                 cvc = cvc as EditText,
                 acceptedCardBrands = acceptedCardBrands,
-                baseUrl = baseUrl as String,
+                baseUrl = sanitisedBaseUrl,
                 validationListener = validationListener as AccessCheckoutCardValidationListener,
                 lifecycleOwner = lifecycleOwner as LifecycleOwner,
                 enablePanFormatting = enablePanFormatting
