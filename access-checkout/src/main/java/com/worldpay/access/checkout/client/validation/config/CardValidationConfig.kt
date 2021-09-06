@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
@@ -131,12 +132,14 @@ class CardValidationConfig private constructor(
             validateNotNull(validationListener, "validation listener")
             validateNotNull(lifecycleOwner, "lifecycle owner")
 
+            val sanitisedBaseUrl = sanitise(baseUrl) as String
+
             return CardValidationConfig(
                 pan = pan as EditText,
                 expiryDate = expiryDate as EditText,
                 cvc = cvc as EditText,
                 acceptedCardBrands = acceptedCardBrands,
-                baseUrl = baseUrl as String,
+                baseUrl = sanitisedBaseUrl,
                 validationListener = validationListener as AccessCheckoutCardValidationListener,
                 lifecycleOwner = lifecycleOwner as LifecycleOwner,
                 enablePanFormatting = enablePanFormatting
