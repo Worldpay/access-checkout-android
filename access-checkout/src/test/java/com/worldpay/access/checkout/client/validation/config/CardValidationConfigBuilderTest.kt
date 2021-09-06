@@ -51,12 +51,10 @@ class CardValidationConfigBuilderTest {
             .pan(pan)
             .expiryDate(expiryDate)
             .cvc(cvc)
-            .acceptedCardBrands(acceptedCardBrands)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
             .build()
 
-        assertNotNull(config)
         assertEquals(baseUrl, config.baseUrl)
     }
 
