@@ -70,7 +70,7 @@ afterEvaluate {
     def filePrefix = "$buildDir/outputs/aar/access-checkout"
     def fileSuffix = "aar"
     def originalFile = file("$filePrefix-release.$fileSuffix")
-    def renamedFile = "$filePrefix-$version.$fileSuffix"
+    def renamedFile = "$filePrefix-android-$version.$fileSuffix"
     tasks.named("assembleRelease").configure {
         doLast {
             originalFile.renameTo(renamedFile)
