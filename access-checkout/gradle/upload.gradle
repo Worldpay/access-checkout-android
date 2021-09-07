@@ -67,7 +67,7 @@ artifacts {
 }
 
 afterEvaluate {
-    def filePrefix = "$buildDir/outputs/aar/$archivesBaseName"
+    def filePrefix = "$buildDir/outputs/aar/access-checkout"
     def fileSuffix = "aar"
     def originalFile = file("$filePrefix-release.$fileSuffix")
     def renamedFile = "$filePrefix-$version.$fileSuffix"
