@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### Unreleased
+#### Added
+
+#### Changed
+
 ### [v2.2.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.2.0) - 2021-09-07
 #### Added
 - Ability to enable Pan formatting by calling `enablePanFormatting()` when building `CardValidationConfig`
