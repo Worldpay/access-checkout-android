@@ -1,5 +1,4 @@
-apply plugin: 'maven'
-apply plugin: 'io.codearte.nexus-staging'
+apply plugin: 'maven-publish'
 
 if (project.hasProperty("signing.keyId")) {
     apply plugin: 'signing'
@@ -8,62 +7,55 @@ if (project.hasProperty("signing.keyId")) {
     }
 }
 
-uploadArchives {
+nexusPublishing {
+    packageGroup = "com.worldpay"
     repositories {
-        mavenDeployer {
+        sonatype()
+    }
+}
 
-            beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
+//artifacts {
+//    archives javadocJar, sourcesJar
+//}
 
-            repository(url: nexusUrl) {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
-            snapshotRepository(url: nexusSnapshotUrl) {
-                authentication(userName: ossrhUsername, password: ossrhPassword)
-            }
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = "com.worldpay.access"
+            artifactId = "${project.archivesBaseName}"
+            version = "${project.version}"
 
-            pom.version = "${project.version}"
-            pom.artifactId = "${project.archivesBaseName}"
-            pom.groupId = "com.worldpay.access"
+            pom {
+                name = 'Worldpay Access Checkout Android SDK'
+                packaging = 'aar'
 
-            pom.project {
-                name 'Worldpay Access Checkout Android SDK'
-                packaging 'aar'
-
-                description 'Android SDK library for Worldpay Access Checkout.'
-                url 'https://github.com/Worldpay/access-checkout'
+                description = 'Android SDK library for Worldpay Access Checkout.'
+                url = 'https://github.com/Worldpay/access-checkout'
 
                 scm {
-                    connection 'scm:git:git://github.com/Worldpay/access-checkout.git'
-                    developerConnection 'scm:git:ssh://github.com/Worldpay/access-checkout.git'
-                    url 'https://github.com/Worldpay/access-checkout/tree/master'
+                    connection = 'scm:git:git://github.com/Worldpay/access-checkout.git'
+                    developerConnection = 'scm:git:ssh://github.com/Worldpay/access-checkout.git'
+                    url = 'https://github.com/Worldpay/access-checkout/tree/master'
                 }
 
                 licenses {
                     license {
-                        name 'MIT License'
-                        url 'https://raw.githubusercontent.com/Worldpay/access-checkout/master/LICENSE'
+                        name = 'MIT License'
+                        url = 'https://raw.githubusercontent.com/Worldpay/access-checkout/master/LICENSE'
                     }
                 }
 
                 developers {
                     developer {
-                        id 'worldpay'
-                        name 'Worldpay'
+                        id = 'worldpay'
+                        name = 'Worldpay'
                         organization = 'Worldpay'
-                        organizationUrl 'https://www.worldpay.com/'
+                        organizationUrl = 'https://www.worldpay.com/'
                     }
                 }
             }
         }
     }
-}
-
-nexusStaging {
-    packageGroup = "com.worldpay"
-}
-
-artifacts {
-    archives javadocJar, sourcesJar
 }
 
 afterEvaluate {

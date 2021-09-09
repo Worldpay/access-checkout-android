@@ -3,9 +3,6 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 
 apply from: './gradle/android.gradle'
-apply from: './gradle/jacoco.gradle'
-apply from: './gradle/javadoc.gradle'
-apply from: './gradle/upload.gradle'
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
