@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.session.api.request
 
+import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
@@ -9,17 +10,16 @@ import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import java.net.URL
-import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import org.awaitility.Awaitility.await
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class RequestDispatcherTest {
@@ -96,9 +96,11 @@ class RequestDispatcherTest {
             "$baseUrl/$verifiedTokensEndpoint",
             responseListener,
             sessionClient
-        ).execute(sessionRequestInfo)
+        ).execute(sessionRequestInfo).get()
 
-        await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
+        shadowOf(getMainLooper()).idle()
+
+        assertTrue { assertResponse }
     }
 
     @Test
@@ -121,9 +123,11 @@ class RequestDispatcherTest {
             "$baseUrl/$verifiedTokensEndpoint",
             responseListener,
             sessionClient
-        ).execute(sessionRequestInfo)
+        ).execute(sessionRequestInfo).get()
 
-        await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
+        shadowOf(getMainLooper()).idle()
+
+        assertTrue { assertResponse }
     }
 
     @Test
@@ -150,9 +154,11 @@ class RequestDispatcherTest {
             "$baseUrl/$verifiedTokensEndpoint",
             responseListener,
             sessionClient
-        ).execute(sessionRequestInfo)
+        ).execute(sessionRequestInfo).get()
 
-        await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
+        shadowOf(getMainLooper()).idle()
+
+        assertTrue { assertResponse }
     }
 
     @Test
@@ -174,9 +180,11 @@ class RequestDispatcherTest {
             "$baseUrl/$verifiedTokensEndpoint",
             responseListener,
             sessionClient
-        ).execute(sessionRequestInfo)
+        ).execute(sessionRequestInfo).get()
 
-        await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
+        shadowOf(getMainLooper()).idle()
+
+        assertTrue { assertResponse }
     }
 
     @Test
@@ -200,9 +208,11 @@ class RequestDispatcherTest {
             "$baseUrl/$verifiedTokensEndpoint",
             responseListener,
             sessionClient
-        ).execute(sessionRequestInfo)
+        ).execute(sessionRequestInfo).get()
 
-        await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
+        shadowOf(getMainLooper()).idle()
+
+        assertTrue { assertResponse }
     }
 
     @Test
@@ -223,8 +233,10 @@ class RequestDispatcherTest {
             "$baseUrl/$verifiedTokensEndpoint",
             responseListener,
             sessionClient
-        ).execute()
+        ).execute().get()
 
-        await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
+        shadowOf(getMainLooper()).idle()
+
+        assertTrue { assertResponse }
     }
 }

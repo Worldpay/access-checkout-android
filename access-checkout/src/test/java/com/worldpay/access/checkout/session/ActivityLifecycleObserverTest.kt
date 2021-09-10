@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.session
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.google.common.base.CaseFormat
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManager
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
@@ -13,7 +12,6 @@ import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.verify
 import org.mockito.Mockito.mock
-import org.mockito.internal.util.reflection.FieldSetter
 
 class ActivityLifecycleObserverTest {
 
@@ -21,6 +19,7 @@ class ActivityLifecycleObserverTest {
     private val lifecycle = mock(Lifecycle::class.java)
     private val tag = "some tag"
     private val sessionBroadcastManagerFactory = mock(SessionBroadcastManagerFactory::class.java)
+    private val sessionBroadcastManager = mock(SessionBroadcastManager::class.java)
 
     private lateinit var activityLifeCycleObserver: ActivityLifecycleObserver
 
@@ -31,15 +30,13 @@ class ActivityLifecycleObserverTest {
             ActivityLifecycleObserver(
                 tag,
                 lifecycleOwner,
-                sessionBroadcastManagerFactory
+                sessionBroadcastManagerFactory,
+                sessionBroadcastManager
             )
     }
 
     @Test
     fun `should register broadcast receivers when activity lifecycle handler has been triggered on start`() {
-        val sessionBroadcastManager = mock(SessionBroadcastManager::class.java)
-        setMock(sessionBroadcastManager)
-
         given(sessionBroadcastManagerFactory.createInstance()).willReturn(sessionBroadcastManager)
 
         activityLifeCycleObserver.startListener()
@@ -49,9 +46,6 @@ class ActivityLifecycleObserverTest {
 
     @Test
     fun `should unregister broadcast receivers when activity lifecycle handler has been triggered on stop`() {
-        val sessionBroadcastManager = mock(SessionBroadcastManager::class.java)
-        setMock(sessionBroadcastManager)
-
         given(sessionBroadcastManagerFactory.createInstance()).willReturn(sessionBroadcastManager)
 
         activityLifeCycleObserver.stopListener()
@@ -79,18 +73,5 @@ class ActivityLifecycleObserverTest {
 
         activityLifeCycleObserver.onResume()
         assertFalse(inLifeCycleState)
-    }
-
-    private fun setMock(clazz: Any) {
-        FieldSetter.setField(
-            activityLifeCycleObserver,
-            activityLifeCycleObserver.javaClass.getDeclaredField(
-                CaseFormat.UPPER_CAMEL.to(
-                    CaseFormat.LOWER_CAMEL,
-                    clazz::class.simpleName!!
-                )
-            ),
-            clazz
-        )
     }
 }

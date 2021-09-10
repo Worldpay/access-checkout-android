@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.client.validation
 
+import android.os.Looper.getMainLooper
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
@@ -7,11 +8,13 @@ import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import kotlin.test.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
@@ -24,6 +27,8 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - pan`() {
         pan.setText(visaPan())
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 

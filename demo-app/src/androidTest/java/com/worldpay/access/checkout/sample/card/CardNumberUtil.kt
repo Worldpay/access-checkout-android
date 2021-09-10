@@ -3,8 +3,6 @@ package com.worldpay.access.checkout.sample.card
 object CardNumberUtil {
 
     const val PARTIAL_VISA = "4111"
-    const val PARTIAL_MASTERCARD = "22"
-    const val PARTIAL_AMEX = "34"
     const val PARTIAL_MAESTRO = "676"
     const val PARTIAL_UNKNOWN_LUHN = "1111111"
 
@@ -26,4 +24,6 @@ object CardNumberUtil {
     const val VALID_UNKNOWN_LUHN_FORMATTED = "0999 0080 7399 7244 886"
 
     const val INVALID_UNKNOWN_LUHN = "0999008073997244887"
+
+    fun asPartial(pan: String) = pan.subSequence(0, 4).toString()
 }

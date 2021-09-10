@@ -8,7 +8,6 @@ import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory
 import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory.Companion.X509_TRUST_MANAGER
-import com.worldpay.access.checkout.sample.utils.IdleResourceCounterFactory
 import java.io.File
 import java.io.IOException
 import okhttp3.Cache
@@ -31,10 +30,7 @@ class SVGImageLoader @JvmOverloads constructor(
         runOnUiThreadFunc
     )
 ) {
-    private val idleResCounter = IdleResourceCounterFactory.getResCounter("SvgImageLoader")
-
     companion object {
-
         @JvmStatic
         @Volatile
         private var INSTANCE: SVGImageLoader? = null
@@ -98,8 +94,6 @@ class SVGImageLoader @JvmOverloads constructor(
     }
 
     private fun applyBrandImage(brandName: String, image: CardBrandImage, target: ImageView) {
-        idleResCounter.increment()
-
         Log.d("SVGImageLoader", "Requesting brand image: ${image.url}")
 
         val request = Request.Builder().url(image.url).build()
@@ -113,8 +107,6 @@ class SVGImageLoader @JvmOverloads constructor(
                 response.body?.let { responseBody ->
                     run {
                         svgImageRenderer.renderImage(responseBody.byteStream(), target, brandName)
-                        idleResCounter.decrement()
-                        idleResCounter.unregisterIdleResCounter()
                     }
                 }
             }

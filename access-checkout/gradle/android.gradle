@@ -1,9 +1,9 @@
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -21,6 +21,17 @@ android {
             testCoverageEnabled = true
             buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
 
+        }
+    }
+
+    libraryVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.name == "release" && outputFile != null && outputFileName.endsWith('.aar')) {
+                outputFileName = "${archivesBaseName}-${version}.aar"
+            }
+            if (variant.name == "debug" && outputFile != null && outputFileName.endsWith('.aar')) {
+                outputFileName = "${archivesBaseName}-${version}-debug.aar"
+            }
         }
     }
 

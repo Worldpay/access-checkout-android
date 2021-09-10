@@ -14,9 +14,9 @@ nexusPublishing {
     }
 }
 
-//artifacts {
-//    archives javadocJar, sourcesJar
-//}
+artifacts {
+    archives javadocJar, sourcesJar
+}
 
 publishing {
     publications {
@@ -54,18 +54,6 @@ publishing {
                     }
                 }
             }
-        }
-    }
-}
-
-afterEvaluate {
-    def filePrefix = "$buildDir/outputs/aar/access-checkout"
-    def fileSuffix = "aar"
-    def originalFile = file("$filePrefix-release.$fileSuffix")
-    def renamedFile = "$filePrefix-android-$version.$fileSuffix"
-    tasks.named("assembleRelease").configure {
-        doLast {
-            originalFile.renameTo(renamedFile)
         }
     }
 }

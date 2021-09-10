@@ -1,18 +1,24 @@
 package com.worldpay.access.checkout.client.validation.cvc
 
+import android.os.Looper.getMainLooper
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
+import org.robolectric.annotation.LooperMode
+import org.robolectric.annotation.LooperMode.Mode.PAUSED
 
 @RunWith(RobolectricTestRunner::class)
+@LooperMode(PAUSED)
 class CvcValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Before
@@ -68,6 +74,8 @@ class CvcValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should limit cvc to 3 digits and validate cvc as true given 4 digit cvc is entered and visa pan is entered`() {
         pan.setText(visaPan())
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         cvc.setText("1234")
 
         verify(cardValidationListener).onCvcValidated(true)

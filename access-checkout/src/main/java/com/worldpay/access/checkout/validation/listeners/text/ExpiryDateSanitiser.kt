@@ -82,7 +82,7 @@ internal class ExpiryDateSanitiser {
 
     private fun limitToMaxLength(expiryDate: String): String {
         if (expiryDate.length > 5) {
-            return expiryDate.substring(0, EXPIRY_DATE_DEFAULTS.validLengths.max()!!)
+            return expiryDate.substring(0, EXPIRY_DATE_DEFAULTS.validLengths.maxOrNull()!!)
         }
         return expiryDate
     }

@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.sample.card.standard.testutil
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Switch
+import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -23,7 +23,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     private fun expiryDateInput() = findById<EditText>(R.id.card_flow_expiry_date)
     private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
     private fun brandLogo() = findById<ImageView>(R.id.card_flow_brand_logo)
-    private fun paymentsCvcSwitch() = findById<Switch>(R.id.card_flow_payments_cvc_switch)
+    private fun paymentsCvcSwitch() = findById<SwitchCompat>(R.id.card_flow_payments_cvc_switch)
 
     enum class Input {
         PAN, CVC, EXPIRY_DATE
@@ -157,11 +157,6 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun cursorPositionIs(position: Int): CardFragmentTestUtils {
         wait { assertEquals(position, panInput().selectionEnd) }
-        return this
-    }
-
-    fun setSelection(start: Int, end: Int): CardFragmentTestUtils {
-        setCursorPosition(panInput(), start, end)
         return this
     }
 

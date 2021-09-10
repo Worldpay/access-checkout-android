@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.api.configuration
 
+import android.os.Looper.getMainLooper
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.HttpsClient
@@ -8,18 +9,20 @@ import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import java.net.MalformedURLException
 import java.net.URL
-import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import org.awaitility.Awaitility
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
+import org.robolectric.annotation.LooperMode
+import org.robolectric.annotation.LooperMode.Mode.PAUSED
 
 @RunWith(RobolectricTestRunner::class)
+@LooperMode(PAUSED)
 class CardConfigurationAsyncTaskTest {
 
     @Test
@@ -37,9 +40,10 @@ class CardConfigurationAsyncTaskTest {
 
         val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
 
-        cardConfigurationAsyncTask.execute("")
+        cardConfigurationAsyncTask.execute("").get()
+        shadowOf(getMainLooper()).idle()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        assertTrue { asserted }
     }
 
     @Test
@@ -57,9 +61,10 @@ class CardConfigurationAsyncTaskTest {
 
         val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
 
-        cardConfigurationAsyncTask.execute(null)
+        cardConfigurationAsyncTask.execute(null).get()
+        shadowOf(getMainLooper()).idle()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        assertTrue { asserted }
     }
 
     @Test
@@ -78,9 +83,10 @@ class CardConfigurationAsyncTaskTest {
 
         val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
 
-        cardConfigurationAsyncTask.execute("abc")
+        cardConfigurationAsyncTask.execute("abc").get()
+        shadowOf(getMainLooper()).idle()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        assertTrue { asserted }
     }
 
     @Test
@@ -108,9 +114,10 @@ class CardConfigurationAsyncTaskTest {
             cardConfigurationParser
         )
 
-        cardConfigurationAsyncTask.execute(baseURL)
+        cardConfigurationAsyncTask.execute(baseURL).get()
+        shadowOf(getMainLooper()).idle()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        assertTrue { asserted }
     }
 
     @Test
@@ -135,9 +142,10 @@ class CardConfigurationAsyncTaskTest {
         given(httpClient.doGet(url, cardConfigurationParser)).willThrow(expectedException)
 
         val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback, urlFactory, httpClient, cardConfigurationParser)
-        cardConfigurationAsyncTask.execute(baseURL)
+        cardConfigurationAsyncTask.execute(baseURL).get()
+        shadowOf(getMainLooper()).idle()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        assertTrue { asserted }
     }
 
     @Test
@@ -157,8 +165,9 @@ class CardConfigurationAsyncTaskTest {
 
         val cardConfigurationAsyncTask = CardConfigurationAsyncTask(callback)
 
-        cardConfigurationAsyncTask.execute()
+        cardConfigurationAsyncTask.execute().get()
+        shadowOf(getMainLooper()).idle()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        assertTrue { asserted }
     }
 }

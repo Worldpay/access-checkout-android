@@ -11,10 +11,9 @@ import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFac
 internal class ActivityLifecycleObserver(
     private val tag: String,
     lifecycleOwner: LifecycleOwner,
-    sessionBroadcastManagerFactory: SessionBroadcastManagerFactory
+    sessionBroadcastManagerFactory: SessionBroadcastManagerFactory,
+    private val sessionBroadcastManager: SessionBroadcastManager = sessionBroadcastManagerFactory.createInstance()
 ) : LifecycleObserver {
-
-    private var sessionBroadcastManager: SessionBroadcastManager = sessionBroadcastManagerFactory.createInstance()
 
     companion object {
         var inLifeCycleState = false
