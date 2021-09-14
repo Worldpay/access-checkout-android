@@ -48,11 +48,11 @@ payload="{
 		}
 	]
 }"
-echo $payload
-#result=$(curl -v -X POST --data-urlencode "payload=${payload}" ${SLACK_WEBHOOK_URL})
-#
-#if [ "${result}" != "ok" ]; then
-#  echo $result
-#  exit 1
-#fi
+
+result=$(curl -v -X POST --data-urlencode "payload=${payload}" ${SLACK_WEBHOOK_URL})
+
+if [ "${result}" != "ok" ]; then
+  echo $result
+  exit 1
+fi
 
