@@ -4,6 +4,9 @@ env:
   secrets-manager:
     hydra_aco_blackduck_token: hydra_aco_blackduck:hydra_aco_blackduck_token
 phases:
+  install:
+    runtime-versions:
+      java: corretto8
   pre_build:
     commands:
       - ./scripts/blackduck/setup_sdk.sh
