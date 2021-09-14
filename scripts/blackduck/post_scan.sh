@@ -1,7 +1,7 @@
 #!/bin/bash
 
 SDK_VERSION=$(grep 'version=' access-checkout/gradle.properties | cut -d= -f2)
-REPORT_SDK_VERSION=$(grep 'version=' access-checkout/gradle.properties | cut -d= -f2)
+REPORT_SDK_VERSION=$(grep 'version=' access-checkout/gradle.properties | cut -d= -f2 | sed -e 's/\./_/g')
 if [ $CODEBUILD_BUILD_SUCCEEDING -eq 1 ]; then
   emoji=":duck:"
   color="#31AD72"
@@ -48,11 +48,11 @@ payload="{
 		}
 	]
 }"
-
-result=$(curl -v -X POST --data-urlencode "payload=${payload}" ${SLACK_WEBHOOK_URL})
-
-if [ "${result}" != "ok" ]; then
-  echo $result
-  exit 1
-fi
+echo $payload
+#result=$(curl -v -X POST --data-urlencode "payload=${payload}" ${SLACK_WEBHOOK_URL})
+#
+#if [ "${result}" != "ok" ]; then
+#  echo $result
+#  exit 1
+#fi
 
