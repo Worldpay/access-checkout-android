@@ -7,9 +7,6 @@ phases:
   install:
     runtime-versions:
       java: corretto8
-  pre_build:
-    commands:
-      - ./scripts/blackduck/setup_sdk.sh
   build:
     commands:
       - ./scripts/blackduck/run_scan.sh
