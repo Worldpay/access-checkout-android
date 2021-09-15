@@ -1,0 +1,20 @@
+version: 0.2
+
+env:
+  secrets-manager:
+    hydra_aco_blackduck_token: hydra_aco_blackduck:hydra_aco_blackduck_token
+phases:
+  install:
+    runtime-versions:
+      java: corretto8
+  build:
+    commands:
+      - ./scripts/blackduck/run_scan.sh
+  post_build:
+    commands:
+      - ./scripts/blackduck/post_scan.sh
+artifacts:
+  files:
+    - "*.pdf"
+  name: $CODEBUILD_BUILD_NUMBER
+  discard-paths: yes
