@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
+import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import java.io.Serializable
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -23,9 +24,8 @@ import org.mockito.Mockito.atMost
 import org.mockito.Mockito.verify
 import org.mockito.Mockito.verifyNoMoreInteractions
 import org.mockito.Mockito.verifyZeroInteractions
-import org.robolectric.RobolectricTestRunner
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(PlainRobolectricTestRunner::class)
 class SessionBroadcastReceiverTest {
 
     private lateinit var externalSessionResponseListener: SessionResponseListener

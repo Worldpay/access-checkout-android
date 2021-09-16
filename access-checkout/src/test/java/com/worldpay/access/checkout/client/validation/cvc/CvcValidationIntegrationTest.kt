@@ -14,11 +14,8 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.LooperMode
-import org.robolectric.annotation.LooperMode.Mode.PAUSED
 
 @RunWith(RobolectricTestRunner::class)
-@LooperMode(PAUSED)
 class CvcValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Before

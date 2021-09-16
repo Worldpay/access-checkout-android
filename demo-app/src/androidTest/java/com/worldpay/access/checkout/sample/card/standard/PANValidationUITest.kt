@@ -3,9 +3,9 @@ package com.worldpay.access.checkout.sample.card.standard
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_LUHN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.asPartial
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
@@ -88,7 +88,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = PARTIAL_VISA)
+            .enterCardDetails(pan = asPartial(VISA_PAN))
             .hasBrand(VISA)
             .focusOn(EXPIRY_DATE)
             .validationStateIs(pan = false)

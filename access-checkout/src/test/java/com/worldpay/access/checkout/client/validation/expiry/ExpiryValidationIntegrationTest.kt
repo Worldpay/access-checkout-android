@@ -4,6 +4,7 @@ import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
+import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import java.lang.System.currentTimeMillis
 import java.time.Duration
 import java.time.Instant.ofEpochMilli
@@ -13,10 +14,9 @@ import kotlin.math.abs
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowSystemClock
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(PlainRobolectricTestRunner::class)
 class ExpiryValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Before

@@ -18,11 +18,8 @@ import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.LooperMode
-import org.robolectric.annotation.LooperMode.Mode.PAUSED
 
 @RunWith(RobolectricTestRunner::class)
-@LooperMode(PAUSED)
 class CardConfigurationAsyncTaskTest {
 
     @Test

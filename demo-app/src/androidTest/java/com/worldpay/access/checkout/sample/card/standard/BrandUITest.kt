@@ -3,10 +3,10 @@ package com.worldpay.access.checkout.sample.card.standard
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.DINERS_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.DISCOVER_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.JCB_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MAESTRO_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.asPartial
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
@@ -28,7 +28,7 @@ class BrandUITest : AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = PARTIAL_UNKNOWN_LUHN)
+            .enterCardDetails(pan = asPartial(INVALID_UNKNOWN_LUHN))
             .hasNoBrand()
             .focusOn(CVC)
             .validationStateIs(pan = false)

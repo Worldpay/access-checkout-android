@@ -21,10 +21,8 @@ import org.junit.runner.RunWith
 import org.mockito.BDDMockito
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import org.robolectric.annotation.LooperMode
 
 @RunWith(RobolectricTestRunner::class)
-@LooperMode(LooperMode.Mode.PAUSED)
 class ApiDiscoveryAsyncTaskTest {
 
     private val endpointMock: Endpoint = mock()

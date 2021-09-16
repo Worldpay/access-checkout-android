@@ -8,15 +8,15 @@ import com.worldpay.access.checkout.client.validation.config.CardValidationConfi
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
+import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(PlainRobolectricTestRunner::class)
 class AccessCheckoutValidationInitialiserTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
