@@ -4,8 +4,8 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.util.Log
 import android.widget.EditText
-import android.widget.Switch
 import android.widget.TextView
+import androidx.appcompat.widget.SwitchCompat
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.SessionType
@@ -58,7 +58,7 @@ class SessionResponseListenerImpl(
         activity.findViewById<EditText>(R.id.card_flow_text_pan).isEnabled = true
         activity.findViewById<TextView>(R.id.card_flow_text_cvc).isEnabled = true
         activity.findViewById<EditText>(R.id.card_flow_expiry_date).isEnabled = true
-        activity.findViewById<Switch>(R.id.card_flow_payments_cvc_switch).isEnabled = true
+        activity.findViewById<SwitchCompat>(R.id.card_flow_payments_cvc_switch).isEnabled = true
     }
 
     private fun resetFields() {
@@ -66,6 +66,6 @@ class SessionResponseListenerImpl(
         activity.findViewById<EditText>(R.id.card_flow_text_pan).text.clear()
         activity.findViewById<EditText>(R.id.card_flow_text_cvc).text.clear()
         activity.findViewById<EditText>(R.id.card_flow_expiry_date).text.clear()
-        activity.findViewById<Switch>(R.id.card_flow_payments_cvc_switch).isChecked = false
+        activity.findViewById<SwitchCompat>(R.id.card_flow_payments_cvc_switch).isChecked = false
     }
 }

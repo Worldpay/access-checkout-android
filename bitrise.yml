@@ -153,6 +153,7 @@ workflows:
           - is_compress: 'true'
           - zip_name: test-reports
           - deploy_path: "$LIBRARY_MODULE/build/reports/tests/testDebugUnitTest"
+          - is_always_run: true
     - gradle-runner@1.9.6:
         title: "Generate javadoc documentation"
         inputs:
