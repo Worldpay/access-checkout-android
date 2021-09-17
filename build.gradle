@@ -6,7 +6,10 @@ buildscript {
     }
 
     dependencies {
+        // When updating the android gradle tools version from 7.0.2, ensure that the jacoco report
+        // is still generated. See the ./access-checkout/gradle/android.gradle file for reasons.
         classpath 'com.android.tools.build:gradle:7.0.2'
+
         classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30'
         classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.5.0'
         classpath 'org.jacoco:org.jacoco.core:0.8.7'
@@ -32,16 +35,6 @@ subprojects {
         disabledRules = ['max-line-length']
     }
 
-    if (project.property('isLibrary') == "true") {
-        apply plugin: 'com.android.library'
-        apply plugin: 'kotlin-android'
-        apply plugin: 'kotlin-parcelize'
-
-        apply from: './gradle/android.gradle'
-        apply from: './gradle/jacoco.gradle'
-        apply from: './gradle/javadoc.gradle'
-        apply from: './gradle/upload.gradle'
-    }
 }
 
 task clean(type: Delete) {

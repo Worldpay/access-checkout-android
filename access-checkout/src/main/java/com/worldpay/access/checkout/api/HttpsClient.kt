@@ -137,9 +137,12 @@ internal class HttpsClient(
     private fun getResponseData(inputStream: InputStream): String {
         return BufferedReader(InputStreamReader(inputStream)).use { reader ->
             val response = StringBuilder()
-            var currentLine: String? = null
+            var currentLine: String?
 
-            while ({ currentLine = reader.readLine(); currentLine }() != null)
+            while (run {
+                    currentLine = reader.readLine()
+                    currentLine
+                } != null)
                 response.append(currentLine)
 
             response.toString()
