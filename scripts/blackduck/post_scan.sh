@@ -3,13 +3,13 @@
 SDK_VERSION=$(grep 'version=' access-checkout/gradle.properties | cut -d= -f2)
 REPORT_SDK_VERSION=$(grep 'version=' access-checkout/gradle.properties | cut -d= -f2 | sed -e 's/\./_/g')
 if [ $CODEBUILD_BUILD_SUCCEEDING -eq 1 ]; then
-  emoji=":duck:"
+  emoji=":android-icon:"
   color="#31AD72"
   header="Success"
   text="Blackduck Scan for Access Checkout Android build *No.${CODEBUILD_BUILD_NUMBER}* for *${CODEBUILD_SOURCE_VERSION}* for version *${SDK_VERSION}* has completed successfully."
   location="Report can be retrieved from *GW2 Dev* here: https://s3.console.aws.amazon.com/s3/object/wp-hydra-artefact-bucket?region=eu-west-1&prefix=access-checkout-android-blackduck/${CODEBUILD_BUILD_NUMBER}/Access_Checkout_Android_30000270_${REPORT_SDK_VERSION}_BlackDuck_RiskReport.pdf"
 else
-  emoji=":duck:"
+  emoji=":android-icon:"
   color="#EA5E1A"
   header="Failed"
   text="Blackduck Scan for Access Checkout Android build *No.${CODEBUILD_BUILD_NUMBER}* for *${CODEBUILD_SOURCE_VERSION}* for version *${SDK_VERSION}* has failed."
