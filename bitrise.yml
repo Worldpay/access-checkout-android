@@ -240,6 +240,7 @@ workflows:
                 Pixel2,27,en,portrait
                 Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
+                Pixel2,30,en,portrait
       - cache-push@2.3.0: {}
 
 app:

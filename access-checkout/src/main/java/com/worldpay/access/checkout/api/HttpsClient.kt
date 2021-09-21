@@ -140,9 +140,10 @@ internal class HttpsClient(
             var currentLine: String?
 
             while (run {
-                    currentLine = reader.readLine()
-                    currentLine
-                } != null)
+                currentLine = reader.readLine()
+                currentLine
+            } != null
+            )
                 response.append(currentLine)
 
             response.toString()

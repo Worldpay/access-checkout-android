@@ -2,7 +2,10 @@ package com.worldpay.access.checkout.session.broadcast.receivers
 
 import android.content.Context
 import android.content.Intent
+import com.nhaarman.mockitokotlin2.atMost
 import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.SessionType
@@ -14,16 +17,14 @@ import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcast
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import java.io.Serializable
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito.atMost
-import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyNoMoreInteractions
-import org.mockito.Mockito.verifyZeroInteractions
+import org.mockito.Mockito.verifyNoInteractions
 
 @RunWith(PlainRobolectricTestRunner::class)
 class SessionBroadcastReceiverTest {
@@ -44,6 +45,46 @@ class SessionBroadcastReceiverTest {
     }
 
     @Test
+    fun `should throw exception when using dummy listener on success`() {
+        broadcastNumSessionTypesRequested(1)
+
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
+        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("some reference", CARD))
+        given(intent.getSerializableExtra("error")).willReturn(null)
+
+        val sessionBroadcastReceiver = SessionBroadcastReceiver()
+
+        val ex = assertFailsWith(
+            exceptionClass = AccessCheckoutException::class,
+            block = { sessionBroadcastReceiver.onReceive(context, intent) }
+        )
+
+        assertEquals("You are required to implement your own SessionResponseListener.", ex.message)
+    }
+
+    @Test
+    fun `should throw exception when using dummy listener on error`() {
+        broadcastNumSessionTypesRequested(1)
+
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
+        given(intent.getSerializableExtra("error")).willReturn(
+            AccessCheckoutException(
+                "some error"
+            )
+        )
+        given(intent.getSerializableExtra("session_type")).willReturn(CARD)
+
+        val sessionBroadcastReceiver = SessionBroadcastReceiver()
+
+        val ex = assertFailsWith(
+            exceptionClass = AccessCheckoutException::class,
+            block = { sessionBroadcastReceiver.onReceive(context, intent) }
+        )
+
+        assertEquals("You are required to implement your own SessionResponseListener.", ex.message)
+    }
+
+    @Test
     fun `should return expected IntentFilter`() {
         val intentFilter = sessionBroadcastReceiver.getIntentFilter()
 
@@ -59,7 +100,7 @@ class SessionBroadcastReceiverTest {
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        verifyZeroInteractions(externalSessionResponseListener)
+        verifyNoInteractions(externalSessionResponseListener)
     }
 
     @Test

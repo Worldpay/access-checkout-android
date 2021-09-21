@@ -80,12 +80,8 @@ class HttpsClientTest {
             throw java.lang.RuntimeException(errorMessage)
         }
 
-        given(url.openConnection()).willReturn(httpsUrlConnection)
-        given(httpsUrlConnection.responseCode).willReturn(201)
+        stubResponse(responseCode = 201)
         given(httpsUrlConnection.inputStream).willReturn(inputStream)
-        given(httpsUrlConnection.errorStream).willReturn(inputStream)
-        given(httpsUrlConnection.outputStream).willReturn(ByteArrayOutputStream())
-        given(httpsUrlConnection.responseMessage).willReturn("")
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
@@ -102,6 +98,21 @@ class HttpsClientTest {
         val errorMessage = "A server error occurred when trying to make the request"
 
         stubErrorResponse(responseCode = 500, message = "")
+
+        given(serializer.serialize(testRequest)).willReturn(testRequestString)
+
+        val exception = assertFailsWith<AccessCheckoutException> {
+            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+        }
+
+        assertEquals(errorMessage, exception.message)
+    }
+
+    @Test
+    fun shouldThrowExceptionWhenStatusCodeIsBelow200ForPost() {
+        val errorMessage = "A server error occurred when trying to make the request"
+
+        stubErrorResponse(responseCode = 100, message = "")
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
@@ -249,16 +260,16 @@ class HttpsClientTest {
         given(urlFactory.getURL(relocatedUrl)).willReturn(relocatedUrlMock)
 
         given(url.openConnection()).willReturn(httpsUrlConnection)
-        given(httpsUrlConnection.responseCode).willReturn(301)
-        given(httpsUrlConnection.inputStream).willReturn(null)
-        given(httpsUrlConnection.errorStream).willReturn(null)
-        given(httpsUrlConnection.outputStream).willReturn(ByteArrayOutputStream())
-        given(httpsUrlConnection.responseMessage).willReturn("")
+        given(relocatedUrlMock.openConnection()).willReturn(httpsUrlConnection)
+
+        given(httpsUrlConnection.responseCode).willReturn(301, 200)
+
         given(httpsUrlConnection.getHeaderField("Location")).willReturn(relocatedUrl)
 
-        stubResponse(responseCode = 200, responseBody = testResponseAsString)
+        given(httpsUrlConnection.inputStream)
+            .willReturn(testResponseAsString.byteInputStream())
 
-        given(relocatedUrlMock.openConnection()).willReturn(httpsUrlConnection)
+        given(httpsUrlConnection.outputStream).willReturn(ByteArrayOutputStream())
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
         given(deserializer.deserialize(testResponseAsString)).willReturn(testResponse)
@@ -343,6 +354,19 @@ class HttpsClientTest {
 
         assertEquals(errorMessage, exception.message)
         assertTrue(exception.cause is java.lang.RuntimeException)
+    }
+
+    @Test
+    fun shouldThrowExceptionWhenStatusCodeIsBelow200ForGet() {
+        val errorMessage = "A server error occurred when trying to make the request"
+
+        stubErrorResponse(responseCode = 100, message = "")
+
+        val exception = assertFailsWith<AccessCheckoutException> {
+            httpsClient.doGet(url, deserializer)
+        }
+
+        assertEquals(errorMessage, exception.message)
     }
 
     @Test
@@ -458,9 +482,7 @@ class HttpsClientTest {
 
         given(url.openConnection()).willReturn(httpsUrlConnection)
         given(redirectToUrlMock.openConnection()).willReturn(httpsUrlConnection)
-        given(httpsUrlConnection.responseCode)
-            .willReturn(301)
-            .willReturn(200)
+        given(httpsUrlConnection.responseCode).willReturn(301, 200)
         given(httpsUrlConnection.inputStream)
             .willReturn(testResponseAsString.byteInputStream())
         given(httpsUrlConnection.outputStream).willReturn(ByteArrayOutputStream())
@@ -530,6 +552,8 @@ class HttpsClientTest {
 
         if (responseBody != null) {
             given(httpsUrlConnection.inputStream).willReturn(responseBody.byteInputStream())
+        } else {
+            given(httpsUrlConnection.inputStream).willReturn(null)
         }
 
         given(httpsUrlConnection.outputStream).willReturn(ByteArrayOutputStream())

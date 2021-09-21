@@ -17,13 +17,9 @@ import java.io.Serializable
 import java.util.EnumMap
 import java.util.concurrent.atomic.AtomicInteger
 
-internal class SessionBroadcastReceiver() : AbstractSessionBroadcastReceiver() {
-
-    private lateinit var externalSessionResponseListener: SessionResponseListener
-
-    constructor(externalSessionResponseListener: SessionResponseListener) : this() {
-        this.externalSessionResponseListener = externalSessionResponseListener
-    }
+internal class SessionBroadcastReceiver(
+    private val externalSessionResponseListener: SessionResponseListener = DummyListener()
+) : AbstractSessionBroadcastReceiver() {
 
     internal companion object {
         const val NUMBER_OF_SESSION_TYPE_KEY = "num_of_session_types"
@@ -113,5 +109,15 @@ internal object SessionBroadcastDataStore {
     fun clear() {
         storedResponses.clear()
         numOfSessionTypes.set(0)
+    }
+}
+
+internal class DummyListener : SessionResponseListener {
+    override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {
+        throw AccessCheckoutException("You are required to implement your own SessionResponseListener.")
+    }
+
+    override fun onError(error: AccessCheckoutException) {
+        throw AccessCheckoutException("You are required to implement your own SessionResponseListener.")
     }
 }
