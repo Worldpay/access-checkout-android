@@ -80,19 +80,25 @@ class CardFragmentTest : AbstractCardFragmentTest() {
 
     @Test
     fun shouldKeepValidationStateOnFieldsWhenAppIsReopened() {
-        cardFragmentTestUtils
-            .isInInitialState()
-            .enterCardDetails(pan = "4", cvc = "12", expiryDate = "129")
-            .focusOn(CVC)
-            .validationStateIs(pan = false, cvc = false, expiryDate = false)
-            .hasBrand(VISA)
-            .enabledStateIs(submitButton = false)
+        restartApp()
 
-        reopenApp()
+        try {
+            cardFragmentTestUtils
+                .isInInitialState()
+                .enterCardDetails(pan = "4", cvc = "12", expiryDate = "129")
+                .focusOn(CVC)
+                .validationStateIs(pan = false, cvc = false, expiryDate = false)
+                .hasBrand(VISA)
+                .enabledStateIs(submitButton = false)
 
-        cardFragmentTestUtils
-            .validationStateIs(pan = false, cvc = false, expiryDate = false)
-            .hasBrand(VISA)
-            .enabledStateIs(submitButton = false)
+            reopenApp()
+
+            cardFragmentTestUtils
+                .validationStateIs(pan = false, cvc = false, expiryDate = false)
+                .hasBrand(VISA)
+                .enabledStateIs(submitButton = false)
+        } finally {
+            restartApp()
+        }
     }
 }
