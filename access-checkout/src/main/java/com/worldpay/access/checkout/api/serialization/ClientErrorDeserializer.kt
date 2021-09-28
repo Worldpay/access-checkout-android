@@ -31,7 +31,7 @@ internal class ClientErrorDeserializer : Deserializer<AccessCheckoutException>()
         if (valErrSize > 0) {
             val clientValidationRuleList = mutableListOf<ValidationRule>()
 
-            for (i in 0 until valErrSize) {
+            (0 until valErrSize).forEach { i ->
                 val vErr = validationErrorArr.getJSONObject(i)
                 clientValidationRuleList.add(getValidationRuleFromJson(vErr))
             }

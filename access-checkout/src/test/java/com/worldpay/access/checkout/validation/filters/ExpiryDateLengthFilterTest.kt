@@ -1,14 +1,14 @@
 package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
+import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 
-@RunWith(RobolectricTestRunner::class)
+@RunWith(PlainRobolectricTestRunner::class)
 class ExpiryDateLengthFilterTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context

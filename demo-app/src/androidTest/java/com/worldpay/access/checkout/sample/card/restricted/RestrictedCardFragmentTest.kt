@@ -12,9 +12,9 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.DISCOVER_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.JCB_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MAESTRO_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.PARTIAL_MAESTRO
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
+import com.worldpay.access.checkout.sample.card.CardNumberUtil.asPartial
 import com.worldpay.access.checkout.sample.card.restricted.testutil.RestrictedCardFragmentTestUtils
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DINERS
@@ -123,7 +123,7 @@ class RestrictedCardFragmentTest {
     fun shouldNotAcceptPartialMaestroPan() {
         restrictedCardFragmentTestUtils
             .isInInitialState()
-            .enterCardDetails(PARTIAL_MAESTRO)
+            .enterCardDetails(asPartial(MAESTRO_PAN))
             .hasBrand(MAESTRO)
             .validationStateIs(false)
     }

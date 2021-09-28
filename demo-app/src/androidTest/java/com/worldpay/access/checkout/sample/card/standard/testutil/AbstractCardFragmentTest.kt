@@ -4,14 +4,20 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
+import com.worldpay.access.checkout.sample.testutil.ScreenshotTestRule
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
+import org.awaitility.kotlin.await
 import org.junit.Before
 import org.junit.Rule
+import java.util.concurrent.TimeUnit
 
 abstract class AbstractCardFragmentTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
+
+    @get:Rule
+    var screenshotTestRule = ScreenshotTestRule()
 
     lateinit var cardFragmentTestUtils: CardFragmentTestUtils
 
@@ -21,5 +27,25 @@ abstract class AbstractCardFragmentTest {
         defaultStubMappings(activityRule.activity)
         closeSoftKeyboard()
         rotatePortrait(activityRule)
+    }
+
+    fun restartApp() {
+        with(activityRule) {
+            finishActivity()
+            launchActivity(null)
+        }
+
+        await.atMost(5, TimeUnit.SECONDS).until {
+            applicationIsVisible()
+        }
+    }
+
+    private fun applicationIsVisible(): Boolean {
+        return try {
+            cardFragmentTestUtils.isInInitialState()
+            true
+        } catch (e: Exception) {
+            false
+        }
     }
 }

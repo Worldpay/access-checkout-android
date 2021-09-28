@@ -1,9 +1,18 @@
 android {
-    compileSdkVersion 29
+    compileSdkVersion 30
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 29
+        targetSdkVersion 30
         versionCode 1
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -18,9 +27,29 @@ android {
             buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
         }
         debug {
-            testCoverageEnabled = true
+            // The test coverage has been disabled here due to a bug in the android build tools (7.0.2)
+            // setting this to false changes the location of where the exec file lives for jacoco to
+            // build/jacoco/testDebugUnitTest.exec with the correct coverage information.
+            // If this is set to true, then the location of the execution data file is at
+            // ./build/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec
+            // and the coverage information in that file is incorrect and reports 0% code coverage.
+            //
+            // for more information see: https://issuetracker.google.com/issues/195860510
+            testCoverageEnabled = false
+            debuggable = true
+            minifyEnabled = false
             buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
+        }
+    }
 
+    libraryVariants.all { variant ->
+        variant.outputs.all { output ->
+            if (variant.name == "release" && outputFile != null && outputFileName.endsWith('.aar')) {
+                outputFileName = "${archivesBaseName}-${version}.aar"
+            }
+            if (variant.name == "debug" && outputFile != null && outputFileName.endsWith('.aar')) {
+                outputFileName = "${archivesBaseName}-${version}-debug.aar"
+            }
         }
     }
 

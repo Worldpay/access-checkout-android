@@ -8,7 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
-import android.widget.Switch
+import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
@@ -30,7 +30,7 @@ class CardFlowFragment : Fragment() {
     private lateinit var cvcText: EditText
     private lateinit var expiryText: EditText
     private lateinit var submitBtn: SubmitButton
-    private lateinit var paymentsCvcSwitch: Switch
+    private lateinit var paymentsCvcSwitch: SwitchCompat
     private lateinit var progressBar: ProgressBar
 
     private lateinit var sessionTypes: List<SessionType>

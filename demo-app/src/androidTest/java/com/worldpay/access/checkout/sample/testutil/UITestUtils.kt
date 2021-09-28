@@ -1,12 +1,12 @@
 package com.worldpay.access.checkout.sample.testutil
 
 import android.content.pm.ActivityInfo
+import android.os.Build
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.NoMatchingViewException
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
@@ -21,8 +21,8 @@ import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
-import java.util.concurrent.TimeUnit
 import org.awaitility.Awaitility.await
+import java.util.concurrent.TimeUnit
 
 object UITestUtils {
 
@@ -89,18 +89,25 @@ object UITestUtils {
 
     fun reopenApp() {
         pressRecentApps()
+
         Thread.sleep(1000)
-        pressRecentApps()
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            val uiDevice = getInstance(getInstrumentation())
+            uiDevice.click(uiDevice.displayWidth / 2, uiDevice.displayHeight / 2)
+        } else {
+            pressRecentApps()
+        }
 
         await().atMost(60, TimeUnit.SECONDS).until {
             try {
                 onView(withId(R.id.drawer_layout))
                     .check(matches(isDisplayed()))
-            } catch (e: NoMatchingViewException) {
+            } catch (e: Exception) {
                 try {
                     onView(withId(R.id.loading_bar))
                         .check(matches(isDisplayed()))
-                } catch (e: NoMatchingViewException) {
+                } catch (e: Exception) {
                     onView(withId(android.R.id.button1))
                         .inRoot(isDialog())
                         .check(matches(isDisplayed()))

@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.api.discovery
 
+import android.os.Looper.getMainLooper
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.Callback
@@ -19,6 +20,7 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class ApiDiscoveryAsyncTaskTest {
@@ -56,9 +58,9 @@ class ApiDiscoveryAsyncTaskTest {
             httpsClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("abcd")
-
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        accessCheckoutDiscoveryAsyncTask.execute("abcd").get()
+        shadowOf(getMainLooper()).idle()
+        assertTrue(asserted)
     }
 
     @Test
@@ -82,9 +84,10 @@ class ApiDiscoveryAsyncTaskTest {
             httpsClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443").get()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        shadowOf(getMainLooper()).idle()
+        assertTrue(asserted)
     }
 
     @Test
@@ -108,9 +111,10 @@ class ApiDiscoveryAsyncTaskTest {
             httpsClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443").get()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        shadowOf(getMainLooper()).idle()
+        assertTrue(asserted)
     }
 
     @Test
@@ -136,9 +140,10 @@ class ApiDiscoveryAsyncTaskTest {
             httpsClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443").get()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        shadowOf(getMainLooper()).idle()
+        assertTrue(asserted)
     }
 
     @Test
@@ -162,9 +167,10 @@ class ApiDiscoveryAsyncTaskTest {
             httpsClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443").get()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        shadowOf(getMainLooper()).idle()
+        assertTrue(asserted)
     }
 
     @Test
@@ -188,9 +194,10 @@ class ApiDiscoveryAsyncTaskTest {
             httpsClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443").get()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        shadowOf(getMainLooper()).idle()
+        assertTrue(asserted)
     }
 
     @Test
@@ -217,9 +224,10 @@ class ApiDiscoveryAsyncTaskTest {
             httpsClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443")
+        accessCheckoutDiscoveryAsyncTask.execute("https://localhost:8443").get()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        shadowOf(getMainLooper()).idle()
+        assertTrue(asserted)
     }
 
     @Test
@@ -247,9 +255,10 @@ class ApiDiscoveryAsyncTaskTest {
             httpsClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute(baseURL)
+        accessCheckoutDiscoveryAsyncTask.execute(baseURL).get()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        shadowOf(getMainLooper()).idle()
+        assertTrue(asserted)
     }
 
     @Test
@@ -277,9 +286,10 @@ class ApiDiscoveryAsyncTaskTest {
             httpsClientMock
         )
 
-        accessCheckoutDiscoveryAsyncTask.execute(baseURL)
+        accessCheckoutDiscoveryAsyncTask.execute(baseURL).get()
 
-        Awaitility.await().atMost(5, TimeUnit.SECONDS).until { asserted }
+        shadowOf(getMainLooper()).idle()
+        assertTrue(asserted)
     }
 
     fun `should discover resource when given valid base url and three levels of discovery required`() {

@@ -13,6 +13,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
+import com.worldpay.access.checkout.api.MockServer.startWiremock
+import com.worldpay.access.checkout.api.MockServer.stopWiremock
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
@@ -47,15 +49,19 @@ class AccessCheckoutClientIntegrationTest {
     fun setup() {
         given(lifecycleOwner.lifecycle).willReturn(lifecycleRegistry)
 
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        getInstrumentation().runOnMainSync {
+            lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
+        }
 
-        MockServer.startWiremock(applicationContext, 8443)
+        startWiremock(applicationContext, 8443)
     }
 
     @After
     fun tearDown() {
-        lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-        MockServer.stopWiremock()
+        getInstrumentation().runOnMainSync {
+            lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
+        }
+        stopWiremock()
     }
 
     @Test
@@ -106,15 +112,17 @@ class AccessCheckoutClientIntegrationTest {
             override fun onError(error: AccessCheckoutException) {}
         }
 
-        val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(getBaseUrl())
-            .merchantId(merchantId)
-            .sessionResponseListener(responseListener)
-            .context(applicationContext)
-            .lifecycleOwner(lifecycleOwner)
-            .build()
+        getInstrumentation().runOnMainSync {
+            val accessCheckoutClient = AccessCheckoutClientBuilder()
+                .baseUrl(getBaseUrl())
+                .merchantId(merchantId)
+                .sessionResponseListener(responseListener)
+                .context(applicationContext)
+                .lifecycleOwner(lifecycleOwner)
+                .build()
 
-        accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+        }
 
         await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
     }
@@ -151,15 +159,17 @@ class AccessCheckoutClientIntegrationTest {
             }
         }
 
-        val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(getBaseUrl())
-            .merchantId(merchantId)
-            .sessionResponseListener(responseListener)
-            .context(applicationContext)
-            .lifecycleOwner(lifecycleOwner)
-            .build()
+        getInstrumentation().runOnMainSync {
+            val accessCheckoutClient = AccessCheckoutClientBuilder()
+                .baseUrl(getBaseUrl())
+                .merchantId(merchantId)
+                .sessionResponseListener(responseListener)
+                .context(applicationContext)
+                .lifecycleOwner(lifecycleOwner)
+                .build()
 
-        accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+        }
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
     }
@@ -192,15 +202,17 @@ class AccessCheckoutClientIntegrationTest {
             }
         }
 
-        val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(getBaseUrl())
-            .merchantId(merchantId)
-            .sessionResponseListener(errorListener)
-            .context(applicationContext)
-            .lifecycleOwner(lifecycleOwner)
-            .build()
+        getInstrumentation().runOnMainSync {
+            val accessCheckoutClient = AccessCheckoutClientBuilder()
+                .baseUrl(getBaseUrl())
+                .merchantId(merchantId)
+                .sessionResponseListener(errorListener)
+                .context(applicationContext)
+                .lifecycleOwner(lifecycleOwner)
+                .build()
 
-        accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+        }
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
     }
@@ -241,15 +253,17 @@ class AccessCheckoutClientIntegrationTest {
             }
         }
 
-        val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(getBaseUrl())
-            .merchantId(merchantId)
-            .sessionResponseListener(errorListener)
-            .context(applicationContext)
-            .lifecycleOwner(lifecycleOwner)
-            .build()
+        getInstrumentation().runOnMainSync {
+            val accessCheckoutClient = AccessCheckoutClientBuilder()
+                .baseUrl(getBaseUrl())
+                .merchantId(merchantId)
+                .sessionResponseListener(errorListener)
+                .context(applicationContext)
+                .lifecycleOwner(lifecycleOwner)
+                .build()
 
-        accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+        }
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
     }
@@ -278,15 +292,17 @@ class AccessCheckoutClientIntegrationTest {
             }
         }
 
-        val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(getBaseUrl())
-            .merchantId(merchantId)
-            .sessionResponseListener(errorListener)
-            .context(applicationContext)
-            .lifecycleOwner(lifecycleOwner)
-            .build()
+        getInstrumentation().runOnMainSync {
+            val accessCheckoutClient = AccessCheckoutClientBuilder()
+                .baseUrl(getBaseUrl())
+                .merchantId(merchantId)
+                .sessionResponseListener(errorListener)
+                .context(applicationContext)
+                .lifecycleOwner(lifecycleOwner)
+                .build()
 
-        accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
+        }
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
     }

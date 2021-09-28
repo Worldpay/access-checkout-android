@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.client.validation.pan
 
+import android.os.Looper.getMainLooper
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
@@ -24,10 +25,12 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTest() {
@@ -80,6 +83,9 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
     @Test
     fun `should not validate pan for partial visa pan but should call brand changed with visa brand`() {
         pan.setText(PARTIAL_VISA)
+
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
     }
@@ -87,6 +93,9 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
     @Test
     fun `should only notify pan validated on validation state change and notify brand change each time the brand changes - without accepted card brands`() {
         pan.setText(visaPan())
+
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 
@@ -138,6 +147,9 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         initialiseValidation(acceptedCardBrands = emptyArray())
 
         pan.setText(visaPan())
+
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
 
@@ -189,6 +201,8 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         cvc.setText("1234")
         verify(cardValidationListener).onCvcValidated(true)
 
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -201,15 +215,21 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
         pan.setText(AMEX_PAN)
 
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
     }
 
     @Test
     fun `should not accept diners card when diners is not accepted`() {
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         initialiseValidation(acceptedCardBrands = arrayOf("AMEX"))
 
         pan.setText(DINERS_PAN)
+
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(false)
         verify(cardValidationListener).onBrandChange(toCardBrand(DINERS_BRAND))

@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.client.validation.pan
 
+import android.os.Looper.getMainLooper
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
@@ -10,11 +11,13 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN_FORMATTED
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
@@ -28,6 +31,8 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should be formatting pan with a space between every 4 digits and detecting correct brand - visa`() {
         pan.setText("4111111111111111")
 
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         assertEquals("4111 1111 1111 1111", pan.text.toString())
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
         verify(cardValidationListener).onPanValidated(true)
@@ -35,6 +40,8 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should be formatting pan with a space between after 4, 6 and 5 digits and detected correct brand`() {
+        shadowOf(getMainLooper()).waitForQueueUntilIdle(1)
+
         pan.setText("342793178931249")
 
         assertEquals("3427 931789 31249", pan.text.toString())
@@ -47,6 +54,8 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         initialiseValidation(enablePanFormatting = false)
 
         pan.setText("4111111111111111")
+
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4111111111111111", pan.text.toString())
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -119,6 +128,8 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should switch from amex format to visa format when different pan is pasted over`() {
+        shadowOf(getMainLooper()).waitForQueueUntilIdle(1)
+
         pan.setText(AMEX_PAN_FORMATTED)
 
         assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
@@ -137,6 +148,8 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         assertEquals(visaPan, pan.text.toString())
 
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         pan.setText(AMEX_PAN_FORMATTED)
 
         assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
@@ -145,6 +158,8 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should be able to paste in an entire pan into a blank pan field and cursor goes to the end of the pan`() {
+        shadowOf(getMainLooper()).waitForQueueUntilIdle(1)
+
         pan.setText(AMEX_PAN_FORMATTED)
 
         assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
@@ -188,6 +203,8 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         assertEquals(visaPan, pan.text.toString())
         assertEquals(19, pan.selectionEnd)
 
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
         pan.setText(AMEX_PAN)
 
         assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
@@ -223,6 +240,8 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should shift digits and trim if pasted characters change brand type`() {
         pan.setText("4444 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
+
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         pan.paste(0, 14, "3434 3434 3434")
 
@@ -288,7 +307,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should not be able to insert nondigit`() {
+    fun `should not be able to insert non-digit`() {
         pan.setText("4554 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
         pan.typeAtIndex(4, "d")

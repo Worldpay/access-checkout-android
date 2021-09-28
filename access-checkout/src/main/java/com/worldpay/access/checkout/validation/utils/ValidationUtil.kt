@@ -23,7 +23,7 @@ internal object ValidationUtil {
     }
 
     fun getMaxLength(cardValidationRule: CardValidationRule) =
-        cardValidationRule.validLengths.max() ?: defaultMaxLength
+        cardValidationRule.validLengths.maxOrNull() ?: defaultMaxLength
 
     fun findBrandForPan(pan: String): RemoteCardBrand? {
         for (brand in getCardConfiguration().brands) {

@@ -4,6 +4,11 @@ jacoco {
     toolVersion = '0.8.7'
 }
 
+tasks.withType(Test) {
+    jacoco.includeNoLocationClasses = true
+    jacoco.excludes = ['jdk.internal.*']
+}
+
 def fileFilter = [
         '**/R.class',
         '**/R$*.class',
@@ -14,13 +19,20 @@ def fileFilter = [
         '**/logging/LoggingUtils*',
         '**/logging/AccessCheckoutLogger*'
 ]
-def debugTree = fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter)
-def kotlinDebugTree = fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+
+def classDirs = files([
+        fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter) +
+        fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+])
+
+def execData = files("$buildDir/jacoco/testDebugUnitTest.exec")
+
+def sourceDirs = files(["${project.projectDir}/src/main/java"])
 
 task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
-    executionData.from = files("$project.projectDir/jacoco.exec")
-    classDirectories.setFrom(files([debugTree], [kotlinDebugTree]))
-    sourceDirectories.setFrom(files(["${project.projectDir}/src/main/java"]))
+    executionData.setFrom(execData)
+    classDirectories.setFrom(classDirs)
+    sourceDirectories.setFrom(sourceDirs)
 
     reports {
         html.enabled true
@@ -28,9 +40,9 @@ task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
 }
 
 task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
-    executionData.from = files("$project.projectDir/jacoco.exec")
-    classDirectories.setFrom(files([debugTree], [kotlinDebugTree]))
-    sourceDirectories.setFrom(files(["${project.projectDir}/src/main/java"]))
+    executionData.setFrom(execData)
+    classDirectories.setFrom(classDirs)
+    sourceDirectories.setFrom(sourceDirs)
 
     violationRules {
         rule {

@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.client.validation.pan
 
+import android.os.Looper.getMainLooper
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
@@ -12,11 +13,13 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUH
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
@@ -37,6 +40,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should validate pan as false when partial visa pan is entered`() {
         pan.setText(PARTIAL_VISA)
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -45,6 +49,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should validate pan as true when full visa pan is entered`() {
         pan.setText(visaPan())
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -55,6 +60,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         initialiseValidation(enablePanFormatting = true)
 
         pan.setText(visaPan(19, true))
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -70,6 +76,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should validate pan as true when visa pan is entered and visa pan is an accepted card brand`() {
         pan.setText(visaPan())
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -86,6 +93,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand and force notify`() {
         pan.setText(visaPan())
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
@@ -110,6 +118,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should not validate cvc when pan brand is recognised and cvc is empty`() {
         pan.setText(visaPan())
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener, never()).onCvcValidated(any())
         verify(cardValidationListener).onPanValidated(true)

@@ -27,7 +27,6 @@ class CardConfigurationLongDelayIntegrationTest {
     private lateinit var cardFragmentTestUtils: CardFragmentTestUtils
 
     private val luhnValidMastercardCard = "5555555555554444"
-    private val luhnValidMastercardCardWithSpaces = "5555 5555 5555 4444"
     private val luhnInvalidMastercardCard = "55555555555111"
     private val luhnInvalidMastercardCardWithSpaces = "5555 5555 5551 11"
 

@@ -68,4 +68,10 @@ class PanValidatorTest {
         val panValidator = PanValidator(arrayOf("VisA", "MASTERCARD"))
         assertEquals(VALID, panValidator.validate(visaPan(), VISA_BRAND.pan, VISA_BRAND))
     }
+
+    @Test
+    fun `should return VALID if the pan is of one of the accepted card brands and card brand is null`() {
+        val panValidator = PanValidator(arrayOf("VISA", "MASTERCARD"))
+        assertEquals(VALID, panValidator.validate(visaPan(), VISA_BRAND.pan, null))
+    }
 }

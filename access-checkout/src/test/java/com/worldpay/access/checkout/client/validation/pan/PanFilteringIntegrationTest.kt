@@ -1,14 +1,17 @@
 package com.worldpay.access.checkout.client.validation.pan
 
+import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN_FORMATTED
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
+import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class PanFilteringIntegrationTest : AbstractValidationIntegrationTest() {
@@ -83,6 +86,7 @@ class PanFilteringIntegrationTest : AbstractValidationIntegrationTest() {
         val visaPan = visaPan(19)
 
         pan.setText(visaPan.plus("123"))
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
         assertEquals(visaPan, pan.text.toString())
 
         pan.setText(MASTERCARD_PAN.plus("1234"))
@@ -94,6 +98,7 @@ class PanFilteringIntegrationTest : AbstractValidationIntegrationTest() {
         val visaPan = visaPan(19, true)
 
         pan.setText(visaPan.plus(" 5678 90"))
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
         assertEquals(visaPan, pan.text.toString())
 
         pan.setText(MASTERCARD_PAN_FORMATTED.plus(" 3456 7890"))

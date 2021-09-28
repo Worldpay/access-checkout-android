@@ -50,7 +50,7 @@ internal class PanValidator(private val acceptedCardBrands: Array<String>) {
     private fun isLuhnValid(pan: String): Boolean {
         var sum = 0
         var alternate = false
-        for (i: Int in (pan.length - 1) downTo 0) {
+        ((pan.length - 1) downTo 0).forEach { i: Int ->
             var n = Integer.parseInt(pan.substring(i, i + 1))
             if (alternate) {
                 n *= 2
