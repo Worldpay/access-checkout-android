@@ -52,10 +52,10 @@ else
 fi
 
 echo "Pushing to git branch - origin/$BRANCH_NAME"
-#git add ./access-checkout/gradle.properties
-#git add ./CHANGELOG.md
-#git commit -m "Updated Android SDK version to $NEW_VERSION"
-#git push --set-upstream origin "$BRANCH_NAME"
+git add ./access-checkout/gradle.properties
+git add ./CHANGELOG.md
+git commit -m "Updated Android SDK version to $NEW_VERSION"
+git push --set-upstream origin "$BRANCH_NAME"
 
 echo "*******************************************************************"
 echo "Version updated to $NEW_VERSION"
