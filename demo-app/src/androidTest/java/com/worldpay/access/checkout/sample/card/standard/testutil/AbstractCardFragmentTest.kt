@@ -4,7 +4,6 @@ import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
-import com.worldpay.access.checkout.sample.testutil.ScreenshotTestRule
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.awaitility.kotlin.await
 import org.junit.Before
@@ -15,9 +14,6 @@ abstract class AbstractCardFragmentTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
-
-    @get:Rule
-    var screenshotTestRule = ScreenshotTestRule()
 
     lateinit var cardFragmentTestUtils: CardFragmentTestUtils
 

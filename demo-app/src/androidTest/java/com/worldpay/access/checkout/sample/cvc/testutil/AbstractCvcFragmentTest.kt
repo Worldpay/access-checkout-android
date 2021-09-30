@@ -5,7 +5,6 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.testutil.ScreenshotTestRule
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import org.awaitility.kotlin.await
@@ -17,9 +16,6 @@ abstract class AbstractCvcFragmentTest {
 
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
-
-    @get:Rule
-    var screenshotTestRule = ScreenshotTestRule()
 
     lateinit var cvcFragmentTestUtils: CvcFragmentTestUtils
 

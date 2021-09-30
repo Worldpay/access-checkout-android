@@ -4,7 +4,6 @@ apply plugin: 'kotlin-parcelize'
 
 apply from: './gradle/android.gradle'
 apply from: './gradle/jacoco.gradle'
-apply from: './gradle/javadoc.gradle'
 apply from: './gradle/upload.gradle'
 
 dependencies {
