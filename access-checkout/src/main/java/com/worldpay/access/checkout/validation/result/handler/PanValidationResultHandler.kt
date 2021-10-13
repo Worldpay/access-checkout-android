@@ -8,7 +8,11 @@ internal class PanValidationResultHandler(
     private val validationListener: AccessCheckoutPanValidationListener,
     private val validationStateManager: PanFieldValidationStateManager,
     lifecycleOwner: LifecycleOwner
-) : AbstractValidationResultHandler(lifecycleOwner) {
+) : AbstractValidationResultHandler() {
+
+    init {
+        lifecycleOwner.lifecycle.addObserver(this)
+    }
 
     override fun notifyListener(isValid: Boolean) {
         validationListener.onPanValidated(isValid)

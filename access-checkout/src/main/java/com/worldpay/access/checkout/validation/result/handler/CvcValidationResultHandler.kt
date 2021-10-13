@@ -8,7 +8,11 @@ internal class CvcValidationResultHandler(
     private val validationListener: AccessCheckoutCvcValidationListener,
     private val validationStateManager: CvcFieldValidationStateManager,
     lifecycleOwner: LifecycleOwner
-) : AbstractValidationResultHandler(lifecycleOwner) {
+) : AbstractValidationResultHandler() {
+
+    init {
+        lifecycleOwner.lifecycle.addObserver(this)
+    }
 
     override fun notifyListener(isValid: Boolean) {
         validationListener.onCvcValidated(isValid)
