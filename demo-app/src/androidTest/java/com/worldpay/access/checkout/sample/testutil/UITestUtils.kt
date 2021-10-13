@@ -21,8 +21,8 @@ import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
-import org.awaitility.Awaitility.await
 import java.util.concurrent.TimeUnit
+import org.awaitility.Awaitility.await
 
 object UITestUtils {
 

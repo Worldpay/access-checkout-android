@@ -4,17 +4,10 @@ import androidx.lifecycle.Lifecycle.Event.ON_PAUSE
 import androidx.lifecycle.Lifecycle.Event.ON_RESUME
 import androidx.lifecycle.Lifecycle.Event.ON_STOP
 import androidx.lifecycle.LifecycleObserver
-import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.OnLifecycleEvent
 import com.worldpay.access.checkout.validation.result.state.FieldValidationState
 
-internal abstract class AbstractValidationResultHandler(
-    lifecycleOwner: LifecycleOwner
-) : LifecycleObserver {
-
-    init {
-        lifecycleOwner.lifecycle.addObserver(this)
-    }
+internal abstract class AbstractValidationResultHandler : LifecycleObserver {
 
     companion object {
         private var VALIDITY_STATE_MAP = mutableMapOf<Int, FieldValidationState?>()

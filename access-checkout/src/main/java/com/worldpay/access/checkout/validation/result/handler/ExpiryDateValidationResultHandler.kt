@@ -8,7 +8,11 @@ internal class ExpiryDateValidationResultHandler(
     private val validationListener: AccessCheckoutExpiryDateValidationListener,
     private val validationStateManager: ExpiryDateFieldValidationStateManager,
     lifecycleOwner: LifecycleOwner
-) : AbstractValidationResultHandler(lifecycleOwner) {
+) : AbstractValidationResultHandler() {
+
+    init {
+        lifecycleOwner.lifecycle.addObserver(this)
+    }
 
     override fun notifyListener(isValid: Boolean) {
         validationListener.onExpiryDateValidated(isValid)
