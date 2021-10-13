@@ -7,10 +7,10 @@ import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
+import java.util.concurrent.TimeUnit
 import org.awaitility.kotlin.await
 import org.junit.Before
 import org.junit.Rule
-import java.util.concurrent.TimeUnit
 
 abstract class AbstractCvcFragmentTest {
 

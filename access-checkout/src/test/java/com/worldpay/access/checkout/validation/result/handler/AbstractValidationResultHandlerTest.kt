@@ -6,11 +6,11 @@ import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.validation.result.state.FieldValidationState
-import org.junit.Before
-import org.junit.Test
 import kotlin.random.Random
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
+import org.junit.Before
+import org.junit.Test
 
 class AbstractValidationResultHandlerTest {
 
