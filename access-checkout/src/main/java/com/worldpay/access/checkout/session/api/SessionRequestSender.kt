@@ -1,40 +1,37 @@
 package com.worldpay.access.checkout.session.api
 
-import com.worldpay.access.checkout.api.Callback
+import android.util.Log
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
-import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClientFactory
-import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
-import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
-import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
 
 internal class SessionRequestSender(
     private val sessionClientFactory: SessionClientFactory,
-    private val requestDispatcherFactory: RequestDispatcherFactory,
-    private val apiDiscoveryClient: ApiDiscoveryClient = ApiDiscoveryClientFactory.getClient()
+    private val apiDiscoveryClient: ApiDiscoveryClient = ApiDiscoveryClient()
 ) {
 
-    fun sendSessionRequest(
+    suspend fun sendSessionRequest(
         sessionRequestInfo: SessionRequestInfo,
-        sessionResponseCallback: Callback<SessionResponseInfo>
-    ) {
-        debugLog("SessionRequestSender", "Making session request")
-        val callback = object :
-            Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                if (response != null) {
-                    val sessionClient = sessionClientFactory.createClient(sessionRequestInfo.requestBody)
-                    val requestDispatcher = requestDispatcherFactory.getInstance(response, sessionClient, sessionResponseCallback)
-                    requestDispatcher.execute(sessionRequestInfo)
-                } else {
-                    sessionResponseCallback.onResponse(
-                        AccessCheckoutException("Could not discover URL", error), null
-                    )
-                }
-            }
+    ): SessionResponseInfo {
+        Log.d("SessionRequestSender", "Making session request")
+
+        val endpoint = apiDiscoveryClient.discoverEndpoint(
+            sessionRequestInfo.baseUrl,
+            sessionRequestInfo.discoverLinks
+        )
+
+        val sessionClient = sessionClientFactory.createClient(sessionRequestInfo.requestBody)
+
+        try {
+            val responseBody = sessionClient.getSessionResponse(endpoint, sessionRequestInfo.requestBody)
+            return SessionResponseInfo.Builder()
+                .responseBody(responseBody)
+                .sessionType(sessionRequestInfo.sessionType)
+                .build()
+        } catch (ex: Exception) {
+            Log.e("RequestDispatcher", "Received exception: $ex")
+            throw ex
         }
-        apiDiscoveryClient.discover(sessionRequestInfo.baseUrl, callback, sessionRequestInfo.discoverLinks)
     }
 }

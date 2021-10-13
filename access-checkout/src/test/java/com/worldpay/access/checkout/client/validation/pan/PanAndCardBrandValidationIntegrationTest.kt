@@ -220,7 +220,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
     }
-
+// TODO: US707277 fix this test
     @Test
     fun `should not accept diners card when diners is not accepted`() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()

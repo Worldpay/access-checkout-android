@@ -5,45 +5,59 @@ import android.content.Context
 import android.content.Intent
 import android.os.Handler
 import android.os.IBinder
-import com.worldpay.access.checkout.api.Callback
+import android.util.Log
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
-import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
-import com.worldpay.access.checkout.util.logging.LoggingUtils.debugLog
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) :
-    Service(),
-    Callback<SessionResponseInfo> {
+    Service(), CoroutineScope by MainScope() {
 
     internal companion object {
         const val REQUEST_KEY = "request"
     }
 
-    private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender(this)
+    private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender()
     private val localBroadcastManagerFactory: LocalBroadcastManagerFactory = factory.getLocalBroadcastManagerFactory(this)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
-            val sessionRequestInfo = intent.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
-            sessionRequestSender.sendSessionRequest(sessionRequestInfo, this)
+            launch {
+                try {
+                    val sessionResponseInfo = fetchSessionResponseInfo(intent)
+                    broadcastResult(sessionResponseInfo, null)
+                } catch (ex: Exception) {
+                    Log.e(javaClass.simpleName, "Failed to retrieve session", ex)
+                    broadcastResult(null, ex)
+                }
+
+                Log.d(javaClass.simpleName, "service stopped self")
+                stopSelf()
+            }
         }
         return super.onStartCommand(intent, flags, startId)
     }
 
-    override fun onBind(intent: Intent): IBinder? = null
-
-    override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
-        debugLog(javaClass.simpleName, "onResponse received: resp:${response?.responseBody} for session type:${response?.sessionType}/ error: $error")
-        debugLog(javaClass.simpleName, "service stopped self")
-        broadcastResult(response, error)
-
-        stopSelf()
+    private suspend fun fetchSessionResponseInfo(intent: Intent): SessionResponseInfo {
+        val sessionRequestInfo = intent.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
+        val sessionResponseInfo = sessionRequestSender.sendSessionRequest(sessionRequestInfo)
+        Log.d(
+            javaClass.simpleName,
+            "session response received: " +
+                "resp:${sessionResponseInfo.responseBody} " +
+                "for session type:${sessionResponseInfo.sessionType}"
+        )
+        return sessionResponseInfo
     }
+
+    override fun onBind(intent: Intent): IBinder? = null
 
     private fun broadcastResult(sessionResponseInfo: SessionResponseInfo?, error: Exception?) {
         val broadcastIntent = Intent()
@@ -75,7 +89,7 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) :
 
 internal interface Factory {
     fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory
-    fun getSessionRequestSender(context: Context): SessionRequestSender
+    fun getSessionRequestSender(): SessionRequestSender
 }
 
 internal class DefaultFactory : Factory {
@@ -83,9 +97,5 @@ internal class DefaultFactory : Factory {
     override fun getLocalBroadcastManagerFactory(context: Context): LocalBroadcastManagerFactory =
         LocalBroadcastManagerFactory(context)
 
-    override fun getSessionRequestSender(context: Context) =
-        SessionRequestSender(
-            SessionClientFactory(),
-            RequestDispatcherFactory()
-        )
+    override fun getSessionRequestSender() = SessionRequestSender(SessionClientFactory())
 }

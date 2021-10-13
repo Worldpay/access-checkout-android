@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import org.junit.Test
@@ -12,7 +13,7 @@ class SessionRequestHandlerFactoryTest {
     @Test
     fun `should return expected list of token request handlers`() {
         val config = SessionRequestHandlerConfig.Builder()
-            .baseUrl("base-url")
+            .baseUrl(URL("http://base-url.com"))
             .merchantId("merchant-id")
             .context(Mockito.mock(Context::class.java))
             .externalSessionResponseListener(Mockito.mock(SessionResponseListener::class.java))

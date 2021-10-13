@@ -12,6 +12,7 @@ import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import com.worldpay.access.checkout.validation.result.state.CvcValidationStateManager
+import java.net.URL
 
 /**
  * Class that is responsible for initialising validation using a given [ValidationConfig]
@@ -61,8 +62,7 @@ object AccessCheckoutValidationInitialiser {
         val cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, validationConfig.pan)
 
         CardConfigurationProvider(
-            baseUrl = validationConfig.baseUrl,
-            cardConfigurationClient = CardConfigurationClient(),
+            cardConfigurationClient = CardConfigurationClient(URL(validationConfig.baseUrl)),
             observers = listOf(panFieldDecorator, expiryDateFieldDecorator, cvcFieldDecorator)
         )
 

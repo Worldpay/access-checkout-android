@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
@@ -19,23 +20,25 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
-import org.mockito.Mockito
+import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
 
 @RunWith(PlainRobolectricTestRunner::class)
 class CvcSessionRequestHandlerTest {
 
-    private val context = Mockito.mock(Context::class.java)
-    private val externalSessionResponseListener = Mockito.mock(SessionResponseListener::class.java)
+    private val context = mock(Context::class.java)
+    private val externalSessionResponseListener = mock(SessionResponseListener::class.java)
 
     private lateinit var cvcSessionRequestHandler: CvcSessionRequestHandler
+
+    private val baseUrl = URL("http://base-url.com")
 
     @Before
     fun setup() {
         cvcSessionRequestHandler =
             CvcSessionRequestHandler(
                 SessionRequestHandlerConfig.Builder()
-                    .baseUrl("base-url")
+                    .baseUrl(baseUrl)
                     .merchantId("merchant-id")
                     .context(context)
                     .externalSessionResponseListener(externalSessionResponseListener)
@@ -101,7 +104,7 @@ class CvcSessionRequestHandlerTest {
         assertEquals("merchant-id", sessionRequestInfo.requestBody.identity)
         assertEquals(cardDetails.cvc, sessionRequestInfo.requestBody.cvc)
 
-        assertEquals("base-url", sessionRequestInfo.baseUrl)
+        assertEquals(baseUrl, sessionRequestInfo.baseUrl)
 
         assertEquals(DiscoverLinks.sessions, sessionRequestInfo.discoverLinks)
         assertEquals(CVC, sessionRequestInfo.sessionType)

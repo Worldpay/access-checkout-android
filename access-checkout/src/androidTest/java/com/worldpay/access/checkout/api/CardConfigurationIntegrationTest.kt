@@ -21,7 +21,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class CardConfigurationIntegrationTest {
-
+// TODO: US707277 fix this class
     private val applicationContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
     private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"

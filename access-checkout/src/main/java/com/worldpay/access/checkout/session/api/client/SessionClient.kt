@@ -16,7 +16,7 @@ internal interface SessionClient {
      * @param[url] the [URL] for the service
      * @param[request] [SessionRequest] containing session request info
      *
-     * @return [SessionResponse] representation of response from the service (nullable)
+     * @return [SessionResponse] representation of response from the service
      */
-    fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse?
+    suspend fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse
 }

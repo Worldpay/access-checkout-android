@@ -11,10 +11,10 @@ import com.worldpay.access.checkout.api.ApiDiscoveryStubs.rootResponseMapping
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.verifiedTokensMapping
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
-import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
+import com.worldpay.access.checkout.api.discovery.EndpointDiscoveryClientFactory
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
@@ -27,7 +27,7 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class ApiDiscoveryIntegrationTest {
-
+// TODO: US707277 - fix this class
     private val applicationContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
     @Before
@@ -53,9 +53,9 @@ class ApiDiscoveryIntegrationTest {
             }
         }
 
-        val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
+        val client = ApiDiscoveryClient(EndpointDiscoveryClientFactory())
 
-        client.discover(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
+        client.discoverEndpoint(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             Log.d("AccessCheckoutDiscoveryIntegrationTest", "Discovered endpoint: $url")
@@ -84,9 +84,9 @@ class ApiDiscoveryIntegrationTest {
             }
         }
 
-        val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
+        val client = ApiDiscoveryClient(EndpointDiscoveryClientFactory())
 
-        client.discover(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
+        client.discoverEndpoint(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until { assertionDone }
     }
@@ -120,8 +120,8 @@ class ApiDiscoveryIntegrationTest {
             }
         }
 
-        val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
-        client.discover(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
+        val client = ApiDiscoveryClient(EndpointDiscoveryClientFactory())
+        client.discoverEndpoint(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             url != null && url.equals("${getBaseUrl()}/verifiedTokens/sessions") && exception == null

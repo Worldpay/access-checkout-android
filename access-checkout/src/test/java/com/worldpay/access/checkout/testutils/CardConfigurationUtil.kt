@@ -1,10 +1,7 @@
 package com.worldpay.access.checkout.testutils
 
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.worldpay.access.checkout.api.Callback
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.CardDefaults
@@ -16,7 +13,6 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configuratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
-import kotlin.test.assertNotNull
 
 internal object CardConfigurationUtil {
 
@@ -235,16 +231,10 @@ internal object CardConfigurationUtil {
             )
     }
 
-    fun mockSuccessfulCardConfiguration() {
+    suspend fun mockSuccessfulCardConfiguration() {
         val cardConfigurationClient = mock<CardConfigurationClient>()
-        val baseUrl = "https://localhost-mock:8443"
-        val captor = argumentCaptor<Callback<CardConfiguration>>()
-
-        CardConfigurationProvider(baseUrl, cardConfigurationClient, emptyList())
-
-        verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), captor.capture())
-
-        assertNotNull(captor.firstValue.onResponse(null, CARD_CONFIG_BASIC))
+        given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
+        CardConfigurationProvider(cardConfigurationClient, emptyList())
     }
 
     fun toCardBrand(remoteCardBrand: RemoteCardBrand): CardBrand? {

@@ -1,31 +1,36 @@
 package com.worldpay.access.checkout.validation.configuration
 
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.eq
+import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.verify
-import com.worldpay.access.checkout.api.Callback
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
+import com.worldpay.access.checkout.testutils.CoroutineTestRule
+import java.lang.RuntimeException
 import kotlin.test.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class CardConfigurationProviderTest {
 
-    private val baseUrl = "localhost"
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
+
     private val cardConfigurationClient = mock<CardConfigurationClient>()
 
     private lateinit var cardConfigurationProvider: CardConfigurationProvider
 
     @Before
-    fun setup() {
+    fun setup() = runAsBlockingTest {
+        given(cardConfigurationClient.getCardConfiguration()).willThrow(RuntimeException())
         cardConfigurationProvider = CardConfigurationProvider(
-            baseUrl = baseUrl,
             cardConfigurationClient = cardConfigurationClient,
             observers = emptyList()
         )
@@ -37,72 +42,60 @@ class CardConfigurationProviderTest {
     }
 
     @Test
-    fun `should reset back to default card configuration each time a provider is created despite having remote card configuration before`() {
-        assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
+    fun `should reset back to default card configuration each time a provider is created despite having remote card configuration before`() =
+        runAsBlockingTest {
+            assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
 
-        mockSuccessfulCardConfiguration()
+            mockSuccessfulCardConfiguration()
 
-        assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
+            assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
 
-        CardConfigurationProvider(
-            baseUrl = baseUrl,
-            cardConfigurationClient = cardConfigurationClient,
-            observers = emptyList()
-        )
+            CardConfigurationProvider(
+                cardConfigurationClient = cardConfigurationClient,
+                observers = emptyList()
+            )
 
-        assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
-    }
+            assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
+        }
 
     @Test
-    fun `should be getting remote card configuration once loaded`() {
+    fun `should be getting remote card configuration once loaded`() = runAsBlockingTest {
         assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
 
         val cardConfigurationClient = mock<CardConfigurationClient>()
-        val baseUrl = "https://localhost-mock:8443"
-        val captor = argumentCaptor<Callback<CardConfiguration>>()
 
-        CardConfigurationProvider(baseUrl, cardConfigurationClient, emptyList())
+        given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
 
-        verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), captor.capture())
-
-        captor.firstValue.onResponse(null, CARD_CONFIG_BASIC)
+        CardConfigurationProvider(cardConfigurationClient, emptyList())
 
         assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
     }
 
     @Test
-    fun `should be calling all observers once remote card configuration is retrieved`() {
+    fun `should be calling all observers once remote card configuration is retrieved`() = runAsBlockingTest {
         assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
 
         val cardConfigObserver = mock<CardConfigurationObserver>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
-        val baseUrl = "https://localhost-mock:8443"
-        val captor = argumentCaptor<Callback<CardConfiguration>>()
 
-        CardConfigurationProvider(baseUrl, cardConfigurationClient, listOf(cardConfigObserver))
+        given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
 
-        verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), captor.capture())
-
-        captor.firstValue.onResponse(null, CARD_CONFIG_BASIC)
+        CardConfigurationProvider(cardConfigurationClient, listOf(cardConfigObserver))
 
         assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
         verify(cardConfigObserver).update()
     }
 
     @Test
-    fun `should do nothing when remote card configuration call fails`() {
+    fun `should do nothing when remote card configuration call fails`() = runAsBlockingTest {
         assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
 
         val cardConfigObserver = mock<CardConfigurationObserver>()
         val cardConfigurationClient = mock<CardConfigurationClient>()
-        val baseUrl = "https://localhost-mock:8443"
-        val captor = argumentCaptor<Callback<CardConfiguration>>()
 
-        CardConfigurationProvider(baseUrl, cardConfigurationClient, listOf(cardConfigObserver))
+        given(cardConfigurationClient.getCardConfiguration()).willThrow(RuntimeException())
 
-        verify(cardConfigurationClient).getCardConfiguration(eq(baseUrl), captor.capture())
-
-        captor.firstValue.onResponse(IllegalArgumentException(), null)
+        CardConfigurationProvider(cardConfigurationClient, listOf(cardConfigObserver))
 
         assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
         verify(cardConfigObserver, never()).update()

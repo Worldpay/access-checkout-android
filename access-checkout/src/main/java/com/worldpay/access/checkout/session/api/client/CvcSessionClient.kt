@@ -21,7 +21,7 @@ internal class CvcSessionClient(
     private val httpsClient: HttpsClient
 ) : SessionClient {
 
-    override fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse? {
+    override suspend fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse {
         val headers = HashMap<String, String>()
         headers[CONTENT_TYPE_HEADER] = SESSIONS_MEDIA_TYPE
         headers[ACCEPT_HEADER] = SESSIONS_MEDIA_TYPE
