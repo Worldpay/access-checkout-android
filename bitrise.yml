@@ -53,6 +53,12 @@ workflows:
         - is_compress: 'true'
         - zip_name: jacoco-reports
         - deploy_path: "$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
+    - gradle-runner@1.9.6:
+        title: Build release artifacts
+        inputs:
+          - gradlew_path: gradlew
+          - gradle_task: ":$LIBRARY_MODULE:assembleRelease javadocJar sourcesJar"
+          - gradle_file: $LIBRARY_MODULE//build.gradle
     - file-downloader@1.0.3:
         inputs:
           - destination: "$LIBRARY_MODULE/secring.gpg"
@@ -61,20 +67,8 @@ workflows:
         title: "Deploy to Nexus Staging"
         inputs:
         - gradlew_path: "gradlew"
-        - gradle_task: "clean publishReleasePublicationToSonatypeRepository --info -s -PsonatypeUsername=$NEXUS_USERNAME -PsonatypePassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
-        - gradle_file: "$LIBRARY_MODULE/build.gradle"
-    - gradle-runner@1.9.6:
-        title: "Close Staging Repository in Nexus"
-        inputs:
-          - gradlew_path: "gradlew"
-          - gradle_task: "closeSonatypeStagingRepository --info -s -PsonatypeUsername=$NEXUS_USERNAME -PsonatypePassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
-          - gradle_file: "$LIBRARY_MODULE/build.gradle"
-    - gradle-runner@1.9.6:
-        title: "Release SDK"
-        inputs:
-          - gradlew_path: "gradlew"
-          - gradle_task: "releaseSonatypeStagingRepository --info -s -PsonatypeUsername=$NEXUS_USERNAME -PsonatypePassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
-          - gradle_file: "$LIBRARY_MODULE/build.gradle"
+        - gradle_task: "clean :access-checkout:publishReleasePublicationToSonatypeRepository closeAndReleaseSonatypeStagingRepository --info -s -PsonatypeUsername=$NEXUS_USERNAME -PsonatypePassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
+        - gradle_file: "./build.gradle"
     - github-release@0.11.0:
         title: "Deploy release to github"
         inputs:
