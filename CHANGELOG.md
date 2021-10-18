@@ -5,9 +5,15 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 ### Unreleased
 #### Added
+
+#### Changed
+
+### [v2.3.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.3.0) - 2021-10-18
+#### Added
 - Now supporting Android API Level 30
 
 #### Changed
+- Allowing initialising validation after the onResume function
 
 ### [v2.2.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.2.0) - 2021-09-07
 #### Added
