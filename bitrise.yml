@@ -63,12 +63,12 @@ workflows:
         - gradlew_path: "gradlew"
         - gradle_task: "clean publishReleasePublicationToSonatypeRepository --info -s -PsonatypeUsername=$NEXUS_USERNAME -PsonatypePassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
         - gradle_file: "$LIBRARY_MODULE/build.gradle"
-    - gradle-runner@1.9.6:
-        title: "Close Staging Repository in Nexus"
-        inputs:
-          - gradlew_path: "gradlew"
-          - gradle_task: "closeSonatypeStagingRepository --info -s -PsonatypeUsername=$NEXUS_USERNAME -PsonatypePassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
-          - gradle_file: "$LIBRARY_MODULE/build.gradle"
+#    - gradle-runner@1.9.6:
+#        title: "Close Staging Repository in Nexus"
+#        inputs:
+#          - gradlew_path: "gradlew"
+#          - gradle_task: "closeSonatypeStagingRepository --info -s -PsonatypeUsername=$NEXUS_USERNAME -PsonatypePassword=$NEXUS_PASSWORD -Psigning.keyId=$GPG_SIGNING_KEY_ID -Psigning.password=$GPG_SIGNING_KEY_PASSWORD -Psigning.secretKeyRingFile=secring.gpg"
+#          - gradle_file: "$LIBRARY_MODULE/build.gradle"
     - gradle-runner@1.9.6:
         title: "Release SDK"
         inputs:
