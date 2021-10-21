@@ -1,4 +1,6 @@
 #!/bin/bash
+echo "Setting version of Detect"
+export DETECT_LATEST_RELEASE_VERSION=$BLACKDUCK_DETECT_VERSION
 
 echo "Initiating Blackduck Scan..."
 
