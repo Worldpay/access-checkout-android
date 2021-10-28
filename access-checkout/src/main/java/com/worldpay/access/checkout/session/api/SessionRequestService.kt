@@ -3,10 +3,11 @@ package com.worldpay.access.checkout.session.api
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.os.Handler
 import android.os.IBinder
 import android.util.Log
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
+import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.sendToMessageQueue
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
@@ -46,7 +47,12 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) :
     }
 
     private suspend fun fetchSessionResponseInfo(intent: Intent): SessionResponseInfo {
-        val sessionRequestInfo = intent.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
+        val sessionRequestInfo = intent.getSerializableExtra(REQUEST_KEY)
+
+        if (sessionRequestInfo !is SessionRequestInfo) {
+            throw AccessCheckoutException("Failed to parse request key for sending the session request")
+        }
+
         val sessionResponseInfo = sessionRequestSender.sendSessionRequest(sessionRequestInfo)
         Log.d(
             javaClass.simpleName,
@@ -68,22 +74,14 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) :
         delay(broadcastIntent)
     }
 
-    private fun delay(broadcastIntent: Intent, maxRetry: Int = 5) {
-        if (!inLifeCycleState) {
+    private fun delay(broadcastIntent: Intent) {
+        if (inLifeCycleState) {
+            sendToMessageQueue {
+                localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
+            }
+        } else {
             localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
-            return
         }
-
-        Handler().postDelayed(
-            {
-                if (maxRetry > 0) {
-                    delay(broadcastIntent, maxRetry - 1)
-                } else {
-                    localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
-                }
-            },
-            500
-        )
     }
 }
 

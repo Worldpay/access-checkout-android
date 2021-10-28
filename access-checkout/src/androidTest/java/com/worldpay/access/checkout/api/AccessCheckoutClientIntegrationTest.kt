@@ -114,7 +114,7 @@ class AccessCheckoutClientIntegrationTest {
 
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl())
+                .baseUrl(getBaseUrl().toString())
                 .merchantId(merchantId)
                 .sessionResponseListener(responseListener)
                 .context(applicationContext)
@@ -161,7 +161,7 @@ class AccessCheckoutClientIntegrationTest {
 
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl())
+                .baseUrl(getBaseUrl().toString())
                 .merchantId(merchantId)
                 .sessionResponseListener(responseListener)
                 .context(applicationContext)
@@ -204,7 +204,7 @@ class AccessCheckoutClientIntegrationTest {
 
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl())
+                .baseUrl(getBaseUrl().toString())
                 .merchantId(merchantId)
                 .sessionResponseListener(errorListener)
                 .context(applicationContext)
@@ -255,7 +255,7 @@ class AccessCheckoutClientIntegrationTest {
 
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl())
+                .baseUrl(getBaseUrl().toString())
                 .merchantId(merchantId)
                 .sessionResponseListener(errorListener)
                 .context(applicationContext)
@@ -294,7 +294,7 @@ class AccessCheckoutClientIntegrationTest {
 
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl())
+                .baseUrl(getBaseUrl().toString())
                 .merchantId(merchantId)
                 .sessionResponseListener(errorListener)
                 .context(applicationContext)

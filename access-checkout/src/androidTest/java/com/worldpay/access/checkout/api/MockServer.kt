@@ -12,6 +12,7 @@ import com.worldpay.access.checkout.api.ssl.client.TrustAllSSLSocketFactory
 import com.worldpay.access.checkout.api.ssl.server.CustomHttpServerFactory
 import java.io.File
 import java.io.FileOutputStream
+import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 object MockServer {
@@ -62,8 +63,8 @@ object MockServer {
         wireMockServer.stop()
     }
 
-    fun getBaseUrl(): String {
-        return baseUrl
+    fun getBaseUrl(): URL {
+        return URL(baseUrl)
     }
 
     private fun waitForWiremock() {

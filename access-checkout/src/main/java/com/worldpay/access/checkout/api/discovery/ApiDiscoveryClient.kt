@@ -2,12 +2,11 @@ package com.worldpay.access.checkout.api.discovery
 
 import android.util.Log
 import com.worldpay.access.checkout.api.HttpsClient
+import com.worldpay.access.checkout.api.URLFactory
+import com.worldpay.access.checkout.api.URLFactoryImpl
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 
 /**
  * This class is responsible for managing the discovery of the API endpoint for a service and
@@ -18,6 +17,7 @@ import kotlinx.coroutines.coroutineScope
  */
 internal class ApiDiscoveryClient(
     private val httpsClient: HttpsClient = HttpsClient(),
+    private val urlFactory: URLFactory = URLFactoryImpl(),
     private val discoveryCache: DiscoveryCache = DiscoveryCache
 ) {
 
@@ -71,11 +71,7 @@ internal class ApiDiscoveryClient(
         var resourceUrl = baseUrl
         for (endpoint in endpoints) {
             val response = httpsClient.doGet(resourceUrl, endpoint.getDeserializer(), endpoint.headers)
-            coroutineScope {
-                async(Dispatchers.IO) {
-                    resourceUrl = URL(response)
-                }
-            }.await()
+            resourceUrl = urlFactory.getURL(response)
         }
 
         Log.d(javaClass.simpleName, "Received response from service discovery endpoint")
