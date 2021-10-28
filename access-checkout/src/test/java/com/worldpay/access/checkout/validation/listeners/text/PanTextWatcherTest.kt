@@ -100,7 +100,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
+        verifyZeroInteractions(panValidationResultHandler)
     }
 
     @Test
