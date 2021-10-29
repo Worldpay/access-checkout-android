@@ -1,31 +1,30 @@
-package com.worldpay.access.checkout.sample.cvc.testutil
+package com.worldpay.access.checkout.sample.card.standard.testutil
 
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
-import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
-import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
 import java.util.concurrent.TimeUnit
 import org.awaitility.kotlin.await
 import org.junit.Before
 import org.junit.Rule
 
-abstract class AbstractCvcFragmentTest {
+abstract class AbstractCardFragmentTestProd {
 
     @get:Rule
     var activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(MainActivity::class.java)
 
-    lateinit var cvcFragmentTestUtils: CvcFragmentTestUtils
+    lateinit var cardFragmentTestUtils: CardFragmentTestUtils
 
     @Before
     fun setup() {
-        cvcFragmentTestUtils = CvcFragmentTestUtils(activityRule)
-        defaultStubMappings(activityRule.activity)
-        navigateTo(R.id.nav_cvc_flow)
+        cardFragmentTestUtils = CardFragmentTestUtils(activityRule)
         closeSoftKeyboard()
         rotatePortrait(activityRule)
+    }
+
+    fun clearPan() {
+        cardFragmentTestUtils.clearCardDetails(pan = true)
     }
 
     fun restartApp() {
@@ -41,8 +40,7 @@ abstract class AbstractCvcFragmentTest {
 
     private fun applicationIsVisible(): Boolean {
         return try {
-            navigateTo(R.id.nav_cvc_flow)
-            cvcFragmentTestUtils.isInInitialState()
+            cardFragmentTestUtils.isInInitialState()
             true
         } catch (e: Exception) {
             false

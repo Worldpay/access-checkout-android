@@ -9,7 +9,7 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.MAESTRO_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.asPartial
-import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
+import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTestProd
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DINERS
@@ -21,7 +21,7 @@ import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
 import org.junit.Test
 
-class BrandUITest : AbstractCardFragmentTest() {
+class BrandUITestProd : AbstractCardFragmentTestProd() {
 
     @Test
     fun shouldHaveNoBrandForPartialUnknownLuhnOnFocusChange() {
