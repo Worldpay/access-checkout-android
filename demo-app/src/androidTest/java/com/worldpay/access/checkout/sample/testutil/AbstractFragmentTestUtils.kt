@@ -54,6 +54,16 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         im.hideSoftInputFromWindow(editText.windowToken, 0)
     }
 
+    protected fun clearText(editText: EditText) {
+        wait { assertTrue("${editText.id} - visibility state") { editText.isVisible } }
+        wait { assertTrue("${editText.id} - enabled state") { editText.isEnabled } }
+        wait { assertEquals(1.0f, editText.alpha, "${editText.id} - alpha state") }
+
+        val editTextUI = UITestUtils.uiObjectWithId(editText.id)
+        editTextUI.click()
+        activityRule.activity.runOnUiThread { editText.text.clear() }
+    }
+
     protected fun setCursorPosition(editText: EditText, startSelection: Int, endSelection: Int) {
         activityRule.activity.runOnUiThread { editText.setSelection(startSelection, endSelection) }
     }

@@ -25,6 +25,10 @@ abstract class AbstractCardFragmentTest {
         rotatePortrait(activityRule)
     }
 
+    fun clearPan() {
+        cardFragmentTestUtils.clearCardDetails(pan = true)
+    }
+
     fun restartApp() {
         with(activityRule) {
             finishActivity()

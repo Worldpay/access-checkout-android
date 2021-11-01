@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.cvc.testutil
+package com.worldpay.access.checkout.sample.cvc
 
 import android.widget.Button
 import android.widget.EditText

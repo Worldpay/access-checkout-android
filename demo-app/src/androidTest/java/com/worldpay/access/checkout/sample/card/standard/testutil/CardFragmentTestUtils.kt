@@ -150,6 +150,16 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
+    fun clearCardDetails(
+        pan: Boolean? = null,
+        cvc: Boolean? = null,
+        expiryDate: Boolean? = null
+    ) {
+        if (pan == true) clearText(panInput())
+        if (expiryDate == true) clearText(expiryDateInput())
+        if (cvc == true) clearText(cvcInput())
+    }
+
     fun setCursorPositionOnPan(position: Int): CardFragmentTestUtils {
         setCursorPosition(panInput(), position, position)
         return this

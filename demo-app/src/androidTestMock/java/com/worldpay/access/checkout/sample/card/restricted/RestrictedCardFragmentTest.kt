@@ -15,7 +15,6 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.asPartial
-import com.worldpay.access.checkout.sample.card.restricted.testutil.RestrictedCardFragmentTestUtils
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DINERS
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DISCOVER

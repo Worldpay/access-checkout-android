@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.sample.card.restricted.testutil
+package com.worldpay.access.checkout.sample.card.restricted
 
 import android.widget.EditText
 import android.widget.ImageView

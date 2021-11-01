@@ -76,7 +76,7 @@ class SessionResponseTest {
             SessionResponse(
                 SessionResponse.Links(
                     SessionResponse.Links.Endpoints(
-                        "https://try.access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                        "https://npe.access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ),
                     arrayOf(
                         SessionResponse.Links.Curies(
@@ -133,7 +133,7 @@ class SessionResponseTest {
                     ),
                     arrayOf(
                         SessionResponse.Links.Curies(
-                            "https://try.access.worldpay.com/rels/verifiedTokens{rel}.json",
+                            "https://npe.access.worldpay.com/rels/verifiedTokens{rel}.json",
                             "verifiedTokens",
                             true
                         )
@@ -275,11 +275,11 @@ class SessionResponseTest {
             SessionResponse(
                 SessionResponse.Links(
                     SessionResponse.Links.Endpoints(
-                        "https://try.access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                        "https://npe.access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
                     ),
                     arrayOf(
                         SessionResponse.Links.Curies(
-                            "https://try.access.worldpay.com/rels/verifiedTokens{rel}.json",
+                            "https://npe.access.worldpay.com/rels/verifiedTokens{rel}.json",
                             "verifiedTokens",
                             true
                         )
