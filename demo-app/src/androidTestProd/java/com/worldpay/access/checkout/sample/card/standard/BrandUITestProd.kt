@@ -103,7 +103,7 @@ class BrandUITestProd : AbstractCardFragmentTestProd() {
     @Test
     fun shouldDisplayBrandImage_DISCOVER_ForRange_644_649() {
         checkBrandImageFor("6440", isBrand = DISCOVER)
-        checkBrandImageFor("6449", isBrand = DISCOVER)
+        checkBrandImageFor("6499", isBrand = DISCOVER)
     }
 
     @Test
