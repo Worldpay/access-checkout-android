@@ -73,6 +73,12 @@ class BrandUITestProd : AbstractCardFragmentTestProd() {
     }
 
     @Test
+    fun shouldDisplayBrandImage_DINERS_ForRange_3095 () {
+        checkBrandImageFor("30950", isBrand = DINERS)
+        checkBrandImageFor("30959", isBrand = DINERS)
+    }
+
+    @Test
     fun shouldDisplayBrandImage_DINERS_ForRange_36() {
         checkBrandImageFor("360", isBrand = DINERS)
         checkBrandImageFor("369", isBrand = DINERS)
@@ -117,9 +123,9 @@ class BrandUITestProd : AbstractCardFragmentTestProd() {
     fun shouldDisplayBrandImage_JCB_ForCompletePan() = checkBrandImageFor(JCB_PAN, isBrand = JCB)
 
     @Test
-    fun shouldDisplayBrandImage_JCB_ForRange_352_358() {
-        checkBrandImageFor("3520", isBrand = JCB)
-        checkBrandImageFor("3589", isBrand = JCB)
+    fun shouldDisplayBrandImage_JCB_ForRange_1800() {
+        checkBrandImageFor("18000", isBrand = JCB)
+        checkBrandImageFor("18009", isBrand = JCB)
     }
 
     @Test
@@ -129,11 +135,41 @@ class BrandUITestProd : AbstractCardFragmentTestProd() {
     }
 
     @Test
-    fun shouldDisplayBrandImage_JCB_ForRange_1800() {
-        checkBrandImageFor("18000", isBrand = JCB)
-        checkBrandImageFor("18009", isBrand = JCB)
+    fun shouldDisplayBrandImage_JCB_ForRange_3088_3094() {
+        checkBrandImageFor("30880", isBrand = JCB)
+        checkBrandImageFor("30949", isBrand = JCB)
     }
 
+    @Test
+    fun shouldDisplayBrandImage_JCB_ForRange_3096_3102() {
+        checkBrandImageFor("30960", isBrand = JCB)
+        checkBrandImageFor("31029", isBrand = JCB)
+    }
+
+    @Test
+    fun shouldDisplayBrandImage_JCB_ForRange_3112_3120() {
+        checkBrandImageFor("31120", isBrand = JCB)
+        checkBrandImageFor("31209", isBrand = JCB)
+    }
+
+    @Test
+    fun shouldDisplayBrandImage_JCB_ForRange_3158_3159() {
+        checkBrandImageFor("31580", isBrand = JCB)
+        checkBrandImageFor("31599", isBrand = JCB)
+    }
+
+    @Test
+    fun shouldDisplayBrandImage_JCB_ForRange_3337_3349() {
+        checkBrandImageFor("33370", isBrand = JCB)
+        checkBrandImageFor("33499", isBrand = JCB)
+    }
+    
+    @Test
+    fun shouldDisplayBrandImage_JCB_ForRange_352_358() {
+        checkBrandImageFor("3520", isBrand = JCB)
+        checkBrandImageFor("3589", isBrand = JCB)
+    }
+    
     // MAESTRO
     @Test
     fun shouldDisplayBrandImage_MAESTRO_ForCompletePan() = checkBrandImageFor(MAESTRO_PAN, isBrand = MAESTRO)
