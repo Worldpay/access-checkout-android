@@ -69,6 +69,11 @@ class SessionRequestServiceTest {
     }
 
     @Test
+    fun `should obtain an instance when using the default constructor`() {
+        assertNotNull(SessionRequestService())
+    }
+
+    @Test
     fun `should return null when on bind method is called`() {
         assertNull(sessionRequestService.onBind(mock()))
     }

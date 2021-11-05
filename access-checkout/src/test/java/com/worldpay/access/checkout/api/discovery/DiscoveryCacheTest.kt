@@ -1,7 +1,14 @@
 package com.worldpay.access.checkout.api.discovery
 
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNull
+import org.junit.Assert.assertNotNull
+import org.junit.Before
+import org.junit.Test
+import java.net.URL
+
 class DiscoveryCacheTest {
-/*
+
     @Before
     fun setUp() {
         DiscoveryCache.results.clear()
@@ -16,7 +23,7 @@ class DiscoveryCacheTest {
 
     @Test
     fun `should set value when setResult is called`() {
-        val expectedResult = AsyncTaskResult("some href")
+        val expectedResult = URL("http://some-href")
         assertNull(DiscoveryCache.results["service:verifiedTokens"])
 
         DiscoveryCache.saveResult(DiscoverLinks.verifiedTokens, expectedResult)
@@ -26,19 +33,19 @@ class DiscoveryCacheTest {
 
     @Test
     fun `should return result when getResult is called`() {
-        val expectedResult = AsyncTaskResult("some href")
+        val expectedResult = URL("http://some-href")
         DiscoveryCache.results["service:verifiedTokens"] = expectedResult
 
         assertEquals(expectedResult, DiscoveryCache.getResult(DiscoverLinks.verifiedTokens))
     }
 
     @Test
-    fun `should remove entry from results when clearResultis called`() {
+    fun `should remove entry from results when clearResult is called`() {
         val service = "service:verifiedTokens"
-        DiscoveryCache.results[service] = AsyncTaskResult("some href")
+        DiscoveryCache.results[service] = URL("http://some-href")
         assertNotNull(DiscoveryCache.results[service])
 
         DiscoveryCache.clearResult(DiscoverLinks.verifiedTokens)
         assertNull(DiscoveryCache.results[service])
-    }*/
+    }
 }

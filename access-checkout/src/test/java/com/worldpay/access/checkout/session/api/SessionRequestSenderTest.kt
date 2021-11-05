@@ -20,6 +20,7 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
+import kotlin.test.assertNotNull
 
 @ExperimentalCoroutinesApi
 class SessionRequestSenderTest {
@@ -33,6 +34,11 @@ class SessionRequestSenderTest {
 
     private val baseURL = URL("https://base.url")
     private val endpoint = URL("https://endpoint.url")
+
+    @Test
+    fun `should obtain an instance using only a sessionClientFactory`() {
+        assertNotNull(SessionRequestSender(sessionClientFactory))
+    }
 
     @Test
     fun `should execute request given that the discovery response is valid`() = runAsBlockingTest {
