@@ -219,7 +219,7 @@ workflows:
           inputs:
             - content: |-
                 #!/bin/bash
-                envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
+                envman add --key "BITRISE_TEST_MOCK_APK" --value "$BITRISE_APK_PATH"
       - android-build:
           title: "Build app APK"
           inputs:
@@ -229,7 +229,7 @@ workflows:
           title: "Run UI tests against app"
           inputs:
             - test_type: instrumentation
-            - test_apk_path: "$BITRISE_TEST_APK"
+            - test_apk_path: "$BITRISE_TEST_MOCK_APK"
             - test_timeout: 1200
             - test_devices: |-
                 Nexus6,21,en,portrait
@@ -242,6 +242,17 @@ workflows:
                 Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
                 Pixel2,30,en,portrait
+      - android-build@0.10.3:
+          title: "Build test APK"
+          inputs:
+            - variant: "${APP_PROD_VARIANT}AndroidTest"
+            - module: "$APP_MODULE"
+      - script@1.1.6:
+          title: "Set path to test APK"
+          inputs:
+            - content: |-
+                #!/bin/bash
+                envman add --key "BITRISE_TEST_PROD_APK" --value "$BITRISE_APK_PATH"
       - android-build:
           title: "Build app APK"
           inputs:
@@ -251,7 +262,7 @@ workflows:
           title: "Run UI tests against app"
           inputs:
             - test_type: instrumentation
-            - test_apk_path: "$BITRISE_TEST_APK"
+            - test_apk_path: "$BITRISE_TEST_PROD_APK"
             - test_timeout: 1200
             - test_devices: |-
                 Nexus6,21,en,portrait
