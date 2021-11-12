@@ -224,7 +224,29 @@ workflows:
           title: "Build app APK"
           inputs:
             - module: "$APP_MODULE"
-            - variant: $APP_MOCK_VARIANT\n$APP_PROD_VARIANT
+            - variant: "$APP_MOCK_VARIANT"
+      - virtual-device-testing-for-android@1.1.5:
+          title: "Run UI tests against app"
+          inputs:
+            - test_type: instrumentation
+            - test_apk_path: "$BITRISE_TEST_APK"
+            - test_timeout: 1200
+            - test_devices: |-
+                Nexus6,21,en,portrait
+                Nexus5,22,en,portrait
+                Nexus5,23,en,portrait
+                Nexus6,24,en,portrait
+                Nexus6,25,en,portrait
+                Pixel2,26,en,portrait
+                Pixel2,27,en,portrait
+                Pixel2,28,en,portrait
+                Pixel2,29,en,portrait
+                Pixel2,30,en,portrait
+      - android-build:
+          title: "Build app APK"
+          inputs:
+            - module: "$APP_MODULE"
+            - variant: "$APP_PROD_VARIANT"
       - virtual-device-testing-for-android@1.1.5:
           title: "Run UI tests against app"
           inputs:
