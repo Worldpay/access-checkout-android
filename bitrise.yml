@@ -93,7 +93,8 @@ workflows:
     - build-router-start@0.14.0:
         inputs:
         - workflows: |-
-            primary-ui
+            primary-ui-mock
+            primary-ui-prod
         - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
     - cache-pull@2.4.0: {}
     - install-missing-android-tools@2.4.1:
@@ -202,7 +203,7 @@ workflows:
           - text_on_error: "Primary build for Access Checkout Android Failed"
           - webhook_url: "$SLACK_ACO_BUILD_WEBHOOK_URL"
 
-  primary-ui:
+  primary-ui-mock:
     steps:
       - set-java-version@1: {"11"}
       - cache-pull@2.4.0: {}
@@ -242,6 +243,15 @@ workflows:
                 Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
                 Pixel2,30,en,portrait
+      - cache-push@2.3.0: {}
+
+  primary-ui-prod:
+    steps:
+      - set-java-version@1: { "11" }
+      - cache-pull@2.4.0: { }
+      - install-missing-android-tools@2.4.1:
+          inputs:
+            - gradlew_path: "gradlew"
       - android-build@0.10.3:
           title: "Build test APK"
           inputs:
@@ -275,8 +285,7 @@ workflows:
                 Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
                 Pixel2,30,en,portrait
-      - cache-push@2.3.0: {}
-
+      - cache-push@2.3.0: { }
 app:
   envs:
   - LIBRARY_MODULE: access-checkout
