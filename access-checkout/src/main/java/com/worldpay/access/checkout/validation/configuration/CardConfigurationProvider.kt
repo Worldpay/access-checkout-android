@@ -23,6 +23,8 @@ internal class CardConfigurationProvider(
     }
 
     init {
+        cardConfiguration = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+
         launch {
             try {
                 cardConfiguration = cardConfigurationClient.getCardConfiguration()
