@@ -12,7 +12,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -102,7 +102,7 @@ class CardConfigurationIntegrationTest {
     }
 
     @Test
-    fun shouldBeAbleToRetrieveCardConfiguration() = runAsBlockingTest {
+    fun shouldBeAbleToRetrieveCardConfiguration() = runBlocking<Unit> {
         stubFor(
             get(cardConfigurationEndpoint)
                 .willReturn(
@@ -120,7 +120,7 @@ class CardConfigurationIntegrationTest {
     }
 
     @Test
-    fun shouldThrowExceptionWhenFailingToGetCardConfiguration() = runAsBlockingTest {
+    fun shouldThrowExceptionWhenFailingToGetCardConfiguration() = runBlocking {
         stubFor(
             get(cardConfigurationEndpoint)
                 .willReturn(

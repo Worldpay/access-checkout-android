@@ -18,7 +18,7 @@ import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.runBlocking
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
@@ -47,7 +47,7 @@ class ApiDiscoveryIntegrationTest {
     }
 
     @Test
-    fun shouldBeAbleToDiscoverVTSessionsFromRoot() = runAsBlockingTest {
+    fun shouldBeAbleToDiscoverVTSessionsFromRoot() = runBlocking {
         stubServiceDiscoveryResponses()
 
         val client = ApiDiscoveryClient()
@@ -59,7 +59,7 @@ class ApiDiscoveryIntegrationTest {
     }
 
     @Test
-    fun shouldReturnExceptionWhenDiscoveryFails() = runAsBlockingTest {
+    fun shouldReturnExceptionWhenDiscoveryFails() = runBlocking {
         stubFor(
             get("/")
                 .willReturn(
@@ -80,7 +80,7 @@ class ApiDiscoveryIntegrationTest {
     }
 
     @Test
-    fun shouldReturnEndpointOnSecondRetry() = runAsBlockingTest {
+    fun shouldReturnEndpointOnSecondRetry() = runBlocking {
         val serviceAvailableState = "SERVICE_AVAILABLE_AGAIN"
 
         stubFor(
