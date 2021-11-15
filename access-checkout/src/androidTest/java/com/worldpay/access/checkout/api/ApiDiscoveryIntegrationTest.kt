@@ -54,7 +54,7 @@ class ApiDiscoveryIntegrationTest {
         val endpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
-            endpoint.equals("${getBaseUrl()}/verifiedTokens/sessions")
+            endpoint.toString() == "${getBaseUrl()}/verifiedTokens/sessions"
         }
     }
 
@@ -73,7 +73,7 @@ class ApiDiscoveryIntegrationTest {
             client.discoverEndpoint(getBaseUrl(), DiscoverLinks.verifiedTokens)
             fail("Expected exception but got none")
         } catch (ace: AccessCheckoutException) {
-            assertEquals("Error message was: Server Error", ace.message)
+            assertEquals("Could not discover session endpoint", ace.message)
         } catch (ex: Exception) {
             fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
@@ -103,7 +103,7 @@ class ApiDiscoveryIntegrationTest {
         val endpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
-            endpoint.equals("${getBaseUrl()}/verifiedTokens/sessions")
+            endpoint.toString() == "${getBaseUrl()}/verifiedTokens/sessions"
         }
     }
 }

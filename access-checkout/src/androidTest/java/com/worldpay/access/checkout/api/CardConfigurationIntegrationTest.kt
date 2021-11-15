@@ -134,7 +134,7 @@ class CardConfigurationIntegrationTest {
             cardConfigurationClient.getCardConfiguration()
             fail("Expected exception but got none")
         } catch (ace: AccessCheckoutException) {
-            assertEquals("Error message was: Server Error", ace.message)
+            assertEquals("There was an error when trying to fetch the card configuration", ace.message)
         } catch (ex: Exception) {
             fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
