@@ -93,7 +93,8 @@ workflows:
     - build-router-start@0.14.0:
         inputs:
         - workflows: |-
-            primary-ui
+            primary-ui-mock
+            primary-ui-prod
         - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
     - cache-pull@2.4.0: {}
     - install-missing-android-tools@2.4.1:
@@ -202,7 +203,7 @@ workflows:
           - text_on_error: "Primary build for Access Checkout Android Failed"
           - webhook_url: "$SLACK_ACO_BUILD_WEBHOOK_URL"
 
-  primary-ui:
+  primary-ui-mock:
     steps:
       - set-java-version@1: {"11"}
       - cache-pull@2.4.0: {}
@@ -219,7 +220,7 @@ workflows:
           inputs:
             - content: |-
                 #!/bin/bash
-                envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
+                envman add --key "BITRISE_TEST_MOCK_APK" --value "$BITRISE_APK_PATH"
       - android-build:
           title: "Build app APK"
           inputs:
@@ -229,7 +230,7 @@ workflows:
           title: "Run UI tests against app"
           inputs:
             - test_type: instrumentation
-            - test_apk_path: "$BITRISE_TEST_APK"
+            - test_apk_path: "$BITRISE_TEST_MOCK_APK"
             - test_timeout: 1200
             - test_devices: |-
                 Nexus6,21,en,portrait
@@ -244,6 +245,47 @@ workflows:
                 Pixel2,30,en,portrait
       - cache-push@2.3.0: {}
 
+  primary-ui-prod:
+    steps:
+      - set-java-version@1: { "11" }
+      - cache-pull@2.4.0: { }
+      - install-missing-android-tools@2.4.1:
+          inputs:
+            - gradlew_path: "gradlew"
+      - android-build@0.10.3:
+          title: "Build test APK"
+          inputs:
+            - variant: "${APP_PROD_VARIANT}AndroidTest"
+            - module: "$APP_MODULE"
+      - script@1.1.6:
+          title: "Set path to test APK"
+          inputs:
+            - content: |-
+                #!/bin/bash
+                envman add --key "BITRISE_TEST_PROD_APK" --value "$BITRISE_APK_PATH"
+      - android-build:
+          title: "Build app APK"
+          inputs:
+            - module: "$APP_MODULE"
+            - variant: "$APP_PROD_VARIANT"
+      - virtual-device-testing-for-android@1.1.5:
+          title: "Run UI tests against app"
+          inputs:
+            - test_type: instrumentation
+            - test_apk_path: "$BITRISE_TEST_PROD_APK"
+            - test_timeout: 1200
+            - test_devices: |-
+                Nexus6,21,en,portrait
+                Nexus5,22,en,portrait
+                Nexus5,23,en,portrait
+                Nexus6,24,en,portrait
+                Nexus6,25,en,portrait
+                Pixel2,26,en,portrait
+                Pixel2,27,en,portrait
+                Pixel2,28,en,portrait
+                Pixel2,29,en,portrait
+                Pixel2,30,en,portrait
+      - cache-push@2.3.0: { }
 app:
   envs:
   - LIBRARY_MODULE: access-checkout
