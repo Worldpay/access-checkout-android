@@ -80,11 +80,8 @@ internal class PanTextWatcher(
             return
         }
 
-
-//         if (newPan != panBefore) {
-            handleCardBrandChange(brand)
-            validate(newPan, cardValidationRule, brand)
-//        }
+        handleCardBrandChange(brand)
+        validate(newPan, cardValidationRule, brand)
 
         if (newPan != panText) {
             setText(newPan, expectedCursorPosition)
