@@ -21,10 +21,12 @@ import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.serialization.CardSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
+import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
-import kotlin.test.assertFailsWith
 import kotlin.test.fail
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -32,7 +34,11 @@ import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 
+@ExperimentalCoroutinesApi
 class VerifiedTokensPactTest {
+
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
     companion object {
         private const val provider = "verified-tokens"
@@ -47,46 +53,38 @@ class VerifiedTokensPactTest {
 
     private lateinit var cardSessionClient: CardSessionClient
 
-    @Before
-    fun setup() {
-        HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
-        cardSessionClient =
-            CardSessionClient(
-                CardSessionResponseDeserializer(),
-                CardSessionRequestSerializer(),
-                HttpsClient()
-            )
-    }
-
     @get:Rule
     var mockProvider = PactHttpsProviderRule(provider, "localhost", 8443, true, PactSpecVersion.V3, this)
 
     private val sessionPath = "/verifiedTokens/sessions"
     private val discoveryPath = "/verifiedTokens"
-
     private val cardNumber = "1111222233334444"
+
     private val invalidLuhn = "444444444444444"
     private val cardStringTooShort = "1111"
     private val cardStringTooLong = "33333333333333333391111111111111"
-
     private val expiryMonth = 12
+
     private val integerMonthTooSmall = 0
     private val integerMonthTooLarge = 13
     private val expiryYear = 2030
-
     private val cvc = "123"
+
     private val cvcNonNumerical = "aaa"
-
     private val identity = "identity"
+
     private val invalidIdentity = "ABC"
-
     private val discoveryEndpointRegex = "https?://[^/]+/verifiedTokens/.+"
-    private val verifiedTokensSessionEndpoint = "https://access.worldpay.com/verifiedTokens/sessions"
 
+    private val verifiedTokensSessionEndpoint = "https://access.worldpay.com/verifiedTokens/sessions"
     private val sessionReferenceRegex = "https?://[^/]+/verifiedTokens/sessions/[^/]+"
+
     private val sessionReferenceExample = "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
     private val curiesRegex = "https?://[^/]+/rels/verifiedTokens/\\{rel\\}.json"
     private val curiesExample = "https://access.worldpay.com/rels/verifiedTokens/{rel}.json"
+
+    private val sessionEndpoint = URL("https://localhost:8443$sessionPath")
+    private val discoveryEndpoint = URL("https://localhost:8443$discoveryPath")
 
     private val responseBody = escapeColonsInMatchingRules(
         PactDslJsonBody()
@@ -112,6 +110,17 @@ class VerifiedTokensPactTest {
             .closeObject()
             .closeObject()
     )
+
+    @Before
+    fun setup() {
+        HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
+        cardSessionClient =
+            CardSessionClient(
+                CardSessionResponseDeserializer(),
+                CardSessionRequestSerializer(),
+                HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+            )
+    }
 
     @Pact(provider = provider, consumer = consumer)
     @SuppressWarnings("unused")
@@ -325,9 +334,8 @@ class VerifiedTokensPactTest {
 
     @Test
     @PactVerification("verified-tokens", fragment = "createSuccessfulGetRequestInteraction")
-    fun `should receive a valid response when a valid GET request is sent`() {
-        val httpClient = HttpsClient()
-        val url = URL(mockProvider.url + discoveryPath)
+    fun `should receive a valid response when a valid GET request is sent`() = runAsBlockingTest {
+        val httpClient = HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
         val headers = mapOf(
             ACCEPT_HEADER to VERIFIED_TOKENS_MEDIA_TYPE,
             CONTENT_TYPE_HEADER to VERIFIED_TOKENS_MEDIA_TYPE
@@ -335,13 +343,13 @@ class VerifiedTokensPactTest {
 
         val deserializer = DiscoverLinks.verifiedTokens.endpoints[1].getDeserializer()
 
-        val response = httpClient.doGet(url, deserializer, headers)
+        val response = httpClient.doGet(discoveryEndpoint, deserializer, headers)
         assertEquals(verifiedTokensSessionEndpoint, response)
     }
 
     @Test
     @PactVerification("verified-tokens", fragment = "createSuccessfulRequestInteraction")
-    fun givenValidRequestThenShouldReceiveValidResponse() {
+    fun givenValidRequestThenShouldReceiveValidResponse() = runAsBlockingTest {
         val sessionRequest =
             CardSessionRequest(
                 cardNumber,
@@ -371,241 +379,247 @@ class VerifiedTokensPactTest {
 
         assertEquals(
             expectedSessionResponse,
-            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+            cardSessionClient.getSessionResponse(sessionEndpoint, sessionRequest)
         )
     }
 
     @Test
     @PactVerification("verified-tokens", fragment = "createInvalidIdentityRequestInteraction")
-    fun givenInvalidIdentityInTheRequestThenShouldReceiveA400ResponseWithIdentityAsReason() {
-        val sessionRequest =
-            CardSessionRequest(
-                cardNumber,
-                CardSessionRequest.CardExpiryDate(
-                    expiryMonth,
-                    expiryYear
-                ),
-                cvc,
-                invalidIdentity
-            )
+    fun givenInvalidIdentityInTheRequestThenShouldReceiveA400ResponseWithIdentityAsReason() =
+        runAsBlockingTest {
+            val sessionRequest =
+                CardSessionRequest(
+                    cardNumber,
+                    CardSessionRequest.CardExpiryDate(
+                        expiryMonth,
+                        expiryYear
+                    ),
+                    cvc,
+                    invalidIdentity
+                )
 
-        try {
-            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
-            fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException) {
-            val validationRule = ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
-            val accessCheckoutException = AccessCheckoutException(
-                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                validationRules = listOf(validationRule)
-            )
-            assertEquals(accessCheckoutException, ex)
-        } catch (ex: Exception) {
-            fail("Should not have reached here!")
+            try {
+                cardSessionClient.getSessionResponse(sessionEndpoint, sessionRequest)
+                fail("Should not have reached here!")
+            } catch (ex: AccessCheckoutException) {
+                val validationRule = ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
+                val accessCheckoutException = AccessCheckoutException(
+                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    validationRules = listOf(validationRule)
+                )
+                assertEquals(accessCheckoutException, ex)
+            } catch (ex: Exception) {
+                fail("Should not have reached here!")
+            }
         }
-    }
 
     @Test
     @PactVerification("verified-tokens", fragment = "createInvalidLuhnRequestInteraction")
-    fun givenLuhnInvalidCardInTheRequestThenShouldReceiveA400ResponseWithPANFailedLuhnError() {
-        val sessionRequest =
-            CardSessionRequest(
-                invalidLuhn,
-                CardSessionRequest.CardExpiryDate(
-                    expiryMonth,
-                    expiryYear
-                ),
-                cvc,
-                identity
-            )
+    fun givenLuhnInvalidCardInTheRequestThenShouldReceiveA400ResponseWithPANFailedLuhnError() =
+        runAsBlockingTest {
+            val sessionRequest =
+                CardSessionRequest(
+                    invalidLuhn,
+                    CardSessionRequest.CardExpiryDate(
+                        expiryMonth,
+                        expiryYear
+                    ),
+                    cvc,
+                    identity
+                )
 
-        try {
-            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
-            fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException) {
-            val validationRule = ValidationRule(
-                "panFailedLuhnCheck",
-                "The identified field contains a PAN that has failed the Luhn check.",
-                "\$.cardNumber"
-            )
-            val accessCheckoutException = AccessCheckoutException(
-                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                validationRules = listOf(validationRule)
-            )
-            assertEquals(accessCheckoutException, ex)
-        } catch (ex: Exception) {
-            fail("Should not have reached here!")
+            try {
+                cardSessionClient.getSessionResponse(sessionEndpoint, sessionRequest)
+                fail("Should not have reached here!")
+            } catch (ex: AccessCheckoutException) {
+                val validationRule = ValidationRule(
+                    "panFailedLuhnCheck",
+                    "The identified field contains a PAN that has failed the Luhn check.",
+                    "\$.cardNumber"
+                )
+                val accessCheckoutException = AccessCheckoutException(
+                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    validationRules = listOf(validationRule)
+                )
+                assertEquals(accessCheckoutException, ex)
+            } catch (ex: Exception) {
+                fail("Should not have reached here!")
+            }
         }
-    }
 
     @Test
     @PactVerification("verified-tokens", fragment = "createStringTooShortRequestInteraction")
-    fun givenStringTooShortCardInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
-        val sessionRequest =
-            CardSessionRequest(
-                cardStringTooShort,
-                CardSessionRequest.CardExpiryDate(
-                    expiryMonth,
-                    expiryYear
-                ),
-                cvc,
-                identity
-            )
+    fun givenStringTooShortCardInTheRequestThenShouldReceiveA400ResponseWithCorrectError() =
+        runAsBlockingTest {
+            val sessionRequest =
+                CardSessionRequest(
+                    cardStringTooShort,
+                    CardSessionRequest.CardExpiryDate(
+                        expiryMonth,
+                        expiryYear
+                    ),
+                    cvc,
+                    identity
+                )
 
-        try {
-            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
-            fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException) {
-            val validationRule = ValidationRule(
-                "stringIsTooShort",
-                "Card number is too short - must be between 10 & 19 digits",
-                "\$.cardNumber"
-            )
-            val accessCheckoutException = AccessCheckoutException(
-                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                validationRules = listOf(validationRule)
-            )
-            assertEquals(accessCheckoutException, ex)
-        } catch (ex: Exception) {
-            fail("Should not have reached here!")
+            try {
+                cardSessionClient.getSessionResponse(sessionEndpoint, sessionRequest)
+                fail("Should not have reached here!")
+            } catch (ex: AccessCheckoutException) {
+                val validationRule = ValidationRule(
+                    "stringIsTooShort",
+                    "Card number is too short - must be between 10 & 19 digits",
+                    "\$.cardNumber"
+                )
+                val accessCheckoutException = AccessCheckoutException(
+                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    validationRules = listOf(validationRule)
+                )
+                assertEquals(accessCheckoutException, ex)
+            } catch (ex: Exception) {
+                fail("Should not have reached here!")
+            }
         }
-    }
 
     @Test
     @PactVerification("verified-tokens", fragment = "createStringTooLongRequestInteraction")
-    fun givenStringTooLongCardInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
-        val sessionRequest =
-            CardSessionRequest(
-                cardStringTooLong,
-                CardSessionRequest.CardExpiryDate(
-                    expiryMonth,
-                    expiryYear
-                ),
-                cvc,
-                identity
-            )
+    fun givenStringTooLongCardInTheRequestThenShouldReceiveA400ResponseWithCorrectError() =
+        runAsBlockingTest {
+            val sessionRequest =
+                CardSessionRequest(
+                    cardStringTooLong,
+                    CardSessionRequest.CardExpiryDate(
+                        expiryMonth,
+                        expiryYear
+                    ),
+                    cvc,
+                    identity
+                )
 
-        try {
-            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
-            fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException) {
-            val validationRule = ValidationRule(
-                "stringIsTooLong",
-                "Card number is too long - must be between 10 & 19 digits",
-                "\$.cardNumber"
-            )
-            val accessCheckoutException = AccessCheckoutException(
-                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                validationRules = listOf(validationRule)
-            )
-            assertEquals(accessCheckoutException, ex)
-        } catch (ex: Exception) {
-            fail("Should not have reached here!")
+            try {
+                cardSessionClient.getSessionResponse(sessionEndpoint, sessionRequest)
+                fail("Should not have reached here!")
+            } catch (ex: AccessCheckoutException) {
+                val validationRule = ValidationRule(
+                    "stringIsTooLong",
+                    "Card number is too long - must be between 10 & 19 digits",
+                    "\$.cardNumber"
+                )
+                val accessCheckoutException = AccessCheckoutException(
+                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    validationRules = listOf(validationRule)
+                )
+                assertEquals(accessCheckoutException, ex)
+            } catch (ex: Exception) {
+                fail("Should not have reached here!")
+            }
         }
-    }
 
     @Test
     @PactVerification("verified-tokens", fragment = "createIntegerMonthTooSmallRequestInteraction")
-    fun givenIntegerMonthTooSmallInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
-        val sessionRequest =
-            CardSessionRequest(
-                cardNumber,
-                CardSessionRequest.CardExpiryDate(
-                    integerMonthTooSmall,
-                    expiryYear
-                ),
-                cvc,
-                identity
-            )
+    fun givenIntegerMonthTooSmallInTheRequestThenShouldReceiveA400ResponseWithCorrectError() =
+        runAsBlockingTest {
+            val sessionRequest =
+                CardSessionRequest(
+                    cardNumber,
+                    CardSessionRequest.CardExpiryDate(
+                        integerMonthTooSmall,
+                        expiryYear
+                    ),
+                    cvc,
+                    identity
+                )
 
-        try {
-            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
-            fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException) {
-            val validationRule = ValidationRule(
-                "integerIsTooSmall",
-                "Card expiry month is too small - must be between 1 & 12",
-                "\$.cardExpiryDate.month"
-            )
-            val accessCheckoutException = AccessCheckoutException(
-                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                validationRules = listOf(validationRule)
-            )
-            assertEquals(accessCheckoutException, ex)
-        } catch (ex: Exception) {
-            fail("Should not have reached here!")
+            try {
+                cardSessionClient.getSessionResponse(sessionEndpoint, sessionRequest)
+                fail("Should not have reached here!")
+            } catch (ex: AccessCheckoutException) {
+                val validationRule = ValidationRule(
+                    "integerIsTooSmall",
+                    "Card expiry month is too small - must be between 1 & 12",
+                    "\$.cardExpiryDate.month"
+                )
+                val accessCheckoutException = AccessCheckoutException(
+                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    validationRules = listOf(validationRule)
+                )
+                assertEquals(accessCheckoutException, ex)
+            } catch (ex: Exception) {
+                fail("Should not have reached here!")
+            }
         }
-    }
 
     @Test
     @PactVerification("verified-tokens", fragment = "createIntegerMonthTooLargeRequestInteraction")
-    fun givenIntegerMonthTooLargeInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
-        val sessionRequest =
-            CardSessionRequest(
-                cardNumber,
-                CardSessionRequest.CardExpiryDate(
-                    integerMonthTooLarge,
-                    expiryYear
-                ),
-                cvc,
-                identity
-            )
+    fun givenIntegerMonthTooLargeInTheRequestThenShouldReceiveA400ResponseWithCorrectError() =
+        runAsBlockingTest {
+            val sessionRequest =
+                CardSessionRequest(
+                    cardNumber,
+                    CardSessionRequest.CardExpiryDate(
+                        integerMonthTooLarge,
+                        expiryYear
+                    ),
+                    cvc,
+                    identity
+                )
 
-        try {
-            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
-            fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException) {
-            val validationRule = ValidationRule(
-                "integerIsTooLarge",
-                "Card expiry month is too large - must be between 1 & 12",
-                "\$.cardExpiryDate.month"
-            )
-            val accessCheckoutException = AccessCheckoutException(
-                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                validationRules = listOf(validationRule)
-            )
-            assertEquals(accessCheckoutException, ex)
-        } catch (ex: Exception) {
-            fail("Should not have reached here!")
+            try {
+                cardSessionClient.getSessionResponse(sessionEndpoint, sessionRequest)
+                fail("Should not have reached here!")
+            } catch (ex: AccessCheckoutException) {
+                val validationRule = ValidationRule(
+                    "integerIsTooLarge",
+                    "Card expiry month is too large - must be between 1 & 12",
+                    "\$.cardExpiryDate.month"
+                )
+                val accessCheckoutException = AccessCheckoutException(
+                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    validationRules = listOf(validationRule)
+                )
+                assertEquals(accessCheckoutException, ex)
+            } catch (ex: Exception) {
+                fail("Should not have reached here!")
+            }
         }
-    }
 
     @Test
     @PactVerification("verified-tokens", fragment = "createStringNonNumericalCvcRequestInteraction")
-    fun givenStringNonNumericalRequestThenShouldReceiveA400ResponseWithCorrectError() {
-        val sessionRequest =
-            CardSessionRequest(
-                cardNumber,
-                CardSessionRequest.CardExpiryDate(
-                    expiryMonth,
-                    expiryYear
-                ),
-                cvcNonNumerical,
-                identity
-            )
+    fun givenStringNonNumericalRequestThenShouldReceiveA400ResponseWithCorrectError() =
+        runAsBlockingTest {
+            val sessionRequest =
+                CardSessionRequest(
+                    cardNumber,
+                    CardSessionRequest.CardExpiryDate(
+                        expiryMonth,
+                        expiryYear
+                    ),
+                    cvcNonNumerical,
+                    identity
+                )
 
-        try {
-            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
-            fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException) {
-            val validationRule = ValidationRule(
-                "fieldMustBeNumber",
-                "CVC must be numeric",
-                "\$.cvc"
-            )
-            val accessCheckoutException = AccessCheckoutException(
-                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                validationRules = listOf(validationRule)
-            )
-            assertEquals(accessCheckoutException, ex)
-        } catch (ex: Exception) {
-            fail("Should not have reached here!")
+            try {
+                cardSessionClient.getSessionResponse(sessionEndpoint, sessionRequest)
+                fail("Should not have reached here!")
+            } catch (ex: AccessCheckoutException) {
+                val validationRule = ValidationRule(
+                    "fieldMustBeNumber",
+                    "CVC must be numeric",
+                    "\$.cvc"
+                )
+                val accessCheckoutException = AccessCheckoutException(
+                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    validationRules = listOf(validationRule)
+                )
+                assertEquals(accessCheckoutException, ex)
+            } catch (ex: Exception) {
+                fail("Should not have reached here!")
+            }
         }
-    }
 
     @Test
     @PactVerification("verified-tokens", fragment = "createEmptyBodyErrorInteractionRequestInteraction")
-    fun givenEmptyBodyInTheRequestThenShouldReceiveA400ResponseWithCorrectError() {
-
+    fun givenEmptyBodyInTheRequestThenShouldReceiveA400ResponseWithCorrectError() = runAsBlockingTest {
         val mockEmptySerializer = mock(CardSessionRequestSerializer::class.java)
 
         val emptyString = ""
@@ -626,16 +640,17 @@ class VerifiedTokensPactTest {
             CardSessionClient(
                 CardSessionResponseDeserializer(),
                 mockEmptySerializer,
-                HttpsClient()
+                HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
             )
 
-        val expectedException = AccessCheckoutException("bodyIsEmpty : The body within the request is empty")
-
-        val exception = assertFailsWith<AccessCheckoutException> {
-            cardSessionClient.getSessionResponse(URL(mockProvider.url + sessionPath), sessionRequest)
+        try {
+            cardSessionClient.getSessionResponse(sessionEndpoint, sessionRequest)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("bodyIsEmpty : The body within the request is empty", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals(expectedException, exception)
     }
 
     private fun generateRequest(

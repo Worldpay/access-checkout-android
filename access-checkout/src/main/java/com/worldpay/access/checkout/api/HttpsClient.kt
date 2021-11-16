@@ -13,88 +13,113 @@ import java.io.OutputStreamWriter
 import java.io.Serializable
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 internal class HttpsClient(
+    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
     private val urlFactory: URLFactory = URLFactoryImpl(),
     private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer()
 ) {
 
     @Throws(AccessCheckoutException::class)
-    fun <Request : Serializable, Response> doPost(
+    suspend fun <Request : Serializable, Response> doPost(
         url: URL,
         request: Request,
         headers: Map<String, String>,
         serializer: Serializer<Request>,
         deserializer: Deserializer<Response>
     ): Response {
-        var httpsUrlConn: HttpsURLConnection? = null
+        return coroutineScope {
+            async(dispatcher) {
+                var httpsUrlConn: HttpsURLConnection? = null
 
-        try {
-            val requestBody = serializer.serialize(request)
+                try {
+                    val requestBody = serializer.serialize(request)
 
-            httpsUrlConn = url.openConnection() as HttpsURLConnection
-            httpsUrlConn.requestMethod = POST_METHOD
-            setRequestProperties(httpsUrlConn, headers)
-            httpsUrlConn.doOutput = true
-            httpsUrlConn.connectTimeout = CONNECT_TIMEOUT
-            httpsUrlConn.readTimeout = READ_TIMEOUT
-            httpsUrlConn.setChunkedStreamingMode(0)
+                    httpsUrlConn = url.openConnection() as HttpsURLConnection
+                    httpsUrlConn.requestMethod = POST_METHOD
+                    setRequestProperties(httpsUrlConn, headers)
+                    httpsUrlConn.doOutput = true
+                    httpsUrlConn.connectTimeout = CONNECT_TIMEOUT
+                    httpsUrlConn.readTimeout = READ_TIMEOUT
+                    httpsUrlConn.setChunkedStreamingMode(0)
 
-            val outputStream: OutputStream = BufferedOutputStream(httpsUrlConn.outputStream)
-            OutputStreamWriter(outputStream).use {
-                it.write(requestBody)
-                it.flush()
+                    val outputStream: OutputStream = BufferedOutputStream(httpsUrlConn.outputStream)
+                    OutputStreamWriter(outputStream).use {
+                        it.write(requestBody)
+                        it.flush()
 
-                val responseData = when (httpsUrlConn.responseCode) {
-                    in successfulHttpRange -> getResponseData(httpsUrlConn.inputStream)
-                    in redirectHttpRange -> return handleRedirect(httpsUrlConn, request, headers, serializer, deserializer)
-                    in clientErrorHttpRange -> throw getClientError(httpsUrlConn)
-                    else -> throw getServerError(httpsUrlConn)
+                        val responseData = when (httpsUrlConn.responseCode) {
+                            in successfulHttpRange -> getResponseData(httpsUrlConn.inputStream)
+                            in redirectHttpRange -> return@async handleRedirect(
+                                httpsUrlConn,
+                                request,
+                                headers,
+                                serializer,
+                                deserializer
+                            )
+                            in clientErrorHttpRange -> throw getClientError(httpsUrlConn)
+                            else -> throw getServerError(httpsUrlConn)
+                        }
+
+                        return@async deserializer.deserialize(responseData)
+                    }
+                } catch (ex: AccessCheckoutException) {
+                    throw ex
+                } catch (ex: Exception) {
+                    val message =
+                        ex.message
+                            ?: "An exception was thrown when trying to establish a connection"
+                    throw AccessCheckoutException(message = message, cause = ex)
+                } finally {
+                    httpsUrlConn?.disconnect()
                 }
-
-                return deserializer.deserialize(responseData)
             }
-        } catch (ex: AccessCheckoutException) {
-            throw ex
-        } catch (ex: Exception) {
-            val message = ex.message ?: "An exception was thrown when trying to establish a connection"
-            throw AccessCheckoutException(message = message, cause = ex)
-        } finally {
-            httpsUrlConn?.disconnect()
-        }
+        }.await()
     }
 
     @Throws(AccessCheckoutException::class)
-    fun <Response> doGet(
+    suspend fun <Response> doGet(
         url: URL,
         deserializer: Deserializer<Response>,
         headers: Map<String, String> = mapOf()
     ): Response {
-        var httpsUrlConn: HttpsURLConnection? = null
-        try {
+        return coroutineScope {
+            async(dispatcher) {
+                var httpsUrlConn: HttpsURLConnection? = null
+                try {
+                    httpsUrlConn = url.openConnection() as HttpsURLConnection
+                    httpsUrlConn.requestMethod = GET_METHOD
+                    setRequestProperties(httpsUrlConn, headers)
+                    httpsUrlConn.connectTimeout = CONNECT_TIMEOUT
+                    httpsUrlConn.readTimeout = READ_TIMEOUT
 
-            httpsUrlConn = url.openConnection() as HttpsURLConnection
-            httpsUrlConn.requestMethod = GET_METHOD
-            setRequestProperties(httpsUrlConn, headers)
-            httpsUrlConn.connectTimeout = CONNECT_TIMEOUT
-            httpsUrlConn.readTimeout = READ_TIMEOUT
+                    val responseData = when (httpsUrlConn.responseCode) {
+                        in successfulHttpRange -> getResponseData(httpsUrlConn.inputStream)
+                        in redirectHttpRange -> return@async handleRedirect(
+                            httpsUrlConn,
+                            deserializer
+                        )
+                        in clientErrorHttpRange -> throw getClientError(httpsUrlConn)
+                        else -> throw getServerError(httpsUrlConn)
+                    }
 
-            val responseData = when (httpsUrlConn.responseCode) {
-                in successfulHttpRange -> getResponseData(httpsUrlConn.inputStream)
-                in redirectHttpRange -> return handleRedirect(httpsUrlConn, deserializer)
-                in clientErrorHttpRange -> throw getClientError(httpsUrlConn)
-                else -> throw getServerError(httpsUrlConn)
+                    return@async deserializer.deserialize(responseData)
+                } catch (ex: AccessCheckoutException) {
+                    throw ex
+                } catch (ex: Exception) {
+                    val message =
+                        ex.message
+                            ?: "An exception was thrown when trying to establish a connection"
+                    throw AccessCheckoutException(message, ex)
+                } finally {
+                    httpsUrlConn?.disconnect()
+                }
             }
-
-            return deserializer.deserialize(responseData)
-        } catch (ex: AccessCheckoutException) {
-            throw ex
-        } catch (ex: Exception) {
-            val message = ex.message ?: "An exception was thrown when trying to establish a connection"
-            throw AccessCheckoutException(message, ex)
-        } finally {
-            httpsUrlConn?.disconnect()
-        }
+        }.await()
     }
 
     private fun setRequestProperties(
@@ -150,34 +175,29 @@ internal class HttpsClient(
         }
     }
 
-    private fun <Request : Serializable, Response> handleRedirect(
+    private suspend fun <Request : Serializable, Response> handleRedirect(
         httpsUrlConn: HttpsURLConnection,
         request: Request,
         headers: Map<String, String>,
         serializer: Serializer<Request>,
         deserializer: Deserializer<Response>
     ): Response {
-        fun postFunc(url: String) = doPost(urlFactory.getURL(url), request, headers, serializer, deserializer)
-        return handleRedirect(httpsUrlConn, ::postFunc)
+        val location = httpsUrlConn.getHeaderField(LOCATION)
+        if (location.isNullOrBlank()) {
+            throw AccessCheckoutException("Response from server was a redirect HTTP response code: ${httpsUrlConn.responseCode} but did not include a Location header")
+        }
+        return doPost(urlFactory.getURL(location), request, headers, serializer, deserializer)
     }
 
-    private fun <Response> handleRedirect(
+    private suspend fun <Response> handleRedirect(
         httpsUrlConn: HttpsURLConnection,
         deserializer: Deserializer<Response>
-    ): Response {
-        fun getFunc(url: String) = doGet(urlFactory.getURL(url), deserializer)
-        return handleRedirect(httpsUrlConn, ::getFunc)
-    }
-
-    private fun <Response> handleRedirect(
-        httpsUrlConn: HttpsURLConnection,
-        exec: (String) -> Response
     ): Response {
         val location = httpsUrlConn.getHeaderField(LOCATION)
         if (location.isNullOrBlank()) {
             throw AccessCheckoutException("Response from server was a redirect HTTP response code: ${httpsUrlConn.responseCode} but did not include a Location header")
         }
-        return exec(location)
+        return doGet(urlFactory.getURL(location), deserializer)
     }
 
     internal companion object {

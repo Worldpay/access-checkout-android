@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
@@ -30,12 +31,14 @@ class CardSessionRequestHandlerTest {
 
     private lateinit var cardSessionRequestHandler: CardSessionRequestHandler
 
+    private val baseUrl = URL("http://base-url.com")
+
     @Before
     fun setup() {
         cardSessionRequestHandler =
             CardSessionRequestHandler(
                 SessionRequestHandlerConfig.Builder()
-                    .baseUrl("base-url")
+                    .baseUrl(baseUrl)
                     .merchantId("merchant-id")
                     .context(context)
                     .externalSessionResponseListener(externalSessionResponseListener)
@@ -118,7 +121,7 @@ class CardSessionRequestHandlerTest {
         assertEquals(cardDetails.expiryDate?.month, sessionRequestInfo.requestBody.cardExpiryDate.month)
         assertEquals(cardDetails.expiryDate?.year, sessionRequestInfo.requestBody.cardExpiryDate.year)
 
-        assertEquals("base-url", sessionRequestInfo.baseUrl)
+        assertEquals(baseUrl, sessionRequestInfo.baseUrl)
 
         assertEquals(DiscoverLinks.verifiedTokens, sessionRequestInfo.discoverLinks)
         assertEquals(CARD, sessionRequestInfo.sessionType)

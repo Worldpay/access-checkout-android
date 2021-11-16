@@ -1,51 +1,47 @@
 package com.worldpay.access.checkout.session.api
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.eq
-import com.worldpay.access.checkout.api.Callback
+import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
-import com.worldpay.access.checkout.session.api.client.CardSessionClient
+import com.worldpay.access.checkout.session.api.client.SessionClient
 import com.worldpay.access.checkout.session.api.client.SessionClientFactory
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
-import com.worldpay.access.checkout.session.api.request.RequestDispatcher
-import com.worldpay.access.checkout.session.api.request.RequestDispatcherFactory
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
+import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
+import com.worldpay.access.checkout.testutils.CoroutineTestRule
+import java.net.URL
+import kotlin.test.fail
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
-import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito
-import org.mockito.Mockito.mock
-import org.mockito.Mockito.verify
+import kotlin.test.assertNotNull
 
+@ExperimentalCoroutinesApi
 class SessionRequestSenderTest {
 
-    private lateinit var sessionClientFactory: SessionClientFactory
-    private lateinit var requestDispatcherFactory: RequestDispatcherFactory
-    private lateinit var apiDiscoveryClient: ApiDiscoveryClient
-    private lateinit var sessionRequestSender: SessionRequestSender
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
-    private val baseURL = "https://localhost:8443"
+    private val apiDiscoveryClient = mock<ApiDiscoveryClient>()
+    private val sessionClientFactory = mock<SessionClientFactory>()
+    private val sessionRequestSender = SessionRequestSender(sessionClientFactory, apiDiscoveryClient)
 
-    @Before
-    fun setup() {
-        sessionClientFactory = mock(SessionClientFactory::class.java)
-        requestDispatcherFactory = mock(RequestDispatcherFactory::class.java)
-        apiDiscoveryClient = mock(ApiDiscoveryClient::class.java)
-        sessionRequestSender =
-            SessionRequestSender(
-                sessionClientFactory, requestDispatcherFactory, apiDiscoveryClient
-            )
+    private val baseURL = URL("https://base.url")
+    private val endpoint = URL("https://endpoint.url")
+
+    @Test
+    fun `should obtain an instance using only a sessionClientFactory`() {
+        assertNotNull(SessionRequestSender(sessionClientFactory))
     }
 
     @Test
-    fun `should execute request given that the discovery response is valid`() {
+    fun `should execute request given that the discovery response is valid`() = runAsBlockingTest {
         val expectedSessionRequest =
             CardSessionRequest(
                 cardNumber = "00001111222233334444",
@@ -57,18 +53,26 @@ class SessionRequestSenderTest {
                 identity = ""
             )
 
-        val sessionResponseCallback = object : Callback<SessionResponseInfo> {
-            override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
-            }
-        }
+        val sessionResponse =
+            SessionResponse(
+                SessionResponse.Links(
+                    SessionResponse.Links.Endpoints(
+                        "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                    ),
+                    arrayOf(
+                        SessionResponse.Links.Curies(
+                            "https://access.worldpay.com/rels/verifiedTokens{rel}.json",
+                            "verifiedTokens",
+                            true
+                        )
+                    )
+                )
+            )
 
-        val requestDispatcher = mock(RequestDispatcher::class.java)
-        val sessionClient = mock(CardSessionClient::class.java)
-        val path = "$baseURL/verifiedTokens/sessions"
-
-        given(sessionClientFactory.createClient(expectedSessionRequest)).willReturn(sessionClient)
-        given(requestDispatcherFactory.getInstance(path, sessionClient, sessionResponseCallback))
-            .willReturn(requestDispatcher)
+        val expectedResponse = SessionResponseInfo.Builder()
+            .responseBody(sessionResponse)
+            .sessionType(CARD)
+            .build()
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
             .baseUrl(baseURL)
@@ -77,62 +81,51 @@ class SessionRequestSenderTest {
             .discoverLinks(DiscoverLinks.verifiedTokens)
             .build()
 
-        sessionRequestSender.sendSessionRequest(sessionRequestInfo, sessionResponseCallback)
+        val sessionClient = mock<SessionClient>()
 
-        val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(apiDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
-        argumentCaptor.firstValue.onResponse(null, path)
+        given(apiDiscoveryClient.discoverEndpoint(sessionRequestInfo.baseUrl, sessionRequestInfo.discoverLinks)).willReturn(endpoint)
+        given(sessionClientFactory.createClient(expectedSessionRequest)).willReturn(sessionClient)
+        given(sessionClient.getSessionResponse(endpoint, sessionRequestInfo.requestBody)).willReturn(sessionResponse)
 
-        verify(requestDispatcher).execute(sessionRequestInfo)
+        val sessionResponseInfo = sessionRequestSender.sendSessionRequest(sessionRequestInfo)
+
+        assertEquals(expectedResponse.responseBody, sessionResponseInfo.responseBody)
+        assertEquals(expectedResponse.sessionType, sessionResponseInfo.sessionType)
     }
 
     @Test
-    fun `should error with exception given that the discovery response is invalid`() {
-        val expectedSessionRequest =
-            CardSessionRequest(
-                cardNumber = "00001111222233334444",
-                cardExpiryDate = CardSessionRequest.CardExpiryDate(
-                    1,
-                    2020
-                ),
-                cvc = "123",
-                identity = ""
-            )
+    fun `should error with exception given that the discovery response is invalid`() =
+        runAsBlockingTest {
+            val expectedSessionRequest =
+                CardSessionRequest(
+                    cardNumber = "00001111222233334444",
+                    cardExpiryDate = CardSessionRequest.CardExpiryDate(
+                        1,
+                        2020
+                    ),
+                    cvc = "123",
+                    identity = ""
+                )
 
-        var assertResponse = false
+            val sessionRequestInfo = SessionRequestInfo.Builder()
+                .baseUrl(baseURL)
+                .requestBody(expectedSessionRequest)
+                .sessionType(CARD)
+                .discoverLinks(DiscoverLinks.verifiedTokens)
+                .build()
 
-        val sessionResponseCallback = object : Callback<SessionResponseInfo> {
-            override fun onResponse(error: Exception?, response: SessionResponseInfo?) {
-                assertTrue(error is AccessCheckoutException)
-                assertEquals("Could not discover URL", error?.message)
-                assertTrue((error as AccessCheckoutException).cause is RuntimeException)
-                assertEquals("Some exception", error.cause?.message)
-                assertResponse = true
+            val sessionClient = mock<SessionClient>()
+
+            given(apiDiscoveryClient.discoverEndpoint(sessionRequestInfo.baseUrl, sessionRequestInfo.discoverLinks)).willReturn(endpoint)
+            given(sessionClientFactory.createClient(expectedSessionRequest)).willReturn(sessionClient)
+            given(sessionClient.getSessionResponse(endpoint, sessionRequestInfo.requestBody)).willThrow(RuntimeException("some message"))
+
+            try {
+                sessionRequestSender.sendSessionRequest(sessionRequestInfo)
+                fail("Expected exception to be thrown but was not")
+            } catch (ex: Exception) {
+                assertTrue(ex is RuntimeException)
+                assertEquals("some message", ex.message)
             }
         }
-
-        val requestDispatcher = mock(RequestDispatcher::class.java)
-        val sessionClient = mock(CardSessionClient::class.java)
-        val path = "$baseURL/verifiedTokens/sessions"
-
-        given(sessionClientFactory.createClient(expectedSessionRequest)).willReturn(sessionClient)
-        given(requestDispatcherFactory.getInstance(path, sessionClient, sessionResponseCallback))
-            .willReturn(requestDispatcher)
-
-        val sessionRequestInfo = SessionRequestInfo.Builder()
-            .baseUrl(baseURL)
-            .requestBody(expectedSessionRequest)
-            .sessionType(CARD)
-            .discoverLinks(DiscoverLinks.verifiedTokens)
-            .build()
-
-        sessionRequestSender.sendSessionRequest(sessionRequestInfo, sessionResponseCallback)
-
-        val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(apiDiscoveryClient).discover(eq(baseURL), argumentCaptor.capture(), any())
-        argumentCaptor.firstValue.onResponse(RuntimeException("Some exception"), null)
-
-        Mockito.verifyZeroInteractions(requestDispatcher)
-        assertTrue(assertResponse)
-    }
 }

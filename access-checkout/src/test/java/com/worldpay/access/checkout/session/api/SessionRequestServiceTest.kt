@@ -3,14 +3,20 @@ package com.worldpay.access.checkout.session.api
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.nhaarman.mockitokotlin2.any
+import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.given
+import com.nhaarman.mockitokotlin2.mock
+import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import com.worldpay.access.checkout.client.session.model.SessionType.CARD
+import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
+import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.messageQueue
+import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.processMessageQueue
+import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.REQUEST_KEY
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
-import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
@@ -18,41 +24,43 @@ import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFacto
 import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.ERROR_KEY
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.RESPONSE_KEY
-import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import com.worldpay.access.checkout.testutils.CoroutineTestRule
+import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.After
-import org.junit.Assert.assertNull
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
-import org.mockito.BDDMockito.given
-import org.mockito.Mockito.mock
-import org.robolectric.shadows.ShadowLooper
+import org.robolectric.RobolectricTestRunner
 
-@RunWith(PlainRobolectricTestRunner::class)
+@RunWith(RobolectricTestRunner::class)
+@ExperimentalCoroutinesApi
 class SessionRequestServiceTest {
 
+    private val factory = mock<Factory>()
+    private val sessionRequestSender = mock<SessionRequestSender>()
+    private val localBroadcastManagerFactory = mock<LocalBroadcastManagerFactory>()
+    private val localBroadcastManager = mock<LocalBroadcastManager>()
+
+    private val baseUrl = URL("https://base.url.com")
+
     private lateinit var sessionRequestService: SessionRequestService
-    private lateinit var localBroadcastManagerFactory: LocalBroadcastManagerFactory
-    private lateinit var sessionRequestSender: SessionRequestSender
+
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
     @Before
     fun setup() {
-        sessionRequestSender = mock(SessionRequestSender::class.java)
-        localBroadcastManagerFactory = mock(LocalBroadcastManagerFactory::class.java)
-
-        val mockFactory = mock(Factory::class.java)
-        given(mockFactory.getSessionRequestSender(any())).willReturn(sessionRequestSender)
-        given(mockFactory.getLocalBroadcastManagerFactory(any())).willReturn(
-            localBroadcastManagerFactory
-        )
-
-        sessionRequestService =
-            SessionRequestService(
-                mockFactory
-            )
+        inLifeCycleState = false
+        given(factory.getSessionRequestSender()).willReturn(sessionRequestSender)
+        given(factory.getLocalBroadcastManagerFactory(any())).willReturn(localBroadcastManagerFactory)
+        given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
+        sessionRequestService = spy(SessionRequestService(factory))
     }
 
     @After
@@ -61,25 +69,140 @@ class SessionRequestServiceTest {
     }
 
     @Test
-    fun `assert service is instantiated with default factory`() {
+    fun `should obtain an instance when using the default constructor`() {
         assertNotNull(SessionRequestService())
     }
 
     @Test
-    fun `assert that started service is never bound`() {
-        assertNull(sessionRequestService.onBind(mock(Intent::class.java)))
+    fun `should return null when on bind method is called`() {
+        assertNull(sessionRequestService.onBind(mock()))
     }
 
     @Test
-    fun `should not send session request when intent is empty`() {
-        sessionRequestService.onStartCommand(null, -1, 0)
+    fun `should not send a session request when the intent is null`() {
+        assertEquals(1, sessionRequestService.onStartCommand(null, 1, 1))
 
         verifyZeroInteractions(sessionRequestSender)
     }
 
     @Test
-    fun `should be able to send card session request when the intent has the appropriate information`() {
-        val intent = mock(Intent::class.java)
+    fun `should send a session request when the intent is not null and broadcast the response`() = runAsBlockingTest {
+        val intent = mock<Intent>()
+
+        val sessionRequestInfo = getSessionRequestInfo()
+        val sessionResponseInfo = getSessionResponseInfo()
+
+        given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(sessionRequestInfo)
+        given(sessionRequestSender.sendSessionRequest(sessionRequestInfo)).willReturn(sessionResponseInfo)
+
+        assertEquals(1, sessionRequestService.onStartCommand(intent, 1, 1))
+
+        val intentCaptor = argumentCaptor<Intent>()
+
+        verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo)
+        verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
+
+        val broadcastIntent = intentCaptor.firstValue
+
+        assertNotNull(broadcastIntent)
+        assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
+        assertEquals(2, broadcastIntent.extras!!.size())
+        assertEquals(sessionResponseInfo, broadcastIntent.extras!!.get(RESPONSE_KEY))
+        assertEquals(null, broadcastIntent.extras!!.get(ERROR_KEY))
+
+        verify(sessionRequestService).stopSelf()
+    }
+
+    @Test
+    fun `should have exception in error key on broadcast when session request fails`() = runAsBlockingTest {
+        val intent = mock<Intent>()
+
+        val sessionRequestInfo = getSessionRequestInfo()
+        val exception = RuntimeException("some message")
+
+        given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(sessionRequestInfo)
+        given(sessionRequestSender.sendSessionRequest(sessionRequestInfo)).willThrow(exception)
+
+        assertEquals(1, sessionRequestService.onStartCommand(intent, 1, 1))
+
+        val intentCaptor = argumentCaptor<Intent>()
+
+        verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo)
+        verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
+
+        val broadcastIntent = intentCaptor.firstValue
+
+        assertNotNull(broadcastIntent)
+        assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
+        assertEquals(2, broadcastIntent.extras!!.size())
+        assertEquals(null, broadcastIntent.extras!!.get(RESPONSE_KEY))
+        assertEquals(exception, broadcastIntent.extras!!.get(ERROR_KEY))
+
+        verify(sessionRequestService).stopSelf()
+    }
+
+    @Test
+    fun `should throw exception when no request key is found for session request in the intent`() {
+        val intent = mock<Intent>()
+
+        val exception = AccessCheckoutException("Failed to parse request key for sending the session request")
+
+        given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(null)
+
+        assertEquals(1, sessionRequestService.onStartCommand(intent, 1, 1))
+
+        val intentCaptor = argumentCaptor<Intent>()
+
+        verifyZeroInteractions(sessionRequestSender)
+        verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
+
+        val broadcastIntent = intentCaptor.firstValue
+
+        assertNotNull(broadcastIntent)
+        assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
+        assertEquals(2, broadcastIntent.extras!!.size())
+        assertEquals(null, broadcastIntent.extras!!.get(RESPONSE_KEY))
+        assertEquals(exception, broadcastIntent.extras!!.get(ERROR_KEY))
+
+        verify(sessionRequestService).stopSelf()
+    }
+
+    @Test
+    fun `should post the broadcast function to the message queue when in lifecycle state`() = runAsBlockingTest {
+        inLifeCycleState = true
+        val intent = mock<Intent>()
+
+        val sessionRequestInfo = getSessionRequestInfo()
+        val sessionResponseInfo = getSessionResponseInfo()
+
+        given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(sessionRequestInfo)
+        given(sessionRequestSender.sendSessionRequest(sessionRequestInfo)).willReturn(sessionResponseInfo)
+
+        assertEquals(0, messageQueue.size)
+
+        assertEquals(1, sessionRequestService.onStartCommand(intent, 1, 1))
+
+        assertEquals(1, messageQueue.size)
+        processMessageQueue()
+        assertEquals(0, messageQueue.size)
+
+        val intentCaptor = argumentCaptor<Intent>()
+
+        verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo)
+        verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
+
+        val broadcastIntent = intentCaptor.firstValue
+
+        assertNotNull(broadcastIntent)
+        assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
+        assertEquals(2, broadcastIntent.extras!!.size())
+        assertEquals(sessionResponseInfo, broadcastIntent.extras!!.get(RESPONSE_KEY))
+        assertEquals(null, broadcastIntent.extras!!.get(ERROR_KEY))
+
+        verify(sessionRequestService).stopSelf()
+    }
+
+    private fun getSessionRequestInfo(): SessionRequestInfo {
         val sessionRequest =
             CardSessionRequest(
                 cardNumber = "111111",
@@ -91,45 +214,15 @@ class SessionRequestServiceTest {
                 identity = "merchant-id"
             )
 
-        val sessionRequestInfo = SessionRequestInfo.Builder()
-            .baseUrl("https://localhost:8443")
+        return SessionRequestInfo.Builder()
+            .baseUrl(baseUrl)
             .requestBody(sessionRequest)
-            .sessionType(CARD)
+            .sessionType(SessionType.CARD)
             .discoverLinks(DiscoverLinks.verifiedTokens)
             .build()
-
-        given(intent.getSerializableExtra("request")).willReturn(sessionRequestInfo)
-
-        sessionRequestService.onStartCommand(intent, -1, 0)
-
-        verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo, sessionRequestService)
     }
 
-    @Test
-    fun `should be able to send cvc session request when the intent has the appropriate information`() {
-        val intent = mock(Intent::class.java)
-        val sessionRequest =
-            CvcSessionRequest(
-                cvc = "123",
-                identity = "merchant-id"
-            )
-
-        val sessionRequestInfo = SessionRequestInfo.Builder()
-            .baseUrl("https://localhost:8443")
-            .requestBody(sessionRequest)
-            .sessionType(CARD)
-            .discoverLinks(DiscoverLinks.verifiedTokens)
-            .build()
-
-        given(intent.getSerializableExtra("request")).willReturn(sessionRequestInfo)
-
-        sessionRequestService.onStartCommand(intent, -1, 0)
-
-        verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo, sessionRequestService)
-    }
-
-    @Test
-    fun `should be able to broadcast response to receivers once response is received`() {
+    private fun getSessionResponseInfo(): SessionResponseInfo {
         val sessionResponse =
             SessionResponse(
                 SessionResponse.Links(
@@ -140,105 +233,9 @@ class SessionRequestServiceTest {
                 )
             )
 
-        val sessionResponseInfo = SessionResponseInfo.Builder()
+        return SessionResponseInfo.Builder()
             .responseBody(sessionResponse)
-            .sessionType(CARD)
+            .sessionType(SessionType.CARD)
             .build()
-
-        val localBroadcastManager = mock(LocalBroadcastManager::class.java)
-
-        given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
-
-        sessionRequestService.onResponse(null, sessionResponseInfo)
-
-        val argument = ArgumentCaptor.forClass(Intent::class.java)
-
-        verify(localBroadcastManager).sendBroadcast(argument.capture())
-
-        assertEquals(sessionResponseInfo, argument.value.getSerializableExtra(RESPONSE_KEY))
-
-        assertNull(argument.value.getSerializableExtra(ERROR_KEY))
-        assertEquals(2, argument.value.extras?.size())
-
-        assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
-    }
-
-    @Test
-    fun `should be able to broadcast error to receivers once error is received`() {
-        val localBroadcastManager = mock(LocalBroadcastManager::class.java)
-        given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
-
-        val exception = AccessCheckoutException("some error")
-        sessionRequestService.onResponse(exception, null)
-
-        val argument = ArgumentCaptor.forClass(Intent::class.java)
-
-        verify(localBroadcastManager).sendBroadcast(argument.capture())
-
-        assertNull(argument.value.getSerializableExtra(RESPONSE_KEY))
-        assertEquals(exception, argument.value.getSerializableExtra(ERROR_KEY))
-        assertEquals(2, argument.value.extras?.size())
-
-        assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
-    }
-
-    @Test
-    fun `should delay broadcast when in a lifecycle state`() {
-        val localBroadcastManager = mock(LocalBroadcastManager::class.java)
-        given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
-
-        val exception = AccessCheckoutException("some error")
-
-        inLifeCycleState = true
-
-        sessionRequestService.onResponse(exception, null)
-
-        verifyZeroInteractions(localBroadcastManager)
-
-        val argument = ArgumentCaptor.forClass(Intent::class.java)
-
-        inLifeCycleState = false
-
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-
-        verify(localBroadcastManager).sendBroadcast(argument.capture())
-
-        assertNull(argument.value.getSerializableExtra(RESPONSE_KEY))
-        assertEquals(exception, argument.value.getSerializableExtra(ERROR_KEY))
-        assertEquals(2, argument.value.extras?.size())
-
-        assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
-    }
-
-    @Test
-    fun `should delay broadcast when in a lifecycle state and does not return`() {
-        val localBroadcastManager = mock(LocalBroadcastManager::class.java)
-        given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
-
-        val exception = AccessCheckoutException("some error")
-
-        inLifeCycleState = true
-
-        sessionRequestService.onResponse(exception, null)
-
-        verifyZeroInteractions(localBroadcastManager)
-
-        val argument = ArgumentCaptor.forClass(Intent::class.java)
-
-        // keep calling this so we can test the recursive code
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-        ShadowLooper.runUiThreadTasksIncludingDelayedTasks()
-
-        verify(localBroadcastManager).sendBroadcast(argument.capture())
-
-        assertNull(argument.value.getSerializableExtra(RESPONSE_KEY))
-        assertEquals(exception, argument.value.getSerializableExtra(ERROR_KEY))
-        assertEquals(2, argument.value.extras?.size())
-
-        assertEquals(COMPLETED_SESSION_REQUEST, argument.value.action)
     }
 }

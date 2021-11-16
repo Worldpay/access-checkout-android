@@ -3,15 +3,23 @@ package com.worldpay.access.checkout.validation.filters
 import android.widget.EditText
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlin.test.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 
-@RunWith(PlainRobolectricTestRunner::class)
+@ExperimentalCoroutinesApi
+@RunWith(RobolectricTestRunner::class)
 class CvcLengthFilterTest {
+
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
@@ -19,7 +27,7 @@ class CvcLengthFilterTest {
     private val pan = EditText(context)
 
     @Before
-    fun setup() {
+    fun setup() = runAsBlockingTest {
         mockSuccessfulCardConfiguration()
         cvc.filters = arrayOf(CvcLengthFilter(pan))
     }

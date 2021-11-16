@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.api
 
-import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
@@ -11,22 +10,28 @@ import com.worldpay.access.checkout.api.ApiDiscoveryStubs.rootResponseMapping
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.verifiedTokensMapping
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
-import com.worldpay.access.checkout.api.discovery.ApiDiscoveryAsyncTaskFactory
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
+import kotlin.test.fail
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class ApiDiscoveryIntegrationTest {
+
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
     private val applicationContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
@@ -42,29 +47,19 @@ class ApiDiscoveryIntegrationTest {
     }
 
     @Test
-    fun shouldBeAbleToDiscoverVTSessionsFromRoot() {
+    fun shouldBeAbleToDiscoverVTSessionsFromRoot() = runBlocking {
         stubServiceDiscoveryResponses()
 
-        var url: String? = null
-
-        val callback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                url = response
-            }
-        }
-
-        val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
-
-        client.discover(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
+        val client = ApiDiscoveryClient()
+        val endpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
-            Log.d("AccessCheckoutDiscoveryIntegrationTest", "Discovered endpoint: $url")
-            url != null && url.equals("${getBaseUrl()}/verifiedTokens/sessions")
+            endpoint.toString() == "${getBaseUrl()}/verifiedTokens/sessions"
         }
     }
 
     @Test
-    fun shouldReturnException_whenDiscoveryFails() {
+    fun shouldReturnExceptionWhenDiscoveryFails() = runBlocking {
         stubFor(
             get("/")
                 .willReturn(
@@ -73,26 +68,19 @@ class ApiDiscoveryIntegrationTest {
                 )
         )
 
-        var assertionDone = false
-        val exceptedException = AccessCheckoutException("Error message was: Server Error")
-
-        val callback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                assertEquals(exceptedException, error)
-                assertNull(response)
-                assertionDone = true
-            }
+        try {
+            val client = ApiDiscoveryClient()
+            client.discoverEndpoint(getBaseUrl(), DiscoverLinks.verifiedTokens)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Could not discover session endpoint", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
-
-        client.discover(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
-
-        await().atMost(5, TimeUnit.SECONDS).until { assertionDone }
     }
 
     @Test
-    fun shouldReturnUrl_whenFirstDiscoveryAttemptFailsThenRetrySucceeds() {
+    fun shouldReturnEndpointOnSecondRetry() = runBlocking {
         val serviceAvailableState = "SERVICE_AVAILABLE_AGAIN"
 
         stubFor(
@@ -111,20 +99,11 @@ class ApiDiscoveryIntegrationTest {
 
         stubFor(verifiedTokensMapping())
 
-        var exception: Exception? = null
-        var url: String? = null
-        val callback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                exception = error
-                url = response
-            }
-        }
-
-        val client = ApiDiscoveryClient(ApiDiscoveryAsyncTaskFactory())
-        client.discover(getBaseUrl(), callback, DiscoverLinks.verifiedTokens)
+        val client = ApiDiscoveryClient()
+        val endpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.verifiedTokens)
 
         await().atMost(5, TimeUnit.SECONDS).until {
-            url != null && url.equals("${getBaseUrl()}/verifiedTokens/sessions") && exception == null
+            endpoint.toString() == "${getBaseUrl()}/verifiedTokens/sessions"
         }
     }
 }

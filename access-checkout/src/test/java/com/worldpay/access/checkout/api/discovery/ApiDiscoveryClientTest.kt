@@ -1,211 +1,135 @@
 package com.worldpay.access.checkout.api.discovery
 
 import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
+import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.mock
-import com.worldpay.access.checkout.api.Callback
+import com.nhaarman.mockitokotlin2.times
+import com.worldpay.access.checkout.api.HttpsClient
+import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
+import com.worldpay.access.checkout.session.api.SessionRequestService
+import com.worldpay.access.checkout.testutils.CoroutineTestRule
+import java.net.URL
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
-import org.mockito.Mockito.times
-import org.mockito.Mockito.verify
+import org.mockito.BDDMockito.verify
+import kotlin.test.*
 
+@ExperimentalCoroutinesApi
 class ApiDiscoveryClientTest {
 
-    private val apiDiscoveryAsyncTaskFactoryMock: ApiDiscoveryAsyncTaskFactory = mock()
-    private var discoverLinks: DiscoverLinks = DiscoverLinks(listOf(Endpoint("some-service"), Endpoint("some-endpoint")))
-    private val apiDiscoveryAsyncTaskMock: ApiDiscoveryAsyncTask = mock()
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
+
+    private val httpsClient = mock<HttpsClient>()
+    private var discoverLinks: DiscoverLinks = DiscoverLinks.verifiedTokens
+
+    private val baseUrl = URL("https://base.url.com")
+    private val firstEndpoint = URL("https://endpoint.1.com")
+    private val expectedEndpoint = URL("http://expected.endpoint.url")
+
+    private lateinit var apiDiscoveryClient: ApiDiscoveryClient
 
     @Before
     fun setUp() {
         DiscoveryCache.results.clear()
+        apiDiscoveryClient = ApiDiscoveryClient(httpsClient)
     }
 
     @Test
-    fun `should throw an exception when base url is empty`() {
-        val exception = assertFailsWith<AccessCheckoutException> {
-            ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock).discover("", getEmptyCallback(), discoverLinks)
-        }
-
-        assertEquals("No URL supplied", exception.message)
+    fun `should obtain an instance when using the default constructor`() {
+        assertNotNull(ApiDiscoveryClient())
     }
 
     @Test
-    fun `should execute async task when valid url is provided without callback for first time discovery`() {
-        val accessCheckoutDiscoveryAsyncTask = mock<ApiDiscoveryAsyncTask>()
+    fun `should retrieve endpoint from cache when one exists`() = runAsBlockingTest {
+        DiscoveryCache.results[discoverLinks.endpoints[0].endpoint] = expectedEndpoint
 
-        given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(accessCheckoutDiscoveryAsyncTask)
+        val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
-        val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
-
-        serviceDiscoveryClient.discover("https://localhost:8443", getEmptyCallback(), discoverLinks)
-
-        verify(accessCheckoutDiscoveryAsyncTask, times(1)).execute("https://localhost:8443")
+        assertEquals(expectedEndpoint, endpoint)
     }
 
     @Test
-    fun `should execute async task and receive success callback when valid url and callback provided`() {
-        var assertionsRan = false
-        val sessionResponse = "session_response"
+    fun `should save endpoint to cache when endpoint discovery is successful`() = runAsBlockingTest {
+        given(
+            httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
+        ).willReturn(firstEndpoint.toString())
 
-        val callback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                assertNotNull(response)
-                assertEquals(sessionResponse, response)
-                assertionsRan = true
-            }
-        }
+        given(
+            httpsClient.doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(expectedEndpoint.toString())
 
-        val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
-        given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(apiDiscoveryAsyncTaskMock)
+        assertTrue { DiscoveryCache.results.isEmpty() }
 
-        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
+        val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
-        val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
-        argumentCaptor.firstValue.onResponse(null, sessionResponse)
+        assertEquals(expectedEndpoint, endpoint)
 
-        verify(apiDiscoveryAsyncTaskMock, times(1)).execute("https://localhost:8443")
-        assertTrue(assertionsRan, "Did not run callback assertions - callback was never invoked")
+        assertFalse { DiscoveryCache.results.isEmpty() }
+        assertEquals(expectedEndpoint, DiscoveryCache.getResult(discoverLinks))
     }
 
     @Test
-    fun `should execute async task and receive success callback when valid url and callback provided and three levels of discovery required`() {
-        var assertionsRan = false
-        val sessionResponse = "session_response"
+    fun `should be able to return endpoint on first attempt`() = runAsBlockingTest {
+        given(
+            httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
+        ).willReturn(firstEndpoint.toString())
 
-        val callback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                assertNotNull(response)
-                assertEquals(sessionResponse, response)
-                assertionsRan = true
-            }
-        }
+        given(
+            httpsClient.doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(expectedEndpoint.toString())
 
-        discoverLinks = DiscoverLinks(listOf(Endpoint("one"), Endpoint("two"), Endpoint("three")))
+        val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
-        val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
-        given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(apiDiscoveryAsyncTaskMock)
-
-        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
-
-        val argumentCaptor = argumentCaptor<Callback<String>>()
-        verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
-        argumentCaptor.firstValue.onResponse(null, sessionResponse)
-
-        verify(apiDiscoveryAsyncTaskMock, times(1)).execute("https://localhost:8443")
-        assertTrue(assertionsRan, "Did not run callback assertions - callback was never invoked")
+        assertEquals(expectedEndpoint, endpoint)
     }
 
     @Test
-    fun `should return url to sessions and not re-execute async task when URL is available and has already been discovered`() {
-        var assertionsRan1 = false
-        var assertionsRan2 = false
-        val sessionResponse = "session_response"
+    fun `should be able to return endpoint on second attempt`() = runAsBlockingTest {
+        given(
+            httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
+        )
+            .willThrow(RuntimeException("some exception"))
+            .willReturn(firstEndpoint.toString())
 
-        val callback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                assertNotNull(response)
-                assertEquals(sessionResponse, response)
-                assertionsRan1 = true
-            }
-        }
+        given(
+            httpsClient.doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(expectedEndpoint.toString())
 
-        val secondCallback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                assertNull(error)
-                assertNotNull(response)
-                assertEquals(sessionResponse, response)
-                assertionsRan2 = true
-            }
-        }
+        val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
-        val argumentCaptor = argumentCaptor<Callback<String>>()
+        assertEquals(expectedEndpoint, endpoint)
 
-        val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
-        given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(any(), any())).willReturn(apiDiscoveryAsyncTaskMock)
-
-        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
-        verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
-
-        argumentCaptor.firstValue.onResponse(null, sessionResponse)
-        serviceDiscoveryClient.discover("https://localhost:8443", secondCallback, discoverLinks)
-
-        verify(apiDiscoveryAsyncTaskMock, times(1)).execute("https://localhost:8443")
-
-        assertTrue(assertionsRan1, "Did not run callback 1 assertions - callback 1 was never invoked")
-        assertTrue(assertionsRan2, "Did not run callback 2 assertions - callback 2 was never invoked")
+        verify(httpsClient, times(2)).doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
+        verify(httpsClient).doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
     }
 
     @Test
-    fun `should return error message if maximum number attempts have been made and an error was the last response`() {
-        var assertionsRan = false
-        val exceptionMessage = "Some exception message"
-        val callback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                assertNull(response)
-                assertNotNull(error)
-                assertTrue(error is RuntimeException)
-                assertEquals(error.message, exceptionMessage)
-                assertionsRan = true
-            }
-        }
+    fun `should throw exception when unable to return endpoint after second attempt`() = runAsBlockingTest {
+        given(
+            httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
+        )
+            .willThrow(RuntimeException("some exception 1"))
+            .willThrow(RuntimeException("some exception 2"))
+            .willReturn(firstEndpoint.toString())
 
-        val argumentCaptor = argumentCaptor<Callback<String>>()
-        given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(argumentCaptor.capture(), any())).willReturn(apiDiscoveryAsyncTaskMock)
+        given(
+            httpsClient.doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(expectedEndpoint.toString())
 
-        val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
-        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
-
-        verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
-        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
-        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
-
-        verify(apiDiscoveryAsyncTaskMock, times(2)).execute("https://localhost:8443")
-        assertTrue(assertionsRan, "Did not run callback assertions - callback was never invoked")
-    }
-
-    @Test
-    fun `should return error message if maximum number attempts have been made and an error was the last response - on the second discover call`() {
-        var assertionsRan = 0
-        val exceptionMessage = "Some exception message"
-        val callback = object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-                assertNull(response)
-                assertNotNull(error)
-                assertTrue(error is RuntimeException)
-                assertEquals(error.message, exceptionMessage)
-                assertionsRan++
-            }
-        }
-
-        val argumentCaptor = argumentCaptor<Callback<String>>()
-        given(apiDiscoveryAsyncTaskFactoryMock.getAsyncTask(argumentCaptor.capture(), any())).willReturn(apiDiscoveryAsyncTaskMock)
-
-        val serviceDiscoveryClient = ApiDiscoveryClient(apiDiscoveryAsyncTaskFactoryMock)
-
-        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
-
-        verify(apiDiscoveryAsyncTaskFactoryMock).getAsyncTask(argumentCaptor.capture(), any())
-        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
-        argumentCaptor.firstValue.onResponse(RuntimeException(exceptionMessage), null)
-
-        serviceDiscoveryClient.discover("https://localhost:8443", callback, discoverLinks)
-
-        verify(apiDiscoveryAsyncTaskMock, times(2)).execute("https://localhost:8443")
-        assertEquals(2, assertionsRan, "Did not run callback assertions - callback was never invoked")
-    }
-
-    private fun getEmptyCallback(): Callback<String> {
-        return object : Callback<String> {
-            override fun onResponse(error: Exception?, response: String?) {
-            }
+        try {
+            apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Could not discover session endpoint", ace.message)
+            assertEquals("some exception 2", ace.cause?.message)
+        } catch (ex: Exception) {
+            fail("expected to get AccessCheckoutException but did not")
         }
     }
 }

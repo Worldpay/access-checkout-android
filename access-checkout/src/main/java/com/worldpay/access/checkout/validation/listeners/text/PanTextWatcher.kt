@@ -81,7 +81,6 @@ internal class PanTextWatcher(
         }
 
         handleCardBrandChange(brand)
-
         validate(newPan, cardValidationRule, brand)
 
         if (newPan != panText) {

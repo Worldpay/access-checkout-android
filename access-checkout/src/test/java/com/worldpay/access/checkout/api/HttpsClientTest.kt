@@ -5,6 +5,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.testutils.removeWhitespace
 import java.io.ByteArrayOutputStream
 import java.io.InputStream
@@ -12,17 +13,20 @@ import java.io.Serializable
 import java.net.ConnectException
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
-import kotlin.test.assertFailsWith
 import kotlin.test.assertTrue
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.fail
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.verify
 import org.mockito.Mock
 import org.mockito.Mockito
-import org.mockito.Mockito.times
 
+@ExperimentalCoroutinesApi
 class HttpsClientTest {
 
     private lateinit var urlFactory: URLFactory
@@ -38,19 +42,22 @@ class HttpsClientTest {
     @Mock
     private lateinit var url: URL
 
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
+
     @Before
-    fun setup() {
+    fun setup() = runAsBlockingTest {
         urlFactory = mock()
         deserializer = mock()
         serializer = mock()
         clientErrorDeserializer = mock()
         url = mock()
-        httpsClient = HttpsClient(urlFactory, clientErrorDeserializer)
+        httpsClient = HttpsClient(coroutinesTestRule.testDispatcher, urlFactory, clientErrorDeserializer)
         httpsUrlConnection = mock()
     }
 
     @Test
-    fun givenValidRequest_shouldReturnSuccessfulResponseOnPost() {
+    fun givenValidRequest_shouldReturnSuccessfulResponseOnPost() = runAsBlockingTest {
         val testResponseAsString = removeWhitespace(
             """{
                 "property": "abcdef"
@@ -73,7 +80,7 @@ class HttpsClientTest {
     }
 
     @Test
-    fun givenErrorWhenReadingResponseBody_ThenShouldThrowAccessCheckoutExceptionOnPost() {
+    fun givenErrorWhenReadingResponseBody_ThenShouldThrowAccessCheckoutExceptionOnPost() = runAsBlockingTest {
         val errorMessage = "Some message"
 
         val inputStream = Mockito.mock(InputStream::class.java) {
@@ -85,90 +92,105 @@ class HttpsClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals(errorMessage, ace.message)
+            assertTrue(ace.cause is RuntimeException)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals(errorMessage, exception.message)
-        assertTrue(exception.cause is java.lang.RuntimeException)
     }
 
     @Test
-    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBodyOnPost() {
+    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBodyOnPost() = runAsBlockingTest {
         val errorMessage = "A server error occurred when trying to make the request"
 
         stubErrorResponse(responseCode = 500, message = "")
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals(errorMessage, ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals(errorMessage, exception.message)
     }
 
     @Test
-    fun shouldThrowExceptionWhenStatusCodeIsBelow200ForPost() {
+    fun shouldThrowExceptionWhenStatusCodeIsBelow200ForPost() = runAsBlockingTest {
         val errorMessage = "A server error occurred when trying to make the request"
 
         stubErrorResponse(responseCode = 100, message = "")
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals(errorMessage, ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals(errorMessage, exception.message)
     }
 
     @Test
-    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithMessageFromServerWhenBodyInResponseOnPost() {
+    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithMessageFromServerWhenBodyInResponseOnPost() = runAsBlockingTest {
         stubErrorResponse(responseCode = 500, responseBody = "Some exception occurred", message = "Some http message")
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Error message was: Some http message. Error response was: Some exception occurred", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("Error message was: Some http message. Error response was: Some exception occurred", exception.message)
     }
 
     @Test
-    fun givenHttp400ErrorWithResponseBody_ThenShouldThrowAccessCheckoutExceptionWithErrorResponseFromServerOnPost() {
-        val errorMessage = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
-        val expectedException = AccessCheckoutException(errorMessage)
-        val responseBody =
-            removeWhitespace(
-                """{
-                        "errorName": "bodyDoesNotMatchSchema",
-                        "message": "The json body provided does not match the expected schema",
-                        "validationErrors": [
-                            {
-                                "errorName": "fieldHasInvalidValue",
-                                "message": "Identity is invalid",
-                                "jsonPath": "${'$'}.identity"
-                            }
-                        ]
-                    }"""
-            )
+    fun givenHttp400ErrorWithResponseBody_ThenShouldThrowAccessCheckoutExceptionWithErrorResponseFromServerOnPost() =
+        runAsBlockingTest {
+            val errorMessage = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
+            val responseBody =
+                removeWhitespace(
+                    """{
+                            "errorName": "bodyDoesNotMatchSchema",
+                            "message": "The json body provided does not match the expected schema",
+                            "validationErrors": [
+                                {
+                                    "errorName": "fieldHasInvalidValue",
+                                    "message": "Identity is invalid",
+                                    "jsonPath": "${'$'}.identity"
+                                }
+                            ]
+                        }"""
+                )
 
-        stubErrorResponse(responseCode = 400, responseBody = responseBody, message = errorMessage)
-        given(clientErrorDeserializer.deserialize(responseBody)).willReturn(expectedException)
+            stubErrorResponse(responseCode = 400, responseBody = responseBody, message = errorMessage)
+            given(clientErrorDeserializer.deserialize(responseBody)).willThrow(AccessCheckoutException(errorMessage))
 
-        given(serializer.serialize(testRequest)).willReturn(testRequestString)
+            given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
-            httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            try {
+                httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+                fail("Expected exception but got none")
+            } catch (ace: AccessCheckoutException) {
+                assertEquals(errorMessage, ace.message)
+            } catch (ex: Exception) {
+                fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
+            }
         }
 
-        assertEquals(expectedException, exception)
-    }
-
     @Test
-    fun givenHttp400ErrorWithNoResponseBody_ThenShouldThrowAccessCheckoutExceptionWithoutAnyErrorResponseBodyOnPost() {
+    fun givenHttp400ErrorWithNoResponseBody_ThenShouldThrowAccessCheckoutExceptionWithoutAnyErrorResponseBodyOnPost() = runAsBlockingTest {
         val errorMessage = "bodyIsEmpty : The body within the request is empty"
         val expectedException = AccessCheckoutException(errorMessage)
 
@@ -184,69 +206,87 @@ class HttpsClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals(errorMessage, ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals(expectedException, exception)
     }
 
     @Test
-    fun givenHttp400ErrorWithEmptyResponseData_ThenShouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBodyOnPost() {
+    fun givenHttp400ErrorWithEmptyResponseData_ThenShouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBodyOnPost() = runAsBlockingTest {
         stubErrorResponse(responseCode = 400, message = "Some Client Error")
-        val expectedException = AccessCheckoutException("Error message was: Some Client Error")
+        val errorMessage = "Error message was: Some Client Error"
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals(errorMessage, ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals(expectedException, exception)
     }
 
     @Test
-    fun givenServerCannotBeReached_ThenShouldThrowAccessCheckoutExceptionWithCauseOnPost() {
+    fun givenServerCannotBeReached_ThenShouldThrowAccessCheckoutExceptionWithCauseOnPost() = runAsBlockingTest {
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
         given(url.openConnection()).willThrow(ConnectException())
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertTrue { ace.cause is ConnectException }
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertTrue(exception.cause is ConnectException)
     }
 
     @Test
-    fun givenSerializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnPost() {
+    fun givenSerializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnPost() = runAsBlockingTest {
         given(serializer.serialize(testRequest)).willThrow(RuntimeException())
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals(
+                "An exception was thrown when trying to establish a connection",
+                ace.message
+            )
+            assertTrue { ace.cause is java.lang.RuntimeException }
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("An exception was thrown when trying to establish a connection", exception.message)
-        assertTrue(exception.cause is java.lang.RuntimeException)
     }
 
     @Test
-    fun givenDeserializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnPost() {
+    fun givenDeserializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnPost() = runAsBlockingTest {
         val responseBody = "{}"
         stubResponse(responseCode = 201, responseBody = responseBody)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
         given(deserializer.deserialize(responseBody)).willThrow(RuntimeException())
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("An exception was thrown when trying to establish a connection", ace.message)
+            assertTrue { ace.cause is java.lang.RuntimeException }
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("An exception was thrown when trying to establish a connection", exception.message)
-        assertTrue(exception.cause is java.lang.RuntimeException)
     }
 
     @Test
-    fun givenRedirectSentByServer_ThenShouldFollowRedirectOnPost() {
+    fun givenRedirectSentByServer_ThenShouldFollowRedirectOnPost() = runAsBlockingTest {
         val testResponseAsString = removeWhitespace(
             """{
                 "property": "abcdef"
@@ -280,20 +320,23 @@ class HttpsClientTest {
     }
 
     @Test
-    fun givenRedirectSentWithNoLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnPost() {
+    fun givenRedirectSentWithNoLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnPost() = runAsBlockingTest {
         stubResponse(responseCode = 301)
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Response from server was a redirect HTTP response code: 301 but did not include a Location header", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("Response from server was a redirect HTTP response code: 301 but did not include a Location header", exception.message)
     }
 
     @Test
-    fun givenRedirectSentWithEmptyLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnPost() {
+    fun givenRedirectSentWithEmptyLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnPost() = runAsBlockingTest {
         val redirectResponseCode = 301
 
         given(url.openConnection()).willReturn(httpsUrlConnection)
@@ -306,15 +349,18 @@ class HttpsClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doPost(url, testRequest, newHashMap(mapOf(Pair("key", "value"))), serializer, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
     }
 
     @Test
-    fun givenValidRequest_shouldReturnSuccessfulResponseOnGet() {
+    fun givenValidRequest_shouldReturnSuccessfulResponseOnGet() = runAsBlockingTest {
 
         val testResponseAsString = removeWhitespace(
             """{
@@ -334,7 +380,7 @@ class HttpsClientTest {
     }
 
     @Test
-    fun givenErrorWhenReadingResponseBody_ThenShouldThrowAccessCheckoutExceptionOnGet() {
+    fun givenErrorWhenReadingResponseBody_ThenShouldThrowAccessCheckoutExceptionOnGet() = runAsBlockingTest {
         val errorMessage = "Some message"
 
         val inputStream = Mockito.mock(InputStream::class.java) {
@@ -348,53 +394,65 @@ class HttpsClientTest {
         given(httpsUrlConnection.outputStream).willReturn(ByteArrayOutputStream())
         given(httpsUrlConnection.responseMessage).willReturn("")
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals(errorMessage, ace.message)
+            assertTrue { ace.cause is RuntimeException }
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals(errorMessage, exception.message)
-        assertTrue(exception.cause is java.lang.RuntimeException)
     }
 
     @Test
-    fun shouldThrowExceptionWhenStatusCodeIsBelow200ForGet() {
+    fun shouldThrowExceptionWhenStatusCodeIsBelow200ForGet() = runAsBlockingTest {
         val errorMessage = "A server error occurred when trying to make the request"
 
         stubErrorResponse(responseCode = 100, message = "")
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals(errorMessage, ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals(errorMessage, exception.message)
     }
 
     @Test
-    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBodyOnGet() {
+    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBodyOnGet() = runAsBlockingTest {
         stubErrorResponse(responseCode = 500)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("A server error occurred when trying to make the request", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("A server error occurred when trying to make the request", exception.message)
     }
 
     @Test
-    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithMessageFromServerWhenBodyInResponseOnGet() {
+    fun givenHttp500Error_ThenShouldThrowAccessCheckoutErrorWithMessageFromServerWhenBodyInResponseOnGet() = runAsBlockingTest {
         stubErrorResponse(responseCode = 500, responseBody = "Some exception occurred", message = "Some http message")
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Error message was: Some http message. Error response was: Some exception occurred", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("Error message was: Some http message. Error response was: Some exception occurred", exception.message)
     }
 
     @Test
-    fun givenHttp400ErrorWithResponseBody_ThenShouldThrowAccessCheckoutExceptionWithErrorResponseFromServerOnGet() {
+    fun givenHttp400ErrorWithResponseBody_ThenShouldThrowAccessCheckoutExceptionWithErrorResponseFromServerOnGet() = runAsBlockingTest {
         val errorMessage = "The json body provided does not match the expected schema"
         val responseBody = """{
                                 "errorName": "bodyDoesNotMatchSchema",
@@ -410,67 +468,82 @@ class HttpsClientTest {
 
         stubErrorResponse(responseCode = 400, responseBody = responseBody, message = errorMessage)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Error message was: $errorMessage. Error response was: ${responseBody.replace("\n", "")}", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("Error message was: $errorMessage. Error response was: ${responseBody.replace("\n", "")}", exception.message)
     }
 
     @Test
-    fun givenHttp400ErrorWithNoResponseBody_ThenShouldThrowAccessCheckoutExceptionWithoutAnyErrorResponseBodyOnGet() {
+    fun givenHttp400ErrorWithNoResponseBody_ThenShouldThrowAccessCheckoutExceptionWithoutAnyErrorResponseBodyOnGet() = runAsBlockingTest {
         val errorMessage = "Cannot deserialize empty string"
 
         stubErrorResponse(responseCode = 400, responseBody = "", message = errorMessage)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Error message was: $errorMessage", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("Error message was: $errorMessage", exception.message)
     }
 
     @Test
-    fun givenHttp400ErrorWithEmptyResponseData_ThenShouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBodyOnGet() {
+    fun givenHttp400ErrorWithEmptyResponseData_ThenShouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBodyOnGet() = runAsBlockingTest {
         stubErrorResponse(responseCode = 400, message = "Some Client Error")
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Error message was: Some Client Error", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("Error message was: Some Client Error", exception.message)
     }
 
     @Test
-    fun givenServerCannotBeReached_ThenShouldThrowAccessCheckoutExceptionWithCauseOnGet() {
+    fun givenServerCannotBeReached_ThenShouldThrowAccessCheckoutExceptionWithCauseOnGet() = runAsBlockingTest {
         given(url.openConnection()).willThrow(ConnectException())
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertTrue { ace.cause is ConnectException }
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertTrue(exception.cause is ConnectException)
     }
 
     @Test
-    fun givenDeserializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnGet() {
+    fun givenDeserializationException_ThenShouldThrowAccessCheckoutExceptionWithCauseAndMessageOnGet() = runAsBlockingTest {
         val responseBody = "{}"
         stubResponse(responseCode = 201, responseBody = responseBody)
 
         given(deserializer.deserialize(responseBody)).willThrow(RuntimeException())
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("An exception was thrown when trying to establish a connection", ace.message)
+            assertTrue { ace.cause is java.lang.RuntimeException }
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("An exception was thrown when trying to establish a connection", exception.message)
-        assertTrue(exception.cause is java.lang.RuntimeException)
     }
 
     @Test
-    fun givenRedirectSentByServer_ThenShouldFollowRedirectOnGet() {
+    fun givenRedirectSentByServer_ThenShouldFollowRedirectOnGet() = runAsBlockingTest {
         val testResponseAsString = removeWhitespace(
             """{
                 "property": "abcdef"
@@ -500,7 +573,7 @@ class HttpsClientTest {
     }
 
     @Test
-    fun givenRedirectSentWithNoLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnGet() {
+    fun givenRedirectSentWithNoLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnGet() = runAsBlockingTest {
         val redirectResponseCode = 301
 
         given(url.openConnection()).willReturn(httpsUrlConnection)
@@ -508,25 +581,31 @@ class HttpsClientTest {
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("Response from server was a redirect HTTP response code: $redirectResponseCode but did not include a Location header", exception.message)
     }
 
     @Test
-    fun givenRedirectSentWithEmptyLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnGet() {
+    fun givenRedirectSentWithEmptyLocationHeaderByServer_ThenShouldThrowAccessCheckoutHttpExceptionOnGet() = coroutinesTestRule.testDispatcher.runAsBlockingTest {
         stubResponse(responseCode = 301)
         given(httpsUrlConnection.getHeaderField("Location")).willReturn("")
 
         given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
-        val exception = assertFailsWith<AccessCheckoutException> {
+        try {
             httpsClient.doGet(url, deserializer)
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("Response from server was a redirect HTTP response code: 301 but did not include a Location header", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        assertEquals("Response from server was a redirect HTTP response code: 301 but did not include a Location header", exception.message)
     }
 
     private fun stubErrorResponse(

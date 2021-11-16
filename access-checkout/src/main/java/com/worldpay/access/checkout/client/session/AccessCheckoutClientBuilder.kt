@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFac
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactory
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
+import java.net.URL
 
 /**
  * A builder that returns an [AccessCheckoutClient] for the client to use for session generation
@@ -93,7 +94,7 @@ class AccessCheckoutClientBuilder {
         validateNotNull(lifecycleOwner, "lifecycle owner")
 
         val tokenRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
-            .baseUrl(baseUrl as String)
+            .baseUrl(URL(baseUrl as String))
             .merchantId(merchantId as String)
             .context(context as Context)
             .externalSessionResponseListener(externalSessionResponseListener as SessionResponseListener)

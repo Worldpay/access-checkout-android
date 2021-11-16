@@ -17,6 +17,16 @@ internal class ActivityLifecycleObserver(
 
     companion object {
         var inLifeCycleState = false
+        val messageQueue = mutableListOf<() -> Any>()
+
+        fun sendToMessageQueue(fn: () -> Any) {
+            messageQueue.add(fn)
+        }
+
+        fun processMessageQueue() {
+            messageQueue.forEach { it.invoke() }
+            messageQueue.clear()
+        }
     }
 
     init {
@@ -39,6 +49,7 @@ internal class ActivityLifecycleObserver(
     internal fun onResume() {
         Log.d(tag, "On Resume")
         inLifeCycleState = false
+        processMessageQueue()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)

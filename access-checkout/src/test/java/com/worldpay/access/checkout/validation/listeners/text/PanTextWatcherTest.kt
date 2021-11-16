@@ -15,6 +15,7 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUH
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
@@ -26,10 +27,17 @@ import com.worldpay.access.checkout.validation.validators.PanValidator.PanValida
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 
+@ExperimentalCoroutinesApi
 class PanTextWatcherTest {
+
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
     private val cvcValidationRuleManager = mock<CVCValidationRuleManager>()
     private val panValidator = mock<PanValidator>()
@@ -48,7 +56,7 @@ class PanTextWatcherTest {
     private lateinit var panTextWatcher: PanTextWatcher
 
     @Before
-    fun setup() {
+    fun setup() = runAsBlockingTest {
         mockSuccessfulCardConfiguration()
 
         panTextWatcher = PanTextWatcher(

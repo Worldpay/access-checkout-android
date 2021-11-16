@@ -1,26 +1,30 @@
 package com.worldpay.access.checkout.api
 
-import android.util.Log
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.api.configuration.CardConfigurationAsyncTask
+import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
-import kotlin.test.assertNull
-import org.awaitility.Awaitility.await
+import kotlin.test.assertNotNull
+import kotlin.test.fail
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.After
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 
+@ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
 class CardConfigurationIntegrationTest {
+
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
     private val applicationContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
 
@@ -98,7 +102,7 @@ class CardConfigurationIntegrationTest {
     }
 
     @Test
-    fun givenCardConfigurationAvailable_ThenCardConfigurationAsyncTaskCanFetchCardConfiguration() {
+    fun shouldBeAbleToRetrieveCardConfiguration() = runBlocking<Unit> {
         stubFor(
             get(cardConfigurationEndpoint)
                 .willReturn(
@@ -109,26 +113,14 @@ class CardConfigurationIntegrationTest {
                 )
         )
 
-        var cardConfiguration: CardConfiguration? = null
+        val cardConfigurationClient = CardConfigurationClient(getBaseUrl())
+        val cardConfig = cardConfigurationClient.getCardConfiguration()
 
-        val callback = object : Callback<CardConfiguration> {
-            override fun onResponse(error: Exception?, response: CardConfiguration?) {
-                cardConfiguration = response
-            }
-        }
-
-        val asyncTask = CardConfigurationAsyncTask(callback)
-
-        asyncTask.execute(getBaseUrl())
-
-        await().atMost(5, TimeUnit.SECONDS).until {
-            Log.d("CardConfigurationIntegrationTest", "Got card configuration: $cardConfiguration")
-            cardConfiguration != null
-        }
+        assertNotNull(cardConfig)
     }
 
     @Test
-    fun givenAnErrorFetchingCardConfiguration_ThenExceptionIsPassedBackToCallback() {
+    fun shouldThrowExceptionWhenFailingToGetCardConfiguration() = runBlocking {
         stubFor(
             get(cardConfigurationEndpoint)
                 .willReturn(
@@ -137,21 +129,14 @@ class CardConfigurationIntegrationTest {
                 )
         )
 
-        var assertionDone = false
-        val expectedException = AccessCheckoutException("Error message was: Server Error")
-
-        val callback = object : Callback<CardConfiguration> {
-            override fun onResponse(error: Exception?, response: CardConfiguration?) {
-                assertEquals(expectedException, error)
-                assertNull(response)
-                assertionDone = true
-            }
+        try {
+            val cardConfigurationClient = CardConfigurationClient(getBaseUrl())
+            cardConfigurationClient.getCardConfiguration()
+            fail("Expected exception but got none")
+        } catch (ace: AccessCheckoutException) {
+            assertEquals("There was an error when trying to fetch the card configuration", ace.message)
+        } catch (ex: Exception) {
+            fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
-
-        val asyncTask = CardConfigurationAsyncTask(callback)
-
-        asyncTask.execute(getBaseUrl())
-
-        await().atMost(5, TimeUnit.SECONDS).until { assertionDone }
     }
 }
