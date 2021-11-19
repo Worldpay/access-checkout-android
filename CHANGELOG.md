@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 #### Changed
 
+### [v2.4.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.4.0) - 2021-11-22
+#### Changed
+- Replaced deprecated ASyncTasks by coroutines 
+
 ### [v2.3.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.3.0) - 2021-10-18
 #### Added
 - Now supporting Android API Level 30
