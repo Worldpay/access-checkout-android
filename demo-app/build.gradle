@@ -46,7 +46,7 @@ android {
 }
 
 dependencies {
-    implementation project(':access-checkout')
+    implementation 'com.worldpay.access:access-checkout-android:2.4.0'
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
