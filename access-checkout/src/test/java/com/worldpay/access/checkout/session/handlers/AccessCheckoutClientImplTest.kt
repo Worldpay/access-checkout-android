@@ -9,11 +9,11 @@ import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
+import com.worldpay.access.checkout.session.ActivityLifecycleObserver
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
-import kotlin.test.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
@@ -23,6 +23,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
+import kotlin.test.assertEquals
 
 @RunWith(PlainRobolectricTestRunner::class)
 class AccessCheckoutClientImplTest {
@@ -36,14 +37,17 @@ class AccessCheckoutClientImplTest {
     private val cvcSessionRequestHandlerMock = mock(CvcSessionRequestHandler::class.java)
     private val cardSessionRequestHandlerMock = mock(CardSessionRequestHandler::class.java)
     private val tokenHandlerFactoryMock = mock(SessionRequestHandlerFactory::class.java)
-    private val activityLifecycleEventHandlerFactory = mock(ActivityLifecycleObserverInitialiser::class.java)
+    private val activityLifecycleObserverInitialiser =
+        mock(ActivityLifecycleObserverInitialiser::class.java)
 
     @Before
     fun setup() {
         given(lifecycleOwnerMock.lifecycle).willReturn(lifecycleMock)
         val handlers = listOf(cvcSessionRequestHandlerMock, cardSessionRequestHandlerMock)
         given(tokenHandlerFactoryMock.getTokenHandlers()).willReturn(handlers)
-        given(localBroadcastManagerFactoryMock.createInstance()).willReturn(localBroadcastManagerMock)
+        given(localBroadcastManagerFactoryMock.createInstance()).willReturn(
+            localBroadcastManagerMock
+        )
     }
 
     @Test
@@ -51,7 +55,7 @@ class AccessCheckoutClientImplTest {
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
                 tokenHandlerFactoryMock,
-                activityLifecycleEventHandlerFactory,
+                activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
                 contextMock
             )
@@ -63,7 +67,7 @@ class AccessCheckoutClientImplTest {
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
                 tokenHandlerFactoryMock,
-                activityLifecycleEventHandlerFactory,
+                activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
                 contextMock
             )
@@ -90,12 +94,12 @@ class AccessCheckoutClientImplTest {
     fun `should retrieve activity lifecycle event handler when client is created`() {
         AccessCheckoutClientImpl(
             tokenHandlerFactoryMock,
-            activityLifecycleEventHandlerFactory,
+            activityLifecycleObserverInitialiser,
             localBroadcastManagerFactoryMock,
             contextMock
         )
 
-        verify(activityLifecycleEventHandlerFactory).initialise()
+        verify(activityLifecycleObserverInitialiser).initialise()
     }
 
     @Test
@@ -111,7 +115,7 @@ class AccessCheckoutClientImplTest {
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
                 tokenHandlerFactoryMock,
-                activityLifecycleEventHandlerFactory,
+                activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
                 contextMock
             )
@@ -134,7 +138,7 @@ class AccessCheckoutClientImplTest {
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
                 tokenHandlerFactoryMock,
-                activityLifecycleEventHandlerFactory,
+                activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
                 contextMock
             )
@@ -160,7 +164,7 @@ class AccessCheckoutClientImplTest {
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
                 tokenHandlerFactoryMock,
-                activityLifecycleEventHandlerFactory,
+                activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
                 contextMock
             )
@@ -183,7 +187,7 @@ class AccessCheckoutClientImplTest {
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
                 tokenHandlerFactoryMock,
-                activityLifecycleEventHandlerFactory,
+                activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
                 contextMock
             )
@@ -192,5 +196,23 @@ class AccessCheckoutClientImplTest {
 
         verify(cardSessionRequestHandlerMock, never()).handle(cardDetails)
         verify(cvcSessionRequestHandlerMock, never()).handle(cardDetails)
+    }
+
+    @Test
+    fun `should call activityLifeCycleObserver onStop() when dispose() is called`() {
+        val activityLifecycleObserver = mock(ActivityLifecycleObserver::class.java)
+        given(activityLifecycleObserverInitialiser.initialise()).willReturn(
+            activityLifecycleObserver
+        )
+        val accessCheckoutClient = AccessCheckoutClientImpl(
+            tokenHandlerFactoryMock,
+            activityLifecycleObserverInitialiser,
+            localBroadcastManagerFactoryMock,
+            contextMock
+        )
+
+        accessCheckoutClient.dispose()
+
+        verify(activityLifecycleObserver).onStop()
     }
 }
