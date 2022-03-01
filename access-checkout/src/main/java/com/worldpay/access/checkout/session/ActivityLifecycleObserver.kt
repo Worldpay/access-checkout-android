@@ -34,13 +34,13 @@ internal class ActivityLifecycleObserver(
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
-    internal fun startListener() {
+    internal fun onStart() {
         Log.d(tag, "On Start")
         sessionBroadcastManager.register()
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_STOP)
-    internal fun stopListener() {
+    internal fun onStop() {
         Log.d(tag, "On Stop")
         sessionBroadcastManager.unregister()
     }

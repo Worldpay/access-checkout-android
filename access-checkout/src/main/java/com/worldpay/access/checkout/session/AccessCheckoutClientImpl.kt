@@ -18,9 +18,8 @@ internal class AccessCheckoutClientImpl(
     private val context: Context
 ) : AccessCheckoutClient {
 
-    init {
+    private val activityLifecycleObserver: ActivityLifecycleObserver =
         activityLifecycleObserverInitialiser.initialise()
-    }
 
     override fun generateSessions(cardDetails: CardDetails, sessionTypes: List<SessionType>) {
         broadcastSessionTypeInfo(sessionTypes)
@@ -38,5 +37,9 @@ internal class AccessCheckoutClientImpl(
         broadcastIntent.putExtra(NUMBER_OF_SESSION_TYPE_KEY, sessionTypes.size)
         broadcastIntent.action = NUM_OF_SESSION_TYPES_REQUESTED
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
+    }
+
+    internal fun dispose() {
+        activityLifecycleObserver.onStop()
     }
 }
