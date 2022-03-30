@@ -35,6 +35,7 @@ internal class ExpiryDateValidator(private val now: Calendar = Calendar.getInsta
         val cal = Calendar.getInstance()
 
         cal.set(Calendar.YEAR, parseInt("${getYearPrefix(now)}$year"))
+        cal.set(Calendar.DATE, 1)
         cal.set(Calendar.MONTH, month - 1)
         cal.set(Calendar.DATE, cal.getActualMaximum(Calendar.DATE))
 
