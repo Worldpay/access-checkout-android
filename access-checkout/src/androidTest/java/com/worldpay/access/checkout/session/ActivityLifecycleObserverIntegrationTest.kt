@@ -9,10 +9,14 @@ import com.worldpay.access.checkout.client.session.listener.SessionResponseListe
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
+import org.awaitility.Duration.ONE_SECOND
+import org.awaitility.kotlin.await
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito
+import org.mockito.Mockito.spy
+import org.mockito.Mockito.verify
 
 class ActivityLifecycleObserverIntegrationTest {
     private val context = InstrumentationRegistry.getInstrumentation().context
@@ -20,7 +24,7 @@ class ActivityLifecycleObserverIntegrationTest {
     private val tag = "some-tag"
     private val sessionBroadcastManagerFactory = createSessionBroadcastManagerFactory(context)
     private val lifecycleOwner: LifecycleOwner = Mockito.mock(LifecycleOwner::class.java)
-    private var lifecycleRegistry = LifecycleRegistry(lifecycleOwner)
+    private var lifecycleRegistry = spy(LifecycleRegistry(lifecycleOwner))
 
     @Before
     fun setup() {
@@ -29,13 +33,27 @@ class ActivityLifecycleObserverIntegrationTest {
 
     @Test
     fun shouldNotThrowExceptionWhenNotInitialisedOnMainThread() {
-        ActivityLifecycleObserver(tag, lifecycleOwner, sessionBroadcastManagerFactory)
+        val observer =
+            ActivityLifecycleObserver(tag, lifecycleOwner, sessionBroadcastManagerFactory)
+
+        await.atMost(ONE_SECOND).until {
+            verify(lifecycleRegistry).addObserver(observer)
+            true
+        }
     }
 
     @Test
     fun shouldNotThrowExceptionWhenInitialisedOnMainThread() {
+        var observer: ActivityLifecycleObserver? = null
+
         InstrumentationRegistry.getInstrumentation().runOnMainSync {
-            ActivityLifecycleObserver(tag, lifecycleOwner, sessionBroadcastManagerFactory)
+            observer =
+                ActivityLifecycleObserver(tag, lifecycleOwner, sessionBroadcastManagerFactory)
+        }
+
+        await.atMost(ONE_SECOND).until {
+            verify(lifecycleRegistry).addObserver(observer!!)
+            true
         }
     }
 
