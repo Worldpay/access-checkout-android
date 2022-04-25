@@ -14,7 +14,8 @@ internal class ActivityLifecycleObserver(
     private val tag: String,
     lifecycleOwner: LifecycleOwner,
     sessionBroadcastManagerFactory: SessionBroadcastManagerFactory,
-    private val sessionBroadcastManager: SessionBroadcastManager = sessionBroadcastManagerFactory.createInstance()
+    private val sessionBroadcastManager: SessionBroadcastManager = sessionBroadcastManagerFactory.createInstance(),
+    handler: Handler = Handler(Looper.getMainLooper())
 ) : LifecycleObserver {
 
     companion object {
@@ -32,7 +33,7 @@ internal class ActivityLifecycleObserver(
     }
 
     init {
-        Handler(Looper.getMainLooper()).post {
+        handler.post {
             lifecycleOwner.lifecycle.addObserver(this)
         }
     }

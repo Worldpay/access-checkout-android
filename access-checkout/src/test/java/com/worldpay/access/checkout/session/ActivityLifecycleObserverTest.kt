@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.session
 
+import android.os.Handler
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
@@ -7,8 +8,8 @@ import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManager
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.verify
+import org.mockito.BDDMockito.*
+import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
@@ -26,13 +27,27 @@ class ActivityLifecycleObserverTest {
     @Before
     fun setUp() {
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
-        activityLifeCycleObserver =
-            ActivityLifecycleObserver(
-                tag,
-                lifecycleOwner,
-                sessionBroadcastManagerFactory,
-                sessionBroadcastManager
-            )
+
+        activityLifeCycleObserver = ActivityLifecycleObserver(
+            tag, lifecycleOwner, sessionBroadcastManagerFactory, sessionBroadcastManager
+        )
+    }
+
+    @Test
+    fun `should add instance as a lifecycle observer by posting on the handler`() {
+        val handler = mock(Handler::class.java)
+        `when`(handler.post(any())).then { invocation ->
+            invocation.getArgument<Runnable>(0).run()
+            true
+        }
+
+        activityLifeCycleObserver = ActivityLifecycleObserver(
+            tag, lifecycleOwner, sessionBroadcastManagerFactory, sessionBroadcastManager,
+            handler
+        )
+
+        verify(lifecycle).addObserver(activityLifeCycleObserver)
+        verify(handler).post(any())
     }
 
     @Test
