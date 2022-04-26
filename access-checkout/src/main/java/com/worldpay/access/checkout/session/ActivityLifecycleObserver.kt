@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.session
 
+import android.os.Handler
+import android.os.Looper
 import android.util.Log
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
@@ -12,7 +14,8 @@ internal class ActivityLifecycleObserver(
     private val tag: String,
     lifecycleOwner: LifecycleOwner,
     sessionBroadcastManagerFactory: SessionBroadcastManagerFactory,
-    private val sessionBroadcastManager: SessionBroadcastManager = sessionBroadcastManagerFactory.createInstance()
+    private val sessionBroadcastManager: SessionBroadcastManager = sessionBroadcastManagerFactory.createInstance(),
+    mainLooperHandler: Handler = Handler(Looper.getMainLooper())
 ) : LifecycleObserver {
 
     companion object {
@@ -30,7 +33,13 @@ internal class ActivityLifecycleObserver(
     }
 
     init {
-        lifecycleOwner.lifecycle.addObserver(this)
+        if (Looper.myLooper() == Looper.getMainLooper()) {
+            lifecycleOwner.lifecycle.addObserver(this)
+        } else {
+            mainLooperHandler.post {
+                lifecycleOwner.lifecycle.addObserver(this)
+            }
+        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_START)
