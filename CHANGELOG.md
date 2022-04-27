@@ -8,6 +8,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 
 #### Changed
 
+### [v2.5.1](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.5.1) - 2022-04-27
+#### Changed
+- Fix an issue when using 'androix.lifecycle:lifecycle-runtime' >= 2.3.0 where the AccessCheckoutClientBuilder (actually ActivityLifecycleObserver) throws an exception when not built on main UI thread
+
 ### [v2.5.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.5.0) - tbc
 #### Added
 - Add support of a dispose functionality in order to fix a memory leak when using the SDK in React Native
