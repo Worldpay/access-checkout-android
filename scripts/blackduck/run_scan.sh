@@ -8,8 +8,8 @@ chmod +x ./detect.sh
 SDK_VERSION=$(grep 'version=' access-checkout/gradle.properties | cut -d= -f2)
 if [ $IS_RELEASE_SCAN -eq 0 ]
 then
-  ./detect.sh --blackduck.url="https://fis2.app.blackduck.com/" --blackduck.api.token=$hydra_aco_blackduck_token --blackduck.trust.cert=true --detect.project.name=$BLACKDUCK_PROJECT_NAME --detect.project.version.name=$SDK_VERSION --detect.risk.report.pdf=true --detect.gradle.excluded.projects=demo-app
+  ./detect.sh --blackduck.url="https://fis2.app.blackduck.com/" --blackduck.api.token=$hydra_aco_blackduck_token --blackduck.trust.cert=true --detect.project.name=$BLACKDUCK_PROJECT_NAME --detect.project.version.name=$SDK_VERSION --detect.risk.report.pdf=true --detect.gradle.excluded.configurations=androidTestImplementation,testImplementation
 else
   echo "Executing Release Scan with name $SDK_VERSION-RELEASE"
-  ./detect.sh --blackduck.url="https://fis2.app.blackduck.com/" --blackduck.api.token=$hydra_aco_blackduck_token --blackduck.trust.cert=true --detect.project.name=$BLACKDUCK_PROJECT_NAME --detect.project.version.name="$SDK_VERSION-RELEASE" --detect.risk.report.pdf=true --detect.gradle.excluded.projects=demo-app
+  ./detect.sh --blackduck.url="https://fis2.app.blackduck.com/" --blackduck.api.token=$hydra_aco_blackduck_token --blackduck.trust.cert=true --detect.project.name=$BLACKDUCK_PROJECT_NAME --detect.project.version.name="$SDK_VERSION-RELEASE" --detect.risk.report.pdf=true --detect.gradle.excluded.configurations=androidTestImplementation,testImplementation
 fi
