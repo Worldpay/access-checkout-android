@@ -3,16 +3,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### Unreleased
-#### Added
-
+### v2.5.2 Unreleased
 #### Changed
+- Fix an issue where when inserting a number digits resulting in a pan longer than the max allowed the application crashes due to the caret position calculations.
 
 ### [v2.5.1](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.5.1) - 2022-04-27
 #### Changed
 - Fix an issue when using 'androix.lifecycle:lifecycle-runtime' >= 2.3.0 where the AccessCheckoutClientBuilder (actually ActivityLifecycleObserver) throws an exception when not built on main UI thread
 
-### [v2.5.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.5.0) - tbc
+### [v2.5.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.5.0) - 2022-04-04
 #### Added
 - Add support of a dispose functionality in order to fix a memory leak when using the SDK in React Native
 
