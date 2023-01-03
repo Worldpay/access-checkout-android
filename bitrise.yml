@@ -5,35 +5,35 @@ project_type: android
 workflows:
   deploy:
     steps:
-    - cache-pull@2.4.0: {}
-    - script@1.1.6:
+    - cache-pull@2.7.2: {}
+    - script@1.2.0:
         title: Get project version
         inputs:
           - content: bitrise/scripts/get_project_version.sh
-    - install-missing-android-tools@2.4.1:
+    - install-missing-android-tools@3.1.0:
         inputs:
         - gradlew_path: "gradlew"
-    - android-lint@0.9.8:
+    - android-lint@0.9.11:
         title: "Lint check on app module"
         inputs:
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
-    - android-unit-test@1.0.2:
+    - android-unit-test@1.0.6:
         title: "Unit tests on app module"
         inputs:
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
-    - android-lint@0.9.8:
+    - android-lint@0.9.11:
         title: "Lint check on Library module"
         inputs:
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
-    - android-unit-test@1.0.2:
+    - android-unit-test@1.0.6:
         title: "Unit tests on Library module"
         inputs:
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
-    - script@1.1.6:
+    - script@1.2.0:
         title: Install pact client
         inputs:
           - content: gem install pact_broker-client
@@ -41,19 +41,19 @@ workflows:
         title: "Tag pact with prod"
         inputs:
           - file_path: bitrise/scripts/tag_prod_pact_version.sh
-    - gradle-runner@1.9.6:
+    - gradle-runner@2.0.1:
         title: "Code coverage check"
         inputs:
         - gradlew_path: "gradlew"
         - gradle_task: jacocoTestCoverageVerification
         - gradle_file: "$LIBRARY_MODULE/build.gradle"
-    - deploy-to-bitrise-io@1.11.1:
+    - deploy-to-bitrise-io@2.1.4:
         title: "Export code coverage results to Bitrise"
         inputs:
         - is_compress: 'true'
         - zip_name: jacoco-reports
         - deploy_path: "$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
-    - gradle-runner@1.9.6:
+    - gradle-runner@2.0.1:
         title: Build release artifacts
         inputs:
           - gradlew_path: gradlew
@@ -63,7 +63,7 @@ workflows:
         inputs:
           - destination: "$LIBRARY_MODULE/secring.gpg"
           - source: "$BITRISEIO_GPG_SECRET_KEY_RING_FILE_URL"
-    - gradle-runner@1.9.6:
+    - gradle-runner@2.0.1:
         title: "Deploy to Nexus Staging"
         inputs:
         - gradlew_path: "gradlew"
@@ -85,7 +85,7 @@ workflows:
           - api_token: $GITHUB_PERSONAL_ACCESS_TOKEN
           - pre_release: 'no'
           - draft: 'no'
-    - cache-push@2.3.0: {}
+    - cache-push@2.7.1: {}
 
   primary:
     steps:
@@ -96,35 +96,35 @@ workflows:
             primary-ui-mock
             primary-ui-prod
         - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
-    - cache-pull@2.4.0: {}
-    - install-missing-android-tools@2.4.1:
+    - cache-pull@2.7.2: {}
+    - install-missing-android-tools@3.1.0:
         inputs:
         - gradlew_path: "gradlew"
-    - android-lint@0.9.8:
+    - android-lint@0.9.11:
         title: "Lint check on demo-app module"
         inputs:
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
-    - android-unit-test@1.0.2:
+    - android-unit-test@1.0.6:
         title: "Run unit tests for demo-app module"
         inputs:
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
-    - android-lint@0.9.8:
+    - android-lint@0.9.11:
         title: "Lint check on library module"
         inputs:
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
-    - android-unit-test@1.0.2:
+    - android-unit-test@1.0.6:
         title: "Run unit tests for library module"
         inputs:
         - module: "$LIBRARY_MODULE"
         - variant: "$LIBRARY_VARIANT"
-    - script@1.1.6:
+    - script@1.2.0:
         title: Get project version
         inputs:
           - content: bitrise/scripts/get_project_version.sh --allow-snapshots
-    - script@1.1.6:
+    - script@1.2.0:
         title: Install pact client
         inputs:
           - content: gem install pact_broker-client
@@ -136,63 +136,63 @@ workflows:
         title: "Verify pact tags on broker"
         inputs:
           - file_path: bitrise/scripts/verify_pact_tags.sh
-    - gradle-runner@1.9.6:
+    - gradle-runner@2.0.1:
         title: "Code coverage check"
         inputs:
         - gradlew_path: "gradlew"
         - gradle_task: jacocoTestCoverageVerification
         - gradle_file: "$LIBRARY_MODULE/build.gradle"
-    - deploy-to-bitrise-io@1.11.1:
+    - deploy-to-bitrise-io@2.1.4:
         title: "Export code coverage results to Bitrise"
         inputs:
         - is_compress: 'true'
         - zip_name: jacoco-reports
         - deploy_path: "$LIBRARY_MODULE/build/reports/jacoco/jacocoTestReport/html"
-    - deploy-to-bitrise-io@1.11.1:
+    - deploy-to-bitrise-io@2.1.4:
         title: "Export test report to Bitrise"
         inputs:
           - is_compress: 'true'
           - zip_name: test-reports
           - deploy_path: "$LIBRARY_MODULE/build/reports/tests/testDebugUnitTest"
           - is_always_run: true
-    - gradle-runner@1.9.6:
+    - gradle-runner@2.0.1:
         title: "Generate javadoc documentation"
         inputs:
         - gradlew_path: "gradlew"
         - gradle_task: dokkaJavadoc
         - gradle_file: "$LIBRARY_MODULE/build.gradle"
-    - deploy-to-bitrise-io@1.11.1:
+    - deploy-to-bitrise-io@2.1.4:
         title: "Export javadoc to Bitrise"
         inputs:
         - is_compress: 'true'
         - zip_name: javadoc
         - deploy_path: "$LIBRARY_MODULE/build/dokka/javadoc"
-    - android-build@0.10.3:
+    - android-build@1.0.5:
         title: "Build test APK"
         inputs:
           - variant: "${LIBRARY_VARIANT}AndroidTest"
           - module: "$LIBRARY_MODULE"
-    - script@1.1.6:
+    - script@1.2.0:
         title: "Set path to test APK"
         inputs:
           - content: |-
               #!/bin/bash
               envman add --key "BITRISE_TEST_APK" --value "$BITRISE_APK_PATH"
-    - android-build:
+    - android-build@1.0.5:
         title: "Build app APK"
         inputs:
           - module: "$APP_MODULE"
           - variant: "$APP_PROD_VARIANT"
           - arguments: -PmerchantID=\"${MERCHANT_ID}\"
-    - virtual-device-testing-for-android@1.1.5:
+    - virtual-device-testing-for-android@1.1.8:
         title: "Run integration tests against app"
         inputs:
           - test_type: instrumentation
           - test_apk_path: "$BITRISE_TEST_APK"
           - test_devices: |-
               Pixel2,28,en,portrait
-    - cache-push@2.3.0: {}
-    - build-router-wait@0.12.1:
+    - cache-push@2.7.1: {}
+    - build-router-wait@0.12.4:
         inputs:
           - access_token: "$BITRISE_PERSONAL_ACCESS_TOKEN_PARALLEL_BUILDS"
     - slack@3.1.5:
@@ -206,27 +206,27 @@ workflows:
   primary-ui-mock:
     steps:
       - set-java-version@1: {"11"}
-      - cache-pull@2.4.0: {}
-      - install-missing-android-tools@2.4.1:
+      - cache-pull@2.7.2: {}
+      - install-missing-android-tools@3.1.0:
           inputs:
             - gradlew_path: "gradlew"
-      - android-build@0.10.3:
+      - android-build@1.0.5:
           title: "Build test APK"
           inputs:
             - variant: "${APP_MOCK_VARIANT}AndroidTest"
             - module: "$APP_MODULE"
-      - script@1.1.6:
+      - script@1.2.0:
           title: "Set path to test APK"
           inputs:
             - content: |-
                 #!/bin/bash
                 envman add --key "BITRISE_TEST_MOCK_APK" --value "$BITRISE_APK_PATH"
-      - android-build:
+      - android-build@1.0.5:
           title: "Build app APK"
           inputs:
             - module: "$APP_MODULE"
             - variant: "$APP_MOCK_VARIANT"
-      - virtual-device-testing-for-android@1.1.5:
+      - virtual-device-testing-for-android@1.1.8:
           title: "Run UI tests against app"
           inputs:
             - test_type: instrumentation
@@ -243,32 +243,32 @@ workflows:
                 Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
                 Pixel2,30,en,portrait
-      - cache-push@2.3.0: {}
+      - cache-push@2.7.1: {}
 
   primary-ui-prod:
     steps:
       - set-java-version@1: { "11" }
-      - cache-pull@2.4.0: { }
-      - install-missing-android-tools@2.4.1:
+      - cache-pull@2.7.2: { }
+      - install-missing-android-tools@3.1.0:
           inputs:
             - gradlew_path: "gradlew"
-      - android-build@0.10.3:
+      - android-build@1.0.5:
           title: "Build test APK"
           inputs:
             - variant: "${APP_PROD_VARIANT}AndroidTest"
             - module: "$APP_MODULE"
-      - script@1.1.6:
+      - script@1.2.0:
           title: "Set path to test APK"
           inputs:
             - content: |-
                 #!/bin/bash
                 envman add --key "BITRISE_TEST_PROD_APK" --value "$BITRISE_APK_PATH"
-      - android-build:
+      - android-build@1.0.5:
           title: "Build app APK"
           inputs:
             - module: "$APP_MODULE"
             - variant: "$APP_PROD_VARIANT"
-      - virtual-device-testing-for-android@1.1.5:
+      - virtual-device-testing-for-android@1.1.8:
           title: "Run UI tests against app"
           inputs:
             - test_type: instrumentation
@@ -285,7 +285,7 @@ workflows:
                 Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
                 Pixel2,30,en,portrait
-      - cache-push@2.3.0: { }
+      - cache-push@2.7.1: { }
 app:
   envs:
   - LIBRARY_MODULE: access-checkout
