@@ -16,6 +16,7 @@ import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
+import java.lang.Math.min
 
 internal class PanTextWatcher(
     private val panEditText: EditText,
@@ -201,6 +202,10 @@ internal class PanTextWatcher(
         panEditText.removeTextChangedListener(this)
         panEditText.setText(text)
         panEditText.addTextChangedListener(this)
-        panEditText.setSelection(cursorPosition)
+
+        // guard against outOfBounds exception in an occasional case
+        // where cursorPosition is beyond the text length
+        val selection = min(cursorPosition, text.length)
+        panEditText.setSelection(selection)
     }
 }
