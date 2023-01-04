@@ -335,4 +335,18 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         assertEquals("4444 8333 3222 2111 100", pan.text.toString())
         assertEquals(6, pan.selectionEnd)
     }
+
+    // This test is to cover an issue where the caret position was incorrectly set
+    // after the end of the text
+    @Test
+    fun `should move cursor at the end of the pan when appending pan which would exceed max length`() {
+        pan.setText("4444")
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
+        pan.append("3333222211110000")
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+
+        assertEquals("4444 3333 2222 1111 000", pan.text.toString())
+        assertEquals(23, pan.selectionStart)
+    }
 }
