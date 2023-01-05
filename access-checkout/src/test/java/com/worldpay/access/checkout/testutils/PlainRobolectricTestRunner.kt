@@ -29,5 +29,6 @@ class PlainRobolectricTestRunner(testClass: Class<*>?) : RobolectricTestRunner(t
 
     override fun finallyAfterTest(method: FrameworkMethod?) {}
 
+    @Deprecated("this method is deprecated in the parent class")
     override fun buildGlobalConfig(): Config = Builder().setManifest(Config.NONE).build()
 }
