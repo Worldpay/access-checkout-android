@@ -132,16 +132,16 @@ class CardValidationConfig private constructor(
             validateNotNull(validationListener, "validation listener")
             validateNotNull(lifecycleOwner, "lifecycle owner")
 
-            val sanitisedBaseUrl = sanitise(baseUrl) as String
+            val sanitisedBaseUrl = sanitise(baseUrl)!!
 
             return CardValidationConfig(
-                pan = pan as EditText,
-                expiryDate = expiryDate as EditText,
-                cvc = cvc as EditText,
+                pan = pan!!,
+                expiryDate = expiryDate!!,
+                cvc = cvc!!,
                 acceptedCardBrands = acceptedCardBrands,
                 baseUrl = sanitisedBaseUrl,
-                validationListener = validationListener as AccessCheckoutCardValidationListener,
-                lifecycleOwner = lifecycleOwner as LifecycleOwner,
+                validationListener = validationListener!!,
+                lifecycleOwner = lifecycleOwner!!,
                 enablePanFormatting = enablePanFormatting
             )
         }

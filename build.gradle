@@ -8,11 +8,11 @@ buildscript {
     dependencies {
         // When updating the android gradle tools version from 7.0.2, ensure that the jacoco report
         // is still generated. See the ./access-checkout/gradle/android.gradle file for reasons.
-        classpath 'com.android.tools.build:gradle:7.0.2'
+        classpath 'com.android.tools.build:gradle:7.2.2'
 
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.5.30'
-        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.5.30'
-        classpath 'org.jacoco:org.jacoco.core:0.8.7'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
+        classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.6.21'
+        classpath 'org.jacoco:org.jacoco.core:0.8.8'
         classpath 'io.github.gradle-nexus:publish-plugin:1.1.0'
         classpath 'org.jlleitschuh.gradle:ktlint-gradle:10.1.0'
     }

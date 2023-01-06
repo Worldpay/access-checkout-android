@@ -36,11 +36,9 @@ internal class CvcSessionRequestHandler(
     override fun handle(cardDetails: CardDetails) {
         validateNotNull(cardDetails.cvc, "cvc")
 
-        cardDetails.cvc as String
-
         val cvcSessionRequest =
             CvcSessionRequest(
-                cardDetails.cvc,
+                cardDetails.cvc!!,
                 sessionRequestHandlerConfig.getMerchantId()
             )
 

@@ -130,7 +130,7 @@ internal class CardConfigurationParser : Deserializer<CardConfiguration>() {
         jsonArray.let {
             for (i in 0 until it.length()) {
                 if (it[i] is Int) {
-                    validLengthsList.add(it[i] as Int)
+                    validLengthsList.add(it[i] !!as Int)
                 } else {
                     throw AccessCheckoutException("Expected property type int but got something else")
                 }

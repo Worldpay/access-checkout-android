@@ -17,10 +17,10 @@ internal data class SessionResponse(val links: Links) : Serializable {
             if (this === other) return true
             if (javaClass != other?.javaClass) return false
 
-            other as Links
+            val links = other !!as Links
 
-            if (endpoints != other.endpoints) return false
-            if (!curies.contentEquals(other.curies)) return false
+            if (endpoints != links.endpoints) return false
+            if (!curies.contentEquals(links.curies)) return false
 
             return true
         }

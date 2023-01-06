@@ -46,15 +46,12 @@ internal class CardSessionRequestHandler(
     }
 
     private fun createCardSessionRequest(cardDetails: CardDetails): CardSessionRequest {
-        cardDetails.pan as String
-        cardDetails.cvc as String
-
         val cardExpiryDate = CardExpiryDate(cardDetails.expiryDate!!.month, cardDetails.expiryDate.year)
 
         return CardSessionRequest(
-            cardDetails.pan,
+            cardDetails.pan!!,
             cardExpiryDate,
-            cardDetails.cvc,
+            cardDetails.cvc!!,
             sessionRequestHandlerConfig.getMerchantId()
         )
     }

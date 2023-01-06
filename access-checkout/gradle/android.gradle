@@ -42,7 +42,7 @@ android {
             // and the coverage information in that file is incorrect and reports 0% code coverage.
             //
             // for more information see: https://issuetracker.google.com/issues/195860510
-            testCoverageEnabled = false
+            testCoverageEnabled = true
             debuggable = true
             minifyEnabled = false
             buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")

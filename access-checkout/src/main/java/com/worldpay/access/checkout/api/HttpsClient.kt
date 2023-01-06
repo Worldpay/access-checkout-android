@@ -39,7 +39,7 @@ internal class HttpsClient(
                 try {
                     val requestBody = serializer.serialize(request)
 
-                    httpsUrlConn = url.openConnection() as HttpsURLConnection
+                    httpsUrlConn = url.openConnection() !!as HttpsURLConnection
                     httpsUrlConn.requestMethod = POST_METHOD
                     setRequestProperties(httpsUrlConn, headers)
                     httpsUrlConn.doOutput = true
@@ -91,7 +91,7 @@ internal class HttpsClient(
             async(dispatcher) {
                 var httpsUrlConn: HttpsURLConnection? = null
                 try {
-                    httpsUrlConn = url.openConnection() as HttpsURLConnection
+                    httpsUrlConn = url.openConnection() !!as HttpsURLConnection
                     httpsUrlConn.requestMethod = GET_METHOD
                     setRequestProperties(httpsUrlConn, headers)
                     httpsUrlConn.connectTimeout = CONNECT_TIMEOUT

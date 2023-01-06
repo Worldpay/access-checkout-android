@@ -69,9 +69,9 @@ class CvcValidationConfig private constructor(
             validateNotNull(lifecycleOwner, "lifecycle owner")
 
             return CvcValidationConfig(
-                cvc = cvc as EditText,
-                validationListener = validationListener as AccessCheckoutCvcValidationListener,
-                lifecycleOwner = lifecycleOwner as LifecycleOwner
+                cvc = cvc!!,
+                validationListener = validationListener!!,
+                lifecycleOwner = lifecycleOwner!!
             )
         }
     }

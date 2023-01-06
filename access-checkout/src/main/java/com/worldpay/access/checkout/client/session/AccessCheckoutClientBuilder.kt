@@ -94,24 +94,24 @@ class AccessCheckoutClientBuilder {
         validateNotNull(lifecycleOwner, "lifecycle owner")
 
         val tokenRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
-            .baseUrl(URL(baseUrl as String))
-            .merchantId(merchantId as String)
-            .context(context as Context)
-            .externalSessionResponseListener(externalSessionResponseListener as SessionResponseListener)
+            .baseUrl(URL(baseUrl!!))
+            .merchantId(merchantId!!)
+            .context(context!!)
+            .externalSessionResponseListener(externalSessionResponseListener!!)
             .build()
 
-        val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context as Context)
+        val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context!!)
 
         val activityLifecycleObserverInitialiser = createActivityLifecycleObserverInitialiser(
             localBroadcastManagerFactory,
-            externalSessionResponseListener as SessionResponseListener
+            externalSessionResponseListener!!
         )
 
         return AccessCheckoutClientImpl(
             SessionRequestHandlerFactory(tokenRequestHandlerConfig),
             activityLifecycleObserverInitialiser,
             localBroadcastManagerFactory,
-            context as Context
+            context!!
         )
     }
 
@@ -121,7 +121,7 @@ class AccessCheckoutClientBuilder {
     ): ActivityLifecycleObserverInitialiser {
         return ActivityLifecycleObserverInitialiser(
             javaClass.simpleName,
-            lifecycleOwner as LifecycleOwner,
+            lifecycleOwner!!,
             SessionBroadcastManagerFactory(localBroadcastManagerFactory, externalSessionResponseListener)
         )
     }
