@@ -25,7 +25,7 @@ def classDirs = files([
         fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
 ])
 
-def execData = files("$buildDir/jacoco/testDebugUnitTest.exec")
+def execData = files("$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
 
 def sourceDirs = files(["${project.projectDir}/src/main/java"])
 
