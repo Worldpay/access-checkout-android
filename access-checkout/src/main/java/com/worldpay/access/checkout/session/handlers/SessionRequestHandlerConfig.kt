@@ -53,10 +53,10 @@ internal class SessionRequestHandlerConfig private constructor(
             validateNotNull(externalSessionResponseListener, "session response listener")
 
             return SessionRequestHandlerConfig(
-                baseUrl = baseUrl as URL,
-                merchantId = merchantId as String,
-                context = context as Context,
-                externalSessionResponseListener = externalSessionResponseListener as SessionResponseListener
+                baseUrl = baseUrl!!,
+                merchantId = merchantId!!,
+                context = context!!,
+                externalSessionResponseListener = externalSessionResponseListener!!
             )
         }
     }

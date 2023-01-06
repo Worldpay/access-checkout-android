@@ -31,7 +31,7 @@ internal class ResultHandlerFactory(
                 lifecycleOwner = lifecycleOwner
             )
         }
-        return cvcValidationResultHandler as CvcValidationResultHandler
+        return cvcValidationResultHandler!!
     }
 
     fun getPanValidationResultHandler(): PanValidationResultHandler {
@@ -43,7 +43,7 @@ internal class ResultHandlerFactory(
             )
         }
 
-        return panValidationResultHandler as PanValidationResultHandler
+        return panValidationResultHandler!!
     }
 
     fun getExpiryDateValidationResultHandler(): ExpiryDateValidationResultHandler {
@@ -55,7 +55,7 @@ internal class ResultHandlerFactory(
                     lifecycleOwner = lifecycleOwner
                 )
         }
-        return expiryDateValidationResultHandler as ExpiryDateValidationResultHandler
+        return expiryDateValidationResultHandler!!
     }
 
     fun getBrandChangedHandler(): BrandChangedHandler {
@@ -65,6 +65,6 @@ internal class ResultHandlerFactory(
                 toCardBrandTransformer = ToCardBrandTransformer()
             )
         }
-        return brandChangedHandler as BrandChangedHandler
+        return brandChangedHandler!!
     }
 }

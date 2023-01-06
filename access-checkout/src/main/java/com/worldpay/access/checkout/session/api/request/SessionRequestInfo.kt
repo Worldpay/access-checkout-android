@@ -41,10 +41,10 @@ internal class SessionRequestInfo private constructor(
 
         fun build() =
             SessionRequestInfo(
-                baseUrl as URL,
-                requestBody as SessionRequest,
-                sessionType as SessionType,
-                discoverLinks as DiscoverLinks
+                baseUrl!!,
+                requestBody!!,
+                sessionType!!,
+                discoverLinks!!
             )
     }
 }

@@ -25,8 +25,8 @@ internal class SessionResponseInfo private constructor(
 
         fun build() =
             SessionResponseInfo(
-                responseBody as SessionResponse,
-                sessionType as SessionType
+                responseBody!!,
+                sessionType!!
             )
     }
 }
