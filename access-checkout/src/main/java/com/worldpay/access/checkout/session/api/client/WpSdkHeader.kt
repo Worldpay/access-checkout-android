@@ -6,7 +6,7 @@ import java.lang.RuntimeException
 class WpSdkHeader private constructor() {
     companion object {
         private const val INVALID_VERSION_ERROR_MESSAGE =
-            "Unsupported version format. This functionality only supports access-checkout-react-native semantic versions or default access-checkout-ios version."
+            "Unsupported version format. This functionality only supports access-checkout-react-native semantic versions or default access-checkout-android version."
 
         private const val PRODUCT_NAME = "access-checkout-android/"
         internal const val DEFAULT_VALUE = PRODUCT_NAME + BuildConfig.VERSION_NAME

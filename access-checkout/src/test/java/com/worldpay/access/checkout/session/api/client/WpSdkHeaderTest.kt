@@ -9,7 +9,7 @@ import kotlin.test.assertFailsWith
 
 internal class WpSdkHeaderTest {
     private val expectedErrorMessage =
-        "Unsupported version format. This functionality only supports access-checkout-react-native semantic versions or default access-checkout-ios version."
+        "Unsupported version format. This functionality only supports access-checkout-react-native semantic versions or default access-checkout-android version."
 
     @AfterTest
     fun tearDown() {
@@ -62,7 +62,7 @@ internal class WpSdkHeaderTest {
     }
 
     @Test
-    fun testAllowsToOverrideVersionWithDefaultAccessCheckoutIosVersion() {
+    fun testAllowsToOverrideVersionWithDefaultAccessCheckoutAndroidVersion() {
         val newVersion = "access-checkout-android/" + BuildConfig.VERSION_NAME
 
         WpSdkHeader.overrideValue(newVersion)
@@ -71,7 +71,7 @@ internal class WpSdkHeaderTest {
     }
 
     @Test
-    fun testThrowsErrorWhenAttemptingToOverrideWithAccessCheckoutIosOfDifferentSemanticVersion() {
+    fun testThrowsErrorWhenAttemptingToOverrideWithAccessCheckoutAndroidIfDifferentSemanticVersion() {
         val newVersion = "access-checkout-android/1.2.3"
 
         assertFailsWith<RuntimeException>(
