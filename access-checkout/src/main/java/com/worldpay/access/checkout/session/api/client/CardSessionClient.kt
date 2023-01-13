@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.session.api.client
 
-import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
@@ -25,7 +24,7 @@ internal class CardSessionClient(
         val headers = HashMap<String, String>()
         headers[CONTENT_TYPE_HEADER] = VERIFIED_TOKENS_MEDIA_TYPE
         headers[ACCEPT_HEADER] = VERIFIED_TOKENS_MEDIA_TYPE
-        headers[WP_SDK_PRODUCT_HEADER] = PRODUCT_NAME + BuildConfig.VERSION_NAME
+        headers[WpSdkHeader.name] = WpSdkHeader.value
 
         return httpsClient.doPost(url, request, headers, serializer, deserializer)
     }
