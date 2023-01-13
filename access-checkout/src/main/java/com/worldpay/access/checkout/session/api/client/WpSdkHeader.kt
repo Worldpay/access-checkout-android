@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.session.api.client
 import com.worldpay.access.checkout.BuildConfig
 import java.lang.RuntimeException
 
-class WpSdkHeader {
+class WpSdkHeader private constructor() {
     companion object {
         private const val INVALID_VERSION_ERROR_MESSAGE =
             "Unsupported version format. This functionality only supports access-checkout-react-native semantic versions or default access-checkout-ios version."
