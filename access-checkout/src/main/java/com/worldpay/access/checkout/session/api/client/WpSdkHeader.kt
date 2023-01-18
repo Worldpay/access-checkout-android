@@ -14,7 +14,7 @@ class WpSdkHeader private constructor() {
         internal const val name = "X-WP-SDK"
 
         private var valueField = DEFAULT_VALUE
-        internal val value get() = valueField
+        val value get() = valueField
 
         fun overrideValue(newValue: String) {
             if (!validateVersionForOverride(newValue)) {
