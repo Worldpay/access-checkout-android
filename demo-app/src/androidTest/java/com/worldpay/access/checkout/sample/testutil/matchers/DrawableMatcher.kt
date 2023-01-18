@@ -10,6 +10,7 @@ import android.widget.TextView
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 
+
 class DrawableMatcher(private val resourceId: Int) : TypeSafeMatcher<View>() {
 
     override fun describeTo(description: Description?) {
@@ -51,8 +52,8 @@ class DrawableMatcher(private val resourceId: Int) : TypeSafeMatcher<View>() {
 
             actualDrawable.bounds = bounds
 
-            val bitmap1 = drawDrawableToBitmap(expectedDrawable)
-            val bitmap2 = drawDrawableToBitmap(actualDrawable)
+            val bitmap1 = toBitmap(expectedDrawable)
+            val bitmap2 = toBitmap(actualDrawable)
 
             if (bitmap1.sameAs(bitmap2)) {
                 return true
@@ -60,6 +61,17 @@ class DrawableMatcher(private val resourceId: Int) : TypeSafeMatcher<View>() {
         }
 
         return false
+    }
+
+    private fun toBitmap(drawable: Drawable): Bitmap {
+        val bitmap = Bitmap.createBitmap(
+            drawable.intrinsicWidth,
+            drawable.intrinsicHeight, Bitmap.Config.ARGB_8888
+        )
+        val canvas = Canvas(bitmap)
+        drawable.setBounds(0, 0, canvas.width, canvas.height)
+        drawable.draw(canvas)
+        return bitmap
     }
 
     private fun drawDrawableToBitmap(drawable: Drawable): Bitmap {
