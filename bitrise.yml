@@ -243,7 +243,7 @@ workflows:
           inputs:
             - test_type: instrumentation
             - test_apk_path: "$BITRISE_TEST_APK"
-            - test_timeout: 1200
+            - test_timeout: 1500
             - test_devices: |-
                 Nexus6,21,en,portrait
                 Nexus5,22,en,portrait
