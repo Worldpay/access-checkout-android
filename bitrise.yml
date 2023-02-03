@@ -254,7 +254,7 @@ workflows:
                 Pixel2,27,en,portrait
                 Pixel2,28,en,portrait
                 Pixel2,29,en,portrait
-                Pixel2,30,en,portrait
+                Pixel2.arm,30,en,portrait
                 Pixel2.arm,32,en,portrait
                 Pixel2.arm,33,en,portrait
       - cache-push@2.7.1: { }
