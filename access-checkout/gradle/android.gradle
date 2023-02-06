@@ -1,5 +1,5 @@
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     packagingOptions {
         exclude "**/attach_hotspot_windows.dll"
@@ -19,7 +19,7 @@ android {
 
     defaultConfig {
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 33
         versionCode 1
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"

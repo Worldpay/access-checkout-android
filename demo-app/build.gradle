@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 
 android {
-    compileSdkVersion 30
+    compileSdkVersion 33
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -17,7 +17,7 @@ android {
     defaultConfig {
         applicationId "com.worldpay.access.checkout.sample"
         minSdkVersion 21
-        targetSdkVersion 30
+        targetSdkVersion 33
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -85,7 +85,7 @@ dependencies {
     testImplementation 'com.github.java-json-tools:json-schema-validator:2.2.10'
     testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.1'
+    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test:rules:1.2.0'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
     androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
