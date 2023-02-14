@@ -1,5 +1,1 @@
-<resources>
-    <string name="card_number_hint">Card Number</string>
-    <string name="card_expiry_date_hint">MM/YY</string>
-    <string name="card_cvc_hint">CVC</string>
-</resources>
+<resources />

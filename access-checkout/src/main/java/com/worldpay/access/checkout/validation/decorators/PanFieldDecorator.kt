@@ -29,8 +29,6 @@ internal class PanFieldDecorator(
         panEditText.onFocusChangeListener = panFocusChangeListener
 
         applyFilter(panEditText, panNumericFilter)
-
-        panEditText.setHint(R.string.card_number_hint)
     }
 
     private fun addTextWatcher() {

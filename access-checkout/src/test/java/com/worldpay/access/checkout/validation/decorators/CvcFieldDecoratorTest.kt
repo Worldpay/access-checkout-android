@@ -11,7 +11,6 @@ import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
@@ -22,6 +21,8 @@ import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class CvcFieldDecoratorTest {
@@ -65,12 +66,13 @@ class CvcFieldDecoratorTest {
     }
 
     @Test
-    fun `should add hint to cvc field`() {
+    fun `should not add hint to cvc field`() {
         given(cvcEditText.filters).willReturn(emptyArray())
 
         cvcFieldDecorator.decorate()
 
-        verify(cvcEditText).setHint(R.string.card_cvc_hint)
+        verify(cvcEditText, never()).setHint(anyInt())
+        verify(cvcEditText, never()).setHint(anyString())
     }
 
     @Test

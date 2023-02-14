@@ -29,8 +29,6 @@ internal class ExpiryDateFieldDecorator(
         expiryDateEditText.onFocusChangeListener = expiryDateFocusChangeListener
 
         applyFilter(expiryDateEditText, expiryDateLengthFilter)
-
-        expiryDateEditText.setHint(R.string.card_expiry_date_hint)
     }
 
     private fun addTextWatcher() {

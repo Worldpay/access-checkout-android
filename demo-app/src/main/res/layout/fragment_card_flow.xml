@@ -19,6 +19,7 @@
         android:inputType="number"
         android:maxLines="1"
         android:textColor="@color/DEFAULT"
+        android:hint="@string/card_number_hint"
         app:layout_constraintEnd_toStartOf="@+id/card_flow_brand_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -47,6 +48,7 @@
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="number"
         android:textColor="@color/DEFAULT"
+        android:hint="@string/card_expiry_date_hint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan"
         tools:ignore="TextFields" />
@@ -61,6 +63,7 @@
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="number"
         android:textColor="@color/DEFAULT"
+        android:hint="@string/card_cvc_hint"
         app:layout_constraintStart_toEndOf="@+id/card_flow_expiry_date"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan" />
 

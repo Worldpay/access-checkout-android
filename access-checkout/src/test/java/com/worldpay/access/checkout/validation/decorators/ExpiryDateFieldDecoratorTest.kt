@@ -11,7 +11,6 @@ import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
@@ -22,6 +21,8 @@ import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ExpiryDateFieldDecoratorTest {
@@ -64,12 +65,13 @@ class ExpiryDateFieldDecoratorTest {
     }
 
     @Test
-    fun `should add hint to expiry date field`() {
+    fun `should not add hint to expiry date field`() {
         given(expiryDateEditText.filters).willReturn(emptyArray())
 
         expiryDateFieldDecorator.decorate()
 
-        verify(expiryDateEditText).setHint(R.string.card_expiry_date_hint)
+        verify(expiryDateEditText, never()).setHint(anyInt())
+        verify(expiryDateEditText, never()).setHint(anyString())
     }
 
     @Test
