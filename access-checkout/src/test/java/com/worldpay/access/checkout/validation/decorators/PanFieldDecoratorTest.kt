@@ -11,7 +11,6 @@ import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
-import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.PanNumericFilter
@@ -23,6 +22,8 @@ import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.ArgumentMatchers.anyString
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class PanFieldDecoratorTest {
@@ -63,12 +64,13 @@ class PanFieldDecoratorTest {
     }
 
     @Test
-    fun `should add hint to pan field`() {
+    fun `should not add hint to pan field`() {
         given(panEditText.filters).willReturn(emptyArray())
 
         panFieldDecorator.decorate()
 
-        verify(panEditText).setHint(R.string.card_number_hint)
+        verify(panEditText, never()).setHint(anyInt())
+        verify(panEditText, never()).setHint(anyString())
     }
 
     @Test

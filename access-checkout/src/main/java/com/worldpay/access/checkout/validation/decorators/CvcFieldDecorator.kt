@@ -29,8 +29,6 @@ internal class CvcFieldDecorator(
         cvcEditText.onFocusChangeListener = cvcFocusChangeListener
 
         applyFilter(cvcEditText, cvcLengthFilter)
-
-        cvcEditText.setHint(R.string.card_cvc_hint)
     }
 
     private fun addTextWatcher() {
