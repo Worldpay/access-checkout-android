@@ -31,6 +31,7 @@ internal class PanTextWatcher(
 
     private var cardBrand: RemoteCardBrand? = null
     private var panBefore = ""
+    private var cursorPositionBefore = 0
 
     private var expectedCursorPosition = 0
     private var isSpaceDeleted = false
@@ -38,6 +39,7 @@ internal class PanTextWatcher(
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         super.beforeTextChanged(s, start, count, after)
         panBefore = s.toString()
+        cursorPositionBefore = start
     }
 
     /**
@@ -85,6 +87,9 @@ internal class PanTextWatcher(
         validate(newPan, cardValidationRule, brand)
 
         if (newPan != panText) {
+            if (newPan == panBefore) {
+                expectedCursorPosition = cursorPositionBefore
+            }
             setText(newPan, expectedCursorPosition)
         }
 
