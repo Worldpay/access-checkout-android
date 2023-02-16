@@ -200,7 +200,13 @@ internal class PanTextWatcher(
 
     private fun setText(text: String, cursorPosition: Int) {
         panEditText.removeTextChangedListener(this)
-        panEditText.setText(text)
+
+        // We set the text using editableText rather than using the setText() method to fix an issue
+        // where the backspace key does not delete the whole text when pressed and maintained
+        // on a device virtual keyboard
+        val editable = panEditText.editableText
+        editable.replace(0, editable.length, text, 0, text.length)
+
         panEditText.addTextChangedListener(this)
 
         // guard against outOfBounds exception in an occasional case

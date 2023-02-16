@@ -35,7 +35,8 @@ internal class FieldDecoratorFactory(
             ),
             panFocusChangeListener = focusChangeListenerFactory.createPanFocusChangeListener(),
             panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),
-            panEditText = panEditText
+            panEditText = panEditText,
+            panFormattingEnabled = enablePanFormatting
         )
     }
 
