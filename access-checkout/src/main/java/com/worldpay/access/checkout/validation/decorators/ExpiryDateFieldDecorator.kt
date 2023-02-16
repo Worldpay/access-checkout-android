@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.validation.decorators
 
+import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
-import com.worldpay.access.checkout.R
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationObserver
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
@@ -29,6 +29,8 @@ internal class ExpiryDateFieldDecorator(
         expiryDateEditText.onFocusChangeListener = expiryDateFocusChangeListener
 
         applyFilter(expiryDateEditText, expiryDateLengthFilter)
+
+        expiryDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     private fun addTextWatcher() {

@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.text.Editable
 import android.text.InputFilter
+import android.text.InputType
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
@@ -108,6 +109,14 @@ class CvcFieldDecoratorTest {
         assertEquals(2, captor.firstValue.size)
         assertTrue(captor.firstValue[0] is InputFilter.AllCaps)
         assertTrue(captor.firstValue[1] is CvcLengthFilter)
+    }
+
+    @Test
+    fun `should set expiry date field inputType to number when decorating`() {
+        given(cvcEditText.filters).willReturn(emptyArray())
+        cvcFieldDecorator.decorate()
+
+        verify(cvcEditText).setInputType(InputType.TYPE_CLASS_NUMBER)
     }
 
     @Test
