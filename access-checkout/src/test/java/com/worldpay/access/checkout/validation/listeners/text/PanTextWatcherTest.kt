@@ -32,6 +32,8 @@ import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
+import org.mockito.Mockito.never
 
 @ExperimentalCoroutinesApi
 class PanTextWatcherTest {
@@ -73,6 +75,7 @@ class PanTextWatcherTest {
         given(cvcEditText.text).willReturn(cvcEditable)
         given(cvcEditable.toString()).willReturn("")
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
+        given(panEditText.editableText).willReturn(panEditable)
     }
 
     @Test
@@ -238,6 +241,26 @@ class PanTextWatcherTest {
 
         verify(brandChangedHandler).handle(VISA_BRAND)
         verifyZeroInteractions(cvcValidator)
+    }
+
+    // Setting the reformatted text on the EditText using setText() is causing an issue where
+    // the card number field cannot be deleted entirely using the virtual keyboard backspace key.
+    // The root cause has not been identified, but it seems like it is interrupting the flow of
+    // keyboard events
+    // This is fixed by using the EditText editableText property to manipulate the text
+    @Test
+    fun `should reformat the EditText text using the EditText editableText and not using setText()`() {
+        val unformattedPan = "44  44   333 3  "
+        val reformattedPan = "4444 3333"
+        given(panEditable.toString()).willReturn(unformattedPan)
+        given(panEditable.length).willReturn(unformattedPan.length)
+        given(panFormatter.isFormattingEnabled()).willReturn(true)
+        given(panFormatter.format(any(), any())).willReturn(reformattedPan)
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verify(panEditText, never()).setText(anyString())
+        verify(panEditable).replace(0, unformattedPan.length, reformattedPan, 0, reformattedPan.length)
     }
 
     private fun mockPan(pan: String, isValid: PanValidationResult) {
