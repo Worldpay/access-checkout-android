@@ -13,7 +13,7 @@ internal class PanFieldDecorator(
     private val panFocusChangeListener: PanFocusChangeListener,
     private val panNumericFilter: PanNumericFilter,
     private val panEditText: EditText,
-    private val panFormattingEnabled:Boolean
+    private val panFormattingEnabled: Boolean
 ) : AbstractFieldDecorator(), CardConfigurationObserver {
 
     internal companion object {
@@ -31,9 +31,10 @@ internal class PanFieldDecorator(
 
         applyFilter(panEditText, panNumericFilter)
 
-        panEditText.inputType = when(panFormattingEnabled) {
-            true -> InputType.TYPE_CLASS_DATETIME
-            false -> InputType.TYPE_CLASS_NUMBER
+        if (panFormattingEnabled) {
+            panEditText.inputType = InputType.TYPE_CLASS_DATETIME
+        } else {
+            panEditText.inputType = InputType.TYPE_CLASS_NUMBER
         }
     }
 
