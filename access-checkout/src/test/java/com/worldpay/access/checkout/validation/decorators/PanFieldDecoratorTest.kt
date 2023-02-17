@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.text.Editable
 import android.text.InputFilter
+import android.text.InputType
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
@@ -109,6 +110,26 @@ class PanFieldDecoratorTest {
     }
 
     @Test
+    fun `should set pan field inputType to number when decorating`() {
+        panFieldDecorator = createFieldDecorator(panFormattingEnabled = false)
+        given(panEditText.filters).willReturn(emptyArray())
+
+        panFieldDecorator.decorate()
+
+        verify(panEditText).setInputType(InputType.TYPE_CLASS_NUMBER)
+    }
+
+    @Test
+    fun `should set pan field inputType to datetime when decorating if pan formatting is enabled`() {
+        panFieldDecorator = createFieldDecorator(panFormattingEnabled = true)
+        given(panEditText.filters).willReturn(emptyArray())
+
+        panFieldDecorator.decorate()
+
+        verify(panEditText).setInputType(InputType.TYPE_CLASS_DATETIME)
+    }
+
+    @Test
     fun `should set text when the pan field is in layout`() {
         val panEditable = mock<Editable>()
         given(panEditText.filters).willReturn(emptyArray())
@@ -155,10 +176,11 @@ class PanFieldDecoratorTest {
         verify(fieldDecorator).decorate()
     }
 
-    private fun createFieldDecorator() = PanFieldDecorator(
+    private fun createFieldDecorator(panFormattingEnabled:Boolean=false) = PanFieldDecorator(
         panTextWatcher = panTextWatcher,
         panFocusChangeListener = panFocusChangeListener,
         panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),
-        panEditText = panEditText
+        panEditText = panEditText,
+        panFormattingEnabled
     )
 }

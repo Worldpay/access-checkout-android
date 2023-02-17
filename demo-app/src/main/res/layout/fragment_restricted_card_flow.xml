@@ -16,7 +16,7 @@
         android:layout_marginEnd="8dp"
         android:ems="4"
         android:imeOptions="actionNext|flagNoFullscreen"
-        android:inputType="number"
+        android:inputType="text"
         android:maxLines="1"
         android:textColor="@color/DEFAULT"
         android:hint="@string/card_number_hint"

@@ -16,7 +16,7 @@
         android:layout_marginEnd="24dp"
         android:ems="4"
         android:imeOptions="actionDone|flagNoFullscreen"
-        android:inputType="number"
+        android:inputType="text"
         android:textColor="@color/DEFAULT"
         android:hint="@string/card_cvc_hint"
         app:layout_constraintEnd_toEndOf="parent"

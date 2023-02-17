@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.text.Editable
 import android.text.InputFilter
+import android.text.InputType
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
@@ -86,6 +87,14 @@ class ExpiryDateFieldDecoratorTest {
 
         assertEquals(1, captor.firstValue.size)
         assertTrue(captor.firstValue[0] is ExpiryDateLengthFilter)
+    }
+
+    @Test
+    fun `should set expiry date field inputType to number when decorating`() {
+        given(expiryDateEditText.filters).willReturn(emptyArray())
+        expiryDateFieldDecorator.decorate()
+
+        verify(expiryDateEditText).setInputType(InputType.TYPE_CLASS_NUMBER)
     }
 
     @Test

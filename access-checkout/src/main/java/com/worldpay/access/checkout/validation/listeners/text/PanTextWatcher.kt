@@ -31,6 +31,7 @@ internal class PanTextWatcher(
 
     private var cardBrand: RemoteCardBrand? = null
     private var panBefore = ""
+    private var cursorPositionBefore = 0
 
     private var expectedCursorPosition = 0
     private var isSpaceDeleted = false
@@ -38,6 +39,7 @@ internal class PanTextWatcher(
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         super.beforeTextChanged(s, start, count, after)
         panBefore = s.toString()
+        cursorPositionBefore = start
     }
 
     /**
@@ -85,6 +87,9 @@ internal class PanTextWatcher(
         validate(newPan, cardValidationRule, brand)
 
         if (newPan != panText) {
+            if (newPan == panBefore) {
+                expectedCursorPosition = cursorPositionBefore
+            }
             setText(newPan, expectedCursorPosition)
         }
 
@@ -200,7 +205,13 @@ internal class PanTextWatcher(
 
     private fun setText(text: String, cursorPosition: Int) {
         panEditText.removeTextChangedListener(this)
-        panEditText.setText(text)
+
+        // We set the text using editableText rather than using the setText() method to fix an issue
+        // where the backspace key does not delete the whole text when pressed and maintained
+        // on a device virtual keyboard
+        val editable = panEditText.editableText
+        editable.replace(0, editable.length, text, 0, text.length)
+
         panEditText.addTextChangedListener(this)
 
         // guard against outOfBounds exception in an occasional case
