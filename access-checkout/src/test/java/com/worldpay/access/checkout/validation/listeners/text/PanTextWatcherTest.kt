@@ -263,6 +263,29 @@ class PanTextWatcherTest {
         verify(panEditable).replace(0, unformattedPan.length, reformattedPan, 0, reformattedPan.length)
     }
 
+    @Test
+    fun `should trim to max length and move caret when inserting a new character in pan already as long as max length`() {
+        // this pan is already as long as the max length allowed
+        val panUsedForBeforeTextChanged = "5354335345423423"
+        val maxLength = panUsedForBeforeTextChanged.length
+        // inserting '2' at the start of a pan that's already at max length
+        val panUsedForOnTextChanged = "2${panUsedForBeforeTextChanged}"
+
+        given(panFormatter.isFormattingEnabled()).willReturn(false)
+
+        panTextWatcher.beforeTextChanged(panUsedForBeforeTextChanged, 1, 0, 0)
+        panTextWatcher.onTextChanged(panUsedForOnTextChanged, 0, 0, 1)
+
+        given(panEditable.toString()).willReturn(panUsedForOnTextChanged)
+        given(panEditable.length).willReturn(panUsedForOnTextChanged.length)
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verify(panEditText).setSelection(1)
+
+        val panUsedForReplacement = panUsedForOnTextChanged.substring(0, maxLength)
+        verify(panEditable).replace(0, panUsedForOnTextChanged.length, panUsedForReplacement, 0, maxLength)
+    }
+
     private fun mockPan(pan: String, isValid: PanValidationResult) {
         given(panEditable.toString()).willReturn(pan)
         given(panValidator.validate(eq(pan), any(), any())).willReturn(isValid)

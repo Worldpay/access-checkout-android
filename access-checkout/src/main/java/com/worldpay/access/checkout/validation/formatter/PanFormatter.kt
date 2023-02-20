@@ -9,6 +9,18 @@ import kotlin.math.ceil
 internal class PanFormatter(
     private val enablePanFormatting: Boolean
 ) {
+    // RegEx for Amex brand
+    private val AMEX_ALLOWED_PATTERNS = listOf(
+        "^\\d{0,4}$", // covers 1 group with 0 to 4 digits
+        "^(\\d{4}) ?$", // covers 1 group of exactly 4 digits + an optional trailing space
+        "^(\\d{4}) (\\d{1,6})$", // covers 1 group of exactly of 4 digits + 1 group with 1 to 6 digits
+        "^(\\d{4}) (\\d{6}) ?$", // covers 1 group of exactly of 4 digits + 1 group with of exactly 6 digits + an optional trailing space
+        "^(\\d{4}) (\\d{6}) (\\d{1,5})$") // covers 1 group of exactly of 4 digits + 1 group with of exactly 6 digits + 1 group with 1 to 5 digits
+        .map(String::toRegex)
+
+    // RegEx for all other brands
+    // covers up to 5 groups of 4 digits separated by a space + ability to enter a single group of up to 4 digits
+    private val OTHER_BRANDS_ALLOWED_PATTERN = "^((\\d{4} ){0,4})(\\d{0,4})?$".toRegex()
 
     private val spacesAfterEveryXChars = 4.0
 
@@ -59,12 +71,14 @@ internal class PanFormatter(
     private fun formatAmexPan(pan: String): String {
         val panWithNoSpaces = removeSpaces(pan)
         var formattedPan = panWithNoSpaces.chunked(4)[0]
-        val chunksOfSix = panWithNoSpaces.removeRange(0, 4).chunked(6)
 
-        formattedPan += " ${chunksOfSix[0].trim()}"
+        if (panWithNoSpaces.length > 4) {
+            val chunksOfSix = panWithNoSpaces.removeRange(0, 4).chunked(6)
+            formattedPan += " ${chunksOfSix[0].trim()}"
 
-        if (chunksOfSix.drop(1).isNotEmpty()) {
-            formattedPan += " ${chunksOfSix.drop(1).joinToString("").trim()}"
+            if (chunksOfSix.drop(1).isNotEmpty()) {
+                formattedPan += " ${chunksOfSix.drop(1).joinToString("").trim()}"
+            }
         }
 
         return formattedPan
@@ -73,30 +87,16 @@ internal class PanFormatter(
     private fun removeSpaces(pan: String) = pan.replace("\\s+".toRegex(), "")
 
     private fun requiresFormatting(pan: String, brand: RemoteCardBrand?): Boolean {
-        var requiresFormatting = false
-        val splitPan = pan.trim().split(" ")
-
         if (isAmex(brand)) {
-            if (splitPan[0].length != 4 && pan.length > 4) {
-                return true
-            }
-            if (splitPan.size == 2 && splitPan[1].length > 6) {
-                return true
-            }
-            if (splitPan.size == 3 && splitPan[1].length != 6) {
-                return true
-            }
-            if (splitPan.size > 3) {
-                return true
-            }
-        } else {
-            for (s in splitPan) {
-                if (s.length != 4) {
-                    requiresFormatting = true
+            for (regEx in AMEX_ALLOWED_PATTERNS) {
+                if (regEx.matches(pan)) {
+                    return false
                 }
             }
+            return true
+        } else {
+            return !OTHER_BRANDS_ALLOWED_PATTERN.matches(pan)
         }
-        return requiresFormatting
     }
 
     private fun isAmex(cardBrand: RemoteCardBrand?) =

@@ -172,7 +172,7 @@ internal class PanTextWatcher(
 
         if (pan.length > totalMaxLength) {
             val charsToDrop = pan.length - totalMaxLength
-            setText(pan.dropLast(charsToDrop), expectedCursorPosition - charsToDrop)
+            setText(pan.dropLast(charsToDrop), expectedCursorPosition)
             return true
         }
         return false
