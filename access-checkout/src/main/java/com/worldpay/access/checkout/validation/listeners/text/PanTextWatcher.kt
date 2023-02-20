@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import android.util.Log
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
