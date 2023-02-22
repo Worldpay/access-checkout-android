@@ -3,7 +3,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### v2.5.2 Unreleased
+### [v2.6.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.6.0)
+#### Removed
+- Drop functionality which sets hints/placeholders on EditText provided by clients. It is the responsibility of the client to set whichever hint/placeholder they want in the language of their preference. Major version of the SDK has not been changed despite this functionality being dropped, the reason is that the SDK should never have had that functionality in the first place so this is classified as a bug fix
+
+#### Added
+- SDK now enforces numeric inputType for each EditText specified by the client
+
+#### Fixed
+- Fix an issue where pressing and maintaining the backspace key does not delete the entirety of the card number field (only occurring when pan formatting is enabled)
+- Fix an issue where the caret would not move when attempting to insert digits towards the end of a card number
+
+#### Changed
+- Upgrade SDK and app to use API Level 33
+- Upgrade Kotlin to 1.6.21
+- Upgrade Kotlin coroutines to 1.5.2
+- Upgrade Gradle to 7.4 and upgrade gradle-wrapper jar
+- Refactor build pipeline to minimise duplication of workflows 
+- Change UI tests to also run against latest versions of Android
+- Fix issue preventing Jacoco from correctly calculating code coverage
+
+### [v2.5.2](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.5.2) - 2023-01-23
 #### Changed
 - Fix an issue where when inserting a number digits resulting in a pan longer than the max allowed the application crashes due to the caret position calculations.
 
