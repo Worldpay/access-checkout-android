@@ -23,9 +23,11 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardValidationListener
 import com.worldpay.access.checkout.sample.card.SessionResponseListenerImpl
 import com.worldpay.access.checkout.sample.images.SVGImageLoader
+import com.worldpay.access.checkout.ui.AccessEditText
 
 class CardFlowFragment : Fragment() {
 
+    private lateinit var accessEditText: AccessEditText;
     private lateinit var panText: EditText
     private lateinit var cvcText: EditText
     private lateinit var expiryText: EditText
@@ -52,19 +54,21 @@ class CardFlowFragment : Fragment() {
             progressBar = ProgressBar(activity)
             submitBtn = SubmitButton(activity, R.id.card_flow_btn_submit)
 
-            panText = view.findViewById(R.id.card_flow_text_pan)
-            expiryText = view.findViewById(R.id.card_flow_expiry_date)
-            cvcText = view.findViewById(R.id.card_flow_text_cvc)
-            paymentsCvcSwitch = view.findViewById(R.id.card_flow_payments_cvc_switch)
+            accessEditText = view.findViewById(R.id.card_flow_text_pan)
+
+//            panText = view.findViewById(R.id.card_flow_text_pan)
+//            expiryText = view.findViewById(R.id.card_flow_expiry_date)
+//            cvcText = view.findViewById(R.id.card_flow_text_cvc)
+//            paymentsCvcSwitch = view.findViewById(R.id.card_flow_payments_cvc_switch)
 
             val brandImageView = view.findViewById<ImageView>(R.id.card_flow_brand_logo)
             SVGImageLoader.getInstance(activity).fetchAndApplyCardLogo(null, brandImageView)
 
-            handleSwitch()
+//            handleSwitch()
 
             cardValidationListener = CardValidationListener(activity)
-
-            initialisePaymentFlow(activity, view)
+//
+//            initialisePaymentFlow(activity, view)
         }
     }
 
@@ -74,7 +78,7 @@ class CardFlowFragment : Fragment() {
             disableFields()
             submitBtn.disable()
         } else {
-            initialiseCardValidation(cardValidationListener)
+//            initialiseCardValidation(cardValidationListener)
         }
     }
 
@@ -129,7 +133,7 @@ class CardFlowFragment : Fragment() {
             .enablePanFormatting()
             .build()
 
-        AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
+//        AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
     }
 
     private fun disableFields() {
