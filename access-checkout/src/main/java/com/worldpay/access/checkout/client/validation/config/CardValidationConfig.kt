@@ -4,6 +4,7 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
@@ -19,9 +20,9 @@ import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
  * @property[lifecycleOwner] [LifecycleOwner] of the application so that validation state can be handled during lifecycle changes
  */
 class CardValidationConfig private constructor(
-    val pan: EditText,
-    val expiryDate: EditText,
-    val cvc: EditText,
+    val pan: AccessEditText,
+    val expiryDate: AccessEditText,
+    val cvc: AccessEditText,
     val acceptedCardBrands: Array<String>,
     val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener,
@@ -31,9 +32,9 @@ class CardValidationConfig private constructor(
 
     class Builder {
 
-        private var pan: EditText? = null
-        private var expiryDate: EditText? = null
-        private var cvc: EditText? = null
+        private var pan: AccessEditText? = null
+        private var expiryDate: AccessEditText? = null
+        private var cvc: AccessEditText? = null
         private var acceptedCardBrands: Array<String> = emptyArray()
         private var baseUrl: String? = null
         private var validationListener: AccessCheckoutCardValidationListener? = null
@@ -45,8 +46,8 @@ class CardValidationConfig private constructor(
          *
          * @param[pan] [EditText] that represents the pan ui element
          */
-        fun pan(pan: EditText): Builder {
-            this.pan = pan
+        fun pan(panAccessEditText: AccessEditText): Builder {
+            this.pan = panAccessEditText
             return this
         }
 
@@ -55,8 +56,8 @@ class CardValidationConfig private constructor(
          *
          * @param[expiryDate] [EditText] that represents the expiry date ui element
          */
-        fun expiryDate(expiryDate: EditText): Builder {
-            this.expiryDate = expiryDate
+        fun expiryDate(expiryDateAccessEditText: AccessEditText): Builder {
+            this.expiryDate = expiryDateAccessEditText
             return this
         }
 
@@ -65,8 +66,8 @@ class CardValidationConfig private constructor(
          *
          * @param[cvc] [EditText] that represents the cvc ui element
          */
-        fun cvc(cvc: EditText): Builder {
-            this.cvc = cvc
+        fun cvc(cvcAccessEditText: AccessEditText): Builder {
+            this.cvc = cvcAccessEditText
             return this
         }
 
