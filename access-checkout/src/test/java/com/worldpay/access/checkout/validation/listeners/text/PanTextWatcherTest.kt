@@ -62,11 +62,11 @@ class PanTextWatcherTest {
         mockSuccessfulCardConfiguration()
 
         panTextWatcher = PanTextWatcher(
-            panEditText = panEditText,
+            panAccessEditText = panEditText,
             panValidator = panValidator,
             panFormatter = panFormatter,
             cvcValidator = cvcValidator,
-            cvcEditText = cvcEditText,
+            cvcAccessEditText = cvcEditText,
             panValidationResultHandler = panValidationResultHandler,
             brandChangedHandler = brandChangedHandler,
             cvcValidationRuleManager = cvcValidationRuleManager

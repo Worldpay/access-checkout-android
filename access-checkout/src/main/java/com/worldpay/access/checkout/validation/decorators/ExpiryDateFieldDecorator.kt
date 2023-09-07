@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.validation.decorators
 import android.text.InputType
 import android.text.TextWatcher
 import android.widget.EditText
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationObserver
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
@@ -12,7 +13,7 @@ internal class ExpiryDateFieldDecorator(
     private val expiryDateTextWatcher: ExpiryDateTextWatcher,
     private val expiryDateFocusChangeListener: ExpiryDateFocusChangeListener,
     private val expiryDateLengthFilter: ExpiryDateLengthFilter,
-    private val expiryDateEditText: EditText
+    private val expiryDateAccessEditText: AccessEditText
 ) : AbstractFieldDecorator(), CardConfigurationObserver {
 
     companion object {
@@ -22,23 +23,23 @@ internal class ExpiryDateFieldDecorator(
     fun decorate() {
         addTextWatcher()
 
-        if (expiryDateEditText.isCursorVisible) {
-            expiryDateEditText.setText(expiryDateEditText.text.toString())
+        if (expiryDateAccessEditText.isCursorVisible) {
+            expiryDateAccessEditText.setText(expiryDateAccessEditText.text.toString())
         }
 
-        expiryDateEditText.onFocusChangeListener = expiryDateFocusChangeListener
+        expiryDateAccessEditText.onFocusChangeListener = expiryDateFocusChangeListener
 
-        applyFilter(expiryDateEditText, expiryDateLengthFilter)
+        applyFilter(expiryDateAccessEditText, expiryDateLengthFilter)
 
-        expiryDateEditText.inputType = InputType.TYPE_CLASS_NUMBER
+        expiryDateAccessEditText.inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     private fun addTextWatcher() {
         if (addedExpiryDateTextWatcher != null) {
-            expiryDateEditText.removeTextChangedListener(addedExpiryDateTextWatcher)
+            expiryDateAccessEditText.removeTextChangedListener(addedExpiryDateTextWatcher)
         }
         addedExpiryDateTextWatcher = expiryDateTextWatcher
-        expiryDateEditText.addTextChangedListener(expiryDateTextWatcher)
+        expiryDateAccessEditText.addTextChangedListener(expiryDateTextWatcher)
     }
 
     override fun update() = decorate()

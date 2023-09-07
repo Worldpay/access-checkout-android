@@ -180,7 +180,7 @@ class PanFieldDecoratorTest {
         panTextWatcher = panTextWatcher,
         panFocusChangeListener = panFocusChangeListener,
         panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),
-        panEditText = panEditText,
+        panAccessEditText = panEditText,
         panFormattingEnabled
     )
 }
