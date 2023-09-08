@@ -26,7 +26,6 @@ import com.worldpay.access.checkout.ui.AccessEditText
 
 class CardFlowFragment : Fragment() {
 
-    private lateinit var accessEditText: AccessEditText
     private lateinit var panText: AccessEditText
     private lateinit var cvcText: AccessEditText
     private lateinit var expiryText: AccessEditText

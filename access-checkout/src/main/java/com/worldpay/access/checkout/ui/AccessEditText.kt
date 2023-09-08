@@ -53,6 +53,7 @@ class AccessEditText @JvmOverloads constructor(
     fun addTextChangedListener(watcher: TextWatcher?) = editText.addTextChangedListener(watcher)
     fun setSelection(index: Int) = editText.setSelection(index)
     fun setTextColor(color: Int) = editText.setTextColor(color)
+    fun clear() = editText.text.clear()
 
     private fun createEditText(): View {
         editText = EditText(context)

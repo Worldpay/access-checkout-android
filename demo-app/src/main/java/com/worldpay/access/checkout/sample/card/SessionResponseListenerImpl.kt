@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.sample.card
 import android.app.Activity
 import android.app.AlertDialog
 import android.util.Log
-import android.widget.EditText
 import androidx.appcompat.widget.SwitchCompat
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
@@ -63,9 +62,9 @@ class SessionResponseListenerImpl(
 
     private fun resetFields() {
         Log.d(javaClass.simpleName, "Resetting all fields")
-        activity.findViewById<EditText>(R.id.card_flow_text_pan).text.clear()
-        activity.findViewById<EditText>(R.id.card_flow_text_cvc).text.clear()
-        activity.findViewById<EditText>(R.id.card_flow_expiry_date).text.clear()
+        activity.findViewById<AccessEditText>(R.id.card_flow_text_pan).clear()
+        activity.findViewById<AccessEditText>(R.id.card_flow_text_cvc).clear()
+        activity.findViewById<AccessEditText>(R.id.card_flow_expiry_date).clear()
         activity.findViewById<SwitchCompat>(R.id.card_flow_payments_cvc_switch).isChecked = false
     }
 }
