@@ -20,6 +20,7 @@ import com.worldpay.access.checkout.client.session.model.SessionType;
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser;
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig;
 import com.worldpay.access.checkout.sample.card.CardValidationListener;
+import com.worldpay.access.checkout.ui.AccessEditText;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,9 +31,9 @@ import static java.util.Collections.singletonList;
 
 public class MainActivityJavaExample extends AppCompatActivity implements SessionResponseListener {
 
-    private EditText panText;
-    private EditText cvcText;
-    private EditText expiryText;
+    private AccessEditText panText;
+    private AccessEditText cvcText;
+    private AccessEditText expiryText;
 
     private Boolean loading = false;
 
@@ -50,7 +51,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
         super.onStart();
 
         panText = findViewById(R.id.card_flow_text_pan);
-        cvcText = findViewById(R.id.cvc_flow_text_cvc);
+        cvcText = this.findViewById(R.id.cvc_flow_text_cvc);
         expiryText = findViewById(R.id.card_flow_expiry_date);
         submit = findViewById(R.id.card_flow_btn_submit);
         contentLayout = findViewById(R.id.fragment_card_flow);
@@ -149,9 +150,9 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
             toggleLoading(false);
 
             CardDetails cardDetails = new CardDetails.Builder()
-                    .pan(panText.getText().toString())
-                    .expiryDate(expiryText.getText().toString())
-                    .cvc(cvcText.getText().toString())
+                    .pan(panText)
+                    .expiryDate(expiryText)
+                    .cvc(cvcText)
                     .build();
 
             accessCheckoutClient.generateSessions(cardDetails, singletonList(SessionType.CARD));

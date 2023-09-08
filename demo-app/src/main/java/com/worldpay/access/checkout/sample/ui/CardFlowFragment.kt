@@ -28,9 +28,9 @@ import com.worldpay.access.checkout.ui.AccessEditText
 class CardFlowFragment : Fragment() {
 
     private lateinit var accessEditText: AccessEditText;
-    private lateinit var panText: EditText
-    private lateinit var cvcText: EditText
-    private lateinit var expiryText: EditText
+    private lateinit var panText: AccessEditText
+    private lateinit var cvcText: AccessEditText
+    private lateinit var expiryText: AccessEditText
     private lateinit var submitBtn: SubmitButton
     private lateinit var paymentsCvcSwitch: SwitchCompat
     private lateinit var progressBar: ProgressBar
@@ -113,9 +113,9 @@ class CardFlowFragment : Fragment() {
             submitBtn.disable()
 
             val cardDetails = CardDetails.Builder()
-                .pan(panText.text.toString())
-                .expiryDate(expiryText.text.toString())
-                .cvc(cvcText.text.toString())
+                .pan(panText)
+                .expiryDate(expiryText)
+                .cvc(cvcText)
                 .build()
 
             accessCheckoutClient.generateSessions(cardDetails, sessionTypes)

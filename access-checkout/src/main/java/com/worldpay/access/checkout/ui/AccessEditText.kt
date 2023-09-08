@@ -52,6 +52,7 @@ class AccessEditText @JvmOverloads constructor(
     fun setSelection(expectedCursorPosition: Int) {
         return editText.setSelection(expectedCursorPosition)
     }
+
     init {
         orientation = VERTICAL
         context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
