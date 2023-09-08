@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.sample.card
 
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.FragmentActivity
@@ -15,7 +14,9 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
     private val validColor = getColor(activity.resources, R.color.SUCCESS, null)
     private val invalidColor = getColor(activity.resources, R.color.FAIL, null)
 
-    override fun onCvcValidated(isValid: Boolean) {}
+    override fun onCvcValidated(isValid: Boolean) {
+        // added to implement the interface
+    }
 
     override fun onPanValidated(isValid: Boolean) {
         val pan = activity.findViewById<AccessEditText>(R.id.restricted_card_flow_text_pan)
@@ -27,15 +28,19 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
         getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
     }
 
-    override fun onExpiryDateValidated(isValid: Boolean) {}
+    override fun onExpiryDateValidated(isValid: Boolean) {
+        // added to implement the interface
+    }
 
-    override fun onValidationSuccess() {}
+    override fun onValidationSuccess() {
+        // added to implement the interface
+    }
 
-    private fun changeFont(editText: AccessEditText, isValid: Boolean) {
+    private fun changeFont(accessEditText: AccessEditText, isValid: Boolean) {
         if (isValid) {
-            editText.setTextColor(validColor)
+            accessEditText.setTextColor(validColor)
         } else {
-            editText.setTextColor(invalidColor)
+            accessEditText.setTextColor(invalidColor)
         }
     }
 }

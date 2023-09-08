@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.sample.card
 
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.FragmentActivity
@@ -42,11 +41,11 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
 
     override fun onValidationSuccess() = submitButton.enable()
 
-    private fun changeFont(editText: AccessEditText, isValid: Boolean) {
+    private fun changeFont(accessEditText: AccessEditText, isValid: Boolean) {
         if (isValid) {
-            editText.setTextColor(validColor)
+            accessEditText.setTextColor(validColor)
         } else {
-            editText.setTextColor(invalidColor)
+            accessEditText.setTextColor(invalidColor)
         }
     }
 }

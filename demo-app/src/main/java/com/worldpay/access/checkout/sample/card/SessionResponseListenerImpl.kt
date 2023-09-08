@@ -4,7 +4,6 @@ import android.app.Activity
 import android.app.AlertDialog
 import android.util.Log
 import android.widget.EditText
-import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener

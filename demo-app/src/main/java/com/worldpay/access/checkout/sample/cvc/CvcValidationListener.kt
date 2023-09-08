@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.sample.cvc
 
-import android.widget.EditText
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
@@ -22,11 +21,11 @@ class CvcValidationListener(private val activity: FragmentActivity) : AccessChec
 
     override fun onValidationSuccess() = submitButton.enable()
 
-    private fun changeFont(editText: AccessEditText, isValid: Boolean) {
+    private fun changeFont(accessEditText: AccessEditText, isValid: Boolean) {
         if (isValid) {
-            editText.setTextColor(validColor)
+            accessEditText.setTextColor(validColor)
         } else {
-            editText.setTextColor(invalidColor)
+            accessEditText.setTextColor(invalidColor)
         }
     }
 }

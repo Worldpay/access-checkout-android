@@ -32,16 +32,15 @@ class AccessEditText @JvmOverloads constructor(
     val isCursorVisible: Boolean get() = editText.isCursorVisible
 
     var filters: Array<InputFilter>
-        get(){
+        get() {
             return editText.filters
         }
-        set(filters){
+        set(filters) {
             editText.filters = filters
         }
 
-    // test and review
     var inputType: Int
-        get(){
+        get() {
             return editText.inputType
         }
         set(inputType) {
@@ -54,7 +53,6 @@ class AccessEditText @JvmOverloads constructor(
     fun addTextChangedListener(watcher: TextWatcher?) = editText.addTextChangedListener(watcher)
     fun setSelection(index: Int) = editText.setSelection(index)
     fun setTextColor(color: Int) = editText.setTextColor(color)
-
 
     private fun createEditText(): View {
         editText = EditText(context)
