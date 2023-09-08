@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.filters
 
-import android.widget.EditText
 import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider.Companion.getCardConfiguration
 import com.worldpay.access.checkout.validation.utils.ValidationUtil

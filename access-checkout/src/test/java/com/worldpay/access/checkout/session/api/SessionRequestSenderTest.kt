@@ -12,6 +12,7 @@ import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import java.net.URL
+import kotlin.test.assertNotNull
 import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
@@ -20,7 +21,6 @@ import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
-import kotlin.test.assertNotNull
 
 @ExperimentalCoroutinesApi
 class SessionRequestSenderTest {

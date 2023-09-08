@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.decorators
 
-import android.widget.EditText
 import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory

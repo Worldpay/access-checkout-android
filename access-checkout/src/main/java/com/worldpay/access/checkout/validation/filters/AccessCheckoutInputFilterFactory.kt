@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.filters
 
-import android.widget.EditText
 import com.worldpay.access.checkout.ui.AccessEditText
 
 internal class AccessCheckoutInputFilterFactory {

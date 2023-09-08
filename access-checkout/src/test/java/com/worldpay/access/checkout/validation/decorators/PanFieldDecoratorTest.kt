@@ -176,7 +176,7 @@ class PanFieldDecoratorTest {
         verify(fieldDecorator).decorate()
     }
 
-    private fun createFieldDecorator(panFormattingEnabled:Boolean=false) = PanFieldDecorator(
+    private fun createFieldDecorator(panFormattingEnabled: Boolean = false) = PanFieldDecorator(
         panTextWatcher = panTextWatcher,
         panFocusChangeListener = panFocusChangeListener,
         panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),

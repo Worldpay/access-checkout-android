@@ -269,7 +269,7 @@ class PanTextWatcherTest {
         val panUsedForBeforeTextChanged = "5354335345423423"
         val maxLength = panUsedForBeforeTextChanged.length
         // inserting '2' at the start of a pan that's already at max length
-        val panUsedForOnTextChanged = "2${panUsedForBeforeTextChanged}"
+        val panUsedForOnTextChanged = "2$panUsedForBeforeTextChanged"
 
         given(panFormatter.isFormattingEnabled()).willReturn(false)
 

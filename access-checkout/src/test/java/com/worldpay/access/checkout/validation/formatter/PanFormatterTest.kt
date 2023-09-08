@@ -119,35 +119,35 @@ class PanFormatterTest {
     }
 
     @Test
-    fun `should reformat an amex pan that has been incorrectly formatted - 3 digits in total but spaces in between the digits` () {
+    fun `should reformat an amex pan that has been incorrectly formatted - 3 digits in total but spaces in between the digits`() {
         val pan = panFormatter.format("34  3", AMEX_BRAND)
 
         assertEquals("343", pan)
     }
 
     @Test
-    fun `should reformat an amex pan that has been incorrectly formatted - 1 group but 2 trailing spaces` () {
+    fun `should reformat an amex pan that has been incorrectly formatted - 1 group but 2 trailing spaces`() {
         val pan = panFormatter.format("3434  ", AMEX_BRAND)
 
         assertEquals("3434", pan)
     }
 
     @Test
-    fun `should reformat an amex pan that has been incorrectly formatted - 1 group but some leading spaces` () {
+    fun `should reformat an amex pan that has been incorrectly formatted - 1 group but some leading spaces`() {
         val pan = panFormatter.format("   3434", AMEX_BRAND)
 
         assertEquals("3434", pan)
     }
 
     @Test
-    fun `should reformat an amex pan that has been incorrectly formatted - 2 groups but 2 trailing spaces` () {
+    fun `should reformat an amex pan that has been incorrectly formatted - 2 groups but 2 trailing spaces`() {
         val pan = panFormatter.format("3434 343434  ", AMEX_BRAND)
 
         assertEquals("3434 343434", pan)
     }
 
     @Test
-    fun `should reformat an amex pan that has been incorrectly formatted - 3 groups but some trailing spaces` () {
+    fun `should reformat an amex pan that has been incorrectly formatted - 3 groups but some trailing spaces`() {
         val pan = panFormatter.format("3434 343434 34343  ", AMEX_BRAND)
 
         assertEquals("3434 343434 34343", pan)

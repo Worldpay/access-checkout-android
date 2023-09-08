@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import android.widget.EditText
 import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateSanitiser.Companion.SEPARATOR
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler

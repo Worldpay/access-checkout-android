@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
-import android.widget.EditText
 import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory

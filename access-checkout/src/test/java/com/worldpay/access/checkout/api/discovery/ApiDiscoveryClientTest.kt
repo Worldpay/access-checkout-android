@@ -7,9 +7,9 @@ import com.nhaarman.mockitokotlin2.times
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import com.worldpay.access.checkout.session.api.SessionRequestService
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import java.net.URL
+import kotlin.test.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
@@ -17,7 +17,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.verify
-import kotlin.test.*
 
 @ExperimentalCoroutinesApi
 class ApiDiscoveryClientTest {
