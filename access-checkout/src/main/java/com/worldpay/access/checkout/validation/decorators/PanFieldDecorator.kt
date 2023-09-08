@@ -24,7 +24,7 @@ internal class PanFieldDecorator(
         addTextWatcher()
 
         if (panAccessEditText.isCursorVisible) {
-            panAccessEditText.setText(panAccessEditText.text.toString())
+            panAccessEditText.setText(panAccessEditText.text)
         }
 
         panAccessEditText.onFocusChangeListener = panFocusChangeListener

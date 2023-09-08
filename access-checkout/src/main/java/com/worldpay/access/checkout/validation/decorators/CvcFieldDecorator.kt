@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.text.InputType
 import android.text.TextWatcher
-import android.widget.EditText
 import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationObserver
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
@@ -24,7 +23,7 @@ internal class CvcFieldDecorator(
         addTextWatcher()
 
         if (cvcAccessEditText.isCursorVisible) {
-            cvcAccessEditText.setText(cvcAccessEditText.text.toString())
+            cvcAccessEditText.setText(cvcAccessEditText.text)
         }
 
         cvcAccessEditText.onFocusChangeListener = cvcFocusChangeListener

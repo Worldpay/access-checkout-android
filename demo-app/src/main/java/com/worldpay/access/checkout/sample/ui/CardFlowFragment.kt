@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
@@ -27,7 +26,7 @@ import com.worldpay.access.checkout.ui.AccessEditText
 
 class CardFlowFragment : Fragment() {
 
-    private lateinit var accessEditText: AccessEditText;
+    private lateinit var accessEditText: AccessEditText
     private lateinit var panText: AccessEditText
     private lateinit var cvcText: AccessEditText
     private lateinit var expiryText: AccessEditText

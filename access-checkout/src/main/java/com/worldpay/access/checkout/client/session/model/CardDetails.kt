@@ -28,21 +28,21 @@ class CardDetails private constructor(
         /**
          * Sets the pan number for the card
          *
-         * @param[pan] [String] that represents the pan number
+         * @param[panAccessEditText] [AccessEditText] that represents the pan number
          */
         fun pan(panAccessEditText: AccessEditText) = apply { this.pan = panAccessEditText.text.replace("\\s+".toRegex(), "") }
 
         /**
          * Sets the expiry date for the card
          *
-         * @param[expiryDate] [String] that represents the expiry date
+         * @param[expiryDateAccessEditText] [AccessEditText] that represents the expiry date
          */
         fun expiryDate(expiryDateAccessEditText: AccessEditText) = apply { this.expiryDate = ExpiryDate(expiryDateAccessEditText) }
 
         /**
          * Sets the cvc for the card
          *
-         * @param[cvc] [String] that represents the cvc
+         * @param[cvcAccessEditText] [AccessEditText] that represents the cvc
          */
         fun cvc(cvcAccessEditText: AccessEditText) = apply { this.cvc = cvcAccessEditText.text }
 

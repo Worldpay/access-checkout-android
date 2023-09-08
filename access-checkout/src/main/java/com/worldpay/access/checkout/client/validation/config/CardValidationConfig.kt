@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 /**
  * An implementation of the [ValidationConfig] that represents the card validation configuration.
  *
- * This configuration should be build to register the relevant fields and the listeners.
+ * This configuration should be used to register the relevant fields and the listeners.
  *
  * @property[pan] [EditText] that represents the pan ui element
  * @property[expiryDate] [EditText] that represents the expiry date ui element
@@ -44,7 +44,7 @@ class CardValidationConfig private constructor(
         /**
          * Sets the pan ui element
          *
-         * @param[pan] [EditText] that represents the pan ui element
+         * @param[panAccessEditText] [AccessEditText] that represents the pan ui element
          */
         fun pan(panAccessEditText: AccessEditText): Builder {
             this.pan = panAccessEditText
@@ -54,7 +54,7 @@ class CardValidationConfig private constructor(
         /**
          * Sets the expiry date ui element
          *
-         * @param[expiryDate] [EditText] that represents the expiry date ui element
+         * @param[expiryDateAccessEditText] [AccessEditText] that represents the expiry date ui element
          */
         fun expiryDate(expiryDateAccessEditText: AccessEditText): Builder {
             this.expiryDate = expiryDateAccessEditText
@@ -64,7 +64,7 @@ class CardValidationConfig private constructor(
         /**
          * Sets the cvc ui element
          *
-         * @param[cvc] [EditText] that represents the cvc ui element
+         * @param[cvcAccessEditText] [AccessEditText] that represents the cvc ui element
          */
         fun cvc(cvcAccessEditText: AccessEditText): Builder {
             this.cvc = cvcAccessEditText
