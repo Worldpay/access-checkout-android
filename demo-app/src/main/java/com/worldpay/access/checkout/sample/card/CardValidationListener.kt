@@ -9,6 +9,7 @@ import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.images.SVGImageLoader.Companion.getInstance
 import com.worldpay.access.checkout.sample.ui.SubmitButton
+import com.worldpay.access.checkout.ui.AccessEditText
 
 class CardValidationListener(private val activity: FragmentActivity) : AccessCheckoutCardValidationListener {
 
@@ -17,13 +18,13 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
     private val submitButton = SubmitButton(activity, R.id.card_flow_btn_submit)
 
     override fun onCvcValidated(isValid: Boolean) {
-        val cvc = activity.findViewById<EditText>(R.id.card_flow_text_cvc)
+        val cvc = activity.findViewById<AccessEditText>(R.id.card_flow_text_cvc)
         changeFont(cvc, isValid)
         if (!isValid) submitButton.disable()
     }
 
     override fun onPanValidated(isValid: Boolean) {
-        val pan = activity.findViewById<EditText>(R.id.card_flow_text_pan)
+        val pan = activity.findViewById<AccessEditText>(R.id.card_flow_text_pan)
         changeFont(pan, isValid)
         if (!isValid) submitButton.disable()
     }
@@ -34,14 +35,14 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
     }
 
     override fun onExpiryDateValidated(isValid: Boolean) {
-        val expiryText = activity.findViewById<EditText>(R.id.card_flow_expiry_date)
+        val expiryText = activity.findViewById<AccessEditText>(R.id.card_flow_expiry_date)
         changeFont(expiryText, isValid)
         if (!isValid) submitButton.disable()
     }
 
     override fun onValidationSuccess() = submitButton.enable()
 
-    private fun changeFont(editText: EditText, isValid: Boolean) {
+    private fun changeFont(editText: AccessEditText, isValid: Boolean) {
         if (isValid) {
             editText.setTextColor(validColor)
         } else {

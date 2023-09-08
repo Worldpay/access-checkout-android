@@ -25,22 +25,36 @@ class AccessEditText @JvmOverloads constructor(
     // and cannot be accessed outside of that module, e.g. cannot be accessed by a merchant's app
     internal val text: String get() = editText.text.toString()
 
-    val selectionEnd: Int = editText.selectionEnd
+    val selectionEnd: Int get() = editText.selectionEnd
 
-    val editableText: Editable = editText.editableText
+    val editableText: Editable get() = editText.editableText
 
-    val isCursorVisible: Boolean = editText.isCursorVisible
+    val isCursorVisible: Boolean get() = editText.isCursorVisible
 
-    var filters: Array<InputFilter> = editText.filters
+    var filters: Array<InputFilter>
+        get(){
+            return editText.filters
+        }
+        set(filters){
+            editText.filters = filters
+        }
 
     // test and review
-    var inputType = editText.inputType
+    var inputType: Int
+        get(){
+            return editText.inputType
+        }
+        set(inputType) {
+            editText.inputType = inputType
+        }
 
     fun setText(text: CharSequence) = editText.setText(text)
     fun length(): Int = editText.length()
     fun removeTextChangedListener(watcher: TextWatcher?) = editText.removeTextChangedListener(watcher)
     fun addTextChangedListener(watcher: TextWatcher?) = editText.addTextChangedListener(watcher)
     fun setSelection(index: Int) = editText.setSelection(index)
+    fun setTextColor(color: Int) = editText.setTextColor(color)
+
 
     private fun createEditText(): View {
         editText = EditText(context)

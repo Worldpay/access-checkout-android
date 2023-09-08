@@ -12,6 +12,7 @@ import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
 import com.worldpay.access.checkout.sample.ui.SubmitButton
+import com.worldpay.access.checkout.ui.AccessEditText
 
 class SessionResponseListenerImpl(
     private val activity: Activity,
@@ -55,9 +56,9 @@ class SessionResponseListenerImpl(
 
     private fun enableFields() {
         Log.d(javaClass.simpleName, "Setting enabled state for all fields to : true")
-        activity.findViewById<EditText>(R.id.card_flow_text_pan).isEnabled = true
-        activity.findViewById<TextView>(R.id.card_flow_text_cvc).isEnabled = true
-        activity.findViewById<EditText>(R.id.card_flow_expiry_date).isEnabled = true
+        activity.findViewById<AccessEditText>(R.id.card_flow_text_pan).isEnabled = true
+        activity.findViewById<AccessEditText>(R.id.card_flow_text_cvc).isEnabled = true
+        activity.findViewById<AccessEditText>(R.id.card_flow_expiry_date).isEnabled = true
         activity.findViewById<SwitchCompat>(R.id.card_flow_payments_cvc_switch).isEnabled = true
     }
 

@@ -6,6 +6,7 @@ import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.SubmitButton
+import com.worldpay.access.checkout.ui.AccessEditText
 
 class CvcValidationListener(private val activity: FragmentActivity) : AccessCheckoutCvcValidationListener {
 
@@ -14,14 +15,14 @@ class CvcValidationListener(private val activity: FragmentActivity) : AccessChec
     private val submitButton = SubmitButton(activity, R.id.cvc_flow_btn_submit)
 
     override fun onCvcValidated(isValid: Boolean) {
-        val cvc = activity.findViewById<EditText>(R.id.cvc_flow_text_cvc)
+        val cvc = activity.findViewById<AccessEditText>(R.id.cvc_flow_text_cvc)
         changeFont(cvc, isValid)
         if (!isValid) submitButton.disable()
     }
 
     override fun onValidationSuccess() = submitButton.enable()
 
-    private fun changeFont(editText: EditText, isValid: Boolean) {
+    private fun changeFont(editText: AccessEditText, isValid: Boolean) {
         if (isValid) {
             editText.setTextColor(validColor)
         } else {

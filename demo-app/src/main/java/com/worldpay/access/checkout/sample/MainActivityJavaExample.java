@@ -51,7 +51,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
         super.onStart();
 
         panText = findViewById(R.id.card_flow_text_pan);
-        cvcText = this.findViewById(R.id.cvc_flow_text_cvc);
+        cvcText = findViewById(R.id.cvc_flow_text_cvc);
         expiryText = findViewById(R.id.card_flow_expiry_date);
         submit = findViewById(R.id.card_flow_btn_submit);
         contentLayout = findViewById(R.id.fragment_card_flow);

@@ -197,7 +197,7 @@ internal class PanTextWatcher(
 
         cvcValidationRuleManager.updateRule(getCvcValidationRule(cardBrand))
 
-        val cvcText = cvcAccessEditText.text.toString()
+        val cvcText = cvcAccessEditText.text
         if (cvcText.isNotBlank()) {
             cvcValidator.validate(cvcText)
         }

@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCar
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.images.SVGImageLoader.Companion.getInstance
+import com.worldpay.access.checkout.ui.AccessEditText
 
 class RestrictedCardValidationListener(private val activity: FragmentActivity) : AccessCheckoutCardValidationListener {
 
@@ -17,7 +18,7 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
     override fun onCvcValidated(isValid: Boolean) {}
 
     override fun onPanValidated(isValid: Boolean) {
-        val pan = activity.findViewById<EditText>(R.id.restricted_card_flow_text_pan)
+        val pan = activity.findViewById<AccessEditText>(R.id.restricted_card_flow_text_pan)
         changeFont(pan, isValid)
     }
 
@@ -30,7 +31,7 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
 
     override fun onValidationSuccess() {}
 
-    private fun changeFont(editText: EditText, isValid: Boolean) {
+    private fun changeFont(editText: AccessEditText, isValid: Boolean) {
         if (isValid) {
             editText.setTextColor(validColor)
         } else {
