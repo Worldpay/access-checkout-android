@@ -1,9 +1,9 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
@@ -19,11 +19,11 @@ import com.worldpay.access.checkout.validation.validators.PanValidator.PanValida
 import java.lang.Math.min
 
 internal class PanTextWatcher(
-    private val panEditText: EditText,
+    private val panAccessEditText: AccessEditText,
     private var panValidator: PanValidator,
     private val panFormatter: PanFormatter,
     private val cvcValidator: CvcValidator,
-    private val cvcEditText: EditText,
+    private val cvcAccessEditText: AccessEditText,
     private val panValidationResultHandler: PanValidationResultHandler,
     private val brandChangedHandler: BrandChangedHandler,
     private val cvcValidationRuleManager: CVCValidationRuleManager
@@ -93,8 +93,8 @@ internal class PanTextWatcher(
             setText(newPan, expectedCursorPosition)
         }
 
-        if (panEditText.selectionEnd != expectedCursorPosition && panEditText.length() >= expectedCursorPosition) {
-            panEditText.setSelection(expectedCursorPosition)
+        if (panAccessEditText.selectionEnd != expectedCursorPosition && panAccessEditText.length() >= expectedCursorPosition) {
+            panAccessEditText.setSelection(expectedCursorPosition)
         }
     }
 
@@ -197,26 +197,26 @@ internal class PanTextWatcher(
 
         cvcValidationRuleManager.updateRule(getCvcValidationRule(cardBrand))
 
-        val cvcText = cvcEditText.text.toString()
+        val cvcText = cvcAccessEditText.text
         if (cvcText.isNotBlank()) {
             cvcValidator.validate(cvcText)
         }
     }
 
     private fun setText(text: String, cursorPosition: Int) {
-        panEditText.removeTextChangedListener(this)
+        panAccessEditText.removeTextChangedListener(this)
 
         // We set the text using editableText rather than using the setText() method to fix an issue
         // where the backspace key does not delete the whole text when pressed and maintained
         // on a device virtual keyboard
-        val editable = panEditText.editableText
+        val editable = panAccessEditText.editableText
         editable.replace(0, editable.length, text, 0, text.length)
 
-        panEditText.addTextChangedListener(this)
+        panAccessEditText.addTextChangedListener(this)
 
         // guard against outOfBounds exception in an occasional case
         // where cursorPosition is beyond the text length
         val selection = min(cursorPosition, text.length)
-        panEditText.setSelection(selection)
+        panAccessEditText.setSelection(selection)
     }
 }

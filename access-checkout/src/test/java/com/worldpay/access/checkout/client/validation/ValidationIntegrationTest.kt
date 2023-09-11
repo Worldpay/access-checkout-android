@@ -11,13 +11,13 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
+import kotlin.test.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import kotlin.test.assertNotEquals
 
 @RunWith(RobolectricTestRunner::class)
 class ValidationIntegrationTest : AbstractValidationIntegrationTest() {

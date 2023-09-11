@@ -7,13 +7,13 @@ import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver.Companion.inLifeCycleState
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManager
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.*
 import org.mockito.Mockito.`when`
 import org.mockito.Mockito.mock
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 
 class ActivityLifecycleObserverTest {
 

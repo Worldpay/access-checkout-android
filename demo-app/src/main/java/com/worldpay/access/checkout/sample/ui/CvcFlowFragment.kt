@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
@@ -18,10 +17,11 @@ import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvc.CvcValidationListener
 import com.worldpay.access.checkout.sample.cvc.SessionResponseListenerImpl
+import com.worldpay.access.checkout.ui.AccessEditText
 
 class CvcFlowFragment : Fragment() {
 
-    private lateinit var cvcText: EditText
+    private lateinit var cvcText: AccessEditText
     private lateinit var submitBtn: SubmitButton
     private lateinit var progressBar: ProgressBar
 
@@ -75,7 +75,7 @@ class CvcFlowFragment : Fragment() {
             disableFields()
             submitBtn.disable()
 
-            val cardDetails = CardDetails.Builder().cvc(cvcText.text.toString()).build()
+            val cardDetails = CardDetails.Builder().cvc(cvcText).build()
             accessCheckoutClient.generateSessions(cardDetails, listOf(SessionType.CVC))
         }
     }

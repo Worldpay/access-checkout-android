@@ -10,7 +10,6 @@ import android.widget.TextView
 import org.hamcrest.Description
 import org.hamcrest.TypeSafeMatcher
 
-
 class DrawableMatcher(private val resourceId: Int) : TypeSafeMatcher<View>() {
 
     override fun describeTo(description: Description?) {
