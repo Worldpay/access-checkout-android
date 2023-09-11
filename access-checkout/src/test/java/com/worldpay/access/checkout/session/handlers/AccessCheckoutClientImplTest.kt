@@ -14,6 +14,7 @@ import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import kotlin.test.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
@@ -23,7 +24,6 @@ import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.mock
 import org.mockito.Mockito.never
 import org.mockito.Mockito.verify
-import kotlin.test.assertEquals
 
 @RunWith(PlainRobolectricTestRunner::class)
 class AccessCheckoutClientImplTest {

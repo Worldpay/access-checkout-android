@@ -7,22 +7,21 @@
     android:layout_height="match_parent"
     tools:context=".sample.ui.CardFlowFragment">
 
-    <EditText
+    <!--
+    The 'app:customHint' is an example of an attribute which under the hood sets a property that exists on the EditText wrapped by this component
+    Typically 'customHint' would need to be renamed 'hint' to match the name of the original property available on EditText
+    -->
+    <com.worldpay.access.checkout.ui.AccessEditText
         android:id="@+id/card_flow_text_pan"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
-        android:ems="4"
-        android:imeOptions="actionNext|flagNoFullscreen"
-        android:inputType="text"
-        android:maxLines="1"
-        android:textColor="@color/DEFAULT"
-        android:hint="@string/card_number_hint"
         app:layout_constraintEnd_toStartOf="@+id/card_flow_brand_logo"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"
+        app:customHint="Hello world"/>
 
     <ImageView
         android:id="@+id/card_flow_brand_logo"
@@ -38,32 +37,34 @@
         app:layout_constraintStart_toEndOf="@+id/card_flow_text_pan"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <com.worldpay.access.checkout.ui.AccessEditText
         android:id="@+id/card_flow_expiry_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
         android:layout_marginTop="24dp"
         android:ems="4"
+        android:hint="@string/card_expiry_date_hint"
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="text"
         android:textColor="@color/DEFAULT"
-        android:hint="@string/card_expiry_date_hint"
+        app:customHint="Exp date"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan"
         tools:ignore="TextFields" />
 
-    <EditText
+    <com.worldpay.access.checkout.ui.AccessEditText
         android:id="@+id/card_flow_text_cvc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:ems="4"
+        android:hint="@string/card_cvc_hint"
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="text"
         android:textColor="@color/DEFAULT"
-        android:hint="@string/card_cvc_hint"
+        app:customHint="123"
         app:layout_constraintStart_toEndOf="@+id/card_flow_expiry_date"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan" />
 

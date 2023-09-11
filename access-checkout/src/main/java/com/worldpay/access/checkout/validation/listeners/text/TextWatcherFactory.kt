@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
-import android.widget.EditText
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
@@ -16,27 +16,27 @@ internal class TextWatcherFactory(
     private val dateValidator = ExpiryDateValidator()
 
     fun createPanTextWatcher(
-        panEditText: EditText,
-        cvcEditText: EditText,
+        panAccessEditText: AccessEditText,
+        cvcAccessEditText: AccessEditText,
         acceptedCardBrands: Array<String>,
         enablePanFormatting: Boolean
     ): PanTextWatcher {
         return PanTextWatcher(
-            panEditText = panEditText,
+            panAccessEditText = panAccessEditText,
             panValidator = PanValidator(acceptedCardBrands),
             panFormatter = PanFormatter(enablePanFormatting),
             cvcValidator = CvcValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
-            cvcEditText = cvcEditText,
+            cvcAccessEditText = cvcAccessEditText,
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager
         )
     }
 
-    fun createExpiryDateTextWatcher(expiryDateEditText: EditText): ExpiryDateTextWatcher {
+    fun createExpiryDateTextWatcher(expiryDateAccessEditText: AccessEditText): ExpiryDateTextWatcher {
         return ExpiryDateTextWatcher(
             dateValidator = dateValidator,
-            expiryDateEditText = expiryDateEditText,
+            expiryDateAccessEditText = expiryDateAccessEditText,
             expiryDateValidationResultHandler = resultHandlerFactory.getExpiryDateValidationResultHandler(),
             expiryDateSanitiser = ExpiryDateSanitiser()
         )

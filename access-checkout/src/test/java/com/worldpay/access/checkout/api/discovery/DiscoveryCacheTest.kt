@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.api.discovery
 
+import java.net.URL
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertNull
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
-import java.net.URL
 
 class DiscoveryCacheTest {
 

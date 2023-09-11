@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.session.api.client
 
 import com.worldpay.access.checkout.BuildConfig
-import org.junit.Test
 import java.lang.RuntimeException
 import kotlin.test.AfterTest
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
+import org.junit.Test
 
 internal class WpSdkHeaderTest {
     private val expectedErrorMessage =
@@ -82,4 +82,3 @@ internal class WpSdkHeaderTest {
         )
     }
 }
-

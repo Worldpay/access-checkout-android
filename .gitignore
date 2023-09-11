@@ -8,3 +8,5 @@
 .externalNativeBuild
 jacoco.exec
 /access-checkout/secring.gpg
+access-checkout/.idea/
+access-checkout/local.properties

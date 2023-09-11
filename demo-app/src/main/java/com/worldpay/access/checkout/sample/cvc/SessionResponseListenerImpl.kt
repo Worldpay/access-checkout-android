@@ -3,14 +3,13 @@ package com.worldpay.access.checkout.sample.cvc
 import android.app.Activity
 import android.app.AlertDialog
 import android.util.Log
-import android.widget.EditText
-import android.widget.TextView
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
 import com.worldpay.access.checkout.sample.ui.SubmitButton
+import com.worldpay.access.checkout.ui.AccessEditText
 
 class SessionResponseListenerImpl(
     private val activity: Activity,
@@ -31,7 +30,7 @@ class SessionResponseListenerImpl(
             .create()
             .show()
 
-        activity.findViewById<EditText>(R.id.cvc_flow_text_cvc).text.clear()
+        activity.findViewById<AccessEditText>(R.id.cvc_flow_text_cvc).clear()
         enableFields()
         submitBtn.disable()
     }
@@ -54,6 +53,6 @@ class SessionResponseListenerImpl(
 
     private fun enableFields() {
         Log.d(javaClass.simpleName, "Setting enabled state for cvc to : true")
-        activity.findViewById<TextView>(R.id.cvc_flow_text_cvc).isEnabled = true
+        activity.findViewById<AccessEditText>(R.id.cvc_flow_text_cvc).isEnabled = true
     }
 }

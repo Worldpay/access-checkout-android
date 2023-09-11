@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.client.session.model
 
 import com.worldpay.access.checkout.client.session.model.CardDetails.ExpiryDate
+import com.worldpay.access.checkout.ui.AccessEditText
 
 /**
  * This class is a representation of card information that can be constructed with a [CardDetails.Builder]
@@ -27,23 +28,23 @@ class CardDetails private constructor(
         /**
          * Sets the pan number for the card
          *
-         * @param[pan] [String] that represents the pan number
+         * @param[panAccessEditText] [AccessEditText] that represents the pan number
          */
-        fun pan(pan: String) = apply { this.pan = pan.replace("\\s+".toRegex(), "") }
+        fun pan(panAccessEditText: AccessEditText) = apply { this.pan = panAccessEditText.text.replace("\\s+".toRegex(), "") }
 
         /**
          * Sets the expiry date for the card
          *
-         * @param[expiryDate] [String] that represents the expiry date
+         * @param[expiryDateAccessEditText] [AccessEditText] that represents the expiry date
          */
-        fun expiryDate(expiryDate: String) = apply { this.expiryDate = ExpiryDate(expiryDate) }
+        fun expiryDate(expiryDateAccessEditText: AccessEditText) = apply { this.expiryDate = ExpiryDate(expiryDateAccessEditText) }
 
         /**
          * Sets the cvc for the card
          *
-         * @param[cvc] [String] that represents the cvc
+         * @param[cvcAccessEditText] [AccessEditText] that represents the cvc
          */
-        fun cvc(cvc: String) = apply { this.cvc = cvc }
+        fun cvc(cvcAccessEditText: AccessEditText) = apply { this.cvc = cvcAccessEditText.text }
 
         /**
          * Builds the [CardDetails] instance
@@ -59,7 +60,7 @@ class CardDetails private constructor(
      * @property [month] the expiry month
      * @property [year] the expiry year
      */
-    class ExpiryDate internal constructor(expiryDate: String) {
+    class ExpiryDate internal constructor(expiryDateAccessEditText: AccessEditText) {
 
         val month: Int
         val year: Int
@@ -70,21 +71,21 @@ class CardDetails private constructor(
 
         init {
 
-            val expiryDateWithoutSeparator = expiryDate.trim().replace(separator, "")
+            val expiryDateWithoutSeparator = expiryDateAccessEditText.text.trim().replace(separator, "")
             val isNumeric = isNumeric(expiryDateWithoutSeparator)
             val isCorrectLength = expiryDateWithoutSeparator.length == maxExpiryDateLength
 
             if (!isCorrectLength || !isNumeric) {
-                throw IllegalArgumentException("expecting expiry date in format MM/YY or MMYY but found $expiryDate")
+                throw IllegalArgumentException("expecting expiry date in format MM/YY or MMYY but found ${expiryDateAccessEditText.text}")
             }
 
-            if (expiryDate.contains(separator)) {
-                val split = expiryDate.split(separator)
+            if (expiryDateAccessEditText.text.contains(separator)) {
+                val split = expiryDateAccessEditText.text.split(separator)
                 month = split.toTypedArray()[0].toInt()
                 year = 2000 + split.toTypedArray()[1].toInt()
             } else {
-                month = expiryDate.dropLast(2).toInt()
-                year = 2000 + expiryDate.substring(2).toInt()
+                month = expiryDateAccessEditText.text.dropLast(2).toInt()
+                year = 2000 + expiryDateAccessEditText.text.substring(2).toInt()
             }
         }
 
