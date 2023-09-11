@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".sample.ui.RestrictedCardFlowFragment">
 
-    <EditText
+    <com.worldpay.access.checkout.ui.AccessEditText
         android:id="@+id/restricted_card_flow_text_pan"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -19,7 +19,7 @@
         android:inputType="text"
         android:maxLines="1"
         android:textColor="@color/DEFAULT"
-        android:hint="@string/card_number_hint"
+        app:customHint="@string/card_number_hint"
         app:layout_constraintEnd_toStartOf="@+id/restricted_card_flow_brand_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
@@ -38,7 +38,7 @@
         app:layout_constraintStart_toEndOf="@+id/restricted_card_flow_text_pan"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <EditText
+    <com.worldpay.access.checkout.ui.AccessEditText
         android:id="@+id/restricted_card_flow_expiry_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -50,12 +50,12 @@
         android:textColor="@color/DEFAULT"
         android:visibility="gone"
         android:enabled="false"
-        android:hint="@string/card_expiry_date_hint"
+        app:customHint="@string/card_expiry_date_hint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/restricted_card_flow_text_pan"
         tools:ignore="TextFields" />
 
-    <EditText
+    <com.worldpay.access.checkout.ui.AccessEditText
         android:id="@+id/restricted_card_flow_text_cvc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -68,7 +68,7 @@
         android:textColor="@color/DEFAULT"
         android:visibility="gone"
         android:enabled="false"
-        android:hint="@string/card_cvc_hint"
+        app:customHint="@string/card_cvc_hint"
         app:layout_constraintStart_toEndOf="@+id/restricted_card_flow_expiry_date"
         app:layout_constraintTop_toBottomOf="@+id/restricted_card_flow_text_pan" />
 
