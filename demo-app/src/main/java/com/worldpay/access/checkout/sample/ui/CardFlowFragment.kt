@@ -60,11 +60,11 @@ class CardFlowFragment : Fragment() {
             val brandImageView = view.findViewById<ImageView>(R.id.card_flow_brand_logo)
             SVGImageLoader.getInstance(activity).fetchAndApplyCardLogo(null, brandImageView)
 
-//            handleSwitch()
+            handleSwitch()
 
             cardValidationListener = CardValidationListener(activity)
 
-//            initialisePaymentFlow(activity, view)
+            initialisePaymentFlow(activity, view)
         }
     }
 
