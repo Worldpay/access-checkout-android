@@ -17,7 +17,7 @@ class AccessEditText @JvmOverloads constructor(
     attrs: AttributeSet? = null,
     defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle) {
-    var mCustomHint: String? = null
+    private var mCustomHint: String? = null
     private lateinit var editText: EditText
 
     // with the internal access modifier, this property is internal to the Access Checkout SDK JAR file
