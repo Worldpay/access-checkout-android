@@ -11,13 +11,13 @@ import com.worldpay.access.checkout.ui.AccessEditText
  * @property [cvc] an optional [String] containing the cvc
  */
 class CardDetails private constructor(
-    val pan: String?,
-    val expiryDate: ExpiryDate?,
-    val cvc: String?
+    internal val pan: String?,
+    internal val expiryDate: ExpiryDate?,
+    internal val cvc: String?
 ) {
 
     /**
-     * This build helps building the [CardDetails] instance
+     * This builder helps build the [CardDetails] instance
      */
     data class Builder(
         private var pan: String? = null,
@@ -62,8 +62,8 @@ class CardDetails private constructor(
      */
     class ExpiryDate internal constructor(expiryDateAccessEditText: AccessEditText) {
 
-        val month: Int
-        val year: Int
+        internal val month: Int
+        internal val year: Int
 
         private val maxExpiryDateLength = 4
 
