@@ -4,6 +4,7 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
+import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
@@ -11,7 +12,7 @@ import org.junit.Test
 
 class CvcValidationConfigBuilderTest {
 
-    private val cvc = mock<EditText>()
+    private val cvc = mock<AccessEditText>()
     private val validationListener = mock<AccessCheckoutCvcValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
 

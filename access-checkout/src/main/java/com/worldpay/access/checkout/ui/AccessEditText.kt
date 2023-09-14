@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.Editable
 import android.text.InputFilter
 import android.text.TextWatcher
+import android.text.method.KeyListener
 import android.util.AttributeSet
 import android.view.View
 import android.widget.EditText
@@ -45,6 +46,14 @@ class AccessEditText @JvmOverloads constructor(
         }
         set(inputType) {
             editText.inputType = inputType
+        }
+
+    var keyListener: KeyListener
+        get() {
+            return editText.keyListener
+        }
+        set(input) {
+            editText.keyListener = input
         }
 
     fun setText(text: CharSequence) = editText.setText(text)

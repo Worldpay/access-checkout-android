@@ -4,6 +4,7 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
+import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
@@ -13,9 +14,9 @@ import org.junit.Test
 
 class CardValidationConfigBuilderTest {
 
-    private val pan = mock<EditText>()
-    private val expiryDate = mock<EditText>()
-    private val cvc = mock<EditText>()
+    private val pan = mock<AccessEditText>()
+    private val expiryDate = mock<AccessEditText>()
+    private val cvc = mock<AccessEditText>()
     private val acceptedCardBrands = arrayOf("AMEX", "DINERS", "DISCOVER", "JCB", "MAESTRO", "MASTERCARD", "VISA")
     private val baseUrl = "https://localhost:8443"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()

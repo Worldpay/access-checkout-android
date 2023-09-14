@@ -63,7 +63,7 @@
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="text"
         android:textColor="@color/DEFAULT"
-        app:customHint="@string/card_cvc_hint"
+        app:customHint="CVC"
         app:layout_constraintStart_toEndOf="@+id/card_flow_expiry_date"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan"
     />
