@@ -12,6 +12,7 @@ import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
@@ -28,8 +29,8 @@ import org.mockito.ArgumentMatchers.anyString
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class CvcFieldDecoratorTest {
 
-    private val cvcEditText = mock<EditText>()
-    private val panEditText = mock<EditText>()
+    private val cvcEditText = mock<AccessEditText>()
+    private val panEditText = mock<AccessEditText>()
 
     private val cvcTextWatcher = mock<CvcTextWatcher>()
     private val cvcFocusChangeListener = mock<CvcFocusChangeListener>()
@@ -116,7 +117,7 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.filters).willReturn(emptyArray())
         cvcFieldDecorator.decorate()
 
-        verify(cvcEditText).setInputType(InputType.TYPE_CLASS_NUMBER)
+        assertEquals(cvcEditText.inputType,InputType.TYPE_CLASS_NUMBER)
     }
 
     @Test
@@ -124,8 +125,8 @@ class CvcFieldDecoratorTest {
         val cvcEditable = mock<Editable>()
         given(cvcEditText.filters).willReturn(emptyArray())
         given(cvcEditText.isCursorVisible).willReturn(true)
-        given(cvcEditText.text).willReturn(cvcEditable)
-        given(cvcEditable.toString()).willReturn("123")
+        given(cvcEditText.text).willReturn("123")
+      //  given(cvcEditable.toString()).willReturn("123")
 
         cvcFieldDecorator.decorate()
 
@@ -170,6 +171,6 @@ class CvcFieldDecoratorTest {
         cvcTextWatcher = cvcTextWatcher,
         cvcFocusChangeListener = cvcFocusChangeListener,
         cvcLengthFilter = accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText),
-        cvcEditText = cvcEditText
+        cvcAccessEditText = cvcEditText
     )
 }

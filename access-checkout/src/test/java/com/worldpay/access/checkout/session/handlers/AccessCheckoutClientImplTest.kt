@@ -5,6 +5,8 @@ import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.whenever
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.client.session.model.SessionType.CVC
@@ -14,6 +16,7 @@ import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -64,6 +67,15 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should send out an initialise broadcast with the request session type information before generating the session`() {
+        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        whenever(pan.text).thenReturn("1234")
+        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "1220"
+        }
+        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "123"
+        }
+
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
                 tokenHandlerFactoryMock,
@@ -73,9 +85,9 @@ class AccessCheckoutClientImplTest {
             )
 
         val cardDetails = CardDetails.Builder()
-            .pan("1234")
-            .expiryDate("1220")
-            .cvc("123")
+            .pan(pan)
+            .expiryDate(expiryDate)
+            .cvc(cvc)
             .build()
 
         val argument = ArgumentCaptor.forClass(Intent::class.java)
@@ -104,10 +116,19 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should be able to call each handler's canHandle method when calling generate`() {
+        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        whenever(pan.text).thenReturn("1234")
+        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "1220"
+        }
+        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "123"
+        }
+
         val cardDetails = CardDetails.Builder()
-            .pan("1234")
-            .expiryDate("1220")
-            .cvc("123")
+            .pan(pan)
+            .expiryDate(expiryDate)
+            .cvc(cvc)
             .build()
 
         val tokenRequests = listOf(CARD, CVC)
@@ -128,8 +149,11 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should call handle method on the sessionTokenRequestHandler when calling generate for session token`() {
+        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "123"
+        }
         val cardDetails = CardDetails.Builder()
-            .cvc("123")
+            .cvc(cvc)
             .build()
 
         val tokenRequests = listOf(CVC)
@@ -152,10 +176,19 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should call handle method on the cardSessionRequestHandler when calling generate for verified token`() {
+        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        whenever(pan.text).thenReturn("1234")
+        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "1220"
+        }
+        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "123"
+        }
+
         val cardDetails = CardDetails.Builder()
-            .pan("1234")
-            .expiryDate("1220")
-            .cvc("123")
+            .pan(pan)
+            .expiryDate(expiryDate)
+            .cvc(cvc)
             .build()
 
         val tokenRequests = listOf(CARD)
@@ -178,10 +211,19 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should not call handle when canHandle returns false`() {
+        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        whenever(pan.text).thenReturn("1234")
+        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "1220"
+        }
+        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "123"
+        }
+
         val cardDetails = CardDetails.Builder()
-            .pan("1234")
-            .expiryDate("1220")
-            .cvc("123")
+            .pan(pan)
+            .expiryDate(expiryDate)
+            .cvc(cvc)
             .build()
 
         val accessCheckoutClient =

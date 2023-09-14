@@ -16,6 +16,7 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
@@ -47,9 +48,9 @@ class PanTextWatcherTest {
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
     private val brandChangedHandler = mock<BrandChangedHandler>()
 
-    private val panEditText = mock<EditText>()
+    private val panEditText = mock<AccessEditText>()
 
-    private val cvcEditText = mock<EditText>()
+    private val cvcEditText = mock<AccessEditText>()
     private val cvcValidator = mock<CvcValidator>()
 
     private val panEditable = mock<Editable>()
@@ -72,8 +73,8 @@ class PanTextWatcherTest {
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 
-        given(cvcEditText.text).willReturn(cvcEditable)
-        given(cvcEditable.toString()).willReturn("")
+       // given(cvcEditText.text).willReturn(cvcEditable)
+      //  given(cvcEditable.toString()).willReturn("")
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
         given(panEditText.editableText).willReturn(panEditable)
     }

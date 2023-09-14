@@ -13,6 +13,7 @@ import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.PanNumericFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
@@ -29,7 +30,7 @@ import org.mockito.ArgumentMatchers.anyString
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class PanFieldDecoratorTest {
 
-    private val panEditText = mock<EditText>()
+    private val panEditText = mock<AccessEditText>()
 
     private val panTextWatcher = mock<PanTextWatcher>()
     private val panFocusChangeListener = mock<PanFocusChangeListener>()
@@ -116,7 +117,7 @@ class PanFieldDecoratorTest {
 
         panFieldDecorator.decorate()
 
-        verify(panEditText).setInputType(InputType.TYPE_CLASS_NUMBER)
+        assertEquals(panEditText.inputType, InputType.TYPE_CLASS_NUMBER)
     }
 
     @Test
@@ -126,16 +127,14 @@ class PanFieldDecoratorTest {
 
         panFieldDecorator.decorate()
 
-        verify(panEditText).setInputType(InputType.TYPE_CLASS_DATETIME)
+        assertEquals(panEditText.inputType, InputType.TYPE_CLASS_DATETIME)
     }
 
     @Test
     fun `should set text when the pan field is in layout`() {
-        val panEditable = mock<Editable>()
         given(panEditText.filters).willReturn(emptyArray())
         given(panEditText.isCursorVisible).willReturn(true)
-        given(panEditText.text).willReturn(panEditable)
-        given(panEditable.toString()).willReturn(visaPan())
+        given(panEditText.text).willReturn(visaPan())
 
         panFieldDecorator.decorate()
 

@@ -2,6 +2,8 @@ package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
 import android.content.Intent
+import com.nhaarman.mockitokotlin2.doReturn
+import com.nhaarman.mockitokotlin2.whenever
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
@@ -11,6 +13,7 @@ import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import com.worldpay.access.checkout.ui.AccessEditText
 import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -58,18 +61,31 @@ class CvcSessionRequestHandlerTest {
 
     @Test
     fun `should not throw illegal argument exception if pan is not provided in card details`() {
+        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "1220"
+        }
+        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "123"
+        }
+
         val cardDetails = CardDetails.Builder()
-            .expiryDate("1020")
-            .cvc("123")
+            .expiryDate(expiryDate)
+            .cvc(cvc)
             .build()
         cvcSessionRequestHandler.handle(cardDetails)
     }
 
     @Test
     fun `should not throw illegal argument exception if expiry date is not provided in card details`() {
+        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        whenever(pan.text).thenReturn("123456789")
+        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "123"
+        }
+
         val cardDetails = CardDetails.Builder()
-            .pan("123456789")
-            .cvc("123")
+            .pan(pan)
+            .cvc(cvc)
             .build()
         cvcSessionRequestHandler.handle(cardDetails)
     }
@@ -87,8 +103,11 @@ class CvcSessionRequestHandlerTest {
 
     @Test
     fun `should start service via context using the expected intent`() {
+        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
+            on { text } doReturn "123"
+        }
         val cardDetails = CardDetails.Builder()
-            .cvc("123")
+            .cvc(cvc)
             .build()
 
         cvcSessionRequestHandler.handle(cardDetails)

@@ -4,6 +4,7 @@ import android.content.Context
 import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
 import android.view.KeyEvent.*
+import android.widget.EditText
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.given

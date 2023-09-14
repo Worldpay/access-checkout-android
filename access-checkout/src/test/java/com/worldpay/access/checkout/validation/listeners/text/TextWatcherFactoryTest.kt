@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import kotlin.test.assertNotNull
 import org.junit.Before
@@ -12,9 +13,9 @@ class TextWatcherFactoryTest {
 
     private val resultHandlerFactory = mock<ResultHandlerFactory>()
 
-    private val cvcEditText = mock<EditText>()
-    private val panEditText = mock<EditText>()
-    private val expiryDateEditText = mock<EditText>()
+    private val cvcEditText = mock<AccessEditText>()
+    private val panEditText = mock<AccessEditText>()
+    private val expiryDateEditText = mock<AccessEditText>()
 
     private lateinit var textWatcherFactory: TextWatcherFactory
 
@@ -30,8 +31,8 @@ class TextWatcherFactoryTest {
         given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
 
         val textWatcher: PanTextWatcher = textWatcherFactory.createPanTextWatcher(
-            panEditText = panEditText,
-            cvcEditText = cvcEditText,
+            panAccessEditText = panEditText,
+            cvcAccessEditText = cvcEditText,
             acceptedCardBrands = emptyArray(),
             enablePanFormatting = false
         )

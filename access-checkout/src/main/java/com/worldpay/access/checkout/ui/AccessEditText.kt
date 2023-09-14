@@ -28,6 +28,8 @@ class AccessEditText @JvmOverloads constructor(
 
     val selectionEnd: Int get() = editText.selectionEnd
 
+    val selectionStart: Int get() = editText.selectionStart
+
     val editableText: Editable get() = editText.editableText
 
     val isCursorVisible: Boolean get() = editText.isCursorVisible
@@ -67,6 +69,13 @@ class AccessEditText @JvmOverloads constructor(
     fun insert(where: Int, text: CharSequence): Editable = editText.text.insert(where, text)
     fun replace(st: Int, en: Int, text: CharSequence): Editable = editText.text.replace(st, en, text)
 
+    fun setHint(hint: CharSequence) = editText.setHint(hint)
+
+    fun setHint(int: Int) = editText.setHint(int)
+
+   // fun setInputType(type: Int) = editText.setInputType(type)
+
+    fun append(text : CharSequence) = editText.append(text)
     private fun createEditText(): View {
         editText = EditText(context)
         editText.setHint(mCustomHint)
