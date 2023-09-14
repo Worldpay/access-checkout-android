@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.client.session
 
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.ui.AccessEditText
 
 /**
  * This interface is the entry point to the session generate for Access Worldpay Services.

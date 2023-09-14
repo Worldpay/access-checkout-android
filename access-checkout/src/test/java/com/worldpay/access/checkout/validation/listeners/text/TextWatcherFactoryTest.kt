@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
-import android.widget.EditText
 import com.nhaarman.mockitokotlin2.given
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.ui.AccessEditText
