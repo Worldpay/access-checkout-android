@@ -3,10 +3,7 @@ package com.worldpay.access.checkout.client.testutil
 import android.content.Context
 import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
-import android.view.KeyEvent.ACTION_DOWN
-import android.view.KeyEvent.ACTION_UP
-import android.view.KeyEvent.KEYCODE_DEL
-import android.widget.EditText
+import android.view.KeyEvent.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.given
@@ -17,15 +14,15 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.ui.AccessEditText
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 
 open class AbstractValidationIntegrationTest {
 
@@ -137,12 +134,12 @@ open class AbstractValidationIntegrationTest {
 
     protected fun AccessEditText.typeAtIndex(selection: Int, text: String) {
         this.setSelection(selection)
-        this.text.insert(selection, text)
+        this.insert(selection, text)
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 
-    protected fun EditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
-        this.text.replace(selectionStart, selectionEnd, text)
+    protected fun AccessEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
+        this.replace(selectionStart, selectionEnd, text)
     }
 }
