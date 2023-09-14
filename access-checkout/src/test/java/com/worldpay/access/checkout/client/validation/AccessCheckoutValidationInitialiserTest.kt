@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.client.validation.config.CardValidationConfi
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
+import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -21,9 +22,9 @@ class AccessCheckoutValidationInitialiserTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
-    private val expiryDate = EditText(context)
-    private val cvc = EditText(context)
-    private val pan = EditText(context)
+    private val expiryDate = AccessEditText(context)
+    private val cvc = AccessEditText(context)
+    private val pan = AccessEditText(context)
     private val acceptedCardBrands = arrayOf("VISA")
 
     private val baseUrl = "https://localhost:8443"

@@ -16,6 +16,7 @@ import com.nhaarman.mockitokotlin2.spy
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
+import com.worldpay.access.checkout.ui.AccessEditText
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
@@ -34,9 +35,9 @@ open class AbstractValidationIntegrationTest {
 
     private val cardConfigJson = CardConfiguration::class.java.getResource("remote_card_config.json")?.readText()!!
 
-    protected lateinit var pan: EditText
-    protected lateinit var cvc: EditText
-    protected lateinit var expiryDate: EditText
+    protected lateinit var pan: AccessEditText
+    protected lateinit var cvc: AccessEditText
+    protected lateinit var expiryDate: AccessEditText
 
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
@@ -83,12 +84,12 @@ open class AbstractValidationIntegrationTest {
     }
 
     private fun resetValidation() {
-        pan = EditText(context)
+        pan = AccessEditText(context)
         pan.id = 1
         pan.keyListener = DigitsKeyListener.getInstance("0123456789")
-        expiryDate = EditText(context)
+        expiryDate = AccessEditText(context)
         expiryDate.id = 2
-        cvc = EditText(context)
+        cvc = AccessEditText(context)
         cvc.id = 3
 
         cardValidationListener = spy(CardValidationListener())
@@ -122,19 +123,19 @@ open class AbstractValidationIntegrationTest {
         return sslContext
     }
 
-    protected fun EditText.pressBackspaceAtIndex(selection: Int) {
+    protected fun AccessEditText.pressBackspaceAtIndex(selection: Int) {
         this.setSelection(selection)
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
-    protected fun EditText.pressBackspaceAtSelection(start: Int, end: Int) {
+    protected fun AccessEditText.pressBackspaceAtSelection(start: Int, end: Int) {
         this.setSelection(start, end)
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
         this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
-    protected fun EditText.typeAtIndex(selection: Int, text: String) {
+    protected fun AccessEditText.typeAtIndex(selection: Int, text: String) {
         this.setSelection(selection)
         this.text.insert(selection, text)
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
