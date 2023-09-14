@@ -7,6 +7,7 @@ import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
 import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
 import org.junit.Before
@@ -19,17 +20,17 @@ class ExpiryDateTextWatcherTest {
     private val dateSanitiser = spy<ExpiryDateSanitiser>()
 
     private val expiryDateEditable = mock<Editable>()
-    private val expiryDateEditText = mock<EditText>()
+    private val expiryDateEditText = mock<AccessEditText>()
 
     private lateinit var expiryDateTextWatcher: ExpiryDateTextWatcher
 
     @Before
     fun setup() {
-        given(expiryDateEditText.text).willReturn(expiryDateEditable)
+        // given(expiryDateEditText.text).willReturn(expiryDateEditable.toString())
 
         expiryDateTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,
-            expiryDateEditText = expiryDateEditText,
+            expiryDateAccessEditText = expiryDateEditText,
             expiryDateValidationResultHandler = expiryDateValidationResultHandler,
             expiryDateSanitiser = dateSanitiser
         )

@@ -12,6 +12,7 @@ import com.nhaarman.mockitokotlin2.never
 import com.nhaarman.mockitokotlin2.reset
 import com.nhaarman.mockitokotlin2.spy
 import com.nhaarman.mockitokotlin2.verify
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
@@ -28,7 +29,7 @@ import org.mockito.ArgumentMatchers.anyString
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ExpiryDateFieldDecoratorTest {
 
-    private val expiryDateEditText = mock<EditText>()
+    private val expiryDateEditText = mock<AccessEditText>()
 
     private val expiryDateTextWatcher = mock<ExpiryDateTextWatcher>()
     private val expiryDateFocusChangeListener = mock<ExpiryDateFocusChangeListener>()
@@ -94,7 +95,7 @@ class ExpiryDateFieldDecoratorTest {
         given(expiryDateEditText.filters).willReturn(emptyArray())
         expiryDateFieldDecorator.decorate()
 
-        verify(expiryDateEditText).setInputType(InputType.TYPE_CLASS_NUMBER)
+        assertEquals(expiryDateEditText.inputType, InputType.TYPE_CLASS_NUMBER)
     }
 
     @Test
@@ -123,8 +124,8 @@ class ExpiryDateFieldDecoratorTest {
         val expiryDateEditable = mock<Editable>()
         given(expiryDateEditText.filters).willReturn(emptyArray())
         given(expiryDateEditText.isCursorVisible).willReturn(true)
-        given(expiryDateEditText.text).willReturn(expiryDateEditable)
-        given(expiryDateEditable.toString()).willReturn("12/21")
+        given(expiryDateEditText.text).willReturn("12/21")
+        // given(expiryDateEditable.toString()).willReturn("12/21")
 
         expiryDateFieldDecorator.decorate()
 
@@ -169,6 +170,6 @@ class ExpiryDateFieldDecoratorTest {
         expiryDateTextWatcher = expiryDateTextWatcher,
         expiryDateFocusChangeListener = expiryDateFocusChangeListener,
         expiryDateLengthFilter = accessCheckoutInputFilterFactory.getExpiryDateLengthFilter(),
-        expiryDateEditText = expiryDateEditText
+        expiryDateAccessEditText = expiryDateEditText
     )
 }

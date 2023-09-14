@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.widget.EditText
 import com.nhaarman.mockitokotlin2.mock
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
@@ -13,9 +14,9 @@ import org.mockito.BDDMockito.verify
 
 class FieldDecoratorFactoryTest {
 
-    private val cvcEditText = mock<EditText>()
-    private val panEditText = mock<EditText>()
-    private val expiryDateEditText = mock<EditText>()
+    private val cvcEditText = mock<AccessEditText>()
+    private val panEditText = mock<AccessEditText>()
+    private val expiryDateEditText = mock<AccessEditText>()
 
     private val textWatcherFactory = mock<TextWatcherFactory>()
     private val focusChangeListenerFactory = mock<FocusChangeListenerFactory>()
@@ -66,8 +67,8 @@ class FieldDecoratorFactoryTest {
 
         given(
             textWatcherFactory.createPanTextWatcher(
-                panEditText = panEditText,
-                cvcEditText = cvcEditText,
+                panAccessEditText = panEditText,
+                cvcAccessEditText = cvcEditText,
                 acceptedCardBrands = acceptedCardBrands,
                 enablePanFormatting = false
 
@@ -77,16 +78,16 @@ class FieldDecoratorFactoryTest {
         given(accessCheckoutInputFilterFactory.getPanNumericFilter()).willReturn(mock())
 
         val decorator: PanFieldDecorator = fieldDecoratorFactory.getPanDecorator(
-            panEditText = panEditText,
-            cvcEditText = cvcEditText,
+            panAccessEditText = panEditText,
+            cvcAccessEditText = cvcEditText,
             acceptedCardBrands = acceptedCardBrands,
             enablePanFormatting = false
         )
 
         assertNotNull(decorator)
         verify(textWatcherFactory).createPanTextWatcher(
-            panEditText = panEditText,
-            cvcEditText = cvcEditText,
+            panAccessEditText = panEditText,
+            cvcAccessEditText = cvcEditText,
             acceptedCardBrands = acceptedCardBrands,
             enablePanFormatting = false
         )

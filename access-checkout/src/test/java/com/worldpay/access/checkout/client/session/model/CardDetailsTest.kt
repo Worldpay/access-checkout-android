@@ -165,7 +165,7 @@ class CardDetailsTest {
         val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("120392895018742508243")
         val expiryDate = mock<AccessEditText>() {
-            on {text} doReturn "11200"
+            on {text} doReturn "1120"
         }
 
         val cardDetails = CardDetails.Builder()
