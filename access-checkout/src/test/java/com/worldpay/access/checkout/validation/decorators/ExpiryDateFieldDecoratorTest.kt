@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.validation.decorators
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
-import android.widget.EditText
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.given

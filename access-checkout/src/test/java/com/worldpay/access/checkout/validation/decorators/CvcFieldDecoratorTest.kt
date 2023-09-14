@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.validation.decorators
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
-import android.widget.EditText
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.argumentCaptor
 import com.nhaarman.mockitokotlin2.given
@@ -117,7 +116,7 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.filters).willReturn(emptyArray())
         cvcFieldDecorator.decorate()
 
-        assertEquals(cvcEditText.inputType,InputType.TYPE_CLASS_NUMBER)
+        assertEquals(cvcEditText.inputType, InputType.TYPE_CLASS_NUMBER)
     }
 
     @Test
@@ -126,7 +125,7 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.filters).willReturn(emptyArray())
         given(cvcEditText.isCursorVisible).willReturn(true)
         given(cvcEditText.text).willReturn("123")
-      //  given(cvcEditable.toString()).willReturn("123")
+        //  given(cvcEditable.toString()).willReturn("123")
 
         cvcFieldDecorator.decorate()
 

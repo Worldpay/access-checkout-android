@@ -2,10 +2,10 @@ package com.worldpay.access.checkout.client.validation.expiry
 
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import kotlin.test.assertEquals
 
 @RunWith(PlainRobolectricTestRunner::class)
 class ExpiryFormattingIntegrationTest : AbstractValidationIntegrationTest() {

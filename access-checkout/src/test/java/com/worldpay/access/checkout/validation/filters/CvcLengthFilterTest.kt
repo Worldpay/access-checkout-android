@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.filters
 
-import android.widget.EditText
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.CoroutineTestRule

@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import android.widget.EditText
 import com.nhaarman.mockitokotlin2.any
 import com.nhaarman.mockitokotlin2.eq
 import com.nhaarman.mockitokotlin2.given
@@ -73,8 +72,8 @@ class PanTextWatcherTest {
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 
-       // given(cvcEditText.text).willReturn(cvcEditable)
-      //  given(cvcEditable.toString()).willReturn("")
+        // given(cvcEditText.text).willReturn(cvcEditable)
+        //  given(cvcEditable.toString()).willReturn("")
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
         given(panEditText.editableText).willReturn(panEditable)
     }

@@ -1,4 +1,5 @@
 package com.worldpay.access.checkout.client.session.model
+
 import com.nhaarman.mockitokotlin2.doReturn
 import com.nhaarman.mockitokotlin2.mock
 import com.nhaarman.mockitokotlin2.whenever
@@ -7,8 +8,8 @@ import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import org.junit.Test
-class CardDetailsTest {
 
+class CardDetailsTest {
 
     @Test
     fun `should be able to create a card details instance using the builder - expiry date with separator`() {
@@ -16,10 +17,10 @@ class CardDetailsTest {
         val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("120392895018742508243")
         val expiryDate = mock<AccessEditText>() {
-            on {text} doReturn "11/20"
+            on { text } doReturn "11/20"
         }
         val cvc = mock<AccessEditText>() {
-            on {text} doReturn "123"
+            on { text } doReturn "123"
         }
 
         val cardDetails = CardDetails.Builder()
@@ -40,10 +41,10 @@ class CardDetailsTest {
         val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("1203 9289 5018 7425 08243")
         val expiryDate = mock<AccessEditText>() {
-            on {text} doReturn "11/20"
+            on { text } doReturn "11/20"
         }
         val cvc = mock<AccessEditText>() {
-            on {text} doReturn "123"
+            on { text } doReturn "123"
         }
 
         val cardDetails = CardDetails.Builder()
@@ -64,10 +65,10 @@ class CardDetailsTest {
         val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("120392895018742508243")
         val expiryDate = mock<AccessEditText>() {
-            on {text} doReturn "1120"
+            on { text } doReturn "1120"
         }
         val cvc = mock<AccessEditText>() {
-            on {text} doReturn "123"
+            on { text } doReturn "123"
         }
 
         val cardDetails = CardDetails.Builder()
@@ -88,10 +89,10 @@ class CardDetailsTest {
         val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("120392895018742508243")
         val expiryDate = mock<AccessEditText>() {
-            on {text} doReturn "11200"
+            on { text } doReturn "11200"
         }
         val cvc = mock<AccessEditText>() {
-            on {text} doReturn "123"
+            on { text } doReturn "123"
         }
 
         val exception = assertFailsWith<IllegalArgumentException> {
@@ -110,10 +111,10 @@ class CardDetailsTest {
         val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("120392895018742508243")
         val expiryDate = mock<AccessEditText>() {
-            on {text} doReturn "abcd"
+            on { text } doReturn "abcd"
         }
         val cvc = mock<AccessEditText>() {
-            on {text} doReturn "123"
+            on { text } doReturn "123"
         }
 
         val exception = assertFailsWith<IllegalArgumentException> {
@@ -130,10 +131,10 @@ class CardDetailsTest {
     @Test
     fun `should be able to create a card details instance without providing pan`() {
         val expiryDate = mock<AccessEditText>() {
-            on {text} doReturn "1120"
+            on { text } doReturn "1120"
         }
         val cvc = mock<AccessEditText>() {
-            on {text} doReturn "123"
+            on { text } doReturn "123"
         }
 
         val cardDetails = CardDetails.Builder()
@@ -149,7 +150,7 @@ class CardDetailsTest {
         val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("120392895018742508243")
         val cvc = mock<AccessEditText>() {
-            on {text} doReturn "123"
+            on { text } doReturn "123"
         }
 
         val cardDetails = CardDetails.Builder()
@@ -165,7 +166,7 @@ class CardDetailsTest {
         val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("120392895018742508243")
         val expiryDate = mock<AccessEditText>() {
-            on {text} doReturn "1120"
+            on { text } doReturn "1120"
         }
 
         val cardDetails = CardDetails.Builder()

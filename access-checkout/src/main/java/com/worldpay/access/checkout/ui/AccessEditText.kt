@@ -73,9 +73,9 @@ class AccessEditText @JvmOverloads constructor(
 
     fun setHint(int: Int) = editText.setHint(int)
 
-   // fun setInputType(type: Int) = editText.setInputType(type)
+    // fun setInputType(type: Int) = editText.setInputType(type)
 
-    fun append(text : CharSequence) = editText.append(text)
+    fun append(text: CharSequence) = editText.append(text)
     private fun createEditText(): View {
         editText = EditText(context)
         editText.setHint(mCustomHint)

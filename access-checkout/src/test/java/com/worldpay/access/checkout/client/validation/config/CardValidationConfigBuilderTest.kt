@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.client.validation.config
 
-import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
