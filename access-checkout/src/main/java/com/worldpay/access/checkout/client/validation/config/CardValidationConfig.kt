@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.client.validation.config
 
-import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
@@ -12,9 +11,9 @@ import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
  *
  * This configuration should be used to register the relevant fields and the listeners.
  *
- * @property[pan] [EditText] that represents the pan ui element
- * @property[expiryDate] [EditText] that represents the expiry date ui element
- * @property[cvc] [EditText] that represents the cvc ui element
+ * @property[pan] [AccessEditText] that represents the pan ui element
+ * @property[expiryDate] [AccessEditText] that represents the expiry date ui element
+ * @property[cvc] [AccessEditText] that represents the cvc ui element
  * @property[baseUrl] [String] that represents the base url to use when calling Worldpay services
  * @property[validationListener] [AccessCheckoutCardValidationListener] that represents the validation listener that should be notified on validation changes
  * @property[lifecycleOwner] [LifecycleOwner] of the application so that validation state can be handled during lifecycle changes

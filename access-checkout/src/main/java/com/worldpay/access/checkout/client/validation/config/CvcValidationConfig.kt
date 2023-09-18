@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.client.validation.config
 
-import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
@@ -10,9 +9,9 @@ import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 /**
  * An implementation of the [ValidationConfig] that represents the cvc validation configuration.
  *
- * This configuration should be build to register the relevant fields and the listeners.
+ * This configuration should be used to register the relevant fields and the listeners.
  *
- * @property[cvc] [EditText] that represents the cvc ui element
+ * @property[cvc] [AccessEditText] that represents the cvc ui element
  * @property[validationListener] [AccessCheckoutCvcValidationListener] that represents the validation listener that should be notified on validation changes
  * @property[lifecycleOwner] [LifecycleOwner] of the application so that validation state can be handled during lifecycle changes
  */
