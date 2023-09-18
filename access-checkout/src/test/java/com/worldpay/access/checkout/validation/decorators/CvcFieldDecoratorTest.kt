@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.decorators
 
-import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import com.nhaarman.mockitokotlin2.any
@@ -56,8 +55,7 @@ class CvcFieldDecoratorTest {
         reset(cvcEditText)
 
         given(cvcEditText.filters).willReturn(emptyArray())
-        given(cvcEditText.text).willReturn(mock())
-        given(mock<Editable>().toString()).willReturn("")
+        given(cvcEditText.text).willReturn("")
 
         cvcFieldDecorator = createFieldDecorator()
         cvcFieldDecorator.decorate()
@@ -116,16 +114,14 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.filters).willReturn(emptyArray())
         cvcFieldDecorator.decorate()
 
-        assertEquals(cvcEditText.inputType, InputType.TYPE_CLASS_NUMBER)
+        verify(cvcEditText).inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     @Test
     fun `should set text when the cvc field is in layout`() {
-        val cvcEditable = mock<Editable>()
         given(cvcEditText.filters).willReturn(emptyArray())
         given(cvcEditText.isCursorVisible).willReturn(true)
         given(cvcEditText.text).willReturn("123")
-        //  given(cvcEditable.toString()).willReturn("123")
 
         cvcFieldDecorator.decorate()
 

@@ -6,6 +6,7 @@ import android.text.InputFilter
 import android.text.TextWatcher
 import android.text.method.KeyListener
 import android.util.AttributeSet
+import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -68,14 +69,11 @@ class AccessEditText @JvmOverloads constructor(
     fun clear() = editText.text.clear()
     fun insert(where: Int, text: CharSequence): Editable = editText.text.insert(where, text)
     fun replace(st: Int, en: Int, text: CharSequence): Editable = editText.text.replace(st, en, text)
-
     fun setHint(hint: CharSequence) = editText.setHint(hint)
-
     fun setHint(int: Int) = editText.setHint(int)
-
-    // fun setInputType(type: Int) = editText.setInputType(type)
-
     fun append(text: CharSequence) = editText.append(text)
+    override fun dispatchKeyEvent(event: KeyEvent) = editText.dispatchKeyEvent(event)
+
     private fun createEditText(): View {
         editText = EditText(context)
         editText.setHint(mCustomHint)

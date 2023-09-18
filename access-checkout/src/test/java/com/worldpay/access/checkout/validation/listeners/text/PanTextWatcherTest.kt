@@ -72,8 +72,7 @@ class PanTextWatcherTest {
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 
-        // given(cvcEditText.text).willReturn(cvcEditable)
-        //  given(cvcEditable.toString()).willReturn("")
+        given(cvcEditText.text).willReturn("")
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
         given(panEditText.editableText).willReturn(panEditable)
     }
@@ -208,7 +207,7 @@ class PanTextWatcherTest {
     @Test
     fun `should re-validate the cvc when the brand changes`() {
         mockPan(visaPan(), VALID)
-        given(cvcEditable.toString()).willReturn("123")
+        given(cvcEditText.text).willReturn("123")
 
         panTextWatcher.afterTextChanged(panEditable)
 
