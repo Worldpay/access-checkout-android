@@ -72,6 +72,8 @@ class AccessEditText @JvmOverloads constructor(
     fun setHint(hint: CharSequence) = editText.setHint(hint)
     fun setHint(int: Int) = editText.setHint(int)
     fun append(text: CharSequence) = editText.append(text)
+    override fun dispatchKeyEvent(event: KeyEvent) = editText.dispatchKeyEvent(event)
+
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         return editText.dispatchKeyEvent(event)
     }
