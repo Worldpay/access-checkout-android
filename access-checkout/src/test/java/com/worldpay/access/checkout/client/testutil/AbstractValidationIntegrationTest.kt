@@ -14,15 +14,15 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.ui.AccessEditText
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 
 open class AbstractValidationIntegrationTest {
 
@@ -44,6 +44,7 @@ open class AbstractValidationIntegrationTest {
     protected lateinit var cardValidationListener: CardValidationListener
 
     private val defaultSSLSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
+
 
     @After
     fun tearDown() {
