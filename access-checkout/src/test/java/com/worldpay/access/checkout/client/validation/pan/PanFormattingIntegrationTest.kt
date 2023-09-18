@@ -33,7 +33,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
-        assertEquals("4111 1111 1111 1111", pan.text.toString())
+        assertEquals("4111 1111 1111 1111", pan.text)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
@@ -44,7 +44,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.setText("342793178931249")
 
-        assertEquals("3427 931789 31249", pan.text.toString())
+        assertEquals("3427 931789 31249", pan.text)
         verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
@@ -57,7 +57,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
-        assertEquals("4111111111111111", pan.text.toString())
+        assertEquals("4111111111111111", pan.text)
         verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
@@ -67,7 +67,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("1234 5678 9012")
         pan.pressBackspaceAtIndex(5)
 
-        assertEquals("1235 6789 012", pan.text.toString())
+        assertEquals("1235 6789 012", pan.text)
         assertEquals(3, pan.selectionEnd)
     }
 
@@ -76,7 +76,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("1234 5678 90")
         pan.pressBackspaceAtSelection(4, 5)
 
-        assertEquals("1235 6789 0", pan.text.toString())
+        assertEquals("1235 6789 0", pan.text)
         assertEquals(3, pan.selectionEnd)
     }
 
@@ -85,7 +85,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("1234 5678 9012")
         pan.pressBackspaceAtSelection(4, 6)
 
-        assertEquals("1234 6789 012", pan.text.toString())
+        assertEquals("1234 6789 012", pan.text)
         assertEquals(4, pan.selectionEnd)
     }
 
@@ -94,7 +94,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("1234 5678 9012")
         pan.pressBackspaceAtIndex(2)
 
-        assertEquals("1345 6789 012", pan.text.toString())
+        assertEquals("1345 6789 012", pan.text)
         assertEquals(1, pan.selectionEnd)
     }
 
@@ -103,7 +103,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("1234 5678 90")
         pan.pressBackspaceAtSelection(3, 6)
 
-        assertEquals("1236 7890", pan.text.toString())
+        assertEquals("1236 7890", pan.text)
         assertEquals(3, pan.selectionEnd)
     }
 
@@ -112,7 +112,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("1234 5678 90")
         pan.pressBackspaceAtSelection(4, 6)
 
-        assertEquals("1234 6789 0", pan.text.toString())
+        assertEquals("1234 6789 0", pan.text)
         assertEquals(4, pan.selectionEnd)
     }
 
@@ -122,7 +122,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.setText(visaPan())
 
-        assertEquals(visaPan, pan.text.toString())
+        assertEquals(visaPan, pan.text)
         assertEquals(19, pan.selectionEnd)
     }
 
@@ -132,11 +132,11 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.setText(AMEX_PAN_FORMATTED)
 
-        assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
+        assertEquals(AMEX_PAN_FORMATTED, pan.text)
 
         pan.setText("3528 0007 0000 0000 267")
 
-        assertEquals("3528 0007 0000 0000 267", pan.text.toString())
+        assertEquals("3528 0007 0000 0000 267", pan.text)
         assertEquals(23, pan.selectionEnd)
     }
 
@@ -146,13 +146,13 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.setText(visaPan)
 
-        assertEquals(visaPan, pan.text.toString())
+        assertEquals(visaPan, pan.text)
 
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         pan.setText(AMEX_PAN_FORMATTED)
 
-        assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
+        assertEquals(AMEX_PAN_FORMATTED, pan.text)
         assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
     }
 
@@ -162,7 +162,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.setText(AMEX_PAN_FORMATTED)
 
-        assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
+        assertEquals(AMEX_PAN_FORMATTED, pan.text)
         assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
     }
 
@@ -171,7 +171,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("1234 5678 90")
         pan.typeAtIndex(4, "1")
 
-        assertEquals("1234 1567 890", pan.text.toString())
+        assertEquals("1234 1567 890", pan.text)
         assertEquals(6, pan.selectionEnd)
     }
 
@@ -180,7 +180,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("1234 5678 90")
         pan.typeAtIndex(3, "1")
 
-        assertEquals("1231 4567 890", pan.text.toString())
+        assertEquals("1231 4567 890", pan.text)
         assertEquals(5, pan.selectionEnd)
     }
 
@@ -190,7 +190,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.typeAtIndex(23, "1")
 
-        assertEquals("1234 5678 9012 3456 789", pan.text.toString())
+        assertEquals("1234 5678 9012 3456 789", pan.text)
         assertEquals(23, pan.selectionEnd)
     }
 
@@ -200,14 +200,14 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.setText(visaPan(formatted = false))
 
-        assertEquals(visaPan, pan.text.toString())
+        assertEquals(visaPan, pan.text)
         assertEquals(19, pan.selectionEnd)
 
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         pan.setText(AMEX_PAN)
 
-        assertEquals(AMEX_PAN_FORMATTED, pan.text.toString())
+        assertEquals(AMEX_PAN_FORMATTED, pan.text)
         assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
     }
 
@@ -218,7 +218,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         verify(cardValidationListener, never()).onBrandChange(any())
         verify(cardValidationListener, never()).onPanValidated(any())
 
-        assertEquals("", pan.text.toString())
+        assertEquals("", pan.text)
     }
 
     @Test
@@ -232,7 +232,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.paste(pan.selectionStart, pan.selectionEnd, "8888")
 
-        assertEquals("4444 3338 8882 2221 111", pan.text.toString())
+        assertEquals("4444 3338 8882 2221 111", pan.text)
         assertEquals(13, pan.selectionEnd)
     }
 
@@ -245,7 +245,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.paste(0, 14, "3434 3434 3434")
 
-        assertEquals("3434 343434 34111", pan.text.toString())
+        assertEquals("3434 343434 34111", pan.text)
         assertEquals(14, pan.selectionEnd)
     }
 
@@ -255,7 +255,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         assertEquals(19, pan.selectionEnd)
         pan.typeAtIndex(19, "1")
 
-        assertEquals("4444 3333 2222 1111 1", pan.text.toString())
+        assertEquals("4444 3333 2222 1111 1", pan.text)
         assertEquals(21, pan.selectionEnd)
     }
 
@@ -267,7 +267,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.typeAtIndex(21, "8")
 
-        assertEquals("4444 3333 2222 1111 18", pan.text.toString())
+        assertEquals("4444 3333 2222 1111 18", pan.text)
         assertEquals(22, pan.selectionEnd)
     }
 
@@ -279,7 +279,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.typeAtIndex(21, "8")
         pan.typeAtIndex(22, "2")
 
-        assertEquals("4444 3333 2222 1111 182", pan.text.toString())
+        assertEquals("4444 3333 2222 1111 182", pan.text)
         assertEquals(23, pan.selectionEnd)
     }
 
@@ -292,7 +292,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.typeAtIndex(22, "2")
         pan.typeAtIndex(23, "3")
 
-        assertEquals("4444 3333 2222 1111 182", pan.text.toString())
+        assertEquals("4444 3333 2222 1111 182", pan.text)
         assertEquals(23, pan.selectionEnd)
     }
 
@@ -302,7 +302,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         assertEquals(23, pan.selectionEnd)
         pan.typeAtIndex(23, " ")
 
-        assertEquals("4554 3333 2222 1111 000", pan.text.toString())
+        assertEquals("4554 3333 2222 1111 000", pan.text)
         assertEquals(23, pan.selectionEnd)
     }
 
@@ -312,7 +312,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         assertEquals(23, pan.selectionEnd)
         pan.typeAtIndex(4, "d")
 
-        assertEquals("4554 3333 2222 1111 000", pan.text.toString())
+        assertEquals("4554 3333 2222 1111 000", pan.text)
         assertEquals(4, pan.selectionEnd)
     }
 
@@ -322,7 +322,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         assertEquals(23, pan.selectionEnd)
         pan.typeAtIndex(3, " ")
 
-        assertEquals("4554 3333 2222 1111 000", pan.text.toString())
+        assertEquals("4554 3333 2222 1111 000", pan.text)
         assertEquals(3, pan.selectionEnd)
     }
 
@@ -332,7 +332,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         assertEquals(23, pan.selectionEnd)
         pan.typeAtIndex(5, "8")
 
-        assertEquals("4444 8333 3222 2111 100", pan.text.toString())
+        assertEquals("4444 8333 3222 2111 100", pan.text)
         assertEquals(6, pan.selectionEnd)
     }
 
@@ -346,7 +346,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.append("3333222211110000")
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
-        assertEquals("4444 3333 2222 1111 000", pan.text.toString())
+        assertEquals("4444 3333 2222 1111 000", pan.text)
         assertEquals(23, pan.selectionStart)
     }
 }

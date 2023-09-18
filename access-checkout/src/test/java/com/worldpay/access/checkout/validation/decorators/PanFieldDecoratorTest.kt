@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.decorators
 
-import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import com.nhaarman.mockitokotlin2.any
@@ -55,8 +54,7 @@ class PanFieldDecoratorTest {
         reset(panEditText)
 
         given(panEditText.filters).willReturn(emptyArray())
-        given(panEditText.text).willReturn(mock())
-        given(mock<Editable>().toString()).willReturn("")
+        given(panEditText.text).willReturn("")
 
         createFieldDecorator().decorate()
 
@@ -116,7 +114,7 @@ class PanFieldDecoratorTest {
 
         panFieldDecorator.decorate()
 
-        assertEquals(panEditText.inputType, InputType.TYPE_CLASS_NUMBER)
+        verify(panEditText).inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     @Test
@@ -126,7 +124,7 @@ class PanFieldDecoratorTest {
 
         panFieldDecorator.decorate()
 
-        assertEquals(panEditText.inputType, InputType.TYPE_CLASS_DATETIME)
+        verify(panEditText).inputType = InputType.TYPE_CLASS_DATETIME
     }
 
     @Test

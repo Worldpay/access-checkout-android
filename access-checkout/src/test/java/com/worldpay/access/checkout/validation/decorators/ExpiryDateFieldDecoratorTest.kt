@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.decorators
 
-import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import com.nhaarman.mockitokotlin2.any
@@ -55,8 +54,7 @@ class ExpiryDateFieldDecoratorTest {
         reset(expiryDateEditText)
 
         given(expiryDateEditText.filters).willReturn(emptyArray())
-        given(expiryDateEditText.text).willReturn(mock())
-        given(mock<Editable>().toString()).willReturn("")
+        given(expiryDateEditText.text).willReturn("")
 
         expiryDateFieldDecorator = createFieldDecorator()
         expiryDateFieldDecorator.decorate()
@@ -94,7 +92,7 @@ class ExpiryDateFieldDecoratorTest {
         given(expiryDateEditText.filters).willReturn(emptyArray())
         expiryDateFieldDecorator.decorate()
 
-        assertEquals(expiryDateEditText.inputType, InputType.TYPE_CLASS_NUMBER)
+        verify(expiryDateEditText).inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     @Test
@@ -120,11 +118,9 @@ class ExpiryDateFieldDecoratorTest {
 
     @Test
     fun `should set text when the expiry date field is in layout`() {
-        val expiryDateEditable = mock<Editable>()
         given(expiryDateEditText.filters).willReturn(emptyArray())
         given(expiryDateEditText.isCursorVisible).willReturn(true)
         given(expiryDateEditText.text).willReturn("12/21")
-        // given(expiryDateEditable.toString()).willReturn("12/21")
 
         expiryDateFieldDecorator.decorate()
 
