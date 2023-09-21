@@ -6,11 +6,7 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.WireMock.aResponse
-import com.github.tomakehurst.wiremock.client.WireMock.equalTo
-import com.github.tomakehurst.wiremock.client.WireMock.post
-import com.github.tomakehurst.wiremock.client.WireMock.stubFor
-import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
 import com.worldpay.access.checkout.api.MockServer.startWiremock
@@ -23,24 +19,27 @@ import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
-import java.util.concurrent.TimeUnit
-import kotlin.test.assertEquals
+import com.worldpay.access.checkout.ui.AccessEditText
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
+import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
 
 class AccessCheckoutClientIntegrationTest {
 
     private val verifiedTokensEndpoint = "verifiedTokens/sessions"
-    private val cvc = "123"
-    private val cardNumber = "1111222233334444"
-    private val expiryDate = "1220"
     private val merchantId = "identity"
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
+
+    private var panAccessEditText = AccessEditText(applicationContext)
+    private var expiryDateAccessEditText = AccessEditText(applicationContext)
+    private var cvcAccessEditText = AccessEditText(applicationContext)
+
     private val lifecycleOwner: LifecycleOwner = mock(LifecycleOwner::class.java)
 
     private var lifecycleRegistry = LifecycleRegistry(lifecycleOwner)
@@ -53,6 +52,9 @@ class AccessCheckoutClientIntegrationTest {
             lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         }
 
+        panAccessEditText.setText("1111222233334444")
+        expiryDateAccessEditText.setText("1220")
+        cvcAccessEditText.setText("123")
         startWiremock(applicationContext, 8443)
     }
 
@@ -72,7 +74,7 @@ class AccessCheckoutClientIntegrationTest {
         val expectedSessionReference = "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
 
         val response = (
-            """{
+                """{
                   "_links": {
                     "verifiedTokens:session": {
                       "href": "$expectedSessionReference"
@@ -86,7 +88,7 @@ class AccessCheckoutClientIntegrationTest {
                     ]
                   }
                 }"""
-            )
+                )
 
         stubFor(
             postRequest(request)
@@ -154,7 +156,10 @@ class AccessCheckoutClientIntegrationTest {
             override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
 
             override fun onError(error: AccessCheckoutException) {
-                assertEquals("bodyDoesNotMatchSchema : The json body provided does not match the expected schema", error.message)
+                assertEquals(
+                    "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    error.message
+                )
                 assertionsRan = true
             }
         }
@@ -316,9 +321,9 @@ class AccessCheckoutClientIntegrationTest {
 
     private fun getCardDetails(): CardDetails {
         return CardDetails.Builder()
-            .pan(cardNumber)
-            .expiryDate(expiryDate)
-            .cvc(cvc)
+            .pan(panAccessEditText)
+            .expiryDate(expiryDateAccessEditText)
+            .cvc(cvcAccessEditText)
             .build()
     }
 
