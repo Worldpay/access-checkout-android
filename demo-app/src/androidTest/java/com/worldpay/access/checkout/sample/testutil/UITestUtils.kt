@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.sample.testutil
 import android.content.pm.ActivityInfo
 import android.os.Build
 import android.view.accessibility.AccessibilityWindowInfo
+import android.widget.EditText
 import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
@@ -21,8 +22,9 @@ import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
-import java.util.concurrent.TimeUnit
+import com.worldpay.access.checkout.ui.AccessEditText
 import org.awaitility.Awaitility.await
+import java.util.concurrent.TimeUnit
 
 object UITestUtils {
 
@@ -142,5 +144,12 @@ object UITestUtils {
         onView(withId(R.id.nav_view))
             .check(matches(isDisplayed()))
             .perform(NavigationViewActions.navigateTo(fragmentId))
+    }
+
+    fun retrieveEnteredText(accessEditText: AccessEditText): String {
+        val property = accessEditText.javaClass.getDeclaredField("editText")
+        property.isAccessible = true
+        val editText = property.get(accessEditText) as EditText
+        return editText.text.toString()
     }
 }

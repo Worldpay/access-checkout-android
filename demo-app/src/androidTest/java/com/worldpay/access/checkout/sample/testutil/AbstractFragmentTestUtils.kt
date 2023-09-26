@@ -4,7 +4,6 @@ import android.app.Activity
 import android.util.Log
 import android.view.View
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
 import androidx.core.content.res.ResourcesCompat
 import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
@@ -16,6 +15,7 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
+import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -33,39 +33,39 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         wait { assertTrue(progressBar().waitUntilGone(3000)) }
     }
 
-    protected fun checkValidationState(editText: EditText, isValid: Boolean, field: String) {
+    protected fun checkValidationState(accessEditText: AccessEditText, isValid: Boolean, field: String) {
         if (isValid) {
-            wait { assertEquals(color(R.color.SUCCESS), editText.currentTextColor, "$field field expected to be valid") }
+            wait { assertEquals(color(R.color.SUCCESS), accessEditText.currentTextColor, "$field field expected to be valid") }
         } else {
-            wait { assertEquals(color(R.color.FAIL), editText.currentTextColor, "$field field expected to be invalid") }
+            wait { assertEquals(color(R.color.FAIL), accessEditText.currentTextColor, "$field field expected to be invalid") }
         }
     }
 
-    protected fun enterText(editText: EditText, text: String) {
-        wait { assertTrue("${editText.id} - visibility state") { editText.isVisible } }
-        wait { assertTrue("${editText.id} - enabled state") { editText.isEnabled } }
-        wait { assertEquals(1.0f, editText.alpha, "${editText.id} - alpha state") }
+    protected fun enterText(accessEditText: AccessEditText, text: String) {
+        wait { assertTrue("${accessEditText.id} - visibility state") { accessEditText.isVisible } }
+        wait { assertTrue("${accessEditText.id} - enabled state") { accessEditText.isEnabled } }
+        wait { assertEquals(1.0f, accessEditText.alpha, "${accessEditText.id} - alpha state") }
 
-        val editTextUI = UITestUtils.uiObjectWithId(editText.id)
+        val editTextUI = UITestUtils.uiObjectWithId(accessEditText.id)
         editTextUI.click()
-        activityRule.activity.runOnUiThread { editText.setText(text) }
+        activityRule.activity.runOnUiThread { accessEditText.setText(text) }
 
         val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        im.hideSoftInputFromWindow(editText.windowToken, 0)
+        im.hideSoftInputFromWindow(accessEditText.windowToken, 0)
     }
 
-    protected fun clearText(editText: EditText) {
-        wait { assertTrue("${editText.id} - visibility state") { editText.isVisible } }
-        wait { assertTrue("${editText.id} - enabled state") { editText.isEnabled } }
-        wait { assertEquals(1.0f, editText.alpha, "${editText.id} - alpha state") }
+    protected fun clearText(accessEditText: AccessEditText) {
+        wait { assertTrue("${accessEditText.id} - visibility state") { accessEditText.isVisible } }
+        wait { assertTrue("${accessEditText.id} - enabled state") { accessEditText.isEnabled } }
+        wait { assertEquals(1.0f, accessEditText.alpha, "${accessEditText.id} - alpha state") }
 
-        val editTextUI = UITestUtils.uiObjectWithId(editText.id)
+        val editTextUI = UITestUtils.uiObjectWithId(accessEditText.id)
         editTextUI.click()
-        activityRule.activity.runOnUiThread { editText.text.clear() }
+        activityRule.activity.runOnUiThread { accessEditText.clear() }
     }
 
-    protected fun setCursorPosition(editText: EditText, startSelection: Int, endSelection: Int) {
-        activityRule.activity.runOnUiThread { editText.setSelection(startSelection, endSelection) }
+    protected fun setCursorPosition(accessEditText: AccessEditText, startSelection: Int, endSelection: Int) {
+        activityRule.activity.runOnUiThread { accessEditText.setSelection(startSelection, endSelection) }
     }
 
     protected fun dialogHasText(text: String) {
