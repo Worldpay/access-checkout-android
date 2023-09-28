@@ -33,7 +33,11 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         wait { assertTrue(progressBar().waitUntilGone(3000)) }
     }
 
-    protected fun checkValidationState(accessEditText: AccessEditText, isValid: Boolean, field: String) {
+    protected fun checkValidationState(
+        accessEditText: AccessEditText,
+        isValid: Boolean,
+        field: String
+    ) {
         if (isValid) {
             wait { assertEquals(color(R.color.SUCCESS), accessEditText.currentTextColor, "$field field expected to be valid") }
         } else {
@@ -64,7 +68,11 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         activityRule.activity.runOnUiThread { accessEditText.clear() }
     }
 
-    protected fun setCursorPosition(accessEditText: AccessEditText, startSelection: Int, endSelection: Int) {
+    protected fun setCursorPosition(
+        accessEditText: AccessEditText,
+        startSelection: Int,
+        endSelection: Int
+    ) {
         activityRule.activity.runOnUiThread { accessEditText.setSelection(startSelection, endSelection) }
     }
 

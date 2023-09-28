@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.validation.filters
 
-import android.widget.EditText
+import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -13,7 +13,7 @@ class ExpiryDateLengthFilterTest {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
-    private val expiryDate = EditText(context)
+    private val expiryDate = AccessEditText(context)
 
     @Before
     fun setup() {
@@ -23,15 +23,15 @@ class ExpiryDateLengthFilterTest {
     @Test
     fun `should limit to max length`() {
         expiryDate.setText("02/299")
-        assertEquals("02/29", expiryDate.text.toString())
+        assertEquals("02/29", expiryDate.text)
     }
 
     @Test
     fun `should allow text within limit`() {
         expiryDate.setText("1")
-        assertEquals("1", expiryDate.text.toString())
+        assertEquals("1", expiryDate.text)
 
         expiryDate.setText("12")
-        assertEquals("12", expiryDate.text.toString())
+        assertEquals("12", expiryDate.text)
     }
 }
