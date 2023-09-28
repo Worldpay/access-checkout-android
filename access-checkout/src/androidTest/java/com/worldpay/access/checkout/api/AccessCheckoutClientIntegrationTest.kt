@@ -20,14 +20,14 @@ import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
 import com.worldpay.access.checkout.ui.AccessEditText
+import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
 import org.awaitility.Awaitility.await
 import org.junit.After
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
-import java.util.concurrent.TimeUnit
-import kotlin.test.assertEquals
 
 class AccessCheckoutClientIntegrationTest {
 
@@ -74,7 +74,7 @@ class AccessCheckoutClientIntegrationTest {
         val expectedSessionReference = "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
 
         val response = (
-                """{
+            """{
                   "_links": {
                     "verifiedTokens:session": {
                       "href": "$expectedSessionReference"
@@ -88,7 +88,7 @@ class AccessCheckoutClientIntegrationTest {
                     ]
                   }
                 }"""
-                )
+            )
 
         stubFor(
             postRequest(request)

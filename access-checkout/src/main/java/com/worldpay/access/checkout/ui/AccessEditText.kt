@@ -20,64 +20,67 @@ class AccessEditText @JvmOverloads constructor(
     defStyle: Int = 0
 ) : LinearLayout(context, attrs, defStyle) {
     private var mCustomHint: String? = null
-    private lateinit var editText: EditText
+    private var editText: EditText? = null
 
     // with the internal access modifier, this property is internal to the Access Checkout SDK JAR file
     // (or access-checkout Gradle project when adding the dependency as a project dependency)
     // and cannot be accessed outside of that module, e.g. cannot be accessed by a merchant's app
-    internal val text: String get() = editText.text.toString()
+    internal val text: String get() = editText!!.text.toString()
 
-    val selectionEnd: Int get() = editText.selectionEnd
+    val selectionEnd: Int get() = editText!!.selectionEnd
 
-    val selectionStart: Int get() = editText.selectionStart
+    val selectionStart: Int get() = editText!!.selectionStart
 
-    val editableText: Editable get() = editText.editableText
+    val editableText: Editable get() = editText!!.editableText
 
-    val isCursorVisible: Boolean get() = editText.isCursorVisible
+    val isCursorVisible: Boolean get() = editText!!.isCursorVisible
+    val currentTextColor: Int get() = editText!!.currentTextColor
 
     var filters: Array<InputFilter>
         get() {
-            return editText.filters
+            return editText!!.filters
         }
         set(filters) {
-            editText.filters = filters
+            editText!!.filters = filters
         }
 
     var inputType: Int
         get() {
-            return editText.inputType
+            return editText!!.inputType
         }
         set(inputType) {
-            editText.inputType = inputType
+            editText!!.inputType = inputType
         }
 
     var keyListener: KeyListener
         get() {
-            return editText.keyListener
+            return editText!!.keyListener
         }
         set(input) {
-            editText.keyListener = input
+            editText!!.keyListener = input
         }
 
-    fun setText(text: CharSequence) = editText.setText(text)
-    fun length(): Int = editText.length()
-    fun removeTextChangedListener(watcher: TextWatcher?) = editText.removeTextChangedListener(watcher)
-    fun addTextChangedListener(watcher: TextWatcher?) = editText.addTextChangedListener(watcher)
-    fun setSelection(index: Int) = editText.setSelection(index)
-    fun setSelection(start: Int, stop: Int) = editText.setSelection(start, stop)
-    fun setTextColor(color: Int) = editText.setTextColor(color)
-    fun clear() = editText.text.clear()
-    fun insert(where: Int, text: CharSequence): Editable = editText.text.insert(where, text)
-    fun replace(st: Int, en: Int, text: CharSequence): Editable = editText.text.replace(st, en, text)
-    fun setHint(hint: CharSequence) = editText.setHint(hint)
-    fun setHint(int: Int) = editText.setHint(int)
-    fun append(text: CharSequence) = editText.append(text)
+    fun setText(text: CharSequence) = editText!!.setText(text)
+    fun length(): Int = editText!!.length()
+    fun removeTextChangedListener(watcher: TextWatcher?) = editText!!.removeTextChangedListener(watcher)
+    fun addTextChangedListener(watcher: TextWatcher?) = editText!!.addTextChangedListener(watcher)
+    fun setSelection(index: Int) = editText!!.setSelection(index)
+    fun setSelection(start: Int, stop: Int) = editText!!.setSelection(start, stop)
+    fun setTextColor(color: Int) = editText!!.setTextColor(color)
+    fun clear() = editText!!.text.clear()
+    fun insert(where: Int, text: CharSequence): Editable = editText!!.text.insert(where, text)
+    fun replace(st: Int, en: Int, text: CharSequence): Editable = editText!!.text.replace(st, en, text)
+    fun setHint(hint: CharSequence) = editText!!.setHint(hint)
+    fun setHint(resid: Int) = editText!!.setHint(resid)
+    fun append(text: CharSequence) = editText!!.append(text)
+    fun getHint(): CharSequence = editText!!.hint
+
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
-        return editText.dispatchKeyEvent(event)
+        return editText!!.dispatchKeyEvent(event)
     }
 
     override fun setOnFocusChangeListener(l: OnFocusChangeListener?) {
-        editText.onFocusChangeListener = l
+        editText!!.onFocusChangeListener = l
     }
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
@@ -90,8 +93,8 @@ class AccessEditText @JvmOverloads constructor(
 
     private fun createEditText(): View {
         editText = EditText(context)
-        editText.setHint(mCustomHint)
-        return editText
+        editText!!.setHint(mCustomHint)
+        return editText!!
     }
 
     init {
