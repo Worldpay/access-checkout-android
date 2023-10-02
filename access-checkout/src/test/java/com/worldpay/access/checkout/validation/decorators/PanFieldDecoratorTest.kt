@@ -2,14 +2,7 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.text.InputFilter
 import android.text.InputType
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
+import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
@@ -114,7 +107,7 @@ class PanFieldDecoratorTest {
 
         panFieldDecorator.decorate()
 
-        verify(panEditText).inputType = InputType.TYPE_CLASS_NUMBER
+        verify(panEditText, times(1)).inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     @Test
@@ -124,7 +117,7 @@ class PanFieldDecoratorTest {
 
         panFieldDecorator.decorate()
 
-        verify(panEditText).inputType = InputType.TYPE_CLASS_DATETIME
+        verify(panEditText, times(1)).inputType = InputType.TYPE_CLASS_DATETIME
     }
 
     @Test
