@@ -36,7 +36,16 @@ class AccessEditText @JvmOverloads constructor(
     val isCursorVisible: Boolean get() = editText!!.isCursorVisible
     val currentTextColor: Int get() = editText!!.currentTextColor
 
-    var filters: Array<InputFilter>
+    init {
+        orientation = VERTICAL
+        context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
+            mCustomHint = getString(R.styleable.AccessEditText_customHint)
+        }
+
+        addView(createEditText())
+    }
+
+    internal var filters: Array<InputFilter>
         get() {
             return editText!!.filters
         }
@@ -60,20 +69,32 @@ class AccessEditText @JvmOverloads constructor(
             editText!!.keyListener = input
         }
 
-    fun setText(text: CharSequence) = editText!!.setText(text)
-    fun length(): Int = editText!!.length()
-    fun removeTextChangedListener(watcher: TextWatcher?) = editText!!.removeTextChangedListener(watcher)
-    fun addTextChangedListener(watcher: TextWatcher?) = editText!!.addTextChangedListener(watcher)
-    fun setSelection(index: Int) = editText!!.setSelection(index)
-    fun setSelection(start: Int, stop: Int) = editText!!.setSelection(start, stop)
-    fun setTextColor(color: Int) = editText!!.setTextColor(color)
-    fun clear() = editText!!.text.clear()
-    fun insert(where: Int, text: CharSequence): Editable = editText!!.text.insert(where, text)
-    fun replace(st: Int, en: Int, text: CharSequence): Editable = editText!!.text.replace(st, en, text)
-    fun setHint(hint: CharSequence) = editText!!.setHint(hint)
-    fun setHint(resid: Int) = editText!!.setHint(resid)
-    fun append(text: CharSequence) = editText!!.append(text)
-    fun getHint(): CharSequence = editText!!.hint
+    internal fun length(): Int = editText!!.length()
+
+    internal fun setSelection(index: Int) = editText!!.setSelection(index)
+
+    internal fun setSelection(start: Int, stop: Int) = editText!!.setSelection(start, stop)
+
+    internal fun setText(text: CharSequence) = editText!!.setText(text)
+
+    internal  fun setTextColor(color: Int) = editText!!.setTextColor(color)
+
+    internal fun removeTextChangedListener(watcher: TextWatcher?) = editText!!.removeTextChangedListener(watcher)
+
+    internal fun addTextChangedListener(watcher: TextWatcher?) = editText!!.addTextChangedListener(watcher)
+
+    internal fun setHint(hint: CharSequence) = editText!!.setHint(hint)
+    internal fun setHint(resid: Int) = editText!!.setHint(resid)
+    internal fun getHint(): CharSequence = editText!!.hint
+
+    internal fun clear() = editText!!.text.clear()
+
+    internal fun insert(where: Int, text: CharSequence): Editable = editText!!.text.insert(where, text)
+
+    internal fun replace(st: Int, en: Int, text: CharSequence): Editable = editText!!.text.replace(st, en, text)
+
+    internal fun append(text: CharSequence) = editText!!.append(text)
+
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         return editText!!.dispatchKeyEvent(event)
@@ -97,12 +118,4 @@ class AccessEditText @JvmOverloads constructor(
         return editText!!
     }
 
-    init {
-        orientation = VERTICAL
-        context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
-            mCustomHint = getString(R.styleable.AccessEditText_customHint)
-        }
-
-        addView(createEditText())
-    }
 }
