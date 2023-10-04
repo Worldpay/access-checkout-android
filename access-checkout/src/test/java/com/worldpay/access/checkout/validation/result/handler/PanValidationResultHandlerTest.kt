@@ -2,15 +2,11 @@ package com.worldpay.access.checkout.validation.result.handler
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
 import com.worldpay.access.checkout.validation.result.state.PanFieldValidationStateManager
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.*
 
 class PanValidationResultHandlerTest {
 
@@ -79,6 +75,6 @@ class PanValidationResultHandlerTest {
     fun `should not bother checking if all fields are valid is isValid is false`() {
         validationResultHandler.notifyListener(false)
 
-        verifyZeroInteractions(validationStateManager)
+        verifyNoInteractions(validationStateManager)
     }
 }

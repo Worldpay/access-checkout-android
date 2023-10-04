@@ -5,8 +5,6 @@ import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.client.session.model.SessionType.CVC
@@ -23,25 +21,22 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
-import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.mock
-import org.mockito.Mockito.never
-import org.mockito.Mockito.verify
+import org.mockito.kotlin.*
 
 @RunWith(PlainRobolectricTestRunner::class)
 class AccessCheckoutClientImplTest {
 
-    private val lifecycleOwnerMock = mock(LifecycleOwner::class.java)
-    private val lifecycleMock = mock(Lifecycle::class.java)
-    private val contextMock = mock(Context::class.java)
-    private val localBroadcastManagerFactoryMock = mock(LocalBroadcastManagerFactory::class.java)
-    private val localBroadcastManagerMock = mock(LocalBroadcastManager::class.java)
+    private val lifecycleOwnerMock = mock<LifecycleOwner>()
+    private val lifecycleMock = mock<Lifecycle>()
+    private val contextMock = mock<Context>()
+    private val localBroadcastManagerFactoryMock = mock<LocalBroadcastManagerFactory>()
+    private val localBroadcastManagerMock = mock<LocalBroadcastManager>()
 
-    private val cvcSessionRequestHandlerMock = mock(CvcSessionRequestHandler::class.java)
-    private val cardSessionRequestHandlerMock = mock(CardSessionRequestHandler::class.java)
-    private val tokenHandlerFactoryMock = mock(SessionRequestHandlerFactory::class.java)
+    private val cvcSessionRequestHandlerMock = mock<CvcSessionRequestHandler>()
+    private val cardSessionRequestHandlerMock = mock<CardSessionRequestHandler>()
+    private val tokenHandlerFactoryMock = mock<SessionRequestHandlerFactory>()
     private val activityLifecycleObserverInitialiser =
-        mock(ActivityLifecycleObserverInitialiser::class.java)
+        mock<ActivityLifecycleObserverInitialiser>()
 
     @Before
     fun setup() {
@@ -67,14 +62,12 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should send out an initialise broadcast with the request session type information before generating the session`() {
-        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("1234")
-        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "1220"
-        }
-        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "123"
-        }
+        val expiryDate = mock<AccessEditText>()
+        whenever(expiryDate.text).thenReturn("1120")
+        val cvc = mock<AccessEditText>()
+        whenever(cvc.text).thenReturn("123")
 
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
@@ -116,14 +109,12 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should be able to call each handler's canHandle method when calling generate`() {
-        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("1234")
-        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "1220"
-        }
-        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "123"
-        }
+        val expiryDate = mock<AccessEditText>()
+        whenever(expiryDate.text).thenReturn("1120")
+        val cvc = mock<AccessEditText>()
+        whenever(cvc.text).thenReturn("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -149,9 +140,9 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should call handle method on the sessionTokenRequestHandler when calling generate for session token`() {
-        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "123"
-        }
+        val cvc = mock<AccessEditText>()
+        whenever(cvc.text).thenReturn("123")
+
         val cardDetails = CardDetails.Builder()
             .cvc(cvc)
             .build()
@@ -176,14 +167,12 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should call handle method on the cardSessionRequestHandler when calling generate for verified token`() {
-        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("1234")
-        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "1220"
-        }
-        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "123"
-        }
+        val expiryDate = mock<AccessEditText>()
+        whenever(expiryDate.text).thenReturn("1120")
+        val cvc = mock<AccessEditText>()
+        whenever(cvc.text).thenReturn("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -211,14 +200,12 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should not call handle when canHandle returns false`() {
-        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("1234")
-        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "1220"
-        }
-        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "123"
-        }
+        val expiryDate = mock<AccessEditText>()
+        whenever(expiryDate.text).thenReturn("1120")
+        val cvc = mock<AccessEditText>()
+        whenever(cvc.text).thenReturn("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -242,7 +229,7 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should call activityLifeCycleObserver onStop() when dispose() is called`() {
-        val activityLifecycleObserver = mock(ActivityLifecycleObserver::class.java)
+        val activityLifecycleObserver = mock<ActivityLifecycleObserver>()
         given(activityLifecycleObserverInitialiser.initialise()).willReturn(
             activityLifecycleObserver
         )

@@ -1,9 +1,5 @@
 package com.worldpay.access.checkout.api.discovery
 
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.times
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
@@ -17,6 +13,10 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.verify
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.times
 
 @ExperimentalCoroutinesApi
 class ApiDiscoveryClientTest {

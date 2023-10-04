@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.validation.decorators
 
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
@@ -8,8 +7,9 @@ import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.verify
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 class FieldDecoratorFactoryTest {
 

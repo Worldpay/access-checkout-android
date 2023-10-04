@@ -2,10 +2,6 @@ package com.worldpay.access.checkout.session.broadcast.receivers
 
 import android.content.Context
 import android.content.Intent
-import com.nhaarman.mockitokotlin2.atMost
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.SessionType
@@ -25,6 +21,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.verifyNoInteractions
+import org.mockito.kotlin.atMost
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoMoreInteractions
 
 @RunWith(PlainRobolectricTestRunner::class)
 class SessionBroadcastReceiverTest {

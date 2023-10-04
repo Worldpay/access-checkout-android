@@ -1,9 +1,6 @@
 package com.worldpay.access.checkout.client.validation
 
 import android.os.Looper.getMainLooper
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyNoMoreInteractions
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
@@ -13,6 +10,9 @@ import kotlin.test.fail
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.verifyNoMoreInteractions
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 
@@ -78,7 +78,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should notify validation result on focus lost where notification has not already been sent - pan`() {
         pan.setText("0000")
-        verifyZeroInteractions(cardValidationListener)
+        verifyNoInteractions(cardValidationListener)
 
         pan.requestFocus()
 
@@ -94,7 +94,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should notify validation result on focus lost where notification has not already been sent - cvc`() {
         cvc.setText("")
-        verifyZeroInteractions(cardValidationListener)
+        verifyNoInteractions(cardValidationListener)
 
         cvc.requestFocus()
 
@@ -110,7 +110,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should notify validation result on focus lost where notification has not already been sent - expiry date`() {
         expiryDate.setText("01/19")
-        verifyZeroInteractions(cardValidationListener)
+        verifyNoInteractions(cardValidationListener)
 
         expiryDate.requestFocus()
 

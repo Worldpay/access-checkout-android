@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.session.api.request
 
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import kotlin.test.assertEquals
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 class SessionRequestInfoTest {
 

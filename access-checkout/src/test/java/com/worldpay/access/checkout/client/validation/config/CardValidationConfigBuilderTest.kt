@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.client.validation.config
 
 import androidx.lifecycle.LifecycleOwner
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
@@ -10,6 +9,7 @@ import kotlin.test.assertFalse
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 class CardValidationConfigBuilderTest {
 

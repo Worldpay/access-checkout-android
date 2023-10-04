@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.text.InputFilter
 import android.text.InputType
-import com.nhaarman.mockitokotlin2.*
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
@@ -17,6 +16,7 @@ import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.*
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class PanFieldDecoratorTest {

@@ -1,7 +1,5 @@
 package com.worldpay.access.checkout.testutils
 
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.CardDefaults
@@ -13,6 +11,8 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configuratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
 
 internal object CardConfigurationUtil {
 

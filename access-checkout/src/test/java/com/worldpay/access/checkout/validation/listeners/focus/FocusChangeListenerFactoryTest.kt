@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.validation.listeners.focus
 
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
 
 class FocusChangeListenerFactoryTest {
 

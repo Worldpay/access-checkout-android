@@ -17,10 +17,28 @@ import com.worldpay.access.checkout.R
 class AccessEditText @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = 0
+    defStyle: Int = 0,
 ) : LinearLayout(context, attrs, defStyle) {
     private var mCustomHint: String? = null
     private var editText: EditText? = null
+
+    internal constructor(
+        context: Context,
+        attrs: AttributeSet? = null,
+        defStyle: Int = 0,
+        editText: EditText
+    ) : this(context, attrs, defStyle) {
+        this.editText = editText
+    }
+
+    init {
+        orientation = VERTICAL
+//        context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
+//            mCustomHint = getString(R.styleable.AccessEditText_customHint)
+//        }
+
+        addView(createEditText())
+    }
 
     // with the internal access modifier, this property is internal to the Access Checkout SDK JAR file
     // (or access-checkout Gradle project when adding the dependency as a project dependency)
@@ -35,15 +53,7 @@ class AccessEditText @JvmOverloads constructor(
 
     val isCursorVisible: Boolean get() = editText!!.isCursorVisible
     val currentTextColor: Int get() = editText!!.currentTextColor
-
-    init {
-        orientation = VERTICAL
-        context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
-            mCustomHint = getString(R.styleable.AccessEditText_customHint)
-        }
-
-        addView(createEditText())
-    }
+    internal fun setTextColor(color: Int) = editText!!.setTextColor(color)
 
     internal var filters: Array<InputFilter>
         get() {
@@ -77,8 +87,6 @@ class AccessEditText @JvmOverloads constructor(
 
     internal fun setText(text: CharSequence) = editText!!.setText(text)
 
-    internal  fun setTextColor(color: Int) = editText!!.setTextColor(color)
-
     internal fun removeTextChangedListener(watcher: TextWatcher?) = editText!!.removeTextChangedListener(watcher)
 
     internal fun addTextChangedListener(watcher: TextWatcher?) = editText!!.addTextChangedListener(watcher)
@@ -94,7 +102,6 @@ class AccessEditText @JvmOverloads constructor(
     internal fun replaceText(st: Int, en: Int, text: CharSequence): Editable = editText!!.text.replace(st, en, text)
 
     internal fun appendText(text: CharSequence) = editText!!.append(text)
-
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         return editText!!.dispatchKeyEvent(event)
@@ -117,5 +124,4 @@ class AccessEditText @JvmOverloads constructor(
         editText!!.setHint(mCustomHint)
         return editText!!
     }
-
 }

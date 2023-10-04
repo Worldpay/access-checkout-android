@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.api
 
 import com.google.common.collect.Maps.newHashMap
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
@@ -25,6 +24,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.verify
 import org.mockito.Mock
 import org.mockito.Mockito
+import org.mockito.kotlin.mock
 
 @ExperimentalCoroutinesApi
 class HttpsClientTest {

@@ -1,12 +1,12 @@
 package com.worldpay.access.checkout.validation.validators
 
-import com.nhaarman.mockitokotlin2.reset
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.verify
 import org.mockito.Mockito.mock
+import org.mockito.kotlin.reset
 
 class CvcValidatorTest {
 
