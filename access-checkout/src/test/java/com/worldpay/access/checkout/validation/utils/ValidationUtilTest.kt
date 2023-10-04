@@ -1,7 +1,5 @@
 package com.worldpay.access.checkout.validation.utils
 
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
@@ -26,6 +24,8 @@ import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
 
 @ExperimentalCoroutinesApi
 class ValidationUtilTest {

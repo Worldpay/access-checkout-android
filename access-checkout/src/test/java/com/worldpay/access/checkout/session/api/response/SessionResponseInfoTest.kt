@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.session.api.response
 
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.request.SessionRequest
@@ -8,6 +7,7 @@ import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import java.net.URL
 import kotlin.test.assertEquals
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 class SessionResponseInfoTest {
 

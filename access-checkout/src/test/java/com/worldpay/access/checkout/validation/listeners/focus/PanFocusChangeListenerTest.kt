@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.validation.listeners.focus
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 
 class PanFocusChangeListenerTest {
 
@@ -29,6 +29,6 @@ class PanFocusChangeListenerTest {
     fun `should do nothing when focus is gained`() {
         panFocusChangeListener.onFocusChange(null, true)
 
-        verifyZeroInteractions(panValidationResultHandler)
+        verifyNoInteractions(panValidationResultHandler)
     }
 }

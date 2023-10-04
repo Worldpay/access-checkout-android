@@ -1,9 +1,6 @@
 package com.worldpay.access.checkout.client.validation.cvc
 
 import android.os.Looper.getMainLooper
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
@@ -12,6 +9,9 @@ import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
+import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 

@@ -1,13 +1,6 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -34,6 +27,7 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.never
+import org.mockito.kotlin.*
 
 @ExperimentalCoroutinesApi
 class PanTextWatcherTest {
@@ -176,7 +170,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verifyZeroInteractions(brandChangedHandler)
+        verifyNoInteractions(brandChangedHandler)
     }
 
     @Test
@@ -191,7 +185,7 @@ class PanTextWatcherTest {
         // set the visa pan again so that the brand changed handler is no longer called
         mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
-        verifyZeroInteractions(brandChangedHandler)
+        verifyNoInteractions(brandChangedHandler)
     }
 
     @Test
@@ -227,8 +221,8 @@ class PanTextWatcherTest {
         // set the visa pan again so that the brand changed handler is no longer called
         mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
-        verifyZeroInteractions(brandChangedHandler)
-        verifyZeroInteractions(cvcValidator)
+        verifyNoInteractions(brandChangedHandler)
+        verifyNoInteractions(cvcValidator)
     }
 
     @Test
@@ -239,7 +233,7 @@ class PanTextWatcherTest {
         panTextWatcher.afterTextChanged(panEditable)
 
         verify(brandChangedHandler).handle(VISA_BRAND)
-        verifyZeroInteractions(cvcValidator)
+        verifyNoInteractions(cvcValidator)
     }
 
     // Setting the reformatted text on the EditText using setText() is causing an issue where

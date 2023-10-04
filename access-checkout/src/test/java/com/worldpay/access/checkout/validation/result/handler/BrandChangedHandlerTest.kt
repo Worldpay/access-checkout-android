@@ -1,12 +1,12 @@
 package com.worldpay.access.checkout.validation.result.handler
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutBrandChangedListener
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 
 class BrandChangedHandlerTest {
 

@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.validation.filters
 
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 class AccessCheckoutInputFilterFactoryTest {
 

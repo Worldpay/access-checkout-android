@@ -1,8 +1,6 @@
 package com.worldpay.access.checkout.client.validation
 
 import android.os.Looper.getMainLooper
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
@@ -16,6 +14,8 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 

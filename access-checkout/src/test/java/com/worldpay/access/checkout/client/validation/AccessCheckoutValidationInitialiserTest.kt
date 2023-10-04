@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.client.validation
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
@@ -13,6 +12,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
+import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 

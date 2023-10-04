@@ -2,8 +2,6 @@ package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
 import android.content.Intent
-import com.nhaarman.mockitokotlin2.doReturn
-import com.nhaarman.mockitokotlin2.whenever
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
@@ -25,6 +23,7 @@ import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import org.mockito.kotlin.whenever
 
 @RunWith(PlainRobolectricTestRunner::class)
 class CardSessionRequestHandlerTest {
@@ -61,12 +60,10 @@ class CardSessionRequestHandlerTest {
 
     @Test
     fun `should throw illegal argument exception if pan is not provided in card details`() {
-        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "1220"
-        }
-        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "123"
-        }
+        val expiryDate = org.mockito.kotlin.mock<AccessEditText>()
+        whenever(expiryDate.text).thenReturn("1120")
+        val cvc = org.mockito.kotlin.mock<AccessEditText>()
+        whenever(cvc.text).thenReturn("123")
 
         val cardDetails = CardDetails.Builder()
             .expiryDate(expiryDate)
@@ -82,11 +79,10 @@ class CardSessionRequestHandlerTest {
 
     @Test
     fun `should throw illegal argument exception if expiry date is not provided in card details`() {
-        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("1234")
-        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "123"
-        }
+        val cvc = org.mockito.kotlin.mock<AccessEditText>()
+        whenever(cvc.text).thenReturn("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -102,11 +98,10 @@ class CardSessionRequestHandlerTest {
 
     @Test
     fun `should throw illegal argument exception if cvc is not provided in card details`() {
-        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("1234")
-        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "1220"
-        }
+        val expiryDate = org.mockito.kotlin.mock<AccessEditText>()
+        whenever(expiryDate.text).thenReturn("1120")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -122,14 +117,12 @@ class CardSessionRequestHandlerTest {
 
     @Test
     fun `should start service via context using the expected intent`() {
-        val pan = com.nhaarman.mockitokotlin2.mock<AccessEditText>()
+        val pan = mock<AccessEditText>()
         whenever(pan.text).thenReturn("1234")
-        val expiryDate = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "1220"
-        }
-        val cvc = com.nhaarman.mockitokotlin2.mock<AccessEditText>() {
-            on { text } doReturn "123"
-        }
+        val expiryDate = org.mockito.kotlin.mock<AccessEditText>()
+        whenever(expiryDate.text).thenReturn("1120")
+        val cvc = org.mockito.kotlin.mock<AccessEditText>()
+        whenever(cvc.text).thenReturn("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
