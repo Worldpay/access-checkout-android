@@ -1,5 +1,0 @@
-<resources>
-    <declare-styleable name="AccessEditText">
-        <attr name="customHint" format="string" />
-    </declare-styleable>
-</resources>

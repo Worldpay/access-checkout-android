@@ -21,7 +21,7 @@
         app:layout_constraintEnd_toStartOf="@+id/card_flow_brand_logo"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:customHint="@string/card_number_hint"/>
+        android:hint="@string/card_number_hint"/>
 
     <ImageView
         android:id="@+id/card_flow_brand_logo"
@@ -47,7 +47,7 @@
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="text"
         android:textColor="@color/DEFAULT"
-        app:customHint="@string/card_expiry_date_hint"
+        android:hint="@string/card_expiry_date_hint"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan"
         tools:ignore="TextFields" />
@@ -62,7 +62,6 @@
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="text"
         android:textColor="@color/DEFAULT"
-        app:customHint="@string/card_cvc_hint"
         app:layout_constraintStart_toEndOf="@+id/card_flow_expiry_date"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan"
     />
