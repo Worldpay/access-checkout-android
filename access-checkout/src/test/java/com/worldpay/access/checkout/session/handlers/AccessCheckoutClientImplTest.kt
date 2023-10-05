@@ -14,6 +14,7 @@ import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import com.worldpay.access.checkout.testutils.createAccessEditTextMock
 import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import org.junit.Assert.assertNotNull
@@ -62,12 +63,9 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should send out an initialise broadcast with the request session type information before generating the session`() {
-        val pan = mock<AccessEditText>()
-        whenever(pan.text).thenReturn("1234")
-        val expiryDate = mock<AccessEditText>()
-        whenever(expiryDate.text).thenReturn("1120")
-        val cvc = mock<AccessEditText>()
-        whenever(cvc.text).thenReturn("123")
+        val pan = createAccessEditTextMock("1234")
+        val expiryDate = createAccessEditTextMock("1120")
+        val cvc = createAccessEditTextMock("123")
 
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
