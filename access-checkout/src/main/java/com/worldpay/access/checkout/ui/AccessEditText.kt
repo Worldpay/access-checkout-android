@@ -33,9 +33,9 @@ class AccessEditText @JvmOverloads constructor(
 
     init {
         orientation = VERTICAL
-//        context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
-//            mCustomHint = getString(R.styleable.AccessEditText_customHint)
-//        }
+        context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
+            mCustomHint = getString(R.styleable.AccessEditText_customHint)
+        }
 
         addView(createEditText())
     }
@@ -92,7 +92,7 @@ class AccessEditText @JvmOverloads constructor(
     internal fun addTextChangedListener(watcher: TextWatcher?) = editText!!.addTextChangedListener(watcher)
 
     internal fun setHint(hint: CharSequence) = editText!!.setHint(hint)
-    internal fun setHint(resid: Int) = editText!!.setHint(resid)
+    internal fun setHint(resId: Int) = editText!!.setHint(resId)
     internal fun getHint(): CharSequence = editText!!.hint
 
     internal fun clearText() = editText!!.text.clear()
