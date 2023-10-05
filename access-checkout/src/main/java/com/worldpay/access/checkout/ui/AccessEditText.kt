@@ -10,8 +10,6 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
-import androidx.core.content.withStyledAttributes
-import com.worldpay.access.checkout.R
 
 // class is final and public by default
 class AccessEditText @JvmOverloads constructor(
@@ -33,9 +31,9 @@ class AccessEditText @JvmOverloads constructor(
 
     init {
         orientation = VERTICAL
-        context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
-            mCustomHint = getString(R.styleable.AccessEditText_customHint)
-        }
+//        context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
+//            mCustomHint = getString(R.styleable.AccessEditText_customHint)
+//        }
 
         addView(createEditText())
     }
