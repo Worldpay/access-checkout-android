@@ -10,4 +10,3 @@ fun createAccessEditTextMock(returnValue: String): AccessEditText {
 
     return accessEditTextMock
 }
-
