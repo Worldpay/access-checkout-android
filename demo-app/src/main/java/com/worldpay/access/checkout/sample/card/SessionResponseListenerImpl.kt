@@ -62,9 +62,9 @@ class SessionResponseListenerImpl(
 
     private fun resetFields() {
         Log.d(javaClass.simpleName, "Resetting all fields")
-        activity.findViewById<AccessEditText>(R.id.card_flow_text_pan).clear()
-        activity.findViewById<AccessEditText>(R.id.card_flow_text_cvc).clear()
-        activity.findViewById<AccessEditText>(R.id.card_flow_expiry_date).clear()
+        activity.findViewById<AccessEditText>(R.id.card_flow_text_pan).clearText()
+        activity.findViewById<AccessEditText>(R.id.card_flow_text_cvc).clearText()
+        activity.findViewById<AccessEditText>(R.id.card_flow_expiry_date).clearText()
         activity.findViewById<SwitchCompat>(R.id.card_flow_payments_cvc_switch).isChecked = false
     }
 }

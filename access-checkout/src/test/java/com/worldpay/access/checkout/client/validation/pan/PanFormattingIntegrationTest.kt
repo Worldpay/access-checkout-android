@@ -343,7 +343,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("4444")
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
-        pan.append("3333222211110000")
+        pan.appendText("3333222211110000")
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4444 3333 2222 1111 000", pan.text)

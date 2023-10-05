@@ -61,7 +61,7 @@ class AccessEditText @JvmOverloads constructor(
             editText!!.inputType = inputType
         }
 
-    var keyListener: KeyListener
+    internal var keyListener: KeyListener
         get() {
             return editText!!.keyListener
         }
@@ -87,13 +87,13 @@ class AccessEditText @JvmOverloads constructor(
     internal fun setHint(resid: Int) = editText!!.setHint(resid)
     internal fun getHint(): CharSequence = editText!!.hint
 
-    internal fun clear() = editText!!.text.clear()
+    internal fun clearText() = editText!!.text.clear()
 
-    internal fun insert(where: Int, text: CharSequence): Editable = editText!!.text.insert(where, text)
+    internal fun insertText(where: Int, text: CharSequence): Editable = editText!!.text.insert(where, text)
 
-    internal fun replace(st: Int, en: Int, text: CharSequence): Editable = editText!!.text.replace(st, en, text)
+    internal fun replaceText(st: Int, en: Int, text: CharSequence): Editable = editText!!.text.replace(st, en, text)
 
-    internal fun append(text: CharSequence) = editText!!.append(text)
+    internal fun appendText(text: CharSequence) = editText!!.append(text)
 
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
