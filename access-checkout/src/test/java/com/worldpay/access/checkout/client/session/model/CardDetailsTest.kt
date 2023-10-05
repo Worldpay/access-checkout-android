@@ -1,24 +1,18 @@
 package com.worldpay.access.checkout.client.session.model
 
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.testutils.createAccessEditTextMock
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 import org.junit.Test
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.whenever
 
 class CardDetailsTest {
 
     @Test
     fun `should be able to create a card details instance using the builder - expiry date with separator`() {
-
-        val pan = mock<AccessEditText>()
-        whenever(pan.text).thenReturn("120392895018742508243")
-        val expiryDate = mock<AccessEditText>()
-        whenever(expiryDate.text).thenReturn("11/20")
-        val cvc = mock<AccessEditText>()
-        whenever(cvc.text).thenReturn("123")
+        val pan = createAccessEditTextMock("120392895018742508243")
+        val expiryDate = createAccessEditTextMock("11/20")
+        val cvc = createAccessEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -35,12 +29,9 @@ class CardDetailsTest {
 
     @Test
     fun `should be able to create a card details instance using the builder - formatted pan has white spaces stripped`() {
-        val pan = mock<AccessEditText>()
-        whenever(pan.text).thenReturn("1203 9289 5018 7425 08243")
-        val expiryDate = mock<AccessEditText>()
-        whenever(expiryDate.text).thenReturn("11/20")
-        val cvc = mock<AccessEditText>()
-        whenever(cvc.text).thenReturn("123")
+        val pan = createAccessEditTextMock("1203 9289 5018 7425 08243")
+        val expiryDate = createAccessEditTextMock("11/20")
+        val cvc = createAccessEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -57,12 +48,9 @@ class CardDetailsTest {
 
     @Test
     fun `should be able to parse expiry date without separator`() {
-        val pan = mock<AccessEditText>()
-        whenever(pan.text).thenReturn("120392895018742508243")
-        val expiryDate = mock<AccessEditText>()
-        whenever(expiryDate.text).thenReturn("1120")
-        val cvc = mock<AccessEditText>()
-        whenever(cvc.text).thenReturn("123")
+        val pan = createAccessEditTextMock("120392895018742508243")
+        val expiryDate = createAccessEditTextMock("1120")
+        val cvc = createAccessEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -79,12 +67,9 @@ class CardDetailsTest {
 
     @Test
     fun `should throw format exception where expiry date is not length of 4 characters`() {
-        val pan = mock<AccessEditText>()
-        whenever(pan.text).thenReturn("120392895018742508243")
-        val expiryDate = mock<AccessEditText>()
-        whenever(expiryDate.text).thenReturn("11200")
-        val cvc = mock<AccessEditText>()
-        whenever(cvc.text).thenReturn("123")
+        val pan = createAccessEditTextMock("120392895018742508243")
+        val expiryDate = createAccessEditTextMock("11200")
+        val cvc = createAccessEditTextMock("123")
 
         val exception = assertFailsWith<IllegalArgumentException> {
             CardDetails.Builder()
@@ -99,12 +84,9 @@ class CardDetailsTest {
 
     @Test
     fun `should throw format exception where expiry date has non numerics`() {
-        val pan = mock<AccessEditText>()
-        whenever(pan.text).thenReturn("120392895018742508243")
-        val expiryDate = mock<AccessEditText>()
-        whenever(expiryDate.text).thenReturn("abcd")
-        val cvc = mock<AccessEditText>()
-        whenever(cvc.text).thenReturn("123")
+        val pan = createAccessEditTextMock("120392895018742508243")
+        val expiryDate = createAccessEditTextMock("abcd")
+        val cvc = createAccessEditTextMock("123")
 
         val exception = assertFailsWith<IllegalArgumentException> {
             CardDetails.Builder()
@@ -119,10 +101,8 @@ class CardDetailsTest {
 
     @Test
     fun `should be able to create a card details instance without providing pan`() {
-        val expiryDate = mock<AccessEditText>()
-        whenever(expiryDate.text).thenReturn("1120")
-        val cvc = mock<AccessEditText>()
-        whenever(cvc.text).thenReturn("123")
+        val expiryDate = createAccessEditTextMock("1120")
+        val cvc = createAccessEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .expiryDate(expiryDate)
@@ -134,10 +114,8 @@ class CardDetailsTest {
 
     @Test
     fun `should be able to create a card details instance without providing expiry date`() {
-        val pan = mock<AccessEditText>()
-        whenever(pan.text).thenReturn("120392895018742508243")
-        val cvc = mock<AccessEditText>()
-        whenever(cvc.text).thenReturn("123")
+        val pan = createAccessEditTextMock("120392895018742508243")
+        val cvc = createAccessEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -149,10 +127,8 @@ class CardDetailsTest {
 
     @Test
     fun `should be able to create a card details instance without providing cvc`() {
-        val pan = mock<AccessEditText>()
-        whenever(pan.text).thenReturn("120392895018742508243")
-        val expiryDate = mock<AccessEditText>()
-        whenever(expiryDate.text).thenReturn("1120")
+        val pan = createAccessEditTextMock("120392895018742508243")
+        val expiryDate = createAccessEditTextMock("1120")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)

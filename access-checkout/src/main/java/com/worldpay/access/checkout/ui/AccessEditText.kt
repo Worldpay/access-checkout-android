@@ -24,9 +24,9 @@ class AccessEditText @JvmOverloads constructor(
 
     internal constructor(
         context: Context,
+        editText: EditText,
         attrs: AttributeSet? = null,
         defStyle: Int = 0,
-        editText: EditText
     ) : this(context, attrs, defStyle) {
         this.editText = editText
     }
@@ -49,7 +49,7 @@ class AccessEditText @JvmOverloads constructor(
 
     val selectionStart: Int get() = editText!!.selectionStart
 
-    val editableText: Editable get() = editText!!.editableText
+    internal val editableText: Editable get() = editText!!.editableText
 
     val isCursorVisible: Boolean get() = editText!!.isCursorVisible
     val currentTextColor: Int get() = editText!!.currentTextColor

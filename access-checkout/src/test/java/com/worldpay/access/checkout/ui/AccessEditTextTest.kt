@@ -10,7 +10,10 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.*
+import org.mockito.kotlin.spy
+import org.mockito.kotlin.times
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.assertEquals
@@ -25,10 +28,9 @@ class AccessEditTextTest {
     private var editTextSpy: EditText = spy(editText)
     private var contextSpy: Context = spy(context)
 
-
     @Before
     fun setUp() {
-        accessEditText = AccessEditText(contextSpy, null, 0, editTextSpy)
+        accessEditText = AccessEditText(contextSpy, editTextSpy)
     }
 
     @Test
@@ -113,10 +115,19 @@ class AccessEditTextTest {
 //    }
 
     @Test
-    fun `should get the key listener of AccessEditText`() {
+    fun `should get the key listener of EditText when called`(){
+        val expectedListener = DigitsKeyListener.getInstance("0123456789")
+        whenever(editTextSpy.keyListener).thenReturn(expectedListener)
+
+        assertEquals(expectedListener, accessEditText.keyListener)
+        verify(editTextSpy).keyListener
+    }
+
+    @Test
+    fun `should set the key listener of EditText when called`(){
         val expectedListener = DigitsKeyListener.getInstance("0123456789")
         accessEditText.keyListener = expectedListener
 
-        assertEquals(expectedListener, accessEditText.keyListener)
+        verify(editTextSpy).keyListener = expectedListener
     }
 }
