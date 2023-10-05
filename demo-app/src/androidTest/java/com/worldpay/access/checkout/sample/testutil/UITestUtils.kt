@@ -150,6 +150,7 @@ object UITestUtils {
         val property = accessEditText.javaClass.getDeclaredField("editText")
         property.isAccessible = true
         val editText = property.get(accessEditText) as EditText
+        property.isAccessible = false
         return editText.text.toString()
     }
 }
