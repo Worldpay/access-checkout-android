@@ -134,12 +134,12 @@ open class AbstractValidationIntegrationTest {
 
     protected fun AccessEditText.typeAtIndex(selection: Int, text: String) {
         this.setSelection(selection)
-        this.insert(selection, text)
+        this.insertText(selection, text)
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 
     protected fun AccessEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
-        this.replace(selectionStart, selectionEnd, text)
+        this.replaceText(selectionStart, selectionEnd, text)
     }
 }

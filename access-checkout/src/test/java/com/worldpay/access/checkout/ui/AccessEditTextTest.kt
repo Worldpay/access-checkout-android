@@ -43,7 +43,7 @@ class AccessEditTextTest {
         accessEditText.setText(visaPan())
         assertEquals(visaPan(), accessEditText.text)
 
-        accessEditText.clear()
+        accessEditText.clearText()
         assertEquals("", accessEditText.text)
     }
 

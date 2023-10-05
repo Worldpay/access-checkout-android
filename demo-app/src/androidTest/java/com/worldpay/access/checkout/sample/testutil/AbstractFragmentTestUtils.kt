@@ -65,7 +65,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
         val editTextUI = UITestUtils.uiObjectWithId(accessEditText.id)
         editTextUI.click()
-        activityRule.activity.runOnUiThread { accessEditText.clear() }
+        activityRule.activity.runOnUiThread { accessEditText.clearText() }
     }
 
     protected fun setCursorPosition(
