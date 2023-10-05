@@ -9,19 +9,22 @@ import android.widget.EditText
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import kotlin.test.assertEquals
+
 
 class AccessEditTextTest {
     private lateinit var accessEditText: AccessEditText
-    private var contextMock: Context = mock<Context>()
-    private var editTextMock: EditText = mock<EditText>()
+    private var contextMock: Context = mock()
+    private var editTextMock: EditText = mock()
+    private var attributeValuesMock: AttributeValues = mock()
 
     @Before
     fun setUp() {
-        accessEditText = AccessEditText(contextMock, editTextMock)
-//        whenever(contextMock.withStyledAttributes(any(),any(),any())).then()
+        accessEditText = AccessEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
     }
 
     @Test
@@ -99,5 +102,21 @@ class AccessEditTextTest {
         accessEditText.keyListener = expectedListener
 
         verify(editTextMock).keyListener = expectedListener
+    }
+
+    @Test
+    fun `should set properties with attribute values in constructor`() {
+        val contextMock:Context = mock()
+        val attributeValuesMock:AttributeValues = mock()
+        val editTextMock:EditText = mock()
+
+        given(attributeValuesMock.stringOf("hint")).willReturn("some hint value")
+        // ... do the same for other properties we want to support in XML
+        // FYI in case you didn't know you can use given() instead of whenever() as illustrated above, it's the same just more BDD
+
+        AccessEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).hint = "some hint value"
+        // ...
     }
 }

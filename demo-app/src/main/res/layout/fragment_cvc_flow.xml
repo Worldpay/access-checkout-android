@@ -18,7 +18,7 @@
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="text"
         android:textColor="@color/DEFAULT"
-        app:customHint="@string/card_cvc_hint"
+        android:hint="@string/card_cvc_hint"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

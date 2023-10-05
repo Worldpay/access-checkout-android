@@ -7,36 +7,30 @@ import android.text.TextWatcher
 import android.text.method.KeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
-import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 
 // class is final and public by default
-class AccessEditText @JvmOverloads constructor(
+class AccessEditText @JvmOverloads internal constructor(
     context: Context,
-    attrs: AttributeSet? = null,
+    attrs: AttributeSet?,
     defStyle: Int = 0,
+    private val editText: EditText,
+    private val attributeValues: AttributeValues,
 ) : LinearLayout(context, attrs, defStyle) {
-    private var mCustomHint: String? = null
-    private var editText: EditText? = null
-
-    internal constructor(
-        context: Context,
-        editText: EditText,
-        attrs: AttributeSet? = null,
-        defStyle: Int = 0,
-    ) : this(context, attrs, defStyle) {
-        this.editText = editText
-    }
-
     init {
         orientation = VERTICAL
-//        context.withStyledAttributes(attrs, R.styleable.AccessEditText) {
-//            mCustomHint = getString(R.styleable.AccessEditText_customHint)
-//        }
 
-        addView(createEditText())
+        addView(this.editText)
+        this.attributeValues.stringOf("hint")?.let { setHint(it) }
     }
+
+    constructor(context: Context, attrs: AttributeSet?, defStyle: Int)
+            : this(context, attrs, defStyle, EditText(context), AttributeValues(context, attrs))
+
+    constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+
+    constructor(context: Context) : this(context, null, 0)
 
     // with the internal access modifier, this property is internal to the Access Checkout SDK JAR file
     // (or access-checkout Gradle project when adding the dependency as a project dependency)
@@ -51,7 +45,7 @@ class AccessEditText @JvmOverloads constructor(
 
     val isCursorVisible: Boolean get() = editText!!.isCursorVisible
     val currentTextColor: Int get() = editText!!.currentTextColor
-    internal fun setTextColor(color: Int) = editText!!.setTextColor(color)
+    fun setTextColor(color: Int) = editText!!.setTextColor(color)
 
     internal var filters: Array<InputFilter>
         get() {
@@ -85,9 +79,11 @@ class AccessEditText @JvmOverloads constructor(
 
     internal fun setText(text: CharSequence) = editText!!.setText(text)
 
-    internal fun removeTextChangedListener(watcher: TextWatcher?) = editText!!.removeTextChangedListener(watcher)
+    internal fun removeTextChangedListener(watcher: TextWatcher?) =
+        editText!!.removeTextChangedListener(watcher)
 
-    internal fun addTextChangedListener(watcher: TextWatcher?) = editText!!.addTextChangedListener(watcher)
+    internal fun addTextChangedListener(watcher: TextWatcher?) =
+        editText!!.addTextChangedListener(watcher)
 
     internal fun setHint(hint: CharSequence) = editText!!.setHint(hint)
     internal fun setHint(resId: Int) = editText!!.setHint(resId)
@@ -109,17 +105,8 @@ class AccessEditText @JvmOverloads constructor(
         editText!!.onFocusChangeListener = l
     }
 
-    override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
-        return editText.dispatchKeyEvent(event)
-    }
-
-    override fun setOnFocusChangeListener(l: OnFocusChangeListener?) {
-        editText.onFocusChangeListener = l
-    }
-
-    private fun createEditText(): View {
-        editText = EditText(context)
-        editText!!.setHint(mCustomHint)
-        return editText!!
-    }
+//    private fun createEditText(): View {
+//        editText = EditText(context)
+//        return editText!!
+//    }
 }
