@@ -59,11 +59,10 @@
         android:layout_marginStart="32dp"
         android:layout_marginTop="24dp"
         android:ems="4"
-        android:hint="@string/card_cvc_hint"
         android:imeOptions="actionDone|flagNoFullscreen"
         android:inputType="text"
         android:textColor="@color/DEFAULT"
-        app:customHint="CVC"
+        app:customHint="@string/card_cvc_hint"
         app:layout_constraintStart_toEndOf="@+id/card_flow_expiry_date"
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan"
     />
