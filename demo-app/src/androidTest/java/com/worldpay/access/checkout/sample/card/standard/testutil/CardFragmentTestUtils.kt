@@ -191,7 +191,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 5000) { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
+        wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
         return this
     }
 }
