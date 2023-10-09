@@ -47,18 +47,18 @@ afterEvaluate {
                     packaging = 'aar'
 
                     description = 'Android SDK library for Worldpay Access Checkout.'
-                    url = 'https://github.com/Worldpay/access-checkout'
+                    url = 'https://github.com/Worldpay/access-checkout-android'
 
                     scm {
-                        connection = 'scm:git:git://github.com/Worldpay/access-checkout.git'
-                        developerConnection = 'scm:git:ssh://github.com/Worldpay/access-checkout.git'
-                        url = 'https://github.com/Worldpay/access-checkout/tree/master'
+                        connection = 'scm:git:git://github.com/Worldpay/access-checkout-android.git'
+                        developerConnection = 'scm:git:ssh://github.com/Worldpay/access-checkout-android.git'
+                        url = 'https://github.com/Worldpay/access-checkout-android/tree/master'
                     }
 
                     licenses {
                         license {
                             name = 'MIT License'
-                            url = 'https://raw.githubusercontent.com/Worldpay/access-checkout/master/LICENSE'
+                            url = 'https://raw.githubusercontent.com/Worldpay/access-checkout-android/master/LICENSE'
                         }
                     }
 
