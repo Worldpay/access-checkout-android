@@ -11,10 +11,10 @@ import android.widget.EditText
 import android.widget.LinearLayout
 
 // class is final and public by default
-class AccessEditText @JvmOverloads internal constructor(
+class AccessEditText internal constructor(
     context: Context,
     attrs: AttributeSet?,
-    defStyle: Int = 0,
+    defStyle: Int,
     private val editText: EditText,
     private val attributeValues: AttributeValues,
 ) : LinearLayout(context, attrs, defStyle) {
