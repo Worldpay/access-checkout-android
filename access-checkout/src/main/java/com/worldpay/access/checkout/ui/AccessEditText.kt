@@ -26,7 +26,7 @@ class AccessEditText internal constructor(
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
-            this(context, attrs, defStyle, EditText(context), AttributeValues(context, attrs))
+        this(context, attrs, defStyle, EditText(context), AttributeValues(context, attrs))
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -89,7 +89,7 @@ class AccessEditText internal constructor(
     internal fun setHint(resId: Int) = editText.setHint(resId)
     internal fun getHint(): CharSequence = editText.hint
 
-     fun clearText() = editText.text.clear()
+    fun clearText() = editText.text.clear()
 
     internal fun insertText(where: Int, text: CharSequence): Editable = editText.text.insert(where, text)
 

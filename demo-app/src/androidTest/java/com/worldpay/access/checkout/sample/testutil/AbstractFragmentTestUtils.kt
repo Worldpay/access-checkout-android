@@ -15,6 +15,8 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.setEnteredText
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.setTestSelection
 import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -52,7 +54,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
         val editTextUI = UITestUtils.uiObjectWithId(accessEditText.id)
         editTextUI.click()
-        activityRule.activity.runOnUiThread { accessEditText.setText(text) }
+        activityRule.activity.runOnUiThread { setEnteredText(accessEditText, text)}
 
         val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(accessEditText.windowToken, 0)
@@ -73,7 +75,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         startSelection: Int,
         endSelection: Int
     ) {
-        activityRule.activity.runOnUiThread { accessEditText.setSelection(startSelection, endSelection) }
+        activityRule.activity.runOnUiThread { setTestSelection(accessEditText,startSelection,endSelection) }
     }
 
     protected fun dialogHasText(text: String) {
