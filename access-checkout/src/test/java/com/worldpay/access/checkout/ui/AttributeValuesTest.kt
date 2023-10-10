@@ -4,14 +4,14 @@ import android.content.Context
 import android.content.res.Resources
 import android.content.res.Resources.NotFoundException
 import android.util.AttributeSet
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 
 class AttributeValuesTest {
     private lateinit var attributeValues: AttributeValues

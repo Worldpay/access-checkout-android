@@ -6,13 +6,13 @@ import android.text.Editable
 import android.text.InputType
 import android.text.method.KeyListener
 import android.widget.EditText
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 
 class AccessEditTextTest {
     private lateinit var accessEditText: AccessEditText

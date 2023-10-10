@@ -23,8 +23,8 @@ import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.ui.AccessEditText
-import java.util.concurrent.TimeUnit
 import org.awaitility.Awaitility.await
+import java.util.concurrent.TimeUnit
 
 object UITestUtils {
 
@@ -152,5 +152,21 @@ object UITestUtils {
         val editText = property.get(accessEditText) as EditText
         property.isAccessible = false
         return editText.text.toString()
+    }
+
+    fun setEnteredText(accessEditText: AccessEditText, text: CharSequence){
+        val property = accessEditText.javaClass.getDeclaredField("editText")
+        property.isAccessible = true
+        val editText = property.get(accessEditText) as EditText
+        editText.setText(text)
+        property.isAccessible = false
+    }
+
+    fun setTestSelection(accessEditText: AccessEditText, start: Int, stop:Int){
+        val property = accessEditText.javaClass.getDeclaredField("editText")
+        property.isAccessible = true
+        val editText = property.get(accessEditText) as EditText
+        editText.setSelection(start,stop)
+        property.isAccessible = false
     }
 }
