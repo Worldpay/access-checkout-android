@@ -6,15 +6,13 @@ import android.text.Editable
 import android.text.InputType
 import android.text.method.KeyListener
 import android.widget.EditText
-import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
-
+import kotlin.test.assertNotNull
 
 class AccessEditTextTest {
     private lateinit var accessEditText: AccessEditText
@@ -36,7 +34,7 @@ class AccessEditTextTest {
 
     @Test
     fun `should get the color from EditText when called`() {
-        whenever(editTextMock.currentTextColor).thenReturn(Color.BLACK)
+        given(editTextMock.currentTextColor).willReturn(Color.BLACK)
 
         assertEquals(Color.BLACK, accessEditText.currentTextColor)
     }
@@ -50,7 +48,7 @@ class AccessEditTextTest {
 
     @Test
     fun `should get the input type of EditText when called`() {
-        whenever(editTextMock.inputType).thenReturn(InputType.TYPE_CLASS_NUMBER)
+        given(editTextMock.inputType).willReturn(InputType.TYPE_CLASS_NUMBER)
 
         assertEquals(InputType.TYPE_CLASS_NUMBER, accessEditText.inputType)
     }
@@ -58,7 +56,7 @@ class AccessEditTextTest {
     @Test
     fun `should clear the text of EditText when called`() {
         val editableMock = mock<Editable>()
-        whenever(editTextMock.text).thenReturn(editableMock)
+        given(editTextMock.text).willReturn(editableMock)
 
         accessEditText.clearText()
         verify(editableMock).clear()
@@ -67,7 +65,7 @@ class AccessEditTextTest {
     @Test
     fun `should get the hint of EditText when called`() {
         val hint = "card-number"
-        whenever(editTextMock.hint).thenReturn(hint)
+        given(editTextMock.hint).willReturn(hint)
 
         assertEquals(hint, accessEditText.getHint())
     }
@@ -91,7 +89,7 @@ class AccessEditTextTest {
     @Test
     fun `should get the key listener of AccessEditText`() {
         val expectedListener = mock<KeyListener>()
-        whenever(editTextMock.keyListener).thenReturn(expectedListener)
+        given(editTextMock.keyListener).willReturn(expectedListener)
 
         assertEquals(expectedListener, accessEditText.keyListener)
     }
@@ -106,17 +104,19 @@ class AccessEditTextTest {
 
     @Test
     fun `should set properties with attribute values in constructor`() {
-        val contextMock:Context = mock()
-        val attributeValuesMock:AttributeValues = mock()
-        val editTextMock:EditText = mock()
+        val contextMock: Context = mock()
+        val attributeValuesMock: AttributeValues = mock()
+        val editTextMock: EditText = mock()
 
         given(attributeValuesMock.stringOf("hint")).willReturn("some hint value")
-        // ... do the same for other properties we want to support in XML
-        // FYI in case you didn't know you can use given() instead of whenever() as illustrated above, it's the same just more BDD
 
         AccessEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
 
         verify(editTextMock).hint = "some hint value"
-        // ...
+    }
+
+    @Test
+    fun `should obtain instance by passing two values to the constructor`() {
+        assertNotNull(AccessEditText(contextMock, null))
     }
 }

@@ -14,7 +14,7 @@ class AttributeValues(
 
     internal fun stringOf(attributeName: String): String? {
         val resId = attrs?.getAttributeResourceValue(defaultNamespace, attributeName, 0)
-        return if (resId != 0) {
+        return if (resId != 0 && resId != null) {
             try {
                 context.resources.getString(resId!!)
             } catch (e: Resources.NotFoundException) {
