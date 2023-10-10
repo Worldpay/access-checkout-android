@@ -10,12 +10,9 @@ internal abstract class AbstractFieldDecorator {
         editText: EditText,
         accessCheckoutInputFilter: AccessCheckoutInputFilter
     ) {
-        val filters = mutableListOf<InputFilter>()
-        for (filter in editText.filters) {
-            if (filter !is AccessCheckoutInputFilter && filter !is InputFilter.LengthFilter) {
-                filters.add(filter)
-            }
-        }
+        val filters = editText.filters
+            .filter { it !is AccessCheckoutInputFilter && it !is InputFilter.LengthFilter }
+            .toMutableList()
 
         filters.add(accessCheckoutInputFilter)
         editText.filters = filters.toTypedArray()
