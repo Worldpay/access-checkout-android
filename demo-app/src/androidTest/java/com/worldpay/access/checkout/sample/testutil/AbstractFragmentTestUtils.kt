@@ -15,8 +15,7 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.setEnteredText
-import com.worldpay.access.checkout.sample.testutil.UITestUtils.setTestSelection
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.setText
 import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
@@ -41,9 +40,21 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         field: String
     ) {
         if (isValid) {
-            wait { assertEquals(color(R.color.SUCCESS), accessEditText.currentTextColor, "$field field expected to be valid") }
+            wait {
+                assertEquals(
+                    color(R.color.SUCCESS),
+                    accessEditText.currentTextColor,
+                    "$field field expected to be valid"
+                )
+            }
         } else {
-            wait { assertEquals(color(R.color.FAIL), accessEditText.currentTextColor, "$field field expected to be invalid") }
+            wait {
+                assertEquals(
+                    color(R.color.FAIL),
+                    accessEditText.currentTextColor,
+                    "$field field expected to be invalid"
+                )
+            }
         }
     }
 
@@ -54,7 +65,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
         val editTextUI = UITestUtils.uiObjectWithId(accessEditText.id)
         editTextUI.click()
-        activityRule.activity.runOnUiThread { setEnteredText(accessEditText, text)}
+        activityRule.activity.runOnUiThread { setText(accessEditText, text) }
 
         val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
         im.hideSoftInputFromWindow(accessEditText.windowToken, 0)
@@ -67,7 +78,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
 
         val editTextUI = UITestUtils.uiObjectWithId(accessEditText.id)
         editTextUI.click()
-        activityRule.activity.runOnUiThread { accessEditText.clearText() }
+        activityRule.activity.runOnUiThread { accessEditText.clear() }
     }
 
     protected fun setCursorPosition(
@@ -75,7 +86,9 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         startSelection: Int,
         endSelection: Int
     ) {
-        activityRule.activity.runOnUiThread { setTestSelection(accessEditText,startSelection,endSelection) }
+        activityRule.activity.runOnUiThread {
+            UITestUtils.setSelection(accessEditText, startSelection, endSelection)
+        }
     }
 
     protected fun dialogHasText(text: String) {
@@ -104,7 +117,10 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
             } catch (exception: AssertionError) {
                 if (i == maxTimes) {
                     val seconds = maxWaitTimeInMillis / 1000
-                    throw AssertionError("Failed assertion after waiting $seconds seconds: ${exception.message}", exception)
+                    throw AssertionError(
+                        "Failed assertion after waiting $seconds seconds: ${exception.message}",
+                        exception
+                    )
                 } else {
                     Thread.sleep(pauseInterval.toLong())
                     Log.d(javaClass.simpleName, "Retrying assertion $assertions")

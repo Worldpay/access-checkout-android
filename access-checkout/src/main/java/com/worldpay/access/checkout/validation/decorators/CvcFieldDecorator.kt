@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.text.InputType
 import android.text.TextWatcher
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationObserver
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
@@ -12,7 +12,7 @@ internal class CvcFieldDecorator(
     private val cvcTextWatcher: CvcTextWatcher,
     private val cvcFocusChangeListener: CvcFocusChangeListener,
     private val cvcLengthFilter: CvcLengthFilter,
-    private val cvcAccessEditText: AccessEditText
+    private val cvcEditText: EditText
 ) : AbstractFieldDecorator(), CardConfigurationObserver {
 
     companion object {
@@ -22,23 +22,23 @@ internal class CvcFieldDecorator(
     fun decorate() {
         addTextWatcher()
 
-        if (cvcAccessEditText.isCursorVisible) {
-            cvcAccessEditText.setText(cvcAccessEditText.text)
+        if (cvcEditText.isCursorVisible) {
+            cvcEditText.setText(cvcEditText.text.toString())
         }
 
-        cvcAccessEditText.onFocusChangeListener = cvcFocusChangeListener
+        cvcEditText.onFocusChangeListener = cvcFocusChangeListener
 
-        applyFilter(cvcAccessEditText, cvcLengthFilter)
+        applyFilter(cvcEditText, cvcLengthFilter)
 
-        cvcAccessEditText.inputType = InputType.TYPE_CLASS_NUMBER
+        cvcEditText.inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     private fun addTextWatcher() {
         if (addedCvcTextWatcher != null) {
-            cvcAccessEditText.removeTextChangedListener(addedCvcTextWatcher)
+            cvcEditText.removeTextChangedListener(addedCvcTextWatcher)
         }
         addedCvcTextWatcher = cvcTextWatcher
-        cvcAccessEditText.addTextChangedListener(cvcTextWatcher)
+        cvcEditText.addTextChangedListener(cvcTextWatcher)
     }
 
     override fun update() = decorate()

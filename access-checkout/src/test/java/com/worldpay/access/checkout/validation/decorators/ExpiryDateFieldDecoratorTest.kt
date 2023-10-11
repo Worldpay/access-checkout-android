@@ -1,14 +1,13 @@
 package com.worldpay.access.checkout.validation.decorators
 
+import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateTextWatcher
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -16,11 +15,13 @@ import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.*
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ExpiryDateFieldDecoratorTest {
 
-    private val expiryDateEditText = mock<AccessEditText>()
+    private val expiryDateEditText = mock<EditText>()
 
     private val expiryDateTextWatcher = mock<ExpiryDateTextWatcher>()
     private val expiryDateFocusChangeListener = mock<ExpiryDateFocusChangeListener>()
@@ -47,7 +48,8 @@ class ExpiryDateFieldDecoratorTest {
         reset(expiryDateEditText)
 
         given(expiryDateEditText.filters).willReturn(emptyArray())
-        given(expiryDateEditText.text).willReturn("")
+        given(expiryDateEditText.text).willReturn(mock())
+        given(mock<Editable>().toString()).willReturn("")
 
         expiryDateFieldDecorator = createFieldDecorator()
         expiryDateFieldDecorator.decorate()
@@ -63,7 +65,7 @@ class ExpiryDateFieldDecoratorTest {
         expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText, never()).setHint(anyInt())
-        verify(expiryDateEditText, never()).setHint(anyString())
+        verify(expiryDateEditText, never()).hint = anyString()
     }
 
     @Test
@@ -111,9 +113,11 @@ class ExpiryDateFieldDecoratorTest {
 
     @Test
     fun `should set text when the expiry date field is in layout`() {
+        val expiryDateEditable = mock<Editable>()
         given(expiryDateEditText.filters).willReturn(emptyArray())
         given(expiryDateEditText.isCursorVisible).willReturn(true)
-        given(expiryDateEditText.text).willReturn("12/21")
+        given(expiryDateEditText.text).willReturn(expiryDateEditable)
+        given(expiryDateEditable.toString()).willReturn("12/21")
 
         expiryDateFieldDecorator.decorate()
 
@@ -158,6 +162,6 @@ class ExpiryDateFieldDecoratorTest {
         expiryDateTextWatcher = expiryDateTextWatcher,
         expiryDateFocusChangeListener = expiryDateFocusChangeListener,
         expiryDateLengthFilter = accessCheckoutInputFilterFactory.getExpiryDateLengthFilter(),
-        expiryDateAccessEditText = expiryDateEditText
+        expiryDateEditText = expiryDateEditText
     )
 }

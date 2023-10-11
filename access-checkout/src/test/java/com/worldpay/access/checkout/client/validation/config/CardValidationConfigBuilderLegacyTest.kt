@@ -3,35 +3,20 @@ package com.worldpay.access.checkout.client.validation.config
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
-import com.worldpay.access.checkout.ui.AccessEditText
-import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.given
 import org.mockito.kotlin.mock
 import kotlin.test.*
 
-class CardValidationConfigBuilderTest {
+class CardValidationConfigBuilderLegacyTest {
 
-    private val pan = mock<AccessEditText>()
-    private val expiryDate = mock<AccessEditText>()
-    private val cvc = mock<AccessEditText>()
-
-    private val panInternalEditText = mock<EditText>()
-    private val expiryDateInternalEditText = mock<EditText>()
-    private val cvcInternalEditText = mock<EditText>()
-
+    private val pan = mock<EditText>()
+    private val expiryDate = mock<EditText>()
+    private val cvc = mock<EditText>()
     private val acceptedCardBrands =
         arrayOf("AMEX", "DINERS", "DISCOVER", "JCB", "MAESTRO", "MASTERCARD", "VISA")
     private val baseUrl = "https://localhost:8443"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
-
-    @Before
-    fun setUp() {
-        given(pan.editText).willReturn(panInternalEditText)
-        given(expiryDate.editText).willReturn(expiryDateInternalEditText)
-        given(cvc.editText).willReturn(cvcInternalEditText)
-    }
 
     @Test
     fun `should build card validation config with pan formatting disabled by default`() {
@@ -47,9 +32,9 @@ class CardValidationConfigBuilderTest {
 
         assertNotNull(config)
         assertEquals(baseUrl, config.baseUrl)
-        assertEquals(panInternalEditText, config.pan)
-        assertEquals(expiryDateInternalEditText, config.expiryDate)
-        assertEquals(cvcInternalEditText, config.cvc)
+        assertEquals(pan, config.pan)
+        assertEquals(expiryDate, config.expiryDate)
+        assertEquals(cvc, config.cvc)
         assertEquals(acceptedCardBrands, config.acceptedCardBrands)
         assertEquals(validationListener, config.validationListener)
         assertFalse(config.enablePanFormatting)
@@ -83,9 +68,9 @@ class CardValidationConfigBuilderTest {
 
         assertNotNull(config)
         assertEquals(baseUrl, config.baseUrl)
-        assertEquals(panInternalEditText, config.pan)
-        assertEquals(expiryDateInternalEditText, config.expiryDate)
-        assertEquals(cvcInternalEditText, config.cvc)
+        assertEquals(pan, config.pan)
+        assertEquals(expiryDate, config.expiryDate)
+        assertEquals(cvc, config.cvc)
         assertEquals(0, config.acceptedCardBrands.size)
         assertEquals(validationListener, config.validationListener)
     }
@@ -201,9 +186,9 @@ class CardValidationConfigBuilderTest {
 
         assertNotNull(config)
         assertEquals(baseUrl, config.baseUrl)
-        assertEquals(panInternalEditText, config.pan)
-        assertEquals(expiryDateInternalEditText, config.expiryDate)
-        assertEquals(cvcInternalEditText, config.cvc)
+        assertEquals(pan, config.pan)
+        assertEquals(expiryDate, config.expiryDate)
+        assertEquals(cvc, config.cvc)
         assertEquals(acceptedCardBrands, config.acceptedCardBrands)
         assertEquals(validationListener, config.validationListener)
         assertTrue(config.enablePanFormatting)

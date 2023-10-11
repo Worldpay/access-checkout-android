@@ -9,7 +9,6 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN_FORMATTED
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
-import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -18,6 +17,7 @@ import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
@@ -343,7 +343,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("4444")
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
-        pan.appendText("3333222211110000")
+        pan.editText.append("3333222211110000")
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4444 3333 2222 1111 000", pan.text)

@@ -1,21 +1,18 @@
 package com.worldpay.access.checkout.ui
 
 import android.content.Context
-import android.text.Editable
 import android.text.InputFilter
-import android.text.TextWatcher
 import android.text.method.KeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.LinearLayout
 
-// class is final and public by default
 class AccessEditText internal constructor(
     context: Context,
     attrs: AttributeSet?,
     defStyle: Int,
-    private val editText: EditText,
+    internal val editText: EditText,
     private val attributeValues: AttributeValues,
 ) : LinearLayout(context, attrs, defStyle) {
     init {
@@ -26,7 +23,7 @@ class AccessEditText internal constructor(
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
-        this(context, attrs, defStyle, EditText(context), AttributeValues(context, attrs))
+            this(context, attrs, defStyle, EditText(context), AttributeValues(context, attrs))
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -40,8 +37,6 @@ class AccessEditText internal constructor(
     val selectionEnd: Int get() = editText.selectionEnd
 
     val selectionStart: Int get() = editText.selectionStart
-
-    internal val editableText: Editable get() = editText.editableText
 
     val isCursorVisible: Boolean get() = editText.isCursorVisible
     val currentTextColor: Int get() = editText.currentTextColor
@@ -73,29 +68,20 @@ class AccessEditText internal constructor(
 
     internal fun length(): Int = editText.length()
 
-    internal fun setSelection(index: Int) = editText.setSelection(index)
-
     internal fun setSelection(start: Int, stop: Int) = editText.setSelection(start, stop)
 
-    internal fun setText(text: CharSequence) = editText.setText(text)
+    fun setText(text: String) {
+        editText.setText(text)
+    }
 
-    internal fun removeTextChangedListener(watcher: TextWatcher?) =
-        editText.removeTextChangedListener(watcher)
+    internal fun setHint(hint: CharSequence) {
+        editText.hint = hint
+    }
 
-    internal fun addTextChangedListener(watcher: TextWatcher?) =
-        editText.addTextChangedListener(watcher)
-
-    internal fun setHint(hint: CharSequence) = editText.setHint(hint)
     internal fun setHint(resId: Int) = editText.setHint(resId)
     internal fun getHint(): CharSequence = editText.hint
 
-    fun clearText() = editText.text.clear()
-
-    internal fun insertText(where: Int, text: CharSequence): Editable = editText.text.insert(where, text)
-
-    internal fun replaceText(st: Int, en: Int, text: CharSequence): Editable = editText.text.replace(st, en, text)
-
-    internal fun appendText(text: CharSequence) = editText.append(text)
+    fun clear() = editText.text.clear()
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         return editText.dispatchKeyEvent(event)

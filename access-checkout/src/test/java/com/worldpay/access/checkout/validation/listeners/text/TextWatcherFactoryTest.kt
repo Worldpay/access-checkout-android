@@ -1,20 +1,20 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
-import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
+import kotlin.test.assertNotNull
 
 class TextWatcherFactoryTest {
 
     private val resultHandlerFactory = mock<ResultHandlerFactory>()
 
-    private val cvcEditText = mock<AccessEditText>()
-    private val panEditText = mock<AccessEditText>()
-    private val expiryDateEditText = mock<AccessEditText>()
+    private val cvcEditText = mock<EditText>()
+    private val panEditText = mock<EditText>()
+    private val expiryDateEditText = mock<EditText>()
 
     private lateinit var textWatcherFactory: TextWatcherFactory
 
@@ -30,8 +30,8 @@ class TextWatcherFactoryTest {
         given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
 
         val textWatcher: PanTextWatcher = textWatcherFactory.createPanTextWatcher(
-            panAccessEditText = panEditText,
-            cvcAccessEditText = cvcEditText,
+            panEditText = panEditText,
+            cvcEditText = cvcEditText,
             acceptedCardBrands = emptyArray(),
             enablePanFormatting = false
         )
@@ -42,7 +42,8 @@ class TextWatcherFactoryTest {
     fun `should get expiry date text watcher`() {
         given(resultHandlerFactory.getExpiryDateValidationResultHandler()).willReturn(mock())
 
-        val textWatcher: ExpiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
+        val textWatcher: ExpiryDateTextWatcher =
+            textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
         assertNotNull(textWatcher)
     }
 

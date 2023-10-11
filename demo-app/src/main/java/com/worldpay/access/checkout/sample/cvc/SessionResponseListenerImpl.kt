@@ -30,7 +30,7 @@ class SessionResponseListenerImpl(
             .create()
             .show()
 
-        activity.findViewById<AccessEditText>(R.id.cvc_flow_text_cvc).clearText()
+        activity.findViewById<AccessEditText>(R.id.cvc_flow_text_cvc).clear()
         enableFields()
         submitBtn.disable()
     }

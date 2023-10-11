@@ -1,13 +1,13 @@
 package com.worldpay.access.checkout.validation.decorators
 
 import android.text.InputFilter
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilter
 
 internal abstract class AbstractFieldDecorator {
 
     protected fun applyFilter(
-        accessEditText: AccessEditText,
+        accessEditText: EditText,
         accessCheckoutInputFilter: AccessCheckoutInputFilter
     ) {
         val filters = mutableListOf<InputFilter>()

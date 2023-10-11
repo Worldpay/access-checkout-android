@@ -24,6 +24,7 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.ui.AccessEditText
 import org.awaitility.Awaitility.await
+import java.util.*
 import java.util.concurrent.TimeUnit
 
 object UITestUtils {
@@ -54,8 +55,10 @@ object UITestUtils {
 
         await().atMost(10, TimeUnit.SECONDS).until {
 
-            val drawerIsVisible = activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
-            val progressBarIsVisible = activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
+            val drawerIsVisible =
+                activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
+            val progressBarIsVisible =
+                activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
 
             if (!drawerIsVisible && !progressBarIsVisible) {
                 onView(withId(android.R.id.button1))
@@ -74,8 +77,10 @@ object UITestUtils {
 
         await().atMost(10, TimeUnit.SECONDS).until {
 
-            val drawerIsVisible = activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
-            val progressBarIsVisible = activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
+            val drawerIsVisible =
+                activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
+            val progressBarIsVisible =
+                activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
 
             if (!drawerIsVisible && !progressBarIsVisible) {
                 onView(withId(android.R.id.button1))
@@ -154,19 +159,23 @@ object UITestUtils {
         return editText.text.toString()
     }
 
-    fun setEnteredText(accessEditText: AccessEditText, text: CharSequence){
-        val property = accessEditText.javaClass.getDeclaredField("editText")
-        property.isAccessible = true
-        val editText = property.get(accessEditText) as EditText
-        editText.setText(text)
-        property.isAccessible = false
+    fun setText(accessEditText: AccessEditText, text: String) {
+        val method = Arrays.stream(accessEditText.javaClass.declaredMethods)
+            .filter { m -> m.name.startsWith("setText") }
+            .findFirst()
+            .get()
+        method.isAccessible = true
+        method.invoke(accessEditText, text)
+        method.isAccessible = false
     }
 
-    fun setTestSelection(accessEditText: AccessEditText, start: Int, stop:Int){
-        val property = accessEditText.javaClass.getDeclaredField("editText")
-        property.isAccessible = true
-        val editText = property.get(accessEditText) as EditText
-        editText.setSelection(start,stop)
-        property.isAccessible = false
+    fun setSelection(accessEditText: AccessEditText, startSelection: Int, endSelection: Int) {
+        val method = Arrays.stream(accessEditText.javaClass.declaredMethods)
+            .filter { m -> m.name.startsWith("setSelection") }
+            .findFirst()
+            .get()
+        method.isAccessible = true
+        method.invoke(accessEditText, startSelection, endSelection)
+        method.isAccessible = false
     }
 }
