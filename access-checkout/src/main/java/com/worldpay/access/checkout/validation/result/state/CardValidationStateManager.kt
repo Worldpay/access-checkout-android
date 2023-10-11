@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.validation.result.state
 
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 
 internal class CardValidationStateManager(
-    pan: AccessEditText,
-    expiryDate: AccessEditText,
-    cvc: AccessEditText
+    pan: EditText,
+    expiryDate: EditText,
+    cvc: EditText
 ) : ExpiryDateFieldValidationStateManager,
     CvcFieldValidationStateManager,
     PanFieldValidationStateManager {

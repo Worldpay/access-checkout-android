@@ -3,27 +3,18 @@ package com.worldpay.access.checkout.client.validation.config
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
-import com.worldpay.access.checkout.ui.AccessEditText
-import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.given
 import org.mockito.kotlin.mock
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
 import kotlin.test.assertNotNull
 
-class CvcValidationConfigBuilderTest {
+class CvcValidationConfigBuilderLegacyTest {
 
-    private val cvc = mock<AccessEditText>()
-    private val cvcInternalEditText = mock<EditText>()
+    private val cvc = mock<EditText>()
 
     private val validationListener = mock<AccessCheckoutCvcValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
-
-    @Before
-    fun setUp() {
-        given(cvc.editText).willReturn(cvcInternalEditText)
-    }
 
     @Test
     fun `should build card validation config`() {
@@ -34,7 +25,7 @@ class CvcValidationConfigBuilderTest {
             .build()
 
         assertNotNull(config)
-        assertEquals(cvcInternalEditText, config.cvc)
+        assertEquals(cvc, config.cvc)
         assertEquals(validationListener, config.validationListener)
     }
 

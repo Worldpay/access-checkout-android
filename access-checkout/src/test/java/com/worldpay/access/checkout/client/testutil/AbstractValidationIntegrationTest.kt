@@ -10,11 +10,6 @@ import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.ui.AccessEditText
-import java.security.KeyStore
-import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.KeyManagerFactory
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -23,6 +18,11 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.spy
 import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
+import java.security.KeyStore
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 
 open class AbstractValidationIntegrationTest {
 
@@ -30,7 +30,8 @@ open class AbstractValidationIntegrationTest {
 
     private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"
 
-    private val cardConfigJson = CardConfiguration::class.java.getResource("remote_card_config.json")?.readText()!!
+    private val cardConfigJson =
+        CardConfiguration::class.java.getResource("remote_card_config.json")?.readText()!!
 
     protected lateinit var pan: AccessEditText
     protected lateinit var cvc: AccessEditText
@@ -121,25 +122,25 @@ open class AbstractValidationIntegrationTest {
     }
 
     protected fun AccessEditText.pressBackspaceAtIndex(selection: Int) {
-        this.setSelection(selection)
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+        this.editText.setSelection(selection)
+        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
+        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
     protected fun AccessEditText.pressBackspaceAtSelection(start: Int, end: Int) {
-        this.setSelection(start, end)
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+        this.editText.setSelection(start, end)
+        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
+        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
     protected fun AccessEditText.typeAtIndex(selection: Int, text: String) {
-        this.setSelection(selection)
-        this.insertText(selection, text)
+        this.editText.setSelection(selection)
+        this.editText.text.insert(selection, text)
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 
     protected fun AccessEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
-        this.replaceText(selectionStart, selectionEnd, text)
+        this.editText.text.replace(selectionStart, selectionEnd, text)
     }
 }

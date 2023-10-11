@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.decorators
 
 import android.text.InputType
 import android.text.TextWatcher
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationObserver
 import com.worldpay.access.checkout.validation.filters.PanNumericFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
@@ -12,7 +12,7 @@ internal class PanFieldDecorator(
     private val panTextWatcher: PanTextWatcher,
     private val panFocusChangeListener: PanFocusChangeListener,
     private val panNumericFilter: PanNumericFilter,
-    private val panAccessEditText: AccessEditText,
+    private val panEditText: EditText,
     private val panFormattingEnabled: Boolean
 ) : AbstractFieldDecorator(), CardConfigurationObserver {
 
@@ -23,27 +23,27 @@ internal class PanFieldDecorator(
     fun decorate() {
         addTextWatcher()
 
-        if (panAccessEditText.isCursorVisible) {
-            panAccessEditText.setText(panAccessEditText.text)
+        if (panEditText.isCursorVisible) {
+            panEditText.setText(panEditText.text.toString())
         }
 
-        panAccessEditText.onFocusChangeListener = panFocusChangeListener
+        panEditText.onFocusChangeListener = panFocusChangeListener
 
-        applyFilter(panAccessEditText, panNumericFilter)
+        applyFilter(panEditText, panNumericFilter)
 
         if (panFormattingEnabled) {
-            panAccessEditText.inputType = InputType.TYPE_CLASS_DATETIME
+            panEditText.inputType = InputType.TYPE_CLASS_DATETIME
         } else {
-            panAccessEditText.inputType = InputType.TYPE_CLASS_NUMBER
+            panEditText.inputType = InputType.TYPE_CLASS_NUMBER
         }
     }
 
     private fun addTextWatcher() {
         if (addedPanTextWatcher != null) {
-            panAccessEditText.removeTextChangedListener(addedPanTextWatcher)
+            panEditText.removeTextChangedListener(addedPanTextWatcher)
         }
         addedPanTextWatcher = panTextWatcher
-        panAccessEditText.addTextChangedListener(addedPanTextWatcher)
+        panEditText.addTextChangedListener(addedPanTextWatcher)
     }
 
     override fun update() = decorate()

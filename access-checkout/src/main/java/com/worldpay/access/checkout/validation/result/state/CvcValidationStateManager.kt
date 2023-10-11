@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.validation.result.state
 
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 
-internal class CvcValidationStateManager(cvc: AccessEditText) : CvcFieldValidationStateManager {
+internal class CvcValidationStateManager(cvc: EditText) : CvcFieldValidationStateManager {
 
     override val cvcValidationState = FieldValidationState(cvc.id)
 

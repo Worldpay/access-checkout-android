@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
 import org.junit.Before
@@ -15,17 +15,17 @@ class ExpiryDateTextWatcherTest {
     private val dateSanitiser = spy<ExpiryDateSanitiser>()
 
     private val expiryDateEditable = mock<Editable>()
-    private val expiryDateEditText = mock<AccessEditText>()
+    private val expiryDateEditText = mock<EditText>()
 
     private lateinit var expiryDateTextWatcher: ExpiryDateTextWatcher
 
     @Before
     fun setup() {
-        // given(expiryDateEditText.text).willReturn(expiryDateEditable.toString())
+        given(expiryDateEditText.text).willReturn(expiryDateEditable)
 
         expiryDateTextWatcher = ExpiryDateTextWatcher(
             dateValidator = dateValidator,
-            expiryDateAccessEditText = expiryDateEditText,
+            expiryDateEditText = expiryDateEditText,
             expiryDateValidationResultHandler = expiryDateValidationResultHandler,
             expiryDateSanitiser = dateSanitiser
         )

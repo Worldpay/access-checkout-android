@@ -1,15 +1,14 @@
 package com.worldpay.access.checkout.validation.decorators
 
+import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
+import android.widget.EditText
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.PanNumericFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.PanTextWatcher
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -17,11 +16,13 @@ import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.*
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class PanFieldDecoratorTest {
 
-    private val panEditText = mock<AccessEditText>()
+    private val panEditText = mock<EditText>()
 
     private val panTextWatcher = mock<PanTextWatcher>()
     private val panFocusChangeListener = mock<PanFocusChangeListener>()
@@ -47,7 +48,9 @@ class PanFieldDecoratorTest {
         reset(panEditText)
 
         given(panEditText.filters).willReturn(emptyArray())
-        given(panEditText.text).willReturn("")
+        given(panEditText.text).willReturn(mock())
+        given(mock<Editable>().toString()).willReturn("")
+
 
         createFieldDecorator().decorate()
 
@@ -62,7 +65,7 @@ class PanFieldDecoratorTest {
         panFieldDecorator.decorate()
 
         verify(panEditText, never()).setHint(anyInt())
-        verify(panEditText, never()).setHint(anyString())
+        verify(panEditText, never()).hint = anyString()
     }
 
     @Test
@@ -122,9 +125,11 @@ class PanFieldDecoratorTest {
 
     @Test
     fun `should set text when the pan field is in layout`() {
+        val panEditable = mock<Editable>()
         given(panEditText.filters).willReturn(emptyArray())
         given(panEditText.isCursorVisible).willReturn(true)
-        given(panEditText.text).willReturn(visaPan())
+        given(panEditText.text).willReturn(panEditable)
+        given(panEditable.toString()).willReturn(visaPan())
 
         panFieldDecorator.decorate()
 
@@ -169,7 +174,7 @@ class PanFieldDecoratorTest {
         panTextWatcher = panTextWatcher,
         panFocusChangeListener = panFocusChangeListener,
         panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),
-        panAccessEditText = panEditText,
+        panEditText = panEditText,
         panFormattingEnabled
     )
 }

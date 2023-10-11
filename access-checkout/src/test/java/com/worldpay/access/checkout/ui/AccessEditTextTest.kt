@@ -58,7 +58,7 @@ class AccessEditTextTest {
         val editableMock = mock<Editable>()
         given(editTextMock.text).willReturn(editableMock)
 
-        accessEditText.clearText()
+        accessEditText.clear()
         verify(editableMock).clear()
     }
 

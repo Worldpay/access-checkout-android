@@ -1,14 +1,14 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateSanitiser.Companion.SEPARATOR
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
 
 internal class ExpiryDateTextWatcher(
     private val dateValidator: ExpiryDateValidator,
-    private val expiryDateAccessEditText: AccessEditText,
+    private val expiryDateEditText: EditText,
     private val expiryDateValidationResultHandler: ExpiryDateValidationResultHandler,
     private val expiryDateSanitiser: ExpiryDateSanitiser
 ) : AbstractCardDetailTextWatcher() {
@@ -48,7 +48,7 @@ internal class ExpiryDateTextWatcher(
     }
 
     private fun updateText(text: String) {
-        expiryDateAccessEditText.setText(text)
-        expiryDateAccessEditText.setSelection(text.length)
+        expiryDateEditText.setText(text)
+        expiryDateEditText.setSelection(text.length)
     }
 }

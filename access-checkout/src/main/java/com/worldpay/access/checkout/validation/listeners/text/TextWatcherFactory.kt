@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
@@ -16,27 +16,30 @@ internal class TextWatcherFactory(
     private val dateValidator = ExpiryDateValidator()
 
     fun createPanTextWatcher(
-        panAccessEditText: AccessEditText,
-        cvcAccessEditText: AccessEditText,
+        panEditText: EditText,
+        cvcEditText: EditText,
         acceptedCardBrands: Array<String>,
         enablePanFormatting: Boolean
     ): PanTextWatcher {
         return PanTextWatcher(
-            panAccessEditText = panAccessEditText,
+            panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),
             panFormatter = PanFormatter(enablePanFormatting),
-            cvcValidator = CvcValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
-            cvcAccessEditText = cvcAccessEditText,
+            cvcValidator = CvcValidator(
+                resultHandlerFactory.getCvcValidationResultHandler(),
+                cvcValidationRuleManager
+            ),
+            cvcAccessEditText = cvcEditText,
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager
         )
     }
 
-    fun createExpiryDateTextWatcher(expiryDateAccessEditText: AccessEditText): ExpiryDateTextWatcher {
+    fun createExpiryDateTextWatcher(expiryDateEditText: EditText): ExpiryDateTextWatcher {
         return ExpiryDateTextWatcher(
             dateValidator = dateValidator,
-            expiryDateAccessEditText = expiryDateAccessEditText,
+            expiryDateEditText = expiryDateEditText,
             expiryDateValidationResultHandler = resultHandlerFactory.getExpiryDateValidationResultHandler(),
             expiryDateSanitiser = ExpiryDateSanitiser()
         )

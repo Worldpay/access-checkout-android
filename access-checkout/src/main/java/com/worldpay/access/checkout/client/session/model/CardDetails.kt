@@ -30,14 +30,16 @@ class CardDetails private constructor(
          *
          * @param[panAccessEditText] [AccessEditText] that represents the pan number
          */
-        fun pan(panAccessEditText: AccessEditText) = apply { this.pan = panAccessEditText.text.replace("\\s+".toRegex(), "") }
+        fun pan(panAccessEditText: AccessEditText) =
+            apply { this.pan = panAccessEditText.text.replace("\\s+".toRegex(), "") }
 
         /**
          * Sets the expiry date for the card
          *
          * @param[expiryDateAccessEditText] [AccessEditText] that represents the expiry date
          */
-        fun expiryDate(expiryDateAccessEditText: AccessEditText) = apply { this.expiryDate = ExpiryDate(expiryDateAccessEditText) }
+        fun expiryDate(expiryDateAccessEditText: AccessEditText) =
+            apply { this.expiryDate = ExpiryDate(expiryDateAccessEditText) }
 
         /**
          * Sets the cvc for the card
@@ -45,6 +47,39 @@ class CardDetails private constructor(
          * @param[cvcAccessEditText] [AccessEditText] that represents the cvc
          */
         fun cvc(cvcAccessEditText: AccessEditText) = apply { this.cvc = cvcAccessEditText.text }
+
+        /**
+         * Sets the pan number for the card
+         *
+         * @param[pan] [String] that represents the pan number
+         */
+        @Deprecated(
+            message = "CardDetails should now be built using instances of AccessEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
+            replaceWith = ReplaceWith("pan(panAccessEditText:AccessEditText)")
+        )
+        fun pan(pan: String) = apply { this.pan = pan.replace("\\s+".toRegex(), "") }
+
+        /**
+         * Sets the expiry date for the card
+         *
+         * @param[expiryDate] [String] that represents the expiry date
+         */
+        @Deprecated(
+            message = "CardDetails should now be built using instances of AccessEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
+            replaceWith = ReplaceWith("expiryDate(expiryDateAccessEditText:AccessEditText)")
+        )
+        fun expiryDate(expiryDate: String) = apply { this.expiryDate = ExpiryDate(expiryDate) }
+
+        /**
+         * Sets the cvc for the card
+         *
+         * @param[cvc] [String] that represents the cvc
+         */
+        @Deprecated(
+            message = "CardDetails should now be built using instances of AccessEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
+            replaceWith = ReplaceWith("cvc(cvcAccessEditText:AccessEditText)")
+        )
+        fun cvc(cvc: String) = apply { this.cvc = cvc }
 
         /**
          * Builds the [CardDetails] instance
@@ -60,7 +95,7 @@ class CardDetails private constructor(
      * @property [month] the expiry month
      * @property [year] the expiry year
      */
-    class ExpiryDate internal constructor(expiryDateAccessEditText: AccessEditText) {
+    class ExpiryDate internal constructor(expiryDate: String) {
 
         internal val month: Int
         internal val year: Int
@@ -71,23 +106,25 @@ class CardDetails private constructor(
 
         init {
 
-            val expiryDateWithoutSeparator = expiryDateAccessEditText.text.trim().replace(separator, "")
+            val expiryDateWithoutSeparator = expiryDate.trim().replace(separator, "")
             val isNumeric = isNumeric(expiryDateWithoutSeparator)
             val isCorrectLength = expiryDateWithoutSeparator.length == maxExpiryDateLength
 
             if (!isCorrectLength || !isNumeric) {
-                throw IllegalArgumentException("expecting expiry date in format MM/YY or MMYY but found ${expiryDateAccessEditText.text}")
+                throw IllegalArgumentException("expecting expiry date in format MM/YY or MMYY but found ${expiryDate}")
             }
 
-            if (expiryDateAccessEditText.text.contains(separator)) {
-                val split = expiryDateAccessEditText.text.split(separator)
+            if (expiryDate.contains(separator)) {
+                val split = expiryDate.split(separator)
                 month = split.toTypedArray()[0].toInt()
                 year = 2000 + split.toTypedArray()[1].toInt()
             } else {
-                month = expiryDateAccessEditText.text.dropLast(2).toInt()
-                year = 2000 + expiryDateAccessEditText.text.substring(2).toInt()
+                month = expiryDate.dropLast(2).toInt()
+                year = 2000 + expiryDate.substring(2).toInt()
             }
         }
+
+        constructor(expiryDateAccessEditText: AccessEditText) : this(expiryDateAccessEditText.text)
 
         private fun isNumeric(text: String): Boolean {
             return try {

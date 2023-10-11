@@ -1,14 +1,13 @@
 package com.worldpay.access.checkout.validation.decorators
 
+import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
-import com.worldpay.access.checkout.ui.AccessEditText
+import android.widget.EditText
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.CvcTextWatcher
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -16,12 +15,14 @@ import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.*
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class CvcFieldDecoratorTest {
 
-    private val cvcEditText = mock<AccessEditText>()
-    private val panEditText = mock<AccessEditText>()
+    private val cvcEditText = mock<EditText>()
+    private val panEditText = mock<EditText>()
 
     private val cvcTextWatcher = mock<CvcTextWatcher>()
     private val cvcFocusChangeListener = mock<CvcFocusChangeListener>()
@@ -48,7 +49,8 @@ class CvcFieldDecoratorTest {
         reset(cvcEditText)
 
         given(cvcEditText.filters).willReturn(emptyArray())
-        given(cvcEditText.text).willReturn("")
+        given(cvcEditText.text).willReturn(mock())
+        given(mock<Editable>().toString()).willReturn("")
 
         cvcFieldDecorator = createFieldDecorator()
         cvcFieldDecorator.decorate()
@@ -64,7 +66,7 @@ class CvcFieldDecoratorTest {
         cvcFieldDecorator.decorate()
 
         verify(cvcEditText, never()).setHint(anyInt())
-        verify(cvcEditText, never()).setHint(anyString())
+        verify(cvcEditText, never()).hint = anyString()
     }
 
     @Test
@@ -112,9 +114,11 @@ class CvcFieldDecoratorTest {
 
     @Test
     fun `should set text when the cvc field is in layout`() {
+        val cvcEditable = mock<Editable>()
         given(cvcEditText.filters).willReturn(emptyArray())
         given(cvcEditText.isCursorVisible).willReturn(true)
-        given(cvcEditText.text).willReturn("123")
+        given(cvcEditText.text).willReturn(cvcEditable)
+        given(cvcEditable.toString()).willReturn("123")
 
         cvcFieldDecorator.decorate()
 
@@ -159,6 +163,6 @@ class CvcFieldDecoratorTest {
         cvcTextWatcher = cvcTextWatcher,
         cvcFocusChangeListener = cvcFocusChangeListener,
         cvcLengthFilter = accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText),
-        cvcAccessEditText = cvcEditText
+        cvcEditText = cvcEditText
     )
 }
