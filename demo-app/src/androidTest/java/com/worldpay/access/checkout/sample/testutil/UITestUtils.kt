@@ -8,13 +8,13 @@ import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice.getInstance
@@ -24,7 +24,6 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.ui.AccessEditText
 import org.awaitility.Awaitility.await
-import java.util.*
 import java.util.concurrent.TimeUnit
 
 object UITestUtils {
@@ -159,23 +158,11 @@ object UITestUtils {
         return editText.text.toString()
     }
 
-    fun setText(accessEditText: AccessEditText, text: String) {
-        val method = Arrays.stream(accessEditText.javaClass.declaredMethods)
-            .filter { m -> m.name.startsWith("setText") }
-            .findFirst()
-            .get()
-        method.isAccessible = true
-        method.invoke(accessEditText, text)
-        method.isAccessible = false
+    fun onCardPanView(): ViewInteraction {
+        return onView(withParent(withId(R.id.card_flow_text_pan)))
     }
 
-    fun setSelection(accessEditText: AccessEditText, startSelection: Int, endSelection: Int) {
-        val method = Arrays.stream(accessEditText.javaClass.declaredMethods)
-            .filter { m -> m.name.startsWith("setSelection") }
-            .findFirst()
-            .get()
-        method.isAccessible = true
-        method.invoke(accessEditText, startSelection, endSelection)
-        method.isAccessible = false
+    fun onCvcOnlyCvcView(): ViewInteraction {
+        return onView(withParent(withId(R.id.cvc_flow_text_cvc)))
     }
 }

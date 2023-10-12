@@ -68,7 +68,7 @@ class AccessEditText internal constructor(
 
     internal fun length(): Int = editText.length()
 
-    internal fun setSelection(start: Int, stop: Int) = editText.setSelection(start, stop)
+    fun setSelection(start: Int, stop: Int) = editText.setSelection(start, stop)
 
     fun setText(text: String) {
         editText.setText(text)
