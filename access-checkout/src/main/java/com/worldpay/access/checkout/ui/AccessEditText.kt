@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.ui
 
 import android.content.Context
+import android.os.Parcelable
 import android.text.InputFilter
 import android.text.method.KeyListener
 import android.util.AttributeSet
@@ -17,6 +18,7 @@ class AccessEditText internal constructor(
 ) : LinearLayout(context, attrs, defStyle) {
     init {
         orientation = VERTICAL
+        this.editText.id = generateViewId()
 
         addView(this.editText)
         this.attributeValues.stringOf("hint")?.let { setHint(it) }
@@ -89,5 +91,15 @@ class AccessEditText internal constructor(
 
     override fun setOnFocusChangeListener(l: OnFocusChangeListener?) {
         editText.onFocusChangeListener = l
+    }
+
+    override fun onSaveInstanceState(): Parcelable? {
+        super.onSaveInstanceState()
+        return editText.onSaveInstanceState()
+    }
+
+    override fun onRestoreInstanceState(state: Parcelable) {
+        super.onRestoreInstanceState(state)
+        editText.onRestoreInstanceState(state)
     }
 }
