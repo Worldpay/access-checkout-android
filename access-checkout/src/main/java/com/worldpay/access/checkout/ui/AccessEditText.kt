@@ -20,6 +20,7 @@ class AccessEditText internal constructor(
 
         addView(this.editText)
         this.attributeValues.stringOf("hint")?.let { setHint(it) }
+        this.attributeValues.stringOfOther("id")?.let { this.editText.id = it }
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
