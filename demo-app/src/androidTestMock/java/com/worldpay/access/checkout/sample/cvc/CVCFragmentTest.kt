@@ -1,11 +1,9 @@
 package com.worldpay.access.checkout.sample.cvc
 
-import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.typeText
-import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.onCvcOnlyCvcView
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import org.junit.Test
@@ -50,7 +48,7 @@ class CVCFragmentTest : AbstractCvcFragmentTest() {
     fun shouldIgnoreLettersInCvcInput() {
         cvcFragmentTestUtils.isInInitialState()
 
-        onView(withId(R.id.cvc_flow_text_cvc))
+        onCvcOnlyCvcView()
             .perform(click(), typeText("sdovidsiv23odfvj0d"))
 
         cvcFragmentTestUtils

@@ -8,13 +8,14 @@ import android.widget.ProgressBar
 import androidx.core.view.isVisible
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.matcher.ViewMatchers
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice.getInstance
@@ -158,19 +159,11 @@ object UITestUtils {
         return editText.text.toString()
     }
 
-    fun setText(accessEditText: AccessEditText, text: String) {
-        val property = accessEditText.javaClass.getDeclaredField("editText")
-        property.isAccessible = true
-        val editText = property.get(accessEditText) as EditText
-        editText.setText(text)
-        property.isAccessible = false
+    fun onCardPanView(): ViewInteraction {
+        return onView(ViewMatchers.withParent(withId(R.id.card_flow_text_pan)))
     }
 
-    fun setSelection(accessEditText: AccessEditText, startSelection: Int, endSelection: Int) {
-        val property = accessEditText.javaClass.getDeclaredField("editText")
-        property.isAccessible = true
-        val editText = property.get(accessEditText) as EditText
-        editText.setSelection(startSelection,endSelection)
-        property.isAccessible = false
+    fun onCvcOnlyCvcView(): ViewInteraction {
+        return onView(ViewMatchers.withParent(withId(R.id.cvc_flow_text_cvc)))
     }
 }
