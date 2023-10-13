@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.ui
 
 import android.content.Context
+import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputFilter
 import android.text.method.KeyListener
@@ -105,12 +106,17 @@ class AccessEditText internal constructor(
     }
 
     public override fun onSaveInstanceState(): Parcelable? {
-        super.onSaveInstanceState()
-        return editText.onSaveInstanceState()
+        val editTextState = editText.onSaveInstanceState()
+        return Bundle().apply {
+            putParcelable("superState", super.onSaveInstanceState())
+            putParcelable("editTextState", editTextState)
+        }
     }
 
     public override fun onRestoreInstanceState(state: Parcelable) {
-        editText.onRestoreInstanceState(state)
-        super.onRestoreInstanceState(state)
+        val bundledState = (state as Bundle)
+
+        super.onRestoreInstanceState(bundledState.getBundle("superState"))
+        editText.onRestoreInstanceState(bundledState.getBundle("editTextState"))
     }
 }
