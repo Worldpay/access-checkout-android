@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.ui
 import android.content.Context
 import android.graphics.Color
 import android.text.Editable
+import android.text.InputFilter
 import android.text.InputType
 import android.text.method.KeyListener
 import android.view.View
@@ -110,6 +111,22 @@ class AccessEditTextTest {
     }
 
     @Test
+    fun `filters getter should return EditText filters`() {
+        val filters = arrayOf(mock<InputFilter>())
+        given(editTextMock.filters).willReturn(filters)
+
+        assertEquals(filters, accessEditText.filters)
+    }
+
+    @Test
+    fun `filters setter should set EditText filters`() {
+        val filters = arrayOf(mock<InputFilter>())
+        accessEditText.filters = filters
+
+        verify(editTextMock).filters = filters
+    }
+
+    @Test
     fun `inputType getter should return EditText inputType`() {
         given(editTextMock.inputType).willReturn(InputType.TYPE_CLASS_NUMBER)
 
@@ -121,6 +138,22 @@ class AccessEditTextTest {
         accessEditText.inputType = InputType.TYPE_CLASS_NUMBER
 
         verify(editTextMock).inputType = InputType.TYPE_CLASS_NUMBER
+    }
+
+    @Test
+    fun `keyListener getter should return EditText keyListener`() {
+        val expectedListener = mock<KeyListener>()
+        given(editTextMock.keyListener).willReturn(expectedListener)
+
+        assertEquals(expectedListener, accessEditText.keyListener)
+    }
+
+    @Test
+    fun `keyListener setter should set EditText keyListener`() {
+        val expectedListener = mock<KeyListener>()
+        accessEditText.keyListener = expectedListener
+
+        verify(editTextMock).keyListener = expectedListener
     }
 
     @Test
@@ -147,25 +180,16 @@ class AccessEditTextTest {
         verify(editTextMock).setHint(resourceId)
     }
 
-    @Test
-    fun `keyListener getter should return EditText keyListener`() {
-        val expectedListener = mock<KeyListener>()
-        given(editTextMock.keyListener).willReturn(expectedListener)
-
-        assertEquals(expectedListener, accessEditText.keyListener)
-    }
-
-    @Test
-    fun `keyListener setter should set EditText keyListener`() {
-        val expectedListener = mock<KeyListener>()
-        accessEditText.keyListener = expectedListener
-
-        verify(editTextMock).keyListener = expectedListener
-    }
-
     /**
     Methods tests
      */
+    @Test
+    fun `length() should return EditText length`() {
+        given(editTextMock.length()).willReturn(123)
+
+        assertEquals(123, accessEditText.length())
+    }
+
     @Test
     fun `clear() should clear EditText text`() {
         val editableMock = mock<Editable>()
@@ -176,14 +200,8 @@ class AccessEditTextTest {
     }
 
     @Test
-    fun `length() should return EditText length`() {
-        given(editTextMock.length()).willReturn(123)
-
-        assertEquals(123, accessEditText.length())
-    }
-
-    @Test
     fun `getOnFocusChangeListener() should call EditText getOnFocusChangeListener()`() {
+        given(editTextMock.onFocusChangeListener).willReturn(mock())
         accessEditText.onFocusChangeListener
 
         verify(editTextMock).onFocusChangeListener
