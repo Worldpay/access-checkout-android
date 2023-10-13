@@ -2,10 +2,12 @@ package com.worldpay.access.checkout.ui
 
 import android.content.Context
 import android.graphics.Color
+import android.os.Parcelable
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.method.KeyListener
+import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import org.junit.Before
@@ -32,6 +34,21 @@ class AccessEditTextTest {
      * Constructors tests
      */
     @Test
+    fun `should construct an instance by passing Context, AttributeSet`() {
+        assertNotNull(AccessEditText(contextMock, null))
+    }
+
+    @Test
+    fun `should construct an instance by passing Context`() {
+        assertNotNull(AccessEditText(contextMock))
+    }
+
+    @Test
+    fun `constructor should set editText instance`() {
+        assertEquals(editTextMock, accessEditText.editText)
+    }
+
+    @Test
     fun `should set properties with attribute values in constructor`() {
         val contextMock: Context = mock()
         val attributeValuesMock: AttributeValues = mock()
@@ -42,11 +59,6 @@ class AccessEditTextTest {
         AccessEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
 
         verify(editTextMock).hint = "some hint value"
-    }
-
-    @Test
-    fun `should obtain instance by passing two values to the constructor`() {
-        assertNotNull(AccessEditText(contextMock, null))
     }
 
     /**
@@ -208,10 +220,34 @@ class AccessEditTextTest {
     }
 
     @Test
-    fun `dispatchKeyEvent() should call EditText dispatchKeyEvent()`() {
-        val listener = mock<View.OnFocusChangeListener>()
-        accessEditText.onFocusChangeListener = listener
+    fun `setOnFocusChangeListener() should call EditText setOnFocusChangeListener()`() {
+        val mockListener = mock<View.OnFocusChangeListener>()
+        accessEditText.onFocusChangeListener = mockListener
 
-        verify(editTextMock).onFocusChangeListener = listener
+        verify(editTextMock).onFocusChangeListener = mockListener
+    }
+
+    @Test
+    fun `dispatchKeyEvent() should call EditText dispatchKeyEvent()`() {
+        val keyEvent = mock<KeyEvent>()
+        accessEditText.dispatchKeyEvent(keyEvent)
+
+        verify(editTextMock).dispatchKeyEvent(keyEvent)
+    }
+
+    @Test
+    fun `onSaveInstanceState() should call EditText onSaveInstanceState()`() {
+        accessEditText.onSaveInstanceState()
+
+        verify(editTextMock).onSaveInstanceState()
+    }
+
+    @Test
+    fun `onRestoreInstanceState() should call EditText onRestoreInstanceState()`() {
+        val parcelable = mock<Parcelable>()
+
+        accessEditText.onRestoreInstanceState(parcelable)
+
+        verify(editTextMock).onRestoreInstanceState(parcelable)
     }
 }

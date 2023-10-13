@@ -18,7 +18,7 @@ class AccessEditText internal constructor(
     private val attributeValues: AttributeValues,
 ) : LinearLayout(context, attrs, defStyle) {
     companion object {
-        val editTextPartialId = Random.nextInt()
+        internal val editTextPartialId = Random.nextInt()
     }
 
     init {
@@ -104,12 +104,12 @@ class AccessEditText internal constructor(
         editText.onFocusChangeListener = l
     }
 
-    override fun onSaveInstanceState(): Parcelable? {
+    public override fun onSaveInstanceState(): Parcelable? {
         super.onSaveInstanceState()
         return editText.onSaveInstanceState()
     }
 
-    override fun onRestoreInstanceState(state: Parcelable) {
+    public override fun onRestoreInstanceState(state: Parcelable) {
         editText.onRestoreInstanceState(state)
         super.onRestoreInstanceState(state)
     }
