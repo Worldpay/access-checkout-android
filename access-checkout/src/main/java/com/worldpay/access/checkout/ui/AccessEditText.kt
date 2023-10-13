@@ -17,6 +17,10 @@ class AccessEditText internal constructor(
     internal val editText: EditText,
     private val attributeValues: AttributeValues,
 ) : LinearLayout(context, attrs, defStyle) {
+    companion object {
+        val editTextPartialId = Random.nextInt()
+    }
+
     init {
         orientation = VERTICAL
         this.editText.id = this.id + editTextPartialId
@@ -26,10 +30,6 @@ class AccessEditText internal constructor(
         this.attributeValues.stringOfOther("id")?.let { this.editText.id = it }
     }
 
-    companion object {
-        val editTextPartialId = Random.nextInt()
-    }
-
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
             this(context, attrs, defStyle, EditText(context), AttributeValues(context, attrs))
 
@@ -37,16 +37,20 @@ class AccessEditText internal constructor(
 
     constructor(context: Context) : this(context, null, 0)
 
-    // with the internal access modifier, this property is internal to the Access Checkout SDK JAR file
-    // (or access-checkout Gradle project when adding the dependency as a project dependency)
-    // and cannot be accessed outside of that module, e.g. cannot be accessed by a merchant's app
+    /**
+     * Core properties
+     */
     internal val text: String get() = editText.text.toString()
-
-    val selectionEnd: Int get() = editText.selectionEnd
+    fun setText(text: String) {
+        editText.setText(text)
+    }
 
     val selectionStart: Int get() = editText.selectionStart
+    val selectionEnd: Int get() = editText.selectionEnd
+    fun setSelection(start: Int, stop: Int) = editText.setSelection(start, stop)
 
     val isCursorVisible: Boolean get() = editText.isCursorVisible
+
     val currentTextColor: Int get() = editText.currentTextColor
     fun setTextColor(color: Int) = editText.setTextColor(color)
 
@@ -74,20 +78,17 @@ class AccessEditText internal constructor(
             editText.keyListener = input
         }
 
-    internal fun length(): Int = editText.length()
-
-    fun setSelection(start: Int, stop: Int) = editText.setSelection(start, stop)
-
-    fun setText(text: String) {
-        editText.setText(text)
-    }
-
+    internal fun getHint(): CharSequence = editText.hint
     internal fun setHint(hint: CharSequence) {
         editText.hint = hint
     }
 
     internal fun setHint(resId: Int) = editText.setHint(resId)
-    internal fun getHint(): CharSequence = editText.hint
+
+    /**
+     * Methods
+     */
+    internal fun length(): Int = editText.length()
 
     fun clear() = editText.text.clear()
 
