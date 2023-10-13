@@ -8,6 +8,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.LinearLayout
+import kotlin.random.Random
 
 class AccessEditText internal constructor(
     context: Context,
@@ -18,11 +19,15 @@ class AccessEditText internal constructor(
 ) : LinearLayout(context, attrs, defStyle) {
     init {
         orientation = VERTICAL
-        this.editText.id = generateViewId()
+        this.editText.id = this.id + editTextPartialId
 
         addView(this.editText)
         this.attributeValues.stringOf("hint")?.let { setHint(it) }
         this.attributeValues.stringOfOther("id")?.let { this.editText.id = it }
+    }
+
+    companion object {
+        val editTextPartialId = Random.nextInt()
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
@@ -90,6 +95,10 @@ class AccessEditText internal constructor(
         return editText.dispatchKeyEvent(event)
     }
 
+    override fun getOnFocusChangeListener(): OnFocusChangeListener {
+        return editText.onFocusChangeListener
+    }
+
     override fun setOnFocusChangeListener(l: OnFocusChangeListener?) {
         editText.onFocusChangeListener = l
     }
@@ -100,7 +109,7 @@ class AccessEditText internal constructor(
     }
 
     override fun onRestoreInstanceState(state: Parcelable) {
-        super.onRestoreInstanceState(state)
         editText.onRestoreInstanceState(state)
+        super.onRestoreInstanceState(state)
     }
 }
