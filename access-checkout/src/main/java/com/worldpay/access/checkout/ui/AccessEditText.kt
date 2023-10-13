@@ -18,8 +18,8 @@ class AccessEditText internal constructor(
     internal val editText: EditText,
     private val attributeValues: AttributeValues,
 ) : LinearLayout(context, attrs, defStyle) {
-    companion object {
-        internal val editTextPartialId = Random.nextInt()
+    internal companion object {
+        internal val editTextPartialId = Random.nextInt(1000)
     }
 
     init {

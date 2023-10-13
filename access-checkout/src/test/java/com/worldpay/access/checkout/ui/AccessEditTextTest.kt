@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.ui
 
 import android.content.Context
 import android.graphics.Color
-import android.os.Parcelable
+import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
@@ -64,6 +64,11 @@ class AccessEditTextTest {
     /**
      * Properties tests
      */
+    @Test
+    fun `companion object has an editTextPartialId field`() {
+        assertNotNull(AccessEditText.editTextPartialId)
+    }
+
     @Test
     fun `text should return EditText text`() {
         val editable = mock<Editable>()
@@ -244,10 +249,12 @@ class AccessEditTextTest {
 
     @Test
     fun `onRestoreInstanceState() should call EditText onRestoreInstanceState()`() {
-        val parcelable = mock<Parcelable>()
+        val bundledState = mock<Bundle>()
+        val editTextState = mock<Bundle>()
+        given(bundledState.getBundle("editTextState")).willReturn(editTextState)
 
-        accessEditText.onRestoreInstanceState(parcelable)
+        accessEditText.onRestoreInstanceState(bundledState)
 
-        verify(editTextMock).onRestoreInstanceState(parcelable)
+        verify(editTextMock).onRestoreInstanceState(editTextState)
     }
 }
