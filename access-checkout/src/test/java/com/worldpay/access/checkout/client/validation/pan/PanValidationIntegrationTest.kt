@@ -1,11 +1,6 @@
 package com.worldpay.access.checkout.client.validation.pan
 
 import android.os.Looper.getMainLooper
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
@@ -18,6 +13,7 @@ import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
 
@@ -69,7 +65,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
         pan.typeAtIndex(23, "5")
 
-        verifyZeroInteractions(cardValidationListener)
+        verifyNoInteractions(cardValidationListener)
         assertEquals(visaPan(19, true), pan.text.toString())
     }
 

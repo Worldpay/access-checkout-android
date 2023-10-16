@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.validation.result.handler
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import kotlin.test.assertEquals
@@ -11,6 +10,7 @@ import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
+import org.mockito.kotlin.mock
 
 class ResultHandlerFactoryTest {
 

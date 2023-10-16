@@ -42,7 +42,9 @@ internal class FieldDecoratorFactory(
 
     fun getExpiryDateDecorator(expiryDateEditText: EditText): ExpiryDateFieldDecorator {
         return ExpiryDateFieldDecorator(
-            expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText),
+            expiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(
+                expiryDateEditText
+            ),
             expiryDateFocusChangeListener = focusChangeListenerFactory.createExpiryDateFocusChangeListener(),
             expiryDateLengthFilter = accessCheckoutInputFilterFactory.getExpiryDateLengthFilter(),
             expiryDateEditText = expiryDateEditText

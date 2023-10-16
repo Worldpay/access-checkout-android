@@ -4,26 +4,19 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.CvcTextWatcher
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.*
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class CvcFieldDecoratorTest {
@@ -73,7 +66,7 @@ class CvcFieldDecoratorTest {
         cvcFieldDecorator.decorate()
 
         verify(cvcEditText, never()).setHint(anyInt())
-        verify(cvcEditText, never()).setHint(anyString())
+        verify(cvcEditText, never()).hint = anyString()
     }
 
     @Test
@@ -116,7 +109,7 @@ class CvcFieldDecoratorTest {
         given(cvcEditText.filters).willReturn(emptyArray())
         cvcFieldDecorator.decorate()
 
-        verify(cvcEditText).setInputType(InputType.TYPE_CLASS_NUMBER)
+        verify(cvcEditText, times(1)).inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     @Test

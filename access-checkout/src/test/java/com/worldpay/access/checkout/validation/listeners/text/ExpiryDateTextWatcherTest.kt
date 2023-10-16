@@ -2,15 +2,11 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.*
 
 class ExpiryDateTextWatcherTest {
 
@@ -45,7 +41,7 @@ class ExpiryDateTextWatcherTest {
         verify(dateSanitiser).sanitise("1")
         verify(dateValidator).validate("1")
         verify(expiryDateValidationResultHandler).handleResult(false)
-        verifyZeroInteractions(expiryDateEditText)
+        verifyNoInteractions(expiryDateEditText)
     }
 
     @Test
@@ -57,7 +53,7 @@ class ExpiryDateTextWatcherTest {
 
         verify(dateValidator).validate("13")
         verify(expiryDateValidationResultHandler).handleResult(false)
-        verifyZeroInteractions(dateSanitiser, expiryDateEditText)
+        verifyNoInteractions(dateSanitiser, expiryDateEditText)
     }
 
     @Test
@@ -69,7 +65,7 @@ class ExpiryDateTextWatcherTest {
         verify(dateSanitiser).sanitise("0")
         verify(dateValidator).validate("0")
         verify(expiryDateValidationResultHandler).handleResult(false)
-        verifyZeroInteractions(expiryDateEditText)
+        verifyNoInteractions(expiryDateEditText)
     }
 
     @Test
@@ -81,7 +77,7 @@ class ExpiryDateTextWatcherTest {
         verify(dateSanitiser).sanitise("13")
         verify(expiryDateEditText).setText("01/3")
         verify(expiryDateEditText).setSelection(4)
-        verifyZeroInteractions(dateValidator, expiryDateValidationResultHandler)
+        verifyNoInteractions(dateValidator, expiryDateValidationResultHandler)
     }
 
     @Test
@@ -92,7 +88,7 @@ class ExpiryDateTextWatcherTest {
 
         verify(dateValidator).validate("02/2")
         verify(expiryDateValidationResultHandler).handleResult(false)
-        verifyZeroInteractions(expiryDateEditText)
+        verifyNoInteractions(expiryDateEditText)
     }
 
     @Test
@@ -103,7 +99,7 @@ class ExpiryDateTextWatcherTest {
 
         verify(dateValidator).validate("")
         verify(expiryDateValidationResultHandler).handleResult(false)
-        verifyZeroInteractions(dateSanitiser, expiryDateEditText)
+        verifyNoInteractions(dateSanitiser, expiryDateEditText)
     }
 
     @Test
@@ -111,7 +107,7 @@ class ExpiryDateTextWatcherTest {
         expiryDateTextWatcher.beforeTextChanged("", 1, 2, 3)
         expiryDateTextWatcher.onTextChanged("", 1, 2, 3)
 
-        verifyZeroInteractions(
+        verifyNoInteractions(
             dateValidator,
             expiryDateValidationResultHandler
         )

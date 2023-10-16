@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.session
 
 import androidx.lifecycle.LifecycleOwner
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
 import junit.framework.Assert.assertNotNull
 import org.junit.Test
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
 
 class ActivityLifecycleObserverInitialiserTest {
 

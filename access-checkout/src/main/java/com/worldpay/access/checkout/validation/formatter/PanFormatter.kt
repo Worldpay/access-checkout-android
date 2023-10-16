@@ -15,7 +15,8 @@ internal class PanFormatter(
         "^(\\d{4}) ?$", // covers 1 group of exactly 4 digits + an optional trailing space
         "^(\\d{4}) (\\d{1,6})$", // covers 1 group of exactly of 4 digits + 1 group with 1 to 6 digits
         "^(\\d{4}) (\\d{6}) ?$", // covers 1 group of exactly of 4 digits + 1 group with of exactly 6 digits + an optional trailing space
-        "^(\\d{4}) (\\d{6}) (\\d{1,5})$") // covers 1 group of exactly of 4 digits + 1 group with of exactly 6 digits + 1 group with 1 to 5 digits
+        "^(\\d{4}) (\\d{6}) (\\d{1,5})$"
+    ) // covers 1 group of exactly of 4 digits + 1 group with of exactly 6 digits + 1 group with 1 to 5 digits
         .map(String::toRegex)
 
     // RegEx for all other brands

@@ -1,15 +1,15 @@
 package com.worldpay.access.checkout.validation.decorators
 
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.listeners.focus.FocusChangeListenerFactory
 import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
-import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.mockito.BDDMockito.verify
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import kotlin.test.assertNotNull
 
 class FieldDecoratorFactoryTest {
 
@@ -38,7 +38,8 @@ class FieldDecoratorFactoryTest {
         given(focusChangeListenerFactory.createCvcFocusChangeListener()).willReturn(mock())
         given(accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText)).willReturn(mock())
 
-        val decorator: CvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(cvcEditText, panEditText)
+        val decorator: CvcFieldDecorator =
+            fieldDecoratorFactory.getCvcDecorator(cvcEditText, panEditText)
 
         assertNotNull(decorator)
         verify(textWatcherFactory).createCvcTextWatcher()
@@ -101,7 +102,8 @@ class FieldDecoratorFactoryTest {
         given(focusChangeListenerFactory.createExpiryDateFocusChangeListener()).willReturn(mock())
         given(accessCheckoutInputFilterFactory.getExpiryDateLengthFilter()).willReturn(mock())
 
-        val decorator: ExpiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(expiryDateEditText)
+        val decorator: ExpiryDateFieldDecorator =
+            fieldDecoratorFactory.getExpiryDateDecorator(expiryDateEditText)
 
         assertNotNull(decorator)
         verify(textWatcherFactory).createExpiryDateTextWatcher(expiryDateEditText)

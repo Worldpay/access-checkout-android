@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.validation.listeners.focus
 
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 
 class CvcFocusChangeListenerTest {
 
@@ -29,6 +29,6 @@ class CvcFocusChangeListenerTest {
     fun `should do nothing when focus is gained`() {
         cvcFocusChangeListener.onFocusChange(null, true)
 
-        verifyZeroInteractions(cvcValidationResultHandler)
+        verifyNoInteractions(cvcValidationResultHandler)
     }
 }

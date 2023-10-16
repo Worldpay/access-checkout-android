@@ -4,27 +4,20 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.PanNumericFilter
 import com.worldpay.access.checkout.validation.listeners.focus.PanFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.PanTextWatcher
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.*
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class PanFieldDecoratorTest {
@@ -58,6 +51,7 @@ class PanFieldDecoratorTest {
         given(panEditText.text).willReturn(mock())
         given(mock<Editable>().toString()).willReturn("")
 
+
         createFieldDecorator().decorate()
 
         verify(panEditText).removeTextChangedListener(panTextWatcher)
@@ -71,7 +65,7 @@ class PanFieldDecoratorTest {
         panFieldDecorator.decorate()
 
         verify(panEditText, never()).setHint(anyInt())
-        verify(panEditText, never()).setHint(anyString())
+        verify(panEditText, never()).hint = anyString()
     }
 
     @Test
@@ -116,7 +110,7 @@ class PanFieldDecoratorTest {
 
         panFieldDecorator.decorate()
 
-        verify(panEditText).setInputType(InputType.TYPE_CLASS_NUMBER)
+        verify(panEditText, times(1)).inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     @Test
@@ -126,7 +120,7 @@ class PanFieldDecoratorTest {
 
         panFieldDecorator.decorate()
 
-        verify(panEditText).setInputType(InputType.TYPE_CLASS_DATETIME)
+        verify(panEditText, times(1)).inputType = InputType.TYPE_CLASS_DATETIME
     }
 
     @Test
@@ -176,7 +170,7 @@ class PanFieldDecoratorTest {
         verify(fieldDecorator).decorate()
     }
 
-    private fun createFieldDecorator(panFormattingEnabled:Boolean=false) = PanFieldDecorator(
+    private fun createFieldDecorator(panFormattingEnabled: Boolean = false) = PanFieldDecorator(
         panTextWatcher = panTextWatcher,
         panFocusChangeListener = panFocusChangeListener,
         panNumericFilter = accessCheckoutInputFilterFactory.getPanNumericFilter(),

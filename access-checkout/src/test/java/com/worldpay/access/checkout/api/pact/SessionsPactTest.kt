@@ -7,7 +7,6 @@ import au.com.dius.pact.consumer.junit.PactVerification
 import au.com.dius.pact.core.model.PactSpecVersion
 import au.com.dius.pact.core.model.RequestResponsePact
 import au.com.dius.pact.core.model.annotations.Pact
-import com.nhaarman.mockitokotlin2.given
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
@@ -35,6 +34,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.Mockito
+import org.mockito.kotlin.given
 
 @ExperimentalCoroutinesApi
 class SessionsPactTest {

@@ -1,15 +1,15 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.validation.result.handler.CvcValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 
 class CvcTextWatcherTest {
 
@@ -47,7 +47,7 @@ class CvcTextWatcherTest {
         cvcTextWatcher.beforeTextChanged("", 1, 2, 3)
         cvcTextWatcher.onTextChanged("", 1, 2, 3)
 
-        verifyZeroInteractions(
+        verifyNoInteractions(
             cvcValidator,
             cvcValidationResultHandler
         )

@@ -4,15 +4,15 @@ import android.widget.EditText
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
+import kotlin.test.assertEquals
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)

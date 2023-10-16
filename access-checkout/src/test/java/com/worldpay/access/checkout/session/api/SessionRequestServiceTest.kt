@@ -2,13 +2,6 @@ package com.worldpay.access.checkout.session.api
 
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.model.SessionType
@@ -36,6 +29,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.kotlin.*
 import org.robolectric.RobolectricTestRunner
 
 @RunWith(RobolectricTestRunner::class)
@@ -82,7 +76,7 @@ class SessionRequestServiceTest {
     fun `should not send a session request when the intent is null`() {
         assertEquals(1, sessionRequestService.onStartCommand(null, 1, 1))
 
-        verifyZeroInteractions(sessionRequestSender)
+        verifyNoInteractions(sessionRequestSender)
     }
 
     @Test
@@ -153,7 +147,7 @@ class SessionRequestServiceTest {
 
         val intentCaptor = argumentCaptor<Intent>()
 
-        verifyZeroInteractions(sessionRequestSender)
+        verifyNoInteractions(sessionRequestSender)
         verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
 
         val broadcastIntent = intentCaptor.firstValue

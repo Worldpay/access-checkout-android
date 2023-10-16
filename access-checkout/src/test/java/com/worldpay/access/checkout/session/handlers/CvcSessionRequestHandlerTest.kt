@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
+import com.worldpay.access.checkout.testutils.createAccessEditTextMock
 import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -58,18 +59,24 @@ class CvcSessionRequestHandlerTest {
 
     @Test
     fun `should not throw illegal argument exception if pan is not provided in card details`() {
+        val expiryDate = createAccessEditTextMock("1120")
+        val cvc = createAccessEditTextMock("123")
+
         val cardDetails = CardDetails.Builder()
-            .expiryDate("1020")
-            .cvc("123")
+            .expiryDate(expiryDate)
+            .cvc(cvc)
             .build()
         cvcSessionRequestHandler.handle(cardDetails)
     }
 
     @Test
     fun `should not throw illegal argument exception if expiry date is not provided in card details`() {
+        val pan = createAccessEditTextMock("123456789")
+        val cvc = createAccessEditTextMock("123")
+
         val cardDetails = CardDetails.Builder()
-            .pan("123456789")
-            .cvc("123")
+            .pan(pan)
+            .cvc(cvc)
             .build()
         cvcSessionRequestHandler.handle(cardDetails)
     }
@@ -87,8 +94,10 @@ class CvcSessionRequestHandlerTest {
 
     @Test
     fun `should start service via context using the expected intent`() {
+        val cvc = createAccessEditTextMock("123")
+
         val cardDetails = CardDetails.Builder()
-            .cvc("123")
+            .cvc(cvc)
             .build()
 
         cvcSessionRequestHandler.handle(cardDetails)

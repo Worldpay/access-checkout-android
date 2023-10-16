@@ -25,8 +25,11 @@ internal class TextWatcherFactory(
             panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),
             panFormatter = PanFormatter(enablePanFormatting),
-            cvcValidator = CvcValidator(resultHandlerFactory.getCvcValidationResultHandler(), cvcValidationRuleManager),
-            cvcEditText = cvcEditText,
+            cvcValidator = CvcValidator(
+                resultHandlerFactory.getCvcValidationResultHandler(),
+                cvcValidationRuleManager
+            ),
+            cvcAccessEditText = cvcEditText,
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager

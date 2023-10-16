@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".sample.ui.CvcFlowFragment">
 
-    <EditText
+    <com.worldpay.access.checkout.ui.AccessEditText
         android:id="@+id/cvc_flow_text_cvc"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

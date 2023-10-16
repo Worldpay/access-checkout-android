@@ -4,7 +4,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ProgressBar;
 
 import androidx.appcompat.app.AlertDialog;
@@ -20,6 +19,7 @@ import com.worldpay.access.checkout.client.session.model.SessionType;
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser;
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig;
 import com.worldpay.access.checkout.sample.card.CardValidationListener;
+import com.worldpay.access.checkout.ui.AccessEditText;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,9 +30,9 @@ import static java.util.Collections.singletonList;
 
 public class MainActivityJavaExample extends AppCompatActivity implements SessionResponseListener {
 
-    private EditText panText;
-    private EditText cvcText;
-    private EditText expiryText;
+    private AccessEditText panText;
+    private AccessEditText cvcText;
+    private AccessEditText expiryText;
 
     private Boolean loading = false;
 
@@ -149,9 +149,9 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
             toggleLoading(false);
 
             CardDetails cardDetails = new CardDetails.Builder()
-                    .pan(panText.getText().toString())
-                    .expiryDate(expiryText.getText().toString())
-                    .cvc(cvcText.getText().toString())
+                    .pan(panText)
+                    .expiryDate(expiryText)
+                    .cvc(cvcText)
                     .build();
 
             accessCheckoutClient.generateSessions(cardDetails, singletonList(SessionType.CARD));

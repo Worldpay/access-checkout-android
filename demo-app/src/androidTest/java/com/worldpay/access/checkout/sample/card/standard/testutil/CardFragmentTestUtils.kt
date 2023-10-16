@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.sample.card.standard.testutil
 
 import android.widget.Button
-import android.widget.EditText
 import android.widget.ImageView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
@@ -12,15 +11,17 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
+import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
-    private fun panInput() = findById<EditText>(R.id.card_flow_text_pan)
-    private fun cvcInput() = findById<EditText>(R.id.card_flow_text_cvc)
-    private fun expiryDateInput() = findById<EditText>(R.id.card_flow_expiry_date)
+    private fun panInput() = findById<AccessEditText>(R.id.card_flow_text_pan)
+    private fun cvcInput() = findById<AccessEditText>(R.id.card_flow_text_cvc)
+    private fun expiryDateInput() = findById<AccessEditText>(R.id.card_flow_expiry_date)
     private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
     private fun brandLogo() = findById<ImageView>(R.id.card_flow_brand_logo)
     private fun paymentsCvcSwitch() = findById<SwitchCompat>(R.id.card_flow_payments_cvc_switch)
@@ -171,13 +172,17 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun cardDetailsAre(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
-        if (pan != null) wait { assertEquals(pan, panInput().text.toString()) }
-        if (cvc != null) wait { assertEquals(cvc, cvcInput().text.toString()) }
-        if (expiryDate != null) wait { assertEquals(expiryDate, expiryDateInput().text.toString()) }
+        if (pan != null) wait { assertEquals(pan, retrieveEnteredText(panInput())) }
+        if (cvc != null) wait { assertEquals(cvc, retrieveEnteredText(cvcInput())) }
+        if (expiryDate != null) wait { assertEquals(expiryDate, retrieveEnteredText(expiryDateInput())) }
         return this
     }
 
-    fun validationStateIs(pan: Boolean? = null, cvc: Boolean? = null, expiryDate: Boolean? = null): CardFragmentTestUtils {
+    fun validationStateIs(
+        pan: Boolean? = null,
+        cvc: Boolean? = null,
+        expiryDate: Boolean? = null
+    ): CardFragmentTestUtils {
         if (pan != null) checkValidationState(panInput(), pan, "pan")
         if (cvc != null) checkValidationState(cvcInput(), cvc, "cvc")
         if (expiryDate != null) checkValidationState(expiryDateInput(), expiryDate, "expiry date")

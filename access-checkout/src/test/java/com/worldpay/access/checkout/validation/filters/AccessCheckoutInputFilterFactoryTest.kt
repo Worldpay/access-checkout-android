@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.mock
-import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.mock
+import kotlin.test.assertNotNull
 
 class AccessCheckoutInputFilterFactoryTest {
 
@@ -25,13 +25,15 @@ class AccessCheckoutInputFilterFactoryTest {
 
     @Test
     fun `should get expiry date length filter`() {
-        val filter: ExpiryDateLengthFilter = accessCheckoutInputFilterFactory.getExpiryDateLengthFilter()
+        val filter: ExpiryDateLengthFilter =
+            accessCheckoutInputFilterFactory.getExpiryDateLengthFilter()
         assertNotNull(filter)
     }
 
     @Test
     fun `should get cvc length filter`() {
-        val filter: CvcLengthFilter = accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText)
+        val filter: CvcLengthFilter =
+            accessCheckoutInputFilterFactory.getCvcLengthFilter(panEditText)
         assertNotNull(filter)
     }
 }

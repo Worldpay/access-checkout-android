@@ -4,26 +4,19 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.never
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.spy
-import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilterFactory
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.ExpiryDateFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.ExpiryDateTextWatcher
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
 import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
+import org.mockito.kotlin.*
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class ExpiryDateFieldDecoratorTest {
@@ -72,7 +65,7 @@ class ExpiryDateFieldDecoratorTest {
         expiryDateFieldDecorator.decorate()
 
         verify(expiryDateEditText, never()).setHint(anyInt())
-        verify(expiryDateEditText, never()).setHint(anyString())
+        verify(expiryDateEditText, never()).hint = anyString()
     }
 
     @Test
@@ -94,7 +87,7 @@ class ExpiryDateFieldDecoratorTest {
         given(expiryDateEditText.filters).willReturn(emptyArray())
         expiryDateFieldDecorator.decorate()
 
-        verify(expiryDateEditText).setInputType(InputType.TYPE_CLASS_NUMBER)
+        verify(expiryDateEditText, times(1)).inputType = InputType.TYPE_CLASS_NUMBER
     }
 
     @Test

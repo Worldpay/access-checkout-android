@@ -1,12 +1,12 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
-import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import kotlin.test.assertNotNull
 
 class TextWatcherFactoryTest {
 
@@ -42,7 +42,8 @@ class TextWatcherFactoryTest {
     fun `should get expiry date text watcher`() {
         given(resultHandlerFactory.getExpiryDateValidationResultHandler()).willReturn(mock())
 
-        val textWatcher: ExpiryDateTextWatcher = textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
+        val textWatcher: ExpiryDateTextWatcher =
+            textWatcherFactory.createExpiryDateTextWatcher(expiryDateEditText)
         assertNotNull(textWatcher)
     }
 

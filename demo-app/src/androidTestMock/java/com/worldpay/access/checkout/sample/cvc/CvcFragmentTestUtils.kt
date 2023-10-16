@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.sample.cvc
 
 import android.widget.Button
-import android.widget.EditText
 import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.click
@@ -10,13 +9,15 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
+import com.worldpay.access.checkout.ui.AccessEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
-    private fun cvcInput() = findById<EditText>(R.id.cvc_flow_text_cvc)
+    private fun cvcInput() = findById<AccessEditText>(R.id.cvc_flow_text_cvc)
     private fun submitButton() = findById<Button>(R.id.cvc_flow_btn_submit)
 
     fun isInInitialState(): CvcFragmentTestUtils {
@@ -86,7 +87,7 @@ class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
     }
 
     fun cardDetailsAre(cvc: String): CvcFragmentTestUtils {
-        wait { assertEquals(cvc, cvcInput().text.toString()) }
+        wait { assertEquals(cvc, retrieveEnteredText(cvcInput())) }
         return this
     }
 }

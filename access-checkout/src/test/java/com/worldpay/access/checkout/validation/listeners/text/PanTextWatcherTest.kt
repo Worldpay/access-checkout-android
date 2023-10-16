@@ -2,13 +2,6 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.eq
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.verify
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -23,17 +16,15 @@ import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManag
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.never
+import org.mockito.kotlin.*
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 
 @ExperimentalCoroutinesApi
 class PanTextWatcherTest {
@@ -66,7 +57,7 @@ class PanTextWatcherTest {
             panValidator = panValidator,
             panFormatter = panFormatter,
             cvcValidator = cvcValidator,
-            cvcEditText = cvcEditText,
+            cvcAccessEditText = cvcEditText,
             panValidationResultHandler = panValidationResultHandler,
             brandChangedHandler = brandChangedHandler,
             cvcValidationRuleManager = cvcValidationRuleManager
@@ -173,11 +164,16 @@ class PanTextWatcherTest {
     @Test
     fun `should not call the brand changed handler when unknown pan is entered for the first time`() {
         mockPan(VALID_UNKNOWN_LUHN, VALID)
-        given(panFormatter.format(VALID_UNKNOWN_LUHN, null)).willReturn(VALID_UNKNOWN_LUHN_FORMATTED)
+        given(
+            panFormatter.format(
+                VALID_UNKNOWN_LUHN,
+                null
+            )
+        ).willReturn(VALID_UNKNOWN_LUHN_FORMATTED)
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verifyZeroInteractions(brandChangedHandler)
+        verifyNoInteractions(brandChangedHandler)
     }
 
     @Test
@@ -192,7 +188,7 @@ class PanTextWatcherTest {
         // set the visa pan again so that the brand changed handler is no longer called
         mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
-        verifyZeroInteractions(brandChangedHandler)
+        verifyNoInteractions(brandChangedHandler)
     }
 
     @Test
@@ -228,8 +224,8 @@ class PanTextWatcherTest {
         // set the visa pan again so that the brand changed handler is no longer called
         mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
-        verifyZeroInteractions(brandChangedHandler)
-        verifyZeroInteractions(cvcValidator)
+        verifyNoInteractions(brandChangedHandler)
+        verifyNoInteractions(cvcValidator)
     }
 
     @Test
@@ -240,7 +236,7 @@ class PanTextWatcherTest {
         panTextWatcher.afterTextChanged(panEditable)
 
         verify(brandChangedHandler).handle(VISA_BRAND)
-        verifyZeroInteractions(cvcValidator)
+        verifyNoInteractions(cvcValidator)
     }
 
     // Setting the reformatted text on the EditText using setText() is causing an issue where
@@ -260,7 +256,13 @@ class PanTextWatcherTest {
         panTextWatcher.afterTextChanged(panEditable)
 
         verify(panEditText, never()).setText(anyString())
-        verify(panEditable).replace(0, unformattedPan.length, reformattedPan, 0, reformattedPan.length)
+        verify(panEditable).replace(
+            0,
+            unformattedPan.length,
+            reformattedPan,
+            0,
+            reformattedPan.length
+        )
     }
 
     @Test
@@ -269,7 +271,7 @@ class PanTextWatcherTest {
         val panUsedForBeforeTextChanged = "5354335345423423"
         val maxLength = panUsedForBeforeTextChanged.length
         // inserting '2' at the start of a pan that's already at max length
-        val panUsedForOnTextChanged = "2${panUsedForBeforeTextChanged}"
+        val panUsedForOnTextChanged = "2$panUsedForBeforeTextChanged"
 
         given(panFormatter.isFormattingEnabled()).willReturn(false)
 
@@ -283,7 +285,13 @@ class PanTextWatcherTest {
         verify(panEditText).setSelection(1)
 
         val panUsedForReplacement = panUsedForOnTextChanged.substring(0, maxLength)
-        verify(panEditable).replace(0, panUsedForOnTextChanged.length, panUsedForReplacement, 0, maxLength)
+        verify(panEditable).replace(
+            0,
+            panUsedForOnTextChanged.length,
+            panUsedForReplacement,
+            0,
+            maxLength
+        )
     }
 
     private fun mockPan(pan: String, isValid: PanValidationResult) {

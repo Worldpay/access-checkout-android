@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.api.configuration
 
-import com.nhaarman.mockitokotlin2.mock
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
@@ -15,6 +14,7 @@ import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
+import org.mockito.kotlin.mock
 
 @ExperimentalCoroutinesApi
 class CardConfigurationClientTest {

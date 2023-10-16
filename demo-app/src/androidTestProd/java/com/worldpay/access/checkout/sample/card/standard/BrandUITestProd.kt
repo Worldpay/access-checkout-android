@@ -73,7 +73,7 @@ class BrandUITestProd : AbstractCardFragmentTestProd() {
     }
 
     @Test
-    fun shouldDisplayBrandImage_DINERS_ForRange_3095 () {
+    fun shouldDisplayBrandImage_DINERS_ForRange_3095() {
         checkBrandImageFor("30950", isBrand = DINERS)
         checkBrandImageFor("30959", isBrand = DINERS)
     }
@@ -163,13 +163,12 @@ class BrandUITestProd : AbstractCardFragmentTestProd() {
         checkBrandImageFor("33370", isBrand = JCB)
         checkBrandImageFor("33499", isBrand = JCB)
     }
-    
     @Test
     fun shouldDisplayBrandImage_JCB_ForRange_352_358() {
         checkBrandImageFor("3520", isBrand = JCB)
         checkBrandImageFor("3589", isBrand = JCB)
     }
-    
+
     // MAESTRO
     @Test
     fun shouldDisplayBrandImage_MAESTRO_ForCompletePan() = checkBrandImageFor(MAESTRO_PAN, isBrand = MAESTRO)

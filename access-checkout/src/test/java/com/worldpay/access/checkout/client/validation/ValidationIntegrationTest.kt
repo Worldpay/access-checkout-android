@@ -1,8 +1,6 @@
 package com.worldpay.access.checkout.client.validation
 
 import android.os.Looper.getMainLooper
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.verify
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
@@ -11,13 +9,15 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
+import kotlin.test.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import kotlin.test.assertNotEquals
 
 @RunWith(RobolectricTestRunner::class)
 class ValidationIntegrationTest : AbstractValidationIntegrationTest() {

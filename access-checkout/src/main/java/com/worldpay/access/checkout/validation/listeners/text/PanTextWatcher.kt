@@ -23,7 +23,7 @@ internal class PanTextWatcher(
     private var panValidator: PanValidator,
     private val panFormatter: PanFormatter,
     private val cvcValidator: CvcValidator,
-    private val cvcEditText: EditText,
+    private val cvcAccessEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler,
     private val brandChangedHandler: BrandChangedHandler,
     private val cvcValidationRuleManager: CVCValidationRuleManager
@@ -63,7 +63,8 @@ internal class PanTextWatcher(
         } else {
             isSpaceDeleted = false
             val currentCursorPosition = count + start
-            expectedCursorPosition = getExpectedCursorPositionOnInsert(panText, currentCursorPosition)
+            expectedCursorPosition =
+                getExpectedCursorPositionOnInsert(panText, currentCursorPosition)
         }
     }
 
@@ -76,7 +77,8 @@ internal class PanTextWatcher(
         }
 
         val brand = findBrandForPan(panText)
-        val newPan = if (panFormatter.isFormattingEnabled()) getFormattedPan(panText, brand) else panText
+        val newPan =
+            if (panFormatter.isFormattingEnabled()) getFormattedPan(panText, brand) else panText
         val cardValidationRule = getPanValidationRule(brand)
 
         if (trimToMaxLength(cardValidationRule, newPan)) {
@@ -117,7 +119,10 @@ internal class PanTextWatcher(
      *
      * @return Int - the expected cursor position
      */
-    private fun getExpectedCursorPositionOnInsert(panText: String, currentCursorPosition: Int): Int {
+    private fun getExpectedCursorPositionOnInsert(
+        panText: String,
+        currentCursorPosition: Int
+    ): Int {
         val pan = if (panFormatter.isFormattingEnabled()) getFormattedPan(panText) else panText
 
         if (panBefore.isBlank()) return pan.length
@@ -129,7 +134,11 @@ internal class PanTextWatcher(
             currentCursorPosition
         }
 
-        val spaceDiffLeft = pan.substring(0, panCursorPosition).count { it == ' ' } - panText.substring(0, currentCursorPosition).count { it == ' ' }
+        val spaceDiffLeft =
+            pan.substring(0, panCursorPosition).count { it == ' ' } - panText.substring(
+                0,
+                currentCursorPosition
+            ).count { it == ' ' }
 
         val expectedCursorPosition = when {
             spaceDiffLeft > 0 -> currentCursorPosition + spaceDiffLeft
@@ -197,7 +206,7 @@ internal class PanTextWatcher(
 
         cvcValidationRuleManager.updateRule(getCvcValidationRule(cardBrand))
 
-        val cvcText = cvcEditText.text.toString()
+        val cvcText = cvcAccessEditText.text.toString()
         if (cvcText.isNotBlank()) {
             cvcValidator.validate(cvcText)
         }

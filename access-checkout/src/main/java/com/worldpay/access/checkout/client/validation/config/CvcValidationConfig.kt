@@ -4,14 +4,15 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
+import com.worldpay.access.checkout.ui.AccessEditText
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
  * An implementation of the [ValidationConfig] that represents the cvc validation configuration.
  *
- * This configuration should be build to register the relevant fields and the listeners.
+ * This configuration should be used to register the relevant fields and the listeners.
  *
- * @property[cvc] [EditText] that represents the cvc ui element
+ * @property[cvc] [AccessEditText] that represents the cvc ui element
  * @property[validationListener] [AccessCheckoutCvcValidationListener] that represents the validation listener that should be notified on validation changes
  * @property[lifecycleOwner] [LifecycleOwner] of the application so that validation state can be handled during lifecycle changes
  */
@@ -30,8 +31,22 @@ class CvcValidationConfig private constructor(
         /**
          * Sets the cvc ui element
          *
+         * @param[cvcAccessEditText] [AccessEditText] that represents the cvc ui element
+         */
+        fun cvc(cvcAccessEditText: AccessEditText): Builder {
+            this.cvc = cvcAccessEditText.editText
+            return this
+        }
+
+        /**
+         * Sets the cvc ui element
+         *
          * @param[cvc] [EditText] that represents the cvc ui element
          */
+        @Deprecated(
+            message = "AccessEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
+            replaceWith = ReplaceWith("cvc(cvc:AccessEditText)")
+        )
         fun cvc(cvc: EditText): Builder {
             this.cvc = cvc
             return this

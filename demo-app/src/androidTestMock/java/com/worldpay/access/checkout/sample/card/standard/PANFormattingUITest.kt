@@ -1,14 +1,9 @@
 package com.worldpay.access.checkout.sample.card.standard
 
 import android.view.KeyEvent.KEYCODE_DEL
-import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.action.ViewActions.pressImeActionButton
-import androidx.test.espresso.action.ViewActions.pressKey
-import androidx.test.espresso.action.ViewActions.typeTextIntoFocusedView
-import androidx.test.espresso.matcher.ViewMatchers.withId
+import androidx.test.espresso.action.ViewActions.*
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
-import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.AMEX_PAN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
@@ -17,6 +12,7 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.onCardPanView
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -73,7 +69,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .cardDetailsAre(pan = "3717 7")
             .setCursorPositionOnPan(3)
 
-        onView(withId(R.id.card_flow_text_pan))
+        onCardPanView()
             .perform(
                 typeTextIntoFocusedView("2345678")
             )
@@ -83,7 +79,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .cursorPositionIs(12)
             .setCursorPositionOnPan(8)
 
-        onView(withId(R.id.card_flow_text_pan))
+        onCardPanView()
             .perform(
                 pressKey(KEYCODE_DEL),
                 pressKey(KEYCODE_DEL),
@@ -106,7 +102,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .enterCardDetails(pan = "1234")
             .setCursorPositionOnPan(3)
 
-        onView(withId(R.id.card_flow_text_pan))
+        onCardPanView()
             .perform(
                 typeTextIntoFocusedView("12345678")
             )
@@ -116,7 +112,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .cursorPositionIs(13)
             .setCursorPositionOnPan(8)
 
-        onView(withId(R.id.card_flow_text_pan))
+        onCardPanView()
             .perform(
                 pressKey(KEYCODE_DEL),
                 pressKey(KEYCODE_DEL),
@@ -140,7 +136,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .cardDetailsAre(pan = "1234 5")
             .setCursorPositionOnPan(5)
 
-        onView(withId(R.id.card_flow_text_pan))
+        onCardPanView()
             .perform(
                 pressKey(KEYCODE_DEL),
                 pressImeActionButton()
@@ -160,7 +156,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .cardDetailsAre(pan = "1234 5")
             .setCursorPositionOnPan(3)
 
-        onView(withId(R.id.card_flow_text_pan))
+        onCardPanView()
             .perform(
                 typeTextIntoFocusedView("8")
             )
@@ -179,7 +175,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .cardDetailsAre(pan = "1234 567")
             .setCursorPositionOnPan(7)
 
-        onView(withId(R.id.card_flow_text_pan))
+        onCardPanView()
             .perform(
                 typeTextIntoFocusedView("8")
             )
@@ -197,7 +193,7 @@ class PANFormattingUITest : AbstractCardFragmentTest() {
             .enterCardDetails(pan = "12345")
             .cardDetailsAre(pan = "1234 5")
 
-        onView(withId(R.id.card_flow_text_pan))
+        onCardPanView()
             .perform(
                 typeTextIntoFocusedView("8")
             )

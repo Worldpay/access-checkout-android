@@ -3,28 +3,26 @@ package com.worldpay.access.checkout.client.testutil
 import android.content.Context
 import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
-import android.view.KeyEvent.ACTION_DOWN
-import android.view.KeyEvent.ACTION_UP
-import android.view.KeyEvent.KEYCODE_DEL
-import android.widget.EditText
+import android.view.KeyEvent.*
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.nhaarman.mockitokotlin2.given
-import com.nhaarman.mockitokotlin2.mock
-import com.nhaarman.mockitokotlin2.reset
-import com.nhaarman.mockitokotlin2.spy
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
+import com.worldpay.access.checkout.ui.AccessEditText
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.spy
+import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 
 open class AbstractValidationIntegrationTest {
 
@@ -32,11 +30,12 @@ open class AbstractValidationIntegrationTest {
 
     private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"
 
-    private val cardConfigJson = CardConfiguration::class.java.getResource("remote_card_config.json")?.readText()!!
+    private val cardConfigJson =
+        CardConfiguration::class.java.getResource("remote_card_config.json")?.readText()!!
 
-    protected lateinit var pan: EditText
-    protected lateinit var cvc: EditText
-    protected lateinit var expiryDate: EditText
+    protected lateinit var pan: AccessEditText
+    protected lateinit var cvc: AccessEditText
+    protected lateinit var expiryDate: AccessEditText
 
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
@@ -83,12 +82,12 @@ open class AbstractValidationIntegrationTest {
     }
 
     private fun resetValidation() {
-        pan = EditText(context)
+        pan = AccessEditText(context)
         pan.id = 1
         pan.keyListener = DigitsKeyListener.getInstance("0123456789")
-        expiryDate = EditText(context)
+        expiryDate = AccessEditText(context)
         expiryDate.id = 2
-        cvc = EditText(context)
+        cvc = AccessEditText(context)
         cvc.id = 3
 
         cardValidationListener = spy(CardValidationListener())
@@ -122,26 +121,26 @@ open class AbstractValidationIntegrationTest {
         return sslContext
     }
 
-    protected fun EditText.pressBackspaceAtIndex(selection: Int) {
-        this.setSelection(selection)
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+    protected fun AccessEditText.pressBackspaceAtIndex(selection: Int) {
+        this.editText.setSelection(selection)
+        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
+        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
-    protected fun EditText.pressBackspaceAtSelection(start: Int, end: Int) {
-        this.setSelection(start, end)
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
-        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+    protected fun AccessEditText.pressBackspaceAtSelection(start: Int, end: Int) {
+        this.editText.setSelection(start, end)
+        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
+        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
-    protected fun EditText.typeAtIndex(selection: Int, text: String) {
-        this.setSelection(selection)
-        this.text.insert(selection, text)
+    protected fun AccessEditText.typeAtIndex(selection: Int, text: String) {
+        this.editText.setSelection(selection)
+        this.editText.text.insert(selection, text)
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 
-    protected fun EditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
-        this.text.replace(selectionStart, selectionEnd, text)
+    protected fun AccessEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
+        this.editText.text.replace(selectionStart, selectionEnd, text)
     }
 }
