@@ -24,17 +24,4 @@ class AttributeValues(
             attrs?.getAttributeValue(defaultNamespace, attributeName)
         }
     }
-
-    internal fun stringOfOther(attributeName: String): Int? {
-        val resId = attrs?.getAttributeResourceValue(defaultNamespace, attributeName, 0)
-        return if (resId != 0 && resId != null) {
-            try {
-                resId
-            } catch (e: Resources.NotFoundException) {
-                null
-            }
-        } else {
-            resId
-        }
-    }
 }
