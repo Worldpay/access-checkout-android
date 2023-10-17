@@ -45,22 +45,14 @@ class AccessEditText internal constructor(
         editText.setText(text)
     }
 
+    val isCursorVisible: Boolean get() = editText.isCursorVisible
+
     val selectionStart: Int get() = editText.selectionStart
     val selectionEnd: Int get() = editText.selectionEnd
     fun setSelection(start: Int, stop: Int) = editText.setSelection(start, stop)
 
-    val isCursorVisible: Boolean get() = editText.isCursorVisible
-
     val currentTextColor: Int get() = editText.currentTextColor
     fun setTextColor(color: Int) = editText.setTextColor(color)
-
-    internal var filters: Array<InputFilter>
-        get() {
-            return editText.filters
-        }
-        set(filters) {
-            editText.filters = filters
-        }
 
     var inputType: Int
         get() {
@@ -68,6 +60,14 @@ class AccessEditText internal constructor(
         }
         set(inputType) {
             editText.inputType = inputType
+        }
+
+    internal var filters: Array<InputFilter>
+        get() {
+            return editText.filters
+        }
+        set(filters) {
+            editText.filters = filters
         }
 
     internal var keyListener: KeyListener
@@ -78,19 +78,18 @@ class AccessEditText internal constructor(
             editText.keyListener = input
         }
 
-    internal fun getHint(): CharSequence = editText.hint
-    internal fun setHint(hint: CharSequence) {
-        editText.hint = hint
-    }
-
-    internal fun setHint(resId: Int) = editText.setHint(resId)
-
     /**
      * Methods
      */
+    fun clear() = editText.text.clear()
+
     internal fun length(): Int = editText.length()
 
-    fun clear() = editText.text.clear()
+    internal fun getHint(): CharSequence = editText.hint
+
+    internal fun setHint(hint: CharSequence) = editText.setHint(hint)
+
+    internal fun setHint(resId: Int) = editText.setHint(resId)
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         return editText.dispatchKeyEvent(event)
