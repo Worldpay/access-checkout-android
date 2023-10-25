@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.ui
 
 import android.content.Context
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
@@ -15,6 +16,7 @@ import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -197,6 +199,92 @@ class AccessEditTextTest {
         verify(editTextMock).setHint(resourceId)
     }
 
+    @Test
+    fun `imeOptions getter should return EditText imeOptions`() {
+        given(editTextMock.imeOptions).willReturn(123)
+
+        assertEquals(123, accessEditText.imeOptions)
+    }
+
+    @Test
+    fun `imeOptions setter should set EditText imeOptions`() {
+        accessEditText.imeOptions = 123
+
+        verify(editTextMock).imeOptions = 123
+    }
+
+    @Test
+    fun `textLocale getter should return EditText textLocale`() {
+        given(editTextMock.textLocale).willReturn(Locale.ENGLISH)
+
+        assertEquals(Locale.ENGLISH, accessEditText.textLocale)
+    }
+
+    @Test
+    fun `textLocale setter should set EditText textLocale`() {
+        accessEditText.textLocale = Locale.ENGLISH
+
+        verify(editTextMock).textLocale = Locale.ENGLISH
+    }
+
+    @Test
+    fun `textScaleX getter should return EditText textScaleX`() {
+        given(editTextMock.textScaleX).willReturn(1F)
+
+        assertEquals(1F, accessEditText.textScaleX)
+    }
+
+    @Test
+    fun `textScaleX setter should set EditText textScaleX`() {
+        accessEditText.textScaleX = 1.1F
+
+        verify(editTextMock).textScaleX = 1.1F
+    }
+
+    @Test
+    fun `textSize getter should return EditText textSize`() {
+        given(editTextMock.textSize).willReturn(1F)
+
+        assertEquals(1F, accessEditText.textSize)
+    }
+
+    @Test
+    fun `textSize setter should set EditText textSize`() {
+        accessEditText.textSize = 1.1F
+
+        verify(editTextMock).textSize = 1.1F
+    }
+
+    @Test
+    fun `autoSizeTextType getter should return EditText autoSizeTextType`() {
+        given(editTextMock.autoSizeTextType).willReturn(123)
+
+        assertEquals(123, accessEditText.autoSizeTextType)
+    }
+
+    @Test
+    fun `currentHintTextColor getter should return EditText currentHintTextColor`() {
+        given(editTextMock.currentHintTextColor).willReturn(123)
+
+        assertEquals(123, accessEditText.currentHintTextColor)
+    }
+
+    @Test
+    fun `typeface getter should return EditText typeface`() {
+        val typefaceMock = mock<Typeface>()
+        given(editTextMock.typeface).willReturn(typefaceMock)
+
+        assertEquals(typefaceMock, accessEditText.typeface)
+    }
+
+    @Test
+    fun `typeface setter should set EditText typeface`() {
+        val typefaceMock = mock<Typeface>()
+        accessEditText.typeface = typefaceMock
+
+        verify(editTextMock).typeface = typefaceMock
+    }
+
     /**
     Methods tests
      */
@@ -256,5 +344,33 @@ class AccessEditTextTest {
         accessEditText.onRestoreInstanceState(bundledState)
 
         verify(editTextMock).onRestoreInstanceState(editTextState)
+    }
+
+    @Test
+    fun `setEms should call EditText setEms()`() {
+        accessEditText.setEms(4)
+
+        verify(editTextMock).setEms(4)
+    }
+
+    @Test
+    fun `setHintTextColor should call EditText setHintTextColor()`() {
+        accessEditText.setHintTextColor(Color.BLACK)
+
+        verify(editTextMock).setHintTextColor(Color.BLACK)
+    }
+
+    @Test
+    fun `setAutoSizeTextTypeWithDefaults should call EditText setAutoSizeTextTypeWithDefaults()`() {
+        accessEditText.setAutoSizeTextTypeWithDefaults(123)
+
+        verify(editTextMock).setAutoSizeTextTypeWithDefaults(123)
+    }
+
+    @Test
+    fun `setTextAppearance should call EditText setTextAppearance()`() {
+        accessEditText.setTextAppearance(123)
+
+        verify(editTextMock).setTextAppearance(123)
     }
 }
