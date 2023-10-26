@@ -7,10 +7,6 @@
     android:layout_height="match_parent"
     tools:context=".sample.ui.CardFlowFragment">
 
-    <!--
-    The 'app:customHint' is an example of an attribute which under the hood sets a property that exists on the EditText wrapped by this component
-    Typically 'customHint' would need to be renamed 'hint' to match the name of the original property available on EditText
-    -->
     <com.worldpay.access.checkout.ui.AccessCheckoutEditText
         android:id="@+id/card_flow_text_pan"
         android:layout_width="0dp"
