@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.client.session.model
 
 import com.worldpay.access.checkout.client.session.model.CardDetails.ExpiryDate
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
 /**
  * This class is a representation of card information that can be constructed with a [CardDetails.Builder]
@@ -28,25 +28,25 @@ class CardDetails private constructor(
         /**
          * Sets the pan number for the card
          *
-         * @param[panAccessEditText] [AccessEditText] that represents the pan number
+         * @param[panAccessCheckoutEditText] [AccessCheckoutEditText] that represents the pan number
          */
-        fun pan(panAccessEditText: AccessEditText) =
-            apply { this.pan = panAccessEditText.text.replace("\\s+".toRegex(), "") }
+        fun pan(panAccessCheckoutEditText: AccessCheckoutEditText) =
+            apply { this.pan = panAccessCheckoutEditText.text.replace("\\s+".toRegex(), "") }
 
         /**
          * Sets the expiry date for the card
          *
-         * @param[expiryDateAccessEditText] [AccessEditText] that represents the expiry date
+         * @param[expiryDateAccessCheckoutEditText] [AccessCheckoutEditText] that represents the expiry date
          */
-        fun expiryDate(expiryDateAccessEditText: AccessEditText) =
-            apply { this.expiryDate = ExpiryDate(expiryDateAccessEditText) }
+        fun expiryDate(expiryDateAccessCheckoutEditText: AccessCheckoutEditText) =
+            apply { this.expiryDate = ExpiryDate(expiryDateAccessCheckoutEditText) }
 
         /**
          * Sets the cvc for the card
          *
-         * @param[cvcAccessEditText] [AccessEditText] that represents the cvc
+         * @param[cvcAccessCheckoutEditText] [AccessCheckoutEditText] that represents the cvc
          */
-        fun cvc(cvcAccessEditText: AccessEditText) = apply { this.cvc = cvcAccessEditText.text }
+        fun cvc(cvcAccessCheckoutEditText: AccessCheckoutEditText) = apply { this.cvc = cvcAccessCheckoutEditText.text }
 
         /**
          * Sets the pan number for the card
@@ -124,7 +124,7 @@ class CardDetails private constructor(
             }
         }
 
-        constructor(expiryDateAccessEditText: AccessEditText) : this(expiryDateAccessEditText.text)
+        constructor(expiryDateAccessCheckoutEditText: AccessCheckoutEditText) : this(expiryDateAccessCheckoutEditText.text)
 
         private fun isNumeric(text: String): Boolean {
             return try {

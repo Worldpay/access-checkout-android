@@ -19,7 +19,7 @@ import com.worldpay.access.checkout.client.session.model.SessionType;
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser;
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig;
 import com.worldpay.access.checkout.sample.card.CardValidationListener;
-import com.worldpay.access.checkout.ui.AccessEditText;
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -30,9 +30,9 @@ import static java.util.Collections.singletonList;
 
 public class MainActivityJavaExample extends AppCompatActivity implements SessionResponseListener {
 
-    private AccessEditText panText;
-    private AccessEditText cvcText;
-    private AccessEditText expiryText;
+    private AccessCheckoutEditText panText;
+    private AccessCheckoutEditText cvcText;
+    private AccessCheckoutEditText expiryText;
 
     private Boolean loading = false;
 

@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.images.SVGImageLoader.Companion.getInstance
 import com.worldpay.access.checkout.sample.ui.SubmitButton
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
 class CardValidationListener(private val activity: FragmentActivity) : AccessCheckoutCardValidationListener {
 
@@ -17,13 +17,13 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
     private val submitButton = SubmitButton(activity, R.id.card_flow_btn_submit)
 
     override fun onCvcValidated(isValid: Boolean) {
-        val cvc = activity.findViewById<AccessEditText>(R.id.card_flow_text_cvc)
+        val cvc = activity.findViewById<AccessCheckoutEditText>(R.id.card_flow_text_cvc)
         changeFont(cvc, isValid)
         if (!isValid) submitButton.disable()
     }
 
     override fun onPanValidated(isValid: Boolean) {
-        val pan = activity.findViewById<AccessEditText>(R.id.card_flow_text_pan)
+        val pan = activity.findViewById<AccessCheckoutEditText>(R.id.card_flow_text_pan)
         changeFont(pan, isValid)
         if (!isValid) submitButton.disable()
     }
@@ -34,18 +34,18 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
     }
 
     override fun onExpiryDateValidated(isValid: Boolean) {
-        val expiryText = activity.findViewById<AccessEditText>(R.id.card_flow_expiry_date)
+        val expiryText = activity.findViewById<AccessCheckoutEditText>(R.id.card_flow_expiry_date)
         changeFont(expiryText, isValid)
         if (!isValid) submitButton.disable()
     }
 
     override fun onValidationSuccess() = submitButton.enable()
 
-    private fun changeFont(accessEditText: AccessEditText, isValid: Boolean) {
+    private fun changeFont(accessCheckoutEditText: AccessCheckoutEditText, isValid: Boolean) {
         if (isValid) {
-            accessEditText.setTextColor(validColor)
+            accessCheckoutEditText.setTextColor(validColor)
         } else {
-            accessEditText.setTextColor(invalidColor)
+            accessCheckoutEditText.setTextColor(invalidColor)
         }
     }
 }

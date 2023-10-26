@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.client.validation.config
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
@@ -14,7 +14,7 @@ import kotlin.test.assertNotNull
 
 class CvcValidationConfigBuilderTest {
 
-    private val cvc = mock<AccessEditText>()
+    private val cvc = mock<AccessCheckoutEditText>()
     private val cvcInternalEditText = mock<EditText>()
 
     private val validationListener = mock<AccessCheckoutCvcValidationListener>()

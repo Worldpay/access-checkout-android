@@ -13,15 +13,15 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
-    private fun panInput() = findById<AccessEditText>(R.id.card_flow_text_pan)
-    private fun cvcInput() = findById<AccessEditText>(R.id.card_flow_text_cvc)
-    private fun expiryDateInput() = findById<AccessEditText>(R.id.card_flow_expiry_date)
+    private fun panInput() = findById<AccessCheckoutEditText>(R.id.card_flow_text_pan)
+    private fun cvcInput() = findById<AccessCheckoutEditText>(R.id.card_flow_text_cvc)
+    private fun expiryDateInput() = findById<AccessCheckoutEditText>(R.id.card_flow_expiry_date)
     private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
     private fun brandLogo() = findById<ImageView>(R.id.card_flow_brand_logo)
     private fun paymentsCvcSwitch() = findById<SwitchCompat>(R.id.card_flow_payments_cvc_switch)

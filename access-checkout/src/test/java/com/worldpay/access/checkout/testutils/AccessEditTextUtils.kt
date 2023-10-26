@@ -1,12 +1,12 @@
 package com.worldpay.access.checkout.testutils
 
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.whenever
 
-fun createAccessEditTextMock(returnValue: String): AccessEditText {
-    val accessEditTextMock = mock<AccessEditText>()
-    whenever(accessEditTextMock.text).thenReturn(returnValue)
+fun createAccessEditTextMock(returnValue: String): AccessCheckoutEditText {
+    val accessCheckoutEditTextMock = mock<AccessCheckoutEditText>()
+    whenever(accessCheckoutEditTextMock.text).thenReturn(returnValue)
 
-    return accessEditTextMock
+    return accessCheckoutEditTextMock
 }

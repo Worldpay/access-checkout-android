@@ -21,15 +21,15 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-class AccessEditTextTest {
-    private lateinit var accessEditText: AccessEditText
+class AccessCheckoutEditTextTest {
+    private lateinit var accessCheckoutEditText: AccessCheckoutEditText
     private var contextMock: Context = mock()
     private var editTextMock: EditText = mock()
     private var attributeValuesMock: AttributeValues = mock()
 
     @Before
     fun setUp() {
-        accessEditText = AccessEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
+        accessCheckoutEditText = AccessCheckoutEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
     }
 
     /**
@@ -37,17 +37,17 @@ class AccessEditTextTest {
      */
     @Test
     fun `should construct an instance by passing Context, AttributeSet`() {
-        assertNotNull(AccessEditText(contextMock, null))
+        assertNotNull(AccessCheckoutEditText(contextMock, null))
     }
 
     @Test
     fun `should construct an instance by passing Context`() {
-        assertNotNull(AccessEditText(contextMock))
+        assertNotNull(AccessCheckoutEditText(contextMock))
     }
 
     @Test
     fun `constructor should set editText instance`() {
-        assertEquals(editTextMock, accessEditText.editText)
+        assertEquals(editTextMock, accessCheckoutEditText.editText)
     }
 
     @Test
@@ -58,7 +58,7 @@ class AccessEditTextTest {
 
         given(attributeValuesMock.stringOf("hint")).willReturn("some hint value")
 
-        AccessEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
+        AccessCheckoutEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
 
         verify(editTextMock).hint = "some hint value"
     }
@@ -68,7 +68,7 @@ class AccessEditTextTest {
      */
     @Test
     fun `companion object has an editTextPartialId field`() {
-        assertNotNull(AccessEditText.editTextPartialId)
+        assertNotNull(AccessCheckoutEditText.editTextPartialId)
     }
 
     @Test
@@ -77,12 +77,12 @@ class AccessEditTextTest {
         given(editable.toString()).willReturn("some text")
         given(editTextMock.text).willReturn(editable)
 
-        assertEquals("some text", accessEditText.text)
+        assertEquals("some text", accessCheckoutEditText.text)
     }
 
     @Test
     fun `setText() should call EditText setText()`() {
-        accessEditText.setText("some text")
+        accessCheckoutEditText.setText("some text")
 
         verify(editTextMock).setText("some text")
     }
@@ -91,19 +91,19 @@ class AccessEditTextTest {
     fun `selectionStart should return EditText selectionStart`() {
         given(editTextMock.selectionStart).willReturn(12)
 
-        assertEquals(12, accessEditText.selectionStart)
+        assertEquals(12, accessCheckoutEditText.selectionStart)
     }
 
     @Test
     fun `selectionEnd should return EditText selectionEnd`() {
         given(editTextMock.selectionEnd).willReturn(12)
 
-        assertEquals(12, accessEditText.selectionEnd)
+        assertEquals(12, accessCheckoutEditText.selectionEnd)
     }
 
     @Test
     fun `setSelection() should call EditText setSelection()`() {
-        accessEditText.setSelection(4, 7)
+        accessCheckoutEditText.setSelection(4, 7)
 
         verify(editTextMock).setSelection(4, 7)
     }
@@ -112,19 +112,19 @@ class AccessEditTextTest {
     fun `isCursorVisible should return EditText isCursorVisible`() {
         given(editTextMock.isCursorVisible).willReturn(true)
 
-        assertTrue(accessEditText.isCursorVisible)
+        assertTrue(accessCheckoutEditText.isCursorVisible)
     }
 
     @Test
     fun `currentTextColor should return EditText currentTextColor`() {
         given(editTextMock.currentTextColor).willReturn(Color.BLACK)
 
-        assertEquals(Color.BLACK, accessEditText.currentTextColor)
+        assertEquals(Color.BLACK, accessCheckoutEditText.currentTextColor)
     }
 
     @Test
     fun `setTextColor() should set EditText color`() {
-        accessEditText.setTextColor(Color.BLACK)
+        accessCheckoutEditText.setTextColor(Color.BLACK)
 
         verify(editTextMock).setTextColor(Color.BLACK)
     }
@@ -134,13 +134,13 @@ class AccessEditTextTest {
         val filters = arrayOf(mock<InputFilter>())
         given(editTextMock.filters).willReturn(filters)
 
-        assertEquals(filters, accessEditText.filters)
+        assertEquals(filters, accessCheckoutEditText.filters)
     }
 
     @Test
     fun `filters setter should set EditText filters`() {
         val filters = arrayOf(mock<InputFilter>())
-        accessEditText.filters = filters
+        accessCheckoutEditText.filters = filters
 
         verify(editTextMock).filters = filters
     }
@@ -149,12 +149,12 @@ class AccessEditTextTest {
     fun `inputType getter should return EditText inputType`() {
         given(editTextMock.inputType).willReturn(InputType.TYPE_CLASS_NUMBER)
 
-        assertEquals(InputType.TYPE_CLASS_NUMBER, accessEditText.inputType)
+        assertEquals(InputType.TYPE_CLASS_NUMBER, accessCheckoutEditText.inputType)
     }
 
     @Test
     fun `inputType setter should set EditText inputType`() {
-        accessEditText.inputType = InputType.TYPE_CLASS_NUMBER
+        accessCheckoutEditText.inputType = InputType.TYPE_CLASS_NUMBER
 
         verify(editTextMock).inputType = InputType.TYPE_CLASS_NUMBER
     }
@@ -164,13 +164,13 @@ class AccessEditTextTest {
         val expectedListener = mock<KeyListener>()
         given(editTextMock.keyListener).willReturn(expectedListener)
 
-        assertEquals(expectedListener, accessEditText.keyListener)
+        assertEquals(expectedListener, accessCheckoutEditText.keyListener)
     }
 
     @Test
     fun `keyListener setter should set EditText keyListener`() {
         val expectedListener = mock<KeyListener>()
-        accessEditText.keyListener = expectedListener
+        accessCheckoutEditText.keyListener = expectedListener
 
         verify(editTextMock).keyListener = expectedListener
     }
@@ -180,13 +180,13 @@ class AccessEditTextTest {
         val hint = "card-number"
         given(editTextMock.hint).willReturn(hint)
 
-        assertEquals(hint, accessEditText.getHint())
+        assertEquals(hint, accessCheckoutEditText.getHint())
     }
 
     @Test
     fun `hint setter should set EditText hint using a string`() {
         val hint = "card-number"
-        accessEditText.setHint(hint)
+        accessCheckoutEditText.setHint(hint)
 
         verify(editTextMock).hint = hint
     }
@@ -194,7 +194,7 @@ class AccessEditTextTest {
     @Test
     fun `hint setter should set EditText hint using a resourceId`() {
         val resourceId = 1234
-        accessEditText.setHint(resourceId)
+        accessCheckoutEditText.setHint(resourceId)
 
         verify(editTextMock).setHint(resourceId)
     }
@@ -203,12 +203,12 @@ class AccessEditTextTest {
     fun `imeOptions getter should return EditText imeOptions`() {
         given(editTextMock.imeOptions).willReturn(123)
 
-        assertEquals(123, accessEditText.imeOptions)
+        assertEquals(123, accessCheckoutEditText.imeOptions)
     }
 
     @Test
     fun `imeOptions setter should set EditText imeOptions`() {
-        accessEditText.imeOptions = 123
+        accessCheckoutEditText.imeOptions = 123
 
         verify(editTextMock).imeOptions = 123
     }
@@ -217,12 +217,12 @@ class AccessEditTextTest {
     fun `textLocale getter should return EditText textLocale`() {
         given(editTextMock.textLocale).willReturn(Locale.ENGLISH)
 
-        assertEquals(Locale.ENGLISH, accessEditText.textLocale)
+        assertEquals(Locale.ENGLISH, accessCheckoutEditText.textLocale)
     }
 
     @Test
     fun `textLocale setter should set EditText textLocale`() {
-        accessEditText.textLocale = Locale.ENGLISH
+        accessCheckoutEditText.textLocale = Locale.ENGLISH
 
         verify(editTextMock).textLocale = Locale.ENGLISH
     }
@@ -231,12 +231,12 @@ class AccessEditTextTest {
     fun `textScaleX getter should return EditText textScaleX`() {
         given(editTextMock.textScaleX).willReturn(1F)
 
-        assertEquals(1F, accessEditText.textScaleX)
+        assertEquals(1F, accessCheckoutEditText.textScaleX)
     }
 
     @Test
     fun `textScaleX setter should set EditText textScaleX`() {
-        accessEditText.textScaleX = 1.1F
+        accessCheckoutEditText.textScaleX = 1.1F
 
         verify(editTextMock).textScaleX = 1.1F
     }
@@ -245,12 +245,12 @@ class AccessEditTextTest {
     fun `textSize getter should return EditText textSize`() {
         given(editTextMock.textSize).willReturn(1F)
 
-        assertEquals(1F, accessEditText.textSize)
+        assertEquals(1F, accessCheckoutEditText.textSize)
     }
 
     @Test
     fun `textSize setter should set EditText textSize`() {
-        accessEditText.textSize = 1.1F
+        accessCheckoutEditText.textSize = 1.1F
 
         verify(editTextMock).textSize = 1.1F
     }
@@ -259,14 +259,14 @@ class AccessEditTextTest {
     fun `autoSizeTextType getter should return EditText autoSizeTextType`() {
         given(editTextMock.autoSizeTextType).willReturn(123)
 
-        assertEquals(123, accessEditText.autoSizeTextType)
+        assertEquals(123, accessCheckoutEditText.autoSizeTextType)
     }
 
     @Test
     fun `currentHintTextColor getter should return EditText currentHintTextColor`() {
         given(editTextMock.currentHintTextColor).willReturn(123)
 
-        assertEquals(123, accessEditText.currentHintTextColor)
+        assertEquals(123, accessCheckoutEditText.currentHintTextColor)
     }
 
     @Test
@@ -274,13 +274,13 @@ class AccessEditTextTest {
         val typefaceMock = mock<Typeface>()
         given(editTextMock.typeface).willReturn(typefaceMock)
 
-        assertEquals(typefaceMock, accessEditText.typeface)
+        assertEquals(typefaceMock, accessCheckoutEditText.typeface)
     }
 
     @Test
     fun `typeface setter should set EditText typeface`() {
         val typefaceMock = mock<Typeface>()
-        accessEditText.typeface = typefaceMock
+        accessCheckoutEditText.typeface = typefaceMock
 
         verify(editTextMock).typeface = typefaceMock
     }
@@ -292,7 +292,7 @@ class AccessEditTextTest {
     fun `length() should return EditText length`() {
         given(editTextMock.length()).willReturn(123)
 
-        assertEquals(123, accessEditText.length())
+        assertEquals(123, accessCheckoutEditText.length())
     }
 
     @Test
@@ -300,14 +300,14 @@ class AccessEditTextTest {
         val editableMock = mock<Editable>()
         given(editTextMock.text).willReturn(editableMock)
 
-        accessEditText.clear()
+        accessCheckoutEditText.clear()
         verify(editableMock).clear()
     }
 
     @Test
     fun `getOnFocusChangeListener() should call EditText getOnFocusChangeListener()`() {
         given(editTextMock.onFocusChangeListener).willReturn(mock())
-        accessEditText.onFocusChangeListener
+        accessCheckoutEditText.onFocusChangeListener
 
         verify(editTextMock).onFocusChangeListener
     }
@@ -315,7 +315,7 @@ class AccessEditTextTest {
     @Test
     fun `setOnFocusChangeListener() should call EditText setOnFocusChangeListener()`() {
         val mockListener = mock<View.OnFocusChangeListener>()
-        accessEditText.onFocusChangeListener = mockListener
+        accessCheckoutEditText.onFocusChangeListener = mockListener
 
         verify(editTextMock).onFocusChangeListener = mockListener
     }
@@ -323,14 +323,14 @@ class AccessEditTextTest {
     @Test
     fun `dispatchKeyEvent() should call EditText dispatchKeyEvent()`() {
         val keyEvent = mock<KeyEvent>()
-        accessEditText.dispatchKeyEvent(keyEvent)
+        accessCheckoutEditText.dispatchKeyEvent(keyEvent)
 
         verify(editTextMock).dispatchKeyEvent(keyEvent)
     }
 
     @Test
     fun `onSaveInstanceState() should call EditText onSaveInstanceState()`() {
-        accessEditText.onSaveInstanceState()
+        accessCheckoutEditText.onSaveInstanceState()
 
         verify(editTextMock).onSaveInstanceState()
     }
@@ -341,35 +341,35 @@ class AccessEditTextTest {
         val editTextState = mock<Bundle>()
         given(bundledState.getBundle("editTextState")).willReturn(editTextState)
 
-        accessEditText.onRestoreInstanceState(bundledState)
+        accessCheckoutEditText.onRestoreInstanceState(bundledState)
 
         verify(editTextMock).onRestoreInstanceState(editTextState)
     }
 
     @Test
     fun `setEms should call EditText setEms()`() {
-        accessEditText.setEms(4)
+        accessCheckoutEditText.setEms(4)
 
         verify(editTextMock).setEms(4)
     }
 
     @Test
     fun `setHintTextColor should call EditText setHintTextColor()`() {
-        accessEditText.setHintTextColor(Color.BLACK)
+        accessCheckoutEditText.setHintTextColor(Color.BLACK)
 
         verify(editTextMock).setHintTextColor(Color.BLACK)
     }
 
     @Test
     fun `setAutoSizeTextTypeWithDefaults should call EditText setAutoSizeTextTypeWithDefaults()`() {
-        accessEditText.setAutoSizeTextTypeWithDefaults(123)
+        accessCheckoutEditText.setAutoSizeTextTypeWithDefaults(123)
 
         verify(editTextMock).setAutoSizeTextTypeWithDefaults(123)
     }
 
     @Test
     fun `setTextAppearance should call EditText setTextAppearance()`() {
-        accessEditText.setTextAppearance(123)
+        accessCheckoutEditText.setTextAppearance(123)
 
         verify(editTextMock).setTextAppearance(123)
     }

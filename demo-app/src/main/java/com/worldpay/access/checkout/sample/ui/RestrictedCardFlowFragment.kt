@@ -13,13 +13,13 @@ import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.RestrictedCardValidationListener
 import com.worldpay.access.checkout.sample.images.SVGImageLoader
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
 class RestrictedCardFlowFragment : Fragment() {
 
-    private lateinit var panText: AccessEditText
-    private lateinit var cvcText: AccessEditText
-    private lateinit var expiryText: AccessEditText
+    private lateinit var panText: AccessCheckoutEditText
+    private lateinit var cvcText: AccessCheckoutEditText
+    private lateinit var expiryText: AccessCheckoutEditText
     private lateinit var progressBar: ProgressBar
 
     private lateinit var cardValidationListener: AccessCheckoutCardValidationListener

@@ -18,7 +18,7 @@ import androidx.core.widget.TextViewCompat
 import java.util.*
 import kotlin.random.Random
 
-class AccessEditText internal constructor(
+class AccessCheckoutEditText internal constructor(
     context: Context,
     attrs: AttributeSet?,
     defStyle: Int,
@@ -63,14 +63,6 @@ class AccessEditText internal constructor(
 
     val autoSizeTextType: Int @RequiresApi(Build.VERSION_CODES.O) get() = editText.autoSizeTextType
 
-    var inputType: Int
-        get() {
-            return editText.inputType
-        }
-        set(inputType) {
-            editText.inputType = inputType
-        }
-
     var imeOptions: Int
         get() {
             return editText.imeOptions
@@ -109,6 +101,14 @@ class AccessEditText internal constructor(
         }
         set(tf) {
             editText.typeface = tf
+        }
+
+    internal var inputType: Int
+        get() {
+            return editText.inputType
+        }
+        set(inputType) {
+            editText.inputType = inputType
         }
 
     internal var filters: Array<InputFilter>

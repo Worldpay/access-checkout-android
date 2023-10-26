@@ -22,13 +22,13 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.CardValidationListener
 import com.worldpay.access.checkout.sample.card.SessionResponseListenerImpl
 import com.worldpay.access.checkout.sample.images.SVGImageLoader
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
 class CardFlowFragment : Fragment() {
 
-    private lateinit var panText: AccessEditText
-    private lateinit var cvcText: AccessEditText
-    private lateinit var expiryText: AccessEditText
+    private lateinit var panText: AccessCheckoutEditText
+    private lateinit var cvcText: AccessCheckoutEditText
+    private lateinit var expiryText: AccessCheckoutEditText
     private lateinit var submitBtn: SubmitButton
     private lateinit var paymentsCvcSwitch: SwitchCompat
     private lateinit var progressBar: ProgressBar

@@ -17,11 +17,11 @@ import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.cvc.CvcValidationListener
 import com.worldpay.access.checkout.sample.cvc.SessionResponseListenerImpl
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
 class CvcFlowFragment : Fragment() {
 
-    private lateinit var cvcText: AccessEditText
+    private lateinit var cvcText: AccessCheckoutEditText
     private lateinit var submitBtn: SubmitButton
     private lateinit var progressBar: ProgressBar
 

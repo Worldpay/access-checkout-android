@@ -4,7 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.util.AttributeSet
 
-class AttributeValues(
+internal class AttributeValues(
     private val context: Context,
     private val attrs: AttributeSet?
 ) {
