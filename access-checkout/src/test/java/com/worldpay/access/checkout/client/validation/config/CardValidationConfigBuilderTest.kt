@@ -4,11 +4,11 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
+import kotlin.test.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.kotlin.mock
-import kotlin.test.*
 
 class CardValidationConfigBuilderTest {
 

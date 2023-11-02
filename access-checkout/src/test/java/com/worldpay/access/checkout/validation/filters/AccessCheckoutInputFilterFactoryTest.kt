@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
+import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
-import kotlin.test.assertNotNull
 
 class AccessCheckoutInputFilterFactoryTest {
 
