@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
+import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
@@ -16,6 +17,7 @@ import android.widget.EditText
 import com.worldpay.access.checkout.R
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentCaptor
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
@@ -417,11 +419,12 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `clear() should clear EditText text`() {
-        val editableMock = mock<Editable>()
-        given(editTextMock.text).willReturn(editableMock)
+        val argumentCaptor = ArgumentCaptor.forClass(SpannableStringBuilder::class.java)
 
         accessCheckoutEditText.clear()
-        verify(editableMock).clear()
+
+        verify(accessCheckoutEditText.editText).text = argumentCaptor.capture()
+        assertEquals(0, argumentCaptor.value.length)
     }
 
     @Test
