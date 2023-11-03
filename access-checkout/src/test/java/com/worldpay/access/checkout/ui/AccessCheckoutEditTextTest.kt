@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.ui
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
@@ -8,11 +9,14 @@ import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.method.KeyListener
+import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
+import com.worldpay.access.checkout.R
 import org.junit.Before
 import org.junit.Test
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -26,10 +30,22 @@ class AccessCheckoutEditTextTest {
     private var contextMock: Context = mock()
     private var editTextMock: EditText = mock()
     private var attributeValuesMock: AttributeValues = mock()
+    private var attributeSetMock: AttributeSet = mock()
+    private var typedArrayMock: TypedArray = mock()
 
     @Before
     fun setUp() {
-        accessCheckoutEditText = AccessCheckoutEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
+        given(
+            contextMock.obtainStyledAttributes(
+                attributeSetMock,
+                R.styleable.AccessCheckoutEditText,
+                0,
+                0
+            )
+        ).willReturn(typedArrayMock)
+
+        accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
     }
 
     /**
@@ -50,17 +66,112 @@ class AccessCheckoutEditTextTest {
         assertEquals(editTextMock, accessCheckoutEditText.editText)
     }
 
+    /**
+     * Attribute setting tests
+     */
     @Test
-    fun `should set properties with attribute values in constructor`() {
-        val contextMock: Context = mock()
-        val attributeValuesMock: AttributeValues = mock()
-        val editTextMock: EditText = mock()
+    fun `should set text color from attribute set`() {
+        given(
+            typedArrayMock.getColor(
+                eq(R.styleable.AccessCheckoutEditText_android_textColor),
+                eq(0)
+            )
+        ).willReturn(Color.RED)
 
-        given(attributeValuesMock.stringOf("hint")).willReturn("some hint value")
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
 
-        AccessCheckoutEditText(contextMock, null, 0, editTextMock, attributeValuesMock)
+        verify(editTextMock).setTextColor(Color.RED)
+    }
 
-        verify(editTextMock).hint = "some hint value"
+    @Test
+    fun `should set hint from attribute set`() {
+        given(typedArrayMock.getString(eq(R.styleable.AccessCheckoutEditText_android_hint))).willReturn("some-hint")
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).setHint("some-hint")
+    }
+
+    @Test
+    fun `should set ems from attribute set`() {
+        given(typedArrayMock.getInt(eq(R.styleable.AccessCheckoutEditText_android_ems), eq(0))).willReturn(123)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).setEms(123)
+    }
+
+    @Test
+    fun `should set hintTextColor from attribute set`() {
+        given(typedArrayMock.getColor(eq(R.styleable.AccessCheckoutEditText_android_textColorHint), eq(0))).willReturn(
+            Color.GREEN
+        )
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).setHintTextColor(Color.GREEN)
+    }
+
+    @Test
+    fun `should set imeOptions from attribute set`() {
+        given(typedArrayMock.getInt(eq(R.styleable.AccessCheckoutEditText_android_imeOptions), eq(0))).willReturn(123)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).imeOptions = 123
+    }
+
+    @Test
+    fun `should set cursorVisible from attribute set`() {
+        given(
+            typedArrayMock.getBoolean(
+                eq(R.styleable.AccessCheckoutEditText_android_cursorVisible),
+                eq(true)
+            )
+        ).willReturn(true)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).isCursorVisible = true
+    }
+
+    @Test
+    fun `should set textScale from attribute set`() {
+        given(typedArrayMock.getFloat(eq(R.styleable.AccessCheckoutEditText_android_textScaleX), eq(0F))).willReturn(1F)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).textScaleX = 1F
+    }
+
+    @Test
+    fun `should set textSize from attribute set`() {
+        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_textSize), eq(0F))).willReturn(1F)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).textSize = 1F
+    }
+
+    @Test
+    fun `should set padding from attribute set`() {
+        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_padding), eq(0.0F))).willReturn(1F)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).setPadding(1, 1, 1, 1)
+    }
+
+    @Test
+    fun `should set padding left, top, right, bottom from attribute set`() {
+        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_paddingLeft), eq(0.0F))).willReturn(1F)
+        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_paddingTop), eq(0.0F))).willReturn(2F)
+        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_paddingRight), eq(0.0F))).willReturn(3F)
+        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_paddingBottom), eq(0.0F))).willReturn(4F)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock, attributeValuesMock)
+
+        verify(editTextMock).setPadding(1, 2, 3, 4)
     }
 
     /**
@@ -285,8 +396,22 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).typeface = typefaceMock
     }
 
+    @Test
+    fun `isCursorVisible getter should return EditText isCursorVisible`() {
+        given(editTextMock.isCursorVisible).willReturn(true)
+
+        assertEquals(true, accessCheckoutEditText.isCursorVisible)
+    }
+
+    @Test
+    fun `isCursorVisible setter should set EditText isCursorVisible`() {
+        accessCheckoutEditText.isCursorVisible = true
+
+        verify(editTextMock).isCursorVisible = true
+    }
+
     /**
-    Methods tests
+     Methods tests
      */
     @Test
     fun `length() should return EditText length`() {
