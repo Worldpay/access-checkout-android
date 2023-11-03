@@ -103,6 +103,9 @@ internal class PanTextWatcher(
         clearPanBefore()
     }
 
+    /**
+     * Designed to clear from memory the text held in the panBefore property
+     */
     private fun clearPanBefore() {
         this.panBefore = ""
     }
