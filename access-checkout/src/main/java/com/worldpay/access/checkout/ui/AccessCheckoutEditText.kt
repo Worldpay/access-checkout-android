@@ -24,7 +24,6 @@ class AccessCheckoutEditText internal constructor(
     attrs: AttributeSet?,
     defStyle: Int,
     internal val editText: EditText,
-    private val attributeValues: AttributeValues,
 ) : LinearLayout(context, attrs, defStyle) {
     internal companion object {
         internal val editTextPartialId = Random.nextInt(1000)
@@ -42,7 +41,7 @@ class AccessCheckoutEditText internal constructor(
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
-        this(context, attrs, defStyle, EditText(context), AttributeValues(context, attrs))
+        this(context, attrs, defStyle, EditText(context))
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
