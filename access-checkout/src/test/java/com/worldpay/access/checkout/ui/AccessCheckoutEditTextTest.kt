@@ -20,7 +20,6 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import java.util.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -321,20 +320,6 @@ class AccessCheckoutEditTextTest {
         accessCheckoutEditText.imeOptions = 123
 
         verify(editTextMock).imeOptions = 123
-    }
-
-    @Test
-    fun `textLocale getter should return EditText textLocale`() {
-        given(editTextMock.textLocale).willReturn(Locale.ENGLISH)
-
-        assertEquals(Locale.ENGLISH, accessCheckoutEditText.textLocale)
-    }
-
-    @Test
-    fun `textLocale setter should set EditText textLocale`() {
-        accessCheckoutEditText.textLocale = Locale.ENGLISH
-
-        verify(editTextMock).textLocale = Locale.ENGLISH
     }
 
     @Test

@@ -192,52 +192,139 @@ class AccessCheckoutEditText internal constructor(
         val styleAttributes: TypedArray =
             context.obtainStyledAttributes(attrs, R.styleable.AccessCheckoutEditText, defStyle, 0)
 
-        val textColor = styleAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColor, 0)
-        textColor.takeIf { it != 0 }?.let { this.setTextColor(textColor) }
+        val textColor = getTextColorAttribute(styleAttributes)
+        setTextColourAttribute(textColor)
 
-        styleAttributes.getString(R.styleable.AccessCheckoutEditText_android_hint)?.let {
-            this.setHint(it as CharSequence)
-        }
+        val hint = getHintAttribute(styleAttributes)
+        setHintAttribute(hint)
 
-        val ems = styleAttributes.getInt(R.styleable.AccessCheckoutEditText_android_ems, 0)
-        ems.takeIf { it != 0 }?.let { this.setEms(ems) }
+        val ems = getEmsAttribute(styleAttributes)
+        setEmsAttribute(ems)
 
-        val hintTextColour = styleAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColorHint, 0)
-        hintTextColour.takeIf { it != 0 }?.let { this.setHintTextColor(hintTextColour) }
+        val hintTextColour = getHintTextColourAttribute(styleAttributes)
+        setHintTextColourAttribute(hintTextColour)
 
-        val imeOptions = styleAttributes.getInt(R.styleable.AccessCheckoutEditText_android_imeOptions, 0)
-        imeOptions.takeIf { it != 0 }?.let { this.imeOptions = imeOptions }
+        val imeOptions = getImeOptionsAttribute(styleAttributes)
+        setImeOptionsAttribute(imeOptions)
 
-        val cursorVisible = styleAttributes.getBoolean(R.styleable.AccessCheckoutEditText_android_cursorVisible, true)
-        this.isCursorVisible = cursorVisible
+        val cursorVisible = getCursorVisibleAttribute(styleAttributes)
+        setCursorVisibleAttribute(cursorVisible)
 
-        val textScaleX = styleAttributes.getFloat(R.styleable.AccessCheckoutEditText_android_textScaleX, 0F)
-        textScaleX.takeIf { it != 0F }?.let { this.textScaleX = textScaleX }
+        val textScaleX = getTextScaleXAttribute(styleAttributes)
+        setTextScaleXAttribute(textScaleX)
 
-        val textSize = styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_textSize, 0F)
-        textSize.takeIf { it != 0F }?.let { this.textSize = textSize }
+        val textSize = getTextSizeAttribute(styleAttributes)
+        setTextSizeAttribute(textSize)
 
         // set padding
-        val padding = styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_padding, 0.0F).toInt()
-        var paddingLeft = styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingLeft, 0.0F).toInt()
-        var paddingTop = styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingTop, 0.0F).toInt()
-        var paddingRight = styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingRight, 0.0F).toInt()
-        var paddingBottom = styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingBottom, 0.0F).toInt()
+        val padding = getPaddingAttribute(styleAttributes).toInt()
+        val paddingLeft = getPaddingLeftAttribute(styleAttributes).toInt()
+        val paddingTop = getPaddingTopAttribute(styleAttributes).toInt()
+        val paddingRight = getPaddingRightAttribute(styleAttributes).toInt()
+        val paddingBottom = getPaddingBottomAttribute(styleAttributes).toInt()
 
-        paddingLeft.takeIf { it == 0 }?.let { paddingLeft = editText.paddingLeft }
-        paddingTop.takeIf { it == 0 }?.let { paddingTop = editText.paddingTop }
-        paddingRight.takeIf { it == 0 }?.let { paddingRight = editText.paddingRight }
-        paddingBottom.takeIf { it == 0 }?.let { paddingBottom = editText.paddingBottom }
-
-        if (padding != 0) {
-            paddingLeft = padding
-            paddingTop = padding
-            paddingRight = padding
-            paddingBottom = padding
-        }
-
-        editText.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+        setPaddingAttribute(paddingLeft, paddingTop, paddingRight, paddingBottom, padding)
 
         return styleAttributes
     }
+
+    private fun setPaddingAttribute(
+        paddingLeft: Int,
+        paddingTop: Int,
+        paddingRight: Int,
+        paddingBottom: Int,
+        padding: Int
+    ) {
+        var paddingLeft1 = paddingLeft
+        var paddingTop1 = paddingTop
+        var paddingRight1 = paddingRight
+        var paddingBottom1 = paddingBottom
+
+        paddingLeft1.takeIf { it == 0 }?.let { paddingLeft1 = editText.paddingLeft }
+        paddingTop1.takeIf { it == 0 }?.let { paddingTop1 = editText.paddingTop }
+        paddingRight1.takeIf { it == 0 }?.let { paddingRight1 = editText.paddingRight }
+        paddingBottom1.takeIf { it == 0 }?.let { paddingBottom1 = editText.paddingBottom }
+
+        if (padding != 0) {
+            paddingLeft1 = padding
+            paddingTop1 = padding
+            paddingRight1 = padding
+            paddingBottom1 = padding
+        }
+
+        editText.setPadding(paddingLeft1, paddingTop1, paddingRight1, paddingBottom1)
+    }
+
+    private fun setCursorVisibleAttribute(cursorVisible: Boolean) {
+        this.isCursorVisible = cursorVisible
+    }
+
+    private fun setHintAttribute(hint: String?) {
+        hint?.let {
+            this.setHint(it as CharSequence)
+        }
+    }
+
+    private fun setTextScaleXAttribute(textScaleX: Float) {
+        textScaleX.takeIf { it != 0F }?.let { this.textScaleX = textScaleX }
+    }
+
+    private fun setTextSizeAttribute(textSize: Float) {
+        textSize.takeIf { it != 0F }?.let { this.textSize = textSize }
+    }
+
+    private fun setImeOptionsAttribute(imeOptions: Int) {
+        imeOptions.takeIf { it != 0 }?.let { this.imeOptions = imeOptions }
+    }
+
+    private fun setHintTextColourAttribute(hintTextColour: Int) {
+        hintTextColour.takeIf { it != 0 }?.let { this.setHintTextColor(hintTextColour) }
+    }
+
+    private fun setEmsAttribute(ems: Int) {
+        ems.takeIf { it != 0 }?.let { this.setEms(ems) }
+    }
+
+    private fun setTextColourAttribute(textColor: Int) {
+        textColor.takeIf { it != 0 }?.let { this.setTextColor(textColor) }
+    }
+
+    private fun getPaddingBottomAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingBottom, 0.0F)
+
+    private fun getPaddingRightAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingRight, 0.0F)
+
+    private fun getPaddingTopAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingTop, 0.0F)
+
+    private fun getPaddingLeftAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingLeft, 0.0F)
+
+    private fun getPaddingAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_padding, 0.0F)
+
+    private fun getHintAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getString(R.styleable.AccessCheckoutEditText_android_hint)
+
+    private fun getTextSizeAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_textSize, 0F)
+
+    private fun getTextScaleXAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getFloat(R.styleable.AccessCheckoutEditText_android_textScaleX, 0F)
+
+    private fun getCursorVisibleAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getBoolean(R.styleable.AccessCheckoutEditText_android_cursorVisible, true)
+
+    private fun getImeOptionsAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getInt(R.styleable.AccessCheckoutEditText_android_imeOptions, 0)
+
+    private fun getHintTextColourAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColorHint, 0)
+
+    private fun getEmsAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getInt(R.styleable.AccessCheckoutEditText_android_ems, 0)
+
+    private fun getTextColorAttribute(styleAttributes: TypedArray) =
+        styleAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColor, 0)
 }
