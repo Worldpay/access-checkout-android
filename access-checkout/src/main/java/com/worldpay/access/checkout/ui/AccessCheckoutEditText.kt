@@ -6,6 +6,7 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputFilter
+import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
@@ -135,7 +136,9 @@ class AccessCheckoutEditText internal constructor(
     /**
      * Methods
      */
-    fun clear() = editText.text.clear()
+    fun clear() {
+        editText.text = SpannableStringBuilder("", 0, 0)
+    }
 
     fun setEms(ems: Int) = editText.setEms(ems)
 
