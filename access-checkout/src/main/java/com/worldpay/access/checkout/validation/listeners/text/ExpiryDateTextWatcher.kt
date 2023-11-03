@@ -31,6 +31,7 @@ internal class ExpiryDateTextWatcher(
                 val newExpiryDate = expiryDateSanitiser.sanitise(expiryDate)
                 if (expiryDate != newExpiryDate) {
                     updateText(newExpiryDate)
+                    clearTextBefore()
                     return
                 }
             }
@@ -38,6 +39,7 @@ internal class ExpiryDateTextWatcher(
 
         val result = dateValidator.validate(expiryDate)
         expiryDateValidationResultHandler.handleResult(isValid = result)
+        clearTextBefore()
     }
 
     private fun attemptingToDeleteSeparator(textBefore: String, textAfter: String): Boolean {
@@ -50,5 +52,12 @@ internal class ExpiryDateTextWatcher(
     private fun updateText(text: String) {
         expiryDateEditText.setText(text)
         expiryDateEditText.setSelection(text.length)
+    }
+
+    /**
+     * Designed to clear from memory the text held in the textBefore property
+     */
+    private fun clearTextBefore() {
+        this.textBefore = ""
     }
 }
