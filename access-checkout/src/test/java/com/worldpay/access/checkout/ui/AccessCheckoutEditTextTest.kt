@@ -172,6 +172,17 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).setPadding(1, 2, 3, 4)
     }
 
+    @Test
+    fun `should set font from attribute set`() {
+        val typefaceMock: Typeface = mock()
+
+        given(typedArrayMock.getFont(eq(R.styleable.AccessCheckoutEditText_android_font))).willReturn(typefaceMock)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).typeface = typefaceMock
+    }
+
     /**
      * Properties tests
      */

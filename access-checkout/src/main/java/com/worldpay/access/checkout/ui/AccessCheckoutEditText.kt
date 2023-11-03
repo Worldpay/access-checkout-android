@@ -16,6 +16,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
+import com.worldpay.access.checkout.R
 import kotlin.random.Random
 
 class AccessCheckoutEditText internal constructor(
@@ -32,13 +33,17 @@ class AccessCheckoutEditText internal constructor(
         orientation = VERTICAL
         this.editText.id = this.id + editTextPartialId
 
-        val attributeValues = AttributeValues(context, attrs, this.editText)
+        attrs?.let {
+            val styledAttributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.AccessCheckoutEditText, 0, 0)
 
-        val attributes: TypedArray? = attrs?.let { attributeValues.setAttributes() }
+            val attributeValues = AttributeValues(styledAttributes)
+
+            attributeValues.setAttributesOnEditText(this.editText)
+
+            styledAttributes.recycle()
+        }
 
         addView(this.editText)
-
-        attributes?.let { attributes.recycle() }
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :

@@ -14,5 +14,6 @@
         <attr name="android:paddingTop"/>
         <attr name="android:paddingRight"/>
         <attr name="android:paddingBottom"/>
+        <attr name="android:font"/>
     </declare-styleable>
 </resources>
