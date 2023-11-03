@@ -7,12 +7,14 @@ import android.os.Bundle
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
+import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import org.junit.Before
 import org.junit.Test
+import org.mockito.ArgumentCaptor
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
@@ -297,11 +299,12 @@ class AccessEditTextTest {
 
     @Test
     fun `clear() should clear EditText text`() {
-        val editableMock = mock<Editable>()
-        given(editTextMock.text).willReturn(editableMock)
+        val argumentCaptor = ArgumentCaptor.forClass(SpannableStringBuilder::class.java)
 
         accessEditText.clear()
-        verify(editableMock).clear()
+
+        verify(accessEditText.editText).text = argumentCaptor.capture()
+        assertEquals(0, argumentCaptor.value.length)
     }
 
     @Test
