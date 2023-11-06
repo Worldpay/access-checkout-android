@@ -4,19 +4,18 @@ import com.worldpay.access.checkout.api.serialization.ClientErrorDeserializer
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import java.io.BufferedOutputStream
-import java.io.BufferedReader
-import java.io.InputStream
-import java.io.InputStreamReader
-import java.io.OutputStream
-import java.io.OutputStreamWriter
-import java.io.Serializable
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
+import java.io.BufferedOutputStream
+import java.io.BufferedReader
+import java.io.InputStream
+import java.io.InputStreamReader
+import java.io.OutputStreamWriter
+import java.io.Serializable
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
 
 internal class HttpsClient(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -39,33 +38,44 @@ internal class HttpsClient(
                 try {
                     val requestBody = serializer.serialize(request)
 
-                    httpsUrlConn = url.openConnection() !!as HttpsURLConnection
+                    httpsUrlConn = url.openConnection()!! as HttpsURLConnection
                     httpsUrlConn.requestMethod = POST_METHOD
                     setRequestProperties(httpsUrlConn, headers)
                     httpsUrlConn.doOutput = true
                     httpsUrlConn.connectTimeout = CONNECT_TIMEOUT
                     httpsUrlConn.readTimeout = READ_TIMEOUT
-                    httpsUrlConn.setChunkedStreamingMode(0)
 
-                    val outputStream: OutputStream = BufferedOutputStream(httpsUrlConn.outputStream)
-                    OutputStreamWriter(outputStream).use {
-                        it.write(requestBody)
-                        it.flush()
+                    // You will note that setChunkedStreamingMode() is not used although it would
+                    // lead to better performances. This is because when used this property creates
+                    // a memory leak where the request body remains in memory, this leaving the
+                    // merchant application vulnerable to a heap inspection attack.
 
-                        val responseData = when (httpsUrlConn.responseCode) {
-                            in successfulHttpRange -> getResponseData(httpsUrlConn.inputStream)
-                            in redirectHttpRange -> return@async handleRedirect(
-                                httpsUrlConn,
-                                request,
-                                headers,
-                                serializer,
-                                deserializer
-                            )
-                            in clientErrorHttpRange -> throw getClientError(httpsUrlConn)
-                            else -> throw getServerError(httpsUrlConn)
+
+                    httpsUrlConn.outputStream.use { connectionOutputStream ->
+                        BufferedOutputStream(connectionOutputStream).use { bufferedOutputStream ->
+                            OutputStreamWriter(bufferedOutputStream).use { outputStreamWriter ->
+                                outputStreamWriter.write(requestBody)
+                                outputStreamWriter.flush()
+
+                                val responseData = when (httpsUrlConn.responseCode) {
+
+                                    in successfulHttpRange -> httpsUrlConn.inputStream.use { inputStream ->
+                                        getResponseData(inputStream)
+                                    }
+                                    in redirectHttpRange -> return@async handleRedirect(
+                                        httpsUrlConn,
+                                        request,
+                                        headers,
+                                        serializer,
+                                        deserializer
+                                    )
+                                    in clientErrorHttpRange -> throw getClientError(httpsUrlConn)
+                                    else -> throw getServerError(httpsUrlConn)
+                                }
+
+                                return@async deserializer.deserialize(responseData)
+                            }
                         }
-
-                        return@async deserializer.deserialize(responseData)
                     }
                 } catch (ex: AccessCheckoutException) {
                     throw ex
@@ -91,14 +101,16 @@ internal class HttpsClient(
             async(dispatcher) {
                 var httpsUrlConn: HttpsURLConnection? = null
                 try {
-                    httpsUrlConn = url.openConnection() !!as HttpsURLConnection
+                    httpsUrlConn = url.openConnection()!! as HttpsURLConnection
                     httpsUrlConn.requestMethod = GET_METHOD
                     setRequestProperties(httpsUrlConn, headers)
                     httpsUrlConn.connectTimeout = CONNECT_TIMEOUT
                     httpsUrlConn.readTimeout = READ_TIMEOUT
 
                     val responseData = when (httpsUrlConn.responseCode) {
-                        in successfulHttpRange -> getResponseData(httpsUrlConn.inputStream)
+                        in successfulHttpRange -> httpsUrlConn.inputStream.use { inputStream ->
+                            getResponseData(inputStream)
+                        }
                         in redirectHttpRange -> return@async handleRedirect(
                             httpsUrlConn,
                             deserializer
@@ -127,6 +139,12 @@ internal class HttpsClient(
         headers: Map<String, String>
     ) {
         headers.forEach { HttpsURLConnection.setRequestProperty(it.key, it.value) }
+
+        // Connection header is "keep-alive" by default. We explicitly set it to "close" to instruct
+        // the http library to close connections after receiving the response. This in return
+        // ensures that the details of requests (headers, body) made to the backend do not
+        // stay in memory
+        HttpsURLConnection.setRequestProperty("Connection", "close")
     }
 
     private fun getClientError(conn: HttpsURLConnection): AccessCheckoutException {
@@ -134,8 +152,10 @@ internal class HttpsClient(
         var errorData: String? = null
 
         if (conn.errorStream != null) {
-            errorData = getResponseData(conn.errorStream)
-            clientException = clientErrorDeserializer.deserialize(errorData)
+            conn.errorStream.use { errorStream ->
+                errorData = getResponseData(errorStream)
+                clientException = clientErrorDeserializer.deserialize(errorData!!)
+            }
         }
 
         return clientException ?: AccessCheckoutException(getMessage(conn, errorData))
@@ -143,9 +163,11 @@ internal class HttpsClient(
 
     private fun getServerError(conn: HttpsURLConnection): AccessCheckoutException {
         if (conn.errorStream != null) {
-            val errorData = getResponseData(conn.errorStream)
-            val message = getMessage(conn, errorData)
-            return AccessCheckoutException(message)
+            conn.errorStream.use { errorStream ->
+                val errorData = getResponseData(errorStream)
+                val message = getMessage(conn, errorData)
+                return AccessCheckoutException(message)
+            }
         }
         return AccessCheckoutException("A server error occurred when trying to make the request")
     }
@@ -160,18 +182,20 @@ internal class HttpsClient(
     }
 
     private fun getResponseData(inputStream: InputStream): String {
-        return BufferedReader(InputStreamReader(inputStream)).use { reader ->
-            val response = StringBuilder()
-            var currentLine: String?
+        return InputStreamReader(inputStream).use { inputStreamReader ->
+            BufferedReader(inputStreamReader).use { reader ->
+                val response = StringBuilder()
+                var currentLine: String?
 
-            while (run {
-                currentLine = reader.readLine()
-                currentLine
-            } != null
-            )
-                response.append(currentLine)
+                while (run {
+                        currentLine = reader.readLine()
+                        currentLine
+                    } != null
+                )
+                    response.append(currentLine)
 
-            response.toString()
+                response.toString()
+            }
         }
     }
 
