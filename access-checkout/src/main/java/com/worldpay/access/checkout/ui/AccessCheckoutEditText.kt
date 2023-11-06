@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.ui
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputFilter
@@ -13,7 +12,6 @@ import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
-import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
 import com.worldpay.access.checkout.R
@@ -68,7 +66,7 @@ class AccessCheckoutEditText internal constructor(
 
     val currentHintTextColor: Int @ColorInt get() = editText.currentHintTextColor
 
-    val autoSizeTextType: Int @RequiresApi(Build.VERSION_CODES.O) get() = editText.autoSizeTextType
+    val autoSizeTextType: Int get() = editText.autoSizeTextType
 
     var imeOptions: Int
         get() {
@@ -145,12 +143,10 @@ class AccessCheckoutEditText internal constructor(
         editText.setHintTextColor(color)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun setAutoSizeTextTypeWithDefaults(@TextViewCompat.AutoSizeTextType autoSizeTextType: Int) {
         editText.setAutoSizeTextTypeWithDefaults(autoSizeTextType)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     fun setTextAppearance(@StyleRes resId: Int) {
         editText.setTextAppearance(resId)
     }

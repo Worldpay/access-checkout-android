@@ -246,10 +246,6 @@ workflows:
             - test_timeout: 1500
             - num_flaky_test_attempts: 1
             - test_devices: |-
-                Nexus5,22,en,portrait
-                Nexus5,23,en,portrait
-                Nexus6,24,en,portrait
-                Nexus6,25,en,portrait
                 Pixel2,26,en,portrait
                 Pixel2,27,en,portrait
                 Pixel2,28,en,portrait
