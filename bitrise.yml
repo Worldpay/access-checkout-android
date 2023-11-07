@@ -244,7 +244,6 @@ workflows:
             - test_type: instrumentation
             - test_apk_path: "$BITRISE_TEST_APK"
             - test_timeout: 1500
-            - num_flaky_test_attempts: 1
             - test_devices: |-
                 Pixel2,26,en,portrait
                 Pixel2,27,en,portrait
