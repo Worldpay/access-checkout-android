@@ -27,6 +27,9 @@ class AccessCheckoutEditText internal constructor(
     internal val editText: EditText,
 ) : LinearLayout(context, attrs, defStyle) {
     internal companion object {
+        private const val SUPER_STATE_KEY = "superState"
+        private const val EDIT_TEXT_STATE_KEY = "editTextState"
+
         private val allEditTextIds = ConcurrentHashMap<Int, Int?>()
 
         fun editTextIdOf(accessCheckoutEditTextId: Int): Int {
@@ -186,15 +189,15 @@ class AccessCheckoutEditText internal constructor(
     public override fun onSaveInstanceState(): Parcelable? {
         val editTextState = editText.onSaveInstanceState()
         return Bundle().apply {
-            putParcelable("superState", super.onSaveInstanceState())
-            putParcelable("editTextState", editTextState)
+            putParcelable(SUPER_STATE_KEY, super.onSaveInstanceState())
+            putParcelable(EDIT_TEXT_STATE_KEY, editTextState)
         }
     }
 
     public override fun onRestoreInstanceState(state: Parcelable) {
         val bundledState = (state as Bundle)
 
-        super.onRestoreInstanceState(bundledState.getParcelable("superState"))
-        editText.onRestoreInstanceState(bundledState.getParcelable("editTextState"))
+        super.onRestoreInstanceState(bundledState.getParcelable(SUPER_STATE_KEY))
+        editText.onRestoreInstanceState(bundledState.getParcelable(EDIT_TEXT_STATE_KEY))
     }
 }

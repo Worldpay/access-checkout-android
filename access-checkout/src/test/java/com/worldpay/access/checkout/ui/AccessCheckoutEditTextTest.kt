@@ -5,12 +5,14 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
 import android.os.Bundle
+import android.os.Parcelable
 import android.text.Editable
 import android.text.InputFilter
 import android.text.InputType
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.AttributeSet
+import android.view.AbsSavedState
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
@@ -508,10 +510,11 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `onRestoreInstanceState() should call EditText onRestoreInstanceState()`() {
+    fun `onRestoreInstanceState() should call EditText onRestoreInstanceState() using key used to save EditText state`() {
+        val editTextState = mock<AbsSavedState>()
+
         val bundledState = mock<Bundle>()
-        val editTextState = mock<Bundle>()
-        given(bundledState.getBundle("editTextState")).willReturn(editTextState)
+        given(bundledState.getParcelable<Parcelable>("editTextState")).willReturn(editTextState)
 
         accessCheckoutEditText.onRestoreInstanceState(bundledState)
 
