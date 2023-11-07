@@ -85,7 +85,9 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set hint from attribute set`() {
-        given(typedArrayMock.getString(eq(R.styleable.AccessCheckoutEditText_android_hint))).willReturn("some-hint")
+        given(typedArrayMock.getString(eq(R.styleable.AccessCheckoutEditText_android_hint))).willReturn(
+            "some-hint"
+        )
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -94,7 +96,12 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set ems from attribute set`() {
-        given(typedArrayMock.getInt(eq(R.styleable.AccessCheckoutEditText_android_ems), eq(0))).willReturn(123)
+        given(
+            typedArrayMock.getInt(
+                eq(R.styleable.AccessCheckoutEditText_android_ems),
+                eq(0)
+            )
+        ).willReturn(123)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -103,7 +110,12 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set hintTextColor from attribute set`() {
-        given(typedArrayMock.getColor(eq(R.styleable.AccessCheckoutEditText_android_textColorHint), eq(0))).willReturn(
+        given(
+            typedArrayMock.getColor(
+                eq(R.styleable.AccessCheckoutEditText_android_textColorHint),
+                eq(0)
+            )
+        ).willReturn(
             Color.GREEN
         )
 
@@ -114,7 +126,12 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set imeOptions from attribute set`() {
-        given(typedArrayMock.getInt(eq(R.styleable.AccessCheckoutEditText_android_imeOptions), eq(0))).willReturn(123)
+        given(
+            typedArrayMock.getInt(
+                eq(R.styleable.AccessCheckoutEditText_android_imeOptions),
+                eq(0)
+            )
+        ).willReturn(123)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -137,7 +154,12 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set textScale from attribute set`() {
-        given(typedArrayMock.getFloat(eq(R.styleable.AccessCheckoutEditText_android_textScaleX), eq(0F))).willReturn(1F)
+        given(
+            typedArrayMock.getFloat(
+                eq(R.styleable.AccessCheckoutEditText_android_textScaleX),
+                eq(0F)
+            )
+        ).willReturn(1F)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -146,7 +168,12 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set textSize from attribute set`() {
-        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_textSize), eq(0F))).willReturn(1F)
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_textSize),
+                eq(0F)
+            )
+        ).willReturn(1F)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -155,7 +182,12 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set padding from attribute set`() {
-        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_padding), eq(0.0F))).willReturn(1F)
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_padding),
+                eq(0.0F)
+            )
+        ).willReturn(1F)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -164,10 +196,30 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set padding left, top, right, bottom from attribute set`() {
-        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_paddingLeft), eq(0.0F))).willReturn(1F)
-        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_paddingTop), eq(0.0F))).willReturn(2F)
-        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_paddingRight), eq(0.0F))).willReturn(3F)
-        given(typedArrayMock.getDimension(eq(R.styleable.AccessCheckoutEditText_android_paddingBottom), eq(0.0F))).willReturn(4F)
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_paddingLeft),
+                eq(0.0F)
+            )
+        ).willReturn(1F)
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_paddingTop),
+                eq(0.0F)
+            )
+        ).willReturn(2F)
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_paddingRight),
+                eq(0.0F)
+            )
+        ).willReturn(3F)
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_paddingBottom),
+                eq(0.0F)
+            )
+        ).willReturn(4F)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -178,7 +230,9 @@ class AccessCheckoutEditTextTest {
     fun `should set font from attribute set`() {
         val typefaceMock: Typeface = mock()
 
-        given(typedArrayMock.getFont(eq(R.styleable.AccessCheckoutEditText_android_font))).willReturn(typefaceMock)
+        given(typedArrayMock.getFont(eq(R.styleable.AccessCheckoutEditText_android_font))).willReturn(
+            typefaceMock
+        )
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -188,11 +242,6 @@ class AccessCheckoutEditTextTest {
     /**
      * Properties tests
      */
-    @Test
-    fun `companion object has an editTextPartialId field`() {
-        assertNotNull(AccessCheckoutEditText.editTextPartialId)
-    }
-
     @Test
     fun `text should return EditText text`() {
         val editable = mock<Editable>()
@@ -408,7 +457,7 @@ class AccessCheckoutEditTextTest {
     }
 
     /**
-     Methods tests
+    Methods tests
      */
     @Test
     fun `length() should return EditText length`() {

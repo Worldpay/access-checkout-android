@@ -10,13 +10,14 @@ import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
 import com.worldpay.access.checkout.R
-import kotlin.random.Random
+import java.util.*
 
 class AccessCheckoutEditText internal constructor(
     context: Context,
@@ -25,15 +26,22 @@ class AccessCheckoutEditText internal constructor(
     internal val editText: EditText,
 ) : LinearLayout(context, attrs, defStyle) {
     internal companion object {
-        internal val editTextPartialId = Random.nextInt(1000)
+        private val allEditTextIds = HashMap<Int, Int?>()
+
+        fun editTextIdOf(accessCheckoutEditTextId: Int): Int {
+            val newId = View.generateViewId()
+            val editTextId = allEditTextIds.putIfAbsent(accessCheckoutEditTextId, newId)
+            return Optional.ofNullable(editTextId).orElse(newId)
+        }
     }
 
     init {
         orientation = VERTICAL
-        this.editText.id = this.id + editTextPartialId
+        this.editText.id = editTextIdOf(this.id)
 
         attrs?.let {
-            val styledAttributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.AccessCheckoutEditText, 0, 0)
+            val styledAttributes: TypedArray =
+                context.obtainStyledAttributes(attrs, R.styleable.AccessCheckoutEditText, 0, 0)
 
             val attributeValues = AttributeValues(styledAttributes)
 
@@ -46,7 +54,7 @@ class AccessCheckoutEditText internal constructor(
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
-        this(context, attrs, defStyle, EditText(context))
+            this(context, attrs, defStyle, EditText(context))
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 

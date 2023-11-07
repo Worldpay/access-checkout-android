@@ -151,23 +151,19 @@ internal class HttpsClient(
         var clientException: AccessCheckoutException? = null
         var errorData: String? = null
 
-        if (conn.errorStream != null) {
-            conn.errorStream.use { errorStream ->
-                errorData = getResponseData(errorStream)
-                clientException = clientErrorDeserializer.deserialize(errorData!!)
-            }
+        conn.errorStream?.use { errorStream ->
+            errorData = getResponseData(errorStream)
+            clientException = clientErrorDeserializer.deserialize(errorData!!)
         }
 
         return clientException ?: AccessCheckoutException(getMessage(conn, errorData))
     }
 
     private fun getServerError(conn: HttpsURLConnection): AccessCheckoutException {
-        if (conn.errorStream != null) {
-            conn.errorStream.use { errorStream ->
-                val errorData = getResponseData(errorStream)
-                val message = getMessage(conn, errorData)
-                return AccessCheckoutException(message)
-            }
+        conn.errorStream?.use { errorStream ->
+            val errorData = getResponseData(errorStream)
+            val message = getMessage(conn, errorData)
+            return AccessCheckoutException(message)
         }
         return AccessCheckoutException("A server error occurred when trying to make the request")
     }
