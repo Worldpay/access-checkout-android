@@ -253,6 +253,8 @@ workflows:
                 Pixel2.arm,30,en,portrait
                 Pixel2.arm,32,en,portrait
                 Pixel2.arm,33,en,portrait
+                Pixel2.arm,33,en,portrait
+                SmallPhone.arm,34,en,portrait
       - cache-push@2.7.1: { }
 
 app:
