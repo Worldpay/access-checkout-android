@@ -194,7 +194,7 @@ class AccessCheckoutEditText internal constructor(
     public override fun onRestoreInstanceState(state: Parcelable) {
         val bundledState = (state as Bundle)
 
-        super.onRestoreInstanceState(bundledState.getBundle("superState"))
-        editText.onRestoreInstanceState(bundledState.getBundle("editTextState"))
+        super.onRestoreInstanceState(bundledState.getParcelable("superState"))
+        editText.onRestoreInstanceState(bundledState.getParcelable("editTextState"))
     }
 }
