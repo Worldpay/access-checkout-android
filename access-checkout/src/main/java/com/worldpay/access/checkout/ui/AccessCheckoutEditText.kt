@@ -17,7 +17,8 @@ import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
 import com.worldpay.access.checkout.R
-import java.util.*
+import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
 
 class AccessCheckoutEditText internal constructor(
     context: Context,
@@ -26,7 +27,7 @@ class AccessCheckoutEditText internal constructor(
     internal val editText: EditText,
 ) : LinearLayout(context, attrs, defStyle) {
     internal companion object {
-        private val allEditTextIds = HashMap<Int, Int?>()
+        private val allEditTextIds = ConcurrentHashMap<Int, Int?>()
 
         fun editTextIdOf(accessCheckoutEditTextId: Int): Int {
             val newId = View.generateViewId()
