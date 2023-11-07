@@ -244,6 +244,7 @@ workflows:
             - test_type: instrumentation
             - test_apk_path: "$BITRISE_TEST_APK"
             - test_timeout: 1500
+            - download_test_results: true
             - test_devices: |-
                 Pixel2,26,en,portrait
                 Pixel2,27,en,portrait
@@ -252,6 +253,12 @@ workflows:
                 Pixel2.arm,30,en,portrait
                 Pixel2.arm,32,en,portrait
                 Pixel2.arm,33,en,portrait
+      - deploy-to-bitrise-io@2.1.4:
+          title: "Export code coverage results to Bitrise"
+          inputs:
+            - is_compress: 'true'
+            - zip_name: ui-test-results
+            - deploy_path: "$VDTESTING_DOWNLOADED_FILES_DIR"
       - cache-push@2.7.1: { }
 
 app:
