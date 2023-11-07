@@ -3,9 +3,9 @@ package com.worldpay.access.checkout.client.validation.config
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
+import kotlin.test.*
 import org.junit.Test
 import org.mockito.kotlin.mock
-import kotlin.test.*
 
 class CardValidationConfigBuilderLegacyTest {
 

@@ -4,7 +4,7 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
@@ -12,7 +12,7 @@ import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
  *
  * This configuration should be used to register the relevant fields and the listeners.
  *
- * @property[cvc] [AccessEditText] that represents the cvc ui element
+ * @property[cvc] [AccessCheckoutEditText] that represents the cvc ui element
  * @property[validationListener] [AccessCheckoutCvcValidationListener] that represents the validation listener that should be notified on validation changes
  * @property[lifecycleOwner] [LifecycleOwner] of the application so that validation state can be handled during lifecycle changes
  */
@@ -31,10 +31,10 @@ class CvcValidationConfig private constructor(
         /**
          * Sets the cvc ui element
          *
-         * @param[cvcAccessEditText] [AccessEditText] that represents the cvc ui element
+         * @param[cvcAccessCheckoutEditText] [AccessCheckoutEditText] that represents the cvc ui element
          */
-        fun cvc(cvcAccessEditText: AccessEditText): Builder {
-            this.cvc = cvcAccessEditText.editText
+        fun cvc(cvcAccessCheckoutEditText: AccessCheckoutEditText): Builder {
+            this.cvc = cvcAccessCheckoutEditText.editText
             return this
         }
 

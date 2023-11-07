@@ -23,9 +23,9 @@ import androidx.test.uiautomator.UiObject
 import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
-import com.worldpay.access.checkout.ui.AccessEditText
-import org.awaitility.Awaitility.await
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import java.util.concurrent.TimeUnit
+import org.awaitility.Awaitility.await
 
 object UITestUtils {
 
@@ -151,10 +151,10 @@ object UITestUtils {
             .perform(NavigationViewActions.navigateTo(fragmentId))
     }
 
-    fun retrieveEnteredText(accessEditText: AccessEditText): String {
-        val property = accessEditText.javaClass.getDeclaredField("editText")
+    fun retrieveEnteredText(accessCheckoutEditText: AccessCheckoutEditText): String {
+        val property = accessCheckoutEditText.javaClass.getDeclaredField("editText")
         property.isAccessible = true
-        val editText = property.get(accessEditText) as EditText
+        val editText = property.get(accessCheckoutEditText) as EditText
         property.isAccessible = false
         return editText.text.toString()
     }

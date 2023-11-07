@@ -19,7 +19,7 @@ import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
 import org.awaitility.Awaitility.await
@@ -36,9 +36,9 @@ class AccessCheckoutClientIntegrationTest {
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
 
-    private var panAccessEditText = AccessEditText(applicationContext)
-    private var expiryDateAccessEditText = AccessEditText(applicationContext)
-    private var cvcAccessEditText = AccessEditText(applicationContext)
+    private var panAccessCheckoutEditText = AccessCheckoutEditText(applicationContext)
+    private var expiryDateAccessCheckoutEditText = AccessCheckoutEditText(applicationContext)
+    private var cvcAccessCheckoutEditText = AccessCheckoutEditText(applicationContext)
 
     private val lifecycleOwner: LifecycleOwner = mock(LifecycleOwner::class.java)
 
@@ -52,9 +52,9 @@ class AccessCheckoutClientIntegrationTest {
             lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
         }
 
-        panAccessEditText.setText("1111222233334444")
-        expiryDateAccessEditText.setText("1220")
-        cvcAccessEditText.setText("123")
+        panAccessCheckoutEditText.setText("1111222233334444")
+        expiryDateAccessCheckoutEditText.setText("1220")
+        cvcAccessCheckoutEditText.setText("123")
         startWiremock(applicationContext, 8443)
     }
 
@@ -321,9 +321,9 @@ class AccessCheckoutClientIntegrationTest {
 
     private fun getCardDetails(): CardDetails {
         return CardDetails.Builder()
-            .pan(panAccessEditText)
-            .expiryDate(expiryDateAccessEditText)
-            .cvc(cvcAccessEditText)
+            .pan(panAccessCheckoutEditText)
+            .expiryDate(expiryDateAccessCheckoutEditText)
+            .cvc(cvcAccessCheckoutEditText)
             .build()
     }
 

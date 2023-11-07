@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.ui
 
 import android.content.Context
+import android.content.res.TypedArray
 import android.graphics.Typeface
-import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputFilter
@@ -12,18 +12,16 @@ import android.view.KeyEvent
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
-import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
-import java.util.*
+import com.worldpay.access.checkout.R
 import kotlin.random.Random
 
-class AccessEditText internal constructor(
+class AccessCheckoutEditText internal constructor(
     context: Context,
     attrs: AttributeSet?,
     defStyle: Int,
     internal val editText: EditText,
-    private val attributeValues: AttributeValues,
 ) : LinearLayout(context, attrs, defStyle) {
     internal companion object {
         internal val editTextPartialId = Random.nextInt(1000)
@@ -33,12 +31,21 @@ class AccessEditText internal constructor(
         orientation = VERTICAL
         this.editText.id = this.id + editTextPartialId
 
+        attrs?.let {
+            val styledAttributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.AccessCheckoutEditText, 0, 0)
+
+            val attributeValues = AttributeValues(styledAttributes)
+
+            attributeValues.setAttributesOnEditText(this.editText)
+
+            styledAttributes.recycle()
+        }
+
         addView(this.editText)
-        this.attributeValues.stringOf("hint")?.let { setHint(it) }
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
-            this(context, attrs, defStyle, EditText(context), AttributeValues(context, attrs))
+        this(context, attrs, defStyle, EditText(context))
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -50,8 +57,6 @@ class AccessEditText internal constructor(
     internal val text: String get() = editText.text.toString()
     fun setText(text: String) = editText.setText(text)
 
-    val isCursorVisible: Boolean get() = editText.isCursorVisible
-
     val selectionStart: Int get() = editText.selectionStart
     val selectionEnd: Int get() = editText.selectionEnd
     fun setSelection(start: Int, stop: Int) = editText.setSelection(start, stop)
@@ -61,15 +66,7 @@ class AccessEditText internal constructor(
 
     val currentHintTextColor: Int @ColorInt get() = editText.currentHintTextColor
 
-    val autoSizeTextType: Int @RequiresApi(Build.VERSION_CODES.O) get() = editText.autoSizeTextType
-
-    var inputType: Int
-        get() {
-            return editText.inputType
-        }
-        set(inputType) {
-            editText.inputType = inputType
-        }
+    val autoSizeTextType: Int get() = editText.autoSizeTextType
 
     var imeOptions: Int
         get() {
@@ -77,14 +74,6 @@ class AccessEditText internal constructor(
         }
         set(imeOptions) {
             editText.imeOptions = imeOptions
-        }
-
-    var textLocale: Locale
-        get() {
-            return editText.textLocale
-        }
-        set(locale) {
-            editText.textLocale = locale
         }
 
     var textScaleX: Float
@@ -109,6 +98,22 @@ class AccessEditText internal constructor(
         }
         set(tf) {
             editText.typeface = tf
+        }
+
+    var isCursorVisible: Boolean
+        get() {
+            return editText.isCursorVisible
+        }
+        set(visible) {
+            editText.isCursorVisible = visible
+        }
+
+    internal var inputType: Int
+        get() {
+            return editText.inputType
+        }
+        set(inputType) {
+            editText.inputType = inputType
         }
 
     internal var filters: Array<InputFilter>
@@ -138,16 +143,13 @@ class AccessEditText internal constructor(
         editText.setHintTextColor(color)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     fun setAutoSizeTextTypeWithDefaults(@TextViewCompat.AutoSizeTextType autoSizeTextType: Int) {
         editText.setAutoSizeTextTypeWithDefaults(autoSizeTextType)
     }
 
-    @RequiresApi(Build.VERSION_CODES.M)
     fun setTextAppearance(@StyleRes resId: Int) {
         editText.setTextAppearance(resId)
     }
-
 
     internal fun length(): Int = editText.length()
 

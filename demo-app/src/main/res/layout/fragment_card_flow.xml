@@ -7,11 +7,7 @@
     android:layout_height="match_parent"
     tools:context=".sample.ui.CardFlowFragment">
 
-    <!--
-    The 'app:customHint' is an example of an attribute which under the hood sets a property that exists on the EditText wrapped by this component
-    Typically 'customHint' would need to be renamed 'hint' to match the name of the original property available on EditText
-    -->
-    <com.worldpay.access.checkout.ui.AccessEditText
+    <com.worldpay.access.checkout.ui.AccessCheckoutEditText
         android:id="@+id/card_flow_text_pan"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -37,7 +33,7 @@
         app:layout_constraintStart_toEndOf="@+id/card_flow_text_pan"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.worldpay.access.checkout.ui.AccessEditText
+    <com.worldpay.access.checkout.ui.AccessCheckoutEditText
         android:id="@+id/card_flow_expiry_date"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -52,7 +48,7 @@
         app:layout_constraintTop_toBottomOf="@+id/card_flow_text_pan"
         tools:ignore="TextFields" />
 
-    <com.worldpay.access.checkout.ui.AccessEditText
+    <com.worldpay.access.checkout.ui.AccessCheckoutEditText
         android:id="@+id/card_flow_text_cvc"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

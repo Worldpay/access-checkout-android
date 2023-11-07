@@ -11,13 +11,13 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
-    private fun cvcInput() = findById<AccessEditText>(R.id.cvc_flow_text_cvc)
+    private fun cvcInput() = findById<AccessCheckoutEditText>(R.id.cvc_flow_text_cvc)
     private fun submitButton() = findById<Button>(R.id.cvc_flow_btn_submit)
 
     fun isInInitialState(): CvcFragmentTestUtils {

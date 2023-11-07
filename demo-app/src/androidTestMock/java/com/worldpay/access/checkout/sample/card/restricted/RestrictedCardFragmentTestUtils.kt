@@ -8,14 +8,14 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 class RestrictedCardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     AbstractFragmentTestUtils(activityRule) {
 
-    private fun panInput() = findById<AccessEditText>(R.id.restricted_card_flow_text_pan)
+    private fun panInput() = findById<AccessCheckoutEditText>(R.id.restricted_card_flow_text_pan)
     private fun brandLogo() = findById<ImageView>(R.id.restricted_card_flow_brand_logo)
 
     fun isInInitialState(): RestrictedCardFragmentTestUtils {

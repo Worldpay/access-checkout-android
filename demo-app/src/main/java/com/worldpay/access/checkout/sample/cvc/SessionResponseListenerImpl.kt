@@ -9,7 +9,7 @@ import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ui.ProgressBar
 import com.worldpay.access.checkout.sample.ui.SubmitButton
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
 class SessionResponseListenerImpl(
     private val activity: Activity,
@@ -30,7 +30,7 @@ class SessionResponseListenerImpl(
             .create()
             .show()
 
-        activity.findViewById<AccessEditText>(R.id.cvc_flow_text_cvc).clear()
+        activity.findViewById<AccessCheckoutEditText>(R.id.cvc_flow_text_cvc).clear()
         enableFields()
         submitBtn.disable()
     }
@@ -53,6 +53,6 @@ class SessionResponseListenerImpl(
 
     private fun enableFields() {
         Log.d(javaClass.simpleName, "Setting enabled state for cvc to : true")
-        activity.findViewById<AccessEditText>(R.id.cvc_flow_text_cvc).isEnabled = true
+        activity.findViewById<AccessCheckoutEditText>(R.id.cvc_flow_text_cvc).isEnabled = true
     }
 }

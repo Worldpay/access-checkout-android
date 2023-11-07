@@ -8,6 +8,8 @@ import com.worldpay.access.checkout.validation.filters.AccessCheckoutInputFilter
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.listeners.focus.CvcFocusChangeListener
 import com.worldpay.access.checkout.validation.listeners.text.CvcTextWatcher
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.FixMethodOrder
 import org.junit.Test
@@ -15,8 +17,6 @@ import org.junit.runners.MethodSorters
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.kotlin.*
-import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 class CvcFieldDecoratorTest {

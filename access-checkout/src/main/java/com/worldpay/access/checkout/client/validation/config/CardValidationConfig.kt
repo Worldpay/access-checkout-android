@@ -4,7 +4,7 @@ import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
@@ -45,30 +45,30 @@ class CardValidationConfig private constructor(
         /**
          * Sets the pan ui element
          *
-         * @param[panAccessEditText] [AccessEditText] that represents the pan ui element
+         * @param[panAccessCheckoutEditText] [AccessCheckoutEditText] that represents the pan ui element
          */
-        fun pan(panAccessEditText: AccessEditText): Builder {
-            this.pan = panAccessEditText.editText
+        fun pan(panAccessCheckoutEditText: AccessCheckoutEditText): Builder {
+            this.pan = panAccessCheckoutEditText.editText
             return this
         }
 
         /**
          * Sets the expiry date ui element
          *
-         * @param[expiryDateAccessEditText] [AccessEditText] that represents the expiry date ui element
+         * @param[expiryDateAccessCheckoutEditText] [AccessCheckoutEditText] that represents the expiry date ui element
          */
-        fun expiryDate(expiryDateAccessEditText: AccessEditText): Builder {
-            this.expiryDate = expiryDateAccessEditText.editText
+        fun expiryDate(expiryDateAccessCheckoutEditText: AccessCheckoutEditText): Builder {
+            this.expiryDate = expiryDateAccessCheckoutEditText.editText
             return this
         }
 
         /**
          * Sets the cvc ui element
          *
-         * @param[cvcAccessEditText] [AccessEditText] that represents the cvc ui element
+         * @param[cvcAccessCheckoutEditText] [AccessCheckoutEditText] that represents the cvc ui element
          */
-        fun cvc(cvcAccessEditText: AccessEditText): Builder {
-            this.cvc = cvcAccessEditText.editText
+        fun cvc(cvcAccessCheckoutEditText: AccessCheckoutEditText): Builder {
+            this.cvc = cvcAccessCheckoutEditText.editText
             return this
         }
 

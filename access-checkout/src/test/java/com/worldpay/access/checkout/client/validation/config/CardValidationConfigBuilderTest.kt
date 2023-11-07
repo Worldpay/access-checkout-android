@@ -3,18 +3,18 @@ package com.worldpay.access.checkout.client.validation.config
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
+import kotlin.test.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.kotlin.mock
-import kotlin.test.*
 
 class CardValidationConfigBuilderTest {
 
-    private val pan = mock<AccessEditText>()
-    private val expiryDate = mock<AccessEditText>()
-    private val cvc = mock<AccessEditText>()
+    private val pan = mock<AccessCheckoutEditText>()
+    private val expiryDate = mock<AccessCheckoutEditText>()
+    private val cvc = mock<AccessCheckoutEditText>()
 
     private val panInternalEditText = mock<EditText>()
     private val expiryDateInternalEditText = mock<EditText>()

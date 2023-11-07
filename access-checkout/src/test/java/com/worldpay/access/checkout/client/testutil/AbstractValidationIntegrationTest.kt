@@ -9,7 +9,12 @@ import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
-import com.worldpay.access.checkout.ui.AccessEditText
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
+import java.security.KeyStore
+import javax.net.ssl.HttpsURLConnection
+import javax.net.ssl.KeyManagerFactory
+import javax.net.ssl.SSLContext
+import javax.net.ssl.TrustManagerFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -18,11 +23,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.spy
 import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
-import java.security.KeyStore
-import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.KeyManagerFactory
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
 
 open class AbstractValidationIntegrationTest {
 
@@ -33,9 +33,9 @@ open class AbstractValidationIntegrationTest {
     private val cardConfigJson =
         CardConfiguration::class.java.getResource("remote_card_config.json")?.readText()!!
 
-    protected lateinit var pan: AccessEditText
-    protected lateinit var cvc: AccessEditText
-    protected lateinit var expiryDate: AccessEditText
+    protected lateinit var pan: AccessCheckoutEditText
+    protected lateinit var cvc: AccessCheckoutEditText
+    protected lateinit var expiryDate: AccessCheckoutEditText
 
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
@@ -82,12 +82,12 @@ open class AbstractValidationIntegrationTest {
     }
 
     private fun resetValidation() {
-        pan = AccessEditText(context)
+        pan = AccessCheckoutEditText(context)
         pan.id = 1
         pan.keyListener = DigitsKeyListener.getInstance("0123456789")
-        expiryDate = AccessEditText(context)
+        expiryDate = AccessCheckoutEditText(context)
         expiryDate.id = 2
-        cvc = AccessEditText(context)
+        cvc = AccessCheckoutEditText(context)
         cvc.id = 3
 
         cardValidationListener = spy(CardValidationListener())
@@ -121,26 +121,26 @@ open class AbstractValidationIntegrationTest {
         return sslContext
     }
 
-    protected fun AccessEditText.pressBackspaceAtIndex(selection: Int) {
+    protected fun AccessCheckoutEditText.pressBackspaceAtIndex(selection: Int) {
         this.editText.setSelection(selection)
         this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
         this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
-    protected fun AccessEditText.pressBackspaceAtSelection(start: Int, end: Int) {
+    protected fun AccessCheckoutEditText.pressBackspaceAtSelection(start: Int, end: Int) {
         this.editText.setSelection(start, end)
         this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
         this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
-    protected fun AccessEditText.typeAtIndex(selection: Int, text: String) {
+    protected fun AccessCheckoutEditText.typeAtIndex(selection: Int, text: String) {
         this.editText.setSelection(selection)
         this.editText.text.insert(selection, text)
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 
-    protected fun AccessEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
+    protected fun AccessCheckoutEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
         this.editText.text.replace(selectionStart, selectionEnd, text)
     }
 }
