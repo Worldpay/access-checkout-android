@@ -6,16 +6,19 @@ import android.graphics.Typeface
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputFilter
+import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.AttributeSet
 import android.view.KeyEvent
+import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
 import com.worldpay.access.checkout.R
-import kotlin.random.Random
+import java.util.Optional
+import java.util.concurrent.ConcurrentHashMap
 
 class AccessCheckoutEditText internal constructor(
     context: Context,
@@ -24,15 +27,25 @@ class AccessCheckoutEditText internal constructor(
     internal val editText: EditText,
 ) : LinearLayout(context, attrs, defStyle) {
     internal companion object {
-        internal val editTextPartialId = Random.nextInt(1000)
+        private const val SUPER_STATE_KEY = "superState"
+        private const val EDIT_TEXT_STATE_KEY = "editTextState"
+
+        private val allEditTextIds = ConcurrentHashMap<Int, Int?>()
+
+        fun editTextIdOf(accessCheckoutEditTextId: Int): Int {
+            val newId = View.generateViewId()
+            val editTextId = allEditTextIds.putIfAbsent(accessCheckoutEditTextId, newId)
+            return Optional.ofNullable(editTextId).orElse(newId)
+        }
     }
 
     init {
         orientation = VERTICAL
-        this.editText.id = this.id + editTextPartialId
+        this.editText.id = editTextIdOf(this.id)
 
         attrs?.let {
-            val styledAttributes: TypedArray = context.obtainStyledAttributes(attrs, R.styleable.AccessCheckoutEditText, 0, 0)
+            val styledAttributes: TypedArray =
+                context.obtainStyledAttributes(attrs, R.styleable.AccessCheckoutEditText, 0, 0)
 
             val attributeValues = AttributeValues(styledAttributes)
 
@@ -45,7 +58,7 @@ class AccessCheckoutEditText internal constructor(
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
-        this(context, attrs, defStyle, EditText(context))
+            this(context, attrs, defStyle, EditText(context))
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -135,7 +148,9 @@ class AccessCheckoutEditText internal constructor(
     /**
      * Methods
      */
-    fun clear() = editText.text.clear()
+    fun clear() {
+        editText.text = SpannableStringBuilder("", 0, 0)
+    }
 
     fun setEms(ems: Int) = editText.setEms(ems)
 
@@ -174,15 +189,15 @@ class AccessCheckoutEditText internal constructor(
     public override fun onSaveInstanceState(): Parcelable? {
         val editTextState = editText.onSaveInstanceState()
         return Bundle().apply {
-            putParcelable("superState", super.onSaveInstanceState())
-            putParcelable("editTextState", editTextState)
+            putParcelable(SUPER_STATE_KEY, super.onSaveInstanceState())
+            putParcelable(EDIT_TEXT_STATE_KEY, editTextState)
         }
     }
 
     public override fun onRestoreInstanceState(state: Parcelable) {
         val bundledState = (state as Bundle)
 
-        super.onRestoreInstanceState(bundledState.getBundle("superState"))
-        editText.onRestoreInstanceState(bundledState.getBundle("editTextState"))
+        super.onRestoreInstanceState(bundledState.getParcelable(SUPER_STATE_KEY))
+        editText.onRestoreInstanceState(bundledState.getParcelable(EDIT_TEXT_STATE_KEY))
     }
 }

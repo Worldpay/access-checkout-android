@@ -82,6 +82,7 @@ internal class PanTextWatcher(
         val cardValidationRule = getPanValidationRule(brand)
 
         if (trimToMaxLength(cardValidationRule, newPan)) {
+            clearPanBefore()
             return
         }
 
@@ -98,6 +99,15 @@ internal class PanTextWatcher(
         if (panEditText.selectionEnd != expectedCursorPosition && panEditText.length() >= expectedCursorPosition) {
             panEditText.setSelection(expectedCursorPosition)
         }
+
+        clearPanBefore()
+    }
+
+    /**
+     * Designed to clear from memory the text held in the panBefore property
+     */
+    private fun clearPanBefore() {
+        this.panBefore = ""
     }
 
     /**
