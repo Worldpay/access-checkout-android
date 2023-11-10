@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -20,10 +21,8 @@ import com.worldpay.access.checkout.R
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.given
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.kotlin.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
@@ -202,6 +201,63 @@ class AccessCheckoutEditTextTest {
         assertParentPaddingValue(accessCheckoutEditText)
 
         verify(editTextMock).setPadding(1, 2, 3, 4)
+    }
+
+    @Test
+    fun `should set paddingRelative when paddingStart and paddingEnd are supplied from attribute set`() {
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_paddingStart),
+                eq(0.0F)
+            )
+        ).willReturn(1F)
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_paddingEnd),
+                eq(0.0F)
+            )
+        ).willReturn(3F)
+
+        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingRelativeValue(accessCheckoutEditText)
+
+        verify(editTextMock, times(1)).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
+        verify(editTextMock).setPaddingRelative(1, 0, 3, 0)
+    }
+
+    @Test
+    fun `should set paddingRelative when only paddingStart is supplied from attribute set`() {
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_paddingStart),
+                eq(0.0F)
+            )
+        ).willReturn(1F)
+
+        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingRelativeValue(accessCheckoutEditText)
+
+        verify(editTextMock, times(1)).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
+        verify(editTextMock).setPaddingRelative(1, 0, 0, 0)
+    }
+
+    @Test
+    fun `should set paddingRelative when only paddingEnd is supplied from attribute set`() {
+        given(
+            typedArrayMock.getDimension(
+                eq(R.styleable.AccessCheckoutEditText_android_paddingEnd),
+                eq(0.0F)
+            )
+        ).willReturn(1F)
+
+        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingRelativeValue(accessCheckoutEditText)
+
+        verify(editTextMock, times(1)).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
+        verify(editTextMock).setPaddingRelative(0, 0, 1, 0)
     }
 
     @Test
@@ -413,6 +469,23 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).isCursorVisible = true
     }
 
+    @Test
+    fun `background getter should return EditText background`() {
+        val backgroundMock = mock<Drawable>()
+        given(editTextMock.background).willReturn(backgroundMock)
+
+        assertEquals(backgroundMock, accessCheckoutEditText.background)
+    }
+
+    @Test
+    fun `background setter should set EditText background`() {
+        val backgroundMock = mock<Drawable>()
+        accessCheckoutEditText.background = backgroundMock
+
+        verify(editTextMock).background = backgroundMock
+    }
+
+
     /**
      Methods tests
      */
@@ -506,10 +579,40 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).setPadding(1, 2, 3, 4)
     }
 
+    @Test
+    fun `setPaddingRelative should call EditText setPaddingRelative()`() {
+        accessCheckoutEditText.setPaddingRelative(1, 2, 3, 4)
+
+        assertParentPaddingRelativeValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPaddingRelative(1, 2, 3, 4)
+    }
+
+    @Test
+    fun `setBackgroundColor should call EditText setBackgroundColor()`() {
+        accessCheckoutEditText.setBackgroundColor(123)
+
+        verify(editTextMock).setBackgroundColor(123)
+    }
+
+    @Test
+    fun `setBackgroundResource should call EditText setBackgroundResource()`() {
+        accessCheckoutEditText.setBackgroundResource(123)
+
+        verify(editTextMock).setBackgroundResource(123)
+    }
+
     private fun assertParentPaddingValue(accessCheckoutEditText: AccessCheckoutEditText) {
         assertEquals(accessCheckoutEditText.paddingLeft, 0)
         assertEquals(accessCheckoutEditText.paddingTop, 0)
         assertEquals(accessCheckoutEditText.paddingRight, 0)
+        assertEquals(accessCheckoutEditText.paddingBottom, 0)
+    }
+
+    private fun assertParentPaddingRelativeValue(accessCheckoutEditText: AccessCheckoutEditText) {
+        assertEquals(accessCheckoutEditText.paddingStart, 0)
+        assertEquals(accessCheckoutEditText.paddingTop, 0)
+        assertEquals(accessCheckoutEditText.paddingEnd, 0)
         assertEquals(accessCheckoutEditText.paddingBottom, 0)
     }
 }

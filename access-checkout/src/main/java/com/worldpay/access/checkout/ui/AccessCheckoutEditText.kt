@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.ui
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputFilter
@@ -165,6 +166,27 @@ class AccessCheckoutEditText internal constructor(
     override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
         super.setPadding(0, 0, 0, 0)
         editText.setPadding(left, top, right, bottom)
+    }
+
+    override fun setPaddingRelative(start: Int, top: Int, end: Int, bottom: Int) {
+        super.setPaddingRelative(0, 0, 0, 0)
+        editText.setPaddingRelative(start, top, end, bottom)
+    }
+
+    override fun getBackground(): Drawable? {
+        return this.editText?.background
+    }
+
+    override fun setBackground(background: Drawable?) {
+        this.editText?.background = background
+    }
+
+    override fun setBackgroundColor(color: Int) {
+        this.editText.setBackgroundColor(color)
+    }
+
+    override fun setBackgroundResource(resId: Int) {
+        this.editText.setBackgroundResource(resId)
     }
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {

@@ -34,24 +34,32 @@ internal class AttributeValues(
         accessCheckoutEditText: AccessCheckoutEditText
     ) {
         val padding = getPaddingAttribute().toInt()
-        var paddingLeft = getPaddingLeftAttribute().toInt()
-        var paddingTop = getPaddingTopAttribute().toInt()
-        var paddingRight = getPaddingRightAttribute().toInt()
-        var paddingBottom = getPaddingBottomAttribute().toInt()
+        var left = getPaddingLeftAttribute().toInt()
+        var top = getPaddingTopAttribute().toInt()
+        var right = getPaddingRightAttribute().toInt()
+        var bottom = getPaddingBottomAttribute().toInt()
+        var start = getPaddingStartAttribute().toInt()
+        var end = getPaddingEndAttribute().toInt()
 
-        paddingLeft.takeIf { it == 0 }?.let { paddingLeft = editText.paddingLeft }
-        paddingTop.takeIf { it == 0 }?.let { paddingTop = editText.paddingTop }
-        paddingRight.takeIf { it == 0 }?.let { paddingRight = editText.paddingRight }
-        paddingBottom.takeIf { it == 0 }?.let { paddingBottom = editText.paddingBottom }
+        left.takeIf { it == 0 }?.let { left = editText.paddingLeft }
+        top.takeIf { it == 0 }?.let { top = editText.paddingTop }
+        right.takeIf { it == 0 }?.let { right = editText.paddingRight }
+        bottom.takeIf { it == 0 }?.let { bottom = editText.paddingBottom }
+        start.takeIf { it == 0 }?.let { start = editText.paddingStart }
+        end.takeIf { it == 0 }?.let { end = editText.paddingEnd }
 
         if (padding != 0) {
-            paddingLeft = padding
-            paddingTop = padding
-            paddingRight = padding
-            paddingBottom = padding
+            left = padding
+            top = padding
+            right = padding
+            bottom = padding
         }
 
-        accessCheckoutEditText.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+        if (start == 0 && end == 0) {
+            accessCheckoutEditText.setPadding(left, top, right, bottom)
+        } else {
+            accessCheckoutEditText.setPaddingRelative(start, top, end, bottom)
+        }
     }
 
     private fun setCursorVisibleAttribute(editText: EditText) {
@@ -102,6 +110,12 @@ internal class AttributeValues(
 
     private fun getPaddingLeftAttribute() =
         styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingLeft, 0.0F)
+
+    private fun getPaddingStartAttribute() =
+        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingStart, 0.0F)
+
+    private fun getPaddingEndAttribute() =
+        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingEnd, 0.0F)
 
     private fun getPaddingAttribute() =
         styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_padding, 0.0F)
