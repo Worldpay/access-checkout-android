@@ -15,5 +15,6 @@
         <attr name="android:paddingStart"/>
         <attr name="android:paddingEnd"/>
         <attr name="android:font"/>
+        <attr name="android:background"/>
     </declare-styleable>
 </resources>

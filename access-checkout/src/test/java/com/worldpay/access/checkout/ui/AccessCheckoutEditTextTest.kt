@@ -273,6 +273,19 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).typeface = typefaceMock
     }
 
+    @Test
+    fun `should set background from attribute set`() {
+        val drawable: Drawable = mock()
+
+        given(typedArrayMock.getDrawable(eq(R.styleable.AccessCheckoutEditText_android_background))).willReturn(
+            drawable
+        )
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).background = drawable
+    }
+
     /**
      * Properties tests
      */

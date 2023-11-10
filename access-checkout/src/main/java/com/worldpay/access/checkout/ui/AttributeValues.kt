@@ -27,6 +27,8 @@ internal class AttributeValues(
         setPaddingAttribute(editText, accessCheckoutEditText)
 
         setFontAttribute(editText)
+
+        setBackgroundAttribute(editText)
     }
 
     private fun setPaddingAttribute(
@@ -99,6 +101,11 @@ internal class AttributeValues(
         font?.let { editText.typeface = font }
     }
 
+    private fun setBackgroundAttribute(editText: EditText) {
+        val background = getBackgroundAttribute()
+        editText?.background = background
+    }
+
     private fun getPaddingBottomAttribute() =
         styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingBottom, 0.0F)
 
@@ -139,4 +146,6 @@ internal class AttributeValues(
         styledAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColor, 0)
 
     private fun getFontAttribute() = styledAttributes.getFont(R.styleable.AccessCheckoutEditText_android_font)
+
+    private fun getBackgroundAttribute() = styledAttributes.getDrawable(R.styleable.AccessCheckoutEditText_android_background)
 }
