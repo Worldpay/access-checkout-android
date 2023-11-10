@@ -1,30 +1,23 @@
 package com.worldpay.access.checkout.ui
 
 import android.content.res.TypedArray
-import android.os.Build
 import android.widget.EditText
-import androidx.annotation.RequiresApi
 import com.worldpay.access.checkout.R
 
 internal class AttributeValues(
     private val styledAttributes: TypedArray
 ) {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     internal fun setAttributesOnEditText(editText: EditText) {
         setTextColourAttribute(editText)
 
         setHintAttribute(editText)
-
-        setEmsAttribute(editText)
 
         setHintTextColourAttribute(editText)
 
         setImeOptionsAttribute(editText)
 
         setCursorVisibleAttribute(editText)
-
-        setTextScaleXAttribute(editText)
 
         setTextSizeAttribute(editText)
 
@@ -69,11 +62,6 @@ internal class AttributeValues(
         }
     }
 
-    private fun setTextScaleXAttribute(editText: EditText) {
-        val textScaleX = getTextScaleXAttribute()
-        textScaleX.takeIf { it != 0F }?.let { editText.textScaleX = textScaleX }
-    }
-
     private fun setTextSizeAttribute(editText: EditText) {
         val textSize = getTextSizeAttribute()
         textSize.takeIf { it != 0F }?.let { editText.textSize = textSize }
@@ -89,17 +77,11 @@ internal class AttributeValues(
         hintTextColour.takeIf { it != 0 }?.let { editText.setHintTextColor(hintTextColour) }
     }
 
-    private fun setEmsAttribute(editText: EditText) {
-        val ems = getEmsAttribute()
-        ems.takeIf { it != 0 }?.let { editText.setEms(ems) }
-    }
-
     private fun setTextColourAttribute(editText: EditText) {
         val textColor = getTextColorAttribute()
         textColor.takeIf { it != 0 }?.let { editText.setTextColor(textColor) }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setFontAttribute(editText: EditText) {
         val font = getFontAttribute()
         font?.let { editText.typeface = font }
@@ -126,9 +108,6 @@ internal class AttributeValues(
     private fun getTextSizeAttribute() =
         styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_textSize, 0F)
 
-    private fun getTextScaleXAttribute() =
-        styledAttributes.getFloat(R.styleable.AccessCheckoutEditText_android_textScaleX, 0F)
-
     private fun getCursorVisibleAttribute() =
         styledAttributes.getBoolean(R.styleable.AccessCheckoutEditText_android_cursorVisible, true)
 
@@ -138,12 +117,8 @@ internal class AttributeValues(
     private fun getHintTextColourAttribute() =
         styledAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColorHint, 0)
 
-    private fun getEmsAttribute() =
-        styledAttributes.getInt(R.styleable.AccessCheckoutEditText_android_ems, 0)
-
     private fun getTextColorAttribute() =
         styledAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColor, 0)
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getFontAttribute() = styledAttributes.getFont(R.styleable.AccessCheckoutEditText_android_font)
 }

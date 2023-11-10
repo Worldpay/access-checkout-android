@@ -3,11 +3,9 @@
     <declare-styleable name="AccessCheckoutEditText">
         <attr name="android:textColor"/>
         <attr name="android:hint"/>
-        <attr name="android:ems"/>
         <attr name="android:textColorHint"/>
         <attr name="android:imeOptions"/>
         <attr name="android:cursorVisible"/>
-        <attr name="android:textScaleX"/>
         <attr name="android:textSize"/>
         <attr name="android:padding"/>
         <attr name="android:paddingLeft"/>

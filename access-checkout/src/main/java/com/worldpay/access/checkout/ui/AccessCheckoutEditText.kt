@@ -17,7 +17,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
 import com.worldpay.access.checkout.R
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class AccessCheckoutEditText internal constructor(
@@ -58,7 +58,7 @@ class AccessCheckoutEditText internal constructor(
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
-            this(context, attrs, defStyle, EditText(context))
+        this(context, attrs, defStyle, EditText(context))
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -79,22 +79,12 @@ class AccessCheckoutEditText internal constructor(
 
     val currentHintTextColor: Int @ColorInt get() = editText.currentHintTextColor
 
-    val autoSizeTextType: Int get() = editText.autoSizeTextType
-
     var imeOptions: Int
         get() {
             return editText.imeOptions
         }
         set(imeOptions) {
             editText.imeOptions = imeOptions
-        }
-
-    var textScaleX: Float
-        get() {
-            return editText.textScaleX
-        }
-        set(size) {
-            editText.textScaleX = size
         }
 
     var textSize: Float
@@ -151,8 +141,6 @@ class AccessCheckoutEditText internal constructor(
     fun clear() {
         editText.text = SpannableStringBuilder("", 0, 0)
     }
-
-    fun setEms(ems: Int) = editText.setEms(ems)
 
     fun setHintTextColor(@ColorInt color: Int) {
         editText.setHintTextColor(color)
