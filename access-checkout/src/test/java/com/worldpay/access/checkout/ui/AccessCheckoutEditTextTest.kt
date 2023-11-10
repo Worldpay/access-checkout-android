@@ -17,9 +17,6 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import com.worldpay.access.checkout.R
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
@@ -27,6 +24,9 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
 
 class AccessCheckoutEditTextTest {
     private lateinit var accessCheckoutEditText: AccessCheckoutEditText
@@ -163,7 +163,9 @@ class AccessCheckoutEditTextTest {
             )
         ).willReturn(1F)
 
-        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingValue(accessCheckoutEditText)
 
         verify(editTextMock).setPadding(1, 1, 1, 1)
     }
@@ -195,7 +197,9 @@ class AccessCheckoutEditTextTest {
             )
         ).willReturn(4F)
 
-        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingValue(accessCheckoutEditText)
 
         verify(editTextMock).setPadding(1, 2, 3, 4)
     }
@@ -491,5 +495,21 @@ class AccessCheckoutEditTextTest {
         accessCheckoutEditText.setTextAppearance(123)
 
         verify(editTextMock).setTextAppearance(123)
+    }
+
+    @Test
+    fun `setPadding should call EditText setPadding()`() {
+        accessCheckoutEditText.setPadding(1, 2, 3, 4)
+
+        assertParentPaddingValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPadding(1, 2, 3, 4)
+    }
+
+    private fun assertParentPaddingValue(accessCheckoutEditText: AccessCheckoutEditText) {
+        assertEquals(accessCheckoutEditText.paddingLeft, 0)
+        assertEquals(accessCheckoutEditText.paddingTop, 0)
+        assertEquals(accessCheckoutEditText.paddingRight, 0)
+        assertEquals(accessCheckoutEditText.paddingBottom, 0)
     }
 }

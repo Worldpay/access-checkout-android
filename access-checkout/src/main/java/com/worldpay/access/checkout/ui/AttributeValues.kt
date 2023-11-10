@@ -8,7 +8,10 @@ internal class AttributeValues(
     private val styledAttributes: TypedArray
 ) {
 
-    internal fun setAttributesOnEditText(editText: EditText) {
+    internal fun setAttributesOnEditText(
+        editText: EditText,
+        accessCheckoutEditText: AccessCheckoutEditText
+    ) {
         setTextColourAttribute(editText)
 
         setHintAttribute(editText)
@@ -21,13 +24,14 @@ internal class AttributeValues(
 
         setTextSizeAttribute(editText)
 
-        setPaddingAttribute(editText)
+        setPaddingAttribute(editText, accessCheckoutEditText)
 
         setFontAttribute(editText)
     }
 
     private fun setPaddingAttribute(
-        editText: EditText
+        editText: EditText,
+        accessCheckoutEditText: AccessCheckoutEditText
     ) {
         val padding = getPaddingAttribute().toInt()
         var paddingLeft = getPaddingLeftAttribute().toInt()
@@ -47,7 +51,7 @@ internal class AttributeValues(
             paddingBottom = padding
         }
 
-        editText.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+        accessCheckoutEditText.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
     }
 
     private fun setCursorVisibleAttribute(editText: EditText) {

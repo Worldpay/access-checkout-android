@@ -49,7 +49,7 @@ class AccessCheckoutEditText internal constructor(
 
             val attributeValues = AttributeValues(styledAttributes)
 
-            attributeValues.setAttributesOnEditText(this.editText)
+            attributeValues.setAttributesOnEditText(this.editText, this)
 
             styledAttributes.recycle()
         }
@@ -161,6 +161,11 @@ class AccessCheckoutEditText internal constructor(
     internal fun setHint(hint: CharSequence) = editText.setHint(hint)
 
     internal fun setHint(resId: Int) = editText.setHint(resId)
+
+    override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
+        super.setPadding(0, 0, 0, 0)
+        editText.setPadding(left, top, right, bottom)
+    }
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
         return editText.dispatchKeyEvent(event)
