@@ -498,6 +498,22 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).background = backgroundMock
     }
 
+    @Test
+    fun `background getter should return EditText background when null`() {
+        val accessCheckoutEditText = AccessCheckoutEditText(contextMock)
+
+        assertEquals(null, accessCheckoutEditText.background)
+    }
+
+    @Test
+    fun `background setter should set EditText background when null`() {
+        val accessCheckoutEditText = AccessCheckoutEditText(contextMock)
+
+        accessCheckoutEditText.background = null
+
+        verify(editTextMock).background = null
+    }
+
 
     /**
      Methods tests

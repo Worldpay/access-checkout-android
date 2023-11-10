@@ -40,6 +40,7 @@ internal class AttributeValues(
         var top = getPaddingTopAttribute().toInt()
         var right = getPaddingRightAttribute().toInt()
         var bottom = getPaddingBottomAttribute().toInt()
+
         var start = getPaddingStartAttribute().toInt()
         var end = getPaddingEndAttribute().toInt()
 
@@ -47,6 +48,7 @@ internal class AttributeValues(
         top.takeIf { it == 0 }?.let { top = editText.paddingTop }
         right.takeIf { it == 0 }?.let { right = editText.paddingRight }
         bottom.takeIf { it == 0 }?.let { bottom = editText.paddingBottom }
+
         start.takeIf { it == 0 }?.let { start = editText.paddingStart }
         end.takeIf { it == 0 }?.let { end = editText.paddingEnd }
 
@@ -57,7 +59,7 @@ internal class AttributeValues(
             bottom = padding
         }
 
-        if (start == 0 && end == 0) {
+        if (left > 0 || right > 0) {
             accessCheckoutEditText.setPadding(left, top, right, bottom)
         } else {
             accessCheckoutEditText.setPaddingRelative(start, top, end, bottom)
@@ -103,7 +105,7 @@ internal class AttributeValues(
 
     private fun setBackgroundAttribute(editText: EditText) {
         val background = getBackgroundAttribute()
-        editText?.background = background
+        editText.background = background
     }
 
     private fun getPaddingBottomAttribute() =
