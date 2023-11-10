@@ -6,7 +6,15 @@ import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.testutils.removeWhitespace
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.io.Serializable
+import java.net.ConnectException
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
@@ -19,14 +27,6 @@ import org.mockito.BDDMockito.verify
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.kotlin.mock
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.io.Serializable
-import java.net.ConnectException
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
-import kotlin.test.assertTrue
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 
 @ExperimentalCoroutinesApi
 class HttpsClientTest {
@@ -595,11 +595,12 @@ class HttpsClientTest {
             } catch (ace: AccessCheckoutException) {
                 assertEquals(
                     "Error message was: $errorMessage. Error response was: ${
-                        responseBody.replace(
-                            "\n",
-                            ""
-                        )
-                    }", ace.message
+                    responseBody.replace(
+                        "\n",
+                        ""
+                    )
+                    }",
+                    ace.message
                 )
             } catch (ex: Exception) {
                 fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
