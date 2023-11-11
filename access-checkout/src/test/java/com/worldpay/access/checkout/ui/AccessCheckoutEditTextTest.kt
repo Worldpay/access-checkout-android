@@ -3,6 +3,8 @@ package com.worldpay.access.checkout.ui
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
+import android.graphics.Color.GREEN
+import android.graphics.Color.RED
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -21,10 +23,13 @@ import com.worldpay.access.checkout.R
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.kotlin.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class AccessCheckoutEditTextTest {
@@ -72,23 +77,16 @@ class AccessCheckoutEditTextTest {
      */
     @Test
     fun `should set text color from attribute set`() {
-        given(
-            typedArrayMock.getColor(
-                eq(R.styleable.AccessCheckoutEditText_android_textColor),
-                eq(0)
-            )
-        ).willReturn(Color.RED)
+        mockColorAttributeValue(R.styleable.AccessCheckoutEditText_android_textColor, RED)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
-        verify(editTextMock).setTextColor(Color.RED)
+        verify(editTextMock).setTextColor(RED)
     }
 
     @Test
     fun `should set hint from attribute set`() {
-        given(typedArrayMock.getString(eq(R.styleable.AccessCheckoutEditText_android_hint))).willReturn(
-            "some-hint"
-        )
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_hint, "some-hint")
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -97,28 +95,16 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set hintTextColor from attribute set`() {
-        given(
-            typedArrayMock.getColor(
-                eq(R.styleable.AccessCheckoutEditText_android_textColorHint),
-                eq(0)
-            )
-        ).willReturn(
-            Color.GREEN
-        )
+        mockColorAttributeValue(R.styleable.AccessCheckoutEditText_android_textColorHint, GREEN)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
-        verify(editTextMock).setHintTextColor(Color.GREEN)
+        verify(editTextMock).setHintTextColor(GREEN)
     }
 
     @Test
     fun `should set imeOptions from attribute set`() {
-        given(
-            typedArrayMock.getInt(
-                eq(R.styleable.AccessCheckoutEditText_android_imeOptions),
-                eq(0)
-            )
-        ).willReturn(123)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_imeOptions, 123)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -127,12 +113,7 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set cursorVisible from attribute set`() {
-        given(
-            typedArrayMock.getBoolean(
-                eq(R.styleable.AccessCheckoutEditText_android_cursorVisible),
-                eq(true)
-            )
-        ).willReturn(true)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_cursorVisible, true)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -141,12 +122,7 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set textSize from attribute set`() {
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_textSize),
-                eq(0F)
-            )
-        ).willReturn(1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_textSize, 1F)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -155,14 +131,10 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set padding from attribute set`() {
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_padding),
-                eq(0.0F)
-            )
-        ).willReturn(1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_padding, 1F)
 
-        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
         assertParentPaddingValue(accessCheckoutEditText)
 
@@ -170,33 +142,14 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `should set padding left, top, right, bottom from attribute set`() {
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingLeft),
-                eq(0.0F)
-            )
-        ).willReturn(1F)
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingTop),
-                eq(0.0F)
-            )
-        ).willReturn(2F)
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingRight),
-                eq(0.0F)
-            )
-        ).willReturn(3F)
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingBottom),
-                eq(0.0F)
-            )
-        ).willReturn(4F)
+    fun `should set padding left, top, right, bottom from attributes set`() {
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingLeft, 1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingTop, 2F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingRight, 3F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingBottom, 4F)
 
-        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
         assertParentPaddingValue(accessCheckoutEditText)
 
@@ -204,69 +157,58 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `should set paddingRelative when paddingStart and paddingEnd are supplied from attribute set`() {
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingStart),
-                eq(0.0F)
-            )
-        ).willReturn(1F)
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingEnd),
-                eq(0.0F)
-            )
-        ).willReturn(3F)
+    fun `should set padding right using setPadding from attribute set`() {
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingRight, 3F)
 
-        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPadding(0, 0, 3, 0)
+    }
+
+    @Test
+    fun `should set paddingRelative when paddingStart and paddingEnd are supplied from attribute set`() {
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingStart, 1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingEnd, 3F)
+
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
         assertParentPaddingRelativeValue(accessCheckoutEditText)
 
-        verify(editTextMock, times(1)).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
         verify(editTextMock).setPaddingRelative(1, 0, 3, 0)
     }
 
     @Test
     fun `should set paddingRelative when only paddingStart is supplied from attribute set`() {
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingStart),
-                eq(0.0F)
-            )
-        ).willReturn(1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingStart, 1F)
 
-        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
         assertParentPaddingRelativeValue(accessCheckoutEditText)
 
-        verify(editTextMock, times(1)).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
         verify(editTextMock).setPaddingRelative(1, 0, 0, 0)
     }
 
     @Test
     fun `should set paddingRelative when only paddingEnd is supplied from attribute set`() {
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingEnd),
-                eq(0.0F)
-            )
-        ).willReturn(1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingEnd, 1F)
 
-        val accessCheckoutEditText = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
         assertParentPaddingRelativeValue(accessCheckoutEditText)
 
-        verify(editTextMock, times(1)).setPadding(anyInt(), anyInt(), anyInt(), anyInt())
         verify(editTextMock).setPaddingRelative(0, 0, 1, 0)
     }
 
     @Test
     fun `should set font from attribute set`() {
         val typefaceMock: Typeface = mock()
-
-        given(typedArrayMock.getFont(eq(R.styleable.AccessCheckoutEditText_android_font))).willReturn(
-            typefaceMock
-        )
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_font, typefaceMock)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -276,10 +218,7 @@ class AccessCheckoutEditTextTest {
     @Test
     fun `should set background from attribute set`() {
         val drawable: Drawable = mock()
-
-        given(typedArrayMock.getDrawable(eq(R.styleable.AccessCheckoutEditText_android_background))).willReturn(
-            drawable
-        )
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_background, drawable)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -499,24 +438,24 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `background getter should return EditText background when null`() {
-        val accessCheckoutEditText = AccessCheckoutEditText(contextMock)
+    fun `background getter should return null when EditText is null`() {
+        val nullEditText = null
+        val accessCheckoutEditText = AccessCheckoutEditText(mock(), mock(), 0, nullEditText)
 
-        assertEquals(null, accessCheckoutEditText.background)
+        assertNull(accessCheckoutEditText.background)
     }
 
     @Test
-    fun `background setter should set EditText background when null`() {
-        val accessCheckoutEditText = AccessCheckoutEditText(contextMock)
+    fun `background setter should do nothing when EditText is null`() {
+        val nullEditText = null
+        val accessCheckoutEditText = AccessCheckoutEditText(mock(), mock(), 0, nullEditText)
 
-        accessCheckoutEditText.background = null
-
-        verify(editTextMock).background = null
+        accessCheckoutEditText.background = mock()
     }
 
 
     /**
-     Methods tests
+    Methods tests
      */
     @Test
     fun `length() should return EditText length`() {
@@ -531,7 +470,7 @@ class AccessCheckoutEditTextTest {
 
         accessCheckoutEditText.clear()
 
-        verify(accessCheckoutEditText.editText).text = argumentCaptor.capture()
+        verify(accessCheckoutEditText.editText)!!.text = argumentCaptor.capture()
         assertEquals(0, argumentCaptor.value.length)
     }
 
@@ -643,5 +582,33 @@ class AccessCheckoutEditTextTest {
         assertEquals(accessCheckoutEditText.paddingTop, 0)
         assertEquals(accessCheckoutEditText.paddingEnd, 0)
         assertEquals(accessCheckoutEditText.paddingBottom, 0)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, value: String) {
+        given(typedArrayMock.getString(eq(attributeId))).willReturn(value)
+    }
+
+    private fun mockColorAttributeValue(attributeId: Int, value: Int) {
+        given(typedArrayMock.getColor(eq(attributeId), anyInt())).willReturn(value)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, value: Int) {
+        given(typedArrayMock.getInt(eq(attributeId), anyInt())).willReturn(value)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, value: Boolean) {
+        given(typedArrayMock.getBoolean(eq(attributeId), anyBoolean())).willReturn(value)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, value: Float) {
+        given(typedArrayMock.getDimension(eq(attributeId), anyFloat())).willReturn(value)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, typefaceMock: Typeface) {
+        given(typedArrayMock.getFont(attributeId)).willReturn(typefaceMock)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, drawable: Drawable) {
+        given(typedArrayMock.getDrawable(attributeId)).willReturn(drawable)
     }
 }

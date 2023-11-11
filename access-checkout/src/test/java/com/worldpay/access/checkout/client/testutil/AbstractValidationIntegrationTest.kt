@@ -122,25 +122,25 @@ open class AbstractValidationIntegrationTest {
     }
 
     protected fun AccessCheckoutEditText.pressBackspaceAtIndex(selection: Int) {
-        this.editText.setSelection(selection)
+        this.editText!!.setSelection(selection)
         this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
         this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
     protected fun AccessCheckoutEditText.pressBackspaceAtSelection(start: Int, end: Int) {
-        this.editText.setSelection(start, end)
+        this.editText!!.setSelection(start, end)
         this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
         this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
     protected fun AccessCheckoutEditText.typeAtIndex(selection: Int, text: String) {
-        this.editText.setSelection(selection)
+        this.editText!!.setSelection(selection)
         this.editText.text.insert(selection, text)
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 
     protected fun AccessCheckoutEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
-        this.editText.text.replace(selectionStart, selectionEnd, text)
+        this.editText!!.text.replace(selectionStart, selectionEnd, text)
     }
 }

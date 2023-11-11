@@ -8,10 +8,7 @@ internal class AttributeValues(
     private val styledAttributes: TypedArray
 ) {
 
-    internal fun setAttributesOnEditText(
-        editText: EditText,
-        accessCheckoutEditText: AccessCheckoutEditText
-    ) {
+    internal fun setAttributesOnEditText(editText: EditText) {
         setTextColourAttribute(editText)
 
         setHintAttribute(editText)
@@ -24,45 +21,32 @@ internal class AttributeValues(
 
         setTextSizeAttribute(editText)
 
-        setPaddingAttribute(editText, accessCheckoutEditText)
+        setBackgroundAttribute(editText)
+
+        setPaddingAttribute(editText)
 
         setFontAttribute(editText)
 
-        setBackgroundAttribute(editText)
     }
 
-    private fun setPaddingAttribute(
-        editText: EditText,
-        accessCheckoutEditText: AccessCheckoutEditText
-    ) {
-        val padding = getPaddingAttribute().toInt()
-        var left = getPaddingLeftAttribute().toInt()
-        var top = getPaddingTopAttribute().toInt()
-        var right = getPaddingRightAttribute().toInt()
-        var bottom = getPaddingBottomAttribute().toInt()
-
-        var start = getPaddingStartAttribute().toInt()
-        var end = getPaddingEndAttribute().toInt()
-
-        left.takeIf { it == 0 }?.let { left = editText.paddingLeft }
-        top.takeIf { it == 0 }?.let { top = editText.paddingTop }
-        right.takeIf { it == 0 }?.let { right = editText.paddingRight }
-        bottom.takeIf { it == 0 }?.let { bottom = editText.paddingBottom }
-
-        start.takeIf { it == 0 }?.let { start = editText.paddingStart }
-        end.takeIf { it == 0 }?.let { end = editText.paddingEnd }
-
+    private fun setPaddingAttribute(editText: EditText) {
+        val padding = getPaddingAttribute(defaultValue = 0)
         if (padding != 0) {
-            left = padding
-            top = padding
-            right = padding
-            bottom = padding
+            editText.setPadding(padding, padding, padding, padding)
+            return
         }
 
+        val left = getPaddingLeftAttribute(defaultValue = editText.paddingLeft)
+        val top = getPaddingTopAttribute(defaultValue = editText.paddingTop)
+        val right = getPaddingRightAttribute(defaultValue = editText.paddingRight)
+        val bottom = getPaddingBottomAttribute(defaultValue = editText.paddingBottom)
+        val start = getPaddingStartAttribute(defaultValue = editText.paddingStart)
+        val end = getPaddingEndAttribute(defaultValue = editText.paddingEnd)
+
         if (left > 0 || right > 0) {
-            accessCheckoutEditText.setPadding(left, top, right, bottom)
+            editText.setPadding(left, top, right, bottom)
         } else {
-            accessCheckoutEditText.setPaddingRelative(start, top, end, bottom)
+            editText.setPaddingRelative(start, top, end, bottom)
         }
     }
 
@@ -105,29 +89,53 @@ internal class AttributeValues(
 
     private fun setBackgroundAttribute(editText: EditText) {
         val background = getBackgroundAttribute()
-        editText.background = background
+        background?.let {
+            editText.setPadding(0, 0, 0, 0)
+            editText.background = background
+        }
     }
 
-    private fun getPaddingBottomAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingBottom, 0.0F)
+    private fun getPaddingBottomAttribute(defaultValue: Int) =
+        styledAttributes.getDimension(
+            R.styleable.AccessCheckoutEditText_android_paddingBottom,
+            defaultValue.toFloat()
+        ).toInt()
 
-    private fun getPaddingRightAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingRight, 0.0F)
+    private fun getPaddingRightAttribute(defaultValue: Int) =
+        styledAttributes.getDimension(
+            R.styleable.AccessCheckoutEditText_android_paddingRight,
+            defaultValue.toFloat()
+        ).toInt()
 
-    private fun getPaddingTopAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingTop, 0.0F)
+    private fun getPaddingTopAttribute(defaultValue: Int) =
+        styledAttributes.getDimension(
+            R.styleable.AccessCheckoutEditText_android_paddingTop,
+            defaultValue.toFloat()
+        ).toInt()
 
-    private fun getPaddingLeftAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingLeft, 0.0F)
+    private fun getPaddingLeftAttribute(defaultValue: Int) =
+        styledAttributes.getDimension(
+            R.styleable.AccessCheckoutEditText_android_paddingLeft,
+            defaultValue.toFloat()
+        ).toInt()
 
-    private fun getPaddingStartAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingStart, 0.0F)
+    private fun getPaddingStartAttribute(defaultValue: Int) =
+        styledAttributes.getDimension(
+            R.styleable.AccessCheckoutEditText_android_paddingStart,
+            defaultValue.toFloat()
+        ).toInt()
 
-    private fun getPaddingEndAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingEnd, 0.0F)
+    private fun getPaddingEndAttribute(defaultValue: Int) =
+        styledAttributes.getDimension(
+            R.styleable.AccessCheckoutEditText_android_paddingEnd,
+            defaultValue.toFloat()
+        ).toInt()
 
-    private fun getPaddingAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_padding, 0.0F)
+    private fun getPaddingAttribute(defaultValue: Int) =
+        styledAttributes.getDimension(
+            R.styleable.AccessCheckoutEditText_android_padding,
+            defaultValue.toFloat()
+        ).toInt()
 
     private fun getHintAttribute() =
         styledAttributes.getString(R.styleable.AccessCheckoutEditText_android_hint)
@@ -147,7 +155,9 @@ internal class AttributeValues(
     private fun getTextColorAttribute() =
         styledAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColor, 0)
 
-    private fun getFontAttribute() = styledAttributes.getFont(R.styleable.AccessCheckoutEditText_android_font)
+    private fun getFontAttribute() =
+        styledAttributes.getFont(R.styleable.AccessCheckoutEditText_android_font)
 
-    private fun getBackgroundAttribute() = styledAttributes.getDrawable(R.styleable.AccessCheckoutEditText_android_background)
+    private fun getBackgroundAttribute() =
+        styledAttributes.getDrawable(R.styleable.AccessCheckoutEditText_android_background)
 }
