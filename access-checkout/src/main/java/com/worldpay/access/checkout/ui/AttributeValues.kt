@@ -30,23 +30,33 @@ internal class AttributeValues(
     }
 
     private fun setPaddingAttribute(editText: EditText) {
-        val padding = getPaddingAttribute(defaultValue = 0)
-        if (padding != 0) {
+        val padding: Int? = getPaddingAttribute()
+        if (padding != null) {
             editText.setPadding(padding, padding, padding, padding)
             return
         }
 
-        val left = getPaddingLeftAttribute(defaultValue = editText.paddingLeft)
-        val top = getPaddingTopAttribute(defaultValue = editText.paddingTop)
-        val right = getPaddingRightAttribute(defaultValue = editText.paddingRight)
-        val bottom = getPaddingBottomAttribute(defaultValue = editText.paddingBottom)
-        val start = getPaddingStartAttribute(defaultValue = editText.paddingStart)
-        val end = getPaddingEndAttribute(defaultValue = editText.paddingEnd)
+        val left = getPaddingLeftAttribute()
+        val top = getPaddingTopAttribute()
+        val right = getPaddingRightAttribute()
+        val bottom = getPaddingBottomAttribute()
+        val start = getPaddingStartAttribute()
+        val end = getPaddingEndAttribute()
 
-        if (left > 0 || right > 0) {
-            editText.setPadding(left, top, right, bottom)
+        if (start != null || end != null) {
+            editText.setPaddingRelative(
+                start ?: editText.paddingStart,
+                top ?: editText.paddingTop,
+                end ?: editText.paddingEnd,
+                bottom ?: editText.paddingBottom
+            )
         } else {
-            editText.setPaddingRelative(start, top, end, bottom)
+            editText.setPadding(
+                left ?: editText.paddingLeft,
+                top ?: editText.paddingTop,
+                right ?: editText.paddingRight,
+                bottom ?: editText.paddingBottom
+            )
         }
     }
 
@@ -95,47 +105,33 @@ internal class AttributeValues(
         }
     }
 
-    private fun getPaddingBottomAttribute(defaultValue: Int) =
-        styledAttributes.getDimension(
-            R.styleable.AccessCheckoutEditText_android_paddingBottom,
-            defaultValue.toFloat()
-        ).toInt()
+    private fun getPaddingBottomAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingBottom)
 
-    private fun getPaddingRightAttribute(defaultValue: Int) =
-        styledAttributes.getDimension(
-            R.styleable.AccessCheckoutEditText_android_paddingRight,
-            defaultValue.toFloat()
-        ).toInt()
+    private fun getPaddingRightAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingRight)
 
-    private fun getPaddingTopAttribute(defaultValue: Int) =
-        styledAttributes.getDimension(
-            R.styleable.AccessCheckoutEditText_android_paddingTop,
-            defaultValue.toFloat()
-        ).toInt()
+    private fun getPaddingTopAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingTop)
 
-    private fun getPaddingLeftAttribute(defaultValue: Int) =
-        styledAttributes.getDimension(
-            R.styleable.AccessCheckoutEditText_android_paddingLeft,
-            defaultValue.toFloat()
-        ).toInt()
+    private fun getPaddingLeftAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingLeft)
 
-    private fun getPaddingStartAttribute(defaultValue: Int) =
-        styledAttributes.getDimension(
-            R.styleable.AccessCheckoutEditText_android_paddingStart,
-            defaultValue.toFloat()
-        ).toInt()
+    private fun getPaddingStartAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingStart)
 
-    private fun getPaddingEndAttribute(defaultValue: Int) =
-        styledAttributes.getDimension(
-            R.styleable.AccessCheckoutEditText_android_paddingEnd,
-            defaultValue.toFloat()
-        ).toInt()
+    private fun getPaddingEndAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingEnd)
 
-    private fun getPaddingAttribute(defaultValue: Int) =
-        styledAttributes.getDimension(
-            R.styleable.AccessCheckoutEditText_android_padding,
-            defaultValue.toFloat()
-        ).toInt()
+    private fun getPaddingAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_padding)
+
+    private fun getDimensionAttribute(attributeId: Int): Int? {
+        val attributeValue = styledAttributes.getDimension(attributeId, -1F)
+        return if (attributeValue == -1F) {
+            null
+        } else attributeValue.toInt()
+    }
 
     private fun getHintAttribute() =
         styledAttributes.getString(R.styleable.AccessCheckoutEditText_android_hint)
