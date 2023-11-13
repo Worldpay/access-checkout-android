@@ -1,22 +1,17 @@
 package com.worldpay.access.checkout.ui
 
 import android.content.res.TypedArray
-import android.os.Build
 import android.widget.EditText
-import androidx.annotation.RequiresApi
 import com.worldpay.access.checkout.R
 
 internal class AttributeValues(
     private val styledAttributes: TypedArray
 ) {
 
-    @RequiresApi(Build.VERSION_CODES.O)
     internal fun setAttributesOnEditText(editText: EditText) {
         setTextColourAttribute(editText)
 
         setHintAttribute(editText)
-
-        setEmsAttribute(editText)
 
         setHintTextColourAttribute(editText)
 
@@ -24,37 +19,45 @@ internal class AttributeValues(
 
         setCursorVisibleAttribute(editText)
 
-        setTextScaleXAttribute(editText)
-
         setTextSizeAttribute(editText)
+
+        setBackgroundAttribute(editText)
 
         setPaddingAttribute(editText)
 
         setFontAttribute(editText)
+
     }
 
-    private fun setPaddingAttribute(
-        editText: EditText
-    ) {
-        val padding = getPaddingAttribute().toInt()
-        var paddingLeft = getPaddingLeftAttribute().toInt()
-        var paddingTop = getPaddingTopAttribute().toInt()
-        var paddingRight = getPaddingRightAttribute().toInt()
-        var paddingBottom = getPaddingBottomAttribute().toInt()
-
-        paddingLeft.takeIf { it == 0 }?.let { paddingLeft = editText.paddingLeft }
-        paddingTop.takeIf { it == 0 }?.let { paddingTop = editText.paddingTop }
-        paddingRight.takeIf { it == 0 }?.let { paddingRight = editText.paddingRight }
-        paddingBottom.takeIf { it == 0 }?.let { paddingBottom = editText.paddingBottom }
-
-        if (padding != 0) {
-            paddingLeft = padding
-            paddingTop = padding
-            paddingRight = padding
-            paddingBottom = padding
+    private fun setPaddingAttribute(editText: EditText) {
+        val padding: Int? = getPaddingAttribute()
+        if (padding != null) {
+            editText.setPadding(padding, padding, padding, padding)
+            return
         }
 
-        editText.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+        val left = getPaddingLeftAttribute()
+        val top = getPaddingTopAttribute()
+        val right = getPaddingRightAttribute()
+        val bottom = getPaddingBottomAttribute()
+        val start = getPaddingStartAttribute()
+        val end = getPaddingEndAttribute()
+
+        if (start != null || end != null) {
+            editText.setPaddingRelative(
+                start ?: editText.paddingStart,
+                top ?: editText.paddingTop,
+                end ?: editText.paddingEnd,
+                bottom ?: editText.paddingBottom
+            )
+        } else {
+            editText.setPadding(
+                left ?: editText.paddingLeft,
+                top ?: editText.paddingTop,
+                right ?: editText.paddingRight,
+                bottom ?: editText.paddingBottom
+            )
+        }
     }
 
     private fun setCursorVisibleAttribute(editText: EditText) {
@@ -67,11 +70,6 @@ internal class AttributeValues(
         hint?.let {
             editText.setHint(it as CharSequence)
         }
-    }
-
-    private fun setTextScaleXAttribute(editText: EditText) {
-        val textScaleX = getTextScaleXAttribute()
-        textScaleX.takeIf { it != 0F }?.let { editText.textScaleX = textScaleX }
     }
 
     private fun setTextSizeAttribute(editText: EditText) {
@@ -89,45 +87,57 @@ internal class AttributeValues(
         hintTextColour.takeIf { it != 0 }?.let { editText.setHintTextColor(hintTextColour) }
     }
 
-    private fun setEmsAttribute(editText: EditText) {
-        val ems = getEmsAttribute()
-        ems.takeIf { it != 0 }?.let { editText.setEms(ems) }
-    }
-
     private fun setTextColourAttribute(editText: EditText) {
         val textColor = getTextColorAttribute()
         textColor.takeIf { it != 0 }?.let { editText.setTextColor(textColor) }
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun setFontAttribute(editText: EditText) {
         val font = getFontAttribute()
         font?.let { editText.typeface = font }
     }
 
-    private fun getPaddingBottomAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingBottom, 0.0F)
+    private fun setBackgroundAttribute(editText: EditText) {
+        val background = getBackgroundAttribute()
+        background?.let {
+            editText.setPadding(0, 0, 0, 0)
+            editText.background = background
+        }
+    }
 
-    private fun getPaddingRightAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingRight, 0.0F)
+    private fun getPaddingBottomAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingBottom)
 
-    private fun getPaddingTopAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingTop, 0.0F)
+    private fun getPaddingRightAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingRight)
 
-    private fun getPaddingLeftAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_paddingLeft, 0.0F)
+    private fun getPaddingTopAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingTop)
 
-    private fun getPaddingAttribute() =
-        styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_padding, 0.0F)
+    private fun getPaddingLeftAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingLeft)
+
+    private fun getPaddingStartAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingStart)
+
+    private fun getPaddingEndAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingEnd)
+
+    private fun getPaddingAttribute(): Int? =
+        getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_padding)
+
+    private fun getDimensionAttribute(attributeId: Int): Int? {
+        val attributeValue = styledAttributes.getDimension(attributeId, -1F)
+        return if (attributeValue == -1F) {
+            null
+        } else attributeValue.toInt()
+    }
 
     private fun getHintAttribute() =
         styledAttributes.getString(R.styleable.AccessCheckoutEditText_android_hint)
 
     private fun getTextSizeAttribute() =
         styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_textSize, 0F)
-
-    private fun getTextScaleXAttribute() =
-        styledAttributes.getFloat(R.styleable.AccessCheckoutEditText_android_textScaleX, 0F)
 
     private fun getCursorVisibleAttribute() =
         styledAttributes.getBoolean(R.styleable.AccessCheckoutEditText_android_cursorVisible, true)
@@ -138,12 +148,12 @@ internal class AttributeValues(
     private fun getHintTextColourAttribute() =
         styledAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColorHint, 0)
 
-    private fun getEmsAttribute() =
-        styledAttributes.getInt(R.styleable.AccessCheckoutEditText_android_ems, 0)
-
     private fun getTextColorAttribute() =
         styledAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColor, 0)
 
-    @RequiresApi(Build.VERSION_CODES.O)
-    private fun getFontAttribute() = styledAttributes.getFont(R.styleable.AccessCheckoutEditText_android_font)
+    private fun getFontAttribute() =
+        styledAttributes.getFont(R.styleable.AccessCheckoutEditText_android_font)
+
+    private fun getBackgroundAttribute() =
+        styledAttributes.getDrawable(R.styleable.AccessCheckoutEditText_android_background)
 }

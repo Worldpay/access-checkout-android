@@ -4,10 +4,6 @@ import com.worldpay.access.checkout.api.serialization.ClientErrorDeserializer
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.InputStream
@@ -16,6 +12,10 @@ import java.io.OutputStreamWriter
 import java.io.Serializable
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 
 internal class HttpsClient(
     private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
@@ -49,7 +49,6 @@ internal class HttpsClient(
                     // lead to better performances. This is because when used this property creates
                     // a memory leak where the request body remains in memory, this leaving the
                     // merchant application vulnerable to a heap inspection attack.
-
 
                     httpsUrlConn.outputStream.use { connectionOutputStream ->
                         BufferedOutputStream(connectionOutputStream).use { bufferedOutputStream ->
@@ -184,9 +183,9 @@ internal class HttpsClient(
                 var currentLine: String?
 
                 while (run {
-                        currentLine = reader.readLine()
-                        currentLine
-                    } != null
+                    currentLine = reader.readLine()
+                    currentLine
+                } != null
                 )
                     response.append(currentLine)
 

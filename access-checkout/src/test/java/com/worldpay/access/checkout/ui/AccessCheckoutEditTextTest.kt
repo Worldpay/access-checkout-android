@@ -3,7 +3,10 @@ package com.worldpay.access.checkout.ui
 import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Color
+import android.graphics.Color.GREEN
+import android.graphics.Color.RED
 import android.graphics.Typeface
+import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.Editable
@@ -20,12 +23,13 @@ import com.worldpay.access.checkout.R
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.given
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
+import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyFloat
+import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.kotlin.*
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 import kotlin.test.assertTrue
 
 class AccessCheckoutEditTextTest {
@@ -73,23 +77,16 @@ class AccessCheckoutEditTextTest {
      */
     @Test
     fun `should set text color from attribute set`() {
-        given(
-            typedArrayMock.getColor(
-                eq(R.styleable.AccessCheckoutEditText_android_textColor),
-                eq(0)
-            )
-        ).willReturn(Color.RED)
+        mockColorAttributeValue(R.styleable.AccessCheckoutEditText_android_textColor, RED)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
-        verify(editTextMock).setTextColor(Color.RED)
+        verify(editTextMock).setTextColor(RED)
     }
 
     @Test
     fun `should set hint from attribute set`() {
-        given(typedArrayMock.getString(eq(R.styleable.AccessCheckoutEditText_android_hint))).willReturn(
-            "some-hint"
-        )
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_hint, "some-hint")
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -97,43 +94,17 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `should set ems from attribute set`() {
-        given(
-            typedArrayMock.getInt(
-                eq(R.styleable.AccessCheckoutEditText_android_ems),
-                eq(0)
-            )
-        ).willReturn(123)
-
-        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
-
-        verify(editTextMock).setEms(123)
-    }
-
-    @Test
     fun `should set hintTextColor from attribute set`() {
-        given(
-            typedArrayMock.getColor(
-                eq(R.styleable.AccessCheckoutEditText_android_textColorHint),
-                eq(0)
-            )
-        ).willReturn(
-            Color.GREEN
-        )
+        mockColorAttributeValue(R.styleable.AccessCheckoutEditText_android_textColorHint, GREEN)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
-        verify(editTextMock).setHintTextColor(Color.GREEN)
+        verify(editTextMock).setHintTextColor(GREEN)
     }
 
     @Test
     fun `should set imeOptions from attribute set`() {
-        given(
-            typedArrayMock.getInt(
-                eq(R.styleable.AccessCheckoutEditText_android_imeOptions),
-                eq(0)
-            )
-        ).willReturn(123)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_imeOptions, 123)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -142,12 +113,7 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set cursorVisible from attribute set`() {
-        given(
-            typedArrayMock.getBoolean(
-                eq(R.styleable.AccessCheckoutEditText_android_cursorVisible),
-                eq(true)
-            )
-        ).willReturn(true)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_cursorVisible, true)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -155,27 +121,8 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `should set textScale from attribute set`() {
-        given(
-            typedArrayMock.getFloat(
-                eq(R.styleable.AccessCheckoutEditText_android_textScaleX),
-                eq(0F)
-            )
-        ).willReturn(1F)
-
-        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
-
-        verify(editTextMock).textScaleX = 1F
-    }
-
-    @Test
     fun `should set textSize from attribute set`() {
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_textSize),
-                eq(0F)
-            )
-        ).willReturn(1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_textSize, 1F)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -184,44 +131,173 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set padding from attribute set`() {
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_padding),
-                eq(0.0F)
-            )
-        ).willReturn(1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_padding, 1F)
 
-        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingValue(accessCheckoutEditText)
 
         verify(editTextMock).setPadding(1, 1, 1, 1)
     }
 
     @Test
-    fun `should set padding left, top, right, bottom from attribute set`() {
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingLeft),
-                eq(0.0F)
-            )
-        ).willReturn(1F)
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingTop),
-                eq(0.0F)
-            )
-        ).willReturn(2F)
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingRight),
-                eq(0.0F)
-            )
-        ).willReturn(3F)
-        given(
-            typedArrayMock.getDimension(
-                eq(R.styleable.AccessCheckoutEditText_android_paddingBottom),
-                eq(0.0F)
-            )
-        ).willReturn(4F)
+    fun `should set padding left, top, right, bottom from attributes set`() {
+        // We need to mock other padding attributes that would interfere as not set
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_padding)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingStart)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingEnd)
+
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingLeft, 1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingTop, 2F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingRight, 3F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingBottom, 4F)
+
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPadding(1, 2, 3, 4)
+    }
+
+    @Test
+    fun `should set padding right using setPadding from attribute set`() {
+        // We need to mock other padding attributes that would interfere as not set
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_padding)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingStart)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingEnd)
+
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingRight, 3F)
+
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPadding(0, 0, 3, 0)
+    }
+
+    @Test
+    fun `should set paddingRelative when paddingStart and paddingEnd are supplied from attribute set`() {
+        // We need to mock other padding attributes that would interfere as not set
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_padding)
+
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingStart, 1F)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingEnd, 3F)
+
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingRelativeValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPaddingRelative(1, 0, 3, 0)
+    }
+
+    @Test
+    fun `should set paddingRelative when only paddingStart is supplied from attribute set`() {
+        // We need to mock other padding attributes that would interfere as not set
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_padding)
+
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingStart, 1F)
+
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingRelativeValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPaddingRelative(1, 0, 0, 0)
+    }
+
+    @Test
+    fun `should set paddingRelative when only paddingEnd is supplied from attribute set`() {
+        // We need to mock other padding attributes that would interfere as not set
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_padding)
+
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingEnd, 1F)
+
+        val accessCheckoutEditText =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        assertParentPaddingRelativeValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPaddingRelative(0, 0, 1, 0)
+    }
+
+    @Test
+    fun `should use editText padding values as defaults when only paddingStart defined`() {
+        // We need to mock other padding attributes that would interfere as not set
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_padding)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingEnd)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingLeft)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingTop)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingRight)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingBottom)
+
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingStart, 1F)
+        given(editTextMock.paddingTop).willReturn(2)
+        given(editTextMock.paddingEnd).willReturn(3)
+        given(editTextMock.paddingBottom).willReturn(4)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).setPaddingRelative(1, 2, 3, 4)
+    }
+
+    @Test
+    fun `should use editText padding values as defaults when only paddingEnd defined`() {
+        // We need to mock other padding attributes that would interfere as not set
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_padding)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingStart)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingLeft)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingTop)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingRight)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingBottom)
+
+        given(editTextMock.paddingStart).willReturn(1)
+        given(editTextMock.paddingTop).willReturn(2)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingEnd, 3F)
+        given(editTextMock.paddingBottom).willReturn(4)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).setPaddingRelative(1, 2, 3, 4)
+    }
+
+    @Test
+    fun `should use editText padding values as defaults when only paddingLeft defined`() {
+        // We need to mock other padding attributes that would interfere as not set
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_padding)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingStart)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingEnd)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingTop)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingRight)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingBottom)
+
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingLeft, 1F)
+        given(editTextMock.paddingTop).willReturn(2)
+        given(editTextMock.paddingRight).willReturn(3)
+        given(editTextMock.paddingBottom).willReturn(4)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).setPadding(1, 2, 3, 4)
+    }
+
+    @Test
+    fun `should use editText padding values as defaults when only paddingRight defined`() {
+        // We need to mock other padding attributes that would interfere as not set
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_padding)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingStart)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingEnd)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingLeft)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingTop)
+        mockDimensionAttributeNotSet(R.styleable.AccessCheckoutEditText_android_paddingBottom)
+
+        given(editTextMock.paddingLeft).willReturn(1)
+        given(editTextMock.paddingTop).willReturn(2)
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_paddingRight, 3F)
+        given(editTextMock.paddingBottom).willReturn(4)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -231,14 +307,21 @@ class AccessCheckoutEditTextTest {
     @Test
     fun `should set font from attribute set`() {
         val typefaceMock: Typeface = mock()
-
-        given(typedArrayMock.getFont(eq(R.styleable.AccessCheckoutEditText_android_font))).willReturn(
-            typefaceMock
-        )
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_font, typefaceMock)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
         verify(editTextMock).typeface = typefaceMock
+    }
+
+    @Test
+    fun `should set background from attribute set`() {
+        val drawable: Drawable = mock()
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_background, drawable)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).background = drawable
     }
 
     /**
@@ -387,20 +470,6 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `textScaleX getter should return EditText textScaleX`() {
-        given(editTextMock.textScaleX).willReturn(1F)
-
-        assertEquals(1F, accessCheckoutEditText.textScaleX)
-    }
-
-    @Test
-    fun `textScaleX setter should set EditText textScaleX`() {
-        accessCheckoutEditText.textScaleX = 1.1F
-
-        verify(editTextMock).textScaleX = 1.1F
-    }
-
-    @Test
     fun `textSize getter should return EditText textSize`() {
         given(editTextMock.textSize).willReturn(1F)
 
@@ -412,13 +481,6 @@ class AccessCheckoutEditTextTest {
         accessCheckoutEditText.textSize = 1.1F
 
         verify(editTextMock).textSize = 1.1F
-    }
-
-    @Test
-    fun `autoSizeTextType getter should return EditText autoSizeTextType`() {
-        given(editTextMock.autoSizeTextType).willReturn(123)
-
-        assertEquals(123, accessCheckoutEditText.autoSizeTextType)
     }
 
     @Test
@@ -458,6 +520,39 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).isCursorVisible = true
     }
 
+    @Test
+    fun `background getter should return EditText background`() {
+        val backgroundMock = mock<Drawable>()
+        given(editTextMock.background).willReturn(backgroundMock)
+
+        assertEquals(backgroundMock, accessCheckoutEditText.background)
+    }
+
+    @Test
+    fun `background setter should set EditText background`() {
+        val backgroundMock = mock<Drawable>()
+        accessCheckoutEditText.background = backgroundMock
+
+        verify(editTextMock).background = backgroundMock
+    }
+
+    @Test
+    fun `background getter should return null when EditText is null`() {
+        val nullEditText = null
+        val accessCheckoutEditText = AccessCheckoutEditText(mock(), mock(), 0, nullEditText)
+
+        assertNull(accessCheckoutEditText.background)
+    }
+
+    @Test
+    fun `background setter should do nothing when EditText is null`() {
+        val nullEditText = null
+        val accessCheckoutEditText = AccessCheckoutEditText(mock(), mock(), 0, nullEditText)
+
+        accessCheckoutEditText.background = mock()
+    }
+
+
     /**
     Methods tests
      */
@@ -474,7 +569,7 @@ class AccessCheckoutEditTextTest {
 
         accessCheckoutEditText.clear()
 
-        verify(accessCheckoutEditText.editText).text = argumentCaptor.capture()
+        verify(accessCheckoutEditText.editText)!!.text = argumentCaptor.capture()
         assertEquals(0, argumentCaptor.value.length)
     }
 
@@ -522,13 +617,6 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `setEms should call EditText setEms()`() {
-        accessCheckoutEditText.setEms(4)
-
-        verify(editTextMock).setEms(4)
-    }
-
-    @Test
     fun `setHintTextColor should call EditText setHintTextColor()`() {
         accessCheckoutEditText.setHintTextColor(Color.BLACK)
 
@@ -547,5 +635,85 @@ class AccessCheckoutEditTextTest {
         accessCheckoutEditText.setTextAppearance(123)
 
         verify(editTextMock).setTextAppearance(123)
+    }
+
+    @Test
+    fun `setPadding should call EditText setPadding()`() {
+        accessCheckoutEditText.setPadding(1, 2, 3, 4)
+
+        assertParentPaddingValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPadding(1, 2, 3, 4)
+    }
+
+    @Test
+    fun `setPaddingRelative should call EditText setPaddingRelative()`() {
+        accessCheckoutEditText.setPaddingRelative(1, 2, 3, 4)
+
+        assertParentPaddingRelativeValue(accessCheckoutEditText)
+
+        verify(editTextMock).setPaddingRelative(1, 2, 3, 4)
+    }
+
+    @Test
+    fun `setBackgroundColor should call EditText setBackgroundColor()`() {
+        accessCheckoutEditText.setBackgroundColor(123)
+
+        verify(editTextMock).setBackgroundColor(123)
+    }
+
+    @Test
+    fun `setBackgroundResource should call EditText setBackgroundResource()`() {
+        accessCheckoutEditText.setBackgroundResource(123)
+
+        verify(editTextMock).setBackgroundResource(123)
+    }
+
+    private fun assertParentPaddingValue(accessCheckoutEditText: AccessCheckoutEditText) {
+        assertEquals(accessCheckoutEditText.paddingLeft, 0)
+        assertEquals(accessCheckoutEditText.paddingTop, 0)
+        assertEquals(accessCheckoutEditText.paddingRight, 0)
+        assertEquals(accessCheckoutEditText.paddingBottom, 0)
+    }
+
+    private fun assertParentPaddingRelativeValue(accessCheckoutEditText: AccessCheckoutEditText) {
+        assertEquals(accessCheckoutEditText.paddingStart, 0)
+        assertEquals(accessCheckoutEditText.paddingTop, 0)
+        assertEquals(accessCheckoutEditText.paddingEnd, 0)
+        assertEquals(accessCheckoutEditText.paddingBottom, 0)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, value: String) {
+        given(typedArrayMock.getString(eq(attributeId))).willReturn(value)
+    }
+
+    private fun mockColorAttributeValue(attributeId: Int, value: Int) {
+        given(typedArrayMock.getColor(eq(attributeId), anyInt())).willReturn(value)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, value: Int) {
+        given(typedArrayMock.getInt(eq(attributeId), anyInt())).willReturn(value)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, value: Boolean) {
+        given(typedArrayMock.getBoolean(eq(attributeId), anyBoolean())).willReturn(value)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, value: Float) {
+        given(typedArrayMock.getDimension(eq(attributeId), anyFloat())).willReturn(value)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, typefaceMock: Typeface) {
+        given(typedArrayMock.getFont(attributeId)).willReturn(typefaceMock)
+    }
+
+    private fun mockAttributeValue(attributeId: Int, drawable: Drawable) {
+        given(typedArrayMock.getDrawable(attributeId)).willReturn(drawable)
+    }
+
+    private fun mockDimensionAttributeNotSet(attributeId: Int) {
+        // We first need to make sure that the padding attribute has not been set
+        // Value -1F, as per production code, is a default value to indicate attribute is not set
+        mockAttributeValue(attributeId, -1F)
     }
 }
