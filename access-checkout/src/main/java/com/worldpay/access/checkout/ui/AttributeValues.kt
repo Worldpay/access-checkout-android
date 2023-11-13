@@ -26,7 +26,6 @@ internal class AttributeValues(
         setPaddingAttribute(editText)
 
         setFontAttribute(editText)
-
     }
 
     private fun setPaddingAttribute(editText: EditText) {
