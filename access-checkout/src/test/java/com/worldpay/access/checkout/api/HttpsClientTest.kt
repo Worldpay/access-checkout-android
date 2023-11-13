@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.api
 
 import com.google.common.collect.Maps.newHashMap
+import com.worldpay.access.checkout.api.NoWeakCipherSSLSocketFactory.Companion.noWeakCipherSSLSocketFactory
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
@@ -59,6 +60,9 @@ class HttpsClientTest {
         httpsUrlConnection = mock()
     }
 
+    /**
+     * doPost() tests
+     */
     @Test
     fun givenValidRequest_doPost_shouldReturnSuccessfulResponse() = runAsBlockingTest {
         val testResponseAsString = removeWhitespace(
@@ -86,6 +90,22 @@ class HttpsClientTest {
 
         assertEquals(testResponse, response)
         verify(httpsUrlConnection).setRequestProperty("key", "value")
+    }
+
+    @Test
+    fun givenValidRequest_doPost_shouldNotUseWeakCiphers() = runAsBlockingTest {
+        val testResponseAsString = removeWhitespace("{}")
+
+        stubResponse(responseCode = 201, responseBody = testResponseAsString)
+
+        assertTrue(httpsUrlConnection.requestProperties.isEmpty())
+
+        given(serializer.serialize(testRequest)).willReturn(testRequestString)
+        given(deserializer.deserialize(testResponseAsString)).willReturn(TestResponse(""))
+
+        httpsClient.doPost(url, testRequest, emptyMap(), serializer, deserializer)
+
+        verify(httpsUrlConnection).sslSocketFactory = noWeakCipherSSLSocketFactory()
     }
 
     @Test
@@ -465,6 +485,9 @@ class HttpsClientTest {
             }
         }
 
+    /**
+     * doGet() tests
+     */
     @Test
     fun givenValidRequest_doGet_shouldReturnSuccessfulResponse() = runAsBlockingTest {
 
@@ -483,6 +506,26 @@ class HttpsClientTest {
         val response = httpsClient.doGet(url, deserializer)
 
         assertEquals(testResponse, response)
+    }
+
+    @Test
+    fun givenValidRequest_doGet_shouldNotUseWeakCiphers() = runAsBlockingTest {
+
+        val testResponseAsString = removeWhitespace(
+            """{
+                "property": "abcdef"
+                }"""
+        )
+
+        val testResponse = TestResponse("abcdef")
+
+        stubResponse(responseCode = 201, responseBody = testResponseAsString)
+
+        given(deserializer.deserialize(testResponseAsString)).willReturn(testResponse)
+
+        httpsClient.doGet(url, deserializer)
+
+        verify(httpsUrlConnection).sslSocketFactory = noWeakCipherSSLSocketFactory()
     }
 
     @Test
