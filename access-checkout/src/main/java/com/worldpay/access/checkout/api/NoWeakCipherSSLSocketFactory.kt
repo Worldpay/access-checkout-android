@@ -9,7 +9,7 @@ import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
 
 internal class NoWeakCipherSSLSocketFactory constructor(
-    private val defaultSSLSocketFactory: SSLSocketFactory = getDefaultSSLSocketFactory()
+    private val defaultSSLSocketFactory: SSLSocketFactory
 ) : SSLSocketFactory() {
 
     private val enabledCipherSuites: Array<String> = Arrays
@@ -19,11 +19,8 @@ internal class NoWeakCipherSSLSocketFactory constructor(
         .toTypedArray()
 
     companion object {
-        private val noWeakCipherSSLSocketFactory =
-            NoWeakCipherSSLSocketFactory(getDefaultSSLSocketFactory())
-
         internal fun noWeakCipherSSLSocketFactory(): SSLSocketFactory {
-            return noWeakCipherSSLSocketFactory
+            return NoWeakCipherSSLSocketFactory(getDefaultSSLSocketFactory())
         }
     }
 

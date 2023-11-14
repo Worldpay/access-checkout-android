@@ -5,7 +5,6 @@ import java.net.Socket
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
 import kotlin.test.assertEquals
-import kotlin.test.assertTrue
 import org.junit.Test
 import org.mockito.Mock
 import org.mockito.Mockito.mock
@@ -23,18 +22,6 @@ class NoWeakCipherSSLSocketFactoryTest {
 
     @Mock
     private val mockDefaultSslSocketFactory = mock<SSLSocketFactory>()
-
-    @Test
-    fun `noWeakCipherSSLSocketFactory() returns unique instance of ssl socket factory`() {
-        val instance1: SSLSocketFactory =
-            NoWeakCipherSSLSocketFactory.noWeakCipherSSLSocketFactory()
-        val instance2: SSLSocketFactory =
-            NoWeakCipherSSLSocketFactory.noWeakCipherSSLSocketFactory()
-
-        assertTrue(instance1 is NoWeakCipherSSLSocketFactory)
-        assertTrue(instance2 is NoWeakCipherSSLSocketFactory)
-        assertEquals(instance1, instance2)
-    }
 
     @Test
     fun `createSocket() overload 1 delegates call to default ssl socket factory`() {
