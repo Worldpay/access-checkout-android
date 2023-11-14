@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.api
 
 import com.google.common.collect.Maps.newHashMap
-import com.worldpay.access.checkout.api.NoWeakCipherSSLSocketFactory.Companion.noWeakCipherSSLSocketFactory
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
@@ -105,7 +104,7 @@ class HttpsClientTest {
 
         httpsClient.doPost(url, testRequest, emptyMap(), serializer, deserializer)
 
-        verify(httpsUrlConnection).sslSocketFactory = noWeakCipherSSLSocketFactory()
+        verify(httpsUrlConnection).sslSocketFactory = any(NoWeakCipherSSLSocketFactory::class.java)
     }
 
     @Test
@@ -525,7 +524,7 @@ class HttpsClientTest {
 
         httpsClient.doGet(url, deserializer)
 
-        verify(httpsUrlConnection).sslSocketFactory = noWeakCipherSSLSocketFactory()
+        verify(httpsUrlConnection).sslSocketFactory = any(NoWeakCipherSSLSocketFactory::class.java)
     }
 
     @Test
