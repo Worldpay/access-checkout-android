@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.api
 
+import com.worldpay.access.checkout.api.NoWeakCipherSSLSocketFactory.Companion.noWeakCipherSSLSocketFactory
 import com.worldpay.access.checkout.api.serialization.ClientErrorDeserializer
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
@@ -38,12 +39,11 @@ internal class HttpsClient(
                 try {
                     val requestBody = serializer.serialize(request)
 
-                    httpsUrlConn = url.openConnection()!! as HttpsURLConnection
+                    httpsUrlConn = createHttpsURLConnection(url)
+
                     httpsUrlConn.requestMethod = POST_METHOD
                     setRequestProperties(httpsUrlConn, headers)
                     httpsUrlConn.doOutput = true
-                    httpsUrlConn.connectTimeout = CONNECT_TIMEOUT
-                    httpsUrlConn.readTimeout = READ_TIMEOUT
 
                     // You will note that setChunkedStreamingMode() is not used although it would
                     // lead to better performances. This is because when used this property creates
@@ -100,11 +100,10 @@ internal class HttpsClient(
             async(dispatcher) {
                 var httpsUrlConn: HttpsURLConnection? = null
                 try {
-                    httpsUrlConn = url.openConnection()!! as HttpsURLConnection
+                    httpsUrlConn = createHttpsURLConnection(url)
+
                     httpsUrlConn.requestMethod = GET_METHOD
                     setRequestProperties(httpsUrlConn, headers)
-                    httpsUrlConn.connectTimeout = CONNECT_TIMEOUT
-                    httpsUrlConn.readTimeout = READ_TIMEOUT
 
                     val responseData = when (httpsUrlConn.responseCode) {
                         in successfulHttpRange -> httpsUrlConn.inputStream.use { inputStream ->
@@ -131,6 +130,18 @@ internal class HttpsClient(
                 }
             }
         }.await()
+    }
+
+    private fun createHttpsURLConnection(url: URL): HttpsURLConnection {
+        val connection = url.openConnection()!! as HttpsURLConnection
+        connection.connectTimeout = CONNECT_TIMEOUT
+        connection.readTimeout = READ_TIMEOUT
+
+        // Using a custom SSLSocketFactory that removes weak cipher suites from
+        // enabled and supported cipher suites
+        connection.sslSocketFactory = noWeakCipherSSLSocketFactory()
+
+        return connection
     }
 
     private fun setRequestProperties(

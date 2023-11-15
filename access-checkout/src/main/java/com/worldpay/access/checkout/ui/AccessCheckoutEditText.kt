@@ -42,9 +42,9 @@ class AccessCheckoutEditText internal constructor(
 
     init {
         orientation = VERTICAL
-        super.setPadding(0,0,0,0)
+        super.setPadding(0, 0, 0, 0)
 
-        this.editText?.let { editText->
+        this.editText?.let { editText ->
             editText.id = editTextIdOf(this.id)
 
             attrs?.let {
@@ -62,7 +62,7 @@ class AccessCheckoutEditText internal constructor(
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
-            this(context, attrs, defStyle, EditText(context))
+        this(context, attrs, defStyle, EditText(context))
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 

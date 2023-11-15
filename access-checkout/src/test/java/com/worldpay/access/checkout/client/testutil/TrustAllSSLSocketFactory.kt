@@ -7,6 +7,7 @@ import java.net.Socket
 import java.net.UnknownHostException
 import java.security.SecureRandom
 import java.security.cert.X509Certificate
+import javax.net.ssl.HttpsURLConnection.getDefaultSSLSocketFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.SSLSocketFactory
 import javax.net.ssl.X509TrustManager
@@ -16,6 +17,8 @@ class TrustAllSSLSocketFactory : SSLSocketFactory() {
     private val sslContext = SSLContext.getInstance("TLS")
 
     companion object {
+        private val DEFAULT_CIPHER_SUITES = getDefaultSSLSocketFactory().defaultCipherSuites
+
         val X509_TRUST_MANAGER = object : X509TrustManager {
             @SuppressLint("TrustAllX509TrustManager")
             override fun checkClientTrusted(xcs: Array<X509Certificate?>?, string: String?) {
@@ -36,11 +39,16 @@ class TrustAllSSLSocketFactory : SSLSocketFactory() {
     }
 
     override fun getDefaultCipherSuites(): Array<String> {
-        return emptyArray()
+        return DEFAULT_CIPHER_SUITES
     }
 
     @Throws(IOException::class, UnknownHostException::class)
-    override fun createSocket(socket: Socket?, host: String?, port: Int, autoClose: Boolean): Socket? {
+    override fun createSocket(
+        socket: Socket?,
+        host: String?,
+        port: Int,
+        autoClose: Boolean
+    ): Socket? {
         return sslContext.socketFactory.createSocket(socket, host, port, autoClose)
     }
 
@@ -53,7 +61,12 @@ class TrustAllSSLSocketFactory : SSLSocketFactory() {
         return sslContext.socketFactory.createSocket(host, port)
     }
 
-    override fun createSocket(host: String?, port: Int, localHost: InetAddress?, localPort: Int): Socket {
+    override fun createSocket(
+        host: String?,
+        port: Int,
+        localHost: InetAddress?,
+        localPort: Int
+    ): Socket {
         return sslContext.socketFactory.createSocket(host, port, localHost, localPort)
     }
 
