@@ -14,10 +14,9 @@ import com.worldpay.access.checkout.sample.ssl.server.CustomHttpServerFactory
 import com.worldpay.access.checkout.sample.stub.BrandLogoMockStub.stubLogos
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.RootResourseMockStub.rootResourceMapping
+import com.worldpay.access.checkout.sample.stub.SessionsMockStub.stubSessionsCardRequest
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.stubSessionsPaymentCvcRequest
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.stubSessionsTokenRootRequest
-import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifiedTokenRootRequest
-import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.stubVerifiedTokenSessionRequest
 import java.io.File
 import java.io.FileOutputStream
 import javax.net.ssl.HttpsURLConnection
@@ -33,9 +32,7 @@ object MockServer {
     object Paths {
         const val SESSIONS_ROOT_PATH = "sessions"
         const val SESSIONS_PAYMENTS_CVC_PATH = "sessions/payments/cvc"
-
-        const val VERIFIED_TOKENS_ROOT_PATH = "verifiedTokens"
-        const val VERIFIED_TOKENS_SESSIONS_PATH = "verifiedTokens/sessions"
+        const val SESSIONS_CARD_PATH = "sessions/card"
 
         const val CARD_LOGO_PATH = "access-checkout/assets"
         const val CARD_CONFIGURATION_PATH = "access-checkout/cardTypes.json"
@@ -99,7 +96,7 @@ object MockServer {
 
         // verified token
         stubVerifiedTokenRootRequest()
-        stubVerifiedTokenSessionRequest(context)
+        stubSessionsCardRequest(context)
 
         // sessions token
         stubSessionsTokenRootRequest()

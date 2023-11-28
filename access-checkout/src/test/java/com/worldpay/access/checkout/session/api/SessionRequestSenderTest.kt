@@ -57,12 +57,12 @@ class SessionRequestSenderTest {
             SessionResponse(
                 SessionResponse.Links(
                     SessionResponse.Links.Endpoints(
-                        "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+                        "https://access.worldpay.com/sessions/<encrypted-data>"
                     ),
                     arrayOf(
                         SessionResponse.Links.Curies(
-                            "https://access.worldpay.com/rels/verifiedTokens{rel}.json",
-                            "verifiedTokens",
+                            "https://access.worldpay.com/rels/sessions{rel}.json",
+                            "sessions",
                             true
                         )
                     )
@@ -78,7 +78,7 @@ class SessionRequestSenderTest {
             .baseUrl(baseURL)
             .requestBody(expectedSessionRequest)
             .sessionType(CARD)
-            .discoverLinks(DiscoverLinks.verifiedTokens)
+            .discoverLinks(DiscoverLinks.cardSessions)
             .build()
 
         val sessionClient = mock<SessionClient>()
@@ -111,7 +111,7 @@ class SessionRequestSenderTest {
                 .baseUrl(baseURL)
                 .requestBody(expectedSessionRequest)
                 .sessionType(CARD)
-                .discoverLinks(DiscoverLinks.verifiedTokens)
+                .discoverLinks(DiscoverLinks.cardSessions)
                 .build()
 
             val sessionClient = mock<SessionClient>()

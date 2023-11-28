@@ -19,8 +19,8 @@ object ApiDiscoveryStubs {
                         "service:tokens": {
                             "href": "{{request.requestLine.baseUrl}}/tokens"
                         },
-                        "service:verifiedTokens": {
-                            "href": "{{request.requestLine.baseUrl}}/verifiedTokens"
+                        "service:sessions": {
+                            "href": "{{request.requestLine.baseUrl}}/sessions"
                         },
                         "curies": [
                             {
@@ -34,29 +34,26 @@ object ApiDiscoveryStubs {
 
     private const val topLevelServiceResourceResponse = """{
                 "_links": {
-                    "verifiedTokens:recurring": {
-                        "href": "{{request.requestLine.baseUrl}}/verifiedTokens/recurring"
+                    "sessions:card": {
+                        "href": "{{request.requestLine.baseUrl}}/sessions/card"
                     },
-                    "verifiedTokens:cardOnFile": {
-                        "href": "{{request.requestLine.baseUrl}}/verifiedTokens/cardOnFile"
+                    "sessions:paymentsCvc": {
+                        "href": "{{request.requestLine.baseUrl}}/sessions/payments/cvc"
                     },
-                    "verifiedTokens:sessions": {
-                        "href": "{{request.requestLine.baseUrl}}/verifiedTokens/sessions"
+                    "resourceTree": {
+                        "href": "{{request.requestLine.baseUrl}}/rels/sessions/resourceTree.json"
                     },
-                "resourceTree": {
-                    "href": "{{request.requestLine.baseUrl}}/rels/verifiedTokens/resourceTree.json"
-                },
-                "curies": [{
-                    "href": "{{request.requestLine.baseUrl}}/rels/verifiedTokens/{rel}.json",
-                    "name": "verifiedTokens",
-                    "templated": true
-                }]
-            }
-        }"""
+                    "curies": [{
+                        "href": "{{request.requestLine.baseUrl}}/rels/sessions/{rel}.json",
+                        "name": "sessions",
+                        "templated": true
+                    }]
+                }
+            }"""
 
     fun stubServiceDiscoveryResponses() {
         stubFor(rootResponseMapping())
-        stubFor(verifiedTokensMapping())
+        stubFor(cardSessionsMapping())
     }
 
     fun rootResponseMapping(): MappingBuilder {
@@ -70,8 +67,8 @@ object ApiDiscoveryStubs {
             )
     }
 
-    fun verifiedTokensMapping(): MappingBuilder {
-        return WireMock.get("/verifiedTokens")
+    fun cardSessionsMapping(): MappingBuilder {
+        return WireMock.get("/sessions")
             .willReturn(
                 WireMock.aResponse()
                     .withStatus(200)

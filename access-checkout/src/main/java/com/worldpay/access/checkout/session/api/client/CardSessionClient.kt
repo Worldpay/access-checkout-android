@@ -22,8 +22,8 @@ internal class CardSessionClient(
 
     override suspend fun getSessionResponse(url: URL, request: SessionRequest): SessionResponse {
         val headers = HashMap<String, String>()
-        headers[CONTENT_TYPE_HEADER] = VERIFIED_TOKENS_MEDIA_TYPE
-        headers[ACCEPT_HEADER] = VERIFIED_TOKENS_MEDIA_TYPE
+        headers[CONTENT_TYPE_HEADER] = SESSIONS_MEDIA_TYPE
+        headers[ACCEPT_HEADER] = SESSIONS_MEDIA_TYPE
         headers[WpSdkHeader.name] = WpSdkHeader.value
 
         return httpsClient.doPost(url, request, headers, serializer, deserializer)

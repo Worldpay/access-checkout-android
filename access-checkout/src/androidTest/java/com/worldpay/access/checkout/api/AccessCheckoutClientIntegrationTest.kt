@@ -6,7 +6,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.LifecycleRegistry
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.WireMock.*
+import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.equalTo
+import com.github.tomakehurst.wiremock.client.WireMock.post
+import com.github.tomakehurst.wiremock.client.WireMock.stubFor
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
 import com.worldpay.access.checkout.api.MockServer.startWiremock
@@ -18,7 +22,7 @@ import com.worldpay.access.checkout.client.session.listener.SessionResponseListe
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
-import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
+import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
@@ -31,7 +35,7 @@ import org.mockito.Mockito.mock
 
 class AccessCheckoutClientIntegrationTest {
 
-    private val verifiedTokensEndpoint = "verifiedTokens/sessions"
+    private val cardSessionEndpoint = "sessions/card"
     private val merchantId = "identity"
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
@@ -67,22 +71,22 @@ class AccessCheckoutClientIntegrationTest {
     }
 
     @Test
-    fun givenValidRequest_shouldReturnSuccessfulResponse() {
+    fun givenValidCardSessionRequest_shouldReturnSuccessfulResponse() {
         val cardDetails = getCardDetails()
         val request = getExpectedRequest(cardDetails)
 
-        val expectedSessionReference = "https://access.worldpay.com/verifiedTokens/sessions/<encrypted-data>"
+        val expectedSessionReference = "https://access.worldpay.com/sessions/<encrypted-data>"
 
         val response = (
             """{
                   "_links": {
-                    "verifiedTokens:session": {
+                    "sessions:session": {
                       "href": "$expectedSessionReference"
                     },
                     "curies": [
                       {
-                        "href": "https://access.worldpay.com/rels/verifiedTokens{rel}.json",
-                        "name": "verifiedTokens",
+                        "href": "https://access.worldpay.com/rels/sessions{rel}.json",
+                        "name": "sessions",
                         "templated": true
                       }
                     ]
@@ -98,7 +102,7 @@ class AccessCheckoutClientIntegrationTest {
                         .withHeader("Content-Type", "application/json")
                         .withHeader(
                             "Location",
-                            "https://access.worldpay.com/$verifiedTokensEndpoint/sessions/<encrypted-data>"
+                            "https://access.worldpay.com/$cardSessionEndpoint/sessions/<encrypted-data>"
                         )
                         .withBody(response)
                 )
@@ -202,7 +206,10 @@ class AccessCheckoutClientIntegrationTest {
             override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
 
             override fun onError(error: AccessCheckoutException) {
-                assertEquals("bodyIsNotJson : The body within the request is not valid json", error.message)
+                assertEquals(
+                    "bodyIsNotJson : The body within the request is not valid json",
+                    error.message
+                )
                 assertionsRan = true
             }
         }
@@ -251,7 +258,13 @@ class AccessCheckoutClientIntegrationTest {
             override fun onError(error: AccessCheckoutException) {
                 val expectedException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(ValidationRule("some-unknown-error", "String is too short", "$.cvv"))
+                    validationRules = listOf(
+                        ValidationRule(
+                            "some-unknown-error",
+                            "String is too short",
+                            "$.cvv"
+                        )
+                    )
                 )
                 assertEquals(expectedException, error)
                 assertionsRan = true
@@ -313,9 +326,9 @@ class AccessCheckoutClientIntegrationTest {
     }
 
     private fun postRequest(request: String): MappingBuilder {
-        return post(urlEqualTo("/$verifiedTokensEndpoint"))
-            .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
-            .withHeader("Content-Type", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
+        return post(urlEqualTo("/$cardSessionEndpoint"))
+            .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
+            .withHeader("Content-Type", equalTo(SESSIONS_MEDIA_TYPE))
             .withRequestBody(EqualToJsonPattern(request, true, true))
     }
 

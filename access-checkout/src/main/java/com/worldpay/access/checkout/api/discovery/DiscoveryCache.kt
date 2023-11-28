@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.api.discovery
 
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
+import java.util.stream.Collectors
 
 /**
  * This class is a cache representation for storing the results of attempted API discoveries
@@ -17,7 +18,7 @@ internal object DiscoveryCache {
      * @return [URL] endpoint that is stored in the cache
      */
     fun getResult(discoverLinks: DiscoverLinks): URL? {
-        return results[discoverLinks.endpoints[0].endpoint]
+        return results[convertToKey(discoverLinks)]
     }
 
     /**
@@ -27,7 +28,7 @@ internal object DiscoveryCache {
      * @param[result] A [URL] generic type to be stored in the cache for the [discoverLinks] key representing the endpoint
      */
     fun saveResult(discoverLinks: DiscoverLinks, result: URL) {
-        results[discoverLinks.endpoints[0].endpoint] = result
+        results[convertToKey(discoverLinks)] = result
     }
 
     /**
@@ -36,6 +37,15 @@ internal object DiscoveryCache {
      * @param[discoverLinks] A [DiscoverLinks] object as the key to be cleared
      */
     fun clearResult(discoverLinks: DiscoverLinks) {
-        results.remove(discoverLinks.endpoints[0].endpoint)
+        results.remove(convertToKey(discoverLinks))
     }
+
+    /**
+     * Converts a DiscoverLinks into a comma-separate String made of each EndPoint endpoint
+     * This String is used to store or lookup a result in the results Map
+     */
+    private fun convertToKey(discoverLinks: DiscoverLinks) =
+        discoverLinks.endpoints.stream()
+            .map { it.endpoint }
+            .collect(Collectors.joining(","))
 }

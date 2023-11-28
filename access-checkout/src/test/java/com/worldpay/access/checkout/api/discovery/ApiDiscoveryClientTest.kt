@@ -25,7 +25,7 @@ class ApiDiscoveryClientTest {
     var coroutinesTestRule = CoroutineTestRule()
 
     private val httpsClient = mock<HttpsClient>()
-    private var discoverLinks: DiscoverLinks = DiscoverLinks.verifiedTokens
+    private var discoverLinks: DiscoverLinks = DiscoverLinks.cardSessions
 
     private val baseUrl = URL("https://base.url.com")
     private val firstEndpoint = URL("https://endpoint.1.com")

@@ -37,7 +37,7 @@ internal class CardSessionRequestHandler(
             .baseUrl(sessionRequestHandlerConfig.getBaseUrl())
             .requestBody(createCardSessionRequest(cardDetails))
             .sessionType(CARD)
-            .discoverLinks(DiscoverLinks.verifiedTokens)
+            .discoverLinks(DiscoverLinks.cardSessions)
             .build()
 
         serviceIntent.putExtra(REQUEST_KEY, sessionRequestInfo)

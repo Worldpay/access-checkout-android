@@ -24,9 +24,6 @@ object RootResourseMockStub {
                         "service:tokens": {
                             "href": "{{request.requestLine.baseUrl}}/tokens"
                         },
-                        "service:verifiedTokens": {
-                            "href": "{{request.requestLine.baseUrl}}/verifiedTokens"
-                        },
                         "curies": [
                             {
                                 "href": "{{request.requestLine.baseUrl}}/rels/payments/{rel}",

@@ -38,7 +38,7 @@ class DiscoveryIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(CARD to activityTestRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to activityTestRule.activity.getString(R.string.card_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -56,7 +56,7 @@ class DiscoveryIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(CVC to activityTestRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
+                mapOf(CVC to activityTestRule.activity.getString(R.string.cvc_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()

@@ -16,8 +16,8 @@ internal class CvcSessionResponseDeserializer : Deserializer<SessionResponse>() 
 
             val links = fetchObject(root, "_links")
 
-            val verifiedTokenSession = fetchObject(links, "sessions:session")
-            val href = toStringProperty(verifiedTokenSession, "href")
+            val cvcSession = fetchObject(links, "sessions:session")
+            val href = toStringProperty(cvcSession, "href")
 
             val curiesRoot = fetchArray(links, "curies")
             val curies = curiesRoot.getJSONObject(0)

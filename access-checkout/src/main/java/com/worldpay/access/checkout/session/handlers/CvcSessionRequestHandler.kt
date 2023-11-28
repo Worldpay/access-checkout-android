@@ -48,7 +48,7 @@ internal class CvcSessionRequestHandler(
             .baseUrl(sessionRequestHandlerConfig.getBaseUrl())
             .requestBody(cvcSessionRequest)
             .sessionType(CVC)
-            .discoverLinks(DiscoverLinks.sessions)
+            .discoverLinks(DiscoverLinks.cvcSessions)
             .build()
 
         serviceIntent.putExtra(SessionRequestService.REQUEST_KEY, sessionRequestInfo)

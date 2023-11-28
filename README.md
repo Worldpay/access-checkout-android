@@ -5,7 +5,7 @@
 
 Access Checkout Android SDK allows you to secure your customer's card details by creating a session.
 
-The session can be used to then create a verified token using the [Access Worldpay APIs](https://developer.worldpay.com/docs/access-worldpay/get-started).
+The session can be used to then take a payment using the [Access Worldpay APIs](https://developer.worldpay.com/docs/access-worldpay/get-started).
 
 A sample demo application is also available to provide an example integration of the SDK.
 

@@ -212,7 +212,7 @@ class SessionRequestServiceTest {
             .baseUrl(baseUrl)
             .requestBody(sessionRequest)
             .sessionType(SessionType.CARD)
-            .discoverLinks(DiscoverLinks.verifiedTokens)
+            .discoverLinks(DiscoverLinks.cardSessions)
             .build()
     }
 

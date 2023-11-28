@@ -24,28 +24,28 @@ class DiscoveryCacheTest {
     @Test
     fun `should set value when setResult is called`() {
         val expectedResult = URL("http://some-href")
-        assertNull(DiscoveryCache.results["service:verifiedTokens"])
+        assertNull(DiscoveryCache.results["service:sessions,sessions:card"])
 
-        DiscoveryCache.saveResult(DiscoverLinks.verifiedTokens, expectedResult)
+        DiscoveryCache.saveResult(DiscoverLinks.cardSessions, expectedResult)
 
-        assertEquals(expectedResult, DiscoveryCache.results["service:verifiedTokens"])
+        assertEquals(expectedResult, DiscoveryCache.results["service:sessions,sessions:card"])
     }
 
     @Test
     fun `should return result when getResult is called`() {
         val expectedResult = URL("http://some-href")
-        DiscoveryCache.results["service:verifiedTokens"] = expectedResult
+        DiscoveryCache.results["service:sessions,sessions:card"] = expectedResult
 
-        assertEquals(expectedResult, DiscoveryCache.getResult(DiscoverLinks.verifiedTokens))
+        assertEquals(expectedResult, DiscoveryCache.getResult(DiscoverLinks.cardSessions))
     }
 
     @Test
     fun `should remove entry from results when clearResult is called`() {
-        val service = "service:verifiedTokens"
-        DiscoveryCache.results[service] = URL("http://some-href")
-        assertNotNull(DiscoveryCache.results[service])
+        val key = "service:sessions,sessions:card"
+        DiscoveryCache.results[key] = URL("http://some-href")
+        assertNotNull(DiscoveryCache.results[key])
 
-        DiscoveryCache.clearResult(DiscoverLinks.verifiedTokens)
-        assertNull(DiscoveryCache.results[service])
+        DiscoveryCache.clearResult(DiscoverLinks.cardSessions)
+        assertNull(DiscoveryCache.results[key])
     }
 }

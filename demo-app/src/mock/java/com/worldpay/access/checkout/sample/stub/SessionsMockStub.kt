@@ -11,6 +11,8 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.github.tomakehurst.wiremock.matching.AnythingPattern
+import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
+import com.worldpay.access.checkout.sample.MockServer
 import com.worldpay.access.checkout.sample.MockServer.Paths.SESSIONS_PAYMENTS_CVC_PATH
 import com.worldpay.access.checkout.sample.MockServer.Paths.SESSIONS_ROOT_PATH
 import com.worldpay.access.checkout.sample.MockServer.stubFor
@@ -20,7 +22,7 @@ import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsRespons
 
 object SessionsMockStub {
 
-    private const val SESSIONS_MEDIA_TYPE = "application/vnd.worldpay.sessions-v1.hal+json"
+    const val SESSIONS_MEDIA_TYPE = "application/vnd.worldpay.sessions-v1.hal+json"
 
     fun stubSessionsTokenRootRequest() {
         stubFor(
@@ -29,14 +31,68 @@ object SessionsMockStub {
         )
     }
 
+    fun stubSessionsCardRequest(context: Context) {
+        stubFor(
+            post(urlEqualTo("/${MockServer.Paths.SESSIONS_CARD_PATH}"))
+                .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
+                .withHeader(
+                    "X-WP-SDK",
+                    matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$")
+                )
+                .withRequestBody(MatchesJsonPathPattern("cardNumber", matching("^[\\d]+$")))
+                .willReturn(
+                    validResponseWithDelay(
+                        context,
+                        2000
+                    )
+                )
+        )
+    }
+
     fun stubSessionsPaymentCvcRequest(context: Context) {
         stubFor(
             post(urlEqualTo("/$SESSIONS_PAYMENTS_CVC_PATH"))
                 .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
-                .withHeader("X-WP-SDK", matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$"))
+                .withHeader(
+                    "X-WP-SDK",
+                    matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$")
+                )
                 .withRequestBody(AnythingPattern())
                 .willReturn(validResponseWithDelay(context, 2000))
+        )
+    }
+
+    fun simulateHttpRedirect(context: Context) {
+        val newLocation = "newSessionsLocation/sessions"
+        stubFor(
+            post(urlEqualTo("/${MockServer.Paths.SESSIONS_CARD_PATH}"))
+                .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
+                .willReturn(
+                    aResponse()
+                        .withFixedDelay(2000)
+                        .withStatus(308)
+                        .withHeader("Location", "${MockServer.getBaseUrl()}/$newLocation")
+                )
+        )
+
+        stubFor(
+            post(urlEqualTo("/$newLocation"))
+                .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
+                .withHeader(
+                    "X-WP-SDK",
+                    matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$")
+                )
+                .withRequestBody(AnythingPattern())
+                .willReturn(
+                    validResponseWithDelay(
+                        context,
+                        2000
+                    )
+                )
         )
     }
 
@@ -46,7 +102,7 @@ object SessionsMockStub {
             """{ 
                   "_links": { 
                     "sessions:session": { 
-                        "href": "${context.getString(R.string.payments_cvc_session_reference)}"                        }, 
+                        "href": "${context.getString(R.string.cvc_session_reference)}"                        }, 
                     "curies": [ 
                       { 
                         "href": "{{request.requestLine.baseUrl}}/rels/sessions/{rel}.json", 
@@ -60,6 +116,9 @@ object SessionsMockStub {
         private const val sessionsResourceResponse = """
                 {
                   "_links": {
+                    "sessions:card": {
+                      "href": "{{request.requestLine.baseUrl}}/sessions/card"
+                    },
                     "sessions:paymentsCvc": {
                       "href": "{{request.requestLine.baseUrl}}/sessions/payments/cvc"
                     },
@@ -89,7 +148,7 @@ object SessionsMockStub {
                 .withFixedDelay(delay)
                 .withStatus(201)
                 .withHeader("Content-Type", "application/json")
-                .withHeader("Location", context.getString(R.string.payments_cvc_session_reference))
+                .withHeader("Location", context.getString(R.string.cvc_session_reference))
                 .withBody(
                     sessionsResourceResponse(
                         context
