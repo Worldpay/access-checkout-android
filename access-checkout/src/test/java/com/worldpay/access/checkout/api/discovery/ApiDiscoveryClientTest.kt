@@ -46,7 +46,8 @@ class ApiDiscoveryClientTest {
 
     @Test
     fun `should retrieve endpoint from cache when one exists`() = runAsBlockingTest {
-        DiscoveryCache.results[discoverLinks.endpoints[0].endpoint] = expectedEndpoint
+        val cacheKey = "${discoverLinks.endpoints[0].endpoint},${discoverLinks.endpoints[1].endpoint}"
+        DiscoveryCache.results[cacheKey] = expectedEndpoint
 
         val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
