@@ -94,12 +94,11 @@ object MockServer {
         Log.d("MockServer", "Stubbing root endpoint with 200 response")
         wireMockServer.stubFor(rootResourceMapping())
 
-        // verified token
-        stubVerifiedTokenRootRequest()
-        stubSessionsCardRequest(context)
-
-        // sessions token
+        // sessions service root endpoint
         stubSessionsTokenRootRequest()
+
+        // card and cvc sessions endpoints
+        stubSessionsCardRequest(context)
         stubSessionsPaymentCvcRequest(context)
 
         stubCardConfiguration(context)
