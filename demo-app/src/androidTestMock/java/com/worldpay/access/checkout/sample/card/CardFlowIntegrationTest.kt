@@ -11,15 +11,15 @@ import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.client.session.model.SessionType.CVC
-import com.worldpay.access.checkout.sample.MockServer.Paths.VERIFIED_TOKENS_SESSIONS_PATH
+import com.worldpay.access.checkout.sample.MockServer.Paths.SESSIONS_CARD_PATH
 import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
-import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VERIFIED_TOKENS_MEDIA_TYPE
-import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.VerifiedTokenResponses.validResponseWithDelay
-import com.worldpay.access.checkout.sample.stub.VerifiedTokenMockStub.simulateHttpRedirect
+import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SESSIONS_MEDIA_TYPE
+import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsResponses.validResponseWithDelay
+import com.worldpay.access.checkout.sample.stub.SessionsMockStub.simulateHttpRedirect
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
 import org.junit.Test
@@ -42,7 +42,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(CARD to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to activityRule.activity.getString(R.string.card_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -75,7 +75,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(CARD to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to activityRule.activity.getString(R.string.card_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -89,7 +89,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(CARD to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to activityRule.activity.getString(R.string.card_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -149,7 +149,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
         CardFragmentTestUtils(activityRule)
             .hasResponseDialogWithMessage(
-                mapOf(CARD to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to activityRule.activity.getString(R.string.card_session_reference)).toString()
             )
             .closeDialog()
             .isInInitialState()
@@ -171,7 +171,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
             CardFragmentTestUtils(activityRule)
                 .hasResponseDialogWithMessage(
-                    mapOf(CARD to activityRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                    mapOf(CARD to activityRule.activity.getString(R.string.card_session_reference)).toString()
                 )
                 .closeDialog()
                 .isInInitialState()
@@ -193,8 +193,8 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
             .clickSubmitButton()
             .hasResponseDialogWithMessage(
                 mapOf(
-                    CVC to activityRule.activity.getString(R.string.payments_cvc_session_reference),
-                    CARD to activityRule.activity.getString(R.string.verified_token_session_reference)
+                    CVC to activityRule.activity.getString(R.string.cvc_session_reference),
+                    CARD to activityRule.activity.getString(R.string.card_session_reference)
                 ).toString()
             )
             .closeDialog()
@@ -203,9 +203,9 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     private fun simulateDelayedResponse(context: Context, pan: String, delay: Int = 10000) {
         stubFor(
-            post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
-                .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
-                .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
+            post(urlEqualTo("/$SESSIONS_CARD_PATH"))
+                .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
                 .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='$pan')]"))
                 .willReturn(validResponseWithDelay(context, delay))
         )
@@ -213,9 +213,9 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     private fun simulateErrorResponse(pan: String) {
         stubFor(
-            post(urlEqualTo("/$VERIFIED_TOKENS_SESSIONS_PATH"))
-                .withHeader("Accept", equalTo(VERIFIED_TOKENS_MEDIA_TYPE))
-                .withHeader("Content-Type", containing(VERIFIED_TOKENS_MEDIA_TYPE))
+            post(urlEqualTo("/$SESSIONS_CARD_PATH"))
+                .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
+                .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
                 .withRequestBody(MatchesJsonPathPattern("$[?(@.cardNumber=='$pan')]"))
                 .willReturn(
                     aResponse()

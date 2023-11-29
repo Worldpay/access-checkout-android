@@ -46,8 +46,8 @@ class CardSessionClientTest {
         val sessionResponse = mock(SessionResponse::class.java)
 
         val headers = hashMapOf(
-            Pair("Content-Type", VERIFIED_TOKENS_MEDIA_TYPE),
-            Pair("Accept", VERIFIED_TOKENS_MEDIA_TYPE),
+            Pair("Content-Type", SESSIONS_MEDIA_TYPE),
+            Pair("Accept", SESSIONS_MEDIA_TYPE),
             Pair("X-WP-SDK", "access-checkout-android/" + BuildConfig.VERSION_NAME)
         )
 

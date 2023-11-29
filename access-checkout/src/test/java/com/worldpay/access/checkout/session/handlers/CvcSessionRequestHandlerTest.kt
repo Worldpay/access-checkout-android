@@ -115,7 +115,7 @@ class CvcSessionRequestHandlerTest {
 
         assertEquals(baseUrl, sessionRequestInfo.baseUrl)
 
-        assertEquals(DiscoverLinks.sessions, sessionRequestInfo.discoverLinks)
+        assertEquals(DiscoverLinks.cvcSessions, sessionRequestInfo.discoverLinks)
         assertEquals(CVC, sessionRequestInfo.sessionType)
 
         assertEquals(1, argument.value.extras?.size())

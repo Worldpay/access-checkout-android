@@ -20,12 +20,12 @@ class SessionResponseInfoTest {
             .baseUrl(baseUrl)
             .requestBody(requestBody)
             .sessionType(CARD)
-            .discoverLinks(DiscoverLinks.verifiedTokens)
+            .discoverLinks(DiscoverLinks.cardSessions)
             .build()
 
         assertEquals(baseUrl, sessionRequestInfo.baseUrl)
         assertEquals(requestBody, sessionRequestInfo.requestBody)
         assertEquals(CARD, sessionRequestInfo.sessionType)
-        assertEquals(DiscoverLinks.verifiedTokens, sessionRequestInfo.discoverLinks)
+        assertEquals(DiscoverLinks.cardSessions, sessionRequestInfo.discoverLinks)
     }
 }

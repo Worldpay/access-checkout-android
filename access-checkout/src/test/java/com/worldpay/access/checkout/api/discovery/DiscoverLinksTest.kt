@@ -1,39 +1,38 @@
 package com.worldpay.access.checkout.api.discovery
 
 import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
-import com.worldpay.access.checkout.session.api.client.VERIFIED_TOKENS_MEDIA_TYPE
 import kotlin.test.assertEquals
 import org.junit.Test
 
 class DiscoverLinksTest {
 
     @Test
-    fun `discoverLinks sessions should return service and endpoint for sessions service`() {
+    fun `discoverLinks cvcSessions should return keys used to discover service and endpoint for cvc sessions`() {
         val expectedService = "service:sessions"
         val expectedEndpoint = "sessions:paymentsCvc"
 
-        assertEquals(DiscoverLinks.sessions.endpoints[0].endpoint, expectedService)
-        assertEquals(DiscoverLinks.sessions.endpoints[1].endpoint, expectedEndpoint)
+        assertEquals(DiscoverLinks.cvcSessions.endpoints[0].endpoint, expectedService)
+        assertEquals(DiscoverLinks.cvcSessions.endpoints[1].endpoint, expectedEndpoint)
     }
 
     @Test
-    fun `discoverLinks verified tokens should return service and endpoint for verifiedTokens service`() {
-        val expectedService = "service:verifiedTokens"
-        val expectedEndpoint = "verifiedTokens:sessions"
-
-        assertEquals(DiscoverLinks.verifiedTokens.endpoints[0].endpoint, expectedService)
-        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].endpoint, expectedEndpoint)
+    fun `discoverLinks cvcSessions should return headers for sessions service`() {
+        assertEquals(DiscoverLinks.cvcSessions.endpoints[1].headers["Accept"], SESSIONS_MEDIA_TYPE)
+        assertEquals(DiscoverLinks.cvcSessions.endpoints[1].headers["Content-Type"], SESSIONS_MEDIA_TYPE)
     }
 
     @Test
-    fun `discoverLinks sessions should return headers for sessions service`() {
-        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Accept"], SESSIONS_MEDIA_TYPE)
-        assertEquals(DiscoverLinks.sessions.endpoints[1].headers["Content-Type"], SESSIONS_MEDIA_TYPE)
+    fun `discoverLinks cardSessions should return keys used to discover service and endpoint for card sessions`() {
+        val expectedService = "service:sessions"
+        val expectedEndpoint = "sessions:card"
+
+        assertEquals(DiscoverLinks.cardSessions.endpoints[0].endpoint, expectedService)
+        assertEquals(DiscoverLinks.cardSessions.endpoints[1].endpoint, expectedEndpoint)
     }
 
     @Test
-    fun `discoverLinks verified tokens should return headers for verifiedTokens service`() {
-        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Accept"], VERIFIED_TOKENS_MEDIA_TYPE)
-        assertEquals(DiscoverLinks.verifiedTokens.endpoints[1].headers["Content-Type"], VERIFIED_TOKENS_MEDIA_TYPE)
+    fun `discoverLinks cardSessions should return headers for sessions service`() {
+        assertEquals(DiscoverLinks.cardSessions.endpoints[1].headers["Accept"], SESSIONS_MEDIA_TYPE)
+        assertEquals(DiscoverLinks.cardSessions.endpoints[1].headers["Content-Type"], SESSIONS_MEDIA_TYPE)
     }
 }

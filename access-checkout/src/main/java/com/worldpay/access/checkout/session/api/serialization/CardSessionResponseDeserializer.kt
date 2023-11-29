@@ -18,8 +18,8 @@ internal class CardSessionResponseDeserializer : Deserializer<SessionResponse>()
 
             val links = fetchObject(root, "_links")
 
-            val verifiedTokenSession = fetchObject(links, "verifiedTokens:session")
-            val href = toStringProperty(verifiedTokenSession, "href")
+            val cardSession = fetchObject(links, "sessions:session")
+            val href = toStringProperty(cardSession, "href")
 
             val curiesRoot = fetchArray(links, "curies")
             val curies = curiesRoot.getJSONObject(0)

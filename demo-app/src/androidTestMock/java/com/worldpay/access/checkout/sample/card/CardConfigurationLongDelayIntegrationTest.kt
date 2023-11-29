@@ -79,7 +79,7 @@ class CardConfigurationLongDelayIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(CARD to cardConfigRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to cardConfigRule.activity.getString(R.string.card_session_reference)).toString()
             )
     }
 

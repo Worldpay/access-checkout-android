@@ -37,7 +37,7 @@ class CardConfigurationIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(CARD to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to cardConfigurationErrorRule.activity.getString(R.string.card_session_reference)).toString()
             )
     }
 
@@ -52,7 +52,7 @@ class CardConfigurationIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(CARD to cardConfigurationErrorRule.activity.getString(R.string.verified_token_session_reference)).toString()
+                mapOf(CARD to cardConfigurationErrorRule.activity.getString(R.string.card_session_reference)).toString()
             )
     }
 }

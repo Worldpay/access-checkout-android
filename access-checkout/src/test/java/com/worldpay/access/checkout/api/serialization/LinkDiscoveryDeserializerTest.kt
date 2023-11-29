@@ -65,7 +65,7 @@ class LinkDiscoveryDeserializerTest {
     }
 
     @Test
-    fun givenValidRootResponseStringThenShouldSuccessfullyDeserializeToVerifiedTokensServiceURL() {
+    fun givenValidRootResponseStringThenShouldSuccessfullyDeserializeToSessionsServiceURL() {
         val rootResponse =
             """{
                     "_links": {
@@ -78,8 +78,8 @@ class LinkDiscoveryDeserializerTest {
                         "service:tokens": {
                             "href": "https://localhost:8443/tokens"
                         },
-                        "service:verifiedTokens": {
-                            "href": "https://localhost:8443/verifiedTokens"
+                        "service:sessions": {
+                            "href": "https://localhost:8443/sessions"
                         },
                         "curies": [
                             {
@@ -91,38 +91,35 @@ class LinkDiscoveryDeserializerTest {
                     }
                 }"""
 
-        val deserializedResponse = LinkDiscoveryDeserializer("service:verifiedTokens").deserialize(rootResponse)
+        val deserializedResponse = LinkDiscoveryDeserializer("service:sessions").deserialize(rootResponse)
 
-        assertEquals("https://localhost:8443/verifiedTokens", deserializedResponse)
+        assertEquals("https://localhost:8443/sessions", deserializedResponse)
     }
 
     @Test
     fun givenValidServiceRootResponseStringThenShouldSuccessfullyDeserializeToSessionsURL() {
         val topLevelServiceResourceResponse = """{
-                "_links": {
-                    "verifiedTokens:recurring": {
-                        "href": "https://localhost:8443/verifiedTokens/recurring"
-                    },
-                    "verifiedTokens:cardOnFile": {
-                        "href": "https://localhost:8443/verifiedTokens/cardOnFile"
-                    },
-                    "verifiedTokens:sessions": {
-                        "href": "https://localhost:8443/verifiedTokens/sessions"
-                    },
+            "_links": {
+                "sessions:card": {
+                    "href": "https://localhost:8443/sessions/card"
+                },
+                "sessions:paymentsCvc": {
+                    "href": "https://localhost:8443/sessions/payments/cvc"
+                },
                 "resourceTree": {
-                    "href": "https://localhost:8443/rels/verifiedTokens/resourceTree.json"
+                    "href": "https://localhost:8443/rels/sessions/resourceTree.json"
                 },
                 "curies": [{
-                    "href": "https://localhost:8443/rels/verifiedTokens/{rel}.json",
-                    "name": "verifiedTokens",
+                    "href": "https://localhost:8443/rels/sessions/{rel}.json",
+                    "name": "sessions",
                     "templated": true
                 }]
             }
         }"""
 
         val deserializedResponse =
-            LinkDiscoveryDeserializer("verifiedTokens:sessions").deserialize(topLevelServiceResourceResponse)
+            LinkDiscoveryDeserializer("sessions:card").deserialize(topLevelServiceResourceResponse)
 
-        assertEquals("https://localhost:8443/verifiedTokens/sessions", deserializedResponse)
+        assertEquals("https://localhost:8443/sessions/card", deserializedResponse)
     }
 }

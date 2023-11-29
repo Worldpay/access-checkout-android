@@ -40,7 +40,7 @@ class FailedCardConfigurationCvcIntegrationTest {
             .clickSubmitButton()
             .requestIsInProgress()
             .hasResponseDialogWithMessage(
-                mapOf(CVC to cardConfigurationErrorRule.activity.getString(R.string.payments_cvc_session_reference)).toString()
+                mapOf(CVC to cardConfigurationErrorRule.activity.getString(R.string.cvc_session_reference)).toString()
             )
             .closeDialog()
             .cardDetailsAre(cvc = "")

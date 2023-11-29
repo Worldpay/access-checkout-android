@@ -137,7 +137,7 @@ class CardSessionRequestHandlerTest {
 
         assertEquals(baseUrl, sessionRequestInfo.baseUrl)
 
-        assertEquals(DiscoverLinks.verifiedTokens, sessionRequestInfo.discoverLinks)
+        assertEquals(DiscoverLinks.cardSessions, sessionRequestInfo.discoverLinks)
         assertEquals(CARD, sessionRequestInfo.sessionType)
 
         assertEquals(1, argument.value.extras?.size())

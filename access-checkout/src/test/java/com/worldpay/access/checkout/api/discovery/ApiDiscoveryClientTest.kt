@@ -25,7 +25,7 @@ class ApiDiscoveryClientTest {
     var coroutinesTestRule = CoroutineTestRule()
 
     private val httpsClient = mock<HttpsClient>()
-    private var discoverLinks: DiscoverLinks = DiscoverLinks.verifiedTokens
+    private var discoverLinks: DiscoverLinks = DiscoverLinks.cardSessions
 
     private val baseUrl = URL("https://base.url.com")
     private val firstEndpoint = URL("https://endpoint.1.com")
@@ -46,7 +46,8 @@ class ApiDiscoveryClientTest {
 
     @Test
     fun `should retrieve endpoint from cache when one exists`() = runAsBlockingTest {
-        DiscoveryCache.results[discoverLinks.endpoints[0].endpoint] = expectedEndpoint
+        val cacheKey = "${discoverLinks.endpoints[0].endpoint},${discoverLinks.endpoints[1].endpoint}"
+        DiscoveryCache.results[cacheKey] = expectedEndpoint
 
         val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 

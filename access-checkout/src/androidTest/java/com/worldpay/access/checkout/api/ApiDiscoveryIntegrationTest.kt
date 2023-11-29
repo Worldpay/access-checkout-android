@@ -6,9 +6,9 @@ import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.stubbing.Scenario
+import com.worldpay.access.checkout.api.ApiDiscoveryStubs.cardSessionsMapping
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.rootResponseMapping
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.stubServiceDiscoveryResponses
-import com.worldpay.access.checkout.api.ApiDiscoveryStubs.verifiedTokensMapping
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
@@ -47,14 +47,14 @@ class ApiDiscoveryIntegrationTest {
     }
 
     @Test
-    fun shouldBeAbleToDiscoverVTSessionsFromRoot() = runBlocking {
+    fun shouldBeAbleToDiscoverCardSessionsFromRoot() = runBlocking {
         stubServiceDiscoveryResponses()
 
         val client = ApiDiscoveryClient()
-        val endpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.verifiedTokens)
+        val endpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
 
         await().atMost(5, TimeUnit.SECONDS).until {
-            endpoint.toString() == "${getBaseUrl()}/verifiedTokens/sessions"
+            endpoint.toString() == "${getBaseUrl()}/sessions/card"
         }
     }
 
@@ -70,7 +70,7 @@ class ApiDiscoveryIntegrationTest {
 
         try {
             val client = ApiDiscoveryClient()
-            client.discoverEndpoint(getBaseUrl(), DiscoverLinks.verifiedTokens)
+            client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
             fail("Expected exception but got none")
         } catch (ace: AccessCheckoutException) {
             assertEquals("Could not discover session endpoint", ace.message)
@@ -97,13 +97,13 @@ class ApiDiscoveryIntegrationTest {
                 .whenScenarioStateIs(serviceAvailableState)
         )
 
-        stubFor(verifiedTokensMapping())
+        stubFor(cardSessionsMapping())
 
         val client = ApiDiscoveryClient()
-        val endpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.verifiedTokens)
+        val endpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
 
         await().atMost(5, TimeUnit.SECONDS).until {
-            endpoint.toString() == "${getBaseUrl()}/verifiedTokens/sessions"
+            endpoint.toString() == "${getBaseUrl()}/sessions/card"
         }
     }
 }
