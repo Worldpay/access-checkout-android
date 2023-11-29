@@ -3,6 +3,11 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### [v3.0.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v3.0.0)
+#### Changed
+- card sessions created by the SDK are now compatible with the simplified Payments API. They remain compatible with the Verified Tokens API.
+- these card sessions URL are now in the form `https://access.worldpay.com/sessions/...` instead of `https://access.worldpay.com/verifiedTokens/sessions/...` before
+
 ### [v2.6.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v2.6.0)
 #### Removed
 - Drop functionality which sets hints/placeholders on EditText provided by clients. It is the responsibility of the client to set whichever hint/placeholder they want in the language of their preference. Major version of the SDK has not been changed despite this functionality being dropped, the reason is that the SDK should never have had that functionality in the first place so this is classified as a bug fix
