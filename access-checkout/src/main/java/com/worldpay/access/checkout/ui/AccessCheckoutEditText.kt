@@ -18,7 +18,7 @@ import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
 import com.worldpay.access.checkout.R
-import java.util.Optional
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 class AccessCheckoutEditText internal constructor(
@@ -160,11 +160,11 @@ class AccessCheckoutEditText internal constructor(
 
     internal fun length(): Int = editText!!.length()
 
-    internal fun getHint(): CharSequence = editText!!.hint
+    fun getHint(): CharSequence = editText!!.hint
 
-    internal fun setHint(hint: CharSequence) = editText!!.setHint(hint)
+    fun setHint(hint: CharSequence) = editText!!.setHint(hint)
 
-    internal fun setHint(resId: Int) = editText!!.setHint(resId)
+    fun setHint(resId: Int) = editText!!.setHint(resId)
 
     override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
         editText!!.setPadding(left, top, right, bottom)
