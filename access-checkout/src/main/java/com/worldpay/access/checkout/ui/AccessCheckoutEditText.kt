@@ -202,6 +202,14 @@ class AccessCheckoutEditText internal constructor(
         editText!!.onFocusChangeListener = l
     }
 
+    override fun isEnabled(): Boolean {
+        return editText!!.isEnabled
+    }
+
+    override fun setEnabled(enabled: Boolean) {
+        editText!!.setEnabled(enabled)
+    }
+
     public override fun onSaveInstanceState(): Parcelable? {
         val editTextState = editText!!.onSaveInstanceState()
         return Bundle().apply {
