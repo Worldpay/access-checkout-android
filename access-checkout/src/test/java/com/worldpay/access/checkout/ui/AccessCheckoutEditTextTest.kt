@@ -20,17 +20,18 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import com.worldpay.access.checkout.R
+import org.junit.Before
+import org.junit.Test
+import org.mockito.ArgumentCaptor
+import org.mockito.ArgumentMatchers.*
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlin.test.assertTrue
-import org.junit.Before
-import org.junit.Test
-import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.anyBoolean
-import org.mockito.ArgumentMatchers.anyFloat
-import org.mockito.ArgumentMatchers.anyInt
-import org.mockito.kotlin.*
 
 class AccessCheckoutEditTextTest {
     private lateinit var accessCheckoutEditText: AccessCheckoutEditText
@@ -550,6 +551,20 @@ class AccessCheckoutEditTextTest {
         val accessCheckoutEditText = AccessCheckoutEditText(mock(), mock(), 0, nullEditText)
 
         accessCheckoutEditText.background = mock()
+    }
+
+    @Test
+    fun `isEnabled getter should return EditText isEnabled`() {
+        given(editTextMock.isEnabled).willReturn(true)
+
+        assertEquals(true, accessCheckoutEditText.isEnabled)
+    }
+
+    @Test
+    fun `isEnabled setter should set EditText isEnabled`() {
+        accessCheckoutEditText.isEnabled = true
+
+        verify(editTextMock).isEnabled = true
     }
 
     /**
