@@ -74,6 +74,7 @@ internal class PanTextWatcher(
         if (isSpaceDeleted) {
             panText = StringBuilder(panText).deleteCharAt(expectedCursorPosition).toString()
             setText(panText, expectedCursorPosition)
+            isSpaceDeleted = false
         }
 
         val brand = findBrandForPan(panText)
