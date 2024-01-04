@@ -8,16 +8,10 @@ import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
- * An implementation of the [ValidationConfig] that represents the card validation configuration.
+ * An implementation of the [ValidationConfig] that represents the card validation configuration
+ * and that can be built using the associated Builder
  *
  * This configuration should be used to register the relevant fields and the listeners.
- *
- * @property[pan] [EditText] that represents the pan ui element
- * @property[expiryDate] [EditText] that represents the expiry date ui element
- * @property[cvc] [EditText] that represents the cvc ui element
- * @property[baseUrl] [String] that represents the base url to use when calling Worldpay services
- * @property[validationListener] [AccessCheckoutCardValidationListener] that represents the validation listener that should be notified on validation changes
- * @property[lifecycleOwner] [LifecycleOwner] of the application so that validation state can be handled during lifecycle changes
  */
 class CardValidationConfig private constructor(
     val pan: EditText,
@@ -30,6 +24,9 @@ class CardValidationConfig private constructor(
     val enablePanFormatting: Boolean
 ) : ValidationConfig {
 
+    /**
+     * A Builder used to create an instance of [CardValidationConfig]
+     */
     class Builder {
 
         private var pan: EditText? = null
@@ -43,9 +40,9 @@ class CardValidationConfig private constructor(
         private var enablePanFormatting: Boolean = false
 
         /**
-         * Sets the pan ui element
+         * Sets the pan ui element to be validated
          *
-         * @param[panAccessCheckoutEditText] [AccessCheckoutEditText] that represents the pan ui element
+         * @param[panAccessCheckoutEditText] [AccessCheckoutEditText] to be validated
          */
         fun pan(panAccessCheckoutEditText: AccessCheckoutEditText): Builder {
             this.pan = panAccessCheckoutEditText.editText
@@ -53,9 +50,9 @@ class CardValidationConfig private constructor(
         }
 
         /**
-         * Sets the expiry date ui element
+         * Sets the expiry date ui element to be validated
          *
-         * @param[expiryDateAccessCheckoutEditText] [AccessCheckoutEditText] that represents the expiry date ui element
+         * @param[expiryDateAccessCheckoutEditText] [AccessCheckoutEditText] to be validated
          */
         fun expiryDate(expiryDateAccessCheckoutEditText: AccessCheckoutEditText): Builder {
             this.expiryDate = expiryDateAccessCheckoutEditText.editText
@@ -63,9 +60,9 @@ class CardValidationConfig private constructor(
         }
 
         /**
-         * Sets the cvc ui element
+         * Sets the cvc ui element to be validated
          *
-         * @param[cvcAccessCheckoutEditText] [AccessCheckoutEditText] that represents the cvc ui element
+         * @param[cvcAccessCheckoutEditText] [AccessCheckoutEditText] to be validated
          */
         fun cvc(cvcAccessCheckoutEditText: AccessCheckoutEditText): Builder {
             this.cvc = cvcAccessCheckoutEditText.editText
@@ -78,8 +75,8 @@ class CardValidationConfig private constructor(
          * @param[pan] [EditText] that represents the pan ui element
          */
         @Deprecated(
-            message = "AccessEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
-            replaceWith = ReplaceWith("pan(pan:AccessEditText)")
+            message = "AccessCheckoutEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
+            replaceWith = ReplaceWith("pan(pan:AccessCheckoutEditText)")
         )
         fun pan(pan: EditText): Builder {
             this.pan = pan
@@ -92,8 +89,8 @@ class CardValidationConfig private constructor(
          * @param[expiryDate] [EditText] that represents the expiry date ui element
          */
         @Deprecated(
-            message = "AccessEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
-            replaceWith = ReplaceWith("expiryDate(expiryDate:AccessEditText)")
+            message = "AccessCheckoutEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
+            replaceWith = ReplaceWith("expiryDate(expiryDate:AccessCheckoutEditText)")
         )
         fun expiryDate(expiryDate: EditText): Builder {
             this.expiryDate = expiryDate
@@ -106,8 +103,8 @@ class CardValidationConfig private constructor(
          * @param[cvc] [EditText] that represents the cvc ui element
          */
         @Deprecated(
-            message = "AccessEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
-            replaceWith = ReplaceWith("cvc(cvc:AccessEditText)")
+            message = "AccessCheckoutEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
+            replaceWith = ReplaceWith("cvc(cvc:AccessCheckoutEditText)")
         )
         fun cvc(cvc: EditText): Builder {
             this.cvc = cvc

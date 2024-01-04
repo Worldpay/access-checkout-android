@@ -21,6 +21,10 @@ import com.worldpay.access.checkout.R
 import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
+/**
+ * A UI component to capture the pan, expiry date or cvc of a payment card without being exposed to the text entered by the shopper.
+ * This design is to allow merchants to reach the lowest level of compliance (SAQ-A)
+ */
 class AccessCheckoutEditText internal constructor(
     context: Context,
     attrs: AttributeSet?,
@@ -69,7 +73,7 @@ class AccessCheckoutEditText internal constructor(
     constructor(context: Context) : this(context, null, 0)
 
     /**
-     * Core properties
+     * Properties
      */
     internal val text: String get() = editText!!.text.toString()
     fun setText(text: String) = editText!!.setText(text)
@@ -78,11 +82,38 @@ class AccessCheckoutEditText internal constructor(
     val selectionEnd: Int get() = editText!!.selectionEnd
     fun setSelection(start: Int, stop: Int) = editText!!.setSelection(start, stop)
 
+    /**
+     * Return the current color selected for normal text.
+     *
+     * @return Returns the current text color.
+     */
     val currentTextColor: Int get() = editText!!.currentTextColor
+    /**
+     * Sets the text color for all the states (normal, selected,
+     * focused) to be this color.
+     *
+     * @param color A color value in the form 0xAARRGGBB
+     */
     fun setTextColor(color: Int) = editText!!.setTextColor(color)
 
+    /**
+     * Return the current color selected to paint the hint text.
+     *
+     * @return Returns the current hint text color.
+     */
     val currentHintTextColor: Int @ColorInt get() = editText!!.currentHintTextColor
+    /**
+     * Sets the color selected to paint the hint text.
+     *
+     * @param color the color to paint the hint text
+     */
+    fun setHintTextColor(@ColorInt color: Int) {
+        editText!!.setHintTextColor(color)
+    }
 
+    /**
+     * The type of the Input Method Editor (IME).
+     */
     var imeOptions: Int
         get() {
             return editText!!.imeOptions
@@ -91,6 +122,9 @@ class AccessCheckoutEditText internal constructor(
             editText!!.imeOptions = imeOptions
         }
 
+    /**
+     * The size (in pixels) of the default text size in this component.
+     */
     var textSize: Float
         get() {
             return editText!!.textSize
@@ -99,6 +133,9 @@ class AccessCheckoutEditText internal constructor(
             editText!!.textSize = size
         }
 
+    /**
+     * The current Typeface that is used to style the text.
+     */
     var typeface: Typeface
         get() {
             return editText!!.typeface
@@ -107,6 +144,9 @@ class AccessCheckoutEditText internal constructor(
             editText!!.typeface = tf
         }
 
+    /**
+     * @return whether or not the cursor is visible
+     */
     var isCursorVisible: Boolean
         get() {
             return editText!!.isCursorVisible
@@ -140,54 +180,133 @@ class AccessCheckoutEditText internal constructor(
         }
 
     /**
+     * Returns whether this component is enabled
+     *
+     * @return whether this component is enabled
+     */
+    override fun isEnabled(): Boolean {
+        return editText!!.isEnabled
+    }
+
+    /**
+     * Enables/Disables this component
+     *
+     * @param enabled a boolean indicating whether to enable this component
+     */
+    override fun setEnabled(enabled: Boolean) {
+        editText!!.setEnabled(enabled)
+    }
+
+    /**
+     * Returns the hint that is displayed when the text is empty.
+     *
+     * @return the hint displayed when the text is empty
+     */
+    fun getHint(): CharSequence = editText!!.hint
+
+    /**
+     * Sets the hint that is displayed when the text is empty.
+     *
+     * @param hint to be displayed when the text is empty
+     */
+    fun setHint(hint: CharSequence) = editText!!.setHint(hint)
+
+    /**
+     * Sets the hint that is displayed when the text is empty.
+     *
+     * @param resId resource id of the hint to be displayed when the text is empty
+     */
+    fun setHint(resId: Int) = editText!!.setHint(resId)
+
+    /**
+     * Returns the background drawn in this component
+     *
+     * @return background drawn in this component
+     */
+    override fun getBackground(): Drawable? {
+        return this.editText?.background
+    }
+
+    /**
+     * Sets the background to be drawn in this component
+     *
+     * @param background to be drawn in this component
+     */
+    override fun setBackground(background: Drawable?) {
+        this.editText?.background = background
+    }
+
+    /**
+     * Sets the background to be drawn in this component using a resource id
+     *
+     * @param resId id of the resource to use to draw the background in this component
+     */
+    override fun setBackgroundResource(resId: Int) {
+        this.editText!!.setBackgroundResource(resId)
+    }
+
+    /**
+     * Sets the background color to be painted in this component
+     *
+     * @param color color to use to paint the background in this component
+     */
+    override fun setBackgroundColor(color: Int) {
+        this.editText!!.setBackgroundColor(color)
+    }
+
+    /**
      * Methods
+     */
+
+    /**
+     * Clears the text entered by the shopper
      */
     fun clear() {
         editText!!.text = SpannableStringBuilder("", 0, 0)
     }
 
-    fun setHintTextColor(@ColorInt color: Int) {
-        editText!!.setHintTextColor(color)
-    }
-
+    /**
+     * Specify whether this widget should automatically scale the text to try to perfectly fit
+     *
+     * @param autoSizeTextType the type of auto-size
+     */
     fun setAutoSizeTextTypeWithDefaults(@TextViewCompat.AutoSizeTextType autoSizeTextType: Int) {
         editText!!.setAutoSizeTextTypeWithDefaults(autoSizeTextType)
     }
 
+    /**
+     * Sets the text appearance from the specified style resource.
+     *
+     * @param resId the resource identifier of the style to apply
+     */
     fun setTextAppearance(@StyleRes resId: Int) {
         editText!!.setTextAppearance(resId)
     }
 
     internal fun length(): Int = editText!!.length()
 
-    fun getHint(): CharSequence = editText!!.hint
-
-    fun setHint(hint: CharSequence) = editText!!.setHint(hint)
-
-    fun setHint(resId: Int) = editText!!.setHint(resId)
-
+    /**
+     * Sets the left, top, right and bottom padding
+     *
+     * @param left left padding
+     * @param top top padding
+     * @param right right padding
+     * @param bottom bottom padding
+     */
     override fun setPadding(left: Int, top: Int, right: Int, bottom: Int) {
         editText!!.setPadding(left, top, right, bottom)
     }
 
+    /**
+     * Sets the start, top, end and bottom padding
+     *
+     * @param start start padding
+     * @param top top padding
+     * @param end end padding
+     * @param bottom bottom padding
+     */
     override fun setPaddingRelative(start: Int, top: Int, end: Int, bottom: Int) {
         editText!!.setPaddingRelative(start, top, end, bottom)
-    }
-
-    override fun getBackground(): Drawable? {
-        return this.editText?.background
-    }
-
-    override fun setBackground(background: Drawable?) {
-        this.editText?.background = background
-    }
-
-    override fun setBackgroundColor(color: Int) {
-        this.editText!!.setBackgroundColor(color)
-    }
-
-    override fun setBackgroundResource(resId: Int) {
-        this.editText!!.setBackgroundResource(resId)
     }
 
     override fun dispatchKeyEvent(event: KeyEvent?): Boolean {
@@ -200,14 +319,6 @@ class AccessCheckoutEditText internal constructor(
 
     override fun setOnFocusChangeListener(l: OnFocusChangeListener?) {
         editText!!.onFocusChangeListener = l
-    }
-
-    override fun isEnabled(): Boolean {
-        return editText!!.isEnabled
-    }
-
-    override fun setEnabled(enabled: Boolean) {
-        editText!!.setEnabled(enabled)
     }
 
     public override fun onSaveInstanceState(): Parcelable? {

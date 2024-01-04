@@ -1,14 +1,12 @@
 package com.worldpay.access.checkout.client.session.model
 
-import com.worldpay.access.checkout.client.session.model.CardDetails.ExpiryDate
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
 /**
- * This class is a representation of card information that can be constructed with a [CardDetails.Builder]
- *
- * @property [pan] an optional [String] containing the PAN
- * @property [expiryDate] an optional [ExpiryDate] object containing the expiry month and year
- * @property [cvc] an optional [String] containing the cvc
+ * A class representing a shopper's card details that can be constructed with a [CardDetails.Builder]
+ * All properties are internal and only accessible to the Access Checkout SDK.
+ * This is designed to protect merchants from exposure to the card details so that they can reach the lowest
+ * level of compliance (SAQ-A)
  */
 class CardDetails private constructor(
     internal val pan: String?,
@@ -17,7 +15,9 @@ class CardDetails private constructor(
 ) {
 
     /**
-     * This builder helps build the [CardDetails] instance
+     * A builder designed to create an instance of the [CardDetails] class by passing references to:
+     * - the AccessCheckoutEditText components used to capture pan, expiry date and cvc (card payment flow)
+     * - or the AccessCheckoutEditText component used to capture the cvc (cvc only payment flow)
      */
     data class Builder(
         private var pan: String? = null,
@@ -26,58 +26,59 @@ class CardDetails private constructor(
     ) {
 
         /**
-         * Sets the pan number for the card
+         * Sets the pan using an instance of [AccessCheckoutEditText]
          *
-         * @param[panAccessCheckoutEditText] [AccessCheckoutEditText] that represents the pan number
+         * @param[panAccessCheckoutEditText] [AccessCheckoutEditText] used to capture the pan
          */
         fun pan(panAccessCheckoutEditText: AccessCheckoutEditText) =
             apply { this.pan = panAccessCheckoutEditText.text.replace("\\s+".toRegex(), "") }
 
         /**
-         * Sets the expiry date for the card
+         * Sets the expiry date using an instance of [AccessCheckoutEditText]
          *
-         * @param[expiryDateAccessCheckoutEditText] [AccessCheckoutEditText] that represents the expiry date
+         * @param[expiryDateAccessCheckoutEditText] [AccessCheckoutEditText] used to capture the expiry date
          */
         fun expiryDate(expiryDateAccessCheckoutEditText: AccessCheckoutEditText) =
             apply { this.expiryDate = ExpiryDate(expiryDateAccessCheckoutEditText) }
 
         /**
-         * Sets the cvc for the card
+         * Sets the cvc using an instance of [AccessCheckoutEditText]
          *
-         * @param[cvcAccessCheckoutEditText] [AccessCheckoutEditText] that represents the cvc
+         * @param[cvcAccessCheckoutEditText] [AccessCheckoutEditText] used to capture the cvc
          */
         fun cvc(cvcAccessCheckoutEditText: AccessCheckoutEditText) = apply { this.cvc = cvcAccessCheckoutEditText.text }
 
         /**
-         * Sets the pan number for the card
+         * (Deprecated) Sets the pan using a [String] that contains the card number
          *
-         * @param[pan] [String] that represents the pan number
+         * @param[pan] [String] that contains the card number
          */
         @Deprecated(
-            message = "CardDetails should now be built using instances of AccessEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
-            replaceWith = ReplaceWith("pan(panAccessEditText:AccessEditText)")
+            message = "CardDetails should now be built using instances of AccessCheckoutEditText rather than actual card details. " +
+                "The support for passing card details as String will be removed in the next major version.",
+            replaceWith = ReplaceWith("pan(panAccessCheckoutEditText:AccessCheckoutEditText)")
         )
         fun pan(pan: String) = apply { this.pan = pan.replace("\\s+".toRegex(), "") }
 
         /**
-         * Sets the expiry date for the card
+         * (Deprecated) Sets the expiry date using a [String] that contains the expiry date
          *
-         * @param[expiryDate] [String] that represents the expiry date
+         * @param[expiryDate] [String] that contains the expiry date
          */
         @Deprecated(
-            message = "CardDetails should now be built using instances of AccessEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
-            replaceWith = ReplaceWith("expiryDate(expiryDateAccessEditText:AccessEditText)")
+            message = "CardDetails should now be built using instances of AccessCheckoutEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
+            replaceWith = ReplaceWith("expiryDate(expiryDateAccessCheckoutEditText:AccessCheckoutEditText)")
         )
         fun expiryDate(expiryDate: String) = apply { this.expiryDate = ExpiryDate(expiryDate) }
 
         /**
-         * Sets the cvc for the card
+         * (Deprecated) Sets the cvc using a [String] that contains the cvc
          *
-         * @param[cvc] [String] that represents the cvc
+         * @param[cvc] [String] that contains the cvc
          */
         @Deprecated(
-            message = "CardDetails should now be built using instances of AccessEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
-            replaceWith = ReplaceWith("cvc(cvcAccessEditText:AccessEditText)")
+            message = "CardDetails should now be built using instances of AccessCheckoutEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
+            replaceWith = ReplaceWith("cvc(cvcAccessCheckoutEditText:AccessCheckoutEditText)")
         )
         fun cvc(cvc: String) = apply { this.cvc = cvc }
 

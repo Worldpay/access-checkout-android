@@ -8,13 +8,10 @@ import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
- * An implementation of the [ValidationConfig] that represents the cvc validation configuration.
+ * An implementation of the [ValidationConfig] that represents the cvc validation configuration
+ * and that can be built using the associated Builder
  *
  * This configuration should be used to register the relevant fields and the listeners.
- *
- * @property[cvc] [AccessCheckoutEditText] that represents the cvc ui element
- * @property[validationListener] [AccessCheckoutCvcValidationListener] that represents the validation listener that should be notified on validation changes
- * @property[lifecycleOwner] [LifecycleOwner] of the application so that validation state can be handled during lifecycle changes
  */
 class CvcValidationConfig private constructor(
     val cvc: EditText,
@@ -22,6 +19,9 @@ class CvcValidationConfig private constructor(
     val lifecycleOwner: LifecycleOwner
 ) : ValidationConfig {
 
+    /**
+     * A Builder used to create an instance of [CvcValidationConfig]
+     */
     class Builder {
 
         private var cvc: EditText? = null
@@ -29,9 +29,9 @@ class CvcValidationConfig private constructor(
         private var lifecycleOwner: LifecycleOwner? = null
 
         /**
-         * Sets the cvc ui element
+         * Sets the cvc ui element to be validated
          *
-         * @param[cvcAccessCheckoutEditText] [AccessCheckoutEditText] that represents the cvc ui element
+         * @param[cvcAccessCheckoutEditText] [AccessCheckoutEditText] to be validated
          */
         fun cvc(cvcAccessCheckoutEditText: AccessCheckoutEditText): Builder {
             this.cvc = cvcAccessCheckoutEditText.editText
@@ -44,8 +44,8 @@ class CvcValidationConfig private constructor(
          * @param[cvc] [EditText] that represents the cvc ui element
          */
         @Deprecated(
-            message = "AccessEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
-            replaceWith = ReplaceWith("cvc(cvc:AccessEditText)")
+            message = "AccessCheckoutEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
+            replaceWith = ReplaceWith("cvc(cvc:AccessCheckoutEditText)")
         )
         fun cvc(cvc: EditText): Builder {
             this.cvc = cvc
