@@ -52,7 +52,7 @@ internal class CardSessionRequestHandler(
             cardDetails.pan!!,
             cardExpiryDate,
             cardDetails.cvc!!,
-            sessionRequestHandlerConfig.getMerchantId()
+            sessionRequestHandlerConfig.getCheckoutId()
         )
     }
 }

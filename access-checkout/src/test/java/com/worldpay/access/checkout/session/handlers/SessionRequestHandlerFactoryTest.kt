@@ -14,7 +14,7 @@ class SessionRequestHandlerFactoryTest {
     fun `should return expected list of token request handlers`() {
         val config = SessionRequestHandlerConfig.Builder()
             .baseUrl(URL("http://base-url.com"))
-            .merchantId("merchant-id")
+            .checkoutId("checkout-id")
             .context(Mockito.mock(Context::class.java))
             .externalSessionResponseListener(Mockito.mock(SessionResponseListener::class.java))
             .build()

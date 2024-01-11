@@ -36,7 +36,7 @@ import org.mockito.Mockito.mock
 class AccessCheckoutClientIntegrationTest {
 
     private val cardSessionEndpoint = "sessions/card"
-    private val merchantId = "identity"
+    private val checkoutId = "identity"
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
 
@@ -121,7 +121,7 @@ class AccessCheckoutClientIntegrationTest {
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
                 .baseUrl(getBaseUrl().toString())
-                .merchantId(merchantId)
+                .checkoutId(checkoutId)
                 .sessionResponseListener(responseListener)
                 .context(applicationContext)
                 .lifecycleOwner(lifecycleOwner)
@@ -171,7 +171,7 @@ class AccessCheckoutClientIntegrationTest {
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
                 .baseUrl(getBaseUrl().toString())
-                .merchantId(merchantId)
+                .checkoutId(checkoutId)
                 .sessionResponseListener(responseListener)
                 .context(applicationContext)
                 .lifecycleOwner(lifecycleOwner)
@@ -217,7 +217,7 @@ class AccessCheckoutClientIntegrationTest {
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
                 .baseUrl(getBaseUrl().toString())
-                .merchantId(merchantId)
+                .checkoutId(checkoutId)
                 .sessionResponseListener(errorListener)
                 .context(applicationContext)
                 .lifecycleOwner(lifecycleOwner)
@@ -274,7 +274,7 @@ class AccessCheckoutClientIntegrationTest {
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
                 .baseUrl(getBaseUrl().toString())
-                .merchantId(merchantId)
+                .checkoutId(checkoutId)
                 .sessionResponseListener(errorListener)
                 .context(applicationContext)
                 .lifecycleOwner(lifecycleOwner)
@@ -313,7 +313,7 @@ class AccessCheckoutClientIntegrationTest {
         getInstrumentation().runOnMainSync {
             val accessCheckoutClient = AccessCheckoutClientBuilder()
                 .baseUrl(getBaseUrl().toString())
-                .merchantId(merchantId)
+                .checkoutId(checkoutId)
                 .sessionResponseListener(errorListener)
                 .context(applicationContext)
                 .lifecycleOwner(lifecycleOwner)
@@ -348,7 +348,7 @@ class AccessCheckoutClientIntegrationTest {
                     "year": ${cardDetails.expiryDate?.year}
                 },
                 "cvc": "${cardDetails.cvc}",
-                "identity": "$merchantId"
+                "identity": "$checkoutId"
             }"""
     }
 }

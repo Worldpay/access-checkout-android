@@ -21,7 +21,7 @@ import java.net.URL
 class AccessCheckoutClientBuilder {
 
     private var baseUrl: String? = null
-    private var merchantId: String? = null
+    private var checkoutId: String? = null
     private var context: Context? = null
     private var externalSessionResponseListener: SessionResponseListener? = null
     private var lifecycleOwner: LifecycleOwner? = null
@@ -37,12 +37,27 @@ class AccessCheckoutClientBuilder {
     }
 
     /**
-     * Sets the merchant id of the client
+     * (Deprecated) Sets the merchant id of the client
      *
      * @param[merchantId] [String] that represents the id of the merchant given to the client at time of registration
      */
+    @Deprecated(
+        message = "Your checkoutId should now be passed to the builder using checkoutId(). The support for passing " +
+            "your checkoutId using merchantId() will be removed in the next major version",
+        replaceWith = ReplaceWith("checkoutId(checkoutId: String)")
+    )
     fun merchantId(merchantId: String): AccessCheckoutClientBuilder {
-        this.merchantId = merchantId
+        this.checkoutId = merchantId
+        return this
+    }
+
+    /**
+     * Sets the checkout id of the client
+     *
+     * @param[checkoutId] [String] that represents the checkoutId given to the merchant at time of registration
+     */
+    fun checkoutId(checkoutId: String): AccessCheckoutClientBuilder {
+        this.checkoutId = checkoutId
         return this
     }
 
@@ -88,14 +103,14 @@ class AccessCheckoutClientBuilder {
      */
     fun build(): AccessCheckoutClient {
         validateNotNull(baseUrl, "base url")
-        validateNotNull(merchantId, "merchant id")
+        validateNotNull(checkoutId, "checkout id")
         validateNotNull(context, "context")
         validateNotNull(externalSessionResponseListener, "session response listener")
         validateNotNull(lifecycleOwner, "lifecycle owner")
 
         val tokenRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
             .baseUrl(URL(baseUrl!!))
-            .merchantId(merchantId!!)
+            .checkoutId(checkoutId!!)
             .context(context!!)
             .externalSessionResponseListener(externalSessionResponseListener!!)
             .build()

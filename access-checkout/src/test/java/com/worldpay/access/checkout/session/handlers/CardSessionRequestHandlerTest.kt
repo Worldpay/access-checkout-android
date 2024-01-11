@@ -40,7 +40,7 @@ class CardSessionRequestHandlerTest {
             CardSessionRequestHandler(
                 SessionRequestHandlerConfig.Builder()
                     .baseUrl(baseUrl)
-                    .merchantId("merchant-id")
+                    .checkoutId("checkout-id")
                     .context(context)
                     .externalSessionResponseListener(externalSessionResponseListener)
                     .build()
@@ -130,7 +130,7 @@ class CardSessionRequestHandlerTest {
         sessionRequestInfo.requestBody as CardSessionRequest
 
         assertEquals(cardDetails.pan, sessionRequestInfo.requestBody.cardNumber)
-        assertEquals("merchant-id", sessionRequestInfo.requestBody.identity)
+        assertEquals("checkout-id", sessionRequestInfo.requestBody.identity)
         assertEquals(cardDetails.cvc, sessionRequestInfo.requestBody.cvc)
         assertEquals(cardDetails.expiryDate?.month, sessionRequestInfo.requestBody.cardExpiryDate.month)
         assertEquals(cardDetails.expiryDate?.year, sessionRequestInfo.requestBody.cardExpiryDate.year)

@@ -39,7 +39,7 @@ internal class CvcSessionRequestHandler(
         val cvcSessionRequest =
             CvcSessionRequest(
                 cardDetails.cvc!!,
-                sessionRequestHandlerConfig.getMerchantId()
+                sessionRequestHandlerConfig.getCheckoutId()
             )
 
         val serviceIntent = Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
