@@ -14,19 +14,19 @@ class SessionRequestHandlerConfigTest {
     @Test
     fun `should be able to create instance of token config and persist the properties`() {
         val baseUrl = URL("http://base-url.com")
-        val merchantId = "merchant-id"
+        val checkoutId = "checkout-id"
         val context = mock(Context::class.java)
         val externalSessionResponseListener = mock(SessionResponseListener::class.java)
 
         val tokenRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
             .baseUrl(baseUrl)
-            .merchantId(merchantId)
+            .checkoutId(checkoutId)
             .context(context)
             .externalSessionResponseListener(externalSessionResponseListener)
             .build()
 
         assertEquals(baseUrl, tokenRequestHandlerConfig.getBaseUrl())
-        assertEquals(merchantId, tokenRequestHandlerConfig.getMerchantId())
+        assertEquals(checkoutId, tokenRequestHandlerConfig.getCheckoutId())
         assertEquals(context, tokenRequestHandlerConfig.getContext())
         assertEquals(
             externalSessionResponseListener,
@@ -38,7 +38,7 @@ class SessionRequestHandlerConfigTest {
     fun `should throw an illegal argument exception when no baseUrl is passed to builder`() {
         val exception = assertFailsWith<IllegalArgumentException> {
             SessionRequestHandlerConfig.Builder()
-                .merchantId("merchant-id")
+                .checkoutId("checkout-id")
                 .context(mock(Context::class.java))
                 .externalSessionResponseListener(mock(SessionResponseListener::class.java))
                 .build()
@@ -47,7 +47,7 @@ class SessionRequestHandlerConfigTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no merchantId is passed to builder`() {
+    fun `should throw an illegal argument exception when no checkoutId is passed to builder`() {
         val exception = assertFailsWith<IllegalArgumentException> {
             SessionRequestHandlerConfig.Builder()
                 .baseUrl(URL("http://base-url.com"))
@@ -63,7 +63,7 @@ class SessionRequestHandlerConfigTest {
         val exception = assertFailsWith<IllegalArgumentException> {
             SessionRequestHandlerConfig.Builder()
                 .baseUrl(URL("http://base-url.com"))
-                .merchantId("merchant-id")
+                .checkoutId("checkout-id")
                 .externalSessionResponseListener(mock(SessionResponseListener::class.java))
                 .build()
         }
@@ -75,7 +75,7 @@ class SessionRequestHandlerConfigTest {
         val exception = assertFailsWith<IllegalArgumentException> {
             SessionRequestHandlerConfig.Builder()
                 .baseUrl(URL("http://base-url.com"))
-                .merchantId("merchant-id")
+                .checkoutId("checkout-id")
                 .context(mock(Context::class.java))
                 .build()
         }
@@ -87,7 +87,7 @@ class SessionRequestHandlerConfigTest {
         val exception = assertFailsWith<MalformedURLException> {
             SessionRequestHandlerConfig.Builder()
                 .baseUrl(URL("malformed-url"))
-                .merchantId("merchant-id")
+                .checkoutId("checkout-id")
                 .externalSessionResponseListener(mock(SessionResponseListener::class.java))
                 .context(mock(Context::class.java))
                 .build()

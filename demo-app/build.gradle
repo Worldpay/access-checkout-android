@@ -34,7 +34,7 @@ android {
     }
 
     applicationVariants.all { variant ->
-        variant.buildConfigField "String", "MERCHANT_ID", merchantID
+        variant.buildConfigField "String", "CHECKOUT_ID", checkoutId
     }
 
     testOptions {

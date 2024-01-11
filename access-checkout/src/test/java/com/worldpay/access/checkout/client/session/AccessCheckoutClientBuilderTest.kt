@@ -18,7 +18,7 @@ class AccessCheckoutClientBuilderTest {
     private val context = mock(Context::class.java)
     private val sessionResponseListener = mock(SessionResponseListener::class.java)
     private val lifecycleOwner = mock(LifecycleOwner::class.java)
-    private val merchantId = "merchant-123"
+    private val checkoutId = "checkout-id-123"
     private val baseUrl = "https://localhost:8443"
 
     @Before
@@ -27,12 +27,27 @@ class AccessCheckoutClientBuilderTest {
     }
 
     @Test
-    fun `should successfully initialise access checkout client using a builder`() {
+    fun `should successfully initialise access checkout client using a builder and merchantId()`() {
         given(context.applicationContext).willReturn(context)
 
         val accessCheckoutClient = AccessCheckoutClientBuilder()
             .baseUrl(baseUrl)
-            .merchantId(merchantId)
+            .merchantId(checkoutId)
+            .context(context)
+            .sessionResponseListener(sessionResponseListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertNotNull(accessCheckoutClient)
+    }
+
+    @Test
+    fun `should successfully initialise access checkout client using a builder and checkoutId()`() {
+        given(context.applicationContext).willReturn(context)
+
+        val accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(baseUrl)
+            .checkoutId(checkoutId)
             .context(context)
             .sessionResponseListener(sessionResponseListener)
             .lifecycleOwner(lifecycleOwner)
@@ -62,7 +77,7 @@ class AccessCheckoutClientBuilderTest {
     fun `should throw an illegal argument exception when no baseUrl is passed to builder`() {
         val exception = assertFailsWith<IllegalArgumentException> {
             AccessCheckoutClientBuilder()
-                .merchantId(merchantId)
+                .checkoutId(checkoutId)
                 .context(context)
                 .sessionResponseListener(sessionResponseListener)
                 .lifecycleOwner(lifecycleOwner)
@@ -72,7 +87,7 @@ class AccessCheckoutClientBuilderTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no merchantId is passed to builder`() {
+    fun `should throw an illegal argument exception when no checkout ID is passed to builder`() {
         val exception = assertFailsWith<IllegalArgumentException> {
             AccessCheckoutClientBuilder()
                 .baseUrl(baseUrl)
@@ -81,7 +96,7 @@ class AccessCheckoutClientBuilderTest {
                 .lifecycleOwner(lifecycleOwner)
                 .build()
         }
-        assertEquals("Expected merchant id to be provided but was not", exception.message)
+        assertEquals("Expected checkout id to be provided but was not", exception.message)
     }
 
     @Test
@@ -89,7 +104,7 @@ class AccessCheckoutClientBuilderTest {
         val exception = assertFailsWith<IllegalArgumentException> {
             AccessCheckoutClientBuilder()
                 .baseUrl(baseUrl)
-                .merchantId(merchantId)
+                .checkoutId(checkoutId)
                 .sessionResponseListener(sessionResponseListener)
                 .lifecycleOwner(lifecycleOwner)
                 .build()
@@ -102,7 +117,7 @@ class AccessCheckoutClientBuilderTest {
         val exception = assertFailsWith<IllegalArgumentException> {
             AccessCheckoutClientBuilder()
                 .baseUrl(baseUrl)
-                .merchantId(merchantId)
+                .checkoutId(checkoutId)
                 .context(context)
                 .lifecycleOwner(lifecycleOwner)
                 .build()
@@ -118,7 +133,7 @@ class AccessCheckoutClientBuilderTest {
         val exception = assertFailsWith<IllegalArgumentException> {
             AccessCheckoutClientBuilder()
                 .baseUrl(baseUrl)
-                .merchantId(merchantId)
+                .checkoutId(checkoutId)
                 .context(context)
                 .sessionResponseListener(sessionResponseListener)
                 .build()

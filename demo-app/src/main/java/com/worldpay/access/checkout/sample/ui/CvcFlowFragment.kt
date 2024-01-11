@@ -63,7 +63,7 @@ class CvcFlowFragment : Fragment() {
     private fun initialisePaymentFlow(activity: FragmentActivity, view: View) {
         val accessCheckoutClient = AccessCheckoutClientBuilder()
             .baseUrl(getBaseUrl())
-            .merchantId(getMerchantID())
+            .checkoutId(getCheckoutId())
             .sessionResponseListener(SessionResponseListenerImpl(activity, progressBar))
             .context(activity.applicationContext)
             .lifecycleOwner(this)
@@ -94,7 +94,7 @@ class CvcFlowFragment : Fragment() {
         cvcText.isEnabled = false
     }
 
-    private fun getMerchantID() = BuildConfig.MERCHANT_ID
+    private fun getCheckoutId() = BuildConfig.CHECKOUT_ID
 
     private fun getBaseUrl() = getString(R.string.endpoint)
 }

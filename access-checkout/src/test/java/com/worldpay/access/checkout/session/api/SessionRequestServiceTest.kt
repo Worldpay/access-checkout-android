@@ -205,7 +205,7 @@ class SessionRequestServiceTest {
                     21
                 ),
                 cvc = "123",
-                identity = "merchant-id"
+                identity = "checkout-id"
             )
 
         return SessionRequestInfo.Builder()

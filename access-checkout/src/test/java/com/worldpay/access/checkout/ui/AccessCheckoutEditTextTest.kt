@@ -20,6 +20,10 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import com.worldpay.access.checkout.R
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
@@ -28,10 +32,6 @@ import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 
 class AccessCheckoutEditTextTest {
     private lateinit var accessCheckoutEditText: AccessCheckoutEditText

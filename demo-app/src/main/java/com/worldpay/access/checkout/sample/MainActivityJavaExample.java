@@ -116,8 +116,8 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
         return getString(R.string.endpoint);
     }
 
-    private String getMerchantID() {
-        return BuildConfig.MERCHANT_ID;
+    private String getCheckoutId() {
+        return BuildConfig.CHECKOUT_ID;
     }
 
     private void initialiseValidation() {
@@ -137,7 +137,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
     private void initialisePaymentFlow() {
         final AccessCheckoutClient accessCheckoutClient = new AccessCheckoutClientBuilder()
                 .baseUrl(getBaseUrl())
-                .merchantId(getMerchantID())
+                .checkoutId(getCheckoutId())
                 .sessionResponseListener(this)
                 .context(getApplicationContext())
                 .lifecycleOwner(this)

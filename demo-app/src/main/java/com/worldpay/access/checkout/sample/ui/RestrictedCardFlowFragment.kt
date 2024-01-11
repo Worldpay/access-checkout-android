@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
-import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.RestrictedCardValidationListener
 import com.worldpay.access.checkout.sample.images.SVGImageLoader
@@ -73,8 +72,6 @@ class RestrictedCardFlowFragment : Fragment() {
 
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
     }
-
-    private fun getMerchantID() = BuildConfig.MERCHANT_ID
 
     private fun getBaseUrl() = getString(R.string.endpoint)
 }

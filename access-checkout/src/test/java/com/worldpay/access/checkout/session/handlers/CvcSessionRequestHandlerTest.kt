@@ -40,7 +40,7 @@ class CvcSessionRequestHandlerTest {
             CvcSessionRequestHandler(
                 SessionRequestHandlerConfig.Builder()
                     .baseUrl(baseUrl)
-                    .merchantId("merchant-id")
+                    .checkoutId("checkout-id")
                     .context(context)
                     .externalSessionResponseListener(externalSessionResponseListener)
                     .build()
@@ -110,7 +110,7 @@ class CvcSessionRequestHandlerTest {
 
         sessionRequestInfo.requestBody as CvcSessionRequest
 
-        assertEquals("merchant-id", sessionRequestInfo.requestBody.identity)
+        assertEquals("checkout-id", sessionRequestInfo.requestBody.identity)
         assertEquals(cardDetails.cvc, sessionRequestInfo.requestBody.cvc)
 
         assertEquals(baseUrl, sessionRequestInfo.baseUrl)
