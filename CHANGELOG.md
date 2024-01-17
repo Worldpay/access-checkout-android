@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-### [v3.0.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v3.0.0)
+### [v3.0.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v3.0.0) - 2024-01-17
 #### Changed
 - card sessions created by the SDK are now compatible with the simplified Payments API. They remain compatible with the Verified Tokens API.
 - these card sessions URL are now in the form `https://access.worldpay.com/sessions/...` instead of `https://access.worldpay.com/verifiedTokens/sessions/...` before

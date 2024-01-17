@@ -253,6 +253,7 @@ workflows:
                 Pixel2.arm,30,en,portrait
                 Pixel2.arm,32,en,portrait
                 Pixel2.arm,33,en,portrait
+                Pixel2.arm,34,en,portrait
       - deploy-to-bitrise-io@2.1.4:
           title: "Export code coverage results to Bitrise"
           inputs:
