@@ -37,21 +37,6 @@ class AccessCheckoutClientBuilder {
     }
 
     /**
-     * (Deprecated) Sets the merchant id of the client
-     *
-     * @param[merchantId] [String] that represents the id of the merchant given to the client at time of registration
-     */
-    @Deprecated(
-        message = "Your checkoutId should now be passed to the builder using checkoutId(). The support for passing " +
-            "your checkoutId using merchantId() will be removed in the next major version",
-        replaceWith = ReplaceWith("checkoutId(checkoutId: String)")
-    )
-    fun merchantId(merchantId: String): AccessCheckoutClientBuilder {
-        this.checkoutId = merchantId
-        return this
-    }
-
-    /**
      * Sets the checkout id of the client
      *
      * @param[checkoutId] [String] that represents the checkoutId given to the merchant at time of registration

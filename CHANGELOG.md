@@ -9,9 +9,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 #### Changed
 
 ### [v4.0.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v4.0.0) - 2024-02-08
-#### Added
-
-#### Changed
+#### Removed
+- Removed deprecated functionality
+  - `AccessCheckoutClientBuilder`: removed `merchantId()` method
+  - `CardDetails.Builder`: removed support for passing pan, expiryDate and cvc as String
+  - `CardValidationConfig.Builder`: removed support for passing pan, expiryDate and cvc as EditText instances
+  - `CvcValidationConfig.Builder`: removed support for passing cvc as an EditText instance
 
 ### [v3.0.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v3.0.0) - 2024-01-17
 #### Changed

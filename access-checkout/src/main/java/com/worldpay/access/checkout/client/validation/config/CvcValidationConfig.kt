@@ -39,20 +39,6 @@ class CvcValidationConfig private constructor(
         }
 
         /**
-         * Sets the cvc ui element
-         *
-         * @param[cvc] [EditText] that represents the cvc ui element
-         */
-        @Deprecated(
-            message = "AccessCheckoutEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
-            replaceWith = ReplaceWith("cvc(cvc:AccessCheckoutEditText)")
-        )
-        fun cvc(cvc: EditText): Builder {
-            this.cvc = cvc
-            return this
-        }
-
-        /**
          * Sets the validation listener that should be notified on validation changes
          *
          * @param[validationListener] [AccessCheckoutCardValidationListener] that represents the validation listener

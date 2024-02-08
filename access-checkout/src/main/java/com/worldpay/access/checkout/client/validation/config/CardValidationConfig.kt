@@ -70,48 +70,6 @@ class CardValidationConfig private constructor(
         }
 
         /**
-         * Sets the pan ui element
-         *
-         * @param[pan] [EditText] that represents the pan ui element
-         */
-        @Deprecated(
-            message = "AccessCheckoutEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
-            replaceWith = ReplaceWith("pan(pan:AccessCheckoutEditText)")
-        )
-        fun pan(pan: EditText): Builder {
-            this.pan = pan
-            return this
-        }
-
-        /**
-         * Sets the expiry date ui element
-         *
-         * @param[expiryDate] [EditText] that represents the expiry date ui element
-         */
-        @Deprecated(
-            message = "AccessCheckoutEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
-            replaceWith = ReplaceWith("expiryDate(expiryDate:AccessCheckoutEditText)")
-        )
-        fun expiryDate(expiryDate: EditText): Builder {
-            this.expiryDate = expiryDate
-            return this
-        }
-
-        /**
-         * Sets the cvc ui element
-         *
-         * @param[cvc] [EditText] that represents the cvc ui element
-         */
-        @Deprecated(
-            message = "AccessCheckoutEditText should now be used instead of EditText. The support for EditText components will be removed in the next major version.",
-            replaceWith = ReplaceWith("cvc(cvc:AccessCheckoutEditText)")
-        )
-        fun cvc(cvc: EditText): Builder {
-            this.cvc = cvc
-            return this
-        }
-
-        /**
          * Sets the list of card brands to accept for validation. Any unrecognised card brand will be accepted at all times.
          *
          * @param[acceptedCardBrands] [Array] of [String] representing the card brands to accept

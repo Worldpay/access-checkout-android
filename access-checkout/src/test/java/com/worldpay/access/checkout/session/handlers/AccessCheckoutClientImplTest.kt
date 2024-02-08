@@ -14,7 +14,7 @@ import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
-import com.worldpay.access.checkout.testutils.createAccessEditTextMock
+import com.worldpay.access.checkout.testutils.createAccessCheckoutEditTextMock
 import kotlin.test.assertEquals
 import org.junit.Assert.assertNotNull
 import org.junit.Before
@@ -65,9 +65,9 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should send out an initialise broadcast with the request session type information before generating the session`() {
-        val pan = createAccessEditTextMock("1234")
-        val expiryDate = createAccessEditTextMock("1120")
-        val cvc = createAccessEditTextMock("123")
+        val pan = createAccessCheckoutEditTextMock("1234")
+        val expiryDate = createAccessCheckoutEditTextMock("1120")
+        val cvc = createAccessCheckoutEditTextMock("123")
 
         val accessCheckoutClient =
             AccessCheckoutClientImpl(
@@ -109,9 +109,9 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should be able to call each handler's canHandle method when calling generate`() {
-        val pan = createAccessEditTextMock("1234")
-        val expiryDate = createAccessEditTextMock("1120")
-        val cvc = createAccessEditTextMock("123")
+        val pan = createAccessCheckoutEditTextMock("1234")
+        val expiryDate = createAccessCheckoutEditTextMock("1120")
+        val cvc = createAccessCheckoutEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -137,7 +137,7 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should call handle method on the sessionTokenRequestHandler when calling generate for session token`() {
-        val cvc = createAccessEditTextMock("123")
+        val cvc = createAccessCheckoutEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .cvc(cvc)
@@ -163,9 +163,9 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should call handle method on the cardSessionRequestHandler when calling generate for verified token`() {
-        val pan = createAccessEditTextMock("1234")
-        val expiryDate = createAccessEditTextMock("1120")
-        val cvc = createAccessEditTextMock("123")
+        val pan = createAccessCheckoutEditTextMock("1234")
+        val expiryDate = createAccessCheckoutEditTextMock("1120")
+        val cvc = createAccessCheckoutEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -193,9 +193,9 @@ class AccessCheckoutClientImplTest {
 
     @Test
     fun `should not call handle when canHandle returns false`() {
-        val pan = createAccessEditTextMock("1234")
-        val expiryDate = createAccessEditTextMock("1120")
-        val cvc = createAccessEditTextMock("123")
+        val pan = createAccessCheckoutEditTextMock("1234")
+        val expiryDate = createAccessCheckoutEditTextMock("1120")
+        val cvc = createAccessCheckoutEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
