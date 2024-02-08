@@ -3,6 +3,16 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/), and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+### Unreleased
+#### Added
+
+#### Changed
+
+### [v4.0.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v4.0.0) - 2024-02-08
+#### Added
+
+#### Changed
+
 ### [v3.0.0](https://github.com/Worldpay/access-checkout-android/releases/tag/v3.0.0) - 2024-01-17
 #### Changed
 - card sessions created by the SDK are now compatible with the simplified Payments API (to be released soon) and remain compatible with the Verified Tokens API.
