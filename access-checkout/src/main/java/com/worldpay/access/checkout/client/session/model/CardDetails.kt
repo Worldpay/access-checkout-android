@@ -49,40 +49,6 @@ class CardDetails private constructor(
         fun cvc(cvcAccessCheckoutEditText: AccessCheckoutEditText) = apply { this.cvc = cvcAccessCheckoutEditText.text }
 
         /**
-         * (Deprecated) Sets the pan using a [String] that contains the card number
-         *
-         * @param[pan] [String] that contains the card number
-         */
-        @Deprecated(
-            message = "CardDetails should now be built using instances of AccessCheckoutEditText rather than actual card details. " +
-                "The support for passing card details as String will be removed in the next major version.",
-            replaceWith = ReplaceWith("pan(panAccessCheckoutEditText:AccessCheckoutEditText)")
-        )
-        fun pan(pan: String) = apply { this.pan = pan.replace("\\s+".toRegex(), "") }
-
-        /**
-         * (Deprecated) Sets the expiry date using a [String] that contains the expiry date
-         *
-         * @param[expiryDate] [String] that contains the expiry date
-         */
-        @Deprecated(
-            message = "CardDetails should now be built using instances of AccessCheckoutEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
-            replaceWith = ReplaceWith("expiryDate(expiryDateAccessCheckoutEditText:AccessCheckoutEditText)")
-        )
-        fun expiryDate(expiryDate: String) = apply { this.expiryDate = ExpiryDate(expiryDate) }
-
-        /**
-         * (Deprecated) Sets the cvc using a [String] that contains the cvc
-         *
-         * @param[cvc] [String] that contains the cvc
-         */
-        @Deprecated(
-            message = "CardDetails should now be built using instances of AccessCheckoutEditText rather than actual card details. The support for passing card details as String will be removed in the next major version.",
-            replaceWith = ReplaceWith("cvc(cvcAccessCheckoutEditText:AccessCheckoutEditText)")
-        )
-        fun cvc(cvc: String) = apply { this.cvc = cvc }
-
-        /**
          * Builds the [CardDetails] instance
          *
          * @return [CardDetails] instance with the given details

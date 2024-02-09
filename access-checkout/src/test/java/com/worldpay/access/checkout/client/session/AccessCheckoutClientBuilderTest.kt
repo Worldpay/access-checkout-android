@@ -27,22 +27,7 @@ class AccessCheckoutClientBuilderTest {
     }
 
     @Test
-    fun `should successfully initialise access checkout client using a builder and merchantId()`() {
-        given(context.applicationContext).willReturn(context)
-
-        val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(baseUrl)
-            .merchantId(checkoutId)
-            .context(context)
-            .sessionResponseListener(sessionResponseListener)
-            .lifecycleOwner(lifecycleOwner)
-            .build()
-
-        assertNotNull(accessCheckoutClient)
-    }
-
-    @Test
-    fun `should successfully initialise access checkout client using a builder and checkoutId()`() {
+    fun `should successfully initialise access checkout client using a builder`() {
         given(context.applicationContext).willReturn(context)
 
         val accessCheckoutClient = AccessCheckoutClientBuilder()

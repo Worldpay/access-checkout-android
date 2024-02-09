@@ -11,7 +11,7 @@ import com.worldpay.access.checkout.session.api.SessionRequestService.Companion.
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
-import com.worldpay.access.checkout.testutils.createAccessEditTextMock
+import com.worldpay.access.checkout.testutils.createAccessCheckoutEditTextMock
 import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -59,8 +59,8 @@ class CardSessionRequestHandlerTest {
 
     @Test
     fun `should throw illegal argument exception if pan is not provided in card details`() {
-        val expiryDate = createAccessEditTextMock("1120")
-        val cvc = createAccessEditTextMock("123")
+        val expiryDate = createAccessCheckoutEditTextMock("1120")
+        val cvc = createAccessCheckoutEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .expiryDate(expiryDate)
@@ -76,8 +76,8 @@ class CardSessionRequestHandlerTest {
 
     @Test
     fun `should throw illegal argument exception if expiry date is not provided in card details`() {
-        val pan = createAccessEditTextMock("1234")
-        val cvc = createAccessEditTextMock("123")
+        val pan = createAccessCheckoutEditTextMock("1234")
+        val cvc = createAccessCheckoutEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -93,8 +93,8 @@ class CardSessionRequestHandlerTest {
 
     @Test
     fun `should throw illegal argument exception if cvc is not provided in card details`() {
-        val pan = createAccessEditTextMock("1234")
-        val expiryDate = createAccessEditTextMock("1120")
+        val pan = createAccessCheckoutEditTextMock("1234")
+        val expiryDate = createAccessCheckoutEditTextMock("1120")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
@@ -110,9 +110,9 @@ class CardSessionRequestHandlerTest {
 
     @Test
     fun `should start service via context using the expected intent`() {
-        val pan = createAccessEditTextMock("1234")
-        val expiryDate = createAccessEditTextMock("1120")
-        val cvc = createAccessEditTextMock("123")
+        val pan = createAccessCheckoutEditTextMock("1234")
+        val expiryDate = createAccessCheckoutEditTextMock("1120")
+        val cvc = createAccessCheckoutEditTextMock("123")
 
         val cardDetails = CardDetails.Builder()
             .pan(pan)
