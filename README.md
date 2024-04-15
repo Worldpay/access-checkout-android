@@ -1,7 +1,7 @@
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/com.worldpay.access/access-checkout-android/badge.svg)](https://maven-badges.herokuapp.com/maven-central/com.worldpay.access/access-checkout-android)
 [![Build Status](https://app.bitrise.io/app/70d419e86c91a8b6/status.svg?token=PiRRusMO6rZNofgN93wOyQ&branch=master)](https://app.bitrise.io/app/70d419e86c91a8b6)
 
-# Access Checkout Android SDK
+# Access Checkout Android SDK 
 
 Access Checkout Android SDK allows you to secure your customer's card details by creating a session.
 
