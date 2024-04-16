@@ -13,7 +13,7 @@ A sample demo application is also available to provide an example integration of
 
 To learn how to integrate with the latest version of the Access Checkout Android SDK - [click here](https://maven-badges.herokuapp.com/maven-central/com.worldpay.access/access-checkout-android).
 
-## Integration
+## Integration test
 
 For full integration instructions and code examples visit [Worldpay Developers](https://developer.worldpay.com/docs/access-worldpay/checkout/android)
 
