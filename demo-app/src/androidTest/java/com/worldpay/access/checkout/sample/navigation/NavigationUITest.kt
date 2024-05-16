@@ -13,8 +13,8 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.espresso.matcher.ViewMatchers.withParent
 import androidx.test.espresso.matcher.ViewMatchers.withTagKey
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
-import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
@@ -22,6 +22,7 @@ import com.worldpay.access.checkout.sample.testutil.matchers.EspressoTestMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.not
+import org.junit.After
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -30,13 +31,16 @@ import org.junit.runner.RunWith
 class NavigationUITest {
 
     @get:Rule
-    val activityRule: ActivityTestRule<MainActivity> = ActivityTestRule(
-        MainActivity::class.java
-    )
+    val activityRule:ActivityScenarioRule<MainActivity> = ActivityScenarioRule(MainActivity::class.java)
 
     private val cardFlowTitle = "Card Flow"
     private val restrictedCardFlowTitle = "Restricted Card Flow"
     private val cvcFlowTitle = "CVC Flow"
+
+    @After
+    fun cleanUp(){
+        activityRule.scenario.close()
+    }
 
     @Test
     fun shouldHaveOnly2ItemsInNavigationDrawer() {
