@@ -34,7 +34,7 @@ internal class CardConfigurationProvider(
             } catch (ex: Exception) {
                 Log.d(
                     javaClass.simpleName,
-                    "Error while fetching card configuration (setting defaults): $ex"
+                    "Error while fetching card configuration (setting defaults): $ex", ex
                 )
                 cardConfiguration = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
             }
