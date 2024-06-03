@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.sample.card
 
+import android.util.Log
 import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.FragmentActivity
@@ -30,7 +31,11 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
 
     override fun onBrandChange(cardBrand: CardBrand?) {
         val brandLogo = activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
-        getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
+        if (brandLogo != null) {
+            getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
+        } else {
+            Log.d(this::class.java.simpleName, "Received CardBranch change but could not find ImageView with id `R.id.card_flow_brand_logo`")
+        }
     }
 
     override fun onExpiryDateValidated(isValid: Boolean) {
