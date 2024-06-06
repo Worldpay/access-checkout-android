@@ -31,6 +31,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun isInInitialState(): CardFragmentTestUtils {
+        attemptToCloseDialogIfPresent()
         progressBarNotVisible()
         enabledStateIs(pan = true, cvc = true, expiryDate = true, submitButton = false)
         cardDetailsAre(pan = "", cvc = "", expiryDate = "")
@@ -66,6 +67,16 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun hasErrorDialogWithMessage(error: String): CardFragmentTestUtils {
         dialogHasText(error)
+        return this
+    }
+
+    fun attemptToCloseDialogIfPresent(): CardFragmentTestUtils {
+        try {
+            onView(withId(android.R.id.button1))
+                .perform(click())
+        } catch (e:Exception) {
+            // no dialog is present
+        }
         return this
     }
 

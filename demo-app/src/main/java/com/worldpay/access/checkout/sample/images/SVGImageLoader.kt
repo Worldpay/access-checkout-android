@@ -106,6 +106,7 @@ class SVGImageLoader @JvmOverloads constructor(
             override fun onResponse(call: Call, response: Response) {
                 response.body?.let { responseBody ->
                     run {
+                        Log.d("SVGImageLoader", "Received image for brand $brandName")
                         svgImageRenderer.renderImage(responseBody.byteStream(), target, brandName)
                     }
                 }
