@@ -132,10 +132,10 @@ abstract class NewAbstractFragmentTestUtils(protected val activityRule: Activity
         for (i in 0..maxTimes) {
             try {
                 assertions()
-            } catch (exception: RuntimeException) {
+            } catch (exception: AssertionError) {
                 if (i == maxTimes) {
                     val seconds = maxWaitTimeInMillis / 1000
-                    throw RuntimeException(
+                    throw AssertionError(
                         "Failed assertion after waiting $seconds seconds: ${exception.message}",
                         exception
                     )
