@@ -14,8 +14,8 @@ import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.RootMatchers.isDialog
-import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice.getInstance
@@ -69,6 +69,30 @@ object UITestUtils {
             Thread.sleep(2000)
 
             true
+        }
+    }
+
+    fun rotatePortrait(activityRule: ActivityScenarioRule<MainActivity>) {
+        activityRule.scenario.onActivity { activity ->
+            activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+            await().atMost(10, TimeUnit.SECONDS).until {
+
+                val drawerIsVisible =
+                    activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
+                val progressBarIsVisible =
+                    activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
+
+                if (!drawerIsVisible && !progressBarIsVisible) {
+                    onView(withId(android.R.id.button1))
+                        .inRoot(isDialog())
+                        .check(matches(isDisplayed()))
+                }
+
+                Thread.sleep(2000)
+
+                true
+            }
         }
     }
 
@@ -160,10 +184,10 @@ object UITestUtils {
     }
 
     fun onCardPanView(): ViewInteraction {
-        return onView(ViewMatchers.withParent(withId(R.id.card_flow_text_pan)))
+        return onView(withParent(withId(R.id.card_flow_text_pan)))
     }
 
     fun onCvcOnlyCvcView(): ViewInteraction {
-        return onView(ViewMatchers.withParent(withId(R.id.cvc_flow_text_cvc)))
+        return onView(withParent(withId(R.id.cvc_flow_text_cvc)))
     }
 }
