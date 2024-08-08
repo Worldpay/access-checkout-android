@@ -38,7 +38,6 @@ class SVGImageRendererImpl(
                     Log.d("SVGImageRendererImpl", "Applying $brandName logo to target view")
                     targetView.setLayerType(View.LAYER_TYPE_SOFTWARE, null)
                     targetView.setImageDrawable(drawable)
-//                    targetView.setTag(R.integer.card_tag, brandName)
                     targetView.tag = brandName
                 }
             )
