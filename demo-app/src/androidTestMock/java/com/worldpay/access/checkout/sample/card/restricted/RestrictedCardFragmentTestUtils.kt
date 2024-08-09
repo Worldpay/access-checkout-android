@@ -55,12 +55,14 @@ class RestrictedCardFragmentTestUtils(activityRule: ActivityTestRule<MainActivit
 
     fun hasNoBrand(): RestrictedCardFragmentTestUtils {
         val resourceEntryName = activity().resources.getResourceEntryName(R.drawable.card_unknown_logo)
-        wait { assertEquals(resourceEntryName, brandLogo().getTag(R.integer.card_tag)) }
+//        wait { assertEquals(resourceEntryName, brandLogo().getTag(R.integer.card_tag)) }
+        wait { assertEquals(resourceEntryName, brandLogo().tag) }
         return this
     }
 
     fun hasBrand(cardBrand: CardBrand): RestrictedCardFragmentTestUtils {
-        wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
+//        wait { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
+        wait { assertEquals(cardBrand.cardBrandName, brandLogo().tag) }
         return this
     }
 
