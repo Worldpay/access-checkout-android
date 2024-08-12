@@ -32,7 +32,7 @@ abstract class NewAbstractFragmentTestUtils(protected val activityRule: Activity
     }
 
     protected fun progressBarNotVisible() {
-        wait2 { assertTrue(progressBar().waitUntilGone(3000)) }
+        waitForAssertion { assertTrue(progressBar().waitUntilGone(3000)) }
     }
 
     protected fun checkValidationState(
@@ -40,7 +40,7 @@ abstract class NewAbstractFragmentTestUtils(protected val activityRule: Activity
         isValid: Boolean,
         field: String
     ) = also {
-        wait2 {
+        waitForAssertion {
             onView(viewMatcher).check(matches(hasTextColor(
                 when (isValid) {
                     true -> R.color.SUCCESS
@@ -51,15 +51,13 @@ abstract class NewAbstractFragmentTestUtils(protected val activityRule: Activity
     }
 
     protected fun enterText(id: Int, text: String) {
-        wait2 { onView(withId(id)).check(matches(isDisplayed())) }
-        wait2 { onView(withId(id)).check(matches(isEnabled())) }
+        waitForAssertion { onView(withId(id)).check(matches(isDisplayed())) }
+        waitForAssertion { onView(withId(id)).check(matches(isEnabled())) }
 
         val editTextUI = UITestUtils.uiObjectWithId(id)
         editTextUI.click()
 
         onView(ViewMatchers.withParent(withId(id))).perform(typeText(text))
-            Log.i("msg", "edit text ui")
-
         onView(ViewMatchers.withParent(withId(id))).perform(closeSoftKeyboard())
     }
 
@@ -69,13 +67,13 @@ abstract class NewAbstractFragmentTestUtils(protected val activityRule: Activity
     }
 
     protected fun assertViewIsVisible(id: Int) {
-        wait2 { onView(withId(id))
+        waitForAssertion { onView(withId(id))
             .check(matches(isDisplayed()))  }
     }
 
     protected fun clearText(id: Int) {
-        wait2 { onView(withId(id)).check(matches(isDisplayed())) }
-        wait2 { onView(withId(id)).check(matches(isEnabled())) }
+        waitForAssertion { onView(withId(id)).check(matches(isDisplayed())) }
+        waitForAssertion { onView(withId(id)).check(matches(isEnabled())) }
 
         val editTextUI = UITestUtils.uiObjectWithId(id)
         editTextUI.click()
@@ -125,7 +123,7 @@ abstract class NewAbstractFragmentTestUtils(protected val activityRule: Activity
         return colorInt
     }
 
-    protected inline fun wait2(maxWaitTimeInMillis: Int = 1000, assertions: () -> Unit) {
+    protected inline fun waitForAssertion(maxWaitTimeInMillis: Int = 1000, assertions: () -> Unit) {
         val pauseInterval = 100
         val maxTimes = maxWaitTimeInMillis / pauseInterval
 

@@ -34,20 +34,20 @@ class NewCardFragmentTestUtils(activityRule: ActivityScenarioRule<MainActivity>)
         enabledStateIs(pan = true, cvc = true, expiryDate = true, submitButton = false)
         cardDetailsAre(pan = "", cvc = "", expiryDate = "")
         hasNoBrand()
-        paymentsCvcSessionCheckedState(checked = false)
+        paymentsCvcSwitchIs(checked = false)
     }
 
     fun setPaymentsCvcSwitchState(checked: Boolean) = apply {
-        wait2 { onView(withId(R.id.card_flow_payments_cvc_switch)).check(matches(isDisplayed())) }
+        waitForAssertion { onView(withId(R.id.card_flow_payments_cvc_switch)).check(matches(isDisplayed())) }
 
         if (checked != withId(R.id.card_flow_payments_cvc_switch).matches(isChecked()))
             uiObjectWithId(R.id.card_flow_payments_cvc_switch).click()
     }
 
-    fun paymentsCvcSessionCheckedState(checked: Boolean) = apply {
+    fun paymentsCvcSwitchIs(checked: Boolean) = apply {
         val checkedViewMatcher = if (checked) isChecked() else isNotChecked()
-        wait2 { onView(withId(R.id.card_flow_payments_cvc_switch)).check(matches(isDisplayed())) }
-        wait2 { onView(withId(R.id.card_flow_payments_cvc_switch)).check(matches(checkedViewMatcher)) }
+        waitForAssertion { onView(withId(R.id.card_flow_payments_cvc_switch)).check(matches(isDisplayed())) }
+        waitForAssertion { onView(withId(R.id.card_flow_payments_cvc_switch)).check(matches(checkedViewMatcher)) }
     }
 
     fun requestIsInProgress() = apply {
@@ -92,8 +92,8 @@ class NewCardFragmentTestUtils(activityRule: ActivityScenarioRule<MainActivity>)
             else -> throw RuntimeException("field view matcher not recognised")
         }
 
-        wait2 { onView(accessCheckoutFieldViewMatcher.viewMatcher).check(matches(isDisplayed())) }
-        wait2 { onView(accessCheckoutFieldViewMatcher.viewMatcher).check(matches(accessCheckoutFieldViewMatcher.enabledViewMatcher)) }
+        waitForAssertion { onView(accessCheckoutFieldViewMatcher.viewMatcher).check(matches(isDisplayed())) }
+        waitForAssertion { onView(accessCheckoutFieldViewMatcher.viewMatcher).check(matches(accessCheckoutFieldViewMatcher.enabledViewMatcher)) }
 
     }
 
@@ -149,7 +149,7 @@ class NewCardFragmentTestUtils(activityRule: ActivityScenarioRule<MainActivity>)
     }
 
     fun cursorPositionIs(position: Int) = apply {
-        wait2 { onView(withId(R.id.card_flow_text_pan)).check { view, noViewFoundException ->
+        waitForAssertion { onView(withId(R.id.card_flow_text_pan)).check { view, noViewFoundException ->
             val isPosition = (view as AccessCheckoutEditText).selectionEnd == position
             isPosition
             }
@@ -157,17 +157,12 @@ class NewCardFragmentTestUtils(activityRule: ActivityScenarioRule<MainActivity>)
     }
 
     fun cardDetailsAre(pan: String? = null, cvc: String? = null, expiryDate: String? = null) = apply {
-        if (pan != null) wait2 { onView(withText(pan)).check(matches(isDisplayed())) }
-        if (pan != null) wait2 { onView(withText(cvc)).check(matches(isDisplayed())) }
-        if (pan != null) wait2 { onView(withText(expiryDate)).check(matches(isDisplayed())) }
+        if (pan != null) waitForAssertion { onView(withText(pan)).check(matches(isDisplayed())) }
+        if (pan != null) waitForAssertion { onView(withText(cvc)).check(matches(isDisplayed())) }
+        if (pan != null) waitForAssertion { onView(withText(expiryDate)).check(matches(isDisplayed())) }
     }
 
-    fun validationStateIs(
-        pan: Boolean? = null,
-        cvc: Boolean? = null,
-        expiryDate: Boolean? = null
-    ) = apply {
-//        if (pan != null) checkValidationState(R.id.card_flow_text_pan, pan, "pan")
+    fun validationStateIs(pan: Boolean? = null, cvc: Boolean? = null, expiryDate: Boolean? = null) = apply {
         if (pan != null) checkValidationState(withParent(withId(R.id.card_flow_text_pan)), pan, "pan")
         if (cvc != null) checkValidationState(withParent(withId(R.id.card_flow_text_cvc)), cvc, "cvc")
         if (expiryDate != null) checkValidationState(withParent(withId(R.id.card_flow_expiry_date)), expiryDate, "expiry date")
@@ -178,11 +173,11 @@ class NewCardFragmentTestUtils(activityRule: ActivityScenarioRule<MainActivity>)
         activityRule.scenario.onActivity(ActivityScenario.ActivityAction { activity ->
             resourceEntryName = activity.resources.getResourceEntryName(R.drawable.card_unknown_logo)
         })
-        wait2 { onView(withId(R.id.card_flow_brand_logo)).check(matches(withTagValue(Matchers.`is`(resourceEntryName)))) }
+        waitForAssertion { onView(withId(R.id.card_flow_brand_logo)).check(matches(withTagValue(Matchers.`is`(resourceEntryName)))) }
     }
 
     fun hasBrand(cardBrand: CardBrand) = apply {
-        wait2(20000) { onView(withId(R.id.card_flow_brand_logo)).check(matches(withTagValue(Matchers.`is`(cardBrand.cardBrandName)))) }
+        waitForAssertion(20000) { onView(withId(R.id.card_flow_brand_logo)).check(matches(withTagValue(Matchers.`is`(cardBrand.cardBrandName)))) }
     }
 
     sealed class AccessCheckoutFieldViewMatcher(val viewMatcher: Matcher<View>, val isEnabled: Boolean) {

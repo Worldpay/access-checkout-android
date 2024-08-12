@@ -37,16 +37,16 @@ class NewCvcFragmentTestUtils(activityRule: ActivityScenarioRule<MainActivity>) 
         val enableMsg = "enabled state"
 
         if (cvc != null) {
-            wait2 { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_text_cvc))
+            waitForAssertion { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_text_cvc))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed())) }
-            wait2 { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_text_cvc))
+            waitForAssertion { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_text_cvc))
                 .check(ViewAssertions.matches(ViewMatchers.isEnabled())) }
         }
 
         if (submitButton != null) {
-            wait2 { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_btn_submit))
+            waitForAssertion { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_btn_submit))
                 .check(ViewAssertions.matches(ViewMatchers.isDisplayed())) }
-            wait2 { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_btn_submit))
+            waitForAssertion { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_btn_submit))
                 .check(ViewAssertions.matches(ViewMatchers.isEnabled())) }
         }
     }
@@ -73,7 +73,7 @@ class NewCvcFragmentTestUtils(activityRule: ActivityScenarioRule<MainActivity>) 
     }
 
     fun cardDetailsAre(cvc: String) = also {
-        wait2 { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_text_cvc))
+        waitForAssertion { Espresso.onView(ViewMatchers.withId(com.worldpay.access.checkout.sample.R.id.cvc_flow_text_cvc))
             .check(ViewAssertions.matches(ViewMatchers.withText(cvc))) }
     }
 }
