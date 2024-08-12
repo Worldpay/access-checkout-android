@@ -202,13 +202,11 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun hasNoBrand(): CardFragmentTestUtils {
         val resourceEntryName = activity().resources.getResourceEntryName(R.drawable.card_unknown_logo)
-//        wait { assertEquals(resourceEntryName, brandLogo().getTag(R.integer.card_tag)) }
         wait { assertEquals(resourceEntryName, brandLogo().tag) }
         return this
     }
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
-//        wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
         wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrand.cardBrandName, brandLogo().tag) }
         return this
     }

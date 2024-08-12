@@ -54,7 +54,6 @@ class SVGImageRendererImplTest {
 
         verify(target).setImageDrawable(ArgumentMatchers.any(PictureDrawable::class.java))
         verify(target).setLayerType(View.LAYER_TYPE_SOFTWARE, null)
-//        verify(target).setTag(R.integer.card_tag, "someName")
         verify(target).tag = "someName"
     }
 

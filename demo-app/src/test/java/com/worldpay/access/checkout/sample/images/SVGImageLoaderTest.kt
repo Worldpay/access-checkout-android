@@ -86,7 +86,6 @@ class SVGImageLoaderTest {
         verifyZeroInteractions(client)
 
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
-//        verify(targetImageView).setTag(R.integer.card_tag, "card_unknown_logo")
         verify(targetImageView).tag = "card_unknown_logo"
     }
 
@@ -115,7 +114,6 @@ class SVGImageLoaderTest {
 
         verifyZeroInteractions(client)
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
-//        verify(targetImageView).setTag(R.integer.card_tag, "card_unknown_logo")
         verify(targetImageView).tag = "card_unknown_logo"
     }
 

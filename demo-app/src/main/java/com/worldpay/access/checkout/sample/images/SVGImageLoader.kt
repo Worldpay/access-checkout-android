@@ -118,7 +118,6 @@ class SVGImageLoader @JvmOverloads constructor(
         Log.d("SVGImageLoader", "Applying card unknown logo to target view")
         target.setImageResource(R.drawable.card_unknown_logo)
         val resourceEntryName = target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
-//        target.setTag(R.integer.card_tag, resourceEntryName)
         target.tag = resourceEntryName
     }
 }
