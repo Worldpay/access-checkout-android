@@ -85,7 +85,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun isInErrorState(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
+    fun areFieldsEnabledAndAssertCardDetails(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
         progressBarNotVisible()
         enabledStateIs(pan = true, cvc = true, expiryDate = true, paymentsCvcSwitch = true, submitButton = true)
         cardDetailsAre(pan, cvc, expiryDate)

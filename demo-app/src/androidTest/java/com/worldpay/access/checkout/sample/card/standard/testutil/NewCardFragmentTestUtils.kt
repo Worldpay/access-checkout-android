@@ -67,7 +67,7 @@ class NewCardFragmentTestUtils(activityRule: ActivityScenarioRule<MainActivity>)
         onView(withId(android.R.id.button1)).perform(click())
     }
 
-    fun isInErrorState(pan: String? = null, cvc: String? = null, expiryDate: String? = null) = apply {
+    fun areFieldsEnabledAndAssertCardDetails(pan: String? = null, cvc: String? = null, expiryDate: String? = null) = apply {
         progressBarNotVisible()
         enabledStateIs(pan = true, cvc = true, expiryDate = true, paymentsCvcSwitch = true, submitButton = true)
         cardDetailsAre(pan, cvc, expiryDate)

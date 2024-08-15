@@ -30,7 +30,7 @@ class NewCardConfigurationIntegrationTest {
     }
 
     @Test
-    fun givenCardConfigCallFails_validKnownBrandCardDetails_returnsSuccessfulResponse() {
+    fun givenCardConfigCallFails_validKnownBrandCardDetails_returnsSuccessfulSession() {
         cardFragmentTestUtils
             .enterCardDetails(pan = MASTERCARD_PAN, cvc = "1234", expiryDate = "1299")
             .cardDetailsAre(pan = MASTERCARD_PAN_FORMATTED, cvc = "1234", expiryDate = "12/99")
@@ -49,7 +49,7 @@ class NewCardConfigurationIntegrationTest {
     }
 
     @Test
-    fun givenCardConfigCallFails_validUnknownBrandCardDetails_returnsSuccessfulResponse() {
+    fun givenCardConfigCallFails_validUnknownBrandCardDetails_returnsSuccessfulSession() {
         cardFragmentTestUtils
             .enterCardDetails(pan = VALID_UNKNOWN_LUHN, cvc = "1234", expiryDate = "1299")
             .cardDetailsAre(pan = VALID_UNKNOWN_LUHN_FORMATTED, cvc = "1234", expiryDate = "12/99")
