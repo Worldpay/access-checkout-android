@@ -6,23 +6,24 @@ dokkaJavadoc.configure {
     dokkaSourceSets {
         named("main") {
             noAndroidSdkLink.set(false)
-            outputDirectory.set(buildDir.resolve("javadoc"))
+            outputDirectory.set(layout.buildDirectory.resolve("javadoc"))
             skipEmptyPackages.set(true)
             includeNonPublic.set(false)
         }
     }
 }
 
-task javadocJar(type: Jar, dependsOn: dokkaJavadoc) {
-    classifier "javadoc"
-    from "$buildDir/dokka/javadoc"
-    appendix "android"
+tasks.register('javadocJar', Jar) {
+    dependsOn dokkaJavadoc
+    archiveClassifier = "javadoc"
+    from "$layout.buildDirectory/dokka/javadoc"
+    archiveAppendix = "android"
 }
 
-task sourcesJar(type: Jar) {
-    classifier "sources"
+tasks.register('sourcesJar', Jar) {
+    archiveClassifier = "sources"
     from android.sourceSets.main.java.srcDirs
-    appendix "android"
+    archiveAppendix = "android"
 }
 
 artifacts {
