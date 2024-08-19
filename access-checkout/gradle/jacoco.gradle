@@ -37,10 +37,6 @@ tasks.register('jacocoTestReport', JacocoReport) {
     executionData.setFrom(execData)
     classDirectories.setFrom(classDirs)
     sourceDirectories.setFrom(sourceDirs)
-
-//    reports {
-//        html.enabled true
-//    }
 }
 
 tasks.register('jacocoTestCoverageVerification', JacocoCoverageVerification) {
