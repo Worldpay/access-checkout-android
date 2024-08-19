@@ -13,6 +13,10 @@ dokkaJavadoc.configure {
     }
 }
 
+// Task dependency is required due to an issue in Dokka
+// see https://github.com/Kotlin/dokka/issues/3153
+dokkaJavadoc.dependsOn(':access-checkout:generateReleaseRFile')
+
 tasks.register('javadocJar', Jar) {
     dependsOn dokkaJavadoc
     archiveClassifier = "javadoc"
