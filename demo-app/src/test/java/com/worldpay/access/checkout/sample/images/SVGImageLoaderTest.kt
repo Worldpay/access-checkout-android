@@ -3,9 +3,6 @@ package com.worldpay.access.checkout.sample.images
 import android.app.Activity
 import android.content.res.Resources
 import android.widget.ImageView
-import com.nhaarman.mockitokotlin2.any
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.given
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
@@ -21,14 +18,22 @@ import org.junit.Before
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
-import org.mockito.Mockito.verifyZeroInteractions
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.given
+import org.mockito.kotlin.verifyNoInteractions
 
 class SVGImageLoaderTest {
 
     private val cardBrand =
         CardBrand(
             name = "visa",
-            images = listOf(CardBrandImage(type = "image/svg+xml", url = "https://localhost:8443/test.svg"))
+            images = listOf(
+                CardBrandImage(
+                    type = "image/svg+xml",
+                    url = "https://localhost:8443/test.svg"
+                )
+            )
         )
 
     private lateinit var activity: Activity
@@ -83,7 +88,7 @@ class SVGImageLoaderTest {
 
         svgImageLoader.fetchAndApplyCardLogo(null, targetImageView)
 
-        verifyZeroInteractions(client)
+        verifyNoInteractions(client)
 
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
         verify(targetImageView).setTag(R.integer.card_tag, "card_unknown_logo")
@@ -94,7 +99,12 @@ class SVGImageLoaderTest {
         val cardBrandWithNoSVG =
             CardBrand(
                 name = "visa",
-                images = listOf(CardBrandImage(type = "image/png", url = "https://localhost:8443/test.png"))
+                images = listOf(
+                    CardBrandImage(
+                        type = "image/png",
+                        url = "https://localhost:8443/test.png"
+                    )
+                )
             )
 
         val mockHttpCall = mock(Call::class.java)
@@ -112,7 +122,7 @@ class SVGImageLoaderTest {
 
         svgImageLoader.fetchAndApplyCardLogo(cardBrandWithNoSVG, targetImageView)
 
-        verifyZeroInteractions(client)
+        verifyNoInteractions(client)
         verify(targetImageView).setImageResource(R.drawable.card_unknown_logo)
         verify(targetImageView).setTag(R.integer.card_tag, "card_unknown_logo")
     }
@@ -136,7 +146,7 @@ class SVGImageLoaderTest {
 
         // Trigger onFailure callback function
         captor.firstValue.onFailure(mockHttpCall, IOException("some message"))
-        verifyZeroInteractions(svgImageRenderer)
-        verifyZeroInteractions(targetImageView)
+        verifyNoInteractions(svgImageRenderer)
+        verifyNoInteractions(targetImageView)
     }
 }
