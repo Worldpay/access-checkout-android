@@ -20,7 +20,7 @@ dokkaJavadoc.dependsOn(':access-checkout:generateReleaseRFile')
 tasks.register('javadocJar', Jar) {
     dependsOn dokkaJavadoc
     archiveClassifier = "javadoc"
-    from "$layout.buildDirectory/dokka/javadoc"
+    from "${layout.buildDirectory.dir('.').get().asFile}/dokka/javadoc"
     archiveAppendix = "android"
 }
 

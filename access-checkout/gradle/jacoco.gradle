@@ -24,11 +24,11 @@ def fileFilter = [
 ]
 
 def classDirs = files([
-        fileTree(dir: "${layout.buildDirectory}/intermediates/classes/debug", excludes: fileFilter) +
-        fileTree(dir: "${layout.buildDirectory}/tmp/kotlin-classes/debug", excludes: fileFilter)
+        fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/intermediates/classes/debug", excludes: fileFilter) +
+        fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/tmp/kotlin-classes/debug", excludes: fileFilter)
 ])
 
-def execData = files("$layout.buildDirectory/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+def execData = files("${layout.buildDirectory.dir('.').get().asFile}/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
 
 def sourceDirs = files(["${project.projectDir}/src/main/java"])
 
