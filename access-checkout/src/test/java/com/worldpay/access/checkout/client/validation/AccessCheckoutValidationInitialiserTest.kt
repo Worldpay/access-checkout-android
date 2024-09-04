@@ -7,6 +7,9 @@ import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
+import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
+import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
+import com.worldpay.access.checkout.validation.filters.PanNumericFilter
 import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -15,6 +18,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
+import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 class AccessCheckoutValidationInitialiserTest {
@@ -55,9 +59,12 @@ class AccessCheckoutValidationInitialiserTest {
 
         AccessCheckoutValidationInitialiser.initialise(config)
 
-        assertEquals(1, pan.filters.size)
-        assertEquals(1, expiryDate.filters.size)
-        assertEquals(1, cvc.filters.size)
+        // Versions of Android >= 30 add an additional LengthFilter to limit the input to 5,000 chars
+        // So to be flexible with our testing we just test that the 1st filter is the one
+        // expected to be added by our SDK
+        assertTrue (pan.filters[0] is PanNumericFilter)
+        assertTrue (expiryDate.filters[0] is ExpiryDateLengthFilter)
+        assertTrue (cvc.filters[0] is CvcLengthFilter)
     }
 
     @Test
@@ -73,6 +80,6 @@ class AccessCheckoutValidationInitialiserTest {
 
         AccessCheckoutValidationInitialiser.initialise(config)
 
-        assertEquals(1, cvc.filters.size)
+        assertTrue (cvc.filters[0] is CvcLengthFilter)
     }
 }
