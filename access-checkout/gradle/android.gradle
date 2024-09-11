@@ -1,5 +1,11 @@
 android {
-    compileSdkVersion 34
+    compileSdk 35
+
+    namespace = "com.worldpay.access.checkout"
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     packagingOptions {
         exclude "**/attach_hotspot_windows.dll"
@@ -19,7 +25,7 @@ android {
 
     defaultConfig {
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 35
         versionCode 1
         versionName version
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -28,7 +34,6 @@ android {
     buildTypes {
         release {
             debuggable false
-            zipAlignEnabled true
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             buildConfigField("String","VERSION_NAME","\"${defaultConfig.versionName}\"")
@@ -49,7 +54,7 @@ android {
         }
     }
 
-    libraryVariants.all { variant ->
+    libraryVariants.configureEach { variant ->
         variant.outputs.all { output ->
             if (variant.name == "release" && outputFile != null && outputFileName.endsWith('.aar')) {
                 outputFileName = "${archivesBaseName}-${version}.aar"

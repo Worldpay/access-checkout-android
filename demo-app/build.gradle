@@ -3,7 +3,13 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 
 android {
-    compileSdkVersion 34
+    compileSdk 35
+
+    namespace = "com.worldpay.access.checkout.sample"
+
+    buildFeatures {
+        buildConfig = true
+    }
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -17,11 +23,11 @@ android {
     defaultConfig {
         applicationId "com.worldpay.access.checkout.sample"
         minSdkVersion 26
-        targetSdkVersion 34
+        targetSdkVersion 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
 
-    flavorDimensions "environment"
+    flavorDimensions = ["environment"]
     productFlavors {
         mock {
             dimension = "environment"
@@ -33,7 +39,7 @@ android {
         }
     }
 
-    applicationVariants.all { variant ->
+    applicationVariants.configureEach { variant ->
         variant.buildConfigField "String", "CHECKOUT_ID", checkoutId
     }
 
@@ -83,7 +89,7 @@ dependencies {
 
     testImplementation 'junit:junit:4.13'
     testImplementation 'com.github.java-json-tools:json-schema-validator:2.2.10'
-    testImplementation "com.nhaarman.mockitokotlin2:mockito-kotlin:2.1.0"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
 
     androidTestImplementation 'androidx.test.ext:junit:1.1.5'
     androidTestImplementation 'androidx.test:rules:1.5.0'

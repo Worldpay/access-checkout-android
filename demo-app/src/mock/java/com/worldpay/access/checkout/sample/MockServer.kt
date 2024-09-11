@@ -92,17 +92,21 @@ object MockServer {
 
     fun defaultStubMappings(context: Context) {
         Log.d("MockServer", "Stubbing root endpoint with 200 response")
-        wireMockServer.stubFor(rootResourceMapping())
+        try {
+            wireMockServer.stubFor(rootResourceMapping())
+            // sessions service root endpoint
+            stubSessionsTokenRootRequest()
 
-        // sessions service root endpoint
-        stubSessionsTokenRootRequest()
+            // card and cvc sessions endpoints
+            stubSessionsCardRequest(context)
+            stubSessionsPaymentCvcRequest(context)
 
-        // card and cvc sessions endpoints
-        stubSessionsCardRequest(context)
-        stubSessionsPaymentCvcRequest(context)
+            stubCardConfiguration(context)
+            stubLogos(context)
+        } catch (e:Exception) {
+            Log.d("MockServer", "Failed to set up default stub mappings ${e.message}",)
+        }
 
-        stubCardConfiguration(context)
-        stubLogos(context)
     }
 
     private fun waitForWiremock() {

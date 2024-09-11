@@ -7,6 +7,7 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MASTERCARD
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.sample.stub.BrandLogoMockStub.stubLogos
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfiguration
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.stubCardConfigurationWithDelay
 import java.util.concurrent.TimeUnit.MILLISECONDS
@@ -19,10 +20,11 @@ import org.junit.Test
 
 class CardConfigurationLongDelayIntegrationTest {
 
-    private val timeoutInMillis = 10000L
+    private val timeoutInMillis = 20000L
+    private val delayInMillis = 10000L
 
     @get:Rule
-    var cardConfigRule = CardConfigurationLongDelayRule(timeoutInMillis, MainActivity::class.java)
+    var cardConfigRule = CardConfigurationLongDelayRule(delayInMillis, MainActivity::class.java)
 
     private lateinit var cardFragmentTestUtils: CardFragmentTestUtils
 
@@ -90,14 +92,21 @@ class CardConfigurationLongDelayIntegrationTest {
 }
 
 class CardConfigurationLongDelayRule(
-    private val timeoutMillis: Long,
+    private val delayMillis: Long,
     activityClass: Class<MainActivity>
 ) : ActivityTestRule<MainActivity>(activityClass) {
 
     override fun beforeActivityLaunched() {
         super.beforeActivityLaunched()
+
         // This card configuration rule adds stubs to mock server to simulate a long delay condition on the card configuration endpoint.
         // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this delayed response.
-        stubCardConfigurationWithDelay(timeoutMillis.toInt())
+        stubCardConfigurationWithDelay(delayMillis.toInt())
+    }
+
+    override fun afterActivityLaunched() {
+        super.afterActivityLaunched()
+
+        stubLogos(activity.applicationContext)
     }
 }

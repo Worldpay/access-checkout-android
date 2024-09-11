@@ -24,25 +24,23 @@ def fileFilter = [
 ]
 
 def classDirs = files([
-        fileTree(dir: "${buildDir}/intermediates/classes/debug", excludes: fileFilter) +
-        fileTree(dir: "${buildDir}/tmp/kotlin-classes/debug", excludes: fileFilter)
+        fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/intermediates/classes/debug", excludes: fileFilter) +
+        fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/tmp/kotlin-classes/debug", excludes: fileFilter)
 ])
 
-def execData = files("$buildDir/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+def execData = files("${layout.buildDirectory.dir('.').get().asFile}/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
 
 def sourceDirs = files(["${project.projectDir}/src/main/java"])
 
-task jacocoTestReport(type: JacocoReport, dependsOn: ['testDebugUnitTest']) {
+tasks.register('jacocoTestReport', JacocoReport) {
+    dependsOn['testDebugUnitTest']
     executionData.setFrom(execData)
     classDirectories.setFrom(classDirs)
     sourceDirectories.setFrom(sourceDirs)
-
-    reports {
-        html.enabled true
-    }
 }
 
-task jacocoTestCoverageVerification(type: JacocoCoverageVerification, dependsOn: 'jacocoTestReport') {
+tasks.register('jacocoTestCoverageVerification', JacocoCoverageVerification) {
+    dependsOn 'jacocoTestReport'
     executionData.setFrom(execData)
     classDirectories.setFrom(classDirs)
     sourceDirectories.setFrom(sourceDirs)

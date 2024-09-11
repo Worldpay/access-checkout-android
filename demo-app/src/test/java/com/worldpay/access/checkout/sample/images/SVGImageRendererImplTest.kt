@@ -6,8 +6,8 @@ import android.graphics.drawable.PictureDrawable
 import android.view.View
 import android.widget.ImageView
 import com.caverock.androidsvg.SVG
-import com.nhaarman.mockitokotlin2.argumentCaptor
-import com.nhaarman.mockitokotlin2.verifyZeroInteractions
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.verifyNoInteractions
 import com.worldpay.access.checkout.sample.R
 import java.io.InputStream
 import org.junit.Before
@@ -64,6 +64,6 @@ class SVGImageRendererImplTest {
 
         svgImageRenderer.renderImage(mockInputStream, target, "someName")
 
-        verifyZeroInteractions(target)
+        verifyNoInteractions(target)
     }
 }
