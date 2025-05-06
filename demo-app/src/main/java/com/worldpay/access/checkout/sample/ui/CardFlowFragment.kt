@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import androidx.appcompat.widget.SwitchCompat
+import androidx.core.content.res.ResourcesCompat.getColor
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
@@ -56,6 +57,28 @@ class CardFlowFragment : Fragment() {
             expiryText = view.findViewById(R.id.card_flow_expiry_date)
             cvcText = view.findViewById(R.id.card_flow_text_cvc)
             paymentsCvcSwitch = view.findViewById(R.id.card_flow_payments_cvc_switch)
+
+            panText.setOnFocusChangeListener { v, hasFocus ->
+                val colour =
+                    if (hasFocus) R.color.worldPayRed else R.color.design_default_color_secondary
+
+                v.setBackgroundColor(getColor(activity.resources, colour, null))
+            }
+
+
+            expiryText.onFocusChangeListener = View.OnFocusChangeListener { v, hasFocus ->
+                val colour =
+                    if (hasFocus) R.color.worldPayRed else R.color.design_default_color_secondary
+
+                v.setBackgroundColor(getColor(activity.resources, colour, null))
+            }
+
+            cvcText.setOnFocusChangeListener { v, hasFocus ->
+                val colour =
+                    if (hasFocus) R.color.worldPayRed else R.color.design_default_color_secondary
+
+                v.setBackgroundColor(getColor(activity.resources, colour, null))
+            }
 
             val brandImageView = view.findViewById<ImageView>(R.id.card_flow_brand_logo)
             SVGImageLoader.getInstance(activity).fetchAndApplyCardLogo(null, brandImageView)
