@@ -20,18 +20,21 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import com.worldpay.access.checkout.R
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
-import org.mockito.ArgumentMatchers.*
+import org.mockito.ArgumentMatchers.anyBoolean
+import org.mockito.ArgumentMatchers.anyFloat
+import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
+import kotlin.test.assertTrue
 
 class AccessCheckoutEditTextTest {
     private lateinit var accessCheckoutEditText: AccessCheckoutEditText
@@ -568,7 +571,7 @@ class AccessCheckoutEditTextTest {
     }
 
     /**
-     Methods tests
+    Methods tests
      */
     @Test
     fun `length() should return EditText length`() {
@@ -588,19 +591,24 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `getOnFocusChangeListener() should call EditText getOnFocusChangeListener()`() {
+    fun `getOnFocusChangeListener() should call not call inner EditText getOnFocusChangeListener()`() {
+        val mockListener = mock<View.OnFocusChangeListener>()
+
         given(editTextMock.onFocusChangeListener).willReturn(mock())
+        accessCheckoutEditText.onFocusChangeListener = mockListener
+
+        //Trigger getter
         accessCheckoutEditText.onFocusChangeListener
 
-        verify(editTextMock).onFocusChangeListener
+        verifyNoInteractions(editTextMock.onFocusChangeListener)
     }
 
     @Test
-    fun `setOnFocusChangeListener() should call EditText setOnFocusChangeListener()`() {
+    fun `setOnFocusChangeListener() should not call inner EditText setOnFocusChangeListener()`() {
         val mockListener = mock<View.OnFocusChangeListener>()
         accessCheckoutEditText.onFocusChangeListener = mockListener
 
-        verify(editTextMock).onFocusChangeListener = mockListener
+        assertEquals(null, editTextMock.onFocusChangeListener)
     }
 
     @Test
