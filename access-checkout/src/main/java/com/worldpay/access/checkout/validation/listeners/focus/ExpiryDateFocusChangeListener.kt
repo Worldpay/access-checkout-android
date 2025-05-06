@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation.listeners.focus
 
 import android.view.View
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.validation.result.handler.ExpiryDateValidationResultHandler
 
 internal class ExpiryDateFocusChangeListener(
@@ -11,5 +12,7 @@ internal class ExpiryDateFocusChangeListener(
         if (!hasFocus) {
             expiryDateValidationResultHandler.handleFocusChange()
         }
+        //Notify AccessCheckoutEditText onFocusListener if it was defined
+        (v?.parent as? AccessCheckoutEditText)?.onFocusChangeListener?.onFocusChange(v.parent as AccessCheckoutEditText, hasFocus)
     }
 }
