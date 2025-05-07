@@ -13,6 +13,8 @@ internal class AttributeValues(
 
         setHintAttribute(editText)
 
+        setAutofillAttribute(editText)
+
         setHintTextColourAttribute(editText)
 
         setImeOptionsAttribute(editText)
@@ -70,6 +72,13 @@ internal class AttributeValues(
         val hint = getHintAttribute()
         hint?.let {
             editText.setHint(it as CharSequence)
+        }
+    }
+
+    private fun setAutofillAttribute(editText: EditText) {
+        val autofill = getAutofillAttribute()
+        autofill?.let {
+            editText.setAutofillHints((it as CharSequence).toString())
         }
     }
 
@@ -141,6 +150,9 @@ internal class AttributeValues(
 
     private fun getHintAttribute() =
         styledAttributes.getString(R.styleable.AccessCheckoutEditText_android_hint)
+
+    private fun getAutofillAttribute() =
+        styledAttributes.getString(R.styleable.AccessCheckoutEditText_android_autofillHints)
 
     private fun getTextSizeAttribute() =
         styledAttributes.getDimension(R.styleable.AccessCheckoutEditText_android_textSize, 0F)
