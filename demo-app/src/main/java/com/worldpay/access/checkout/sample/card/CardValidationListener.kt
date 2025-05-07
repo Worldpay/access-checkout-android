@@ -29,12 +29,16 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
         if (!isValid) submitButton.disable()
     }
 
-    override fun onBrandChange(cardBrand: CardBrand?) {
+    override fun onBrandsChange(cardBrands: List<CardBrand?>) {
         val brandLogo = activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
         if (brandLogo != null) {
+            // currently just applying first card logo returned in list
+            // as underlying functionality to display two logos doesn't exist yet
+            // will be displayed in demo application as csv values below card number field
+            val cardBrand = cardBrands.firstOrNull()
             getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
         } else {
-            Log.d(this::class.java.simpleName, "Received CardBranch change but could not find ImageView with id `R.id.card_flow_brand_logo`")
+            Log.d(this::class.java.simpleName, "Received CardBrand change but could not find ImageView with id `R.id.card_flow_brand_logo`")
         }
     }
 

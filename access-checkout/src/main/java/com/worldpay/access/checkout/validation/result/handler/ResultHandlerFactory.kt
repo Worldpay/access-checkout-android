@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.validation.result.handler
 
 import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutBrandChangedListener
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutBrandsChangedListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutExpiryDateValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutPanValidationListener
@@ -21,7 +21,7 @@ internal class ResultHandlerFactory(
     private var cvcValidationResultHandler: CvcValidationResultHandler? = null
     private var panValidationResultHandler: PanValidationResultHandler? = null
     private var expiryDateValidationResultHandler: ExpiryDateValidationResultHandler? = null
-    private var brandChangedHandler: BrandChangedHandler? = null
+    private var brandsChangedHandler: BrandsChangedHandler? = null
 
     fun getCvcValidationResultHandler(): CvcValidationResultHandler {
         if (cvcValidationResultHandler == null) {
@@ -58,13 +58,13 @@ internal class ResultHandlerFactory(
         return expiryDateValidationResultHandler!!
     }
 
-    fun getBrandChangedHandler(): BrandChangedHandler {
-        if (brandChangedHandler == null) {
-            brandChangedHandler = BrandChangedHandler(
-                validationListener = accessCheckoutValidationListener as AccessCheckoutBrandChangedListener,
+    fun getBrandsChangedHandler(): BrandsChangedHandler {
+        if (brandsChangedHandler == null) {
+            brandsChangedHandler = BrandsChangedHandler(
+                validationListener = accessCheckoutValidationListener as AccessCheckoutBrandsChangedListener,
                 toCardBrandTransformer = ToCardBrandTransformer()
             )
         }
-        return brandChangedHandler!!
+        return brandsChangedHandler!!
     }
 }

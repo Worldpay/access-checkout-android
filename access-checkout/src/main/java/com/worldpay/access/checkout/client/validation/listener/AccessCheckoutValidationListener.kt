@@ -31,8 +31,8 @@ interface AccessCheckoutPanValidationListener : AccessCheckoutValidationSuccessL
 /**
  * Interface that should be used when brand changes
  */
-interface AccessCheckoutBrandChangedListener {
-    fun onBrandChange(cardBrand: CardBrand?)
+interface AccessCheckoutBrandsChangedListener {
+    fun onBrandsChange(cardBrands: List<CardBrand?>)
 }
 
 /**
@@ -49,4 +49,4 @@ interface AccessCheckoutCardValidationListener :
     AccessCheckoutCvcValidationListener,
     AccessCheckoutPanValidationListener,
     AccessCheckoutExpiryDateValidationListener,
-    AccessCheckoutBrandChangedListener
+    AccessCheckoutBrandsChangedListener
