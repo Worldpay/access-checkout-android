@@ -13,12 +13,12 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
-import android.widget.LinearLayout
+import android.widget.FrameLayout
 import androidx.annotation.ColorInt
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
 import com.worldpay.access.checkout.R
-import java.util.*
+import java.util.Optional
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -30,7 +30,9 @@ class AccessCheckoutEditText internal constructor(
     attrs: AttributeSet?,
     defStyle: Int,
     internal val editText: EditText?,
-) : LinearLayout(context, attrs, defStyle) {
+) : FrameLayout(context, attrs, defStyle) {
+    private var externalOnFocusChangeListener: OnFocusChangeListener? = null
+
     internal companion object {
         private const val SUPER_STATE_KEY = "superState"
         private const val EDIT_TEXT_STATE_KEY = "editTextState"
@@ -45,9 +47,7 @@ class AccessCheckoutEditText internal constructor(
     }
 
     init {
-        orientation = VERTICAL
         super.setPadding(0, 0, 0, 0)
-
         this.editText?.let { editText ->
             editText.id = editTextIdOf(this.id)
 
@@ -60,13 +60,12 @@ class AccessCheckoutEditText internal constructor(
 
                 styledAttributes.recycle()
             }
-
             addView(this.editText)
         }
     }
 
     constructor(context: Context, attrs: AttributeSet?, defStyle: Int) :
-        this(context, attrs, defStyle, EditText(context))
+            this(context, attrs, defStyle, EditText(context))
 
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
 
@@ -88,6 +87,7 @@ class AccessCheckoutEditText internal constructor(
      * @return Returns the current text color.
      */
     val currentTextColor: Int get() = editText!!.currentTextColor
+
     /**
      * Sets the text color for all the states (normal, selected,
      * focused) to be this color.
@@ -102,6 +102,7 @@ class AccessCheckoutEditText internal constructor(
      * @return Returns the current hint text color.
      */
     val currentHintTextColor: Int @ColorInt get() = editText!!.currentHintTextColor
+
     /**
      * Sets the color selected to paint the hint text.
      *
@@ -313,12 +314,12 @@ class AccessCheckoutEditText internal constructor(
         return editText!!.dispatchKeyEvent(event)
     }
 
-    override fun getOnFocusChangeListener(): OnFocusChangeListener {
-        return editText!!.onFocusChangeListener
+    override fun getOnFocusChangeListener(): OnFocusChangeListener? {
+        return this.externalOnFocusChangeListener
     }
 
-    override fun setOnFocusChangeListener(l: OnFocusChangeListener?) {
-        editText!!.onFocusChangeListener = l
+    override fun setOnFocusChangeListener(event: OnFocusChangeListener?) {
+        this.externalOnFocusChangeListener = event
     }
 
     public override fun onSaveInstanceState(): Parcelable? {

@@ -66,7 +66,7 @@ class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
     }
 
     fun focusOff(): CvcFragmentTestUtils {
-        cvcInput().onFocusChangeListener.onFocusChange(cvcInput(), false)
+        cvcInput().onFocusChangeListener?.onFocusChange(cvcInput(), false)
         return this
     }
 
