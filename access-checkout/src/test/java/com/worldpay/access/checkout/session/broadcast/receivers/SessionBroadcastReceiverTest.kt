@@ -104,6 +104,15 @@ class SessionBroadcastReceiverTest {
     }
 
     @Test
+    fun `should  notify if the intent is not recognised`() {
+        given(intent.action).willReturn("COMPLETED_SESSION_REQUEST")
+
+        sessionBroadcastReceiver.onReceive(context, intent)
+
+        verifyNoInteractions(externalSessionResponseListener)
+    }
+
+    @Test
     fun `should return empty session and exception when session response is empty`() {
         broadcastNumSessionTypesRequested(1)
 
@@ -120,6 +129,25 @@ class SessionBroadcastReceiverTest {
         verify(externalSessionResponseListener, atMost(1))
             .onError(AccessCheckoutException("some error"))
     }
+
+    @Test
+    fun `should return AccessCheckoutException with unknown error when casting serializable to AccessCheckoutException fails`() {
+        broadcastNumSessionTypesRequested(1)
+
+        given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
+        given(intent.getSerializableExtra("error")).willReturn(
+            IllegalArgumentException(
+                "some error"
+            )
+        )
+        given(intent.getSerializableExtra("session_type")).willReturn(CARD)
+
+        sessionBroadcastReceiver.onReceive(context, intent)
+
+        verify(externalSessionResponseListener, atMost(1))
+            .onError(AccessCheckoutException("Unknown error"))
+    }
+
 
     @Test
     fun `should return href given a session response is received`() {
