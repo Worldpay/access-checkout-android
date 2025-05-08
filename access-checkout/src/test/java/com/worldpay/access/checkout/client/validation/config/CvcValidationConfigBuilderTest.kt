@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import kotlin.test.assertEquals
@@ -40,7 +41,7 @@ class CvcValidationConfigBuilderTest {
 
     @Test
     fun `should throw exception where cvc is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CvcValidationConfig.Builder()
                 .validationListener(validationListener)
                 .lifecycleOwner(lifecycleOwner)
@@ -52,7 +53,7 @@ class CvcValidationConfigBuilderTest {
 
     @Test
     fun `should throw exception where lifecycle owner is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CvcValidationConfig.Builder()
                 .cvc(cvc)
                 .validationListener(validationListener)
@@ -64,7 +65,7 @@ class CvcValidationConfigBuilderTest {
 
     @Test
     fun `should throw exception where validation listener is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CvcValidationConfig.Builder()
                 .cvc(cvc)
                 .lifecycleOwner(lifecycleOwner)

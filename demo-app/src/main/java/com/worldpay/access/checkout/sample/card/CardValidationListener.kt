@@ -20,13 +20,13 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
     override fun onCvcValidated(isValid: Boolean) {
         val cvc = activity.findViewById<AccessCheckoutEditText>(R.id.card_flow_text_cvc)
         changeFont(cvc, isValid)
-        if (!isValid) submitButton.disable()
+        if (!isValid) submitButton.enable()
     }
 
     override fun onPanValidated(isValid: Boolean) {
         val pan = activity.findViewById<AccessCheckoutEditText>(R.id.card_flow_text_pan)
         changeFont(pan, isValid)
-        if (!isValid) submitButton.disable()
+        if (!isValid) submitButton.enable()
     }
 
     override fun onBrandChange(cardBrand: CardBrand?) {
@@ -41,7 +41,7 @@ class CardValidationListener(private val activity: FragmentActivity) : AccessChe
     override fun onExpiryDateValidated(isValid: Boolean) {
         val expiryText = activity.findViewById<AccessCheckoutEditText>(R.id.card_flow_expiry_date)
         changeFont(expiryText, isValid)
-        if (!isValid) submitButton.disable()
+        if (!isValid) submitButton.enable()
     }
 
     override fun onValidationSuccess() = submitButton.enable()

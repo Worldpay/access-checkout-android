@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.session.api.client
 
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequest
@@ -47,7 +48,7 @@ class SessionClientFactoryTest {
 
     @Test
     fun `should throw exception when suitable request is not found`() {
-        assertFailsWith<IllegalArgumentException> {
+        assertFailsWith<AccessCheckoutException> {
             sessionClientFactory.createClient(InvalidSessionRequest())
         }
     }

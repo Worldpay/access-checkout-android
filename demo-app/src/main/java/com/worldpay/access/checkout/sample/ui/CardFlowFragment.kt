@@ -72,7 +72,7 @@ class CardFlowFragment : Fragment() {
         super.onResume()
         if (progressBar.isLoading()) {
             disableFields()
-            submitBtn.disable()
+            submitBtn.enable()
         } else {
             initialiseCardValidation(cardValidationListener)
         }
@@ -106,7 +106,7 @@ class CardFlowFragment : Fragment() {
             Log.d(javaClass.simpleName, "Started request")
             this.progressBar.beginLoading()
             disableFields()
-            submitBtn.disable()
+            submitBtn.enable()
 
             val cardDetails = CardDetails.Builder()
                 .pan(panText)

@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.session.handlers
 import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
@@ -58,7 +59,7 @@ class CardSessionRequestHandlerTest {
     }
 
     @Test
-    fun `should throw illegal argument exception if pan is not provided in card details`() {
+    fun `should throw AccessCheckoutException if pan is not provided in card details`() {
         val expiryDate = createAccessCheckoutEditTextMock("1120")
         val cvc = createAccessCheckoutEditTextMock("123")
 
@@ -67,7 +68,7 @@ class CardSessionRequestHandlerTest {
             .cvc(cvc)
             .build()
 
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             cardSessionRequestHandler.handle(cardDetails)
         }
 
@@ -75,7 +76,7 @@ class CardSessionRequestHandlerTest {
     }
 
     @Test
-    fun `should throw illegal argument exception if expiry date is not provided in card details`() {
+    fun `should throw AccessCheckoutException if expiry date is not provided in card details`() {
         val pan = createAccessCheckoutEditTextMock("1234")
         val cvc = createAccessCheckoutEditTextMock("123")
 
@@ -84,7 +85,7 @@ class CardSessionRequestHandlerTest {
             .cvc(cvc)
             .build()
 
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             cardSessionRequestHandler.handle(cardDetails)
         }
 
@@ -92,7 +93,7 @@ class CardSessionRequestHandlerTest {
     }
 
     @Test
-    fun `should throw illegal argument exception if cvc is not provided in card details`() {
+    fun `should throw AccessCheckoutException if cvc is not provided in card details`() {
         val pan = createAccessCheckoutEditTextMock("1234")
         val expiryDate = createAccessCheckoutEditTextMock("1120")
 
@@ -101,7 +102,7 @@ class CardSessionRequestHandlerTest {
             .expiryDate(expiryDate)
             .build()
 
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             cardSessionRequestHandler.handle(cardDetails)
         }
 

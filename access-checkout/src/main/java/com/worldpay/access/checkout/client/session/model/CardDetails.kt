@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.client.session.model
 
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
 /**
@@ -78,7 +79,7 @@ class CardDetails private constructor(
             val isCorrectLength = expiryDateWithoutSeparator.length == maxExpiryDateLength
 
             if (!isCorrectLength || !isNumeric) {
-                throw IllegalArgumentException("expecting expiry date in format MM/YY or MMYY but found $expiryDate")
+                throw AccessCheckoutException("expecting expiry date in format MM/YY or MMYY but found $expiryDate")
             }
 
             if (expiryDate.contains(separator)) {

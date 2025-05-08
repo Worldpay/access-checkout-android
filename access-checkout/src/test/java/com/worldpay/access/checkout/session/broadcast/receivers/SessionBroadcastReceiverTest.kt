@@ -234,13 +234,13 @@ class SessionBroadcastReceiverTest {
     fun `should notify with custom error when a response that is not a session response and error deserialize failure`() {
         broadcastNumSessionTypesRequested(2)
 
-        val illegalArgumentException = IllegalArgumentException("")
+        val AccessCheckoutException = AccessCheckoutException("")
         val expectedEx =
-            AccessCheckoutException("Unknown error", illegalArgumentException)
+            AccessCheckoutException("Unknown error", AccessCheckoutException)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("response")).willReturn(TestObject("something"))
-        given(intent.getSerializableExtra("error")).willReturn(illegalArgumentException)
+        given(intent.getSerializableExtra("error")).willReturn(AccessCheckoutException)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 

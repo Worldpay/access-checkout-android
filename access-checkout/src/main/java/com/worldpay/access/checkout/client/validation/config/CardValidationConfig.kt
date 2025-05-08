@@ -121,7 +121,7 @@ class CardValidationConfig private constructor(
          * Builds the validation configuration by returning an instance of the [CardValidationConfig]
          *
          * @return [CardValidationConfig] implementation that can be used to initialise validation
-         * @throws [IllegalArgumentException] is thrown when a property is missing
+         * @throws [AccessCheckoutException] is thrown when a property is missing
          */
         fun build(): CardValidationConfig {
             validateNotNull(pan, "pan component")
