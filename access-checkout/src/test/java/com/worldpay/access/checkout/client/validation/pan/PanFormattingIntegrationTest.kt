@@ -34,7 +34,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4111 1111 1111 1111", pan.text)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
         verify(cardValidationListener).onPanValidated(true)
     }
 
@@ -45,7 +45,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("342793178931249")
 
         assertEquals("3427 931789 31249", pan.text)
-        verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrand(AMEX_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
 
@@ -58,7 +58,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4111111111111111", pan.text)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
         verify(cardValidationListener).onPanValidated(true)
     }
 
@@ -215,7 +215,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should do nothing when text is empty`() {
         pan.setText("")
 
-        verify(cardValidationListener, never()).onBrandChange(any())
+        verify(cardValidationListener, never()).onBrandsChange(any())
         verify(cardValidationListener, never()).onPanValidated(any())
 
         assertEquals("", pan.text)

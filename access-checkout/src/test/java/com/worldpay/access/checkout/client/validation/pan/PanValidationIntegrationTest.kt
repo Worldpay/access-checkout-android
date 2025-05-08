@@ -30,7 +30,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("00000")
 
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener, never()).onBrandChange(any())
+        verify(cardValidationListener, never()).onBrandsChange(any())
     }
 
     @Test
@@ -39,7 +39,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
     }
 
     @Test
@@ -48,7 +48,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
     }
 
     @Test
@@ -59,7 +59,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
 
         reset(cardValidationListener)
 
@@ -75,7 +75,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
     }
 
     @Test
@@ -83,7 +83,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText(VALID_UNKNOWN_LUHN)
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener, never()).onBrandChange(any())
+        verify(cardValidationListener, never()).onBrandsChange(any())
     }
 
     @Test
@@ -92,7 +92,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
     }
 
     @Test
@@ -100,7 +100,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText(VALID_UNKNOWN_LUHN)
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener, never()).onBrandChange(any())
+        verify(cardValidationListener, never()).onBrandsChange(any())
     }
 
     @Test
@@ -108,7 +108,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText(INVALID_UNKNOWN_LUHN)
 
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener, never()).onBrandChange(any())
+        verify(cardValidationListener, never()).onBrandsChange(any())
     }
 
     @Test
@@ -118,6 +118,6 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
         verify(cardValidationListener, never()).onCvcValidated(any())
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
     }
 }

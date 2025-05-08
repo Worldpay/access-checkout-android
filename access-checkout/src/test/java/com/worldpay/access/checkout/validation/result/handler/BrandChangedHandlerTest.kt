@@ -30,7 +30,7 @@ class BrandChangedHandlerTest {
     fun `should notify brand changed when null is passed`() {
         brandChangedHandler.handle(null)
 
-        verify(validationListener).onBrandChange(null)
+        verify(validationListener).onBrandsChange(null)
     }
 
     @Test
@@ -39,6 +39,6 @@ class BrandChangedHandlerTest {
 
         brandChangedHandler.handle(VISA_BRAND)
 
-        verify(validationListener).onBrandChange(cardBrand)
+        verify(validationListener).onBrandsChange(cardBrand)
     }
 }

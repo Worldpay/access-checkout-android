@@ -33,7 +33,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
 
         cvc.setText("1234")
         verify(cardValidationListener).onCvcValidated(true)
@@ -56,7 +56,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onCvcValidated(false)
-        verify(cardValidationListener).onBrandChange(amexCardBrand)
+        verify(cardValidationListener).onBrandsChange(amexCardBrand)
 
         reset(cardValidationListener)
 
@@ -66,7 +66,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         // We assert that the brand has changed this way and not using verify()
         // because verify(visaPan()) does not work consistently in our BitRise builds
         val brandArgCaptor: ArgumentCaptor<CardBrand> = ArgumentCaptor.forClass(CardBrand::class.java)
-        verify(cardValidationListener).onBrandChange(brandArgCaptor.capture())
+        verify(cardValidationListener).onBrandsChange(brandArgCaptor.capture())
         assertNotEquals(amexCardBrand, brandArgCaptor.value)
 
         verify(cardValidationListener).onCvcValidated(true)
