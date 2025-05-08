@@ -78,7 +78,7 @@ internal class AttributeValues(
     private fun setAutofillAttribute(editText: EditText) {
         val autofill = getAutofillAttribute()
         autofill?.let {
-            editText.setAutofillHints((it as CharSequence).toString())
+            editText.setAutofillHints(it as CharSequence as String?)
         }
     }
 

@@ -95,6 +95,15 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
+    fun `should autofill hint from attribute set`() {
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_autofillHints, "some-credit-card")
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).setAutofillHints("some-credit-card").toString()
+    }
+
+    @Test
     fun `should set hintTextColor from attribute set`() {
         mockColorAttributeValue(R.styleable.AccessCheckoutEditText_android_textColorHint, GREEN)
 

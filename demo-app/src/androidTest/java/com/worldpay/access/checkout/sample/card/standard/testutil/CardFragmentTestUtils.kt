@@ -210,4 +210,11 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
         return this
     }
+
+    fun autofillHints(input: String): CardFragmentTestUtils {
+        wait { assertEquals("creditCardNumber", panInput().autofillHints?.get(0)) }
+        wait { assertEquals("creditCardSecurityCode", cvcInput().autofillHints?.get(0)) }
+        wait { assertEquals("creditCardExpirationDate", expiryDateInput().autofillHints?.get(0)) }
+        return this
+    }
 }
