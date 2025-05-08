@@ -35,11 +35,11 @@ class CardFragmentTest : AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .focusOn(CardFragmentTestUtils.Input.PAN)
-            .autofillHints("creditCardNumber")
+            .hasAutofillHints()
             .focusOn(CVC)
-            .autofillHints("creditCardSecurityCode")
+            .hasAutofillHints()
             .focusOn(CardFragmentTestUtils.Input.EXPIRY_DATE)
-            .autofillHints("creditCardExpirationDate")
+            .hasAutofillHints()
     }
 
     @Test

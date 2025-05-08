@@ -211,7 +211,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun autofillHints(input: String): CardFragmentTestUtils {
+    fun hasAutofillHints(): CardFragmentTestUtils {
         wait { assertEquals("creditCardNumber", panInput().autofillHints?.get(0)) }
         wait { assertEquals("creditCardSecurityCode", cvcInput().autofillHints?.get(0)) }
         wait { assertEquals("creditCardExpirationDate", expiryDateInput().autofillHints?.get(0)) }
