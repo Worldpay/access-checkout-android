@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.validation.result.handler
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutBrandsChangedListener
 import com.worldpay.access.checkout.client.validation.model.CardBrand
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import org.junit.Before
 import org.junit.Test
