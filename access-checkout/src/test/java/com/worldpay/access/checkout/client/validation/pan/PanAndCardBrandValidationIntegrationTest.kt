@@ -9,7 +9,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.JCB_B
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MAESTRO_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MASTERCARD_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrandList
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.DINERS_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.DISCOVER_PAN
@@ -83,7 +83,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
     }
 
     @Test
@@ -93,49 +93,49 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(MASTERCARD_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(MASTERCARD_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(MASTERCARD_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(AMEX_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(AMEX_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(AMEX_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(JCB_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(JCB_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(JCB_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(DISCOVER_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(DISCOVER_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(DISCOVER_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(DINERS_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(DINERS_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(DINERS_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(MAESTRO_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(MAESTRO_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(MAESTRO_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText("")
         verify(cardValidationListener).onPanValidated(false)
-        verify(cardValidationListener).onBrandsChange(null)
+        verify(cardValidationListener).onBrandsChange(emptyList())
     }
 
     @Test
@@ -147,49 +147,49 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(MASTERCARD_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(MASTERCARD_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(MASTERCARD_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(AMEX_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(AMEX_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(AMEX_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(JCB_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(JCB_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(JCB_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(DISCOVER_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(DISCOVER_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(DISCOVER_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(DINERS_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(DINERS_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(DINERS_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText(MAESTRO_PAN)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrand(MAESTRO_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(MAESTRO_BRAND))
 
         reset(cardValidationListener)
 
         pan.setText("")
         verify(cardValidationListener).onPanValidated(false)
-        verify(cardValidationListener).onBrandsChange(null)
+        verify(cardValidationListener).onBrandsChange(emptyList())
     }
 
     @Test
@@ -201,7 +201,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
         pan.setText(visaPan())
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
         verify(cardValidationListener).onCvcValidated(false)
     }
 
@@ -214,7 +214,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrand(AMEX_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(AMEX_BRAND))
     }
 
     @Test
@@ -228,6 +228,6 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(false)
-        verify(cardValidationListener).onBrandsChange(toCardBrand(DINERS_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(DINERS_BRAND))
     }
 }
