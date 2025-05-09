@@ -14,6 +14,7 @@ import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
@@ -56,7 +57,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onCvcValidated(false)
-        verify(cardValidationListener).onBrandsChange(amexCardBrand)
+        verify(cardValidationListener).onBrandsChange(listOf(amexCardBrand))
 
         reset(cardValidationListener)
 
@@ -65,9 +66,10 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
         // We assert that the brand has changed this way and not using verify()
         // because verify(visaPan()) does not work consistently in our BitRise builds
-        val brandArgCaptor: ArgumentCaptor<CardBrand> = ArgumentCaptor.forClass(CardBrand::class.java)
-        verify(cardValidationListener).onBrandsChange(brandArgCaptor.capture())
-        assertNotEquals(amexCardBrand, brandArgCaptor.value)
+        val brandsArgCaptor = argumentCaptor<List<CardBrand>>()
+        verify(cardValidationListener).onBrandsChange(brandsArgCaptor.capture())
+        val capturedBrands = brandsArgCaptor.firstValue
+        assertNotEquals(amexCardBrand, capturedBrands[0])
 
         verify(cardValidationListener).onCvcValidated(true)
     }

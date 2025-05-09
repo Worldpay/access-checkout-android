@@ -27,7 +27,7 @@ class TextWatcherFactoryTest {
     fun `should get pan text watcher`() {
         given(resultHandlerFactory.getPanValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
-        given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
+        given(resultHandlerFactory.getBrandsChangedHandler()).willReturn(mock())
 
         val textWatcher: PanTextWatcher = textWatcherFactory.createPanTextWatcher(
             panEditText = panEditText,
