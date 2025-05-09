@@ -115,6 +115,17 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
+    fun `should get autofill hint from attribute set`() {
+        val autofillHints = arrayOf("creditCardNumber", "creditCardExpirationDate")
+        given(editTextMock.getAutofillHints()).willReturn(autofillHints)
+
+        val result = accessCheckoutEditText.getAutofillHints()
+
+        assertEquals(autofillHints, result)
+        verify(editTextMock).getAutofillHints()
+    }
+
+    @Test
     fun `should set hintTextColor from attribute set`() {
         mockColorAttributeValue(R.styleable.AccessCheckoutEditText_android_textColorHint, GREEN)
 
