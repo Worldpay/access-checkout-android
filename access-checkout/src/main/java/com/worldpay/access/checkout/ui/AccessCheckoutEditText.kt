@@ -330,6 +330,10 @@ class AccessCheckoutEditText internal constructor(
         editText?.setAutofillHints(*hints)
     }
 
+    override fun getAutofillHints(): Array<String>? {
+        return editText?.getAutofillHints()
+    }
+
     public override fun onSaveInstanceState(): Parcelable? {
         val editTextState = editText!!.onSaveInstanceState()
         return Bundle().apply {
