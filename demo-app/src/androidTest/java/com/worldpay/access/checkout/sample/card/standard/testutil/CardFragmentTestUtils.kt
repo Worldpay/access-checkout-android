@@ -15,7 +15,6 @@ import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredT
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
 import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
@@ -215,7 +214,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun hasAutofillHints(id: Int, expectedAutofillHint: Array<String>): CardFragmentTestUtils {
-        wait{ assertNotNull(field(id).autofillHints) }
+        wait{ assertTrue { expectedAutofillHint contentEquals field(id).autofillHints}}
         wait{ assertTrue { expectedAutofillHint contentEquals field(id).autofillHints}}
         return this
     }

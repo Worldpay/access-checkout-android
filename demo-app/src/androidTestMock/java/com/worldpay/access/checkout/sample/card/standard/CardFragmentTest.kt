@@ -4,7 +4,6 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import org.junit.Test
@@ -35,7 +34,7 @@ class CardFragmentTest : AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasAutofillHints(R.id.card_flow_text_pan, arrayOf("creditCardNumber"))
-            .hasAutofillHints(R.id.cvc_flow_text_cvc, arrayOf("creditCardSecurityCode"))
+            .hasAutofillHints(R.id.card_flow_text_cvc, arrayOf("creditCardSecurityCode"))
             .hasAutofillHints(R.id.card_flow_expiry_date, arrayOf("creditCardExpirationDate"))
     }
 
