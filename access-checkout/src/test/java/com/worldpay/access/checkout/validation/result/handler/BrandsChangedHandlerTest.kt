@@ -1,24 +1,26 @@
 package com.worldpay.access.checkout.validation.result.handler
 
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutBrandsChangedListener
+import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.validation.transformers.ToCardBrandTransformer
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
+import org.mockito.kotlin.whenever
 
 class BrandsChangedHandlerTest {
 
     private lateinit var brandsChangedHandler: BrandsChangedHandler
-
     private lateinit var validationListener: AccessCheckoutBrandsChangedListener
     private lateinit var toCardBrandTransformer: ToCardBrandTransformer
 
     @Before
     fun setup() {
         validationListener = mock()
-        toCardBrandTransformer = ToCardBrandTransformer()
+        toCardBrandTransformer = mock()
 
         brandsChangedHandler = BrandsChangedHandler(
             validationListener = validationListener,
@@ -29,16 +31,29 @@ class BrandsChangedHandlerTest {
     @Test
     fun `should notify brand changed when emptylist is passed`() {
         brandsChangedHandler.handle(emptyList())
-
         verify(validationListener).onBrandsChange(emptyList())
     }
 
     @Test
     fun `should notify brand changed when brand is passed`() {
-        val cardBrand = toCardBrandTransformer.transform(VISA_BRAND)
+        val remoteCardBrand = mock<RemoteCardBrand>()
+        val cardBrand = mock<CardBrand>()
+        whenever(toCardBrandTransformer.transform(remoteCardBrand)).thenReturn(cardBrand)
 
-        brandsChangedHandler.handle(listOf(VISA_BRAND))
+        val remoteBrands = listOf(remoteCardBrand)
+        brandsChangedHandler.handle(remoteBrands)
 
-        verify(validationListener).onBrandsChange(listOf(cardBrand!!))
+        verify(validationListener).onBrandsChange(listOf(cardBrand))
+    }
+
+    @Test
+    fun `should notify brand changed with emptyList when brand transformer returns null`() {
+        val remoteCardBrand = mock<RemoteCardBrand>()
+        whenever(toCardBrandTransformer.transform(remoteCardBrand)).thenReturn(null)
+
+        val remoteBrands = listOf(remoteCardBrand)
+        brandsChangedHandler.handle(remoteBrands)
+
+        verify(validationListener).onBrandsChange(emptyList())
     }
 }
