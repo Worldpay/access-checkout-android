@@ -10,7 +10,8 @@ import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.images.SVGImageLoader.Companion.getInstance
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
-class RestrictedCardValidationListener(private val activity: FragmentActivity) : AccessCheckoutCardValidationListener {
+class RestrictedCardValidationListener(private val activity: FragmentActivity) :
+    AccessCheckoutCardValidationListener {
 
     private val validColor = getColor(activity.resources, R.color.SUCCESS, null)
     private val invalidColor = getColor(activity.resources, R.color.FAIL, null)
@@ -25,18 +26,18 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
     }
 
     override fun onBrandsChange(cardBrands: List<CardBrand>) {
-        val brandLogo = activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
+        val brandLogo = activity.findViewById<ImageView>(R.id.restricted_card_flow_brand_logo)
         if (brandLogo != null) {
-            if (cardBrands.isEmpty()) {
-                getInstance(activity).fetchAndApplyCardLogo(null, brandLogo)
-            } else {
-                // currently just applying first card logo returned in list
-                // as underlying functionality to display two logos doesn't exist yet
-                // will be displayed in demo application as csv values below card number field
-                getInstance(activity).fetchAndApplyCardLogo(cardBrands.first(), brandLogo)
-            }
+            // currently just applying first card logo returned in list
+            // as underlying functionality to display two logos doesn't exist yet
+            // will be displayed in demo application as csv values below card number field
+            val cardBrand = if (cardBrands.isEmpty()) null else cardBrands.first()
+            getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
         } else {
-            Log.d(this::class.java.simpleName, "Received CardBrand change but could not find ImageView with id `R.id.card_flow_brand_logo`")
+            Log.d(
+                this::class.java.simpleName,
+                "Received CardBrand change but could not find ImageView with id `R.id.card_flow_brand_logo`"
+            )
         }
     }
 
