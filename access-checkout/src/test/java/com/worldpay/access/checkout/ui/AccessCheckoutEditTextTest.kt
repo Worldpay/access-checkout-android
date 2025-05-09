@@ -108,11 +108,10 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `should set autofill hint from hint constants set`() {
-        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_autofillHints, "creditCardNumber")
+        val field = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        field.setAutofillHints(View.AUTOFILL_HINT_CREDIT_CARD_NUMBER)
 
-        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
-
-        verify(editTextMock).setAutofillHints(View.AUTOFILL_HINT_CREDIT_CARD_NUMBER)
+        verify(editTextMock).setAutofillHints("creditCardNumber")
     }
 
     @Test

@@ -322,6 +322,14 @@ class AccessCheckoutEditText internal constructor(
         this.externalOnFocusChangeListener = event
     }
 
+    /**
+     * Delegates the call to the EditText instance
+     * This supports the autofill within this component
+     */
+    override fun setAutofillHints(vararg hints: String?) {
+        editText?.setAutofillHints(*hints)
+    }
+
     public override fun onSaveInstanceState(): Parcelable? {
         val editTextState = editText!!.onSaveInstanceState()
         return Bundle().apply {
