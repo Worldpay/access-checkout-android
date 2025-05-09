@@ -15,10 +15,13 @@ import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredT
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertSame
 import kotlin.test.assertTrue
 
 class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
 
+    private fun field(id: Int) = findById<AccessCheckoutEditText>(id)
     private fun panInput() = findById<AccessCheckoutEditText>(R.id.card_flow_text_pan)
     private fun cvcInput() = findById<AccessCheckoutEditText>(R.id.card_flow_text_cvc)
     private fun expiryDateInput() = findById<AccessCheckoutEditText>(R.id.card_flow_expiry_date)
@@ -211,10 +214,9 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun hasAutofillHints(): CardFragmentTestUtils {
-        wait { assertEquals("creditCardNumber", panInput().autofillHints?.get(0)) }
-        wait { assertEquals("creditCardSecurityCode", cvcInput().autofillHints?.get(0)) }
-        wait { assertEquals("creditCardExpirationDate", expiryDateInput().autofillHints?.get(0)) }
+    fun hasAutofillHints(id: Int, expectedAutofillHint: Array<String>): CardFragmentTestUtils {
+        wait{ assertNotNull(field(id).autofillHints) }
+        wait{ assertTrue { expectedAutofillHint contentEquals field(id).autofillHints}}
         return this
     }
 }
