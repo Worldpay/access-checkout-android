@@ -136,6 +136,32 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
+    fun `getAutofillHints() should not call EditText getAutofillHints()`() {
+        val contextMock = mock<Context>()
+        val attributeSetMock = mock<AttributeSet>()
+
+        val accessCheckoutEditTextOptional = AccessCheckoutEditText(contextMock, attributeSetMock, 0, null)
+
+        val result = accessCheckoutEditTextOptional.autofillHints
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `setAutofillHints() should not call EditText setAutofillHints()`() {
+        val contextMock = mock<Context>()
+        val attributeSetMock = mock<AttributeSet>()
+
+        val accessCheckoutEditTextOptional = AccessCheckoutEditText(contextMock, attributeSetMock, 0, null)
+
+        accessCheckoutEditTextOptional.setAutofillHints("patata")
+
+        val result = accessCheckoutEditTextOptional.autofillHints
+
+        assertNull(result)
+    }
+
+    @Test
     fun `should set hintTextColor from attribute set`() {
         mockColorAttributeValue(R.styleable.AccessCheckoutEditText_android_textColorHint, GREEN)
 

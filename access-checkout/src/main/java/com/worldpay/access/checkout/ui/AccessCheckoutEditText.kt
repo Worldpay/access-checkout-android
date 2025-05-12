@@ -327,11 +327,11 @@ class AccessCheckoutEditText internal constructor(
      * This supports the autofill within this component
      */
     override fun setAutofillHints(vararg hints: String?) {
-        editText!!.setAutofillHints(*hints)
+        editText?.setAutofillHints(*hints)
     }
 
     override fun getAutofillHints(): Array<String>? {
-        return editText!!.getAutofillHints()
+        return editText?.getAutofillHints()
     }
 
     public override fun onSaveInstanceState(): Parcelable? {
