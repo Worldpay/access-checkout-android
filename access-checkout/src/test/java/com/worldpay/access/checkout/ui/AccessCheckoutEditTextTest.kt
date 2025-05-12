@@ -20,6 +20,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import com.worldpay.access.checkout.R
+import org.junit.Assert.assertArrayEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
@@ -31,6 +32,7 @@ import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -115,13 +117,21 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `should get autofill hint from attribute set`() {
+    fun `setAutofillHints() should call EditText setAutofillHints()`() {
+        accessCheckoutEditText.setAutofillHints("some-credit-card")
+
+        verify(editTextMock).setAutofillHints("some-credit-card")
+    }
+
+    @Test
+    fun `getAutofillHints() should call EditText getAutofillHints()`() {
         val autofillHints = arrayOf("creditCardNumber", "creditCardExpirationDate")
-        given(editTextMock.getAutofillHints()).willReturn(autofillHints)
+        whenever(editTextMock.getAutofillHints()).thenReturn(autofillHints)
+        accessCheckoutEditText.setAutofillHints(*autofillHints)
 
         val result = accessCheckoutEditText.getAutofillHints()
 
-        assertEquals(autofillHints, result)
+        assertArrayEquals(autofillHints, result)
         verify(editTextMock).getAutofillHints()
     }
 
