@@ -125,14 +125,14 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `getAutofillHints() should call EditText getAutofillHints()`() {
-        val autofillHints = arrayOf("creditCardNumber", "creditCardExpirationDate") // create array of autofillHints
-        whenever(editTextMock.autofillHints).thenReturn(autofillHints) // mock returns expected hints
-        editTextMock.setAutofillHints("some-credit-card") // sets the autofillHints
+        val autofillHints = arrayOf("creditCardNumber", "creditCardExpirationDate")
+        whenever(editTextMock.autofillHints).thenReturn(autofillHints)
+        accessCheckoutEditText.setAutofillHints("creditCardNumber", "creditCardExpirationDate")
 
-        val result = editTextMock.autofillHints // gets the autofillHints and stores it in variable results
+        val result = accessCheckoutEditText.autofillHints
 
-        assertArrayEquals(autofillHints, result) // asserts the array is equal to the result
-        verify(editTextMock).getAutofillHints() // verifies the call to getAutofillHints
+        assertArrayEquals(autofillHints, result)
+        verify(editTextMock).autofillHints
     }
 
     @Test
