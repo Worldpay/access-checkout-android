@@ -3,6 +3,7 @@
     <declare-styleable name="AccessCheckoutEditText">
         <attr name="android:textColor"/>
         <attr name="android:hint"/>
+        <attr name="android:autofillHints"/>
         <attr name="android:textColorHint"/>
         <attr name="android:imeOptions"/>
         <attr name="android:cursorVisible"/>

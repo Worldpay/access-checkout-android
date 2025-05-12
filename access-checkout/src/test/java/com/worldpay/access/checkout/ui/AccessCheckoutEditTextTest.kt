@@ -20,6 +20,7 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import com.worldpay.access.checkout.R
+import org.junit.Assert.assertArrayEquals
 import org.junit.Before
 import org.junit.Test
 import org.mockito.ArgumentCaptor
@@ -31,6 +32,7 @@ import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -95,6 +97,68 @@ class AccessCheckoutEditTextTest {
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
         verify(editTextMock).setHint("some-hint")
+    }
+
+    @Test
+    fun `should set autofill hint from attribute set`() {
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_autofillHints, "some-credit-card")
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).setAutofillHints("some-credit-card")
+    }
+
+    @Test
+    fun `should set autofill hint from hint constants set`() {
+        val field = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        field.setAutofillHints(View.AUTOFILL_HINT_CREDIT_CARD_NUMBER)
+
+        verify(editTextMock).setAutofillHints("creditCardNumber")
+    }
+
+    @Test
+    fun `setAutofillHints() should call EditText setAutofillHints()`() {
+        accessCheckoutEditText.setAutofillHints("some-credit-card")
+
+        verify(editTextMock).setAutofillHints("some-credit-card")
+    }
+
+    @Test
+    fun `getAutofillHints() should call EditText getAutofillHints()`() {
+        val autofillHints = arrayOf("creditCardNumber", "creditCardExpirationDate")
+        whenever(editTextMock.autofillHints).thenReturn(autofillHints)
+        accessCheckoutEditText.setAutofillHints("creditCardNumber", "creditCardExpirationDate")
+
+        val result = accessCheckoutEditText.autofillHints
+
+        assertArrayEquals(autofillHints, result)
+        verify(editTextMock).autofillHints
+    }
+
+    @Test
+    fun `getAutofillHints() should not call EditText getAutofillHints()`() {
+        val contextMock = mock<Context>()
+        val attributeSetMock = mock<AttributeSet>()
+
+        val accessCheckoutEditTextOptional = AccessCheckoutEditText(contextMock, attributeSetMock, 0, null)
+
+        val result = accessCheckoutEditTextOptional.autofillHints
+
+        assertNull(result)
+    }
+
+    @Test
+    fun `setAutofillHints() should not call EditText setAutofillHints()`() {
+        val contextMock = mock<Context>()
+        val attributeSetMock = mock<AttributeSet>()
+
+        val accessCheckoutEditTextOptional = AccessCheckoutEditText(contextMock, attributeSetMock, 0, null)
+
+        accessCheckoutEditTextOptional.setAutofillHints("patata")
+
+        val result = accessCheckoutEditTextOptional.autofillHints
+
+        assertNull(result)
     }
 
     @Test

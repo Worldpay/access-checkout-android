@@ -37,7 +37,8 @@
                     android:clickable="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
-                    android:hint="@string/card_number_hint">
+                    android:hint="@string/card_number_hint"
+                    android:autofillHints="creditCardNumber">
 
                 </com.worldpay.access.checkout.ui.AccessCheckoutEditText>
 
@@ -64,6 +65,7 @@
                     android:layout_weight="3"
                     android:ems="4"
                     android:hint="@string/card_expiry_date_hint"
+                    android:autofillHints="creditCardExpirationDate"
                     android:imeOptions="actionDone|flagNoFullscreen"
                     android:inputType="text"
                     android:textColor="@color/DEFAULT"
@@ -79,6 +81,7 @@
                     android:layout_weight="2"
                     android:ems="4"
                     android:hint="@string/card_cvc_hint"
+                    android:autofillHints="creditCardSecurityCode"
                     android:imeOptions="actionDone|flagNoFullscreen"
                     android:inputType="text"
                     android:textColor="@color/DEFAULT" />

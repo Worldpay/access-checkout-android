@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.sample.card.standard
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
@@ -27,6 +28,14 @@ class CardFragmentTest : AbstractCardFragmentTest() {
             .hasBrand(VISA)
             .validationStateIs(pan = true, cvc = true, expiryDate = true)
             .enabledStateIs(submitButton = true)
+    }
+
+    @Test fun shouldHaveCorrectAutofillHints() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasAutofillHints(R.id.card_flow_text_pan, arrayOf("creditCardNumber"))
+            .hasAutofillHints(R.id.card_flow_text_cvc, arrayOf("creditCardSecurityCode"))
+            .hasAutofillHints(R.id.card_flow_expiry_date, arrayOf("creditCardExpirationDate"))
     }
 
     @Test
