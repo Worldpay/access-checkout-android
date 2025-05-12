@@ -11,11 +11,6 @@ import com.worldpay.access.checkout.session.api.response.SessionResponse
 import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
-import java.io.Serializable
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,6 +20,11 @@ import org.mockito.kotlin.atMost
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoMoreInteractions
+import java.io.Serializable
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(PlainRobolectricTestRunner::class)
 class SessionBroadcastReceiverTest {
@@ -49,7 +49,12 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(1)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("some reference", CARD))
+        given(intent.getSerializableExtra("response")).willReturn(
+            createSessionResponse(
+                "some reference",
+                CARD
+            )
+        )
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         val sessionBroadcastReceiver = SessionBroadcastReceiver()
@@ -95,7 +100,7 @@ class SessionBroadcastReceiverTest {
     }
 
     @Test
-    fun `should not notify if the intent is not recognised`() {
+    fun `should not notify externalSessionResponseListener if the intent is not recognised`() {
         given(intent.action).willReturn("UNKNOWN_INTENT")
 
         sessionBroadcastReceiver.onReceive(context, intent)
@@ -104,7 +109,7 @@ class SessionBroadcastReceiverTest {
     }
 
     @Test
-    fun `should  notify if the intent is not recognised`() {
+    fun `should not notify externalSessionResponseListener if the intent is recognised but no externalSessionResponseListener was set`() {
         given(intent.action).willReturn("COMPLETED_SESSION_REQUEST")
 
         sessionBroadcastReceiver.onReceive(context, intent)
@@ -154,7 +159,12 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(1)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("some reference", CARD))
+        given(intent.getSerializableExtra("response")).willReturn(
+            createSessionResponse(
+                "some reference",
+                CARD
+            )
+        )
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         sessionBroadcastReceiver.onReceive(context, intent)
@@ -169,13 +179,23 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(2)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", CARD))
+        given(intent.getSerializableExtra("response")).willReturn(
+            createSessionResponse(
+                "verified-token-session-url",
+                CARD
+            )
+        )
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         val sessionBroadcastReceiver = SessionBroadcastReceiver(externalSessionResponseListener)
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", CVC))
+        given(intent.getSerializableExtra("response")).willReturn(
+            createSessionResponse(
+                "payments-cvc-session-url",
+                CVC
+            )
+        )
 
         val sessionBroadcastReceiver2 = SessionBroadcastReceiver(externalSessionResponseListener)
         sessionBroadcastReceiver2.onReceive(context, intent)
@@ -193,12 +213,22 @@ class SessionBroadcastReceiverTest {
         broadcastNumSessionTypesRequested(2)
 
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", CARD))
+        given(intent.getSerializableExtra("response")).willReturn(
+            createSessionResponse(
+                "verified-token-session-url",
+                CARD
+            )
+        )
         given(intent.getSerializableExtra("error")).willReturn(null)
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", CVC))
+        given(intent.getSerializableExtra("response")).willReturn(
+            createSessionResponse(
+                "payments-cvc-session-url",
+                CVC
+            )
+        )
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -223,7 +253,12 @@ class SessionBroadcastReceiverTest {
 
         verify(externalSessionResponseListener, atMost(1)).onError(expectedEx)
 
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("payments-cvc-session-url", CVC))
+        given(intent.getSerializableExtra("response")).willReturn(
+            createSessionResponse(
+                "payments-cvc-session-url",
+                CVC
+            )
+        )
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
@@ -237,7 +272,12 @@ class SessionBroadcastReceiverTest {
         val expectedEx: AccessCheckoutException = mock()
         given(intent.action).willReturn(COMPLETED_SESSION_REQUEST)
         given(intent.getSerializableExtra("error")).willReturn(expectedEx)
-        given(intent.getSerializableExtra("response")).willReturn(createSessionResponse("verified-token-session-url", CARD))
+        given(intent.getSerializableExtra("response")).willReturn(
+            createSessionResponse(
+                "verified-token-session-url",
+                CARD
+            )
+        )
 
         sessionBroadcastReceiver.onReceive(context, intent)
 
