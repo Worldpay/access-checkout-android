@@ -52,5 +52,5 @@ dependencies {
 }
 
 tasks.withType(Test) {
-    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2)
+    maxParallelForks = Runtime.runtime.availableProcessors()
 }
