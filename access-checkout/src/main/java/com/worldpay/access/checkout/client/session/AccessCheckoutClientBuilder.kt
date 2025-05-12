@@ -84,7 +84,7 @@ class AccessCheckoutClientBuilder {
      * Builds the [AccessCheckoutClient] instance
      *
      * @return [AccessCheckoutClient] interface with a default internal implementation
-     * @throws [IllegalArgumentException] is thrown when a property is missing
+     * @throws [AccessCheckoutException] is thrown when a property is missing
      */
     fun build(): AccessCheckoutClient {
         validateNotNull(baseUrl, "base url")

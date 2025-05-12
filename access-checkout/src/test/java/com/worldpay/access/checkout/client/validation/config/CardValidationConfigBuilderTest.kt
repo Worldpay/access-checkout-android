@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import kotlin.test.*
@@ -92,7 +93,7 @@ class CardValidationConfigBuilderTest {
 
     @Test
     fun `should throw exception where base url is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
                 .pan(pan)
                 .expiryDate(expiryDate)
@@ -108,7 +109,7 @@ class CardValidationConfigBuilderTest {
 
     @Test
     fun `should throw exception where pan is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .expiryDate(expiryDate)
@@ -124,7 +125,7 @@ class CardValidationConfigBuilderTest {
 
     @Test
     fun `should throw exception where expiry date is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .pan(pan)
@@ -140,7 +141,7 @@ class CardValidationConfigBuilderTest {
 
     @Test
     fun `should throw exception where cvc is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .pan(pan)
@@ -156,7 +157,7 @@ class CardValidationConfigBuilderTest {
 
     @Test
     fun `should throw exception where validation listener is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .pan(pan)
@@ -172,7 +173,7 @@ class CardValidationConfigBuilderTest {
 
     @Test
     fun `should throw exception where lifecycle owner is not provided`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
                 .baseUrl(baseUrl)
                 .pan(pan)

@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.testutils
 
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+
 object CardNumberUtil {
 
     const val PARTIAL_VISA = "4111"
@@ -23,14 +25,14 @@ object CardNumberUtil {
                 16 -> "4111 1111 1111 1111"
                 18 -> "4111 1111 1111 1111 11"
                 19 -> "4444 3333 2222 1111 000"
-                else -> throw IllegalArgumentException("valid lengths are 16, 18, 19")
+                else -> throw AccessCheckoutException("valid lengths are 16, 18, 19")
             }
         } else {
             when (length) {
                 16 -> "4111111111111111"
                 18 -> "411111111111111111"
                 19 -> "4444333322221111000"
-                else -> throw IllegalArgumentException("valid lengths are 16, 18, 19")
+                else -> throw AccessCheckoutException("valid lengths are 16, 18, 19")
             }
         }
     }

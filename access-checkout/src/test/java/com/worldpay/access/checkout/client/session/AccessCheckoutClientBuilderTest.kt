@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.client.session
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import java.lang.reflect.Field
 import kotlin.test.assertEquals
@@ -59,8 +60,8 @@ class AccessCheckoutClientBuilderTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no baseUrl is passed to builder`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+    fun `should throw an AccessCheckoutException when no baseUrl is passed to builder`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
             AccessCheckoutClientBuilder()
                 .checkoutId(checkoutId)
                 .context(context)
@@ -72,8 +73,8 @@ class AccessCheckoutClientBuilderTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no checkout ID is passed to builder`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+    fun `should throw an AccessCheckoutException when no checkout ID is passed to builder`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
             AccessCheckoutClientBuilder()
                 .baseUrl(baseUrl)
                 .context(context)
@@ -85,8 +86,8 @@ class AccessCheckoutClientBuilderTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no context is passed to builder`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+    fun `should throw an AccessCheckoutException when no context is passed to builder`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
             AccessCheckoutClientBuilder()
                 .baseUrl(baseUrl)
                 .checkoutId(checkoutId)
@@ -98,8 +99,8 @@ class AccessCheckoutClientBuilderTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no Session Response Listener is passed to builder`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+    fun `should throw an AccessCheckoutException when no Session Response Listener is passed to builder`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
             AccessCheckoutClientBuilder()
                 .baseUrl(baseUrl)
                 .checkoutId(checkoutId)
@@ -114,8 +115,8 @@ class AccessCheckoutClientBuilderTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no lifecycle owner is passed to builder`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+    fun `should throw an AccessCheckoutException when no lifecycle owner is passed to builder`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
             AccessCheckoutClientBuilder()
                 .baseUrl(baseUrl)
                 .checkoutId(checkoutId)

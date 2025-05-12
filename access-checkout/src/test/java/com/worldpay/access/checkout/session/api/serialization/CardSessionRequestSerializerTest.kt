@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.session.api.serialization
 
 import com.worldpay.access.checkout.api.serialization.Serializer
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest.CardExpiryDate
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
@@ -49,7 +50,7 @@ class CardSessionRequestSerializerTest {
                 "123",
                 "MERCHANT-123"
             )
-        assertFailsWith<IllegalArgumentException> { sessionRequestSerializer.serialize(sessionRequest) }
+        assertFailsWith<AccessCheckoutException> { sessionRequestSerializer.serialize(sessionRequest) }
     }
 
     private fun removeWhitespace(string: String): String {

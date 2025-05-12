@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.session.api.serialization
 
 import com.worldpay.access.checkout.api.serialization.Serializer
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest.CardExpiryDate
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
@@ -42,7 +43,7 @@ class CvcSessionRequestSerializerTest {
                 identity = "MERCHANT-123"
             )
 
-        assertFailsWith<IllegalArgumentException> {
+        assertFailsWith<AccessCheckoutException> {
             sessionRequestSerializer.serialize(
                 sessionRequest
             )

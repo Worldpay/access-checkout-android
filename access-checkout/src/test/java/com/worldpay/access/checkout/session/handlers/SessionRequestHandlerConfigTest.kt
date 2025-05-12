@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import java.net.MalformedURLException
 import java.net.URL
@@ -35,8 +36,8 @@ class SessionRequestHandlerConfigTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no baseUrl is passed to builder`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+    fun `should throw an AccessCheckoutException when no baseUrl is passed to builder`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
             SessionRequestHandlerConfig.Builder()
                 .checkoutId("checkout-id")
                 .context(mock(Context::class.java))
@@ -47,8 +48,8 @@ class SessionRequestHandlerConfigTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no checkoutId is passed to builder`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+    fun `should throw an AccessCheckoutException when no checkoutId is passed to builder`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
             SessionRequestHandlerConfig.Builder()
                 .baseUrl(URL("http://base-url.com"))
                 .context(mock(Context::class.java))
@@ -59,8 +60,8 @@ class SessionRequestHandlerConfigTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no context is passed to builder`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+    fun `should throw an AccessCheckoutException when no context is passed to builder`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
             SessionRequestHandlerConfig.Builder()
                 .baseUrl(URL("http://base-url.com"))
                 .checkoutId("checkout-id")
@@ -71,8 +72,8 @@ class SessionRequestHandlerConfigTest {
     }
 
     @Test
-    fun `should throw an illegal argument exception when no external session response listener is passed to builder`() {
-        val exception = assertFailsWith<IllegalArgumentException> {
+    fun `should throw an AccessCheckoutException when no external session response listener is passed to builder`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
             SessionRequestHandlerConfig.Builder()
                 .baseUrl(URL("http://base-url.com"))
                 .checkoutId("checkout-id")

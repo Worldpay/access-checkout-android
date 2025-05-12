@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.client.session.model
 
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.createAccessCheckoutEditTextMock
 import kotlin.test.assertEquals
 import kotlin.test.assertFailsWith
@@ -71,7 +72,7 @@ class CardDetailsTest {
         val expiryDate = createAccessCheckoutEditTextMock("11200")
         val cvc = createAccessCheckoutEditTextMock("123")
 
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CardDetails.Builder()
                 .pan(pan)
                 .expiryDate(expiryDate)
@@ -88,7 +89,7 @@ class CardDetailsTest {
         val expiryDate = createAccessCheckoutEditTextMock("abcd")
         val cvc = createAccessCheckoutEditTextMock("123")
 
-        val exception = assertFailsWith<IllegalArgumentException> {
+        val exception = assertFailsWith<AccessCheckoutException> {
             CardDetails.Builder()
                 .pan(pan)
                 .expiryDate(expiryDate)

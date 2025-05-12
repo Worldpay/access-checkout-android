@@ -62,7 +62,7 @@ class CvcValidationConfig private constructor(
          * Builds the validation configuration by returning an instance of the [CvcValidationConfig]
          *
          * @return [CvcValidationConfig] implementation that can be used to initialise validation
-         * @throws [IllegalArgumentException] is thrown when a property is missing
+         * @throws [AccessCheckoutException] is thrown when a property is missing
          */
         fun build(): CvcValidationConfig {
             validateNotNull(cvc, "cvc component")
