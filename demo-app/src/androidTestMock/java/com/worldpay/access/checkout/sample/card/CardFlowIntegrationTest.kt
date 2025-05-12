@@ -65,7 +65,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
                 "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             )
             .closeDialog()
-            .isInErrorState(pan = unknownCardErrorFormatted, cvc = amexCvc, expiryDate = "12/99")
+            .areFieldsEnabledAndAssertCardDetails(pan = unknownCardErrorFormatted, cvc = amexCvc, expiryDate = "12/99")
             .paymentsCvcSessionCheckedState(checked = true)
 
         // passing scenario with single session
@@ -110,7 +110,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
                 "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             )
             .closeDialog()
-            .isInErrorState(pan = unknownCardErrorFormatted, cvc = amexCvc, expiryDate = "12/99")
+            .areFieldsEnabledAndAssertCardDetails(pan = unknownCardErrorFormatted, cvc = amexCvc, expiryDate = "12/99")
     }
 
     @Test
@@ -129,7 +129,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
                 "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             )
             .closeDialog()
-            .isInErrorState(pan = unknownCardErrorFormatted, cvc = amexCvc, expiryDate = "12/99")
+            .areFieldsEnabledAndAssertCardDetails(pan = unknownCardErrorFormatted, cvc = amexCvc, expiryDate = "12/99")
             .paymentsCvcSessionCheckedState(checked = true)
     }
 
