@@ -99,3 +99,7 @@ dependencies {
     androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
 
 }
+
+tasks.withType(Test) {
+    maxParallelForks = Runtime.runtime.availableProcessors().intdiv(2) ?: 1
+}
