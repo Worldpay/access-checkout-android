@@ -10,7 +10,7 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN_
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
-import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
+import com.worldpay.access.checkout.validation.result.handler.BrandsChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
 import com.worldpay.access.checkout.validation.validators.CvcValidator
@@ -36,7 +36,7 @@ class PanTextWatcherTest {
     private val panValidator = mock<PanValidator>()
     private val panFormatter = mock<PanFormatter>()
     private val panValidationResultHandler = mock<PanValidationResultHandler>()
-    private val brandChangedHandler = mock<BrandChangedHandler>()
+    private val brandsChangedHandler = mock<BrandsChangedHandler>()
 
     private val panEditText = mock<EditText>()
 
@@ -59,7 +59,7 @@ class PanTextWatcherTest {
             cvcValidator = cvcValidator,
             cvcAccessEditText = cvcEditText,
             panValidationResultHandler = panValidationResultHandler,
-            brandChangedHandler = brandChangedHandler,
+            brandsChangedHandler = brandsChangedHandler,
             cvcValidationRuleManager = cvcValidationRuleManager
         )
 
@@ -122,13 +122,13 @@ class PanTextWatcherTest {
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
 
         panTextWatcher.afterTextChanged(panEditable)
-        verify(brandChangedHandler).handle(VISA_BRAND)
+        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
         mockPan(INVALID_UNKNOWN_LUHN, INVALID)
         given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
 
         panTextWatcher.afterTextChanged(panEditable)
-        verify(brandChangedHandler).handle(null)
+        verify(brandsChangedHandler).handle(emptyList())
     }
 
     @Test
@@ -137,13 +137,13 @@ class PanTextWatcherTest {
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
 
         panTextWatcher.afterTextChanged(panEditable)
-        verify(brandChangedHandler).handle(VISA_BRAND)
+        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
         mockPan(INVALID_UNKNOWN_LUHN, CARD_BRAND_NOT_ACCEPTED)
         given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
 
         panTextWatcher.afterTextChanged(panEditable)
-        verify(brandChangedHandler).handle(null)
+        verify(brandsChangedHandler).handle(emptyList())
     }
 
     @Test
@@ -152,13 +152,13 @@ class PanTextWatcherTest {
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
 
         panTextWatcher.afterTextChanged(panEditable)
-        verify(brandChangedHandler).handle(VISA_BRAND)
+        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
         mockPan(INVALID_UNKNOWN_LUHN, INVALID_LUHN)
         given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
 
         panTextWatcher.afterTextChanged(panEditable)
-        verify(brandChangedHandler).handle(null)
+        verify(brandsChangedHandler).handle(emptyList())
     }
 
     @Test
@@ -173,7 +173,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verifyNoInteractions(brandChangedHandler)
+        verifyNoInteractions(brandsChangedHandler)
     }
 
     @Test
@@ -181,14 +181,14 @@ class PanTextWatcherTest {
         // set the visa pan so that the brand changed handler is called with visa
         mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
-        verify(brandChangedHandler).handle(VISA_BRAND)
+        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
-        reset(brandChangedHandler)
+        reset(brandsChangedHandler)
 
         // set the visa pan again so that the brand changed handler is no longer called
         mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
-        verifyNoInteractions(brandChangedHandler)
+        verifyNoInteractions(brandsChangedHandler)
     }
 
     @Test
@@ -197,7 +197,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(brandChangedHandler).handle(VISA_BRAND)
+        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
         verify(cvcValidationRuleManager).updateRule(VISA_BRAND.cvc)
     }
 
@@ -208,7 +208,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(brandChangedHandler).handle(VISA_BRAND)
+        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
         verify(cvcValidator).validate("123")
     }
 
@@ -217,14 +217,14 @@ class PanTextWatcherTest {
         // set the visa pan so that the brand changed handler is called with visa
         mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
-        verify(brandChangedHandler).handle(VISA_BRAND)
+        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
-        reset(brandChangedHandler)
+        reset(brandsChangedHandler)
 
         // set the visa pan again so that the brand changed handler is no longer called
         mockPan(visaPan(), VALID)
         panTextWatcher.afterTextChanged(panEditable)
-        verifyNoInteractions(brandChangedHandler)
+        verifyNoInteractions(brandsChangedHandler)
         verifyNoInteractions(cvcValidator)
     }
 
@@ -235,7 +235,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(brandChangedHandler).handle(VISA_BRAND)
+        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
         verifyNoInteractions(cvcValidator)
     }
 

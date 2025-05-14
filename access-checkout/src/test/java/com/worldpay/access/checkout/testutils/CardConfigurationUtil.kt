@@ -237,7 +237,12 @@ internal object CardConfigurationUtil {
         CardConfigurationProvider(cardConfigurationClient, emptyList())
     }
 
-    fun toCardBrand(remoteCardBrand: RemoteCardBrand): CardBrand? {
-        return ToCardBrandTransformer().transform(remoteCardBrand)
+    fun toCardBrand(remoteCardBrand: RemoteCardBrand): CardBrand {
+        return ToCardBrandTransformer().transform(remoteCardBrand)!!
+    }
+
+    fun toCardBrandList(remoteCardBrand: RemoteCardBrand): List<CardBrand> {
+        val cardBrand = toCardBrand(remoteCardBrand)
+        return listOf(cardBrand)
     }
 }

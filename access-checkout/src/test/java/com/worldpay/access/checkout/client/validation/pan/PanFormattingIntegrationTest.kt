@@ -4,7 +4,7 @@ import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrandList
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN_FORMATTED
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
@@ -34,7 +34,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4111 1111 1111 1111", pan.text)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
 
@@ -45,7 +45,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("342793178931249")
 
         assertEquals("3427 931789 31249", pan.text)
-        verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(AMEX_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
 
@@ -58,7 +58,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4111111111111111", pan.text)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
 
@@ -215,7 +215,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should do nothing when text is empty`() {
         pan.setText("")
 
-        verify(cardValidationListener, never()).onBrandChange(any())
+        verify(cardValidationListener, never()).onBrandsChange(any())
         verify(cardValidationListener, never()).onPanValidated(any())
 
         assertEquals("", pan.text)

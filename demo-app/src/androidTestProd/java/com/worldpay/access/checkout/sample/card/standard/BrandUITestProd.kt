@@ -163,6 +163,7 @@ class BrandUITestProd : AbstractCardFragmentTestProd() {
         checkBrandImageFor("33370", isBrand = JCB)
         checkBrandImageFor("33499", isBrand = JCB)
     }
+
     @Test
     fun shouldDisplayBrandImage_JCB_ForRange_352_358() {
         checkBrandImageFor("3520", isBrand = JCB)

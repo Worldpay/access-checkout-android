@@ -5,7 +5,7 @@ import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
-import com.worldpay.access.checkout.validation.result.handler.BrandChangedHandler
+import com.worldpay.access.checkout.validation.result.handler.BrandsChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
 import com.worldpay.access.checkout.validation.utils.ValidationUtil
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
@@ -25,7 +25,7 @@ internal class PanTextWatcher(
     private val cvcValidator: CvcValidator,
     private val cvcAccessEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler,
-    private val brandChangedHandler: BrandChangedHandler,
+    private val brandsChangedHandler: BrandsChangedHandler,
     private val cvcValidationRuleManager: CVCValidationRuleManager
 ) : AbstractCardDetailTextWatcher() {
 
@@ -213,7 +213,8 @@ internal class PanTextWatcher(
 
         cardBrand = newCardBrand
 
-        brandChangedHandler.handle(newCardBrand)
+        val cardBrands = if (newCardBrand != null) listOf(newCardBrand) else emptyList()
+        brandsChangedHandler.handle(cardBrands)
 
         cvcValidationRuleManager.updateRule(getCvcValidationRule(cardBrand))
 

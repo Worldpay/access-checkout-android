@@ -31,7 +31,7 @@ internal class TextWatcherFactory(
             ),
             cvcAccessEditText = cvcEditText,
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
-            brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
+            brandsChangedHandler = resultHandlerFactory.getBrandsChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager
         )
     }

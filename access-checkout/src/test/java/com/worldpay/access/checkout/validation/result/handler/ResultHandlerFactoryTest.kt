@@ -98,13 +98,13 @@ class ResultHandlerFactoryTest {
 
     @Test
     fun `should return a brand change handler`() {
-        assertNotNull(resultHandlerFactory.getBrandChangedHandler())
+        assertNotNull(resultHandlerFactory.getBrandsChangedHandler())
     }
 
     @Test
     fun `should return same instance of brand change validation result handler on multiple calls using same instance of factory`() {
-        val handler1 = resultHandlerFactory.getBrandChangedHandler()
-        val handler2 = resultHandlerFactory.getBrandChangedHandler()
+        val handler1 = resultHandlerFactory.getBrandsChangedHandler()
+        val handler2 = resultHandlerFactory.getBrandsChangedHandler()
 
         assertEquals(handler1, handler2)
 
@@ -113,7 +113,7 @@ class ResultHandlerFactoryTest {
             lifecycleOwner
         )
 
-        val handler3 = resultHandlerFactory.getBrandChangedHandler()
+        val handler3 = resultHandlerFactory.getBrandsChangedHandler()
 
         assertNotEquals(handler2, handler3)
     }
