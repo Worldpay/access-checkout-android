@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
+import android.util.Log
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
@@ -35,6 +36,7 @@ internal class PanTextWatcher(
 
     private var expectedCursorPosition = 0
     private var isSpaceDeleted = false
+    private val requiredPanLengthForScheme = 12
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         super.beforeTextChanged(s, start, count, after)
@@ -46,9 +48,9 @@ internal class PanTextWatcher(
      * This function is called whenever the text is being changed in the UI.
      * The override is responsible for calculating where the cursor position should be after the text changes
      *
-     * @param start - the position of cursor when text changed
-     * @param before - the number of characters changed
-     * @param count - number of characters added
+     * @param start the position of cursor when text changed
+     * @param before the number of characters changed
+     * @param count number of characters added
      */
     override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {
         super.onTextChanged(s, start, before, count)
@@ -86,7 +88,6 @@ internal class PanTextWatcher(
             clearPanBefore()
             return
         }
-
         handleCardBrandChange(brand)
         validate(newPan, cardValidationRule, brand)
 
@@ -209,6 +210,8 @@ internal class PanTextWatcher(
      * rule of the new card brand
      */
     private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
+        if (isPanRequiredLength()) logCardBrands(newCardBrand)
+
         if (cardBrand == newCardBrand) return
 
         cardBrand = newCardBrand
@@ -239,5 +242,17 @@ internal class PanTextWatcher(
         // where cursorPosition is beyond the text length
         val selection = min(cursorPosition, text.length)
         panEditText.setSelection(selection)
+    }
+
+    private fun logCardBrands(newCardBrand: RemoteCardBrand?) {
+        val hardCodedBrand = findBrandForPan("5555444433332222")
+        val hardCodedBrands = listOf(newCardBrand?.name, hardCodedBrand?.name)
+        Log.d(javaClass.simpleName, "Available brands for card: $hardCodedBrands")
+    }
+
+    private fun isPanRequiredLength(): Boolean {
+        val pan = panEditText.text.toString()
+        val formattedPan = pan.replace(" ", "").length
+        return (formattedPan >= requiredPanLengthForScheme)
     }
 }
