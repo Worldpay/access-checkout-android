@@ -30,7 +30,7 @@ internal class PanTextWatcher(
     private val cvcValidationRuleManager: CVCValidationRuleManager
 ) : AbstractCardDetailTextWatcher() {
 
-    private var cardBrand: RemoteCardBrand? = null
+    private var cardBrands: List<RemoteCardBrand?> = emptyList()
     private var panBefore = ""
     private var cursorPositionBefore = 0
 
@@ -88,8 +88,10 @@ internal class PanTextWatcher(
             clearPanBefore()
             return
         }
-        handleCardBrandChange(brand)
-        logCardBrands(brand)
+
+        val brands = getCardBrands(brand)
+        handleCardBrandChange(brands)
+
         validate(newPan, cardValidationRule, brand)
 
         if (newPan != panText) {
@@ -210,15 +212,14 @@ internal class PanTextWatcher(
      * This function also revalidates the cvc using the cvc validation
      * rule of the new card brand
      */
-    private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
-        if (cardBrand == newCardBrand) return
+    private fun handleCardBrandChange(newCardBrands: List<RemoteCardBrand?>) {
+        if (cardBrands == newCardBrands) return
 
-        cardBrand = newCardBrand
+        cardBrands = newCardBrands
 
-        val cardBrands = if (newCardBrand != null) listOf(newCardBrand) else emptyList()
         brandsChangedHandler.handle(cardBrands)
 
-        cvcValidationRuleManager.updateRule(getCvcValidationRule(cardBrand))
+        cvcValidationRuleManager.updateRule(getCvcValidationRule(this.cardBrands.first()))
 
         val cvcText = cvcAccessEditText.text.toString()
         if (cvcText.isNotBlank()) {
@@ -243,12 +244,14 @@ internal class PanTextWatcher(
         panEditText.setSelection(selection)
     }
 
-    private fun logCardBrands(newCardBrand: RemoteCardBrand?) {
+    private fun getCardBrands(newCardBrand: RemoteCardBrand?): List<RemoteCardBrand?> {
         if (isPanRequiredLength()) {
             val hardCodedBrand = findBrandForPan("5555444433332222")
-            val hardCodedBrands = listOf(newCardBrand?.name, hardCodedBrand?.name)
+            val hardCodedBrands = listOf(newCardBrand, hardCodedBrand)
             Log.d(javaClass.simpleName, "Available brands for card: $hardCodedBrands")
+            return hardCodedBrands
         }
+        return listOf(newCardBrand)
     }
 
     private fun isPanRequiredLength(): Boolean {
