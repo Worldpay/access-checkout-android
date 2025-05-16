@@ -89,6 +89,7 @@ internal class PanTextWatcher(
             return
         }
         handleCardBrandChange(brand)
+        logCardBrands(brand)
         validate(newPan, cardValidationRule, brand)
 
         if (newPan != panText) {
@@ -210,8 +211,6 @@ internal class PanTextWatcher(
      * rule of the new card brand
      */
     private fun handleCardBrandChange(newCardBrand: RemoteCardBrand?) {
-        if (isPanRequiredLength()) logCardBrands(newCardBrand)
-
         if (cardBrand == newCardBrand) return
 
         cardBrand = newCardBrand
@@ -245,9 +244,11 @@ internal class PanTextWatcher(
     }
 
     private fun logCardBrands(newCardBrand: RemoteCardBrand?) {
-        val hardCodedBrand = findBrandForPan("5555444433332222")
-        val hardCodedBrands = listOf(newCardBrand?.name, hardCodedBrand?.name)
-        Log.d(javaClass.simpleName, "Available brands for card: $hardCodedBrands")
+        if (isPanRequiredLength()) {
+            val hardCodedBrand = findBrandForPan("5555444433332222")
+            val hardCodedBrands = listOf(newCardBrand?.name, hardCodedBrand?.name)
+            Log.d(javaClass.simpleName, "Available brands for card: $hardCodedBrands")
+        }
     }
 
     private fun isPanRequiredLength(): Boolean {
