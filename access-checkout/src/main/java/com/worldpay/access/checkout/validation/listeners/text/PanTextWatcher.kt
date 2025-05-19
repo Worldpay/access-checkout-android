@@ -30,13 +30,13 @@ internal class PanTextWatcher(
     private val cvcValidationRuleManager: CVCValidationRuleManager
 ) : AbstractCardDetailTextWatcher() {
 
-    private var cardBrands: List<RemoteCardBrand?> = emptyList()
+    private var cardBrands: List<RemoteCardBrand> = emptyList()
     private var panBefore = ""
     private var cursorPositionBefore = 0
 
     private var expectedCursorPosition = 0
     private var isSpaceDeleted = false
-    private val requiredPanLengthForScheme = 12
+    private val requiredPanLengthForCardBrands = 12
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         super.beforeTextChanged(s, start, count, after)
@@ -212,7 +212,7 @@ internal class PanTextWatcher(
      * This function also revalidates the cvc using the cvc validation
      * rule of the new card brand
      */
-    private fun handleCardBrandChange(newCardBrands: List<RemoteCardBrand?>) {
+    private fun handleCardBrandChange(newCardBrands: List<RemoteCardBrand>) {
         if (cardBrands == newCardBrands) return
 
         cardBrands = newCardBrands
@@ -244,12 +244,18 @@ internal class PanTextWatcher(
         panEditText.setSelection(selection)
     }
 
-    private fun getCardBrands(newCardBrand: RemoteCardBrand?): List<RemoteCardBrand?> {
+    private fun getCardBrands(newCardBrand: RemoteCardBrand?): List<RemoteCardBrand> {
+        if (newCardBrand == null) {
+            return emptyList()
+        }
+
         if (isPanRequiredLength()) {
             val hardCodedBrand = findBrandForPan("5555444433332222")
-            val hardCodedBrands = listOf(newCardBrand, hardCodedBrand)
-            Log.d(javaClass.simpleName, "Available brands for card: $hardCodedBrands")
-            return hardCodedBrands
+            if (hardCodedBrand != null) {
+                val hardCodedBrands = listOf(newCardBrand, hardCodedBrand)
+                Log.d(javaClass.simpleName, "Available brands for card: $hardCodedBrands")
+                return hardCodedBrands
+            }
         }
         return listOf(newCardBrand)
     }
@@ -257,6 +263,6 @@ internal class PanTextWatcher(
     private fun isPanRequiredLength(): Boolean {
         val pan = panEditText.text.toString()
         val formattedPan = pan.replace(" ", "").length
-        return (formattedPan >= requiredPanLengthForScheme)
+        return (formattedPan >= requiredPanLengthForCardBrands)
     }
 }
