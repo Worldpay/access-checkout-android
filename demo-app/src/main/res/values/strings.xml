@@ -9,6 +9,7 @@
     <string name="nav_header_desc">Navigation header</string>
 
     <string name="card_brand_icon">card brand icon</string>
+    <string name="card_brand_name">card brand name</string>
 
     <string name="enable_multi_token_title">CVC Session</string>
     <string name="enable_multi_token_desc">Retrieve card and cvc sessions</string>
