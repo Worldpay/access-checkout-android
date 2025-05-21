@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
+import android.util.Log
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
@@ -31,12 +32,14 @@ internal class PanTextWatcher(
     private val brandService: BrandService
 ) : AbstractCardDetailTextWatcher() {
 
-    private var cardBrands: List<RemoteCardBrand> = emptyList()
+    private var cardBrands: List<RemoteCardBrand?> = emptyList()
     private var panBefore = ""
     private var cursorPositionBefore = 0
 
     private var expectedCursorPosition = 0
     private var isSpaceDeleted = false
+
+    private val requiredPanLengthForCardBrands = 12
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         super.beforeTextChanged(s, start, count, after)
@@ -89,7 +92,8 @@ internal class PanTextWatcher(
             return
         }
 
-        val brands = brandService.getCardBrands(brand, newPan)
+        val brands = if (isPanRequiredLength())  brandService.getCardBrands(brand, newPan) else listOf(brand)
+
         handleCardBrandChange(brands)
 
         validate(newPan, cardValidationRule, brand)
@@ -212,7 +216,7 @@ internal class PanTextWatcher(
      * This function also revalidates the cvc using the cvc validation
      * rule of the new card brand
      */
-    private fun handleCardBrandChange(newCardBrands: List<RemoteCardBrand>) {
+    private fun handleCardBrandChange(newCardBrands: List<RemoteCardBrand?>) {
         if (cardBrands == newCardBrands) return
 
         cardBrands = newCardBrands
@@ -243,5 +247,11 @@ internal class PanTextWatcher(
         // where cursorPosition is beyond the text length
         val selection = min(cursorPosition, text.length)
         panEditText.setSelection(selection)
+    }
+
+    private fun isPanRequiredLength(): Boolean {
+        val pan = panEditText.editableText.toString()
+        val formattedPan = pan.replace(" ", "").length
+        return (formattedPan >= requiredPanLengthForCardBrands)
     }
 }

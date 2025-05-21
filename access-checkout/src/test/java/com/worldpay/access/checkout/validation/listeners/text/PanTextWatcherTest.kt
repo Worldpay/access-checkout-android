@@ -17,15 +17,24 @@ import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManag
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.never
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 
 @ExperimentalCoroutinesApi
 class PanTextWatcherTest {
@@ -307,6 +316,26 @@ class PanTextWatcherTest {
             0,
             maxLength
         )
+    }
+
+    @Test
+    fun `should not call brand service when pan is less than 12 digits`() {
+        mockPan("44443333222", INVALID)
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verifyNoInteractions(brandService)
+    }
+
+    @Test
+    fun `should call brand service when pan is greater than or equal to 12 digits`() {
+        val pan = "444433332222"
+
+        mockPan(pan, INVALID)
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verify(brandService).getCardBrands(VISA_BRAND, pan)
     }
 
     private fun mockPan(pan: String, isValid: PanValidationResult) {
