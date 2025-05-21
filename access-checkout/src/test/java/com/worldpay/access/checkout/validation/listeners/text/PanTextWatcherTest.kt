@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
+import com.worldpay.access.checkout.service.BrandService
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -16,15 +17,24 @@ import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManag
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.never
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 
 @ExperimentalCoroutinesApi
 class PanTextWatcherTest {
@@ -48,6 +58,8 @@ class PanTextWatcherTest {
 
     private lateinit var panTextWatcher: PanTextWatcher
 
+    private val brandService = mock<BrandService>()
+
     @Before
     fun setup() = runAsBlockingTest {
         mockSuccessfulCardConfiguration()
@@ -60,7 +72,8 @@ class PanTextWatcherTest {
             cvcAccessEditText = cvcEditText,
             panValidationResultHandler = panValidationResultHandler,
             brandsChangedHandler = brandsChangedHandler,
-            cvcValidationRuleManager = cvcValidationRuleManager
+            cvcValidationRuleManager = cvcValidationRuleManager,
+            brandService = brandService
         )
 
         given(cvcEditText.text).willReturn(cvcEditable)
@@ -120,6 +133,7 @@ class PanTextWatcherTest {
     fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID`() {
         mockPan(visaPan(), VALID)
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
+        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
@@ -135,6 +149,7 @@ class PanTextWatcherTest {
     fun `should call the brand changed handler with visa brand regardless of the pan validation result being CARD_BRAND_NOT_ACCEPTED`() {
         mockPan(visaPan(), VALID)
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
+        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
@@ -150,6 +165,7 @@ class PanTextWatcherTest {
     fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID_LUHN`() {
         mockPan(visaPan(), VALID)
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
+        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
@@ -180,6 +196,8 @@ class PanTextWatcherTest {
     fun `should not call the brand changed handler if the brand has not actually changed from the previous one`() {
         // set the visa pan so that the brand changed handler is called with visa
         mockPan(visaPan(), VALID)
+        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
@@ -194,6 +212,8 @@ class PanTextWatcherTest {
     @Test
     fun `should update the cvc validation rule when the brand changes`() {
         mockPan(visaPan(), VALID)
+        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+
 
         panTextWatcher.afterTextChanged(panEditable)
 
@@ -205,6 +225,7 @@ class PanTextWatcherTest {
     fun `should re-validate the cvc when the brand changes`() {
         mockPan(visaPan(), VALID)
         given(cvcEditable.toString()).willReturn("123")
+        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
 
@@ -216,6 +237,8 @@ class PanTextWatcherTest {
     fun `should not interact with the cvc validator at all if the brand has not changed`() {
         // set the visa pan so that the brand changed handler is called with visa
         mockPan(visaPan(), VALID)
+        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
@@ -232,6 +255,7 @@ class PanTextWatcherTest {
     fun `should not interact with the cvc validator at all if the cvc is empty`() {
         mockPan(visaPan(), VALID)
         given(cvcEditable.toString()).willReturn("")
+        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
 
@@ -292,6 +316,26 @@ class PanTextWatcherTest {
             0,
             maxLength
         )
+    }
+
+    @Test
+    fun `should not call brand service when pan is less than 12 digits`() {
+        mockPan("44443333222", INVALID)
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verifyNoInteractions(brandService)
+    }
+
+    @Test
+    fun `should call brand service when pan is greater than or equal to 12 digits`() {
+        val pan = "444433332222"
+
+        mockPan(pan, INVALID)
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verify(brandService).getCardBrands(VISA_BRAND, pan)
     }
 
     private fun mockPan(pan: String, isValid: PanValidationResult) {
