@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import android.util.Log
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.service.BrandService
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandsChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
@@ -27,7 +27,8 @@ internal class PanTextWatcher(
     private val cvcAccessEditText: EditText,
     private val panValidationResultHandler: PanValidationResultHandler,
     private val brandsChangedHandler: BrandsChangedHandler,
-    private val cvcValidationRuleManager: CVCValidationRuleManager
+    private val cvcValidationRuleManager: CVCValidationRuleManager,
+    private val brandService: BrandService
 ) : AbstractCardDetailTextWatcher() {
 
     private var cardBrands: List<RemoteCardBrand> = emptyList()
@@ -36,7 +37,6 @@ internal class PanTextWatcher(
 
     private var expectedCursorPosition = 0
     private var isSpaceDeleted = false
-    private val requiredPanLengthForCardBrands = 12
 
     override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {
         super.beforeTextChanged(s, start, count, after)
@@ -89,7 +89,7 @@ internal class PanTextWatcher(
             return
         }
 
-        val brands = getCardBrands(brand)
+        val brands = brandService.getCardBrands(brand, newPan)
         handleCardBrandChange(brands)
 
         validate(newPan, cardValidationRule, brand)
@@ -219,7 +219,8 @@ internal class PanTextWatcher(
 
         brandsChangedHandler.handle(cardBrands)
 
-        cvcValidationRuleManager.updateRule(getCvcValidationRule(this.cardBrands.first()))
+        // Use the first card brand from the list else pass null if the list is empty
+        cvcValidationRuleManager.updateRule(getCvcValidationRule(cardBrands.firstOrNull()))
 
         val cvcText = cvcAccessEditText.text.toString()
         if (cvcText.isNotBlank()) {
@@ -242,27 +243,5 @@ internal class PanTextWatcher(
         // where cursorPosition is beyond the text length
         val selection = min(cursorPosition, text.length)
         panEditText.setSelection(selection)
-    }
-
-    private fun getCardBrands(newCardBrand: RemoteCardBrand?): List<RemoteCardBrand> {
-        if (newCardBrand == null) {
-            return emptyList()
-        }
-
-        if (isPanRequiredLength()) {
-            val hardCodedBrand = findBrandForPan("5555444433332222")
-            if (hardCodedBrand != null) {
-                val hardCodedBrands = listOf(newCardBrand, hardCodedBrand)
-                Log.d(javaClass.simpleName, "Available brands for card: $hardCodedBrands")
-                return hardCodedBrands
-            }
-        }
-        return listOf(newCardBrand)
-    }
-
-    private fun isPanRequiredLength(): Boolean {
-        val pan = panEditText.text.toString()
-        val formattedPan = pan.replace(" ", "").length
-        return (formattedPan >= requiredPanLengthForCardBrands)
     }
 }
