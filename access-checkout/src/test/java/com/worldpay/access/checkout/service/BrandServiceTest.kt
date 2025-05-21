@@ -23,7 +23,7 @@ class BrandServiceTest {
         private val brandService = BrandService()
 
         @Test
-        fun `should return an array with a single brand when pan is required length but unable to find brand`() {
+        fun `should return an list with a single brand when unable to find brand for pan`() {
             val brand = VISA_BRAND
             val expected = listOf(brand)
             val result = brandService.getCardBrands(brand, "1234123412341234")
@@ -46,24 +46,14 @@ class BrandServiceTest {
         }
 
         @Test
-        fun `should return an empty array when brand is null`() {
+        fun `should return an empty list when brand is null`() {
             val result = brandService.getCardBrands(null, testPan)
 
             assertEquals(result, emptyList())
         }
 
         @Test
-        fun `should return an array with a single brand when pan is below required length`() {
-            val panBelowRequiredLength = "44443333222"
-            val brand = VISA_BRAND
-            val expected = listOf(brand)
-            val result = brandService.getCardBrands(brand, panBelowRequiredLength)
-
-            assertEquals(result, expected)
-        }
-
-        @Test
-        fun `should return a array of brands when pan is required length`() {
+        fun `should return a list of brands when able to find brand for pan`() {
             val brand = VISA_BRAND
             val result = brandService.getCardBrands(brand, testPan)
 
