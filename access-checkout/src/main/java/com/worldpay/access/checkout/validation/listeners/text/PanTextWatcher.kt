@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
-import android.util.Log
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
@@ -32,7 +31,7 @@ internal class PanTextWatcher(
     private val brandService: BrandService
 ) : AbstractCardDetailTextWatcher() {
 
-    private var cardBrands: List<RemoteCardBrand?> = emptyList()
+    private var cardBrands: List<RemoteCardBrand> = emptyList()
     private var panBefore = ""
     private var cursorPositionBefore = 0
 
@@ -82,21 +81,29 @@ internal class PanTextWatcher(
             isSpaceDeleted = false
         }
 
-        val brand = findBrandForPan(panText)
+        val globalBrand = findBrandForPan(panText)
         val newPan =
-            if (panFormatter.isFormattingEnabled()) getFormattedPan(panText, brand) else panText
-        val cardValidationRule = getPanValidationRule(brand)
+            if (panFormatter.isFormattingEnabled()) getFormattedPan(
+                panText,
+                globalBrand
+            ) else panText
+        val cardValidationRule = getPanValidationRule(globalBrand)
 
         if (trimToMaxLength(cardValidationRule, newPan)) {
             clearPanBefore()
             return
         }
 
-        val brands = if (isPanRequiredLength())  brandService.getCardBrands(brand, newPan) else listOf(brand)
+        val listOfBrand = if (globalBrand == null) emptyList() else listOf(globalBrand)
+
+        val brands = if (isPanRequiredLength()) brandService.getCardBrands(
+            globalBrand,
+            newPan
+        ) else listOfBrand
 
         handleCardBrandChange(brands)
 
-        validate(newPan, cardValidationRule, brand)
+        validate(newPan, cardValidationRule, globalBrand)
 
         if (newPan != panText) {
             if (newPan == panBefore) {
@@ -216,7 +223,7 @@ internal class PanTextWatcher(
      * This function also revalidates the cvc using the cvc validation
      * rule of the new card brand
      */
-    private fun handleCardBrandChange(newCardBrands: List<RemoteCardBrand?>) {
+    private fun handleCardBrandChange(newCardBrands: List<RemoteCardBrand>) {
         if (cardBrands == newCardBrands) return
 
         cardBrands = newCardBrands
