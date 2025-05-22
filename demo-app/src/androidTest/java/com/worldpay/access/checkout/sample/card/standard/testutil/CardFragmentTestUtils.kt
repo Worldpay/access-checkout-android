@@ -87,7 +87,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun isInErrorState(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
+    fun areFieldsEnabledAndAssertCardDetails(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
         progressBarNotVisible()
         enabledStateIs(pan = true, cvc = true, expiryDate = true, paymentsCvcSwitch = true, submitButton = true)
         cardDetailsAre(pan, cvc, expiryDate)
@@ -204,12 +204,12 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun hasNoBrand(): CardFragmentTestUtils {
         val resourceEntryName = activity().resources.getResourceEntryName(R.drawable.card_unknown_logo)
-        wait { assertEquals(resourceEntryName, brandLogo().getTag(R.integer.card_tag)) }
+        wait { assertEquals(resourceEntryName, brandLogo().tag) }
         return this
     }
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
+        wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrand.cardBrandName, brandLogo().tag) }
         return this
     }
 
