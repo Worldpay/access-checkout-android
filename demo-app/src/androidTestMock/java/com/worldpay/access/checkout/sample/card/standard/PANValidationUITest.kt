@@ -71,13 +71,40 @@ class PANValidationUITest : AbstractCardFragmentTest() {
     }
 
     @Test
-    fun shouldDisplayBrandName() {
+    fun shouldDisplayBrandNameWhenPanIsValidated() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails(pan = "4111111111111111")
             .hasBrand(VISA)
             .hasBrandName("visa, mastercard")
+    }
+
+    @Test
+    fun shouldDisplayOneBrandNameWhenOneDigitFromValidPanIsRemoved() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "444433332222")
+            .hasBrand(VISA)
+            .hasBrandName("visa, mastercard")
+            .setCursorPositionOnPan(11)
+            .removeLastPanDigit()
+            .hasBrandName("visa")
+    }
+
+    @Test
+    fun shouldShowNoBrandsWhenValidPanIsCleared() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "4111111111111111")
+            .hasBrand(VISA)
+            .hasBrandName("visa, mastercard")
+        clearPan()
+        cardFragmentTestUtils
+            .hasNoBrand()
+            .hasBrandName("")
     }
 
     @Test

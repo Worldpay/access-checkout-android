@@ -218,4 +218,12 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrandNme, brandName().text, "Card brand name does not match expected value.") }
         return this
     }
+
+    fun removeLastPanDigit(): CardFragmentTestUtils {
+        val pan = retrieveEnteredText(panInput())
+        if (pan.isNotEmpty()) {
+            enterText(panInput(), pan.substring(0, pan.length - 1))
+        }
+        return this
+    }
 }
