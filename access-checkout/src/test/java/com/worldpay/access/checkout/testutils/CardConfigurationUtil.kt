@@ -7,6 +7,7 @@ import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrandImage
 import com.worldpay.access.checkout.client.validation.model.CardBrand
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MASTERCARD_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
@@ -244,5 +245,11 @@ internal object CardConfigurationUtil {
     fun toCardBrandList(remoteCardBrand: RemoteCardBrand): List<CardBrand> {
         val cardBrand = toCardBrand(remoteCardBrand)
         return listOf(cardBrand)
+    }
+
+    fun toCardBrandListHardcoded(remoteCardBrand: RemoteCardBrand): List<CardBrand> {
+        val cardBrand = toCardBrand(remoteCardBrand)
+        val masterCardBrand = toCardBrand(MASTERCARD_BRAND)
+        return listOf(cardBrand,masterCardBrand)
     }
 }
