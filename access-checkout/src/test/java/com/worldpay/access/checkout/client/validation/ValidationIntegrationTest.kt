@@ -4,6 +4,7 @@ import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MASTERCARD_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
@@ -23,6 +24,8 @@ import org.robolectric.Shadows.shadowOf
 @RunWith(RobolectricTestRunner::class)
 class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
+    private val masterCardBrand = toCardBrand(MASTERCARD_BRAND)
+
     @Before
     fun setup() {
         initialiseValidation()
@@ -34,7 +37,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)!!))
+        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND),masterCardBrand))
 
         cvc.setText("1234")
         verify(cardValidationListener).onCvcValidated(true)
@@ -57,7 +60,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onCvcValidated(false)
-        verify(cardValidationListener).onBrandsChange(listOf(amexCardBrand))
+        verify(cardValidationListener).onBrandsChange(listOf(amexCardBrand,masterCardBrand))
 
         reset(cardValidationListener)
 

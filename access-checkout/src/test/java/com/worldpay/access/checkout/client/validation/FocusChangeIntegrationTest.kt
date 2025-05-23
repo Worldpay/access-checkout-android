@@ -5,6 +5,7 @@ import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrandList
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrandListHardcoded
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import kotlin.test.fail
@@ -31,7 +32,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(VISA_BRAND))
 
         pan.requestFocus()
 
