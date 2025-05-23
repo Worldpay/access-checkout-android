@@ -1,5 +1,3 @@
-package com.worldpay.access.checkout.sample.card.standard
-
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -70,6 +68,16 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .hasBrand(AMEX)
             .focusOn(CVC)
             .validationStateIs(pan = false)
+    }
+
+    @Test
+    fun shouldDisplayBrandName() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "4111111111111111")
+            .hasBrand(VISA)
+            .hasBrandName("visa, mastercard")
     }
 
     @Test

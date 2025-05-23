@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.sample.card.standard.testutil
 
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
@@ -24,6 +25,8 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     private fun expiryDateInput() = findById<AccessCheckoutEditText>(R.id.card_flow_expiry_date)
     private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
     private fun brandLogo() = findById<ImageView>(R.id.card_flow_brand_logo)
+
+    private fun brandName() = findById<TextView>(R.id.card_flow_text_card_brand_name)
     private fun paymentsCvcSwitch() = findById<SwitchCompat>(R.id.card_flow_payments_cvc_switch)
 
     enum class Input {
@@ -208,6 +211,11 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
         wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
+        return this
+    }
+
+    fun hasBrandName(cardBrandNme: String): CardFragmentTestUtils {
+        wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrandNme, brandName().text, "Card brand name does not match expected value.") }
         return this
     }
 }
