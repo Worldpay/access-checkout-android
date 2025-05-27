@@ -7,7 +7,7 @@ import java.net.URL
 
 /**
  * This is a serializable class that contain all the necessary information to request a session.
- * It should only be created using the [SessionResponseInfo.Builder]
+ * It should only be created using the [SessionRequestInfo.Builder]
  *
  * @param[baseUrl] [URL] representing the base url for Access Worldpay services
  * @param[requestBody] [SessionRequest] with the card and merchant information
