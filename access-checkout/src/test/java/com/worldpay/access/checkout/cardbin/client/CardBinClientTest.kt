@@ -11,6 +11,7 @@ import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
@@ -21,6 +22,7 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.net.URL
+import kotlin.test.assertTrue
 import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 
 @ExperimentalCoroutinesApi
@@ -33,6 +35,10 @@ class CardBinClientTest {
     private val baseUrl = URL("https://some-base-url")
     private val cardBinEndpoint = "public/card/bindetails"
     private val cardBinUrl = URL("$baseUrl/$cardBinEndpoint")
+    private val headers = hashMapOf(
+        Pair(WP_API_VERSION, WP_API_VERSION_VALUE),
+        Pair(WP_CALLER_ID, WP_CALLER_ID_VALUE),
+    )
 
     @Test
     fun `should make expected http request when calling the card bin service`() =
@@ -42,11 +48,6 @@ class CardBinClientTest {
             val urlFactory = mock<URLFactory>()
             val serializer = mock<CardBinRequestSerializer>()
             val deserializer = mock<CardBinResponseDeserializer>()
-
-            val headers = hashMapOf(
-                Pair(WP_API_VERSION, WP_API_VERSION_VALUE),
-                Pair(WP_CALLER_ID, WP_CALLER_ID_VALUE),
-            )
 
             val cardBinRequest =
                 CardBinRequest(
@@ -59,10 +60,42 @@ class CardBinClientTest {
             given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
                 .willReturn(cardBinResponse)
 
-            val cardBinClient = CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer)
+            val cardBinClient =
+                CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer)
 
             val actualResponse = cardBinClient.getCardBinResponse(cardBinRequest)
 
             assertEquals(cardBinResponse, actualResponse)
         }
+
+    @Test
+    fun `should throw AccessCheckoutException when an exception is thrown when sending a request`() = runAsBlockingTest {
+        val httpsClient = mock<HttpsClient>()
+        val urlFactory = mock<URLFactory>()
+        val serializer = mock<CardBinRequestSerializer>()
+        val deserializer = mock<CardBinResponseDeserializer>()
+
+        val cardBinRequest =
+            CardBinRequest(
+                cardNumber = "1111222233334444",
+                checkoutId = "some-id"
+            )
+
+        given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
+        given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
+            .willThrow(RuntimeException("run time exception"))
+
+        try {
+            val cardBinClient =
+                CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer)
+
+            cardBinClient.getCardBinResponse(cardBinRequest)
+        } catch (e: Exception) {
+            assertTrue { e is AccessCheckoutException }
+            assertEquals(
+                "There was an error when trying to get card schemes",
+                e.message
+            )
+        }
+    }
 }

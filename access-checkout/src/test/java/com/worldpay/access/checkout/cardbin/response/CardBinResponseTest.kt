@@ -1,0 +1,27 @@
+package com.worldpay.access.checkout.cardbin.response
+
+import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
+import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
+import kotlin.test.assertEquals
+import org.junit.Test
+
+class CardBinResponseTest {
+
+    @Test
+    fun `should be able to set and get the brand, fundingType and luhnCompliant for a card bin response`() {
+        val brand = listOf("brand1", "brand2")
+        val fundingType = "some-funding-type"
+        val luhnCompliant = false
+
+        val cardBinResponse =
+            CardBinResponse(
+                brand,
+                fundingType,
+                luhnCompliant
+            )
+
+        assertEquals(brand, cardBinResponse.brand)
+        assertEquals(fundingType, cardBinResponse.fundingType)
+        assertEquals(luhnCompliant, cardBinResponse.luhnCompliant)
+    }
+}
