@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
-import com.worldpay.access.checkout.service.BrandService
+import com.worldpay.access.checkout.cardbin.api.service.CardBinService
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
@@ -58,7 +58,7 @@ class PanTextWatcherTest {
 
     private lateinit var panTextWatcher: PanTextWatcher
 
-    private val brandService = mock<BrandService>()
+    private val cardBinService = mock<CardBinService>()
 
     @Before
     fun setup() = runAsBlockingTest {
@@ -73,7 +73,7 @@ class PanTextWatcherTest {
             panValidationResultHandler = panValidationResultHandler,
             brandsChangedHandler = brandsChangedHandler,
             cvcValidationRuleManager = cvcValidationRuleManager,
-            brandService = brandService
+            cardBinService = cardBinService
         )
 
         given(cvcEditText.text).willReturn(cvcEditable)
@@ -133,7 +133,7 @@ class PanTextWatcherTest {
     fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID`() {
         mockPan(visaPan(), VALID)
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
-        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+        given(cardBinService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
@@ -149,7 +149,7 @@ class PanTextWatcherTest {
     fun `should call the brand changed handler with visa brand regardless of the pan validation result being CARD_BRAND_NOT_ACCEPTED`() {
         mockPan(visaPan(), VALID)
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
-        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+        given(cardBinService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
@@ -165,7 +165,7 @@ class PanTextWatcherTest {
     fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID_LUHN`() {
         mockPan(visaPan(), VALID)
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
-        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+        given(cardBinService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
@@ -196,7 +196,7 @@ class PanTextWatcherTest {
     fun `should not call the brand changed handler if the brand has not actually changed from the previous one`() {
         // set the visa pan so that the brand changed handler is called with visa
         mockPan(visaPan(), VALID)
-        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+        given(cardBinService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
@@ -212,7 +212,7 @@ class PanTextWatcherTest {
     @Test
     fun `should update the cvc validation rule when the brand changes`() {
         mockPan(visaPan(), VALID)
-        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+        given(cardBinService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
 
         panTextWatcher.afterTextChanged(panEditable)
@@ -225,7 +225,7 @@ class PanTextWatcherTest {
     fun `should re-validate the cvc when the brand changes`() {
         mockPan(visaPan(), VALID)
         given(cvcEditable.toString()).willReturn("123")
-        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+        given(cardBinService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
 
@@ -237,7 +237,7 @@ class PanTextWatcherTest {
     fun `should not interact with the cvc validator at all if the brand has not changed`() {
         // set the visa pan so that the brand changed handler is called with visa
         mockPan(visaPan(), VALID)
-        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+        given(cardBinService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
@@ -255,7 +255,7 @@ class PanTextWatcherTest {
     fun `should not interact with the cvc validator at all if the cvc is empty`() {
         mockPan(visaPan(), VALID)
         given(cvcEditable.toString()).willReturn("")
-        given(brandService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
+        given(cardBinService.getCardBrands(any(), any())).willReturn(listOf(VISA_BRAND))
 
         panTextWatcher.afterTextChanged(panEditable)
 
@@ -324,7 +324,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verifyNoInteractions(brandService)
+        verifyNoInteractions(cardBinService)
     }
 
     @Test
@@ -335,7 +335,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(brandService).getCardBrands(VISA_BRAND, pan)
+        verify(cardBinService).getCardBrands(VISA_BRAND, pan)
     }
 
     private fun mockPan(pan: String, isValid: PanValidationResult) {

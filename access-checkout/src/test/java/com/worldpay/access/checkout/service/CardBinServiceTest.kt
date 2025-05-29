@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.service
 
+import com.worldpay.access.checkout.cardbin.api.service.CardBinService
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
@@ -16,17 +17,17 @@ import kotlin.test.assertEquals
 
 @RunWith(Enclosed::class)
 @ExperimentalCoroutinesApi
-class BrandServiceTest {
+class CardBinServiceTest {
 
     // Runs tests without mock card configuration
     class WithoutBrandDetection() {
-        private val brandService = BrandService()
+        private val cardBinService = CardBinService()
 
         @Test
         fun `should return an list with a single brand when unable to find brand for pan`() {
             val brand = VISA_BRAND
             val expected = listOf(brand)
-            val result = brandService.getCardBrands(brand, "1234123412341234")
+            val result = cardBinService.getCardBrands(brand, "1234123412341234")
 
             assertEquals(result, expected)
         }
@@ -37,7 +38,7 @@ class BrandServiceTest {
         @get:Rule
         var coroutinesTestRule = CoroutineTestRule()
 
-        private val brandService = BrandService()
+        private val cardBinService = CardBinService()
         private val testPan = "4444333322221111"
 
         @Before
@@ -47,7 +48,7 @@ class BrandServiceTest {
 
         @Test
         fun `should return an empty list when brand is null`() {
-            val result = brandService.getCardBrands(null, testPan)
+            val result = cardBinService.getCardBrands(null, testPan)
 
             assertEquals(result, emptyList())
         }
@@ -55,7 +56,7 @@ class BrandServiceTest {
         @Test
         fun `should return a list of brands when able to find brand for pan`() {
             val brand = VISA_BRAND
-            val result = brandService.getCardBrands(brand, testPan)
+            val result = cardBinService.getCardBrands(brand, testPan)
 
             assertTrue(brand in result)
             assertEquals(2, result.count())
