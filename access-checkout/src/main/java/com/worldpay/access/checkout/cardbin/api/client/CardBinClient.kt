@@ -1,12 +1,15 @@
 package com.worldpay.access.checkout.cardbin.api.client
 
 import com.worldpay.access.checkout.api.HttpsClient
+import com.worldpay.access.checkout.api.URLFactory
+import com.worldpay.access.checkout.api.URLFactoryImpl
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
+import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
+import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import java.net.URL
-import java.util.UUID
 
 /**
  * Retrieves session for card flow
@@ -16,18 +19,25 @@ import java.util.UUID
  * @property[httpsClient] Responsible for carrying out the HTTPS request
  */
 internal class CardBinClient(
-    private val deserializer: Deserializer<CardBinResponse>,
-    private val serializer: Serializer<CardBinRequest>,
-    private val httpsClient: HttpsClient
+    baseUrl: URL,
+    urlFactory: URLFactory = URLFactoryImpl(),
+    private val httpsClient: HttpsClient = HttpsClient(),
+    private val deserializer: Deserializer<CardBinResponse> = CardBinResponseDeserializer(),
+    private val serializer: Serializer<CardBinRequest> = CardBinRequestSerializer(),
 ) {
 
-    suspend fun getCardBinResponse(url: URL, request: CardBinRequest): CardBinResponse {
+    internal companion object {
+        private const val CARD_BIN_ENDPOINT = "public/card/bindetails"
+    }
+
+    private val cardConfigUrl = urlFactory.getURL("$baseUrl/$CARD_BIN_ENDPOINT")
+
+
+    suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
         val headers = HashMap<String, String>()
         headers[WP_API_VERSION] = WP_API_VERSION_VALUE
         headers[WP_CALLER_ID] = WP_CALLER_ID_VALUE
-        // Change this correlation ID creation as it's hard coded
-        headers[WP_CORRELATION_ID] = UUID.randomUUID().toString()
-        return httpsClient.doPost(url, request, headers, serializer, deserializer)
+        return httpsClient.doPost(cardConfigUrl, request, headers, serializer, deserializer)
     }
 }
 
