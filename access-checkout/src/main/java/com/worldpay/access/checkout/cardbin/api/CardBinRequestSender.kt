@@ -17,7 +17,6 @@ internal class CardBinRequestSender(
 
         try {
             val responseBody = cardBinClient.getCardBinResponse(
-                cardBinRequestInfo.url,
                 cardBinRequestInfo.requestBody
             )
             return CardBinResponseInfo.Builder()
