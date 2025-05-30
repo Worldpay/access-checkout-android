@@ -14,6 +14,6 @@ class HeadersTest {
         assertEquals("WP-Api-Version", WP_API_VERSION)
         assertEquals("1", WP_API_VERSION_VALUE)
         assertEquals("WP-CallerId", WP_CALLER_ID)
-        assertEquals("checkout", WP_CALLER_ID_VALUE)
+        assertEquals("checkoutandroid", WP_CALLER_ID_VALUE)
     }
 }
