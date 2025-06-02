@@ -133,4 +133,28 @@ class CardBinResponseDeserializerTest {
 
         assertEquals(expectedResponse, deserializedResponse)
     }
+
+    @Test
+    fun `should ignore unknown properties when deserializing card bin response`() {
+        val jsonWithExtraProperties =
+            """
+        {
+            "brand": ["visa"],
+            "fundingType": "debit",
+            "luhnCompliant": true,
+            "unexpectedProperty": "some value",
+            "anotherUnexpectedProperty": 12345,
+            "aNestedObject": {
+                "key": "value"
+            },
+            "anArrayField": [1, 2, 3]
+        }
+    """.trimIndent()
+
+        val deserializedResponse = cardBinResponseDeserializer.deserialize(jsonWithExtraProperties)
+
+        assertEquals(listOf("visa"), deserializedResponse.brand)
+        assertEquals("debit", deserializedResponse.fundingType)
+        assertEquals(true, deserializedResponse.luhnCompliant)
+    }
 }
