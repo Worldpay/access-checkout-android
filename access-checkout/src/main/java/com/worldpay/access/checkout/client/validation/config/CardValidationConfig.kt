@@ -21,7 +21,8 @@ class CardValidationConfig private constructor(
     val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener,
     val lifecycleOwner: LifecycleOwner,
-    val enablePanFormatting: Boolean
+    val enablePanFormatting: Boolean,
+    val checkoutId: String
 ) : ValidationConfig {
 
     /**
@@ -38,6 +39,7 @@ class CardValidationConfig private constructor(
         private var validationListener: AccessCheckoutCardValidationListener? = null
         private var lifecycleOwner: LifecycleOwner? = null
         private var enablePanFormatting: Boolean = false
+        private var checkoutId: String? = null
 
         /**
          * Sets the pan ui element to be validated
@@ -130,6 +132,7 @@ class CardValidationConfig private constructor(
             validateNotNull(baseUrl, "base url")
             validateNotNull(validationListener, "validation listener")
             validateNotNull(lifecycleOwner, "lifecycle owner")
+            validateNotNull(checkoutId, UUID)
 
             val sanitisedBaseUrl = sanitise(baseUrl)!!
 
@@ -141,7 +144,8 @@ class CardValidationConfig private constructor(
                 baseUrl = sanitisedBaseUrl,
                 validationListener = validationListener!!,
                 lifecycleOwner = lifecycleOwner!!,
-                enablePanFormatting = enablePanFormatting
+                enablePanFormatting = enablePanFormatting,
+                checkoutId = checkoutId,
             )
         }
     }
