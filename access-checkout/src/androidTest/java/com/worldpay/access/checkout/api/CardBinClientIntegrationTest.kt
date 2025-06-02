@@ -101,7 +101,7 @@ class CardBinClientIntegrationTest {
     }
 
     @Test
-    fun shouldThrowExceptionWhenFailingToGetCardScheme() = runBlocking {
+    fun shouldThrowExceptionWhenFailingToGetCardBrand() = runBlocking {
         val request =
             """{
             "cardNumber": "$cardNumber",

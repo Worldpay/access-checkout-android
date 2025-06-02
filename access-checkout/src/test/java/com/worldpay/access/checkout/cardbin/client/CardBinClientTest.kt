@@ -72,7 +72,7 @@ class CardBinClientTest {
         }
 
     @Test
-    fun `should throw AccessCheckoutException when an exception is thrown when sending a request`() =
+    fun `should not swallow exception thrown by HttpClient`() =
         runAsBlockingTest {
             val httpsClient = mock<HttpsClient>()
             val urlFactory = mock<URLFactory>()

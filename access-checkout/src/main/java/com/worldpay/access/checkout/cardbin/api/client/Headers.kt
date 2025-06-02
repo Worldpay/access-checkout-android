@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.cardbin.api.client
 
+// create map for values
 internal const val WP_API_VERSION = "WP-Api-Version"
 internal const val WP_API_VERSION_VALUE = "1"
 internal const val WP_CALLER_ID = "WP-CallerId"
