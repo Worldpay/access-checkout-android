@@ -27,11 +27,13 @@ import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.fail
 
 @ExperimentalCoroutinesApi
@@ -100,17 +102,19 @@ class CardBinClientIntegrationTest {
 
     @Test
     fun shouldThrowExceptionWhenFailingToGetCardScheme() = runBlocking {
-        val request = """{
-                "cardNumber": "$cardNumber",
-                "checkoutId": "$checkoutId"
-                }
-                """
+        val request =
+            """{
+            "cardNumber": "$cardNumber",
+            "checkoutId": "$checkoutId"
+            }
+            """
 
         stubFor(
             postRequest(request)
                 .willReturn(
                     aResponse()
                         .withStatus(500)
+                        .withStatusMessage("Server Error")
                 )
         )
         val cardBinReq =
@@ -119,13 +123,14 @@ class CardBinClientIntegrationTest {
                 checkoutId = checkoutId
             )
 
-        try {
+        val result = runCatching {
             val cardBinClient = CardBinClient(getBaseUrl())
             cardBinClient.getCardBinResponse(cardBinReq)
-            fail("Expected exception was not thrown")
-        } catch (ace: AccessCheckoutException) {
-            assertEquals("There was an error when trying to get card schemes", ace.message)
         }
+
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is AccessCheckoutException)
+        assertEquals("Error message was: Server Error", result.exceptionOrNull()?.message)
     }
 
     private fun postRequest(request: String): MappingBuilder {
