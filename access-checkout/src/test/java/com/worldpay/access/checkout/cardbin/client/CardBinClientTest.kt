@@ -17,7 +17,6 @@ import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Assert.assertEquals
-import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -26,7 +25,6 @@ import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
 import java.net.URL
-import kotlin.test.assertFailsWith
 import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 
 @ExperimentalCoroutinesApi
@@ -98,6 +96,7 @@ class CardBinClientTest {
                 cardBinClient.getCardBinResponse(cardBinRequest)
             }
 
+            assertTrue(result.isFailure)
             assertTrue(result.exceptionOrNull() is AccessCheckoutException)
             assertEquals("Access Checkout Exception", result.exceptionOrNull()?.message)
         }
