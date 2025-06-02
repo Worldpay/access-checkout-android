@@ -4,6 +4,8 @@ import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION
 import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION_VALUE
 import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID
 import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.WP_CONTENT_TYPE
+import com.worldpay.access.checkout.cardbin.api.client.WP_CONTENT_TYPE_VALUE
 import kotlin.test.assertEquals
 import org.junit.Test
 
@@ -15,5 +17,7 @@ class HeadersTest {
         assertEquals("1", WP_API_VERSION_VALUE)
         assertEquals("WP-CallerId", WP_CALLER_ID)
         assertEquals("checkoutandroid", WP_CALLER_ID_VALUE)
+        assertEquals("Content-Type", WP_CONTENT_TYPE)
+        assertEquals("application/json", WP_CONTENT_TYPE_VALUE)
     }
 }
