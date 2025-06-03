@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.service
+package com.worldpay.access.checkout.cardbin.service
 
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
