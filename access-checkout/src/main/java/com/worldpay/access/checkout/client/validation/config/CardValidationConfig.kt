@@ -132,7 +132,7 @@ class CardValidationConfig private constructor(
             validateNotNull(baseUrl, "base url")
             validateNotNull(validationListener, "validation listener")
             validateNotNull(lifecycleOwner, "lifecycle owner")
-            validateNotNull(checkoutId, UUID)
+            validateNotNull(checkoutId, "Checkout Id")
 
             val sanitisedBaseUrl = sanitise(baseUrl)!!
 
@@ -145,7 +145,7 @@ class CardValidationConfig private constructor(
                 validationListener = validationListener!!,
                 lifecycleOwner = lifecycleOwner!!,
                 enablePanFormatting = enablePanFormatting,
-                checkoutId = checkoutId,
+                checkoutId = checkoutId!!,
             )
         }
     }
