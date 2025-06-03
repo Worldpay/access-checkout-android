@@ -1,6 +1,6 @@
 package com.worldpay.access.checkout.sample.card
 
-import androidx.test.rule.ActivityTestRule
+import androidx.test.ext.junit.rules.ActivityScenarioRule
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
@@ -8,22 +8,25 @@ import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.MASTERCARD_PAN_FORMATTED
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils
+import com.worldpay.access.checkout.sample.card.standard.testutil.NewCardFragmentTestUtils
 import com.worldpay.access.checkout.sample.stub.CardConfigurationMockStub.simulateCardConfigurationServerError
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.junit.rules.ExternalResource
+import org.junit.runner.Description
+import org.junit.runners.model.Statement
 
-class CardConfigurationIntegrationTest {
+class NewCardConfigurationIntegrationTest {
 
     @get:Rule
-    var cardConfigurationErrorRule: CardConfigurationErrorRule = CardConfigurationErrorRule(MainActivity::class.java)
+    var cardConfigurationErrorRule = NewCardConfigurationErrorRule(ActivityScenarioRule(MainActivity::class.java))
 
-    private lateinit var cardFragmentTestUtils: CardFragmentTestUtils
+    private lateinit var cardFragmentTestUtils: NewCardFragmentTestUtils
 
     @Before
     fun setup() {
-        cardFragmentTestUtils = CardFragmentTestUtils(cardConfigurationErrorRule)
+        cardFragmentTestUtils = NewCardFragmentTestUtils(cardConfigurationErrorRule.innerRule)
     }
 
     @Test
@@ -36,9 +39,13 @@ class CardConfigurationIntegrationTest {
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
-            .hasResponseDialogWithMessage(
-                mapOf(CARD to cardConfigurationErrorRule.activity.getString(R.string.card_session_reference)).toString()
-            )
+            .hasResponseDialogWithMessage( run {
+                var ref = ""
+                cardConfigurationErrorRule.innerRule.scenario.onActivity { activity ->
+                    ref = activity.getString(R.string.card_session_reference)
+                }
+                mapOf(CARD to ref).toString()
+            })
     }
 
     @Test
@@ -51,16 +58,24 @@ class CardConfigurationIntegrationTest {
             .enabledStateIs(submitButton = true)
             .clickSubmitButton()
             .requestIsInProgress()
-            .hasResponseDialogWithMessage(
-                mapOf(CARD to cardConfigurationErrorRule.activity.getString(R.string.card_session_reference)).toString()
-            )
+            .hasResponseDialogWithMessage( run {
+                var ref = ""
+                cardConfigurationErrorRule.innerRule.scenario.onActivity { activity ->
+                    ref = activity.getString(R.string.card_session_reference)
+                }
+                mapOf(CARD to ref).toString()
+            })
     }
 }
 
-class CardConfigurationErrorRule(activityClass: Class<MainActivity>) : ActivityTestRule<MainActivity>(activityClass) {
+class NewCardConfigurationErrorRule(val innerRule: ActivityScenarioRule<MainActivity>) : ExternalResource() {
 
-    override fun beforeActivityLaunched() {
-        super.beforeActivityLaunched()
+    override fun apply(base: Statement, description: Description): Statement {
+        return super.apply(innerRule.apply(base, description), description)
+    }
+
+    override fun before() {
+        super.before()
         // This card configuration rule adds stubs to mockserver to simulate a server error condition on the card configuration endpoint.
         // On initialisation of our SDK, the SDK will trigger a card configuration call which will get back this error
         // response.
