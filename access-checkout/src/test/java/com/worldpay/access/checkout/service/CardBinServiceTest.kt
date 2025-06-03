@@ -22,7 +22,7 @@ class CardBinServiceTest {
     // Runs tests without mock card configuration
     class WithoutBrandDetection() {
         private val cardBinService = CardBinService(
-            checkoutId = TODO()
+            checkoutId = "validCheckoutId"
         )
 
         //wrap the test inside a coroutine as getCardBrands is a suspend function
@@ -43,7 +43,7 @@ class CardBinServiceTest {
         var coroutinesTestRule = CoroutineTestRule()
 
         private val cardBinService = CardBinService(
-            checkoutId = TODO()
+            checkoutId = "validCheckoutId"
         )
         private val testPan = "4444333322221111"
 
@@ -56,7 +56,7 @@ class CardBinServiceTest {
         fun `should return an empty list when brand is null`() = runBlockingTest {
             val result = cardBinService.getCardBrands(null, testPan)
 
-            assertEquals(result, emptyList<Any>(), result)
+            assertEquals(result, emptyList<Any>(), result.toString())
         }
 
         @Test
