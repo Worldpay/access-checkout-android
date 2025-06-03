@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManag
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.ExpiryDateValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
+import java.net.URL
 
 internal class TextWatcherFactory(
     private val resultHandlerFactory: ResultHandlerFactory
@@ -35,7 +36,7 @@ internal class TextWatcherFactory(
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandsChangedHandler = resultHandlerFactory.getBrandsChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager,
-            cardBinService = CardBinService(checkoutId)
+            cardBinService = CardBinService(checkoutId, baseUrl = URL("http.changeme.com"))
         )
     }
 

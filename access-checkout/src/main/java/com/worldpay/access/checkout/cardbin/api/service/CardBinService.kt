@@ -9,6 +9,7 @@ import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
@@ -33,7 +34,7 @@ internal class CardBinService(
     private var onAdditionalBrandsReceived: ((List<RemoteCardBrand>) -> Unit)? = null
 
     fun getCardBrands(initialCardBrand: RemoteCardBrand?, pan: String): List<RemoteCardBrand> {
-        if (initialCardBrand == null) {
+        if (initialCardBrand == null || pan.length < 12) {
             return emptyList()
         }
 
@@ -110,6 +111,10 @@ internal class CardBinService(
                 )
             }
             .distinctBy { it.name.lowercase() }
+    }
+
+    fun destroy() {
+        coroutineScope.cancel()
     }
 }
 
