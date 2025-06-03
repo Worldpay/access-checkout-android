@@ -31,7 +31,7 @@ internal class CardBinService(
     // creates concurrent hash map to store API response by card number prefix (12 digits)
     private val cache = ConcurrentHashMap<String, CardBinResponse?>()
     // callback invoked when additional brands are fetched from API
-    private var onAdditionalBrandsReceived: ((List<RemoteCardBrand>) -> Unit)? = null
+    var onAdditionalBrandsReceived: ((List<RemoteCardBrand>) -> Unit)? = null
 
     fun getCardBrands(initialCardBrand: RemoteCardBrand?, pan: String): List<RemoteCardBrand> {
         if (initialCardBrand == null || pan.length < 12) {
@@ -111,6 +111,10 @@ internal class CardBinService(
                 )
             }
             .distinctBy { it.name.lowercase() }
+    }
+
+    fun setOnAdditionalBrandsReceived(callback: (List<RemoteCardBrand>) -> Unit) {
+        onAdditionalBrandsReceived = callback
     }
 
     fun destroy() {
