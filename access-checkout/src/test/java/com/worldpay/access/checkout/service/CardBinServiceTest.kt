@@ -21,15 +21,19 @@ class CardBinServiceTest {
 
     // Runs tests without mock card configuration
     class WithoutBrandDetection() {
-        private val cardBinService = CardBinService()
+        private val cardBinService = CardBinService(
+            checkoutId = TODO()
+        )
+
+        //wrap the test inside a coroutine as getCardBrands is a suspend function
 
         @Test
-        fun `should return an list with a single brand when unable to find brand for pan`() {
+        fun `should return an list with a single brand when unable to find brand for pan`() = runBlockingTest {
             val brand = VISA_BRAND
             val expected = listOf(brand)
             val result = cardBinService.getCardBrands(brand, "1234123412341234")
 
-            assertEquals(result, expected)
+            assertEquals(expected, result)
         }
     }
 
@@ -38,7 +42,9 @@ class CardBinServiceTest {
         @get:Rule
         var coroutinesTestRule = CoroutineTestRule()
 
-        private val cardBinService = CardBinService()
+        private val cardBinService = CardBinService(
+            checkoutId = TODO()
+        )
         private val testPan = "4444333322221111"
 
         @Before
@@ -47,14 +53,14 @@ class CardBinServiceTest {
         }
 
         @Test
-        fun `should return an empty list when brand is null`() {
+        fun `should return an empty list when brand is null`() = runBlockingTest {
             val result = cardBinService.getCardBrands(null, testPan)
 
-            assertEquals(result, emptyList())
+            assertEquals(result, emptyList<Any>(), result)
         }
 
         @Test
-        fun `should return a list of brands when able to find brand for pan`() {
+        fun `should return a list of brands when able to find brand for pan`() = runBlockingTest {
             val brand = VISA_BRAND
             val result = cardBinService.getCardBrands(brand, testPan)
 
