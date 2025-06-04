@@ -31,8 +31,9 @@ internal class CardBinService(
     // creates concurrent hash map to store API response by card number prefix (12 digits)
     private val cache = ConcurrentHashMap<String, CardBinResponse?>()
     // callback invoked when additional brands are fetched from API
-    var onAdditionalBrandsReceived: ((List<RemoteCardBrand>) -> Unit)? = null
+    private var onAdditionalBrandsReceived: ((List<RemoteCardBrand>) -> Unit)? = null
 
+    // pass callback into the parameters
     fun getCardBrands(initialCardBrand: RemoteCardBrand?, pan: String): List<RemoteCardBrand> {
         if (initialCardBrand == null || pan.length < 12) {
             return emptyList()
@@ -60,8 +61,8 @@ internal class CardBinService(
         initialCardBrand: RemoteCardBrand,
         pan: String,
     ) {
-        coroutineScope.launch {
-            try {
+        val job = coroutineScope.launch {
+//            try {
                 // builds the request to send to card bin api
                 val cardBinRequest = CardBinRequest(pan, checkoutId)
                 // request to card bin api
@@ -76,10 +77,10 @@ internal class CardBinService(
                 // will be needed to test response of coroutine scope
                 onAdditionalBrandsReceived?.invoke(brands)
 
-            } catch (e: AccessCheckoutException) {
+//            } catch (e: AccessCheckoutException) {
                 // catch the exception from HttpClient and swallow it
-                Log.e("Card Bin API", "Unable to retrieve Card Bin details")
-            }
+//                Log.e("Card Bin API", "Unable to retrieve Card Bin details")
+//            }
         }
     }
 

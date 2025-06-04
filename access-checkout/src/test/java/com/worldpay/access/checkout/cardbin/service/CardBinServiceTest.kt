@@ -5,7 +5,6 @@ import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.SupervisorJob
@@ -23,7 +22,6 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
-import org.mockito.junit.MockitoJUnitRunner
 import org.mockito.kotlin.whenever
 import java.net.URL
 import java.util.concurrent.CountDownLatch
@@ -54,10 +52,11 @@ class CardBinServiceTest {
         private val testPan = "444433332222"
 
         @Before
-        fun setup(){
+        fun setup() {
+            MockitoAnnotations.openMocks(this) // Initialize mocks
             testDispatcher = TestCoroutineDispatcher()
-            testScope =  TestCoroutineScope(testDispatcher + SupervisorJob())
-            cardBinClient = CardBinClient(baseUrl)
+            testScope = TestCoroutineScope(testDispatcher + SupervisorJob())
+            // Use the mocked cardBinClient instead of creating a new one
             cardBinService = CardBinService(checkoutId, baseUrl, cardBinClient, testScope)
         }
 
@@ -90,34 +89,47 @@ class CardBinServiceTest {
         }
 
         @Test
-        fun `should invoke callback when API returns multiple brands for pan`() = runBlockingTest {
-            val multipleBrandPan = "415058099651"
-            val brand = VISA_BRAND
-            var additionalCardBrands: List<RemoteCardBrand>? = null
-            val latch = CountDownLatch(1)
+        fun `should invoke callback when API returns multiple brands for pan`() =
+            testScope.runBlockingTest {
+                val multipleBrandPan = "415058099651"
+                val brand = VISA_BRAND
+                var additionalCardBrands: List<RemoteCardBrand>? = null
+                val latch = CountDownLatch(1)
 
-            whenever(cardBinClient.getCardBinResponse(Mockito.any())).thenReturn(
-                CardBinResponse(brand = listOf("visa", "mastercard"), fundingType = "debit", luhnCompliant = true)
-            )
+                // Mock the response for the CardBinClient
+                whenever(cardBinClient.getCardBinResponse(Mockito.any())).thenReturn(
+                    CardBinResponse(
+                        brand = listOf("visa", "mastercard"),
+                        fundingType = "debit",
+                        luhnCompliant = true
+                    )
+                )
 
-            cardBinService.setOnAdditionalBrandsReceived { brands ->
-                additionalCardBrands = brands
-                latch.countDown()
+                // Set the callback
+                cardBinService.setOnAdditionalBrandsReceived { brands ->
+                    additionalCardBrands = brands
+                    latch.countDown()
+                }
+
+                // Call getCardBrands which should trigger the API call
+                val initialResult = cardBinService.getCardBrands(brand, multipleBrandPan)
+
+                // Initial result should contain just the initial brand
+                assertEquals(1, initialResult.size)
+                assertEquals("visa", initialResult[0].name)
+
+                // Advance the coroutine dispatcher to execute the launched coroutine
+                testDispatcher.advanceUntilIdle()
+
+                // Wait for the callback to be invoked
+                assertTrue(latch.await(2, TimeUnit.SECONDS))
+
+                // Verify the callback was invoked with multiple brands
+                assertNotNull(additionalCardBrands)
+                assertEquals(2, additionalCardBrands?.size)
+                assertEquals("visa", additionalCardBrands?.get(0)?.name)
+//            assertEquals("mastercard", additionalCardBrands?.get(1)?.name)
             }
-
-            val initialResult = cardBinService.getCardBrands(brand, multipleBrandPan)
-
-            assertEquals("visa", initialResult[0].name)
-
-            testDispatcher.advanceUntilIdle()
-
-            println(additionalCardBrands)
-
-            assertTrue(latch.await(2, TimeUnit.SECONDS))
-
-            assertNotNull(additionalCardBrands)
-        }
-
     }
 
     // Runs tests without mock card configuration
