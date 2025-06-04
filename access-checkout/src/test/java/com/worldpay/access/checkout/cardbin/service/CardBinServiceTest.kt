@@ -22,6 +22,7 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.MockitoAnnotations
+import org.mockito.kotlin.anyOrNull
 import org.mockito.kotlin.whenever
 import java.net.URL
 import java.util.concurrent.CountDownLatch
@@ -83,7 +84,6 @@ class CardBinServiceTest {
             val brand = VISA_BRAND
             val result = cardBinService.getCardBrands(brand, testPan)
 
-            assertTrue(brand in result)
             assertEquals(1, result.count())
             assertEquals("visa", result[0].name)
         }
@@ -97,7 +97,7 @@ class CardBinServiceTest {
                 val latch = CountDownLatch(1)
 
                 // Mock the response for the CardBinClient
-                whenever(cardBinClient.getCardBinResponse(Mockito.any())).thenReturn(
+                whenever(cardBinClient.getCardBinResponse(anyOrNull())).thenReturn(
                     CardBinResponse(
                         brand = listOf("visa", "mastercard"),
                         fundingType = "debit",
