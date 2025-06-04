@@ -18,6 +18,7 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
+import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
@@ -46,11 +47,13 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Test
     fun `should validate pan as true when full visa pan is entered`() {
-        pan.setText(visaPan())
+        val validVisaPan = visaPan()
+        pan.setText(validVisaPan)
+
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
     }
 
     @Test
@@ -61,7 +64,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
 
         reset(cardValidationListener)
 
@@ -77,7 +80,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
     }
 
     @Test
@@ -94,7 +97,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
     }
 
     @Test
@@ -120,6 +123,6 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
         verify(cardValidationListener, never()).onCvcValidated(any())
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
     }
 }
