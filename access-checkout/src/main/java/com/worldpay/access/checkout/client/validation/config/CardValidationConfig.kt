@@ -120,6 +120,16 @@ class CardValidationConfig private constructor(
         }
 
         /**
+         * Sets the checkoutId to use
+         *
+         * @param[checkoutId] [String] that represents the checkoutId
+         */
+        fun checkoutId(checkoutId: String): Builder {
+            this.checkoutId = checkoutId
+            return this
+        }
+
+        /**
          * Builds the validation configuration by returning an instance of the [CardValidationConfig]
          *
          * @return [CardValidationConfig] implementation that can be used to initialise validation
