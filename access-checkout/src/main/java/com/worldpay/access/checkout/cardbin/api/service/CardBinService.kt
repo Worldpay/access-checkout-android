@@ -61,8 +61,8 @@ internal class CardBinService(
         initialCardBrand: RemoteCardBrand,
         pan: String,
     ) {
-        val job = coroutineScope.launch {
-//            try {
+        coroutineScope.launch {
+            try {
                 // builds the request to send to card bin api
                 val cardBinRequest = CardBinRequest(pan, checkoutId)
                 // request to card bin api
@@ -77,10 +77,10 @@ internal class CardBinService(
                 // will be needed to test response of coroutine scope
                 onAdditionalBrandsReceived?.invoke(brands)
 
-//            } catch (e: AccessCheckoutException) {
-                // catch the exception from HttpClient and swallow it
-//                Log.e("Card Bin API", "Unable to retrieve Card Bin details")
-//            }
+            } catch (e: AccessCheckoutException) {
+                 //catch the exception from HttpClient and swallow it
+                Log.e("Card Bin API", "Unable to retrieve Card Bin details")
+            }
         }
     }
 

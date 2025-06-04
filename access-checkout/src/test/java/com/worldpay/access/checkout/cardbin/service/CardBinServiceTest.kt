@@ -82,6 +82,13 @@ class CardBinServiceTest {
         @Test
         fun `should return a list of brands when able to find brand for pan`() = runBlockingTest {
             val brand = VISA_BRAND
+            whenever(cardBinClient.getCardBinResponse(anyOrNull())).thenReturn(
+                CardBinResponse(
+                    brand = listOf("visa"),
+                    fundingType = "debit",
+                    luhnCompliant = true
+                )
+            )
             val result = cardBinService.getCardBrands(brand, testPan)
 
             assertEquals(1, result.count())
