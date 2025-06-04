@@ -30,11 +30,13 @@ internal class CardBinService(
 
     // creates concurrent hash map to store API response by card number prefix (12 digits)
     private val cache = ConcurrentHashMap<String, CardBinResponse?>()
-    // callback invoked when additional brands are fetched from API
-    private var onAdditionalBrandsReceived: ((List<RemoteCardBrand>) -> Unit)? = null
 
     // pass callback into the parameters
-    fun getCardBrands(initialCardBrand: RemoteCardBrand?, pan: String): List<RemoteCardBrand> {
+    fun getCardBrands(
+        initialCardBrand: RemoteCardBrand?,
+        pan: String,
+        onAdditionalBrandsReceived: ((List<RemoteCardBrand>) -> Unit)? = null
+    ): List<RemoteCardBrand> {
         if (initialCardBrand == null || pan.length < 12) {
             return emptyList()
         }
@@ -50,7 +52,8 @@ internal class CardBinService(
             return brands
         }
 
-        launchCoroutineRequest(initialCardBrand, pan)
+        // callback invoked when additional brands are fetched from API
+        launchCoroutineRequest(initialCardBrand, pan, onAdditionalBrandsReceived)
 
         // returns initialCardBrand immediately
         // coroutine will return when the response has been received (launch & forget)
@@ -60,6 +63,7 @@ internal class CardBinService(
     private fun launchCoroutineRequest(
         initialCardBrand: RemoteCardBrand,
         pan: String,
+        callback: ((List<RemoteCardBrand>) -> Unit)?
     ) {
         coroutineScope.launch {
             try {
@@ -69,13 +73,12 @@ internal class CardBinService(
                 val response = client.getCardBinResponse(cardBinRequest)
 
                 // caches response in concurrent hash map
-                cache[pan] = response
+                cache[pan.take(CACHE_KEY_LENGTH)] = response
 
                 val brands = transform(initialCardBrand, response)
 
-                // should update other parts of the app when new card brand information from Card Bin API is returned
-                // will be needed to test response of coroutine scope
-                onAdditionalBrandsReceived?.invoke(brands)
+                // callback to returns card brands when there is a response
+                callback?.invoke(brands)
 
             } catch (e: AccessCheckoutException) {
                  //catch the exception from HttpClient and swallow it
@@ -108,14 +111,11 @@ internal class CardBinService(
                     name = brandName,
                     images = initialCardBrand.images,
                     cvc = initialCardBrand.cvc,
+
                     pan = initialCardBrand.pan
                 )
             }
             .distinctBy { it.name.lowercase() }
-    }
-
-    fun setOnAdditionalBrandsReceived(callback: (List<RemoteCardBrand>) -> Unit) {
-        onAdditionalBrandsReceived = callback
     }
 
     fun destroy() {
