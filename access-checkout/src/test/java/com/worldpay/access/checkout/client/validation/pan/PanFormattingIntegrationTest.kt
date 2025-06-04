@@ -35,7 +35,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4111 1111 1111 1111", pan.text)
-        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
 
@@ -46,7 +46,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         pan.setText("342793178931249")
 
         assertEquals("3427 931789 31249", pan.text)
-        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(AMEX_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(AMEX_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
 
@@ -59,7 +59,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4111111111111111", pan.text)
-        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
 
