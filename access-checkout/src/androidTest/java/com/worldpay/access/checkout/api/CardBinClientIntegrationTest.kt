@@ -13,6 +13,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
+import com.worldpay.access.checkout.api.MockServer.getStringBaseUrl
 import com.worldpay.access.checkout.api.MockServer.startWiremock
 import com.worldpay.access.checkout.api.MockServer.stopWiremock
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
@@ -87,7 +88,7 @@ class CardBinClientIntegrationTest {
                 )
         )
 
-        val cardBinClient = CardBinClient(getBaseUrl())
+        val cardBinClient = CardBinClient(getStringBaseUrl())
         val cardBinReq =
             CardBinRequest(
                 cardNumber = cardNumber,
@@ -124,7 +125,7 @@ class CardBinClientIntegrationTest {
             )
 
         val result = runCatching {
-            val cardBinClient = CardBinClient(getBaseUrl())
+            val cardBinClient = CardBinClient(getStringBaseUrl())
             cardBinClient.getCardBinResponse(cardBinReq)
         }
 
