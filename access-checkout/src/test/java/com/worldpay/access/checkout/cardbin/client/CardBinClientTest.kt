@@ -95,7 +95,7 @@ class CardBinClientTest {
     }
 
     @Test
-    fun `should wrap non-cancellation exception in AccessCheckoutException`() = runTest {
+    fun `should wrap exception in AccessCheckoutException`() = runTest {
         given(
             httpsClient.doPost(
                 eq(cardBinUrl),
