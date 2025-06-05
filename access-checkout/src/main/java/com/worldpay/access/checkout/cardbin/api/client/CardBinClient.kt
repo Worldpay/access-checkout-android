@@ -9,16 +9,27 @@ import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.suspendCancellableCoroutine
 import java.net.URL
+import kotlin.coroutines.resume
+import kotlin.coroutines.resumeWithException
 
 /**
- * Retrieves the card schemes
+ * Client for retrieving card scheme details using a card BIN.
  *
- * @property[baseUrl] Used to determine which env to send request to
- * @property[urlFactory] Used to build the url to send request
- * @property[httpsClient] Responsible for carrying out the HTTPS request
- * @property[deserializer] Used to deserialize the [CardBinResponse]
- * @property[serializer] Used to serialise [CardBinRequest]
+ * This class manages a single in-flight request at a time. If a new request is made while another is in progress,
+ * the previous request is cancelled and only the latest request will complete.
+ *
+ * @property baseUrl The base URL for the API endpoint.
+ * @property urlFactory Factory to build the full endpoint URL.
+ * @property httpsClient HTTP client to perform the network request.
+ * @property deserializer Deserializes the response from the API.
+ * @property serializer Serializes the request to the API.
  */
 internal class CardBinClient(
     baseUrl: URL,
@@ -30,15 +41,62 @@ internal class CardBinClient(
 
     internal companion object {
         private const val CARD_BIN_ENDPOINT = "public/card/bindetails"
+
+        // Header constants
+        internal const val WP_API_VERSION = "WP-Api-Version"
+        internal const val WP_API_VERSION_VALUE = "1"
+        internal const val WP_CALLER_ID = "WP-CallerId"
+        internal const val WP_CALLER_ID_VALUE = "checkoutandroid"
+        internal const val WP_CONTENT_TYPE = "Content-Type"
+        internal const val WP_CONTENT_TYPE_VALUE = "application/json"
     }
+
+    // Coroutine scope for launching requests
+    private val scope = CoroutineScope(Dispatchers.IO)
+
+    // Holds the current in-flight request Job for cancellation
+    internal var currentJob: Job? = null
 
     private val cardBinUrl = urlFactory.getURL("$baseUrl/$CARD_BIN_ENDPOINT")
 
+    /**
+     * Makes a network request to retrieve card scheme details for the given request.
+     *
+     * If a previous request is still in progress, it will be cancelled before starting the new one.
+     * Only the latest request should complete and return a result.
+     *
+     * @param request The card BIN request payload.
+     * @return The card BIN response from the API.
+     * @throws Exception if the request fails or is cancelled.
+     */
     suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
-        val headers = HashMap<String, String>()
-        headers[WP_API_VERSION] = WP_API_VERSION_VALUE
-        headers[WP_CALLER_ID] = WP_CALLER_ID_VALUE
-        headers[WP_CONTENT_TYPE] = WP_CONTENT_TYPE_VALUE
-        return httpsClient.doPost(cardBinUrl, request, headers, serializer, deserializer)
+        // Safe-guard: Cancel any previous in-flight request before starting a new one
+        currentJob?.cancel()
+
+        return suspendCancellableCoroutine { continuation ->
+            // Launch a new coroutine for the call to card-bin service and keep track of its Job
+            currentJob = scope.launch {
+                try {
+
+                    val headers = hashMapOf(
+                        WP_API_VERSION to WP_API_VERSION_VALUE,
+                        WP_CALLER_ID to WP_CALLER_ID_VALUE,
+                        WP_CONTENT_TYPE to WP_CONTENT_TYPE_VALUE
+                    )
+
+                    val response =
+                        httpsClient.doPost(cardBinUrl, request, headers, serializer, deserializer)
+
+                    // Resume the coroutine with the response
+                    continuation.resume(response)
+                } catch (_: Exception) {
+                    //Otherwise raise new exception
+                    continuation.resumeWithException(
+                        //TODO: Do we need any details ?
+                        AccessCheckoutException("Could not perform request to card-bin API.")
+                    )
+                }
+            }
+        }
     }
 }
