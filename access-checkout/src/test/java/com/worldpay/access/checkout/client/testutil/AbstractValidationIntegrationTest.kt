@@ -67,7 +67,7 @@ open class AbstractValidationIntegrationTest {
             .validationListener(cardValidationListener)
             .baseUrl("${url.scheme}://${url.host}:${url.port}/")
             .lifecycleOwner(lifecycleOwner)
-            .checkoutId("checkout id")
+            .checkoutId("YOUR-CHECKOUT-ID")
 
         if (enablePanFormatting) {
             cardValidationConfig.enablePanFormatting()

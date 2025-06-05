@@ -14,7 +14,6 @@ import kotlin.test.assertNotEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
@@ -25,6 +24,7 @@ import org.robolectric.Shadows.shadowOf
 class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     private val masterCardBrand = toCardBrand(MASTERCARD_BRAND)
+    private val visaCard = toCardBrand(VISA_BRAND)
 
     @Before
     fun setup() {
@@ -37,14 +37,17 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND),masterCardBrand))
+        verify(cardValidationListener).onBrandsChange(listOf(visaCard))
 
         cvc.setText("1234")
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
         verify(cardValidationListener).onCvcValidated(true)
 
         expiryDate.setText("1229")
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
         verify(cardValidationListener).onExpiryDateValidated(true)
 
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
         verify(cardValidationListener).onValidationSuccess()
     }
 
@@ -60,7 +63,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onCvcValidated(false)
-        verify(cardValidationListener).onBrandsChange(listOf(amexCardBrand,masterCardBrand))
+        verify(cardValidationListener).onBrandsChange(listOf(amexCardBrand))
 
         reset(cardValidationListener)
 

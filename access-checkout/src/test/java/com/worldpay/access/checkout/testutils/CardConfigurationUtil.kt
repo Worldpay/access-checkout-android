@@ -246,10 +246,4 @@ internal object CardConfigurationUtil {
         val cardBrand = toCardBrand(remoteCardBrand)
         return listOf(cardBrand)
     }
-
-    fun toCardBrandListHardcoded(remoteCardBrand: RemoteCardBrand): List<CardBrand> {
-        val cardBrand = toCardBrand(remoteCardBrand)
-        val masterCardBrand = toCardBrand(MASTERCARD_BRAND)
-        return listOf(cardBrand,masterCardBrand)
-    }
 }
