@@ -33,6 +33,10 @@ internal class CardBinClient(
     private val urlFactory: URLFactory = URLFactoryImpl()
     private val cardBinUrl = urlFactory.getURL("$baseUrl/$CARD_BIN_ENDPOINT")
 
+    constructor(baseUrl: String) : this(
+        baseUrl, HttpsClient(), CardBinResponseDeserializer(), CardBinRequestSerializer()
+    )
+
     suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
         val headers = HashMap<String, String>()
         headers[WP_API_VERSION] = WP_API_VERSION_VALUE
