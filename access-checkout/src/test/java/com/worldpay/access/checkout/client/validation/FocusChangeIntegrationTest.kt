@@ -32,7 +32,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandListHardcoded(VISA_BRAND))
+        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
 
         pan.requestFocus()
 
