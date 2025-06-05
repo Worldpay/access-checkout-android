@@ -23,6 +23,7 @@ import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION_VALUE
 import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID
 import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID_VALUE
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
+import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,6 +49,9 @@ class CardBinClientIntegrationTest {
     var coroutinesTestRule = CoroutineTestRule()
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
+    private val cardBinClient = CardBinClient(getStringBaseUrl(), HttpsClient(),
+        CardBinResponseDeserializer(), CardBinRequestSerializer()
+    )
 
     @Before
     fun setup() {
@@ -88,7 +92,6 @@ class CardBinClientIntegrationTest {
                 )
         )
 
-        val cardBinClient = CardBinClient(getStringBaseUrl())
         val cardBinReq =
             CardBinRequest(
                 cardNumber = cardNumber,
@@ -125,7 +128,6 @@ class CardBinClientIntegrationTest {
             )
 
         val result = runCatching {
-            val cardBinClient = CardBinClient(getStringBaseUrl())
             cardBinClient.getCardBinResponse(cardBinReq)
         }
 
