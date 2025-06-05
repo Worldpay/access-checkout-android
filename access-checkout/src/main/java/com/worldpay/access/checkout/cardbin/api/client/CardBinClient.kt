@@ -20,10 +20,10 @@ import java.net.URL
  * @property[serializer] Used to serialise [CardBinRequest]
  */
 internal class CardBinClient(
-    baseUrl: String,
-    private val httpsClient: HttpsClient = HttpsClient(),
-    private val deserializer: Deserializer<CardBinResponse> = CardBinResponseDeserializer(),
-    private val serializer: Serializer<CardBinRequest> = CardBinRequestSerializer(),
+    private val baseUrl: String,
+    private val httpsClient: HttpsClient,
+    private val deserializer: Deserializer<CardBinResponse>,
+    private val serializer: Serializer<CardBinRequest>
 ) {
 
     internal companion object {
