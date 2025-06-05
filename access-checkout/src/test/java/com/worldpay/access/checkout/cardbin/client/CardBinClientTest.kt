@@ -3,12 +3,12 @@ package com.worldpay.access.checkout.cardbin.client
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION
-import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID
-import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.WP_CONTENT_TYPE
-import com.worldpay.access.checkout.cardbin.api.client.WP_CONTENT_TYPE_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CONTENT_TYPE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CONTENT_TYPE_VALUE
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
@@ -16,16 +16,21 @@ import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDes
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.verify
 import java.net.URL
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
@@ -33,71 +38,111 @@ class CardBinClientTest {
 
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
-
     private val baseUrl = URL("https://some-base-url")
     private val cardBinEndpoint = "public/card/bindetails"
     private val cardBinUrl = URL("$baseUrl/$cardBinEndpoint")
     private val headers = hashMapOf(
-        Pair(WP_API_VERSION, WP_API_VERSION_VALUE),
-        Pair(WP_CALLER_ID, WP_CALLER_ID_VALUE),
-        Pair(WP_CONTENT_TYPE, WP_CONTENT_TYPE_VALUE)
+        WP_API_VERSION to WP_API_VERSION_VALUE,
+        WP_CALLER_ID to WP_CALLER_ID_VALUE,
+        WP_CONTENT_TYPE to WP_CONTENT_TYPE_VALUE
     )
 
-    @Test
-    fun `should make expected http request when calling the card bin service`() =
-        runAsBlockingTest {
-            val cardBinResponse = mock<CardBinResponse>()
-            val httpsClient = mock<HttpsClient>()
-            val urlFactory = mock<URLFactory>()
-            val serializer = mock<CardBinRequestSerializer>()
-            val deserializer = mock<CardBinResponseDeserializer>()
+    private lateinit var httpsClient: HttpsClient
+    private lateinit var urlFactory: URLFactory
+    private lateinit var serializer: CardBinRequestSerializer
+    private lateinit var deserializer: CardBinResponseDeserializer
+    private lateinit var cardBinRequest: CardBinRequest
+    private lateinit var client: CardBinClient
 
-            val cardBinRequest =
-                CardBinRequest(
-                    cardNumber = "1111222233334444",
-                    checkoutId = "some-id"
-                )
+    @Before
+    fun setUp() {
+        httpsClient = mock(HttpsClient::class.java)
+        urlFactory = mock(URLFactory::class.java)
+        serializer = mock(CardBinRequestSerializer::class.java)
+        deserializer = mock(CardBinResponseDeserializer::class.java)
+        cardBinRequest = CardBinRequest("1111222233334444", "some-id")
 
+        given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
+        client = CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer)
 
-            given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
-            given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
-                .willReturn(cardBinResponse)
-
-            val cardBinClient =
-                CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer)
-
-            val actualResponse = cardBinClient.getCardBinResponse(cardBinRequest)
-
-            assertEquals(cardBinResponse, actualResponse)
-        }
+    }
 
     @Test
-    fun `should not swallow exception thrown by HttpClient`() =
-        runAsBlockingTest {
-            val httpsClient = mock<HttpsClient>()
-            val urlFactory = mock<URLFactory>()
-            val serializer = mock<CardBinRequestSerializer>()
-            val deserializer = mock<CardBinResponseDeserializer>()
+    fun `should use default urlFactory`() = runTest {
+        //Added this tests just to cover the line to initialise the URLFactory when not provided
+        val client = CardBinClient(
+            baseUrl = baseUrl,
+            httpsClient = httpsClient,
+            deserializer = deserializer,
+            serializer = serializer
+        )
 
-            val cardBinRequest =
-                CardBinRequest(
-                    cardNumber = "1111222233334444",
-                    checkoutId = "some-id"
-                )
+        val actualResponse = client.getCardBinResponse(cardBinRequest)
 
-            given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
-            given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
-                .willThrow(AccessCheckoutException("Access Checkout Exception"))
+        assertEquals(null, actualResponse)
 
-            val cardBinClient =
-                CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer)
+    }
 
-            val result = runCatching {
-                cardBinClient.getCardBinResponse(cardBinRequest)
+
+    @Test
+    fun `should make expected http request and return response`() = runTest {
+        val cardBinResponse = mock(CardBinResponse::class.java)
+        given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
+            .willReturn(cardBinResponse)
+
+        val actualResponse = client.getCardBinResponse(cardBinRequest)
+        assertEquals(cardBinResponse, actualResponse)
+    }
+
+    @Test
+    fun `should wrap non-cancellation exception in AccessCheckoutException`() = runTest {
+        given(
+            httpsClient.doPost(
+                eq(cardBinUrl),
+                eq(cardBinRequest),
+                any<HashMap<String, String>>(),
+                eq(serializer),
+                eq(deserializer)
+            )
+        ).willThrow(RuntimeException("Some error"))
+
+        val ex = runCatching { client.getCardBinResponse(cardBinRequest) }.exceptionOrNull()
+
+        assertTrue(ex is AccessCheckoutException)
+        assertEquals("Could not perform request to card-bin API.", ex?.message)
+    }
+
+    @Test
+    fun `should cancel previous job if new request is made`() = runTest {
+        val response1 = mock(CardBinResponse::class.java)
+        val response2 = mock(CardBinResponse::class.java)
+        given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
+            .willReturn(response1, response2)
+
+
+        val mockJob = mock(Job::class.java)
+        client.apply { currentJob = mockJob }
+
+        // Launch first request (will be cancelled)
+        client.getCardBinResponse(cardBinRequest)
+
+        // Launch second request (should complete)
+        val result = client.getCardBinResponse(cardBinRequest)
+
+        verify(mockJob).cancel() // Verify the first job was canceled
+        assertEquals(response2, result)
+    }
+
+    @Test
+    fun `should call cancel on currentJob to ensure previous jobs are cancelled`() = runTest {
+        val mockJob = mock(Job::class.java)
+        val client =
+            CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer).apply {
+                currentJob = mockJob
             }
 
-            assertTrue(result.isFailure)
-            assertTrue(result.exceptionOrNull() is AccessCheckoutException)
-            assertEquals("Access Checkout Exception", result.exceptionOrNull()?.message)
-        }
+        client.getCardBinResponse(cardBinRequest)
+
+        verify(mockJob).cancel()
+    }
 }
