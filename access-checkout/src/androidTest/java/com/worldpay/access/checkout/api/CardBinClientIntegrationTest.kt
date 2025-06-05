@@ -13,6 +13,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
+import com.worldpay.access.checkout.api.MockServer.getStringBaseUrl
 import com.worldpay.access.checkout.api.MockServer.startWiremock
 import com.worldpay.access.checkout.api.MockServer.stopWiremock
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
