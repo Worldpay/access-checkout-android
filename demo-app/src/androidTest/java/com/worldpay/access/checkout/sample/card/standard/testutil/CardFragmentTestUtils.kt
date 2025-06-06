@@ -227,6 +227,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         }
         return this
     }
+
     fun hasAutofillHints(id: Int, expectedAutofillHint: Array<String>): CardFragmentTestUtils {
         wait{ assertTrue { expectedAutofillHint contentEquals field(id).autofillHints}}
         return this

@@ -48,6 +48,7 @@ class CardBinClientTest {
         runAsBlockingTest {
             val cardBinResponse = mock<CardBinResponse>()
             val httpsClient = mock<HttpsClient>()
+            val urlFactory = mock<URLFactory>()
             val serializer = mock<CardBinRequestSerializer>()
             val deserializer = mock<CardBinResponseDeserializer>()
 
@@ -57,6 +58,8 @@ class CardBinClientTest {
                     checkoutId = "some-id"
                 )
 
+
+//            given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
             given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
                 .willReturn(cardBinResponse)
 
@@ -72,6 +75,7 @@ class CardBinClientTest {
     fun `should not swallow exception thrown by HttpClient`() =
         runAsBlockingTest {
             val httpsClient = mock<HttpsClient>()
+            val urlFactory = mock<URLFactory>()
             val serializer = mock<CardBinRequestSerializer>()
             val deserializer = mock<CardBinResponseDeserializer>()
 
@@ -81,6 +85,7 @@ class CardBinClientTest {
                     checkoutId = "some-id"
                 )
 
+//            given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
             given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
                 .willThrow(AccessCheckoutException("Access Checkout Exception"))
 

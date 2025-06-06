@@ -15,13 +15,13 @@ internal class TextWatcherFactory(
 
     private val cvcValidationRuleManager = CVCValidationRuleManager()
     private val dateValidator = ExpiryDateValidator()
-    private val cardBinService = CardBinService()
 
     fun createPanTextWatcher(
         panEditText: EditText,
         cvcEditText: EditText,
         acceptedCardBrands: Array<String>,
-        enablePanFormatting: Boolean
+        enablePanFormatting: Boolean,
+        checkoutId: String
     ): PanTextWatcher {
         return PanTextWatcher(
             panEditText = panEditText,
@@ -35,7 +35,9 @@ internal class TextWatcherFactory(
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandsChangedHandler = resultHandlerFactory.getBrandsChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager,
-            cardBinService
+            cardBinService = CardBinService(
+                checkoutId, baseUrl = "https://changeme.com",
+            )
         )
     }
 
