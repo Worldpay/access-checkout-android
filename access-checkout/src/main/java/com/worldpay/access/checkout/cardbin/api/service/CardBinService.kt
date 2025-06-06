@@ -3,41 +3,54 @@ package com.worldpay.access.checkout.cardbin.api.service
 import android.util.Log
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.api.serialization.Deserializer
-import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
+import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
+import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.launch
-import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
+
+/**
+ * Service for retrieving card brand schemes using the card BIN (Bank Identification Number).
+ *
+ * @property[checkoutId] The checkout session identifier used for API requests.
+ * @property[baseUrl] The base URL for the card bin API endpoint.
+ * @property[client] The client responsible for making card bin API requests.
+ * @property[coroutineScope] The coroutine scope used for asynchronous operations.
+ */
 
 internal class CardBinService(
     private val checkoutId: String,
     private val baseUrl: String,
-    private val httpsClient: HttpsClient,
-    private val deserializer: Deserializer<CardBinResponse>,
-    private val serializer: Serializer<CardBinRequest>,
-
-    private val client: CardBinClient = CardBinClient(
-        baseUrl,
-        httpsClient,
-        deserializer,
-        serializer
-    ),
-    private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
-)
-{
+    private val client: CardBinClient,
+    private val coroutineScope: CoroutineScope
+) {
     companion object {
         // only stores value in cache of required length (12 digits)
-        // stops duplication of same card number in cache of 12+ digits
         private const val CACHE_KEY_LENGTH = 12
     }
+
+    // secondary constructor for production use
+    // can't define default values in the field parameters as jacoco test coverage fails due to synthetic methods
+    constructor(checkoutId: String, baseUrl: String) : this(
+        checkoutId = checkoutId,
+        baseUrl = baseUrl,
+        client = CardBinClient(
+            baseUrl,
+            HttpsClient(),
+            CardBinResponseDeserializer(),
+            CardBinRequestSerializer()
+        ),
+        coroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    )
+
+
     //TODO: Make a mapping function to pass in the baseURL to CardBinService
 
     // creates concurrent hash map to store API response by card number prefix (12 digits)
@@ -93,7 +106,7 @@ internal class CardBinService(
                 callback?.invoke(brands)
 
             } catch (e: AccessCheckoutException) {
-                 //catch the exception from HttpClient and swallow it
+                //catch the exception from HttpClient and swallow it
                 Log.e("Card Bin API", "Unable to retrieve Card Bin details")
             }
         }
@@ -110,7 +123,8 @@ internal class CardBinService(
 
         // if response returns the same single brand, no transformation needed & checks if it matches initialCardBrand
         if (response.brand.size == 1 &&
-            response.brand.first().equals(initialCardBrand.name, ignoreCase = true)) {
+            response.brand.first().equals(initialCardBrand.name, ignoreCase = true)
+        ) {
             return listOf(initialCardBrand)
         }
 

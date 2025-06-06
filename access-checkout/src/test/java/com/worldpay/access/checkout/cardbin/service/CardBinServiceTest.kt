@@ -1,13 +1,9 @@
 package com.worldpay.access.checkout.cardbin.service
 
-import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DINERS_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DISCOVER_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
@@ -27,11 +23,10 @@ import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
-import org.mockito.kotlin.anyOrNull
+import org.mockito.kotlin.any
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
-import java.net.URL
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
@@ -40,7 +35,6 @@ import kotlin.test.assertEquals
 @ExperimentalCoroutinesApi
 @RunWith(Enclosed::class)
 class CardBinServiceTest {
-
 
     // runs tests with mock card configuration to detect brands
     // use before mocked dependencies
@@ -55,7 +49,7 @@ class CardBinServiceTest {
         private lateinit var testScope: TestCoroutineScope
 
         private val checkoutId = "testCheckoutId"
-        private val baseUrl = URL("https::/changeme.com")
+        private val baseUrl = "https::/changeme.com"
 
         private val visaTestPan = "444433332222"
         private val discoverDinersTestPan = "601100040000"
@@ -67,7 +61,14 @@ class CardBinServiceTest {
             MockitoAnnotations.openMocks(this)
             testDispatcher = TestCoroutineDispatcher()
             testScope = TestCoroutineScope(testDispatcher + SupervisorJob())
-            cardBinService = CardBinService(checkoutId, baseUrl.toString(), HttpsClient())
+
+            // use the primary constructor to inject mocked dependencies
+            cardBinService = CardBinService(
+                checkoutId = checkoutId,
+                baseUrl = baseUrl,
+                client = cardBinClient,
+                coroutineScope = testScope
+            )
         }
 
         @After
@@ -89,20 +90,24 @@ class CardBinServiceTest {
         }
 
         @Test
-        fun `should return a list of brands when able to find brand for pan`() = runBlockingTest {
-            val brand = VISA_BRAND
-            whenever(cardBinClient.getCardBinResponse(anyOrNull())).thenReturn(
-                CardBinResponse(
-                    brand = listOf("visa"),
-                    fundingType = "debit",
-                    luhnCompliant = true
+        fun `should return a list of brands when able to find brand for pan`() =
+            testScope.runBlockingTest {
+                val brand = VISA_BRAND
+                whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+                    CardBinResponse(
+                        brand = listOf("visa"),
+                        fundingType = "debit",
+                        luhnCompliant = true
+                    )
                 )
-            )
-            val result = cardBinService.getCardBrands(brand, visaTestPan)
+                val result = cardBinService.getCardBrands(brand, visaTestPan)
 
-            assertEquals(1, result.count())
-            assertEquals("visa", result[0].name)
-        }
+                assertEquals(1, result.count())
+                assertEquals("visa", result[0].name)
+
+                // Advance time to ensure coroutine completes
+                testDispatcher.advanceUntilIdle()
+            }
 
         @Test
         fun `should invoke callback when response returns multiple brands for pan`() =
@@ -111,8 +116,8 @@ class CardBinServiceTest {
                 var additionalCardBrands: List<RemoteCardBrand>? = null
                 val latch = CountDownLatch(1)
 
-                // Mock the response for the CardBinClient
-                whenever(cardBinClient.getCardBinResponse(anyOrNull())).thenReturn(
+                // mock the response for the CardBinClient
+                whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
                     CardBinResponse(
                         brand = listOf("discover", "diners"),
                         fundingType = "debit",
@@ -147,7 +152,7 @@ class CardBinServiceTest {
 
         @Test
         fun `should have same response for two pan numbers with same first 12 digits`() =
-            runBlockingTest {
+            testScope.runBlockingTest {
                 val firstBrandPan = discoverDinersTestPan + "1234"
                 val secondBrandPan = discoverDinersTestPan + "5678"
                 val brand = DISCOVER_BRAND
@@ -158,7 +163,7 @@ class CardBinServiceTest {
                     fundingType = "debit",
                     luhnCompliant = true
                 )
-                whenever(cardBinClient.getCardBinResponse(anyOrNull())).thenReturn(mockResponse)
+                whenever(cardBinClient.getCardBinResponse(any())).thenReturn(mockResponse)
 
                 // first call to the get card brands
                 val firstResult = cardBinService.getCardBrands(brand, firstBrandPan)
@@ -178,7 +183,7 @@ class CardBinServiceTest {
                 assertEquals("diners", secondResult[1].name)
 
                 // verify the API was only called once (for the first PAN)
-                verify(cardBinClient, times(1)).getCardBinResponse(anyOrNull())
+                verify(cardBinClient, times(1)).getCardBinResponse(any())
             }
 
         @Test
@@ -197,7 +202,7 @@ class CardBinServiceTest {
                     fundingType = "debit",
                     luhnCompliant = true
                 )
-                whenever(cardBinClient.getCardBinResponse(anyOrNull())).thenReturn(mockResponse)
+                whenever(cardBinClient.getCardBinResponse(any())).thenReturn(mockResponse)
 
                 // first call with callback
                 cardBinService.getCardBrands(brand, firstBrandPan) { brands ->
@@ -229,7 +234,7 @@ class CardBinServiceTest {
 
                 // second callback won't be invoked since result comes from cache
                 assertNull(secondCallbackResult)
-                verify(cardBinClient, times(1)).getCardBinResponse(anyOrNull())
+                verify(cardBinClient, times(1)).getCardBinResponse(any())
             }
     }
 }
