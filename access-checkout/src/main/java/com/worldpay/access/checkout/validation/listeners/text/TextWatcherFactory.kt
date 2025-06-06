@@ -16,7 +16,6 @@ internal class TextWatcherFactory(
 
     private val cvcValidationRuleManager = CVCValidationRuleManager()
     private val dateValidator = ExpiryDateValidator()
-    private val cardBinService = CardBinService()
 
     fun createPanTextWatcher(
         panEditText: EditText,
