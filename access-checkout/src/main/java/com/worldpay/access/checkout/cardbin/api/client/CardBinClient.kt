@@ -7,9 +7,6 @@ import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
-import java.net.URL
 
 /**
  * Retrieves the card schemes
