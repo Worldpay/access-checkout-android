@@ -1,7 +1,10 @@
 package com.worldpay.access.checkout.cardbin.service
 
+import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
+import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DINERS_BRAND
@@ -64,7 +67,7 @@ class CardBinServiceTest {
             MockitoAnnotations.openMocks(this)
             testDispatcher = TestCoroutineDispatcher()
             testScope = TestCoroutineScope(testDispatcher + SupervisorJob())
-            cardBinService = CardBinService(checkoutId, baseUrl, cardBinClient, testScope)
+            cardBinService = CardBinService(checkoutId, baseUrl.toString(), HttpsClient())
         }
 
         @After

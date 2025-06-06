@@ -1,354 +1,143 @@
 package com.worldpay.access.checkout.api
 
 import android.content.Context
-import androidx.lifecycle.Lifecycle
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.LifecycleRegistry
+import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.tomakehurst.wiremock.client.MappingBuilder
+import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
+import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.MockServer.getBaseUrl
+import com.worldpay.access.checkout.api.MockServer.getStringBaseUrl
 import com.worldpay.access.checkout.api.MockServer.startWiremock
 import com.worldpay.access.checkout.api.MockServer.stopWiremock
+import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
+import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION
+import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID
+import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID_VALUE
+import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
+import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import com.worldpay.access.checkout.client.api.exception.ValidationRule
-import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
-import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
-import com.worldpay.access.checkout.client.session.model.CardDetails
-import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.client.session.model.SessionType.CARD
-import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
-import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import java.util.concurrent.TimeUnit
-import kotlin.test.assertEquals
-import org.awaitility.Awaitility.await
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Rule
 import org.junit.Test
-import org.mockito.BDDMockito.given
-import org.mockito.Mockito.mock
+import org.junit.runner.RunWith
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.fail
 
-class AccessCheckoutClientIntegrationTest {
+@ExperimentalCoroutinesApi
+@RunWith(AndroidJUnit4::class)
+class CardBinClientIntegrationTest {
+    private val cardBinEndpoint = "public/card/bindetails"
+    private val cardNumber = "444433332222"
+    private val checkoutId = "some-checkout-id"
 
-    private val cardSessionEndpoint = "sessions/card"
-    private val checkoutId = "identity"
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
 
-    private var panAccessCheckoutEditText = AccessCheckoutEditText(applicationContext)
-    private var expiryDateAccessCheckoutEditText = AccessCheckoutEditText(applicationContext)
-    private var cvcAccessCheckoutEditText = AccessCheckoutEditText(applicationContext)
-
-    private val lifecycleOwner: LifecycleOwner = mock(LifecycleOwner::class.java)
-
-    private var lifecycleRegistry = LifecycleRegistry(lifecycleOwner)
-
     @Before
     fun setup() {
-        given(lifecycleOwner.lifecycle).willReturn(lifecycleRegistry)
-
-        getInstrumentation().runOnMainSync {
-            lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_START)
-        }
-
-        panAccessCheckoutEditText.setText("1111222233334444")
-        expiryDateAccessCheckoutEditText.setText("1220")
-        cvcAccessCheckoutEditText.setText("123")
         startWiremock(applicationContext, 8443)
     }
 
     @After
     fun tearDown() {
-        getInstrumentation().runOnMainSync {
-            lifecycleRegistry.handleLifecycleEvent(Lifecycle.Event.ON_STOP)
-        }
         stopWiremock()
     }
 
     @Test
-    fun givenValidCardSessionRequest_shouldReturnSuccessfulResponse() {
-        val cardDetails = getCardDetails()
-        val request = getExpectedRequest(cardDetails)
-
-        val expectedSessionReference = "https://access.worldpay.com/sessions/<encrypted-data>"
-
-        val response = (
-            """{
-                  "_links": {
-                    "sessions:session": {
-                      "href": "$expectedSessionReference"
-                    },
-                    "curies": [
+    fun givenValid12DigitPan_shouldReturnSuccessfulResponse() = runBlocking {
+        val request = """{
+                "cardNumber": "$cardNumber",
+                "checkoutId": "$checkoutId"
+                }
+                """
+        val response =
+            """
                       {
-                        "href": "https://access.worldpay.com/rels/sessions{rel}.json",
-                        "name": "sessions",
-                        "templated": true
-                      }
-                    ]
-                  }
-                }"""
-            )
+                        "brand": [
+                            "visa"
+                        ],
+                        "fundingType": "debit",
+                        "luhnCompliant": true
+                    }   
+                """
+
 
         stubFor(
             postRequest(request)
                 .willReturn(
                     aResponse()
-                        .withStatus(201)
+                        .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withHeader(
-                            "Location",
-                            "https://access.worldpay.com/$cardSessionEndpoint/sessions/<encrypted-data>"
-                        )
                         .withBody(response)
                 )
         )
 
-        var assertResponse = false
-        val responseListener = object : SessionResponseListener {
-            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {
-                assertEquals(mapOf(CARD to expectedSessionReference), sessionResponseMap)
-                assertResponse = true
-            }
-
-            override fun onError(error: AccessCheckoutException) {}
-        }
-
-        getInstrumentation().runOnMainSync {
-            val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl().toString())
-                .checkoutId(checkoutId)
-                .sessionResponseListener(responseListener)
-                .context(applicationContext)
-                .lifecycleOwner(lifecycleOwner)
-                .build()
-
-            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
-        }
-
-        await().atMost(5, TimeUnit.SECONDS).until { assertResponse }
-    }
-
-    @Test
-    fun shouldReturnError_whenHttpResponseHasValidationErrors() {
-        val cardDetails = getCardDetails()
-        val request = getExpectedRequest(cardDetails)
-
-        val response = """{
-                   "errorName": "bodyDoesNotMatchSchema",
-                   "message": "The json body provided does not match the expected schema",
-                   "validationErrors": [{
-                        "errorName": "stringIsTooShort",
-                        "message": "String is too short",
-                        "jsonPath": "\$.cvv"
-                    }]}"""
-
-        stubFor(
-            postRequest(request).willReturn(
-                aResponse()
-                    .withStatus(400)
-                    .withBody(response)
+        val cardBinClient = CardBinClient(getStringBaseUrl())
+        val cardBinReq =
+            CardBinRequest(
+                cardNumber = cardNumber,
+                checkoutId = checkoutId
             )
-        )
 
-        var assertionsRan = false
-        val responseListener = object : SessionResponseListener {
-            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
+        val cardBinResponse = cardBinClient.getCardBinResponse(cardBinReq)
+        val expectedResponse = CardBinResponseDeserializer().deserialize(response)
 
-            override fun onError(error: AccessCheckoutException) {
-                assertEquals(
-                    "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    error.message
-                )
-                assertionsRan = true
-            }
-        }
-
-        getInstrumentation().runOnMainSync {
-            val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl().toString())
-                .checkoutId(checkoutId)
-                .sessionResponseListener(responseListener)
-                .context(applicationContext)
-                .lifecycleOwner(lifecycleOwner)
-                .build()
-
-            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
-        }
-
-        await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
+        assertEquals(expectedResponse, cardBinResponse)
     }
 
     @Test
-    fun shouldReturnError_whenHttpResponseHasNoValidationErrors() {
-        val cardDetails = getCardDetails()
-        val request = getExpectedRequest(cardDetails)
-
-        val response = """{
-                "errorName": "bodyIsNotJson",
-                "message": "The body within the request is not valid json"
-            }"""
-
-        stubFor(
-            postRequest(request).willReturn(
-                aResponse()
-                    .withStatus(400)
-                    .withBody(response)
-            )
-        )
-
-        var assertionsRan = false
-        val errorListener = object : SessionResponseListener {
-            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
-
-            override fun onError(error: AccessCheckoutException) {
-                assertEquals(
-                    "bodyIsNotJson : The body within the request is not valid json",
-                    error.message
-                )
-                assertionsRan = true
+    fun shouldThrowExceptionWhenFailingToGetCardBrand() = runBlocking {
+        val request =
+            """{
+            "cardNumber": "$cardNumber",
+            "checkoutId": "$checkoutId"
             }
-        }
-
-        getInstrumentation().runOnMainSync {
-            val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl().toString())
-                .checkoutId(checkoutId)
-                .sessionResponseListener(errorListener)
-                .context(applicationContext)
-                .lifecycleOwner(lifecycleOwner)
-                .build()
-
-            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
-        }
-
-        await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
-    }
-
-    @Test
-    fun shouldReturnException_evenWhenResponseValidationRuleIsUnknown() {
-        val cardDetails = getCardDetails()
-        val request = getExpectedRequest(cardDetails)
-
-        val response = """{
-                   "errorName": "bodyDoesNotMatchSchema",
-                   "message": "The json body provided does not match the expected schema",
-                   "validationErrors": [{
-                        "errorName": "some-unknown-error",
-                        "message": "String is too short",
-                        "jsonPath": "\$.cvv"
-                    }]}"""
-
-        stubFor(
-            postRequest(request).willReturn(
-                aResponse()
-                    .withStatus(400)
-                    .withBody(response)
-            )
-        )
-
-        var assertionsRan = false
-        val errorListener = object : SessionResponseListener {
-            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
-
-            override fun onError(error: AccessCheckoutException) {
-                val expectedException = AccessCheckoutException(
-                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(
-                        ValidationRule(
-                            "some-unknown-error",
-                            "String is too short",
-                            "$.cvv"
-                        )
-                    )
-                )
-                assertEquals(expectedException, error)
-                assertionsRan = true
-            }
-        }
-
-        getInstrumentation().runOnMainSync {
-            val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl().toString())
-                .checkoutId(checkoutId)
-                .sessionResponseListener(errorListener)
-                .context(applicationContext)
-                .lifecycleOwner(lifecycleOwner)
-                .build()
-
-            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
-        }
-
-        await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
-    }
-
-    @Test
-    fun shouldReturnError_whenHttpResponseIsServerError() {
-        val cardDetails = getCardDetails()
-        val request = getExpectedRequest(cardDetails)
+            """
 
         stubFor(
             postRequest(request)
                 .willReturn(
                     aResponse()
                         .withStatus(500)
-                        .withStatusMessage("Internal Server Error")
+                        .withStatusMessage("Server Error")
                 )
         )
+        val cardBinReq =
+            CardBinRequest(
+                cardNumber = cardNumber,
+                checkoutId = checkoutId
+            )
 
-        var assertionsRan = false
-        val errorListener = object : SessionResponseListener {
-            override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {}
-
-            override fun onError(error: AccessCheckoutException) {
-                assertEquals("Error message was: Internal Server Error", error.message)
-                assertionsRan = true
-            }
+        val result = runCatching {
+            val cardBinClient = CardBinClient(getStringBaseUrl())
+            cardBinClient.getCardBinResponse(cardBinReq)
         }
 
-        getInstrumentation().runOnMainSync {
-            val accessCheckoutClient = AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl().toString())
-                .checkoutId(checkoutId)
-                .sessionResponseListener(errorListener)
-                .context(applicationContext)
-                .lifecycleOwner(lifecycleOwner)
-                .build()
-
-            accessCheckoutClient.generateSessions(cardDetails, listOf(CARD))
-        }
-
-        await().atMost(5, TimeUnit.SECONDS).until { assertionsRan }
+        assertTrue(result.isFailure)
+        assertTrue(result.exceptionOrNull() is AccessCheckoutException)
+        assertEquals("Error message was: Server Error", result.exceptionOrNull()?.message)
     }
 
     private fun postRequest(request: String): MappingBuilder {
-        return post(urlEqualTo("/$cardSessionEndpoint"))
-            .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
-            .withHeader("Content-Type", equalTo(SESSIONS_MEDIA_TYPE))
+        return post(urlEqualTo("/$cardBinEndpoint"))
+            .withHeader(WP_API_VERSION, equalTo(WP_API_VERSION_VALUE))
+            .withHeader(WP_CALLER_ID, equalTo(WP_CALLER_ID_VALUE))
             .withRequestBody(EqualToJsonPattern(request, true, true))
-    }
-
-    private fun getCardDetails(): CardDetails {
-        return CardDetails.Builder()
-            .pan(panAccessCheckoutEditText)
-            .expiryDate(expiryDateAccessCheckoutEditText)
-            .cvc(cvcAccessCheckoutEditText)
-            .build()
-    }
-
-    private fun getExpectedRequest(cardDetails: CardDetails): String {
-        return """{
-                "cardNumber": "${cardDetails.pan}",
-                "cardExpiryDate": {
-                    "month": ${cardDetails.expiryDate?.month},
-                    "year": ${cardDetails.expiryDate?.year}
-                },
-                "cvc": "${cardDetails.cvc}",
-                "identity": "$checkoutId"
-            }"""
     }
 }

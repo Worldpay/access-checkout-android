@@ -34,7 +34,7 @@ class CardBinClientTest {
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
 
-    private val baseUrl = URL("https://some-base-url")
+    private val baseUrl = "https://some-base-url"
     private val cardBinEndpoint = "public/card/bindetails"
     private val cardBinUrl = URL("$baseUrl/$cardBinEndpoint")
     private val headers = hashMapOf(
@@ -64,7 +64,7 @@ class CardBinClientTest {
                 .willReturn(cardBinResponse)
 
             val cardBinClient =
-                CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer)
+                CardBinClient(baseUrl, httpsClient, deserializer, serializer)
 
             val actualResponse = cardBinClient.getCardBinResponse(cardBinRequest)
 
@@ -90,7 +90,7 @@ class CardBinClientTest {
                 .willThrow(AccessCheckoutException("Access Checkout Exception"))
 
             val cardBinClient =
-                CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer)
+                CardBinClient(baseUrl, httpsClient, deserializer, serializer)
 
             val result = runCatching {
                 cardBinClient.getCardBinResponse(cardBinRequest)

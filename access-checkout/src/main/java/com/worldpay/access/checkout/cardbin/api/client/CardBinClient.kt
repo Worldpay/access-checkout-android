@@ -15,23 +15,22 @@ import java.net.URL
  * Retrieves the card schemes
  *
  * @property[baseUrl] Used to determine which env to send request to
- * @property[urlFactory] Used to build the url to send request
  * @property[httpsClient] Responsible for carrying out the HTTPS request
  * @property[deserializer] Used to deserialize the [CardBinResponse]
  * @property[serializer] Used to serialise [CardBinRequest]
  */
 internal class CardBinClient(
-    baseUrl: URL,
-    urlFactory: URLFactory = URLFactoryImpl(),
-    private val httpsClient: HttpsClient = HttpsClient(),
-    private val deserializer: Deserializer<CardBinResponse> = CardBinResponseDeserializer(),
-    private val serializer: Serializer<CardBinRequest> = CardBinRequestSerializer(),
+    private val baseUrl: String,
+    private val httpsClient: HttpsClient,
+    private val deserializer: Deserializer<CardBinResponse>,
+    private val serializer: Serializer<CardBinRequest>
 ) {
 
     internal companion object {
         private const val CARD_BIN_ENDPOINT = "public/card/bindetails"
     }
 
+    private val urlFactory: URLFactory = URLFactoryImpl()
     private val cardBinUrl = urlFactory.getURL("$baseUrl/$CARD_BIN_ENDPOINT")
 
     suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {

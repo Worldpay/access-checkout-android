@@ -1,6 +1,14 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.widget.EditText
+import com.worldpay.access.checkout.api.HttpsClient
+import com.worldpay.access.checkout.api.serialization.Deserializer
+import com.worldpay.access.checkout.api.serialization.Serializer
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
+import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
+import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
+import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
+import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
@@ -36,7 +44,12 @@ internal class TextWatcherFactory(
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandsChangedHandler = resultHandlerFactory.getBrandsChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager,
-            cardBinService = CardBinService(checkoutId, baseUrl = URL("https://changeme.com"))
+            cardBinService = CardBinService(
+                checkoutId, baseUrl = "https://changeme.com",
+                httpsClient = HttpsClient(),
+                deserializer = CardBinResponseDeserializer(),
+                serializer = CardBinRequestSerializer()
+            )
         )
     }
 

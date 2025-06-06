@@ -1,7 +1,10 @@
 package com.worldpay.access.checkout.cardbin.api.service
 
 import android.util.Log
+import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.api.serialization.Deserializer
+import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
@@ -16,8 +19,17 @@ import java.util.concurrent.ConcurrentHashMap
 
 internal class CardBinService(
     private val checkoutId: String,
-    private val baseUrl: URL,
-    private val client: CardBinClient = CardBinClient(baseUrl),
+    private val baseUrl: String,
+    private val httpsClient: HttpsClient,
+    private val deserializer: Deserializer<CardBinResponse>,
+    private val serializer: Serializer<CardBinRequest>,
+
+    private val client: CardBinClient = CardBinClient(
+        baseUrl,
+        httpsClient,
+        deserializer,
+        serializer
+    ),
     private val coroutineScope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 )
 {

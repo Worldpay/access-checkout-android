@@ -35,8 +35,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.fail
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -92,7 +90,6 @@ class CardBinClientIntegrationTest {
                 )
         )
 
-        val cardBinClient = CardBinClient(getBaseUrl())
         val cardBinReq =
             CardBinRequest(
                 cardNumber = cardNumber,
