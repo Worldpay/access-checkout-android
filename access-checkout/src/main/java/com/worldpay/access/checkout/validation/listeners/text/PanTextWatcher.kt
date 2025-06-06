@@ -94,14 +94,18 @@ internal class PanTextWatcher(
             return
         }
 
-        val listOfBrand = if (globalBrand == null) emptyList() else listOf(globalBrand)
+        val listOfBrand = globalBrand?.let { listOf(it) } ?: emptyList()
 
-        val brands = if (isPanRequiredLength()) cardBinService.getCardBrands(
-            globalBrand,
-            newPan
-        ) else listOfBrand
-
-        handleCardBrandChange(brands)
+        if (isPanRequiredLength() && globalBrand != null) {
+            cardBinService.getCardBrands(
+                globalBrand,
+                newPan
+            ) { fetchedBrands ->
+                handleCardBrandChange(fetchedBrands)
+            }
+        } else {
+            handleCardBrandChange(listOfBrand)
+        }
 
         validate(newPan, cardValidationRule, globalBrand)
 
