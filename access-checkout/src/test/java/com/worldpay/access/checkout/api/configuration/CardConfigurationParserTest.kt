@@ -71,11 +71,11 @@ class CardConfigurationParserTest {
                     "images": [
                         {
                             "type": "image/png",
-                            "url": "https://local.com/access-checkout/assets/visa.png"
+                            "url": "https://example.com/access-checkout/assets/visa.png"
                         },
                         {
                             "type": "image/svg+xml",
-                            "url": "https://local.com/access-checkout/assets/visa.svg"
+                            "url": "https://example.com/access-checkout/assets/visa.svg"
                         }
                     ]
                 }
@@ -93,9 +93,9 @@ class CardConfigurationParserTest {
         assertEquals(listOf(3), result.brands[0].cvc.validLengths)
 
         assertEquals("image/png", result.brands[0].images[0].type)
-        assertEquals("https://local.com/access-checkout/assets/visa.png", result.brands[0].images[0].url)
+        assertEquals("https://example.com/access-checkout/assets/visa.png", result.brands[0].images[0].url)
         assertEquals("image/svg+xml", result.brands[0].images[1].type)
-        assertEquals("https://local.com/access-checkout/assets/visa.svg", result.brands[0].images[1].url)
+        assertEquals("https://example.com/access-checkout/assets/visa.svg", result.brands[0].images[1].url)
     }
 
     @Test

@@ -364,7 +364,7 @@ class PanTextWatcherTest {
 
         panTextWatcher.afterTextChanged(panEditable)
 
-        verify(cardBinService).getCardBrands(VISA_BRAND, pan)
+        verify(cardBinService).getCardBrands(eq(VISA_BRAND), eq(pan), any())
     }
 
     private fun mockPan(pan: String, isValid: PanValidationResult) {

@@ -73,23 +73,23 @@ internal class PanTextWatcher(
     }
 
     override fun afterTextChanged(pan: Editable) {
-        var panText = pan.toString()
+        var rawPanText = pan.toString()
 
         if (isSpaceDeleted) {
-            panText = StringBuilder(panText).deleteCharAt(expectedCursorPosition).toString()
-            setText(panText, expectedCursorPosition)
+            rawPanText = StringBuilder(rawPanText).deleteCharAt(expectedCursorPosition).toString()
+            setText(rawPanText, expectedCursorPosition)
             isSpaceDeleted = false
         }
 
-        val globalBrand = findBrandForPan(panText)
-        val newPan =
+        val globalBrand = findBrandForPan(rawPanText)
+        val formattedPanText =
             if (panFormatter.isFormattingEnabled()) getFormattedPan(
-                panText,
+                rawPanText,
                 globalBrand
-            ) else panText
+            ) else rawPanText
         val cardValidationRule = getPanValidationRule(globalBrand)
 
-        if (trimToMaxLength(cardValidationRule, newPan)) {
+        if (trimToMaxLength(cardValidationRule, formattedPanText)) {
             clearPanBefore()
             return
         }
@@ -97,23 +97,21 @@ internal class PanTextWatcher(
         val listOfBrand = globalBrand?.let { listOf(it) } ?: emptyList()
 
         if (isPanRequiredLength() && globalBrand != null) {
-            cardBinService.getCardBrands(
-                globalBrand,
-                newPan
-            ) { fetchedBrands ->
+            //Note: the card-bin service should always received the raw pan text also known as "unformatted"
+            cardBinService.getCardBrands(globalBrand, rawPanText) { fetchedBrands ->
                 handleCardBrandChange(fetchedBrands)
             }
         } else {
             handleCardBrandChange(listOfBrand)
         }
 
-        validate(newPan, cardValidationRule, globalBrand)
+        validate(formattedPanText, cardValidationRule, globalBrand)
 
-        if (newPan != panText) {
-            if (newPan == panBefore) {
+        if (formattedPanText != rawPanText) {
+            if (formattedPanText == panBefore) {
                 expectedCursorPosition = cursorPositionBefore
             }
-            setText(newPan, expectedCursorPosition)
+            setText(formattedPanText, expectedCursorPosition)
         }
 
         if (panEditText.selectionEnd != expectedCursorPosition && panEditText.length() >= expectedCursorPosition) {

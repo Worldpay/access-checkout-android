@@ -1,14 +1,17 @@
 package com.worldpay.access.checkout.client.testutil
 
 import android.content.Context
+import android.os.Looper.getMainLooper
 import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
 import android.view.KeyEvent.*
+import android.widget.EditText
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
+import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
@@ -18,15 +21,17 @@ import javax.net.ssl.TrustManagerFactory
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
+import org.junit.Before
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.spy
+import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 
 open class AbstractValidationIntegrationTest {
 
-    protected val context: Context = getInstrumentation().context
+    protected lateinit var context: Context
 
     private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"
 
@@ -46,9 +51,17 @@ open class AbstractValidationIntegrationTest {
 
     private val defaultSSLSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
 
+    @Before
+    fun setUp() {
+        context = getInstrumentation().context
+        resetValidation()
+    }
+
     @After
     fun tearDown() {
-        server.shutdown()
+        if (this::server.isInitialized) {
+            server.shutdown()
+        }
         HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory)
     }
 
@@ -143,5 +156,10 @@ open class AbstractValidationIntegrationTest {
 
     protected fun AccessCheckoutEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
         this.editText!!.text.replace(selectionStart, selectionEnd, text)
+    }
+
+    fun AccessCheckoutEditText.setTextAndWait(text: String) {
+        this.setText(text)
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
     }
 }

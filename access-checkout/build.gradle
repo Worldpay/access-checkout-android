@@ -51,3 +51,9 @@ dependencies {
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
     testImplementation 'au.com.dius:pact-jvm-consumer-junit:4.0.10'
 }
+
+tasks.withType(Test).configureEach {
+    def forks = Math.max((int)(Runtime.getRuntime().availableProcessors() / 2), 1)
+    maxParallelForks = forks
+    println("Setting maxParallelForks to $forks")
+}

@@ -9,25 +9,21 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
+import kotlinx.coroutines.runBlocking
 import kotlin.test.assertEquals
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.*
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.Shadows.shadowOf
-import java.util.concurrent.TimeUnit
 
 @RunWith(RobolectricTestRunner::class)
 class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
-    @Before
-    fun setUp() {
-        initialiseValidation(enablePanFormatting = false)
-    }
-
     @Test
-    fun `should validate pan as false when partial unknown pan is entered`() {
+    fun `should validate pan as false when partial unknown pan is entered`()  = runBlocking {
+        initialiseValidation(enablePanFormatting = false)
+
         pan.setText("00000")
 
         verify(cardValidationListener, never()).onPanValidated(any())
@@ -35,7 +31,9 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should validate pan as false when partial visa pan is entered`() {
+    fun `should validate pan as false when partial visa pan is entered`()  = runBlocking{
+        initialiseValidation(enablePanFormatting = false)
+
         pan.setText(PARTIAL_VISA)
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
@@ -44,7 +42,9 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should validate pan as true when full visa pan is entered`() {
+    fun `should validate pan as true when full visa pan is entered`()  = runBlocking{
+        initialiseValidation(enablePanFormatting = false)
+
         val validVisaPan = visaPan()
         pan.setText(validVisaPan)
 
@@ -55,25 +55,24 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should trim and not revalidate pan when pan is over max length`() {
+    fun `should trim and not revalidate pan when pan is over max length`() = runBlocking{
         initialiseValidation(enablePanFormatting = true)
 
         pan.setText(visaPan(19, true))
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
-
         verify(cardValidationListener).onPanValidated(true)
         verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
-
         reset(cardValidationListener)
 
         pan.typeAtIndex(23, "5")
-
         verifyNoInteractions(cardValidationListener)
         assertEquals(visaPan(19, true), pan.text.toString())
     }
 
     @Test
-    fun `should validate pan as true when visa pan is entered and visa pan is an accepted card brand`() {
+    fun `should validate pan as true when visa pan is entered and visa pan is an accepted card brand`()  = runBlocking{
+        initialiseValidation(enablePanFormatting = false)
+
         pan.setText(visaPan())
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
@@ -82,7 +81,9 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should validate pan as true when unknown valid luhn pan is entered and there are some accepted cards specified`() {
+    fun `should validate pan as true when unknown valid luhn pan is entered and there are some accepted cards specified`()  = runBlocking {
+        initialiseValidation(enablePanFormatting = false)
+
         pan.setText(VALID_UNKNOWN_LUHN)
 
         verify(cardValidationListener).onPanValidated(true)
@@ -90,7 +91,9 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand and force notify`() {
+    fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand and force notify`() = runBlocking {
+        initialiseValidation(enablePanFormatting = false)
+
         pan.setText(visaPan())
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
@@ -99,7 +102,9 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should validate pan as true when 19 character unknown valid luhn is entered`() {
+    fun `should validate pan as true when 19 character unknown valid luhn is entered`()  = runBlocking{
+        initialiseValidation(enablePanFormatting = false)
+
         pan.setText(VALID_UNKNOWN_LUHN)
 
         verify(cardValidationListener).onPanValidated(true)
@@ -107,7 +112,9 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should validate pan as true when 19 character unknown invalid luhn is entered`() {
+    fun `should validate pan as true when 19 character unknown invalid luhn is entered`()  = runBlocking{
+        initialiseValidation(enablePanFormatting = false)
+
         pan.setText(INVALID_UNKNOWN_LUHN)
 
         verify(cardValidationListener, never()).onPanValidated(any())
@@ -115,7 +122,8 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should not validate cvc when pan brand is recognised and cvc is empty`() {
+    fun `should not validate cvc when pan brand is recognised and cvc is empty`()  = runBlocking{
+        initialiseValidation(enablePanFormatting = false)
         pan.setText(visaPan())
         shadowOf(getMainLooper()).waitForQueueUntilIdle()
 

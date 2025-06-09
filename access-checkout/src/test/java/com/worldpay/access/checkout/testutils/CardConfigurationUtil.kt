@@ -7,7 +7,6 @@ import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrandImage
 import com.worldpay.access.checkout.client.validation.model.CardBrand
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MASTERCARD_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
@@ -17,7 +16,7 @@ import org.mockito.kotlin.mock
 
 internal object CardConfigurationUtil {
 
-    const val BASE_PATH = "https://local.com/access-checkout/assets"
+    const val BASE_PATH = "https://example.com/access-checkout/assets"
 
     object Configurations {
 

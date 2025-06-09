@@ -1,0 +1,38 @@
+services:
+  generate-certs:
+    image: artifactory.luigi.worldpay.io/docker/alpine:latest
+    restart: no
+    command: >
+      /bin/sh -c "
+        apk add --no-cache openssl &&
+        openssl req -x509 -newkey rsa:2048 -keyout key.pem -out cert.pem -days 365 -nodes -subj "/CN=localhost" &&
+        mv cert.pem ./certs/cert.pem && 
+        mv key.pem ./certs/key.pem && test -f ./certs/cert.pem && sleep infity
+      "
+    volumes:
+      - ./docker/certs:/certs
+    healthcheck:
+      test: [ "CMD", "test", "-f", "./certs/cert.pem" ]
+      interval: 2s
+      timeout: 1s
+      retries: 5
+
+  card-bin-service:
+    depends_on:
+      generate-certs:
+        condition: service_healthy #Wait for certs to be created
+
+    image: artifactory.luigi.worldpay.io/docker/mockoon/cli:9
+    command: "--data ./data/card-bin-service.json --port 3003 --log-transaction"
+    volumes:
+      - ./docker/certs:/certs
+      - type: bind
+        source: ./docker/card-bin-service-stub
+        target: /data
+    ports:
+      - "3003:3003"            # card-bin-service
+    healthcheck:
+      test: [ "CMD", "wget", "-nv", "-t1", "--spider", "--no-check-certificate", "https://card-bin-service:3003/healthcheck" ]
+      interval: 10s
+      timeout: 5s
+      retries: 5

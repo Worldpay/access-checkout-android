@@ -48,6 +48,7 @@ internal class CardBinService(
 
         // Generates a cache key by extracting the first 12 digits of the provided PAN.
         fun getCacheKey(pan: String): String = pan.take(CACHE_KEY_LENGTH)
+
         // Function to manually clear the cache
         fun clearCache() {
             cache.clear()
@@ -72,9 +73,11 @@ internal class CardBinService(
         pan: String,
         callback: ((List<RemoteCardBrand>) -> Unit)? = null
     ) {
-        // Generate the cache key using the first 12 digits of the PAN
-        val cacheKey = getCacheKey(pan)
+        //Safe-guard: ensure pan has no spaces to be able to compute cache keys and request correctly
+        val panValue = pan.replace(" ", "")
 
+        // Generate the cache key using the first 12 digits of the PAN
+        val cacheKey = getCacheKey(panValue)
         // Return cached response if available
         cache[cacheKey]?.let { cachedResponse ->
             callback?.invoke(cachedResponse)
@@ -84,7 +87,7 @@ internal class CardBinService(
         // Launch a coroutine to fetch the card brands from the API asynchronously
         launchCancellableCoroutineRequest(
             request = {
-                val response = client.getCardBinResponse(request = CardBinRequest(pan, checkoutId))
+                val response = client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
                 // Transform the API response into a list of card brands
                 val brands = transform(globalBrand, response)
                 cache[cacheKey] = brands
@@ -106,9 +109,11 @@ internal class CardBinService(
     private fun launchCancellableCoroutineRequest(
         request: suspend () -> Unit
     ) {
-        // Cancel any previous in-flight request
-        currentJob?.cancel()
-
+        if (currentJob != null) {
+            println("Found in-flight request, will abort in-flight request.")
+            // Cancel any previous in-flight request
+            currentJob?.cancel()
+        }
         // Launch a new coroutine to execute the request
         currentJob = scope.launch {
             try {

@@ -43,7 +43,7 @@ class CardBinServiceTest {
         private lateinit var cardBinService: CardBinService
 
         private val checkoutId = "testCheckoutId"
-        private val baseUrl = "https::/changeme.com"
+        private val baseUrl = "https://example.com"
 
         private val visaTestPan = "444433332222"
         private val discoverDinersTestPan = "601100040000"
