@@ -57,7 +57,6 @@ tasks.register('startDockerContainers', Exec) {
 }
 
 tasks.withType(Test).configureEach {
-    println it.name
     def forks = Math.max((int)(Runtime.getRuntime().availableProcessors() / 2), 1)
     maxParallelForks = forks
     println("Setting maxParallelForks to $forks")
