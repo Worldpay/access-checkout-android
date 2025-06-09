@@ -4,6 +4,7 @@ import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DISCOVER_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
@@ -13,6 +14,7 @@ import kotlinx.coroutines.test.TestCoroutineDispatcher
 import kotlinx.coroutines.test.TestCoroutineScope
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.After
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertNull
 import org.junit.Assert.assertTrue
@@ -22,11 +24,13 @@ import org.junit.Test
 import org.junit.experimental.runners.Enclosed
 import org.junit.runner.RunWith
 import org.mockito.Mock
+import org.mockito.Mockito.mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
+import java.util.concurrent.ConcurrentHashMap
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
@@ -78,6 +82,116 @@ class CardBinServiceTest {
         }
 
         @Test
+        fun `should instantiate CardBinService with default client`() {
+            val service = CardBinService(
+                checkoutId = "testCheckoutId",
+                baseUrl = "https://example.com"
+            )
+            assertNotNull(service)
+        }
+
+        @Test
+        fun `should instantiate CardBinService with custom client`() {
+            val mockClient = mock<CardBinClient>()
+            val service = CardBinService(
+                checkoutId = "testCheckoutId",
+                baseUrl = "https://example.com",
+                client = mockClient
+            )
+            assertNotNull(service)
+        }
+
+        @Test
+        fun `transform should return initialCardBrand when response brand is empty`() {
+            val initialBrand = VISA_BRAND
+            val emptyResponse = CardBinResponse(
+                brand = emptyList(),
+                fundingType = "debit",
+                luhnCompliant = true
+            )
+            val result = cardBinService.transform(initialBrand, emptyResponse)
+            assertEquals(listOf(initialBrand), result)
+        }
+
+        @Test
+        fun `should swallow AccessCheckoutException and not invoke callback`() = testScope.runBlockingTest {
+            whenever(cardBinClient.getCardBinResponse(any())).thenThrow(AccessCheckoutException("error"))
+            var callbackInvoked = false
+
+            cardBinService.getCardBrands(VISA_BRAND, "444433332222") {
+                callbackInvoked = true
+            }
+            testDispatcher.advanceUntilIdle()
+            assertFalse(callbackInvoked)
+        }
+
+
+
+        @Test
+        fun `should return initialCardBrand when pan is less than CACHE_KEY_LENGTH`() {
+            val result = cardBinService.getCardBrands(VISA_BRAND, "12345678901")
+            assertEquals(listOf(VISA_BRAND), result)
+        }
+
+        @Test
+        fun `transform should return initialCardBrand when response has single brand matching initialCardBrand name ignoring case`() {
+            val initialBrand = VISA_BRAND.copy(name = "Visa")
+            val response = CardBinResponse(
+                brand = listOf("vIsA"),
+                fundingType = "debit",
+                luhnCompliant = true
+            )
+            val result = cardBinService.transform(initialBrand, response)
+            assertEquals(listOf(initialBrand), result)
+        }
+
+        @Test
+        fun `transform should return new brand when response has single brand not matching initialCardBrand name`() {
+            val initialBrand = VISA_BRAND.copy(name = "Visa")
+            val response = CardBinResponse(
+                brand = listOf("mastercard"),
+                fundingType = "debit",
+                luhnCompliant = true
+            )
+            val result = cardBinService.transform(initialBrand, response)
+            assertEquals(1, result.size)
+            assertEquals("mastercard", result[0].name)
+        }
+
+        @Test
+        fun `transform should return multiple brands when response has multiple brands`() {
+            val initialBrand = VISA_BRAND
+            val response = CardBinResponse(
+                brand = listOf("visa", "mastercard"),
+                fundingType = "debit",
+                luhnCompliant = true
+            )
+            val result = cardBinService.transform(initialBrand, response)
+            assertEquals(2, result.size)
+            assertTrue(result.any { it.name == "visa" })
+            assertTrue(result.any { it.name == "mastercard" })
+        }
+
+        @Test
+        fun `getCardBrands should call client and cache response`() = testScope.runBlockingTest {
+            val initialBrand = VISA_BRAND
+            val response = CardBinResponse(
+                brand = listOf("visa"),
+                fundingType = "debit",
+                luhnCompliant = true
+            )
+            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(response)
+            val result = cardBinService.getCardBrands(initialBrand, "444433332222")
+            assertEquals(listOf(initialBrand), result)
+            testDispatcher.advanceUntilIdle()
+
+            // call again to check cache
+            val cachedResult = cardBinService.getCardBrands(initialBrand, "444433332222")
+            assertEquals(listOf(initialBrand), cachedResult)
+            verify(cardBinClient, times(1)).getCardBinResponse(any())
+        }
+
+        @Test
         fun `should return an empty list when initialCardBrand is null`() = runBlockingTest {
             val result = cardBinService.getCardBrands(null, visaTestPan)
             assertEquals(emptyList<Any>(), result)
@@ -108,6 +222,31 @@ class CardBinServiceTest {
                 // Advance time to ensure coroutine completes
                 testDispatcher.advanceUntilIdle()
             }
+
+//        @Test
+//        fun `should handle null response from client gracefully`() = testScope.runBlockingTest {
+//            // Mock the client to return null
+//            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(null)
+//
+//            var callbackInvoked = false
+//            var callbackResult: List<RemoteCardBrand>? = null
+//
+//            // This should not crash even though the client returns null
+//            val result = cardBinService.getCardBrands(VISA_BRAND, visaTestPan) { brands ->
+//                callbackInvoked = true
+//                callbackResult = brands
+//            }
+//
+//            // Should return initial brand immediately
+//            assertEquals(listOf(VISA_BRAND), result)
+//
+//            // Advance coroutine
+//            testDispatcher.advanceUntilIdle()
+//
+//            // The callback should not be invoked due to the null response causing an exception
+//            assertFalse(callbackInvoked)
+//            assertNull(callbackResult)
+//        }
 
         @Test
         fun `should invoke callback when response returns multiple brands for pan`() =
@@ -237,4 +376,5 @@ class CardBinServiceTest {
                 verify(cardBinClient, times(1)).getCardBinResponse(any())
             }
     }
+
 }
