@@ -1,6 +1,6 @@
 services:
   generate-certs:
-    image: artifactory.luigi.worldpay.io/docker/alpine:latest
+    image: alpine:latest
     restart: no
     command: >
       /bin/sh -c "
@@ -22,7 +22,7 @@ services:
       generate-certs:
         condition: service_healthy #Wait for certs to be created
 
-    image: artifactory.luigi.worldpay.io/docker/mockoon/cli:9
+    image: mockoon/cli:9
     command: "--data ./data/card-bin-service.json --port 3003 --log-transaction"
     volumes:
       - ./docker/certs:/certs
