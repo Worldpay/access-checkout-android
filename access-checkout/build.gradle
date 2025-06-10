@@ -46,24 +46,25 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // override the version of bcprov-jdk15on to avoid the ssl internal errors
-    testImplementation('org.robolectric:robolectric:4.7')
+    testImplementation('org.robolectric:robolectric:4.14.1') {
+        //Allows us to use the Android version of Apache httpclient instead
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
 
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
     testImplementation 'au.com.dius:pact-jvm-consumer-junit:4.0.10'
-}
 
-tasks.register('startDockerContainers', Exec) {
-    commandLine 'docker-compose', 'up', '-d'
+
+    testImplementation("org.wiremock:wiremock:3.13.0") {
+        //Allows us to use the Android version of Apache httpclient instead
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+
 }
 
 tasks.withType(Test).configureEach {
     def forks = Math.max((int)(Runtime.getRuntime().availableProcessors() / 2), 1)
     maxParallelForks = forks
     println("Setting maxParallelForks to $forks")
-}
-
-afterEvaluate {
-    // making sure the docker local environment is up when running tests
-    testDebugUnitTest.dependsOn startDockerContainers
-    testReleaseUnitTest.dependsOn startDockerContainers
+    maxHeapSize = "1g" //For roboelectric
 }

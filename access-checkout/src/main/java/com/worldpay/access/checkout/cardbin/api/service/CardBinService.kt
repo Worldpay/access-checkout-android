@@ -119,6 +119,8 @@ internal class CardBinService(
             try {
                 // Execute the provided request
                 request()
+                //Reset when the request completes successfully
+                currentJob = null
             } catch (exception: Exception) {
                 // Wrap and rethrow the exception with additional context
                 throw AccessCheckoutException(
