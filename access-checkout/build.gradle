@@ -46,7 +46,7 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // override the version of bcprov-jdk15on to avoid the ssl internal errors
-    testImplementation('org.robolectric:robolectric:4.14.1') {
+    testImplementation('org.robolectric:robolectric:4.7') {
         //Allows us to use the Android version of Apache httpclient instead
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
