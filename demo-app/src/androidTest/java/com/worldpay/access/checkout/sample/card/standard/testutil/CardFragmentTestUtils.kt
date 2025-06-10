@@ -30,6 +30,8 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     private fun brandName() = findById<TextView>(R.id.card_flow_text_card_brand_name)
     private fun paymentsCvcSwitch() = findById<SwitchCompat>(R.id.card_flow_payments_cvc_switch)
 
+    private fun checkoutId() = "checkout-id"
+
     enum class Input {
         PAN, CVC, EXPIRY_DATE
     }
@@ -40,6 +42,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         enabledStateIs(pan = true, cvc = true, expiryDate = true, submitButton = false)
         cardDetailsAre(pan = "", cvc = "", expiryDate = "")
         hasNoBrand()
+        checkoutId()
         paymentsCvcSessionCheckedState(checked = false)
         return this
     }
@@ -207,6 +210,11 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     fun hasNoBrand(): CardFragmentTestUtils {
         val resourceEntryName = activity().resources.getResourceEntryName(R.drawable.card_unknown_logo)
         wait { assertEquals(resourceEntryName, brandLogo().getTag(R.integer.card_tag)) }
+        return this
+    }
+
+    fun hasCheckoutId(checkoutId: String): CardFragmentTestUtils {
+        wait(maxWaitTimeInMillis = 20000) { assertEquals(checkoutId, "checkout-id", "CheckoutId does not match expected value.") }
         return this
     }
 

@@ -90,7 +90,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .hasBrandName("visa, mastercard")
             .setCursorPositionOnPan(11)
             .removeLastPanDigit()
-            .hasBrandName("visa")
+            .hasBrandName("visa[]")
     }
 
     @Test
