@@ -1,5 +1,6 @@
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
@@ -9,12 +10,16 @@ import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
+import com.worldpay.access.checkout.sample.card.standard.testutil.mock.CardBinServiceMock
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class PANValidationUITest : AbstractCardFragmentTest() {
+
+    private lateinit var cardBinServer: WireMockServer
 
     @Test
     fun shouldValidateValidVisaAsGreenTextWithVisaBrandIcon() {
@@ -75,7 +80,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
-            .enterCardDetails(pan = "4111111111111111")
+            .enterCardDetails(pan = "4444333322221111")
             .hasBrand(VISA)
             .hasBrandName("visa, mastercard")
     }
