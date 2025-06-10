@@ -36,7 +36,8 @@ internal class TextWatcherFactory(
             brandsChangedHandler = resultHandlerFactory.getBrandsChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager,
             cardBinService = CardBinService(
-                checkoutId, baseUrl = "https://changeme.com",
+                checkoutId = checkoutId,
+                baseUrl = "https://localhost:3003",
             )
         )
     }

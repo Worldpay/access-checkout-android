@@ -1,32 +1,40 @@
 package com.worldpay.access.checkout.client.testutil
 
 import android.content.Context
+import android.os.Looper.getMainLooper
 import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
-import android.view.KeyEvent.*
+import android.view.KeyEvent.ACTION_DOWN
+import android.view.KeyEvent.ACTION_UP
+import android.view.KeyEvent.KEYCODE_DEL
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.client.testutil.mocks.CardBinServiceMock
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
+import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
+import okhttp3.mockwebserver.MockResponse
+import okhttp3.mockwebserver.MockWebServer
+import org.junit.After
+import org.junit.Before
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.spy
+import org.robolectric.Shadows.shadowOf
+import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 import java.security.KeyStore
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
-import okhttp3.mockwebserver.MockResponse
-import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
-import org.mockito.kotlin.given
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.reset
-import org.mockito.kotlin.spy
-import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 
 open class AbstractValidationIntegrationTest {
 
-    protected val context: Context = getInstrumentation().context
+    protected lateinit var context: Context
 
     private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"
 
@@ -45,10 +53,22 @@ open class AbstractValidationIntegrationTest {
     protected lateinit var cardValidationListener: CardValidationListener
 
     private val defaultSSLSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
+    private lateinit var cardBinServer: WireMockServer
+
+    @Before
+    fun setUp() {
+        context = getInstrumentation().context
+        cardBinServer = CardBinServiceMock.start()
+        resetValidation()
+
+    }
 
     @After
     fun tearDown() {
-        server.shutdown()
+        if (this::server.isInitialized) {
+            server.shutdown()
+        }
+
         HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory)
     }
 
@@ -141,7 +161,16 @@ open class AbstractValidationIntegrationTest {
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 
-    protected fun AccessCheckoutEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
+    protected fun AccessCheckoutEditText.paste(
+        selectionStart: Int,
+        selectionEnd: Int,
+        text: String
+    ) {
         this.editText!!.text.replace(selectionStart, selectionEnd, text)
+    }
+
+    fun AccessCheckoutEditText.setTextAndWait(text: String) {
+        this.setText(text)
+        shadowOf(getMainLooper()).waitForQueueUntilIdle()
     }
 }

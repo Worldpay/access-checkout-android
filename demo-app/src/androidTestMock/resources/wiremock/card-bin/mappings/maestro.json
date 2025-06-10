@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/public/card/bindetails",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": {
+          "expression": "$.cardNumber",
+          "matches": "^(493698|(50[0-5][0-9]{2}|506[0-5][0-9]|5066[0-9])|(5067[7-9]|506[89][0-9]|50[78][0-9]{2})|5[6-9]|63|67)\\d*$"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "WP-CorrelationId": "4c195ce9-3dbd-4bc8-9c94-3d3393842323",
+      "WP-Api-Version": "1"
+    },
+    "body": "{\"brand\": [\"maestro\"],\"fundingType\": \"debit\", \"luhnCompliant\": true}"
+  }
+}
