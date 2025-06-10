@@ -1,0 +1,23 @@
+{
+  "scenarioName": "RETRY Scenario 1: Success on second call",
+  "requiredScenarioState": "RetryScenario1.2",
+  "request": {
+    "method": "POST",
+    "url": "/public/card/bindetails",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": {
+          "expression": "$.cardNumber",
+          "matches": "3841001111222235555"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json"
+    },
+    "body": "{\"brand\": [\"hipercard\"],\"fundingType\": \"debit\", \"luhnCompliant\": true}"
+  }
+}

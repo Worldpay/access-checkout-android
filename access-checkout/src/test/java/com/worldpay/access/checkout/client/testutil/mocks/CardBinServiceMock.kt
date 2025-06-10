@@ -32,7 +32,6 @@ object CardBinServiceMock {
                 server?.start()
             } catch (ex: Exception) {
                 println("card-bin-service was already running")
-
             }
 
         }
