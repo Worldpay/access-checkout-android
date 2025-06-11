@@ -7,8 +7,17 @@
         "matchesJsonPath": {
           "expression": "$.cardNumber",
           "matches": "^(?!^493698\\d*$)4\\d*$"
-        }
-      }
+        }},
+      {
+        "matchesJsonPath": {
+          "expression": "$.cardNumber",
+          "doesNotMatch": "4150580996517927"
+        }},
+      {
+        "matchesJsonPath": {
+          "expression": "$.cardNumber",
+          "doesNotMatch": "415058099651"
+        }}
     ]
   },
   "response": {
