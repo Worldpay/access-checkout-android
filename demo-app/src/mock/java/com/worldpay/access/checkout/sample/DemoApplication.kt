@@ -12,6 +12,7 @@ class DemoApplication : Application() {
 
     override fun onTerminate() {
         MockServer.stopWiremock()
+        CardBinServiceMock.stop()
         super.onTerminate()
     }
 }

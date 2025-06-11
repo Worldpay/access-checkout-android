@@ -756,6 +756,7 @@ class SessionsPactTest {
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
+                println(ex)
                 fail("Should not have reached here!")
             }
         }

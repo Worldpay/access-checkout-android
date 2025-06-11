@@ -65,30 +65,9 @@ object MockServer {
                 .extensions(ResponseTemplateTransformer(false))
         )
 
-
-            val selfSignedJks =
-                MockServer::class.java.getResource("/self-signed-keystore.jks")
-                   println("selfSignedJks: $selfSignedJks")
-            var cardBinService = WireMockServer(
-                WireMockConfiguration.options()
-                    .port(0)
-                    .httpsPort(3003)
-                    .usingFilesUnderDirectory("src/mock/resources/wiremock/card-bin")
-                    .httpServerFactory(CustomHttpServerFactory())
-                    .keystorePath(keyStoreFile.absolutePath)
-                    .keystoreType("BKS")
-                    .keystorePassword("password")
-            )
-//        Thread(
-//            Runnable {
-//                cardBinService.start()
-//            }
-//        ).start()
-
         Thread(
             Runnable {
                 wireMockServer.start()
-                cardBinService.start()
                 defaultStubMappings(
                     context
                 )

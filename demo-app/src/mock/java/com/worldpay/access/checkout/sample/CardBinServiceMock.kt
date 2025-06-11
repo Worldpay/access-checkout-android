@@ -38,7 +38,7 @@ object CardBinServiceMock {
         return WireMockServer(
             WireMockConfiguration.options()
                 .port(0)
-                .httpsPort(3333)
+                .httpsPort(3003)
                 .usingFilesUnderDirectory(cardBinDest.absolutePath)
                 .keystorePath(keystoreDest.absolutePath)
                 .keystoreType("BKS")

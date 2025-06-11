@@ -8,7 +8,7 @@ import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import java.lang.RuntimeException
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,7 +28,7 @@ class CardConfigurationProviderTest {
     private lateinit var cardConfigurationProvider: CardConfigurationProvider
 
     @Before
-    fun setup() = runAsBlockingTest {
+    fun setup() = runTest {
         given(cardConfigurationClient.getCardConfiguration()).willThrow(RuntimeException())
         cardConfigurationProvider = CardConfigurationProvider(
             cardConfigurationClient = cardConfigurationClient,
@@ -43,7 +43,7 @@ class CardConfigurationProviderTest {
 
     @Test
     fun `should reset back to default card configuration each time a provider is created despite having remote card configuration before`() =
-        runAsBlockingTest {
+        runTest {
             assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
 
             mockSuccessfulCardConfiguration()
@@ -59,7 +59,7 @@ class CardConfigurationProviderTest {
         }
 
     @Test
-    fun `should be getting remote card configuration once loaded`() = runAsBlockingTest {
+    fun `should be getting remote card configuration once loaded`() = runTest {
         assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
 
         val cardConfigurationClient = mock<CardConfigurationClient>()
@@ -72,7 +72,7 @@ class CardConfigurationProviderTest {
     }
 
     @Test
-    fun `should be calling all observers once remote card configuration is retrieved`() = runAsBlockingTest {
+    fun `should be calling all observers once remote card configuration is retrieved`() = runTest {
         assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
 
         val cardConfigObserver = mock<CardConfigurationObserver>()
@@ -87,7 +87,7 @@ class CardConfigurationProviderTest {
     }
 
     @Test
-    fun `should do nothing when remote card configuration call fails`() = runAsBlockingTest {
+    fun `should do nothing when remote card configuration call fails`() = runTest {
         assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
 
         val cardConfigObserver = mock<CardConfigurationObserver>()

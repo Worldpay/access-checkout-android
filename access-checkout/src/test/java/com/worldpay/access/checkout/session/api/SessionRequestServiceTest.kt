@@ -23,7 +23,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -80,7 +80,7 @@ class SessionRequestServiceTest {
     }
 
     @Test
-    fun `should send a session request when the intent is not null and broadcast the response`() = runAsBlockingTest {
+    fun `should send a session request when the intent is not null and broadcast the response`() = runTest {
         val intent = mock<Intent>()
 
         val sessionRequestInfo = getSessionRequestInfo()
@@ -108,7 +108,7 @@ class SessionRequestServiceTest {
     }
 
     @Test
-    fun `should have exception in error key on broadcast when session request fails`() = runAsBlockingTest {
+    fun `should have exception in error key on broadcast when session request fails`() = runTest {
         val intent = mock<Intent>()
 
         val sessionRequestInfo = getSessionRequestInfo()
@@ -162,7 +162,7 @@ class SessionRequestServiceTest {
     }
 
     @Test
-    fun `should post the broadcast function to the message queue when in lifecycle state`() = runAsBlockingTest {
+    fun `should post the broadcast function to the message queue when in lifecycle state`() = runTest {
         inLifeCycleState = true
         val intent = mock<Intent>()
 
