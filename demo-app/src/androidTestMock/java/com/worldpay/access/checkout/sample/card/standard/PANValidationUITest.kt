@@ -82,7 +82,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .hasNoBrand()
             .enterCardDetails(pan = "4444333322221111")
             .hasBrand(VISA)
-            .hasBrandName("visa, mastercard")
+            .hasBrandName("visa")
     }
 
     @Test
@@ -92,10 +92,10 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .hasNoBrand()
             .enterCardDetails(pan = "444433332222")
             .hasBrand(VISA)
-            .hasBrandName("visa, mastercard")
+            .hasBrandName("visa")
             .setCursorPositionOnPan(11)
             .removeLastPanDigit()
-            .hasBrandName("visa[]")
+            .hasBrandName("visa")
     }
 
     @Test
@@ -105,7 +105,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .hasNoBrand()
             .enterCardDetails(pan = "4111111111111111")
             .hasBrand(VISA)
-            .hasBrandName("visa, mastercard")
+            .hasBrandName("visa")
         clearPan()
         cardFragmentTestUtils
             .hasNoBrand()
