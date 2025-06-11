@@ -37,7 +37,7 @@ internal class TextWatcherFactory(
             cvcValidationRuleManager = cvcValidationRuleManager,
             cardBinService = CardBinService(
                 checkoutId = checkoutId,
-                baseUrl = "https://localhost:3333",
+                baseUrl = "https://localhost:3003",
             )
         )
     }
