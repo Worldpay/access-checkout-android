@@ -7,6 +7,7 @@ class DemoApplication : Application() {
     override fun onCreate() {
         super.onCreate()
         MockServer.startWiremock(this)
+        CardBinServiceMock.start(this)
     }
 
     override fun onTerminate() {
