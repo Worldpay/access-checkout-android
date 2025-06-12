@@ -44,7 +44,6 @@ internal class CardBinClient(
             WP_CALLER_ID to WP_CALLER_ID_VALUE,
             WP_CONTENT_TYPE to WP_CONTENT_TYPE_VALUE
         )
-
         return httpsClient.doPost(cardBinUrl, request, headers, serializer, deserializer)
     }
 }

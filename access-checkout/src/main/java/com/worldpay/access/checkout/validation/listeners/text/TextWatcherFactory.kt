@@ -23,6 +23,11 @@ internal class TextWatcherFactory(
         enablePanFormatting: Boolean,
         checkoutId: String
     ): PanTextWatcher {
+        val baseUrl = if (checkoutId === "YOUR_CHECKOUT_ID") {
+            "https://localhost:3003"
+        } else {
+            "https://live.staging.hpp.worldpay.com"
+        }
         return PanTextWatcher(
             panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),
@@ -37,7 +42,7 @@ internal class TextWatcherFactory(
             cvcValidationRuleManager = cvcValidationRuleManager,
             cardBinService = CardBinService(
                 checkoutId = checkoutId,
-                baseUrl = "https://localhost:3003",
+                baseUrl = baseUrl,
             )
         )
     }
