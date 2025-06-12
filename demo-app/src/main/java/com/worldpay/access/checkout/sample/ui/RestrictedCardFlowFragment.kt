@@ -68,6 +68,7 @@ class RestrictedCardFlowFragment : Fragment() {
             .acceptedCardBrands(arrayOf("visa", "mastercard", "amex"))
             .validationListener(cardValidationListener)
             .lifecycleOwner(this)
+            .checkoutId("checkout-id")
             .build()
 
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
