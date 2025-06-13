@@ -23,7 +23,7 @@ internal class TextWatcherFactory(
         enablePanFormatting: Boolean,
         checkoutId: String
     ): PanTextWatcher {
-        val baseUrl = if (checkoutId === "YOUR_CHECKOUT_ID") {
+        val baseUrl = if (checkoutId === "YOUR-CHECKOUT-ID") {
             "https://localhost:3003"
         } else {
             "https://hpp-sandbox.worldpay.com"

@@ -5,9 +5,8 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configuratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
-import java.lang.RuntimeException
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
@@ -16,6 +15,7 @@ import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 class CardConfigurationProviderTest {
@@ -48,6 +48,8 @@ class CardConfigurationProviderTest {
 
             mockSuccessfulCardConfiguration()
 
+            advanceUntilIdle()
+
             assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
 
             CardConfigurationProvider(
@@ -68,6 +70,8 @@ class CardConfigurationProviderTest {
 
         CardConfigurationProvider(cardConfigurationClient, emptyList())
 
+        advanceUntilIdle()
+
         assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
     }
 
@@ -81,6 +85,8 @@ class CardConfigurationProviderTest {
         given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
 
         CardConfigurationProvider(cardConfigurationClient, listOf(cardConfigObserver))
+
+        advanceUntilIdle()
 
         assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
         verify(cardConfigObserver).update()
