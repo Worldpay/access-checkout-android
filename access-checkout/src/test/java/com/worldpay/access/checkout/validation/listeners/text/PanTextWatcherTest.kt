@@ -17,26 +17,15 @@ import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManag
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.never
-import org.mockito.kotlin.any
-import org.mockito.kotlin.argumentCaptor
-import org.mockito.kotlin.eq
-import org.mockito.kotlin.given
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.reset
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
-import kotlin.text.format
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import org.mockito.kotlin.*
 
 @ExperimentalCoroutinesApi
 class PanTextWatcherTest {
@@ -63,7 +52,7 @@ class PanTextWatcherTest {
     private val cardBinService = mock<CardBinService>()
 
     @Before
-    fun setup() = runAsBlockingTest {
+    fun setup() = runTest {
         mockSuccessfulCardConfiguration()
 
         panTextWatcher = PanTextWatcher(
