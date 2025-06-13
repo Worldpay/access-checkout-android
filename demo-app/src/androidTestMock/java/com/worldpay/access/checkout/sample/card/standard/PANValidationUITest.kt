@@ -1,23 +1,15 @@
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
 import com.github.tomakehurst.wiremock.WireMockServer
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.DINERS_PAN
-import com.worldpay.access.checkout.sample.card.CardNumberUtil.DISCOVER_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.asPartial
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.AMEX
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.CARTES_BANCAIRES
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DINERS
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.DISCOVER
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
-import com.worldpay.access.checkout.sample.card.standard.testutil.mock.CardBinServiceMock
-import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 

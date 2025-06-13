@@ -26,7 +26,7 @@ internal class TextWatcherFactory(
         val baseUrl = if (checkoutId === "YOUR_CHECKOUT_ID") {
             "https://localhost:3003"
         } else {
-            "https://live.staging.hpp.worldpay.com"
+            "https://hpp-sandbox.worldpay.com"
         }
         return PanTextWatcher(
             panEditText = panEditText,
