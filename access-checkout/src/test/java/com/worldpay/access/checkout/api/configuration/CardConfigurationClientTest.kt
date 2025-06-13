@@ -10,7 +10,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
@@ -27,7 +27,7 @@ class CardConfigurationClientTest {
     private val cardConfigUrl = URL("$baseUrl/$cardConfigResource")
 
     @Test
-    fun shouldFetchCardConfigFromServer() = runAsBlockingTest {
+    fun shouldFetchCardConfigFromServer() = runTest {
         val httpsClient = mock<HttpsClient>()
         val urlFactory = mock<URLFactory>()
         val cardConfigurationParser = mock<CardConfigurationParser>()
@@ -49,7 +49,7 @@ class CardConfigurationClientTest {
     }
 
     @Test
-    fun shouldThrowExceptionWhenAnyExceptionIsThrown() = runAsBlockingTest {
+    fun shouldThrowExceptionWhenAnyExceptionIsThrown() = runTest {
         val httpsClient = mock<HttpsClient>()
         val urlFactory = mock<URLFactory>()
         val cardConfigurationParser = mock<CardConfigurationParser>()

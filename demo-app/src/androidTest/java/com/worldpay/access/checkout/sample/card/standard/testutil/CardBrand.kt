@@ -7,5 +7,6 @@ enum class CardBrand(val cardBrandName: String) {
     DINERS("diners"),
     DISCOVER("discover"),
     JCB("jcb"),
-    MAESTRO("maestro")
+    MAESTRO("maestro"),
+    CARTES_BANCAIRES("cartesBancaires")
 }

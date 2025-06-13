@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import java.net.URL
 import kotlin.test.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -45,7 +45,7 @@ class ApiDiscoveryClientTest {
     }
 
     @Test
-    fun `should retrieve endpoint from cache when one exists`() = runAsBlockingTest {
+    fun `should retrieve endpoint from cache when one exists`() = runTest {
         val cacheKey = "${discoverLinks.endpoints[0].endpoint},${discoverLinks.endpoints[1].endpoint}"
         DiscoveryCache.results[cacheKey] = expectedEndpoint
 
@@ -55,7 +55,7 @@ class ApiDiscoveryClientTest {
     }
 
     @Test
-    fun `should save endpoint to cache when endpoint discovery is successful`() = runAsBlockingTest {
+    fun `should save endpoint to cache when endpoint discovery is successful`() = runTest {
         given(
             httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
         ).willReturn(firstEndpoint.toString())
@@ -75,7 +75,7 @@ class ApiDiscoveryClientTest {
     }
 
     @Test
-    fun `should be able to return endpoint on first attempt`() = runAsBlockingTest {
+    fun `should be able to return endpoint on first attempt`() = runTest {
         given(
             httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
         ).willReturn(firstEndpoint.toString())
@@ -90,7 +90,7 @@ class ApiDiscoveryClientTest {
     }
 
     @Test
-    fun `should be able to return endpoint on second attempt`() = runAsBlockingTest {
+    fun `should be able to return endpoint on second attempt`() = runTest {
         given(
             httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
         )
@@ -110,7 +110,7 @@ class ApiDiscoveryClientTest {
     }
 
     @Test
-    fun `should throw exception when unable to return endpoint after second attempt`() = runAsBlockingTest {
+    fun `should throw exception when unable to return endpoint after second attempt`() = runTest {
         given(
             httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
         )

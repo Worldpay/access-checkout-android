@@ -33,7 +33,8 @@ class TextWatcherFactoryTest {
             panEditText = panEditText,
             cvcEditText = cvcEditText,
             acceptedCardBrands = emptyArray(),
-            enablePanFormatting = false
+            enablePanFormatting = false,
+            checkoutId = "testCheckoutId"
         )
         assertNotNull(textWatcher)
     }

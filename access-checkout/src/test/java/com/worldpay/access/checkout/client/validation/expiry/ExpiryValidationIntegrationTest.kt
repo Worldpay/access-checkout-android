@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.client.validation.expiry
 
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
-import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import java.lang.System.currentTimeMillis
 import java.time.Duration
 import java.time.Instant.ofEpochMilli
@@ -14,9 +13,10 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowSystemClock
 
-@RunWith(PlainRobolectricTestRunner::class)
+@RunWith(RobolectricTestRunner::class)
 class ExpiryValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Before

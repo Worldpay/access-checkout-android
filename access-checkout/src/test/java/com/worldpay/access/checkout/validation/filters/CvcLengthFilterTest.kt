@@ -6,7 +6,7 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -27,7 +27,7 @@ class CvcLengthFilterTest {
     private val pan = EditText(context)
 
     @Before
-    fun setup() = runAsBlockingTest {
+    fun setup() = runTest {
         mockSuccessfulCardConfiguration()
         cvc.filters = arrayOf(CvcLengthFilter(pan))
     }
