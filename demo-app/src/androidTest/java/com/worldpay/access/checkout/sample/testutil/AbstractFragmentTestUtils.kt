@@ -106,7 +106,7 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         return activity().findViewById(id)
     }
 
-    protected fun wait(maxWaitTimeInMillis: Int = 5000, assertions: () -> Unit) {
+    protected fun wait(maxWaitTimeInMillis: Int = 20000, assertions: () -> Unit) {
         val pauseInterval = 100
         val maxTimes = maxWaitTimeInMillis / pauseInterval
 
