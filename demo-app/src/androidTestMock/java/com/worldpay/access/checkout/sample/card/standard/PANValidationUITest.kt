@@ -139,7 +139,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails("4150580996517927")
-            .hasBrandName("visa, cartesBancaires")
+            .hasBrandName("cartesBancaires, visa")
             .validationStateIs(pan = true)
     }
 
@@ -149,7 +149,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails("415058099651")
-            .hasBrandName("visa, cartesBancaires")
+            .hasBrandName("cartesBancaires, visa")
             .removeLastPanDigit()
             .hasBrandName("visa")
     }
