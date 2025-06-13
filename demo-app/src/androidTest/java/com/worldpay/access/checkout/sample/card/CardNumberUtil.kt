@@ -11,7 +11,7 @@ object CardNumberUtil {
     const val AMEX_PAN = "342793178931249"
     const val AMEX_PAN_FORMATTED = "3427 931789 31249"
 
-    const val JCB_PAN = "3534268134677774"
+    const val JCB_PAN = "3528000700000000"
     const val DISCOVER_PAN = "6011454625346690"
     const val DINERS_PAN = "36121966553184"
     const val MAESTRO_PAN = "6759649826438453"
