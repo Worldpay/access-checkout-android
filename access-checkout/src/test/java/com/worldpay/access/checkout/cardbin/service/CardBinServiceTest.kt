@@ -238,5 +238,124 @@ class CardBinServiceTest {
                 // API should only be called once
                 verify(cardBinClient, times(1)).getCardBinResponse(any())
             }
+
+        @Test
+        fun `should invoke callback when response returns no brands for pan`() = runTest {
+            val brand = DISCOVER_BRAND
+            var additionalCardBrands: List<RemoteCardBrand>? = null
+            val latch = CountDownLatch(1)
+
+            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+                CardBinResponse(
+                    brand = emptyList(),
+                    fundingType = "debit",
+                    luhnCompliant = true
+                )
+            )
+
+            cardBinService.getCardBrands(
+                brand,
+                discoverDinersTestPan
+            ) { brands ->
+                additionalCardBrands = brands
+                latch.countDown()
+            }
+
+            // Wait for the callback to be invoked
+            assertTrue(latch.await(2, TimeUnit.SECONDS))
+
+            assertNotNull(additionalCardBrands)
+            assertEquals(1, additionalCardBrands?.size)
+            assertEquals("discover", additionalCardBrands?.get(0)?.name)
+        }
+
+        @Test
+        fun `should invoke callback when response returns a single pan`() = runTest {
+            val brand = DISCOVER_BRAND
+            var additionalCardBrands: List<RemoteCardBrand>? = null
+            val latch = CountDownLatch(1)
+
+            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+                CardBinResponse(
+                    brand = listOf("discover"),
+                    fundingType = "debit",
+                    luhnCompliant = true
+                )
+            )
+
+            cardBinService.getCardBrands(
+                brand,
+                discoverDinersTestPan
+            ) { brands ->
+                additionalCardBrands = brands
+                latch.countDown()
+            }
+
+            // Wait for the callback to be invoked
+            assertTrue(latch.await(2, TimeUnit.SECONDS))
+
+            assertNotNull(additionalCardBrands)
+            assertEquals(1, additionalCardBrands?.size)
+            assertEquals("discover", additionalCardBrands?.get(0)?.name)
+        }
+
+        @Test
+        fun `should invoke callback when response returns a single pan but does not match global brand`() = runTest {
+            val brand = DISCOVER_BRAND
+            var additionalCardBrands: List<RemoteCardBrand>? = null
+            val latch = CountDownLatch(1)
+
+            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+                CardBinResponse(
+                    brand = listOf("mastercard"),
+                    fundingType = "debit",
+                    luhnCompliant = true
+                )
+            )
+
+            cardBinService.getCardBrands(
+                brand,
+                discoverDinersTestPan
+            ) { brands ->
+                additionalCardBrands = brands
+                latch.countDown()
+            }
+
+            // Wait for the callback to be invoked
+            assertTrue(latch.await(2, TimeUnit.SECONDS))
+
+            assertNotNull(additionalCardBrands)
+            assertEquals(1, additionalCardBrands?.size)
+            assertEquals("mastercard", additionalCardBrands?.get(0)?.name)
+        }
+
+        // todo
+        @Test
+        fun `should not invoke callback when it has not been passed to function`() = runTest {
+            val brand = DISCOVER_BRAND
+            var additionalCardBrands: List<RemoteCardBrand>? = null
+            val latch = CountDownLatch(1)
+
+            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+                CardBinResponse(
+                    brand = listOf("discover"),
+                    fundingType = "debit",
+                    luhnCompliant = true
+                )
+            )
+
+            cardBinService.getCardBrands(
+                brand,
+                discoverDinersTestPan
+            )
+
+            // Wait for the callback to be invoked
+            assertTrue(latch.await(2, TimeUnit.SECONDS))
+
+            assertNotNull(additionalCardBrands)
+            assertEquals(1, additionalCardBrands?.size)
+            assertEquals("mastercard", additionalCardBrands?.get(0)?.name)
+        }
+
     }
 }

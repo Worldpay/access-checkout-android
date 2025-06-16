@@ -5,6 +5,7 @@ import android.widget.EditText
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockUnsuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
@@ -354,6 +355,18 @@ class PanTextWatcherTest {
         panTextWatcher.afterTextChanged(panEditable)
 
         verify(cardBinService).getCardBrands(eq(VISA_BRAND), eq(pan), any())
+    }
+
+    @Test
+    fun `should call the brand changed handler with list of brand when able to detect global brand`() = runTest {
+        mockUnsuccessfulCardConfiguration()
+
+        mockPan(visaPan(), VALID)
+
+
+        panTextWatcher.afterTextChanged(panEditable)
+
+        verifyNoInteractions(brandsChangedHandler)
     }
 
     private fun mockPan(pan: String, isValid: PanValidationResult) {

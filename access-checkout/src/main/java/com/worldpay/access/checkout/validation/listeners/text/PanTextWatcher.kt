@@ -94,7 +94,11 @@ internal class PanTextWatcher(
             return
         }
 
-        val listOfBrand = globalBrand?.let { listOf(it) } ?: emptyList()
+        var listOfBrands = emptyList<RemoteCardBrand>()
+
+        if (globalBrand != null){
+            listOfBrands = listOfBrands.plus(globalBrand)
+        }
 
         if (isPanRequiredLength() && globalBrand != null) {
             //Note: the card-bin service should always received the raw pan text also known as "unformatted"
@@ -102,7 +106,7 @@ internal class PanTextWatcher(
                 handleCardBrandChange(fetchedBrands)
             }
         } else {
-            handleCardBrandChange(listOfBrand)
+            handleCardBrandChange(listOfBrands)
         }
 
         validate(formattedPanText, cardValidationRule, globalBrand)
