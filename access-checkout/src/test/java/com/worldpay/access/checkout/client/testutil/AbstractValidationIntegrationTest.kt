@@ -171,6 +171,6 @@ open class AbstractValidationIntegrationTest {
 
     fun AccessCheckoutEditText.setTextAndWait(text: String) {
         this.setText(text)
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+        shadowOf(getMainLooper()).waitForQueueUntilIdle(5)
     }
 }
