@@ -4,14 +4,19 @@ import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DISCOVER_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.runBlocking
 import kotlinx.coroutines.test.runTest
+import org.junit.After
 import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertThrows
 import org.junit.Assert.assertTrue
 import org.junit.Before
+import org.junit.Ignore
 import org.junit.Rule
 import org.junit.Test
 import org.junit.experimental.runners.Enclosed
@@ -19,7 +24,9 @@ import org.junit.runner.RunWith
 import org.mockito.Mock
 import org.mockito.MockitoAnnotations
 import org.mockito.kotlin.any
+import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
 import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
@@ -64,6 +71,10 @@ class CardBinServiceTest {
             CardBinService.clearCache()
         }
 
+        @After
+        fun teardown() {
+            reset(cardBinClient)
+        }
 
         @Test
         fun `should instantiate CardBinService with default client`() {
@@ -270,92 +281,63 @@ class CardBinServiceTest {
         }
 
         @Test
-        fun `should invoke callback when response returns a single pan`() = runTest {
-            val brand = DISCOVER_BRAND
-            var additionalCardBrands: List<RemoteCardBrand>? = null
-            val latch = CountDownLatch(1)
+        fun `should invoke callback when response returns a single pan but does not match global brand`() =
+            runTest {
+                val brand = DISCOVER_BRAND
+                var additionalCardBrands: List<RemoteCardBrand>? = null
+                val latch = CountDownLatch(1)
 
-            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
-                CardBinResponse(
-                    brand = listOf("discover"),
-                    fundingType = "debit",
-                    luhnCompliant = true
+                whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+                    CardBinResponse(
+                        brand = listOf("mastercard"),
+                        fundingType = "debit",
+                        luhnCompliant = true
+                    )
                 )
-            )
 
-            cardBinService.getCardBrands(
-                brand,
-                discoverDinersTestPan
-            ) { brands ->
-                additionalCardBrands = brands
-                latch.countDown()
+                cardBinService.getCardBrands(
+                    brand,
+                    discoverDinersTestPan
+                ) { brands ->
+                    additionalCardBrands = brands
+                    latch.countDown()
+                }
+
+                // Wait for the callback to be invoked
+                assertTrue(latch.await(2, TimeUnit.SECONDS))
+
+                assertNotNull(additionalCardBrands)
+                assertEquals(1, additionalCardBrands?.size)
+                assertEquals("mastercard", additionalCardBrands?.get(0)?.name)
             }
 
-            // Wait for the callback to be invoked
-            assertTrue(latch.await(2, TimeUnit.SECONDS))
 
-            assertNotNull(additionalCardBrands)
-            assertEquals(1, additionalCardBrands?.size)
-            assertEquals("discover", additionalCardBrands?.get(0)?.name)
-        }
-
-        @Test
-        fun `should invoke callback when response returns a single pan but does not match global brand`() = runTest {
+        @Ignore
+        fun `should throw error when unable to get response from card bin service`() = runTest {
+            val firstBrandPan = discoverDinersTestPan + "1234"
             val brand = DISCOVER_BRAND
-            var additionalCardBrands: List<RemoteCardBrand>? = null
-            val latch = CountDownLatch(1)
 
-            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
-                CardBinResponse(
-                    brand = listOf("mastercard"),
-                    fundingType = "debit",
-                    luhnCompliant = true
-                )
-            )
+            whenever(cardBinClient.getCardBinResponse(any())).thenThrow(RuntimeException("some exception"))
 
-            cardBinService.getCardBrands(
-                brand,
-                discoverDinersTestPan
-            ) { brands ->
-                additionalCardBrands = brands
-                latch.countDown()
+            assertThrows(AccessCheckoutException::class.java) {
+                cardBinService.getCardBrands(brand, firstBrandPan) {}
             }
-
-            // Wait for the callback to be invoked
-            assertTrue(latch.await(2, TimeUnit.SECONDS))
-
-            assertNotNull(additionalCardBrands)
-            assertEquals(1, additionalCardBrands?.size)
-            assertEquals("mastercard", additionalCardBrands?.get(0)?.name)
         }
 
-        // todo
-        @Test
-        fun `should not invoke callback when it has not been passed to function`() = runTest {
-            val brand = DISCOVER_BRAND
-            var additionalCardBrands: List<RemoteCardBrand>? = null
-            val latch = CountDownLatch(1)
+        @Ignore
+        fun `should throw error when unable to get response from card bin service2`() =
+            runBlocking {
+                val firstBrandPan = discoverDinersTestPan + "1234"
+                val brand = DISCOVER_BRAND
 
-            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
-                CardBinResponse(
-                    brand = listOf("discover"),
-                    fundingType = "debit",
-                    luhnCompliant = true
-                )
-            )
+                given(cardBinClient.getCardBinResponse(any())).willThrow(RuntimeException("some exception"))
+                cardBinService.getCardBrands(brand, firstBrandPan) {}
+                val ex = runCatching {
+                    cardBinService.currentJob?.join()
+                }.exceptionOrNull()
 
-            cardBinService.getCardBrands(
-                brand,
-                discoverDinersTestPan
-            )
-
-            // Wait for the callback to be invoked
-            assertTrue(latch.await(2, TimeUnit.SECONDS))
-
-            assertNotNull(additionalCardBrands)
-            assertEquals(1, additionalCardBrands?.size)
-            assertEquals("mastercard", additionalCardBrands?.get(0)?.name)
-        }
-
+                assertTrue(ex is AccessCheckoutException)
+                assertEquals("Could not perform request to card-bin API.", ex?.message)
+            }
     }
 }

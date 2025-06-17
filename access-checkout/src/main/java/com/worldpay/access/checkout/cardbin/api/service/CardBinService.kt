@@ -71,7 +71,7 @@ internal class CardBinService(
     fun getCardBrands(
         globalBrand: RemoteCardBrand,
         pan: String,
-        callback: ((List<RemoteCardBrand>) -> Unit)? = null
+        callback: ((List<RemoteCardBrand>) -> Unit)
     ) {
         //Safe-guard: ensure pan has no spaces to be able to compute cache keys and request correctly
         val panValue = pan.replace(" ", "")
@@ -80,22 +80,24 @@ internal class CardBinService(
         val cacheKey = getCacheKey(panValue)
         // Return cached response if available
         cache[cacheKey]?.let { cachedResponse ->
-            callback?.invoke(cachedResponse)
+            callback.invoke(cachedResponse)
             //Return if the cache is hit, so the coroutine (and thus the API call) is not launched.
             return
         }
-        // Launch a coroutine to fetch the card brands from the API asynchronously
-        launchCancellableCoroutineRequest(
-            request = {
-                val response = client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
-                // Transform the API response into a list of card brands
-                val brands = transform(globalBrand, response)
-                cache[cacheKey] = brands
+            // Launch a coroutine to fetch the card brands from the API asynchronously
+            launchCancellableCoroutineRequest(
+                request = {
+                    val response = client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
+                    // Transform the API response into a list of card brands
+                    val brands = transform(globalBrand, response)
+                    cache[cacheKey] = brands
 
-                // Invoke the callback with the transformed card brands
-                callback?.invoke(brands)
-            }
-        )
+                    // Invoke the callback with the transformed card brands
+                    callback.invoke(brands)
+                }
+            )
+
+
     }
 
     /**
@@ -162,4 +164,3 @@ internal class CardBinService(
             .distinctBy { it.name.lowercase() }
     }
 }
-
