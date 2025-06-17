@@ -33,6 +33,7 @@ import org.mockito.kotlin.whenever
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 
 @ExperimentalCoroutinesApi
@@ -310,6 +311,34 @@ class CardBinServiceTest {
                 assertEquals(1, additionalCardBrands?.size)
                 assertEquals("mastercard", additionalCardBrands?.get(0)?.name)
             }
+
+        @Test
+        fun `should cancel the current job when there is a request in flight`() = runTest {
+            val firstBrandPan = discoverDinersTestPan + "1234"
+            val secondBrandPan = discoverDinersTestPan + "5678"
+            val brand = DISCOVER_BRAND
+
+            // Simulate a long-running request
+            whenever(cardBinClient.getCardBinResponse(any())).thenAnswer {
+                Thread.sleep(5000) // Simulate delay
+                CardBinResponse(
+                    brand = listOf("discover", "diners"),
+                    fundingType = "debit",
+                    luhnCompliant = true
+                )
+            }
+
+            // Start the first request
+            cardBinService.getCardBrands(brand, firstBrandPan) {}
+
+            val firstJob = cardBinService.currentJob
+
+            // Send a second request while the first is still in progress
+            cardBinService.getCardBrands(brand, secondBrandPan) {}
+
+            // Verify that the first job was cancelled
+            assertTrue(firstJob?.isCancelled ?: false)
+        }
 
 
         @Ignore

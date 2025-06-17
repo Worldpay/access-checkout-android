@@ -114,7 +114,7 @@ internal class CardBinService(
         if (currentJob != null) {
             println("Found in-flight request, will abort in-flight request.")
             // Cancel any previous in-flight request
-            currentJob?.cancel()
+            currentJob!!.cancel()
         }
         // Launch a new coroutine to execute the request
         currentJob = scope.launch {
