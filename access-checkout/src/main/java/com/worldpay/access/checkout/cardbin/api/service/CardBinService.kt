@@ -30,11 +30,9 @@ internal class CardBinService(
         HttpsClient(),
         CardBinResponseDeserializer(),
         CardBinRequestSerializer()
-    )
+    ),
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
-
-    // Coroutine scope for launching requests
-    private val scope = CoroutineScope(Dispatchers.IO)
 
     // Holds the current in-flight request Job for cancellation
     internal var currentJob: Job? = null
@@ -84,20 +82,18 @@ internal class CardBinService(
             //Return if the cache is hit, so the coroutine (and thus the API call) is not launched.
             return
         }
-            // Launch a coroutine to fetch the card brands from the API asynchronously
-            launchCancellableCoroutineRequest(
-                request = {
-                    val response = client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
-                    // Transform the API response into a list of card brands
-                    val brands = transform(globalBrand, response)
-                    cache[cacheKey] = brands
 
-                    // Invoke the callback with the transformed card brands
-                    callback.invoke(brands)
-                }
-            )
+        // Launch a coroutine to fetch the card brands from the API asynchronously
+        launchCancellableCoroutineRequest {
+            val response =
+                client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
+            // Transform the API response into a list of card brands
+            val brands = transform(globalBrand, response)
+            cache[cacheKey] = brands
 
-
+            // Invoke the callback with the transformed card brands
+            callback.invoke(brands)
+        }
     }
 
     /**
@@ -111,26 +107,28 @@ internal class CardBinService(
     private fun launchCancellableCoroutineRequest(
         request: suspend () -> Unit
     ) {
-        if (currentJob != null) {
+        currentJob?.let {
             println("Found in-flight request, will abort in-flight request.")
-            // Cancel any previous in-flight request
-            currentJob!!.cancel()
+            it.cancel() // Cancel the in-flight request
+            currentJob = null // Reset the job reference
         }
+
         // Launch a new coroutine to execute the request
         currentJob = scope.launch {
             try {
                 // Execute the provided request
                 request()
-                //Reset when the request completes successfully
-                currentJob = null
             } catch (exception: Exception) {
                 // Wrap and rethrow the exception with additional context
                 throw AccessCheckoutException(
                     "Could not perform request to card-bin API.",
                     exception
                 )
+            } finally {
+                currentJob = null
             }
         }
+
     }
 
     private fun transform(
