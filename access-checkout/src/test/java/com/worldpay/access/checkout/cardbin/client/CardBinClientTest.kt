@@ -3,12 +3,12 @@ package com.worldpay.access.checkout.cardbin.client
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION
-import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID
-import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.WP_CONTENT_TYPE
-import com.worldpay.access.checkout.cardbin.api.client.WP_CONTENT_TYPE_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CONTENT_TYPE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CONTENT_TYPE_VALUE
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
@@ -48,6 +48,7 @@ class CardBinClientTest {
         runAsBlockingTest {
             val cardBinResponse = mock<CardBinResponse>()
             val httpsClient = mock<HttpsClient>()
+            val urlFactory = mock<URLFactory>()
             val serializer = mock<CardBinRequestSerializer>()
             val deserializer = mock<CardBinResponseDeserializer>()
 
@@ -57,6 +58,8 @@ class CardBinClientTest {
                     checkoutId = "some-id"
                 )
 
+
+//            given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
             given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
                 .willReturn(cardBinResponse)
 
@@ -72,6 +75,7 @@ class CardBinClientTest {
     fun `should not swallow exception thrown by HttpClient`() =
         runAsBlockingTest {
             val httpsClient = mock<HttpsClient>()
+            val urlFactory = mock<URLFactory>()
             val serializer = mock<CardBinRequestSerializer>()
             val deserializer = mock<CardBinResponseDeserializer>()
 
@@ -81,6 +85,7 @@ class CardBinClientTest {
                     checkoutId = "some-id"
                 )
 
+//            given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
             given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
                 .willThrow(AccessCheckoutException("Access Checkout Exception"))
 

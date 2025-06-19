@@ -125,6 +125,7 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
 
         CardValidationConfig cardValidationConfig = new CardValidationConfig.Builder()
                 .baseUrl(getBaseUrl())
+                .checkoutId(getCheckoutId())
                 .pan(panText)
                 .expiryDate(expiryText)
                 .cvc(cvcText)

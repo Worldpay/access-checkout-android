@@ -70,8 +70,8 @@ class FieldDecoratorFactoryTest {
                 panEditText = panEditText,
                 cvcEditText = cvcEditText,
                 acceptedCardBrands = acceptedCardBrands,
-                enablePanFormatting = false
-
+                enablePanFormatting = false,
+                checkoutId = "testCheckoutId"
             )
         ).willReturn(mock())
         given(focusChangeListenerFactory.createPanFocusChangeListener()).willReturn(mock())
@@ -81,7 +81,8 @@ class FieldDecoratorFactoryTest {
             panEditText = panEditText,
             cvcEditText = cvcEditText,
             acceptedCardBrands = acceptedCardBrands,
-            enablePanFormatting = false
+            enablePanFormatting = false,
+            checkoutId = "testCheckoutId"
         )
 
         assertNotNull(decorator)
@@ -89,7 +90,8 @@ class FieldDecoratorFactoryTest {
             panEditText = panEditText,
             cvcEditText = cvcEditText,
             acceptedCardBrands = acceptedCardBrands,
-            enablePanFormatting = false
+            enablePanFormatting = false,
+            checkoutId = "testCheckoutId"
         )
 
         verify(focusChangeListenerFactory).createPanFocusChangeListener()

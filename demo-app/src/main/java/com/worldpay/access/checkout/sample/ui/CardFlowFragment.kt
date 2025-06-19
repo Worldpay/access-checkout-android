@@ -37,6 +37,8 @@ class CardFlowFragment : Fragment() {
 
     private lateinit var cardValidationListener: CardValidationListener
 
+    private lateinit var accessCheckoutClientBuilder: AccessCheckoutClientBuilder
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -126,6 +128,7 @@ class CardFlowFragment : Fragment() {
             .cvc(cvcText)
             .validationListener(cardValidationListener)
             .lifecycleOwner(this)
+            .checkoutId(getCheckoutId())
             .enablePanFormatting()
             .build()
 

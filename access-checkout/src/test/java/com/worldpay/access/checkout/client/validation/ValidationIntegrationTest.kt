@@ -1,30 +1,26 @@
 package com.worldpay.access.checkout.client.validation
 
-import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.client.validation.model.CardBrand
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MASTERCARD_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
-import kotlin.test.assertNotEquals
+import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.ArgumentCaptor
 import org.mockito.kotlin.argumentCaptor
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
+import kotlin.test.assertNotEquals
 
 @RunWith(RobolectricTestRunner::class)
 class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
-    private val masterCardBrand = toCardBrand(MASTERCARD_BRAND)
+    private val visaCard = toCardBrand(VISA_BRAND)
 
     @Before
     fun setup() {
@@ -32,40 +28,41 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should call each listener function as each input is filled and then finally call the onValidationSuccess function`() {
-        pan.setText(visaPan())
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+    fun `should call each listener function as each input is filled and then finally call the onValidationSuccess function`() =
+        runBlocking {
+            pan.setTextAndWait(visaPan())
 
-        verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND),masterCardBrand))
+            verify(cardValidationListener).onPanValidated(true)
+            verify(cardValidationListener).onBrandsChange(listOf(visaCard))
 
-        cvc.setText("1234")
-        verify(cardValidationListener).onCvcValidated(true)
+            cvc.setTextAndWait("1234")
 
-        expiryDate.setText("1229")
-        verify(cardValidationListener).onExpiryDateValidated(true)
+            verify(cardValidationListener).onCvcValidated(true)
 
-        verify(cardValidationListener).onValidationSuccess()
-    }
+            expiryDate.setTextAndWait("1229")
+
+            verify(cardValidationListener).onExpiryDateValidated(true)
+
+
+            verify(cardValidationListener).onValidationSuccess()
+        }
 
     @Test
-    fun `should revalidate cvc when brand changes`() {
+    fun `should revalidate cvc when brand changes`() = runBlocking {
         val amexCardBrand = toCardBrand(AMEX_BRAND)
 
-        cvc.setText("123")
+        cvc.setTextAndWait("123")
 
         verify(cardValidationListener).onCvcValidated(true)
 
-        pan.setText(AMEX_PAN)
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+        pan.setTextAndWait(AMEX_PAN)
 
         verify(cardValidationListener).onCvcValidated(false)
-        verify(cardValidationListener).onBrandsChange(listOf(amexCardBrand,masterCardBrand))
+        verify(cardValidationListener).onBrandsChange(listOf(amexCardBrand))
 
         reset(cardValidationListener)
 
-        pan.setText(visaPan())
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+        pan.setTextAndWait(visaPan())
 
         // We assert that the brand has changed this way and not using verify()
         // because verify(visaPan()) does not work consistently in our BitRise builds

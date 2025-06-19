@@ -10,7 +10,7 @@ buildscript {
         // is still generated. See the ./access-checkout/gradle/android.gradle file for reasons.
         classpath 'com.android.tools.build:gradle:8.5.2'
 
-        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.6.21'
+        classpath 'org.jetbrains.kotlin:kotlin-gradle-plugin:1.8.20'
         classpath 'org.jetbrains.dokka:dokka-gradle-plugin:1.9.20'
         classpath 'org.jacoco:org.jacoco.core:0.8.10'
         classpath 'io.github.gradle-nexus:publish-plugin:1.1.0'

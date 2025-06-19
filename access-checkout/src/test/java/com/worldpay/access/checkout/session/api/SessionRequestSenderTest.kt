@@ -14,7 +14,7 @@ import java.net.URL
 import kotlin.test.assertNotNull
 import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
@@ -41,7 +41,7 @@ class SessionRequestSenderTest {
     }
 
     @Test
-    fun `should execute request given that the discovery response is valid`() = runAsBlockingTest {
+    fun `should execute request given that the discovery response is valid`() = runTest {
         val expectedSessionRequest =
             CardSessionRequest(
                 cardNumber = "00001111222233334444",
@@ -95,7 +95,7 @@ class SessionRequestSenderTest {
 
     @Test
     fun `should error with exception given that the discovery response is invalid`() =
-        runAsBlockingTest {
+        runTest {
             val expectedSessionRequest =
                 CardSessionRequest(
                     cardNumber = "00001111222233334444",
