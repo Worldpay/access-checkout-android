@@ -100,13 +100,13 @@ internal class PanTextWatcher(
             listOfBrands = listOfBrands.plus(globalBrand)
         }
 
+        handleCardBrandChange(listOfBrands)
+
         if (isPanRequiredLength() && globalBrand != null) {
             //Note: the card-bin service should always received the raw pan text also known as "unformatted"
             cardBinService.getCardBrands(globalBrand, rawPanText) { fetchedBrands ->
                 handleCardBrandChange(fetchedBrands)
             }
-        } else {
-            handleCardBrandChange(listOfBrands)
         }
 
         validate(formattedPanText, cardValidationRule, globalBrand)
