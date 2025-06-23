@@ -58,8 +58,6 @@ class CardBinClientTest {
                     checkoutId = "some-id"
                 )
 
-
-//            given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
             given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
                 .willReturn(cardBinResponse)
 

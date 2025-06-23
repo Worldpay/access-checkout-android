@@ -31,7 +31,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
     private lateinit var cardBinService: CardBinService
 
     private val checkoutId = "testCheckoutId"
-    private val baseUrl = "https://example.com"
+    private val baseUrl = "https://localhost"
 
     private val visaTestPan = "444433332222"
     private val discoverDinersTestPan = "601100040000"
@@ -54,7 +54,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
     fun `should instantiate CardBinService with default client`() {
         val service = CardBinService(
             checkoutId = "testCheckoutId",
-            baseUrl = "https://example.com"
+            baseUrl = "https://localhost"
         )
         assertNotNull(service)
     }
@@ -64,7 +64,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
         val mockClient = mock<CardBinClient>()
         val service = CardBinService(
             checkoutId = "testCheckoutId",
-            baseUrl = "https://example.com",
+            baseUrl = "https://localhost",
             client = mockClient
         )
         assertNotNull(service)
