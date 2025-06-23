@@ -12,6 +12,7 @@ import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTe
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.Arrays
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
@@ -80,7 +81,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .hasNoBrand()
             .enterCardDetails(pan = "4444333322221111")
             .hasBrand(VISA)
-            .hasBrandName("visa")
+            .hasBrandNames("visa")
     }
 
     @Test
@@ -90,10 +91,10 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .hasNoBrand()
             .enterCardDetails(pan = "444433332222")
             .hasBrand(VISA)
-            .hasBrandName("visa")
+            .hasBrandNames("visa")
             .setCursorPositionOnPan(11)
             .removeLastPanDigit()
-            .hasBrandName("visa")
+            .hasBrandNames("visa")
     }
 
     @Test
@@ -103,11 +104,11 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .hasNoBrand()
             .enterCardDetails(pan = "4111111111111111")
             .hasBrand(VISA)
-            .hasBrandName("visa")
+            .hasBrandNames("visa")
         clearPan()
         cardFragmentTestUtils
             .hasNoBrand()
-            .hasBrandName("")
+            .hasBrandNames("")
     }
 
     @Test
@@ -139,7 +140,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails("4150580996517927")
-            .hasBrandName("cartesBancaires, visa")
+            .hasBrandNames("cartesBancaires", "visa")
             .validationStateIs(pan = true)
     }
 
@@ -149,9 +150,9 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .isInInitialState()
             .hasNoBrand()
             .enterCardDetails("415058099651")
-            .hasBrandName("cartesBancaires, visa")
+            .hasBrandNames("cartesBancaires", "visa")
             .removeLastPanDigit()
-            .hasBrandName("visa")
+            .hasBrandNames("visa")
     }
 
 
