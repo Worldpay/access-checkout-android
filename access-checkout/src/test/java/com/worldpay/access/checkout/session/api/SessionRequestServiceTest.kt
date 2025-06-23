@@ -18,12 +18,9 @@ import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSIO
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.ERROR_KEY
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver.Companion.RESPONSE_KEY
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
-import java.net.URL
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
@@ -31,6 +28,10 @@ import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.*
 import org.robolectric.RobolectricTestRunner
+import java.net.URL
+import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
+import kotlin.test.assertNull
 
 @RunWith(RobolectricTestRunner::class)
 @ExperimentalCoroutinesApi
@@ -80,7 +81,7 @@ class SessionRequestServiceTest {
     }
 
     @Test
-    fun `should send a session request when the intent is not null and broadcast the response`() = runAsBlockingTest {
+    fun `should send a session request when the intent is not null and broadcast the response`() = runTest {
         val intent = mock<Intent>()
 
         val sessionRequestInfo = getSessionRequestInfo()
@@ -92,6 +93,8 @@ class SessionRequestServiceTest {
         assertEquals(1, sessionRequestService.onStartCommand(intent, 1, 1))
 
         val intentCaptor = argumentCaptor<Intent>()
+
+        advanceUntilIdle()
 
         verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo)
         verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
@@ -108,7 +111,7 @@ class SessionRequestServiceTest {
     }
 
     @Test
-    fun `should have exception in error key on broadcast when session request fails`() = runAsBlockingTest {
+    fun `should have exception in error key on broadcast when session request fails`() = runTest {
         val intent = mock<Intent>()
 
         val sessionRequestInfo = getSessionRequestInfo()
@@ -120,6 +123,8 @@ class SessionRequestServiceTest {
         assertEquals(1, sessionRequestService.onStartCommand(intent, 1, 1))
 
         val intentCaptor = argumentCaptor<Intent>()
+
+        advanceUntilIdle()
 
         verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo)
         verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
@@ -136,7 +141,7 @@ class SessionRequestServiceTest {
     }
 
     @Test
-    fun `should throw exception when no request key is found for session request in the intent`() {
+    fun `should throw exception when no request key is found for session request in the intent`() = runTest {
         val intent = mock<Intent>()
 
         val exception = AccessCheckoutException("Failed to parse request key for sending the session request")
@@ -146,6 +151,8 @@ class SessionRequestServiceTest {
         assertEquals(1, sessionRequestService.onStartCommand(intent, 1, 1))
 
         val intentCaptor = argumentCaptor<Intent>()
+
+        advanceUntilIdle()
 
         verifyNoInteractions(sessionRequestSender)
         verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
@@ -162,11 +169,12 @@ class SessionRequestServiceTest {
     }
 
     @Test
-    fun `should post the broadcast function to the message queue when in lifecycle state`() = runAsBlockingTest {
+    fun `should post the broadcast function to the message queue when in lifecycle state`() = runTest {
         inLifeCycleState = true
         val intent = mock<Intent>()
 
         val sessionRequestInfo = getSessionRequestInfo()
+
         val sessionResponseInfo = getSessionResponseInfo()
 
         given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(sessionRequestInfo)
@@ -175,6 +183,8 @@ class SessionRequestServiceTest {
         assertEquals(0, messageQueue.size)
 
         assertEquals(1, sessionRequestService.onStartCommand(intent, 1, 1))
+
+        advanceUntilIdle()
 
         assertEquals(1, messageQueue.size)
         processMessageQueue()

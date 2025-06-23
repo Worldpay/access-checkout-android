@@ -21,7 +21,8 @@ class CardValidationConfig private constructor(
     val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener,
     val lifecycleOwner: LifecycleOwner,
-    val enablePanFormatting: Boolean
+    val enablePanFormatting: Boolean,
+    val checkoutId: String
 ) : ValidationConfig {
 
     /**
@@ -38,6 +39,7 @@ class CardValidationConfig private constructor(
         private var validationListener: AccessCheckoutCardValidationListener? = null
         private var lifecycleOwner: LifecycleOwner? = null
         private var enablePanFormatting: Boolean = false
+        private var checkoutId: String? = null
 
         /**
          * Sets the pan ui element to be validated
@@ -118,6 +120,16 @@ class CardValidationConfig private constructor(
         }
 
         /**
+         * Sets the checkoutId to use
+         *
+         * @param[checkoutId] [String] that represents the checkoutId
+         */
+        fun checkoutId(checkoutId: String): Builder {
+            this.checkoutId = checkoutId
+            return this
+        }
+
+        /**
          * Builds the validation configuration by returning an instance of the [CardValidationConfig]
          *
          * @return [CardValidationConfig] implementation that can be used to initialise validation
@@ -130,6 +142,7 @@ class CardValidationConfig private constructor(
             validateNotNull(baseUrl, "base url")
             validateNotNull(validationListener, "validation listener")
             validateNotNull(lifecycleOwner, "lifecycle owner")
+            validateNotNull(checkoutId, "Checkout Id")
 
             val sanitisedBaseUrl = sanitise(baseUrl)!!
 
@@ -141,7 +154,8 @@ class CardValidationConfig private constructor(
                 baseUrl = sanitisedBaseUrl,
                 validationListener = validationListener!!,
                 lifecycleOwner = lifecycleOwner!!,
-                enablePanFormatting = enablePanFormatting
+                enablePanFormatting = enablePanFormatting,
+                checkoutId = checkoutId!!,
             )
         }
     }

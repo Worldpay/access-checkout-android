@@ -4,24 +4,20 @@ import android.content.Context
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import com.github.tomakehurst.wiremock.client.MappingBuilder
-import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.equalTo
-import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
-import com.worldpay.access.checkout.api.MockServer.getBaseUrl
 import com.worldpay.access.checkout.api.MockServer.getStringBaseUrl
 import com.worldpay.access.checkout.api.MockServer.startWiremock
 import com.worldpay.access.checkout.api.MockServer.stopWiremock
-import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION
-import com.worldpay.access.checkout.cardbin.api.client.WP_API_VERSION_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID
-import com.worldpay.access.checkout.cardbin.api.client.WP_CALLER_ID_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION_VALUE
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID
+import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID_VALUE
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
@@ -35,8 +31,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.fail
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)

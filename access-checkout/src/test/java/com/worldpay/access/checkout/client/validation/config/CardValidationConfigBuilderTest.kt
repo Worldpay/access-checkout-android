@@ -26,6 +26,7 @@ class CardValidationConfigBuilderTest {
     private val baseUrl = "https://localhost:8443"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
+    private val checkoutId = "checkout id"
 
     @Before
     fun setUp() {
@@ -44,6 +45,7 @@ class CardValidationConfigBuilderTest {
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
+            .checkoutId(checkoutId)
             .build()
 
         assertNotNull(config)
@@ -66,6 +68,7 @@ class CardValidationConfigBuilderTest {
             .cvc(cvc)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
+            .checkoutId(checkoutId)
             .build()
 
         assertEquals(baseUrl, config.baseUrl)
@@ -80,6 +83,7 @@ class CardValidationConfigBuilderTest {
             .cvc(cvc)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
+            .checkoutId(checkoutId)
             .build()
 
         assertNotNull(config)
@@ -101,6 +105,7 @@ class CardValidationConfigBuilderTest {
                 .acceptedCardBrands(acceptedCardBrands)
                 .validationListener(validationListener)
                 .lifecycleOwner(lifecycleOwner)
+                .checkoutId(checkoutId)
                 .build()
         }
 
@@ -197,6 +202,7 @@ class CardValidationConfigBuilderTest {
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
+            .checkoutId(checkoutId)
             .enablePanFormatting()
             .build()
 

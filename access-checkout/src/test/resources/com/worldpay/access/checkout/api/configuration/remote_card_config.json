@@ -11,11 +11,11 @@
     "images": [
       {
         "type": "image/png",
-        "url": "https://local.com/access-checkout/assets/visa.png"
+        "url": "https://example.com/access-checkout/assets/visa.png"
       },
       {
         "type": "image/svg+xml",
-        "url": "https://local.com/access-checkout/assets/visa.svg"
+        "url": "https://example.com/access-checkout/assets/visa.svg"
       }
     ]
   },
@@ -29,11 +29,11 @@
     "images": [
       {
         "type": "image/png",
-        "url": "https://local.com/access-checkout/assets/mastercard.png"
+        "url": "https://example.com/access-checkout/assets/mastercard.png"
       },
       {
         "type": "image/svg+xml",
-        "url": "https://local.com/access-checkout/assets/mastercard.svg"
+        "url": "https://example.com/access-checkout/assets/mastercard.svg"
       }
     ]
   },
@@ -47,11 +47,11 @@
     "images": [
       {
         "type": "image/png",
-        "url": "https://local.com/access-checkout/assets/amex.png"
+        "url": "https://example.com/access-checkout/assets/amex.png"
       },
       {
         "type": "image/svg+xml",
-        "url": "https://local.com/access-checkout/assets/amex.svg"
+        "url": "https://example.com/access-checkout/assets/amex.svg"
       }
     ]
   },
@@ -68,11 +68,11 @@
     "images": [
       {
         "type": "image/png",
-        "url": "https://local.com/access-checkout/assets/jcb.png"
+        "url": "https://example.com/access-checkout/assets/jcb.png"
       },
       {
         "type": "image/svg+xml",
-        "url": "https://local.com/access-checkout/assets/jcb.svg"
+        "url": "https://example.com/access-checkout/assets/jcb.svg"
       }
     ]
   },
@@ -87,11 +87,11 @@
     "images": [
       {
         "type": "image/png",
-        "url": "https://local.com/access-checkout/assets/discover.png"
+        "url": "https://example.com/access-checkout/assets/discover.png"
       },
       {
         "type": "image/svg+xml",
-        "url": "https://local.com/access-checkout/assets/discover.svg"
+        "url": "https://example.com/access-checkout/assets/discover.svg"
       }
     ]
   },
@@ -107,11 +107,11 @@
     "images": [
       {
         "type": "image/png",
-        "url": "https://local.com/access-checkout/assets/diners.png"
+        "url": "https://example.com/access-checkout/assets/diners.png"
       },
       {
         "type": "image/svg+xml",
-        "url": "https://local.com/access-checkout/assets/diners.svg"
+        "url": "https://example.com/access-checkout/assets/diners.svg"
       }
     ]
   },
@@ -132,11 +132,11 @@
     "images": [
       {
         "type": "image/png",
-        "url": "https://local.com/access-checkout/assets/maestro.png"
+        "url": "https://example.com/access-checkout/assets/maestro.png"
       },
       {
         "type": "image/svg+xml",
-        "url": "https://local.com/access-checkout/assets/maestro.svg"
+        "url": "https://example.com/access-checkout/assets/maestro.svg"
       }
     ]
   }

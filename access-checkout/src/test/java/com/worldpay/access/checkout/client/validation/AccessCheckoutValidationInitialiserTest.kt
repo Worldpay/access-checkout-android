@@ -35,6 +35,7 @@ class AccessCheckoutValidationInitialiserTest {
     private val cvcValidationListener: AccessCheckoutCvcValidationListener = mock()
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
+    private val checkoutId = "checkout id"
 
     @Before
     fun setUp() {
@@ -51,6 +52,7 @@ class AccessCheckoutValidationInitialiserTest {
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(cardValidationListener)
             .lifecycleOwner(lifecycleOwner)
+            .checkoutId(checkoutId)
             .build()
 
         assertEquals(0, pan.filters.size)

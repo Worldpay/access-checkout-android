@@ -15,10 +15,8 @@ import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValida
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getMaxLength
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -26,6 +24,8 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 @ExperimentalCoroutinesApi
 class ValidationUtilTest {
@@ -34,7 +34,7 @@ class ValidationUtilTest {
     var coroutinesTestRule = CoroutineTestRule()
 
     @Before
-    fun setup() = runAsBlockingTest {
+    fun setup() = runTest {
         mockSuccessfulCardConfiguration()
     }
 
@@ -69,14 +69,12 @@ class ValidationUtilTest {
     }
 
     @Test
-    fun `should be able to find brand for pan`() = runAsBlockingTest {
-        mockSuccessfulCardConfiguration()
+    fun `should be able to find brand for pan`() = runTest {
         assertEquals(VISA_BRAND, findBrandForPan(visaPan()))
     }
 
     @Test
-    fun `should be able to find brand for formatted pan`() = runAsBlockingTest {
-        mockSuccessfulCardConfiguration()
+    fun `should be able to find brand for formatted pan`() = runTest {
         assertEquals(VISA_BRAND, findBrandForPan("4111 1111 1111 1111"))
     }
 
@@ -91,7 +89,7 @@ class ValidationUtilTest {
     }
 
     @Test
-    fun `should be able to find null brand for visa pan but where card config has no brands`() = runAsBlockingTest {
+    fun `should be able to find null brand for visa pan but where card config has no brands`() = runTest {
         val cardConfigurationClient = mock<CardConfigurationClient>()
 
         given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_NO_BRAND)
