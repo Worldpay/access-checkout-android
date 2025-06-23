@@ -70,7 +70,7 @@ internal class SessionBroadcastReceiver(
     private fun sendErrorCallback(errorSerializable: Serializable?) {
         try {
             Log.d(javaClass.simpleName, "Sending erred response: $errorSerializable")
-            externalSessionResponseListener.onError(errorSerializable !!as AccessCheckoutException)
+            externalSessionResponseListener.onError(errorSerializable!! as AccessCheckoutException)
         } catch (ex: Exception) {
             externalSessionResponseListener.onError(
                 AccessCheckoutException("Unknown error", ex)
@@ -98,7 +98,8 @@ internal object SessionBroadcastDataStore {
 
     fun isExpectingResponse() = numOfSessionTypes.get() != 0
 
-    fun allRequestsCompleted() = isExpectingResponse() && numOfSessionTypes.get() == storedResponses.size
+    fun allRequestsCompleted() =
+        isExpectingResponse() && numOfSessionTypes.get() == storedResponses.size
 
     fun addResponse(sessionType: SessionType, href: String) {
         storedResponses[sessionType] = href

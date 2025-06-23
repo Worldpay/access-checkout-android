@@ -36,7 +36,7 @@ dependencies {
     androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
     androidTestImplementation 'com.google.android.gms:play-services-vision:20.1.3'
-    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
+    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
 
     testImplementation 'org.mockito:mockito-core:3.12.4'
     testImplementation 'androidx.test.ext:junit:1.1.3'
@@ -46,8 +46,25 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // override the version of bcprov-jdk15on to avoid the ssl internal errors
-    testImplementation('org.robolectric:robolectric:4.7')
+    testImplementation('org.robolectric:robolectric:4.7') {
+        //Allows us to use the Android version of Apache httpclient instead
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
 
     testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
     testImplementation 'au.com.dius:pact-jvm-consumer-junit:4.0.10'
+
+
+    testImplementation("org.wiremock:wiremock:3.13.0") {
+        //Allows us to use the Android version of Apache httpclient instead
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+
+}
+
+tasks.withType(Test).configureEach {
+    def forks = Math.max((int)(Runtime.getRuntime().availableProcessors() / 2), 1)
+    maxParallelForks = forks
+    println("Setting maxParallelForks to $forks")
+    maxHeapSize = "1g" //For roboelectric
 }

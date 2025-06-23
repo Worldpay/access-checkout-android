@@ -33,7 +33,7 @@ import javax.net.ssl.HttpsURLConnection
 import kotlin.test.assertEquals
 import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -176,7 +176,7 @@ class SessionsPactTest {
 
     @Test
     @PactVerification("sessions", fragment = "createSuccessfulGetRequestInteraction")
-    fun `should receive a valid response when a valid GET request is sent`() = runAsBlockingTest {
+    fun `should receive a valid response when a valid GET request is sent`() = runTest {
         val httpClient = HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
         val headers = mapOf(ACCEPT_HEADER to SESSIONS_MEDIA_TYPE, CONTENT_TYPE_HEADER to SESSIONS_MEDIA_TYPE)
 
@@ -270,7 +270,7 @@ class SessionsPactTest {
 
     @Test
     @PactVerification("sessions", fragment = "cvcSessionCreateSuccessfulRequestInteraction")
-    fun `should receive a valid response when a valid request is sent`() = runAsBlockingTest {
+    fun `should receive a valid response when a valid request is sent`() = runTest {
         val sessionRequest =
             CvcSessionRequest(
                 cvc,
@@ -298,7 +298,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cvcSessionCreateInvalidIdentityRequestInteraction")
     fun `should receive a 400 response when a Cvc session request is sent with an invalid identity`() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CvcSessionRequest(
                     cvc,
@@ -326,7 +326,7 @@ class SessionsPactTest {
 
     @Test
     @PactVerification("sessions", fragment = "cvcSessionCreateStringNonNumericalCvcRequestInteraction")
-    fun `should receive an error when Cvc session request has a non-numeric cvc is provided`() = runAsBlockingTest {
+    fun `should receive an error when Cvc session request has a non-numeric cvc is provided`() = runTest {
         val sessionRequest =
             CvcSessionRequest(
                 cvcNonNumerical,
@@ -355,7 +355,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cvcSessionCreateEmptyBodyErrorInteractionRequestInteraction")
     fun `should receive a 400 response with error when body of Cvc session request is empty`() =
-        runAsBlockingTest {
+        runTest {
             val mockEmptySerializer = Mockito.mock(CvcSessionRequestSerializer::class.java)
 
             val emptyString = ""
@@ -594,7 +594,7 @@ class SessionsPactTest {
 
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateSuccessfulRequestInteraction")
-    fun givenValidCardSessionRequestThenShouldReceiveValidResponse() = runAsBlockingTest {
+    fun givenValidCardSessionRequestThenShouldReceiveValidResponse() = runTest {
         val sessionRequest =
             CardSessionRequest(
                 cardNumber,
@@ -631,7 +631,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateInvalidIdentityRequestInteraction")
     fun givenInvalidIdentityInCardSessionRequestThenShouldReceiveA400ResponseWithIdentityAsReason() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardNumber,
@@ -661,7 +661,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateInvalidLuhnRequestInteraction")
     fun givenLuhnInvalidCardInCardSessionRequestThenShouldReceiveA400ResponseWithPANFailedLuhnError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     invalidLuhn,
@@ -695,7 +695,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateStringTooShortRequestInteraction")
     fun givenStringTooShortCardInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardStringTooShort,
@@ -729,7 +729,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateStringTooLongRequestInteraction")
     fun givenStringTooLongCardInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardStringTooLong,
@@ -756,6 +756,7 @@ class SessionsPactTest {
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
+                println(ex)
                 fail("Should not have reached here!")
             }
         }
@@ -763,7 +764,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateIntegerMonthTooSmallRequestInteraction")
     fun givenIntegerMonthTooSmallInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardNumber,
@@ -797,7 +798,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateIntegerMonthTooLargeRequestInteraction")
     fun givenIntegerMonthTooLargeInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardNumber,
@@ -831,7 +832,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateStringNonNumericalCvcRequestInteraction")
     fun givenStringNonNumericalInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardNumber,
@@ -864,7 +865,7 @@ class SessionsPactTest {
 
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateEmptyBodyErrorInteractionRequestInteraction")
-    fun givenEmptyBodyInTheRequestThenShouldReceiveA400ResponseWithCorrectError() = runAsBlockingTest {
+    fun givenEmptyBodyInTheRequestThenShouldReceiveA400ResponseWithCorrectError() = runTest {
         val mockEmptySerializer = Mockito.mock(CardSessionRequestSerializer::class.java)
 
         val emptyString = ""

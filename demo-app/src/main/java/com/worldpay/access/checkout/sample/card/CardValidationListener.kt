@@ -55,10 +55,10 @@ class CardValidationListener(private val activity: FragmentActivity) :
     override fun onExpiryDateValidated(isValid: Boolean) {
         val expiryText = activity.findViewById<AccessCheckoutEditText>(R.id.card_flow_expiry_date)
         changeFont(expiryText, isValid)
-        if (!isValid) submitButton.disable()
+        if (!isValid) enableSubmitButton(false)
     }
 
-    override fun onValidationSuccess() = submitButton.enable()
+    override fun onValidationSuccess() = enableSubmitButton(true)
 
     private fun changeFont(accessCheckoutEditText: AccessCheckoutEditText, isValid: Boolean) {
         if (isValid) {
@@ -72,5 +72,18 @@ class CardValidationListener(private val activity: FragmentActivity) :
         val cardBrandNameTextView =
             activity.findViewById<TextView>(R.id.card_flow_text_card_brand_name)
         cardBrandNameTextView.text = text
+    }
+
+    private fun enableSubmitButton(enable: Boolean) {
+        if (enable) {
+            activity.runOnUiThread {
+                submitButton.enable()
+            }
+        } else {
+            activity.runOnUiThread {
+                submitButton.disable()
+            }
+        }
+
     }
 }

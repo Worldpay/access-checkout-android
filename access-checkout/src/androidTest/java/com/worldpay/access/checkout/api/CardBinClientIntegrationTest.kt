@@ -10,7 +10,7 @@ import com.github.tomakehurst.wiremock.client.WireMock.post
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
 import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
 import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
-import com.worldpay.access.checkout.api.MockServer.getBaseUrl
+import com.worldpay.access.checkout.api.MockServer.getStringBaseUrl
 import com.worldpay.access.checkout.api.MockServer.startWiremock
 import com.worldpay.access.checkout.api.MockServer.stopWiremock
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
@@ -19,6 +19,7 @@ import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.W
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID_VALUE
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
+import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -42,6 +43,9 @@ class CardBinClientIntegrationTest {
     var coroutinesTestRule = CoroutineTestRule()
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
+    private val cardBinClient = CardBinClient(getStringBaseUrl(), HttpsClient(),
+        CardBinResponseDeserializer(), CardBinRequestSerializer()
+    )
 
     @Before
     fun setup() {
@@ -82,7 +86,6 @@ class CardBinClientIntegrationTest {
                 )
         )
 
-        val cardBinClient = CardBinClient(getBaseUrl())
         val cardBinReq =
             CardBinRequest(
                 cardNumber = cardNumber,
@@ -119,7 +122,6 @@ class CardBinClientIntegrationTest {
             )
 
         val result = runCatching {
-            val cardBinClient = CardBinClient(getBaseUrl())
             cardBinClient.getCardBinResponse(cardBinReq)
         }
 

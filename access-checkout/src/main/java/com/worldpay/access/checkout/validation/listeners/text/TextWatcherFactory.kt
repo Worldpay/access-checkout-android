@@ -15,14 +15,19 @@ internal class TextWatcherFactory(
 
     private val cvcValidationRuleManager = CVCValidationRuleManager()
     private val dateValidator = ExpiryDateValidator()
-    private val cardBinService = CardBinService()
 
     fun createPanTextWatcher(
         panEditText: EditText,
         cvcEditText: EditText,
         acceptedCardBrands: Array<String>,
-        enablePanFormatting: Boolean
+        enablePanFormatting: Boolean,
+        checkoutId: String
     ): PanTextWatcher {
+        val baseUrl = if (checkoutId === "YOUR-CHECKOUT-ID") {
+            "https://localhost:3003"
+        } else {
+            "https://hpp-sandbox.worldpay.com"
+        }
         return PanTextWatcher(
             panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),
@@ -35,7 +40,10 @@ internal class TextWatcherFactory(
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandsChangedHandler = resultHandlerFactory.getBrandsChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager,
-            cardBinService
+            cardBinService = CardBinService(
+                checkoutId = checkoutId,
+                baseUrl = baseUrl,
+            )
         )
     }
 
