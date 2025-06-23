@@ -12,6 +12,7 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
+import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -26,10 +27,7 @@ internal class CardBinService(
     private val checkoutId: String,
     private val baseUrl: String,
     private val client: CardBinClient = CardBinClient(
-        baseUrl,
-        HttpsClient(),
-        CardBinResponseDeserializer(),
-        CardBinRequestSerializer()
+        URL(baseUrl)
     ),
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
