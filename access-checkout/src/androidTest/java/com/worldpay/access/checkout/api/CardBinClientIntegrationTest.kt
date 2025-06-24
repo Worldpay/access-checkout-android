@@ -30,6 +30,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.net.URL
 import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
@@ -43,7 +44,8 @@ class CardBinClientIntegrationTest {
     var coroutinesTestRule = CoroutineTestRule()
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
-    private val cardBinClient = CardBinClient(getStringBaseUrl(), HttpsClient(),
+    private val cardBinClient = CardBinClient(URL(getStringBaseUrl()),
+        URLFactoryImpl(),HttpsClient(),
         CardBinResponseDeserializer(), CardBinRequestSerializer()
     )
 
