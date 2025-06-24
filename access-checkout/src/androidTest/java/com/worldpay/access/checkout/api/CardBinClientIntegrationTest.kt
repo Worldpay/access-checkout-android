@@ -129,7 +129,7 @@ class CardBinClientIntegrationTest {
 
         assertTrue(result.isFailure)
         assertTrue(result.exceptionOrNull() is AccessCheckoutException)
-        assertEquals("Error message was: Server Error", result.exceptionOrNull()?.message)
+        assertEquals("Could not perform request to card-bin API.", result.exceptionOrNull()?.message)
     }
 
     private fun postRequest(request: String): MappingBuilder {
