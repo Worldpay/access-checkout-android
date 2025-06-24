@@ -90,11 +90,10 @@ internal class CardBinClient(
 
                     // Resume the coroutine with the response
                     continuation.resume(response)
-                } catch (_: Exception) {
+                } catch (e: Exception) {
                     //Otherwise raise new exception
                     continuation.resumeWithException(
-                        //TODO: Do we need any details ?
-                        AccessCheckoutException("Could not perform request to card-bin API.")
+                        AccessCheckoutException("${e.message}")
                     )
                 }
             }
