@@ -37,6 +37,7 @@ internal class CardBinClient(
     private val httpsClient: HttpsClient = HttpsClient(),
     private val deserializer: Deserializer<CardBinResponse> = CardBinResponseDeserializer(),
     private val serializer: Serializer<CardBinRequest> = CardBinRequestSerializer(),
+    private var currentJob: Job? = null
 ) {
 
     internal companion object {
@@ -55,7 +56,7 @@ internal class CardBinClient(
     private val scope = CoroutineScope(Dispatchers.IO)
 
     // Holds the current in-flight request Job for cancellation
-    internal var currentJob: Job? = null
+//    private var currentJob: Job? = null
 
     private val cardBinUrl = urlFactory.getURL("$baseUrl/$CARD_BIN_ENDPOINT")
 

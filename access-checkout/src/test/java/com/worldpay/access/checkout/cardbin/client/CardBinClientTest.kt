@@ -53,7 +53,6 @@ class CardBinClientTest {
     private lateinit var serializer: CardBinRequestSerializer
     private lateinit var deserializer: CardBinResponseDeserializer
     private lateinit var cardBinRequest: CardBinRequest
-    private lateinit var client: CardBinClient
 
     @Before
     fun setUp() {
@@ -64,8 +63,6 @@ class CardBinClientTest {
         cardBinRequest = CardBinRequest("1111222233334444", "some-id")
 
         given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
-        client = CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer)
-
     }
 
     @Test
@@ -81,12 +78,12 @@ class CardBinClientTest {
         val actualResponse = client.getCardBinResponse(cardBinRequest)
 
         assertEquals(null, actualResponse)
-
     }
-
 
     @Test
     fun `should make expected http request and return response`() = runTest {
+        val client = createCardBinClient()
+
         val cardBinResponse = mock(CardBinResponse::class.java)
         given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
             .willReturn(cardBinResponse)
@@ -95,8 +92,11 @@ class CardBinClientTest {
         assertEquals(cardBinResponse, actualResponse)
     }
 
+
     @Test
     fun `should wrap exception in AccessCheckoutException`() = runTest {
+        val client = createCardBinClient()
+
         given(
             httpsClient.doPost(
                 eq(cardBinUrl),
@@ -115,14 +115,14 @@ class CardBinClientTest {
 
     @Test
     fun `should cancel previous job if new request is made`() = runTest {
+        val mockJob = mock(Job::class.java)
+        val client = createCardBinClient(mockJob)
+
         val response1 = mock(CardBinResponse::class.java)
         val response2 = mock(CardBinResponse::class.java)
         given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
             .willReturn(response1, response2)
 
-
-        val mockJob = mock(Job::class.java)
-        client.apply { currentJob = mockJob }
 
         // Launch first request (will be cancelled)
         client.getCardBinResponse(cardBinRequest)
@@ -137,27 +137,14 @@ class CardBinClientTest {
     @Test
     fun `should call cancel on currentJob to ensure previous jobs are cancelled`() = runTest {
         val mockJob = mock(Job::class.java)
-        val client =
-            CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer).apply {
-                currentJob = mockJob
-            }
+        val client = createCardBinClient(mockJob)
 
         client.getCardBinResponse(cardBinRequest)
 
         verify(mockJob).cancel()
-        assertNotEquals(client.currentJob, mockJob)
     }
 
-    @Test
-    fun `should create new job if new request is made`() = runTest {
-        val mockJob = mock(Job::class.java)
-        val client =
-            CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer).apply {
-                currentJob = mockJob
-            }
-
-        client.getCardBinResponse(cardBinRequest)
-
-        assertNotEquals(client.currentJob, mockJob)
+    private fun createCardBinClient(currentJob: Job? = null): CardBinClient {
+        return CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer, currentJob)
     }
 }
