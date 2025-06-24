@@ -19,6 +19,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -144,5 +145,19 @@ class CardBinClientTest {
         client.getCardBinResponse(cardBinRequest)
 
         verify(mockJob).cancel()
+        assertNotEquals(client.currentJob, mockJob)
+    }
+
+    @Test
+    fun `should create new job if new request is made`() = runTest {
+        val mockJob = mock(Job::class.java)
+        val client =
+            CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer).apply {
+                currentJob = mockJob
+            }
+
+        client.getCardBinResponse(cardBinRequest)
+
+        assertNotEquals(client.currentJob, mockJob)
     }
 }
