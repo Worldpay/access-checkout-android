@@ -33,11 +33,14 @@ def execData = files("${layout.buildDirectory.dir('.').get().asFile}/outputs/uni
 def sourceDirs = files(["${project.projectDir}/src/main/java"])
 
 tasks.register('jacocoTestReport', JacocoReport) {
-    dependsOn['testDebugUnitTest']
     executionData.setFrom(execData)
     classDirectories.setFrom(classDirs)
     sourceDirectories.setFrom(sourceDirs)
 }
+tasks.named('jacocoTestReport') {
+    dependsOn('testDebugUnitTest')
+}
+
 
 tasks.register('jacocoTestCoverageVerification', JacocoCoverageVerification) {
     dependsOn 'jacocoTestReport'
