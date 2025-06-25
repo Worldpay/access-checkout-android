@@ -127,11 +127,11 @@ internal class CardBinClient(
 
     suspend fun fetchCardBinResponseWithRetry(
         client: RemoteCardBrand,
-        request: CardBinResponse,
+        request: CardBinRequest,
         maxAttempts: Int = 3
     ): CardBinResponse {
-        return client.retryMechanism(maxAttempts) {
-            client.getCardBinResponse(request) // Call the CardBinService
+        return retryMechanism(maxAttempts) {
+            getCardBinResponse(request) // Call the CardBinService
         }
     }
 }

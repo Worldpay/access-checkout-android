@@ -132,7 +132,7 @@ internal class CardBinService(
 
     private suspend fun transform(
         cardBinClient: RemoteCardBrand,
-        cardBinRequest: CardBinResponse,
+        cardBinRequest: CardBinRequest,
         globalBrand: RemoteCardBrand,
         maxAttempts: Int = 3
     ): List<RemoteCardBrand> {
