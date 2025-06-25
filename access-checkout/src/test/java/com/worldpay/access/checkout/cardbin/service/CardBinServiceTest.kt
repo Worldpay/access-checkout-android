@@ -21,6 +21,7 @@ import org.mockito.kotlin.whenever
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 
 class CardBinServiceTest : BaseCoroutineTest() {
 
@@ -316,10 +317,10 @@ class CardBinServiceTest : BaseCoroutineTest() {
         }
 
     @Test
-    fun `should swallow exception and call callback with global brand when exception thrown by API client`() =
+    fun `should swallow exception and not call callback when exception thrown by API client`() =
         runTest {
             val globalBrand = DISCOVER_BRAND
-            var additionalCardBrands: List<RemoteCardBrand>? = null
+            var additionalCardBrands: List<RemoteCardBrand> = emptyList()
             val latch = CountDownLatch(1)
 
             whenever(cardBinClient.getCardBinResponse(any())).thenThrow(RuntimeException("hello"))
@@ -332,11 +333,11 @@ class CardBinServiceTest : BaseCoroutineTest() {
                 latch.countDown()
             }
 
-            // Wait for the callback to be invoked
-            assertTrue(latch.await(2, TimeUnit.SECONDS))
+            // Wait until the countdown latch times out the callback
+            // will never be called and the latched never reach 0
+            assertFalse(latch.await(1, TimeUnit.SECONDS))
 
-            assertNotNull(additionalCardBrands)
-            assertEquals(1, additionalCardBrands?.size)
-            assertEquals("discover", additionalCardBrands?.get(0)?.name)
+            // making sure that we never received any card brands
+            assertTrue(additionalCardBrands.isEmpty())
         }
 }

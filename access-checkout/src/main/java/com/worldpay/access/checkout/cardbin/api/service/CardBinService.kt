@@ -81,7 +81,6 @@ internal class CardBinService(
                     this::class.java.simpleName,
                     "Could not retrieve card bin information using API client: ${throwable.message}"
                 )
-                callback.invoke(listOf(globalBrand))
             }
 
         // Launch a coroutine to fetch the card brands from the API asynchronously
