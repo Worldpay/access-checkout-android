@@ -129,10 +129,13 @@ internal class CardBinService(
 
     }
 
-    private fun transform(
+    private suspend fun transform(
+        cardBinClient: CardBinClient,
+        cardBinRequest: CardBinRequest,
         globalBrand: RemoteCardBrand,
-        response: CardBinResponse
+        maxAttempts: Int = 3
     ): List<RemoteCardBrand> {
+        val response = client.fetchCardBinResponseWithRetry(cardBinClient, cardBinRequest, maxAttempts)
         // check that the response.brand isn't empty
         if (response.brand.isEmpty()) {
             return listOf(globalBrand)

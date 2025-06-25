@@ -123,4 +123,14 @@ internal class CardBinClient(
         }
         throw AccessCheckoutException("Unexpected error occurred while fetching card schemes", lastException)
         }
+
+    suspend fun fetchCardBinResponseWithRetry(
+        client: CardBinClient,
+        request: CardBinRequest,
+        maxAttempts: Int = 3
+    ): CardBinResponse {
+        return client.retryMechanism(maxAttempts) {
+            client.getCardBinResponse(request) // Call the CardBinService
+        }
+    }
 }
