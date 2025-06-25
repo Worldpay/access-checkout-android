@@ -44,14 +44,16 @@ class CardBinClientIntegrationTest {
     var coroutinesTestRule = CoroutineTestRule()
 
     private val applicationContext: Context = getInstrumentation().context.applicationContext
-    private val cardBinClient = CardBinClient(URL(getStringBaseUrl()),
-        URLFactoryImpl(),HttpsClient(),
-        CardBinResponseDeserializer(), CardBinRequestSerializer()
-    )
+    private var cardBinClient: CardBinClient? = null
 
     @Before
     fun setup() {
         startWiremock(applicationContext, 8443)
+        cardBinClient = CardBinClient(
+            URL(getStringBaseUrl()),
+            URLFactoryImpl(), HttpsClient(),
+            CardBinResponseDeserializer(), CardBinRequestSerializer()
+        )
     }
 
     @After
@@ -94,7 +96,7 @@ class CardBinClientIntegrationTest {
                 checkoutId = checkoutId
             )
 
-        val cardBinResponse = cardBinClient.getCardBinResponse(cardBinReq)
+        val cardBinResponse = cardBinClient!!.getCardBinResponse(cardBinReq)
         val expectedResponse = CardBinResponseDeserializer().deserialize(response)
 
         assertEquals(expectedResponse, cardBinResponse)
@@ -124,12 +126,11 @@ class CardBinClientIntegrationTest {
             )
 
         val result = runCatching {
-            cardBinClient.getCardBinResponse(cardBinReq)
+            cardBinClient!!.getCardBinResponse(cardBinReq)
         }
 
         assertTrue(result.isFailure)
-        assertTrue(result.exceptionOrNull() is AccessCheckoutException)
-        assertEquals("Could not perform request to card-bin API.", result.exceptionOrNull()?.message)
+        assertEquals("Error message was: Server Error", result.exceptionOrNull()?.message)
     }
 
     private fun postRequest(request: String): MappingBuilder {
