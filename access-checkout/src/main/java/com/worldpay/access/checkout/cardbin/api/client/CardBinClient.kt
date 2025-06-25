@@ -102,23 +102,23 @@ internal class CardBinClient(
 
     suspend fun fetchCardBinResponseWithRetry(
         cardBinRequest: CardBinRequest, // The request to fetch card BIN details
-        maxAttempts: Int = 3
+        maxAttempts: Int = 3 // Maximum number of retry attempts
     ): CardBinResponse {
-        var attempt = 0
-        var lastException: Exception? = null
+        var attempt = 0 // Tracks the current number of attempts
+        var lastException: Exception? = null //stores the last encountered exception
 
-        while (attempt < maxAttempts) {
+        while (attempt < maxAttempts) { // Loops until max attempts are reached
             try {
-                return getCardBinResponse(cardBinRequest)
+                return getCardBinResponse(cardBinRequest) // Attempts to get the card BIN response
             } catch (e: Exception) {
-                lastException = e
-                attempt++
-                if (attempt == maxAttempts) {
+                lastException = e // Stores the exception if the previous attempt fails
+                attempt++ // Increments the number of attempts
+                if (attempt == maxAttempts) { // Throws an exception if max attempts reached
                     throw AccessCheckoutException("Failed after $maxAttempts attempts", lastException)
                 }
             }
         }
 
-        throw AccessCheckoutException("Unexpected error", lastException)
+        throw AccessCheckoutException("Unexpected error", lastException) // Fallback exception if loop exits unexpectedly
     }
 }

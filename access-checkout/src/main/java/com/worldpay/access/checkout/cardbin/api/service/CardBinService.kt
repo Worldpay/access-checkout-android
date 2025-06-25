@@ -126,7 +126,7 @@ internal class CardBinService(
         globalBrand: RemoteCardBrand,
         maxAttempts: Int = 3
     ): List<RemoteCardBrand> {
-        val response = client.fetchCardBinResponseWithRetry(cardBinRequest, maxAttempts)
+        val response = client.fetchCardBinResponseWithRetry(cardBinRequest, maxAttempts) // Calls the function from CardBinClient to fetch the card BIN response
         // check that the response.brand isn't empty
         if (response.brand.isEmpty()) {
             return listOf(globalBrand)
