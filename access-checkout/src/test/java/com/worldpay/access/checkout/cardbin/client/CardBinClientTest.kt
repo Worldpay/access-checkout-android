@@ -143,6 +143,51 @@ class CardBinClientTest {
         verify(mockJob).cancel()
     }
 
+    @Test
+    fun `should return result on first attempt`() =
+        runTest {
+            val client = createCardBinClient()
+
+            val cardBinResponse = mock(CardBinResponse::class.java)
+            given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
+                .willReturn(cardBinResponse)
+
+            val actualResponse = client.getCardBinResponse(cardBinRequest)
+
+            assertEquals(cardBinResponse, actualResponse)
+        }
+
+    @Test
+    fun `should retry and succeed on second attempt`() =
+        runTest {
+            val client = createCardBinClient()
+
+            val cardBinResponse = mock(CardBinResponse::class.java)
+            given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
+                .willThrow(RuntimeException("First attempt failed"))
+                .willReturn(cardBinResponse)
+
+            val actualResponse = client.fetchCardBinResponseWithRetry(cardBinRequest)
+
+            assertEquals(cardBinResponse, actualResponse)
+        }
+
+    @Test
+    fun `should throw exception after max attempts reached`() =
+        runTest {
+            val client = createCardBinClient()
+
+            given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
+                .willThrow(RuntimeException("Request failed"))
+
+            val ex = runCatching {
+                client.fetchCardBinResponseWithRetry(cardBinRequest, maxAttempts = 3)
+            }.exceptionOrNull()
+
+            assertTrue(ex is AccessCheckoutException)
+            assertEquals("Failed after 3 attempts", ex?.message)
+        }
+
     private fun createCardBinClient(currentJob: Job? = null): CardBinClient {
         return CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer, currentJob)
     }
