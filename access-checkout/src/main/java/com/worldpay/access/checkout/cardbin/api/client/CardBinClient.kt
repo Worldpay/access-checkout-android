@@ -18,7 +18,6 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import java.net.URL
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
-
 /**
  * Client for retrieving card scheme details using a card BIN.
  *
@@ -100,4 +99,28 @@ internal class CardBinClient(
             }
         }
     }
+
+    suspend fun retryMechanism (
+        maxAttempts: Int = 3, // parameter to control the number of retry attempts
+        block: suspend () -> CardBinResponse // suspending lambda that performs the request
+    ): CardBinResponse {
+            var attempt = 0 // initialise the attempt counter at 0
+            var lastException: Exception? = null // stores the last exception thrown, initialised with null
+
+        while (attempt < maxAttempts) {
+            try {
+                return block() // attempt to execute the block of code
+            } catch (e: Exception) {
+                lastException = e
+                attempt++
+                if (attempt == maxAttempts) {
+                    throw AccessCheckoutException(
+                        "Failed after $maxAttempts attempted",
+                        lastException
+                    ) // rethrow the exception if the last attempt fails
+                }
+            }
+        }
+        throw AccessCheckoutException("Unexpected error occurred while fetching card schemes", lastException)
+        }
 }
