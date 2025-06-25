@@ -18,6 +18,7 @@ import kotlinx.coroutines.suspendCancellableCoroutine
 import java.net.URL
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
+
 /**
  * Client for retrieving card scheme details using a card BIN.
  *
@@ -77,7 +78,7 @@ internal class CardBinClient(
             // Launch a new coroutine for the call to card-bin service and keep track of its Job
             currentJob = scope.launch {
                 try {
-                    // TODO Can I refactor this to a separate method?
+
                     val headers = hashMapOf(
                         WP_API_VERSION to WP_API_VERSION_VALUE,
                         WP_CALLER_ID to WP_CALLER_ID_VALUE,
@@ -89,11 +90,10 @@ internal class CardBinClient(
 
                     // Resume the coroutine with the response
                     continuation.resume(response)
-                } catch (_: Exception) {
+                } catch (e: Exception) {
                     //Otherwise raise new exception
                     continuation.resumeWithException(
-                        //TODO: Do we need any details ?
-                        AccessCheckoutException("Could not perform request to card-bin API.")
+                        AccessCheckoutException("${e.message}")
                     )
                 }
             }
@@ -112,13 +112,19 @@ internal class CardBinClient(
                 return getCardBinResponse(cardBinRequest) // Attempts to get the card BIN response
             } catch (e: Exception) {
                 lastException = e // Stores the exception if the previous attempt fails
-                attempt++ // Increments the number of attempts
-                if (attempt == maxAttempts) { // Throws an exception if max attempts reached
-                    throw AccessCheckoutException("Failed after $maxAttempts attempts", lastException)
+                if (e == AccessCheckoutException("Client Server Error")) {
+                    throw e // Throws an exception if a Client Server error is encountered
+                } else {
+                    attempt++ // Increments the number of attempts
+                    if (attempt == maxAttempts) { // Throws an exception if max attempts reached
+                        throw AccessCheckoutException("Failed after $maxAttempts attempts", lastException)
+                    }
                 }
             }
         }
-
-        throw AccessCheckoutException("Unexpected error", lastException) // Fallback exception if loop exits unexpectedly
+        throw AccessCheckoutException(
+            "Unexpected error",
+            lastException
+        ) // Fallback exception if loop exits unexpectedly
     }
 }

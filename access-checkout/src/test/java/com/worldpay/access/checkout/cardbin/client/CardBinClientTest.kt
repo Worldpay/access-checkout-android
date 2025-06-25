@@ -31,6 +31,7 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import java.net.URL
+import kotlin.test.assertNotEquals
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
@@ -186,6 +187,23 @@ class CardBinClientTest {
 
             assertTrue(ex is AccessCheckoutException)
             assertEquals("Failed after 3 attempts", ex?.message)
+        }
+
+    @Test
+    fun `should throw exception if response is a client server error (codes 400 to 499) and not retry`() =
+        runTest {
+            val client = createCardBinClient()
+
+            given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
+                .willThrow(AccessCheckoutException("Client Server Error"))
+
+            val ex = runCatching {
+                client.fetchCardBinResponseWithRetry(cardBinRequest)
+            }.exceptionOrNull()
+
+            assertTrue(ex is AccessCheckoutException)
+            assertEquals("Client Server Error", ex?.message)
+            assertNotEquals("Failed after 3 attempts", ex?.message)
         }
 
     private fun createCardBinClient(currentJob: Job? = null): CardBinClient {
