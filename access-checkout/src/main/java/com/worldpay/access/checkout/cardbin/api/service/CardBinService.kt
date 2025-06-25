@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.cardbin.api.service
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -11,6 +10,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
+import kotlin.text.set
 
 /**
  * Service for retrieving card brand schemes using the card BIN (Bank Identification Number).
@@ -68,7 +68,6 @@ internal class CardBinService(
     ) {
         //Safe-guard: ensure pan has no spaces to be able to compute cache keys and request correctly
         val panValue = pan.replace(" ", "")
-
         // Generate the cache key using the first 12 digits of the PAN
         val cacheKey = getCacheKey(panValue)
         // Return cached response if available
@@ -80,17 +79,9 @@ internal class CardBinService(
 
         // Launch a coroutine to fetch the card brands from the API asynchronously
         launchCancellableCoroutineRequest {
-            val response =
-                client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
-            // Transform the API response into a list of card brands
-            val brands = transform(
-                globalBrand, response,
-                globalBrand = globalBrand,
-                maxAttempts = 3
-            )
+            val cardBinRequest = CardBinRequest(panValue, checkoutId)
+            val brands = transform(cardBinRequest, globalBrand, maxAttempts = 3)
             cache[cacheKey] = brands
-
-            // Invoke the callback with the transformed card brands
             callback.invoke(brands)
         }
     }
@@ -131,12 +122,11 @@ internal class CardBinService(
     }
 
     private suspend fun transform(
-        cardBinClient: RemoteCardBrand,
         cardBinRequest: CardBinRequest,
         globalBrand: RemoteCardBrand,
         maxAttempts: Int = 3
     ): List<RemoteCardBrand> {
-        val response = client.fetchCardBinResponseWithRetry(cardBinClient, cardBinRequest, maxAttempts)
+        val response = client.fetchCardBinResponseWithRetry(cardBinRequest, maxAttempts)
         // check that the response.brand isn't empty
         if (response.brand.isEmpty()) {
             return listOf(globalBrand)

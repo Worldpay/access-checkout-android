@@ -3,7 +3,6 @@ package com.worldpay.access.checkout.cardbin.api.client
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.api.URLFactoryImpl
-import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
@@ -101,37 +100,25 @@ internal class CardBinClient(
         }
     }
 
-    suspend fun retryMechanism (
-        maxAttempts: Int = 3, // parameter to control the number of retry attempts
-        block: suspend () -> CardBinResponse // suspending lambda that performs the request
+    suspend fun fetchCardBinResponseWithRetry(
+        cardBinRequest: CardBinRequest, // The request to fetch card BIN details
+        maxAttempts: Int = 3
     ): CardBinResponse {
-            var attempt = 0 // initialise the attempt counter at 0
-            var lastException: Exception? = null // stores the last exception thrown, initialised with null
+        var attempt = 0
+        var lastException: Exception? = null
 
         while (attempt < maxAttempts) {
             try {
-                return block() // attempt to execute the block of code
+                return getCardBinResponse(cardBinRequest)
             } catch (e: Exception) {
                 lastException = e
                 attempt++
                 if (attempt == maxAttempts) {
-                    throw AccessCheckoutException(
-                        "Failed after $maxAttempts attempted",
-                        lastException
-                    ) // rethrow the exception if the last attempt fails
+                    throw AccessCheckoutException("Failed after $maxAttempts attempts", lastException)
                 }
             }
         }
-        throw AccessCheckoutException("Unexpected error occurred while fetching card schemes", lastException)
-        }
 
-    suspend fun fetchCardBinResponseWithRetry(
-        client: RemoteCardBrand,
-        request: CardBinRequest,
-        maxAttempts: Int = 3
-    ): CardBinResponse {
-        return retryMechanism(maxAttempts) {
-            getCardBinResponse(request) // Call the CardBinService
-        }
+        throw AccessCheckoutException("Unexpected error", lastException)
     }
 }
