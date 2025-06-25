@@ -1,12 +1,9 @@
 package com.worldpay.access.checkout.cardbin.api.service
 
-import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -86,7 +83,11 @@ internal class CardBinService(
             val response =
                 client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
             // Transform the API response into a list of card brands
-            val brands = transform(globalBrand, response)
+            val brands = transform(
+                globalBrand, response,
+                globalBrand = globalBrand,
+                maxAttempts = 3
+            )
             cache[cacheKey] = brands
 
             // Invoke the callback with the transformed card brands
@@ -130,8 +131,8 @@ internal class CardBinService(
     }
 
     private suspend fun transform(
-        cardBinClient: CardBinClient,
-        cardBinRequest: CardBinRequest,
+        cardBinClient: RemoteCardBrand,
+        cardBinRequest: CardBinResponse,
         globalBrand: RemoteCardBrand,
         maxAttempts: Int = 3
     ): List<RemoteCardBrand> {

@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.cardbin.api.client
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.api.URLFactoryImpl
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
@@ -125,8 +126,8 @@ internal class CardBinClient(
         }
 
     suspend fun fetchCardBinResponseWithRetry(
-        client: CardBinClient,
-        request: CardBinRequest,
+        client: RemoteCardBrand,
+        request: CardBinResponse,
         maxAttempts: Int = 3
     ): CardBinResponse {
         return client.retryMechanism(maxAttempts) {
