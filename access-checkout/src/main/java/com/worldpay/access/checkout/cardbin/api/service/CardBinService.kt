@@ -80,7 +80,7 @@ internal class CardBinService(
         // Launch a coroutine to fetch the card brands from the API asynchronously
         launchCancellableCoroutineRequest {
             val cardBinRequest = CardBinRequest(panValue, checkoutId)
-            val brands = transform(cardBinRequest, globalBrand, maxAttempts = 3)
+            val brands = transform(cardBinRequest, globalBrand)
             cache[cacheKey] = brands
             callback.invoke(brands)
         }
@@ -124,9 +124,8 @@ internal class CardBinService(
     private suspend fun transform(
         cardBinRequest: CardBinRequest,
         globalBrand: RemoteCardBrand,
-        maxAttempts: Int = 3
     ): List<RemoteCardBrand> {
-        val response = client.fetchCardBinResponseWithRetry(cardBinRequest, maxAttempts) // Calls the function from CardBinClient to fetch the card BIN response
+        val response = client.fetchCardBinResponseWithRetry(cardBinRequest) // Calls the fybc
         // check that the response.brand isn't empty
         if (response.brand.isEmpty()) {
             return listOf(globalBrand)

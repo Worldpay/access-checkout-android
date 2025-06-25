@@ -77,7 +77,7 @@ internal class CardBinClient(
             // Launch a new coroutine for the call to card-bin service and keep track of its Job
             currentJob = scope.launch {
                 try {
-
+                    // TODO Can I refactor this to a separate method?
                     val headers = hashMapOf(
                         WP_API_VERSION to WP_API_VERSION_VALUE,
                         WP_CALLER_ID to WP_CALLER_ID_VALUE,
@@ -101,9 +101,9 @@ internal class CardBinClient(
     }
 
     suspend fun fetchCardBinResponseWithRetry(
-        cardBinRequest: CardBinRequest, // The request to fetch card BIN details
-        maxAttempts: Int = 3 // Maximum number of retry attempts
+        cardBinRequest: CardBinRequest // The request to fetch card BIN details
     ): CardBinResponse {
+        val maxAttempts = 3 // Maximum number of retry attempts
         var attempt = 0 // Tracks the current number of attempts
         var lastException: Exception? = null //stores the last encountered exception
 

@@ -181,7 +181,7 @@ class CardBinClientTest {
                 .willThrow(RuntimeException("Request failed"))
 
             val ex = runCatching {
-                client.fetchCardBinResponseWithRetry(cardBinRequest, maxAttempts = 3)
+                client.fetchCardBinResponseWithRetry(cardBinRequest)
             }.exceptionOrNull()
 
             assertTrue(ex is AccessCheckoutException)
