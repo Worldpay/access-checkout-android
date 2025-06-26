@@ -28,8 +28,6 @@ import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
-import org.mockito.kotlin.any
-import org.mockito.kotlin.eq
 import org.mockito.kotlin.verify
 import java.net.URL
 import kotlin.test.assertNotEquals
