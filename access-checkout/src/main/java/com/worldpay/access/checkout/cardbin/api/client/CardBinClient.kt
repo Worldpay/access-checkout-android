@@ -10,6 +10,7 @@ import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -92,9 +93,7 @@ internal class CardBinClient(
                     continuation.resume(response)
                 } catch (e: Exception) {
                     //Otherwise raise new exception
-                    continuation.resumeWithException(
-                        AccessCheckoutException("${e.message}")
-                    )
+                    continuation.resumeWithException(e)
                 }
             }
         }
@@ -109,11 +108,12 @@ internal class CardBinClient(
 
         while (attempt < maxAttempts) { // Loops until max attempts are reached
             try {
-                return getCardBinResponse(cardBinRequest) // Attempts to get the card BIN response
+                return getCardBinResponse(cardBinRequest)
+                // Attempts to get the card BIN response
             } catch (e: Exception) {
                 lastException = e // Stores the exception if the previous attempt fails
-                if (e == AccessCheckoutException("Client Server Error")) {
-                    throw e // Throws an exception if a Client Server error is encountered
+                if (e.cause is ClientErrorException) { // client error is 400-499
+                    throw e // Throws an exception if a Client error is encountered
                 } else {
                     attempt++ // Increments the number of attempts
                     if (attempt == maxAttempts) { // Throws an exception if max attempts reached

@@ -14,6 +14,7 @@ import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
@@ -90,27 +91,6 @@ class CardBinClientTest {
 
         val actualResponse = client.getCardBinResponse(cardBinRequest)
         assertEquals(cardBinResponse, actualResponse)
-    }
-
-
-    @Test
-    fun `should wrap exception in AccessCheckoutException`() = runTest {
-        val client = createCardBinClient()
-
-        given(
-            httpsClient.doPost(
-                eq(cardBinUrl),
-                eq(cardBinRequest),
-                any<HashMap<String, String>>(),
-                eq(serializer),
-                eq(deserializer)
-            )
-        ).willThrow(RuntimeException("Some error"))
-
-        val ex = runCatching { client.getCardBinResponse(cardBinRequest) }.exceptionOrNull()
-
-        assertTrue(ex is AccessCheckoutException)
-        assertEquals("Could not perform request to card-bin API.", ex?.message)
     }
 
     @Test
@@ -190,19 +170,20 @@ class CardBinClientTest {
         }
 
     @Test
-    fun `should throw exception if response is a client server error (codes 400 to 499) and not retry`() =
+    fun `should throw exception if response is a client server error (code 400 to 499) and not retry`() =
         runTest {
             val client = createCardBinClient()
 
             given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
-                .willThrow(AccessCheckoutException("Client Server Error"))
+                .willThrow(AccessCheckoutException("HTTP response code: 400", ClientErrorException(errorCode=400)))
 
             val ex = runCatching {
                 client.fetchCardBinResponseWithRetry(cardBinRequest)
             }.exceptionOrNull()
 
             assertTrue(ex is AccessCheckoutException)
-            assertEquals("Client Server Error", ex?.message)
+            assertTrue(ex?.cause is ClientErrorException)
+            assertEquals("HTTP response code: 400", ex?.message)
             assertNotEquals("Failed after 3 attempts", ex?.message)
         }
 
