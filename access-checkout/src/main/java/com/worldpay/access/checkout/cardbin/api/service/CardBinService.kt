@@ -1,16 +1,13 @@
 package com.worldpay.access.checkout.cardbin.api.service
 
-import com.worldpay.access.checkout.api.HttpsClient
+import android.util.Log
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
-import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
@@ -31,9 +28,6 @@ internal class CardBinService(
     ),
     private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
 ) {
-
-    // Holds the current in-flight request Job for cancellation
-    internal var currentJob: Job? = null
 
     companion object {
         // only stores value in cache of required length (12 digits)
@@ -81,17 +75,28 @@ internal class CardBinService(
             return
         }
 
-        // Launch a coroutine to fetch the card brands from the API asynchronously
-        launchCancellableCoroutineRequest {
-            val response =
-                client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
-            // Transform the API response into a list of card brands
-            val brands = transform(globalBrand, response)
-            cache[cacheKey] = brands
+        val coroutineExceptionHandler =
+            CoroutineExceptionHandler { _, throwable ->
+                Log.d(
+                    this::class.java.simpleName,
+                    "Could not retrieve card bin information using API client: ${throwable.message}"
+                )
+            }
 
-            // Invoke the callback with the transformed card brands
-            callback.invoke(brands)
-        }
+        // Launch a coroutine to fetch the card brands from the API asynchronously
+        launchCancellableCoroutineRequest(
+            {
+                val response =
+                    client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
+                // Transform the API response into a list of card brands
+                val brands = transform(globalBrand, response)
+                cache[cacheKey] = brands
+
+                // Invoke the callback with the transformed card brands
+                callback.invoke(brands)
+            },
+            coroutineExceptionHandler
+        )
     }
 
     /**
@@ -103,30 +108,14 @@ internal class CardBinService(
      * @param request A suspendable lambda representing the request to be executed.
      */
     private fun launchCancellableCoroutineRequest(
-        request: suspend () -> Unit
+        request: suspend () -> Unit,
+        coroutineExceptionHandler: CoroutineExceptionHandler
     ) {
-        currentJob?.let {
-            println("Found in-flight request, will abort in-flight request.")
-            it.cancel() // Cancel the in-flight request
-            currentJob = null // Reset the job reference
-        }
-
         // Launch a new coroutine to execute the request
-        currentJob = scope.launch {
-            try {
-                // Execute the provided request
-                request()
-            } catch (exception: Exception) {
-                // Wrap and rethrow the exception with additional context
-                throw AccessCheckoutException(
-                    "Could not perform request to card-bin API.",
-                    exception
-                )
-            } finally {
-                currentJob = null
-            }
+        scope.launch(coroutineExceptionHandler) {
+            // Execute the provided request
+            request()
         }
-
     }
 
     private fun transform(

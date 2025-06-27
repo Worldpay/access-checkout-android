@@ -91,7 +91,6 @@ class CardBinClientTest {
         assertEquals(cardBinResponse, actualResponse)
     }
 
-
     @Test
     fun `should wrap exception in AccessCheckoutException`() = runTest {
         val client = createCardBinClient()
@@ -109,7 +108,7 @@ class CardBinClientTest {
         val ex = runCatching { client.getCardBinResponse(cardBinRequest) }.exceptionOrNull()
 
         assertTrue(ex is AccessCheckoutException)
-        assertEquals("Could not perform request to card-bin API.", ex?.message)
+        assertEquals("Some error", ex?.message)
     }
 
     @Test

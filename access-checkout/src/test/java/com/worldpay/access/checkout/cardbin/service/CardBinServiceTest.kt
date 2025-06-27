@@ -4,7 +4,6 @@ import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
-import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DISCOVER_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import kotlinx.coroutines.launch
@@ -22,7 +21,7 @@ import org.mockito.kotlin.whenever
 import java.util.concurrent.CountDownLatch
 import java.util.concurrent.TimeUnit
 import kotlin.test.assertEquals
-import kotlin.test.fail
+import kotlin.test.assertFalse
 
 class CardBinServiceTest : BaseCoroutineTest() {
 
@@ -318,62 +317,27 @@ class CardBinServiceTest : BaseCoroutineTest() {
         }
 
     @Test
-    fun `should cancel the current job when there is a request in flight`() = runTest {
-        val firstBrandPan = discoverDinersTestPan + "1234"
-        val secondBrandPan = discoverDinersTestPan + "5678"
-        val brand = DISCOVER_BRAND
-
-        // Simulate a long-running request
-        whenever(cardBinClient.getCardBinResponse(any())).thenAnswer {
-            Thread.sleep(5000) // Simulate delay
-            CardBinResponse(
-                brand = listOf("discover", "diners"),
-                fundingType = "debit",
-                luhnCompliant = true
-            )
-        }
-
-        // Start the first request
-        cardBinService.getCardBrands(brand, firstBrandPan) {}
-
-        val firstJob = cardBinService.currentJob
-
-        // Send a second request while the first is still in progress
-        cardBinService.getCardBrands(brand, secondBrandPan) {}
-
-        // Verify that the first job was cancelled
-        assertTrue(firstJob?.isCancelled ?: false)
-    }
-
-    @Test
-    fun `should raise AccessCheckoutException when client throws RuntimeException`() =
+    fun `should swallow exception and not call callback when exception thrown by API client`() =
         runTest {
+            val globalBrand = DISCOVER_BRAND
+            var additionalCardBrands: List<RemoteCardBrand> = emptyList()
+            val latch = CountDownLatch(1)
 
-            testScope.launch {
-                cardBinService = CardBinService(
-                    checkoutId = checkoutId,
-                    baseUrl = baseUrl,
-                    client = cardBinClient,
-                    scope = testScope
-                )
-                val callback: (List<RemoteCardBrand>) -> Unit = {}
-                whenever(cardBinClient.getCardBinResponse(any())).thenThrow(RuntimeException("hello"))
-                try {
-                    cardBinService.getCardBrands(
-                        DISCOVER_BRAND,
-                        discoverDinersTestPan,
-                        callback
-                    )
+            whenever(cardBinClient.getCardBinResponse(any())).thenThrow(RuntimeException("hello"))
 
-                    assertNotNull(cardBinService.currentJob) //null
-                    cardBinService.currentJob?.join() // wait for child thread to complete
-                } catch (exception: Exception) {
-                    assertNotNull(exception)
-                    assertTrue(exception is AccessCheckoutException)
-                    assertEquals("Could not perform request to card-bin API.", exception!!.message)
-                    assertTrue(exception.cause is RuntimeException)
-                }
-                fail("Exception was not caught")
+            cardBinService.getCardBrands(
+                globalBrand,
+                discoverDinersTestPan
+            ) { brands ->
+                additionalCardBrands = brands
+                latch.countDown()
             }
+
+            // Wait until the countdown latch times out the callback
+            // will never be called and the latched never reach 0
+            assertFalse(latch.await(1, TimeUnit.SECONDS))
+
+            // making sure that we never received any card brands
+            assertTrue(additionalCardBrands.isEmpty())
         }
 }
