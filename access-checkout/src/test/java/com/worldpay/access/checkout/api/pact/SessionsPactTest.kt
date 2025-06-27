@@ -13,13 +13,10 @@ import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
 import com.worldpay.access.checkout.api.pact.PactUtils.Companion.escapeColonsInMatchingRules
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.client.testutil.TrustAllSSLSocketFactory
-import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
-import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
-import com.worldpay.access.checkout.session.api.client.CardSessionClient
-import com.worldpay.access.checkout.session.api.client.CvcSessionClient
-import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
+import com.worldpay.access.checkout.session.api.client.*
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
@@ -28,10 +25,6 @@ import com.worldpay.access.checkout.session.api.serialization.CardSessionRespons
 import com.worldpay.access.checkout.session.api.serialization.CvcSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CvcSessionResponseDeserializer
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
-import kotlin.test.assertEquals
-import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -41,6 +34,10 @@ import org.junit.Test
 import org.mockito.BDDMockito
 import org.mockito.Mockito
 import org.mockito.kotlin.given
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlin.test.assertEquals
+import kotlin.test.fail
 
 @ExperimentalCoroutinesApi
 class SessionsPactTest {
@@ -316,7 +313,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutClientError = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 assertEquals(accessCheckoutClientError, ex)
             } catch (ex: Exception) {
@@ -344,7 +342,8 @@ class SessionsPactTest {
             )
             val accessCheckoutClientError = AccessCheckoutException(
                 message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                validationRules = listOf(validationRule)
+                validationRules = listOf(validationRule),
+                cause = ClientErrorException(errorCode = 400)
             )
             assertEquals(accessCheckoutClientError, ex)
         } catch (ex: Exception) {
@@ -378,7 +377,9 @@ class SessionsPactTest {
                 cvcSessionClient.getSessionResponse(cvcSessionsEndpoint, sessionRequest)
                 fail("Should not have reached here!")
             } catch (ex: AccessCheckoutException) {
-                val accessCheckoutClientError = AccessCheckoutException("bodyIsEmpty : The body within the request is empty")
+                val accessCheckoutClientError = AccessCheckoutException(
+                    "bodyIsEmpty : The body within the request is empty", cause = ClientErrorException(errorCode = 400)
+                )
                 assertEquals(accessCheckoutClientError, ex)
             } catch (ex: Exception) {
                 fail("Should not have reached here!")
@@ -650,7 +651,8 @@ class SessionsPactTest {
                 val validationRule = ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -684,7 +686,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -718,7 +721,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -752,7 +756,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -787,7 +792,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -821,7 +827,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -855,7 +862,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
