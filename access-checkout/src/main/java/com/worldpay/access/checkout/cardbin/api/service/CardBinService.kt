@@ -87,7 +87,7 @@ internal class CardBinService(
         launchCancellableCoroutineRequest(
             {
                 val response =
-                    client.getCardBinResponse(request = CardBinRequest(panValue, checkoutId))
+                    client.fetchCardBinResponseWithRetry(request = CardBinRequest(panValue, checkoutId))
                 // Transform the API response into a list of card brands
                 val brands = transform(globalBrand, response)
                 cache[cacheKey] = brands
@@ -100,7 +100,7 @@ internal class CardBinService(
     }
 
     /**
-     * Launches an cancellable coroutine to execute the provided suspendable request.
+     * Launches a cancellable coroutine to execute the provided suspendable request.
      *
      * This method ensures that any previous in-flight request is canceled before starting a new one.
      * It handles exceptions raised during the execution of the request and wraps them in an `AccessCheckoutException`.

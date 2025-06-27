@@ -74,7 +74,7 @@ class CardBinClientTest {
             serializer = serializer
         )
 
-        val actualResponse = client.getCardBinResponse(cardBinRequest)
+        val actualResponse = client.fetchCardBinResponseWithRetry(cardBinRequest)
 
         assertEquals(null, actualResponse)
     }
@@ -87,7 +87,7 @@ class CardBinClientTest {
         given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
             .willReturn(cardBinResponse)
 
-        val actualResponse = client.getCardBinResponse(cardBinRequest)
+        val actualResponse = client.fetchCardBinResponseWithRetry(cardBinRequest)
         assertEquals(cardBinResponse, actualResponse)
     }
 
@@ -103,10 +103,10 @@ class CardBinClientTest {
 
 
         // Launch first request (will be cancelled)
-        client.getCardBinResponse(cardBinRequest)
+        client.fetchCardBinResponseWithRetry(cardBinRequest)
 
         // Launch second request (should complete)
-        val result = client.getCardBinResponse(cardBinRequest)
+        val result = client.fetchCardBinResponseWithRetry(cardBinRequest)
 
         verify(mockJob).cancel() // Verify the first job was canceled
         assertEquals(response2, result)
@@ -117,7 +117,7 @@ class CardBinClientTest {
         val mockJob = mock(Job::class.java)
         val client = createCardBinClient(mockJob)
 
-        client.getCardBinResponse(cardBinRequest)
+        client.fetchCardBinResponseWithRetry(cardBinRequest)
 
         verify(mockJob).cancel()
     }
@@ -131,7 +131,7 @@ class CardBinClientTest {
             given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
                 .willReturn(cardBinResponse)
 
-            val actualResponse = client.getCardBinResponse(cardBinRequest)
+            val actualResponse = client.fetchCardBinResponseWithRetry(cardBinRequest)
 
             assertEquals(cardBinResponse, actualResponse)
         }
