@@ -8,6 +8,7 @@ import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import java.net.URL
 import java.util.concurrent.ConcurrentHashMap
@@ -26,7 +27,7 @@ internal class CardBinService(
     private val client: CardBinClient = CardBinClient(
         URL(baseUrl)
     ),
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO)
+    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
 ) {
 
     companion object {
