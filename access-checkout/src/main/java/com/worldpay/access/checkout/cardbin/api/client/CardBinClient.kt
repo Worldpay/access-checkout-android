@@ -55,9 +55,6 @@ internal class CardBinClient(
     // Coroutine scope for launching requests
     private val scope = CoroutineScope(Dispatchers.IO)
 
-    // Holds the current in-flight request Job for cancellation
-//    private var currentJob: Job? = null
-
     private val cardBinUrl = urlFactory.getURL("$baseUrl/$CARD_BIN_ENDPOINT")
 
     /**
