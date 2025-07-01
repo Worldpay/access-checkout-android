@@ -161,15 +161,15 @@ internal class HttpsClient(
     private fun getClientError(conn: HttpsURLConnection): AccessCheckoutException {
         var clientException: AccessCheckoutException? = null
         var errorData: String? = null
-        val responseCode = conn.responseCode
         val clientErrorException = ClientErrorException(
-            errorCode = responseCode,
+            errorCode = conn.responseCode,
         )
 
         conn.errorStream?.use { errorStream ->
             errorData = getResponseData(errorStream)
             clientException = clientErrorDeserializer.deserialize(errorData!!)
         }
+
         clientException?.cause = clientErrorException
         return clientException ?: AccessCheckoutException(getMessage(conn, errorData), clientErrorException)
     }

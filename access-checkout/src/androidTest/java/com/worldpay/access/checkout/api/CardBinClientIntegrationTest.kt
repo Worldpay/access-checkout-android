@@ -96,7 +96,7 @@ class CardBinClientIntegrationTest {
                 checkoutId = checkoutId
             )
 
-        val cardBinResponse = cardBinClient!!.getCardBinResponse(cardBinReq)
+        val cardBinResponse = cardBinClient!!.fetchCardBinResponseWithRetry(cardBinReq)
         val expectedResponse = CardBinResponseDeserializer().deserialize(response)
 
         assertEquals(expectedResponse, cardBinResponse)
@@ -126,11 +126,11 @@ class CardBinClientIntegrationTest {
             )
 
         val result = runCatching {
-            cardBinClient!!.getCardBinResponse(cardBinReq)
+            cardBinClient!!.fetchCardBinResponseWithRetry(cardBinReq)
         }
 
         assertTrue(result.isFailure)
-        assertEquals("Error message was: Server Error", result.exceptionOrNull()?.message)
+        assertEquals("Failed after 3 attempts", result.exceptionOrNull()?.message)
     }
 
     private fun postRequest(request: String): MappingBuilder {

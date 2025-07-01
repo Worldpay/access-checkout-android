@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.client.api.exception
 
 /**
- * General Exception class for any errors that occur within the Access Checkout SDK
+ * Exception class for any client errors (4xx) that occur when sending a request to a service
  *
  * @property[cause] any nested exceptions
  * @property[errorCode] the error code
