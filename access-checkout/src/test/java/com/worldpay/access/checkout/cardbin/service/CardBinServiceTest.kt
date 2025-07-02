@@ -76,7 +76,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
             var callbackResult: List<RemoteCardBrand>? = null
             val latch = CountDownLatch(1)
 
-            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+            whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
                 CardBinResponse(
                     brand = listOf("visa"),
                     fundingType = "debit",
@@ -105,7 +105,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
         var additionalCardBrands: List<RemoteCardBrand>? = null
         val latch = CountDownLatch(1)
 
-        whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+        whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
             CardBinResponse(
                 brand = listOf("discover", "diners"),
                 fundingType = "debit",
@@ -141,7 +141,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
             fundingType = "debit",
             luhnCompliant = true
         )
-        whenever(cardBinClient.getCardBinResponse(any())).thenReturn(mockResponse)
+        whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(mockResponse)
 
         var firstCallbackResult: List<RemoteCardBrand>? = null
         var secondCallbackResult: List<RemoteCardBrand>? = null
@@ -174,7 +174,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
         assertEquals("diners", secondCallbackResult?.get(1)?.name)
 
         // API should only be called once
-        verify(cardBinClient, times(1)).getCardBinResponse(any())
+        verify(cardBinClient, times(1)).fetchCardBinResponseWithRetry(any())
     }
 
     @Test
@@ -194,7 +194,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
                 fundingType = "debit",
                 luhnCompliant = true
             )
-            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(mockResponse)
+            whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(mockResponse)
 
             // First call with callback
             cardBinService.getCardBrands(brand, firstBrandPan) { brands ->
@@ -222,7 +222,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
             assertEquals("diners", secondCallbackResult?.get(1)?.name)
 
             // API should only be called once
-            verify(cardBinClient, times(1)).getCardBinResponse(any())
+            verify(cardBinClient, times(1)).fetchCardBinResponseWithRetry(any())
         }
 
     @Test
@@ -231,7 +231,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
         var additionalCardBrands: List<RemoteCardBrand>? = null
         val latch = CountDownLatch(1)
 
-        whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+        whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
             CardBinResponse(
                 brand = emptyList(),
                 fundingType = "debit",
@@ -261,7 +261,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
         var additionalCardBrands: List<RemoteCardBrand>? = null
         val latch = CountDownLatch(1)
 
-        whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+        whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
             CardBinResponse(
                 brand = listOf("discover"),
                 fundingType = "debit",
@@ -292,7 +292,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
             var additionalCardBrands: List<RemoteCardBrand>? = null
             val latch = CountDownLatch(1)
 
-            whenever(cardBinClient.getCardBinResponse(any())).thenReturn(
+            whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
                 CardBinResponse(
                     brand = listOf("mastercard"),
                     fundingType = "debit",
@@ -323,7 +323,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
             var additionalCardBrands: List<RemoteCardBrand> = emptyList()
             val latch = CountDownLatch(1)
 
-            whenever(cardBinClient.getCardBinResponse(any())).thenThrow(RuntimeException("hello"))
+            whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenThrow(RuntimeException("hello"))
 
             cardBinService.getCardBrands(
                 globalBrand,

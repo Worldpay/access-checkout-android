@@ -222,7 +222,7 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
 
     @Test
     fun `should invalidate the cvc after the pan has been validated with a brand and the cvc is now incorrect`() =
-        runTest {
+        runBlocking {
             initialiseValidation()
             cvc.setTextAndWait("1234")
 

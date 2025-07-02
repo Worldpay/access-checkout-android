@@ -4,6 +4,7 @@ import com.google.common.collect.Maps.newHashMap
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.testutils.removeWhitespace
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -326,6 +327,7 @@ class HttpsClientTest {
                 fail("Expected exception but got none")
             } catch (ace: AccessCheckoutException) {
                 assertEquals(errorMessage, ace.message)
+                assertEquals(ClientErrorException(400), ace.cause)
             } catch (ex: Exception) {
                 fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
             }
@@ -344,6 +346,7 @@ class HttpsClientTest {
                 fail("Expected exception but got none")
             } catch (ace: AccessCheckoutException) {
                 assertEquals(errorMessage, ace.message)
+                assertEquals(ClientErrorException(400), ace.cause)
             } catch (ex: Exception) {
                 fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
             }

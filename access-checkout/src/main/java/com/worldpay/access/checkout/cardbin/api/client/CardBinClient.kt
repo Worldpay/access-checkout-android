@@ -10,11 +10,8 @@ import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.suspendCancellableCoroutine
+import com.worldpay.access.checkout.client.api.exception.ClientErrorException
+import kotlinx.coroutines.*
 import java.net.URL
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -50,6 +47,9 @@ internal class CardBinClient(
         internal const val WP_CALLER_ID_VALUE = "checkoutandroid"
         internal const val WP_CONTENT_TYPE = "Content-Type"
         internal const val WP_CONTENT_TYPE_VALUE = "application/json"
+
+        /** Maximum number of retry attempts for card bin requests */
+        internal const val MAX_ATTEMPTS = 3
     }
 
     // Coroutine scope for launching requests
@@ -70,7 +70,7 @@ internal class CardBinClient(
      * @return The card BIN response from the API.
      * @throws Exception if the request fails or is cancelled.
      */
-    suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
+    private suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
         // Safe-guard: Cancel any previous in-flight request before starting a new one
         currentJob?.cancel()
 
@@ -92,11 +92,31 @@ internal class CardBinClient(
                     continuation.resume(response)
                 } catch (e: Exception) {
                     //Otherwise raise new exception
-                    continuation.resumeWithException(
-                        AccessCheckoutException("${e.message}")
-                    )
+                    continuation.resumeWithException(e)
                 }
             }
         }
+    }
+
+    suspend fun fetchCardBinResponseWithRetry(
+        request: CardBinRequest // The request to fetch card BIN details
+    ): CardBinResponse {
+        var attempt = 0 // Tracks the current number of attempts
+        var lastException: Exception? = null //stores the last encountered exception
+
+        while (attempt < MAX_ATTEMPTS) { // Loops until max attempts are reached
+            try {
+                return getCardBinResponse(request)
+                // Attempts to get the card BIN response
+            } catch (e: Exception) {
+                lastException = e // Stores the exception if the previous attempt fails
+                if (e.cause is ClientErrorException) { // client error is 400-499
+                    throw e
+                } else {
+                    attempt++ // Increments the number of attempts
+                }
+            }
+        }
+        throw AccessCheckoutException("Failed after $MAX_ATTEMPTS attempts", lastException)
     }
 }

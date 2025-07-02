@@ -5,6 +5,7 @@ import com.worldpay.access.checkout.api.serialization.ClientErrorDeserializer
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.InputStream
@@ -160,13 +161,17 @@ internal class HttpsClient(
     private fun getClientError(conn: HttpsURLConnection): AccessCheckoutException {
         var clientException: AccessCheckoutException? = null
         var errorData: String? = null
+        val clientErrorException = ClientErrorException(
+            errorCode = conn.responseCode,
+        )
 
         conn.errorStream?.use { errorStream ->
             errorData = getResponseData(errorStream)
             clientException = clientErrorDeserializer.deserialize(errorData!!)
         }
 
-        return clientException ?: AccessCheckoutException(getMessage(conn, errorData))
+        clientException?.cause = clientErrorException
+        return clientException ?: AccessCheckoutException(getMessage(conn, errorData), clientErrorException)
     }
 
     private fun getServerError(conn: HttpsURLConnection): AccessCheckoutException {

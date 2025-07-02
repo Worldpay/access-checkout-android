@@ -9,7 +9,7 @@ package com.worldpay.access.checkout.client.api.exception
  */
 data class AccessCheckoutException(
     override val message: String,
-    override val cause: Exception? = null,
+    override var cause: Exception? = null,
     val validationRules: List<ValidationRule> = emptyList()
 ) : RuntimeException()
 
