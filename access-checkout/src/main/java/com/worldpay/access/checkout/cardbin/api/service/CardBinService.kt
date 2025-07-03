@@ -1,10 +1,13 @@
 package com.worldpay.access.checkout.cardbin.api.service
 
 import android.util.Log
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -60,7 +63,7 @@ internal class CardBinService(
      * @param callback A callback function to receive additional card brands fetched from the API.
      */
     fun getCardBrands(
-        globalBrand: RemoteCardBrand,
+        globalBrand: RemoteCardBrand?,
         pan: String,
         callback: ((List<RemoteCardBrand>) -> Unit)
     ) {
@@ -120,33 +123,47 @@ internal class CardBinService(
     }
 
     private fun transform(
-        globalBrand: RemoteCardBrand,
+        globalBrand: RemoteCardBrand?,
         response: CardBinResponse
     ): List<RemoteCardBrand> {
-        // check that the response.brand isn't empty
-        if (response.brand.isEmpty()) {
-            return listOf(globalBrand)
+        // SAfe-guard: If globalBrand is null and response is empty, return an empty list
+        if (globalBrand == null && response.brand.isEmpty()) {
+            return emptyList()
         }
 
-        // if response returns the same single brand, no transformation needed & checks if it matches globalBrand
-        if (response.brand.size == 1 &&
-            response.brand.first().equals(globalBrand.name, ignoreCase = true)
-        ) {
-            return listOf(globalBrand)
+        // Initialize default validation rules for CVC and PAN
+        var cvcValidationRule = CVC_DEFAULTS
+        var panValidationRule = PAN_DEFAULTS
+
+        // If a globalBrand is provided, override the default validation rules with those from the globalBrand
+        if (globalBrand !== null) {
+            cvcValidationRule = globalBrand.cvc
+            panValidationRule = globalBrand.pan
         }
 
-        // map each brand name to a RemoteCardBrand object when there are multiple brands in response
-        // or response brand is different from globalBrand
-        // distinctBy ensure unique objects in the list
-        return response.brand
-            .map { brandName ->
-                RemoteCardBrand(
-                    name = brandName,
-                    images = globalBrand.images,
-                    cvc = globalBrand.cvc,
-                    pan = globalBrand.pan
-                )
-            }
+        // Transform the response brands into a list of RemoteCardBrand objects
+        // For each brand name in the response, attempt to find an existing brand configuration by name
+        // If no matching brand is found, create a new RemoteCardBrand using name but the current validation rules:
+        // if globalBRands was available it will use those otherwise it would use the default rules
+        val responseBrands = response.brand.map { brandName ->
+            findBrandByName(brandName, globalBrand) ?: RemoteCardBrand(
+                name = brandName, // Use the brand name from the response
+                images = emptyList(), // No images are associated with the new/unknown brand
+                cvc = cvcValidationRule, // Use the determined CVC validation rule
+                pan = panValidationRule  // Use the determined PAN validation rule
+            )
+        }
+        // Combine globalBrand (if not null) with response brands and deduplicate by name
+        return (listOfNotNull(globalBrand) + responseBrands)
             .distinctBy { it.name.lowercase() }
     }
+
+    fun findBrandByName(brandName: String, default: RemoteCardBrand?): RemoteCardBrand? {
+        if (brandName === default?.name) {
+            return default
+        }
+        var cardConfiguration = CardConfigurationProvider.getCardConfiguration()
+        return cardConfiguration.brands.firstOrNull { it.name.equals(brandName, ignoreCase = true) }
+    }
+
 }

@@ -62,7 +62,7 @@ object AccessCheckoutValidationInitialiser {
         val expiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(validationConfig.expiryDate)
         val cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, validationConfig.pan)
 
-        CardConfigurationProvider(
+        CardConfigurationProvider.initialize(
             cardConfigurationClient = CardConfigurationClient(URL(validationConfig.baseUrl)),
             observers = listOf(panFieldDecorator, expiryDateFieldDecorator, cvcFieldDecorator)
         )

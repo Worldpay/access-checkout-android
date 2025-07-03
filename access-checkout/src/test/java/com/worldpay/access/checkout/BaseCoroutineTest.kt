@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.cardbin.service
+package com.worldpay.access.checkout
 
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
