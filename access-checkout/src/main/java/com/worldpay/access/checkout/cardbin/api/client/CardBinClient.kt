@@ -38,7 +38,7 @@ internal class CardBinClient(
 ) {
 
     internal companion object {
-        private const val CARD_BIN_ENDPOINT = "public/card/bindetails"
+        private const val CARD_BIN_ENDPOINT = "public/card/bindetails/incorrect/endpoint"
 
         // Header constants
         internal const val WP_API_VERSION = "WP-Api-Version"
