@@ -8,14 +8,14 @@ import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory
 import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory.Companion.X509_TRUST_MANAGER
-import java.io.File
-import java.io.IOException
 import okhttp3.Cache
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import java.io.File
+import java.io.IOException
 
 /**
  * This class is responsible for fetching a remote SVG file and applying it to a target view
@@ -115,9 +115,12 @@ class SVGImageLoader @JvmOverloads constructor(
     }
 
     private fun setUnknownCardBrand(target: ImageView) {
-        Log.d("SVGImageLoader", "Applying card unknown logo to target view")
-        target.setImageResource(R.drawable.card_unknown_logo)
-        val resourceEntryName = target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
-        target.setTag(R.integer.card_tag, resourceEntryName)
+        runOnUiThreadFunc {
+            Log.d("SVGImageLoader", "Applying card unknown logo to target view")
+            target.setImageResource(R.drawable.card_unknown_logo)
+            val resourceEntryName =
+                target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
+            target.setTag(R.integer.card_tag, resourceEntryName)
+        }
     }
 }

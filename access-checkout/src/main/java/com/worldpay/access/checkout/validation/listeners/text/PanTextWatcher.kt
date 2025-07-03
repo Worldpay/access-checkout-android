@@ -102,11 +102,14 @@ internal class PanTextWatcher(
 
         handleCardBrandChange(listOfBrands)
 
-        if (isPanRequiredLength() && globalBrand != null) {
-            //Note: the card-bin service should always received the raw pan text also known as "unformatted"
+        if (isRequiredPanLengthForCardBrands()) {
             cardBinService.getCardBrands(globalBrand, rawPanText) { fetchedBrands ->
                 handleCardBrandChange(fetchedBrands)
             }
+        } else {
+//            var brandsList =
+//                if (globalBrand === null) emptyList<RemoteCardBrand>() else listOf(globalBrand)
+//            handleCardBrandChange(brandsList)
         }
 
         validate(formattedPanText, cardValidationRule, globalBrand)
@@ -231,7 +234,6 @@ internal class PanTextWatcher(
      */
     private fun handleCardBrandChange(newCardBrands: List<RemoteCardBrand>) {
         if (cardBrands == newCardBrands) return
-
         cardBrands = newCardBrands
 
         brandsChangedHandler.handle(cardBrands)
@@ -262,7 +264,7 @@ internal class PanTextWatcher(
         panEditText.setSelection(selection)
     }
 
-    private fun isPanRequiredLength(): Boolean {
+    private fun isRequiredPanLengthForCardBrands(): Boolean {
         val pan = panEditText.editableText.toString()
         val formattedPan = pan.replace(" ", "").length
         return (formattedPan >= requiredPanLengthForCardBrands)

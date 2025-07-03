@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.cardbin.service
 
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
@@ -70,65 +71,67 @@ class CardBinServiceTest : BaseCoroutineTest() {
     }
 
     @Test
-    fun `should return a list of brands when able to find brand for pan`() = runTest {
-        testScope.launch {
-            val brand = VISA_BRAND
-            var callbackResult: List<RemoteCardBrand>? = null
+    fun `should return a distinct list of brands when card-bin-service responds with brands`() =
+        runTest {
+            testScope.launch {
+                val brand = VISA_BRAND
+                var callbackResult: List<RemoteCardBrand>? = null
+                val latch = CountDownLatch(1)
+
+                whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
+                    CardBinResponse(
+                        brand = listOf("visa"),
+                        fundingType = "debit",
+                        luhnCompliant = true
+                    )
+                )
+
+                cardBinService.getCardBrands(brand, visaTestPan) { brands ->
+                    callbackResult = brands
+                    latch.countDown()
+                }
+
+                // Wait for the callback to be invoked
+                assertTrue(latch.await(2, TimeUnit.SECONDS))
+
+                // Verify the callback result
+                assertNotNull(callbackResult)
+                assertEquals(1, callbackResult?.size)
+                assertEquals("visa", callbackResult?.get(0)?.name)
+            }
+        }
+
+    @Test
+    fun `should invoke callback when card-bin-service response contains multiple brands`() =
+        runTest {
+            val brand = DISCOVER_BRAND
+            var additionalCardBrands: List<RemoteCardBrand>? = null
             val latch = CountDownLatch(1)
 
             whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
                 CardBinResponse(
-                    brand = listOf("visa"),
+                    brand = listOf("discover", "diners"),
                     fundingType = "debit",
                     luhnCompliant = true
                 )
             )
 
-            cardBinService.getCardBrands(brand, visaTestPan) { brands ->
-                callbackResult = brands
+            cardBinService.getCardBrands(
+                brand,
+                discoverDinersTestPan
+            ) { brands ->
+                additionalCardBrands = brands
                 latch.countDown()
             }
 
             // Wait for the callback to be invoked
             assertTrue(latch.await(2, TimeUnit.SECONDS))
 
-            // Verify the callback result
-            assertNotNull(callbackResult)
-            assertEquals(1, callbackResult?.size)
-            assertEquals("visa", callbackResult?.get(0)?.name)
+            assertNotNull(additionalCardBrands)
+            assertEquals(2, additionalCardBrands?.size)
+            assertEquals("discover", additionalCardBrands?.get(0)?.name)
+            assertEquals("diners", additionalCardBrands?.get(1)?.name)
         }
-    }
-
-    @Test
-    fun `should invoke callback when response returns multiple brands for pan`() = runTest {
-        val brand = DISCOVER_BRAND
-        var additionalCardBrands: List<RemoteCardBrand>? = null
-        val latch = CountDownLatch(1)
-
-        whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
-            CardBinResponse(
-                brand = listOf("discover", "diners"),
-                fundingType = "debit",
-                luhnCompliant = true
-            )
-        )
-
-        cardBinService.getCardBrands(
-            brand,
-            discoverDinersTestPan
-        ) { brands ->
-            additionalCardBrands = brands
-            latch.countDown()
-        }
-
-        // Wait for the callback to be invoked
-        assertTrue(latch.await(2, TimeUnit.SECONDS))
-
-        assertNotNull(additionalCardBrands)
-        assertEquals(2, additionalCardBrands?.size)
-        assertEquals("discover", additionalCardBrands?.get(0)?.name)
-        assertEquals("diners", additionalCardBrands?.get(1)?.name)
-    }
 
     @Test
     fun `should have same response for two pan numbers with same first 12 digits`() = runTest {
@@ -256,7 +259,7 @@ class CardBinServiceTest : BaseCoroutineTest() {
     }
 
     @Test
-    fun `should invoke callback when response returns a single pan`() = runTest {
+    fun `should invoke callback when response returns a single brand`() = runTest {
         val brand = DISCOVER_BRAND
         var additionalCardBrands: List<RemoteCardBrand>? = null
         val latch = CountDownLatch(1)
@@ -312,8 +315,69 @@ class CardBinServiceTest : BaseCoroutineTest() {
             assertTrue(latch.await(2, TimeUnit.SECONDS))
 
             assertNotNull(additionalCardBrands)
+            assertEquals(2, additionalCardBrands?.size)
+            assertEquals("discover", additionalCardBrands?.get(0)?.name)
+            assertEquals("mastercard", additionalCardBrands?.get(1)?.name)
+
+        }
+
+    @Test
+    fun `should return brands with default validation rules when globalBrand was null`() =
+        runTest {
+            var additionalCardBrands: List<RemoteCardBrand>? = null
+            val latch = CountDownLatch(1)
+
+            whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
+                CardBinResponse(
+                    brand = listOf("discovery"),
+                    fundingType = "debit",
+                    luhnCompliant = true
+                )
+            )
+
+            cardBinService.getCardBrands(
+                null,
+                discoverDinersTestPan
+            ) { brands ->
+                additionalCardBrands = brands
+                latch.countDown()
+            }
+
+            // Wait for the callback to be invoked
+            assertTrue(latch.await(2, TimeUnit.SECONDS))
+
+            assertNotNull(additionalCardBrands)
             assertEquals(1, additionalCardBrands?.size)
-            assertEquals("mastercard", additionalCardBrands?.get(0)?.name)
+            assertEquals("discovery", additionalCardBrands?.get(0)?.name)
+        }
+
+    @Test
+    fun `should return emptyList when globalBrand was null and card-bin-service response brands was empty`() =
+        runTest {
+            var additionalCardBrands: List<RemoteCardBrand>? = null
+            val latch = CountDownLatch(1)
+
+            whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
+                CardBinResponse(
+                    brand = emptyList(),
+                    fundingType = "debit",
+                    luhnCompliant = true
+                )
+            )
+
+            cardBinService.getCardBrands(
+                null,
+                discoverDinersTestPan
+            ) { brands ->
+                additionalCardBrands = brands
+                latch.countDown()
+            }
+
+            // Wait for the callback to be invoked
+            assertTrue(latch.await(2, TimeUnit.SECONDS))
+
+            assertNotNull(additionalCardBrands)
+            assertEquals(emptyList(), additionalCardBrands)
         }
 
     @Test
@@ -323,7 +387,11 @@ class CardBinServiceTest : BaseCoroutineTest() {
             var additionalCardBrands: List<RemoteCardBrand> = emptyList()
             val latch = CountDownLatch(1)
 
-            whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenThrow(RuntimeException("hello"))
+            whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenThrow(
+                RuntimeException(
+                    "hello"
+                )
+            )
 
             cardBinService.getCardBrands(
                 globalBrand,

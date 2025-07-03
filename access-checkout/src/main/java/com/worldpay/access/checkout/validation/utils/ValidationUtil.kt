@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.utils
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider.Companion.getCardConfiguration
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider.getCardConfiguration
 
 internal object ValidationUtil {
 

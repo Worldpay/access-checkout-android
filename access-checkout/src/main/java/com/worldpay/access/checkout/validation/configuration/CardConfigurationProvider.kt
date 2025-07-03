@@ -4,40 +4,51 @@ import android.util.Log
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.runBlocking
 
-internal class CardConfigurationProvider(
-    cardConfigurationClient: CardConfigurationClient,
-    observers: List<CardConfigurationObserver>
-) : CoroutineScope by MainScope() {
+internal object CardConfigurationProvider {
 
-    companion object {
-        private var cardConfiguration =
-            CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+    private lateinit var cardConfigurationClient: CardConfigurationClient
+    private var observers: List<CardConfigurationObserver> = emptyList()
+    private var cardConfiguration: CardConfiguration? = null
 
-        fun getCardConfiguration(): CardConfiguration {
-            return cardConfiguration
-        }
-    }
+    fun initialize(
+        cardConfigurationClient: CardConfigurationClient,
+        observers: List<CardConfigurationObserver>
+    ) {
+        this.cardConfigurationClient = cardConfigurationClient
+        this.observers = observers
 
-    init {
-        cardConfiguration = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+        runBlocking(Dispatchers.IO) {
+            cardConfiguration = fetchCardConfiguration(cardConfigurationClient)
 
-        launch {
-            try {
-                cardConfiguration = cardConfigurationClient.getCardConfiguration()
-                for (observer in observers) {
-                    observer.update()
-                }
-            } catch (ex: Exception) {
-                Log.d(
-                    javaClass.simpleName,
-                    "Error while fetching card configuration (setting defaults): $ex", ex
-                )
-                cardConfiguration = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+            for (observer in observers) {
+                observer.update()
             }
         }
     }
+
+    fun getCardConfiguration(): CardConfiguration {
+        return cardConfiguration ?: CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+    }
+
+    private suspend fun fetchCardConfiguration(cardConfigurationClient: CardConfigurationClient): CardConfiguration {
+        return try {
+            cardConfigurationClient.getCardConfiguration()
+        } catch (ex: Exception) {
+            Log.d(
+                javaClass.simpleName,
+                "Error while fetching card configuration (setting defaults): $ex", ex
+            )
+            CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+        }
+    }
+
+    //For testing purposes
+    internal fun reset() {
+        cardConfiguration = null
+        observers = emptyList()
+    }
+
 }

@@ -32,18 +32,18 @@ class CardValidationListener(private val activity: FragmentActivity) :
     }
 
     override fun onBrandsChange(cardBrands: List<CardBrand>) {
+        // Set the text of the list of card brands to the text view
+        val cardBrandList = cardBrands.joinToString(", ") { it.name }
+        setCardBrandText(cardBrandList)
+
+        // Fetch and apply the card logo if the ImageView is available and a card brand exists
         val brandLogo = activity.findViewById<ImageView>(R.id.card_flow_brand_logo)
         if (brandLogo != null) {
             // currently just applying first card logo returned in list
             // as underlying functionality to display two logos doesn't exist yet
             // will be displayed in demo application as csv values below card number field
-            val cardBrand = if (cardBrands.isEmpty()) null else cardBrands.first()
+            val cardBrand = cardBrands.firstOrNull()
             getInstance(activity).fetchAndApplyCardLogo(cardBrand, brandLogo)
-            val cardBrandList =
-                if (cardBrands.isEmpty()) null else cardBrands.joinToString(", ") { it.name }
-
-            // we then set the text of the list of card brands to the text view
-            if (cardBrandList != null) setCardBrandText(cardBrandList) else setCardBrandText("")
         } else {
             Log.d(
                 this::class.java.simpleName,

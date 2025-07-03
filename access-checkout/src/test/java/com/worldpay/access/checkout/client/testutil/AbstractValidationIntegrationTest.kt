@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.client.testutil
 
 import android.content.Context
-import android.os.Looper.getMainLooper
+import android.os.Looper
 import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
 import android.view.KeyEvent.ACTION_DOWN
@@ -11,11 +11,13 @@ import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
+import com.worldpay.access.checkout.cardbin.api.service.CardBinService
 import com.worldpay.access.checkout.client.testutil.mocks.CardBinServiceMock
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
-import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
+import kotlinx.coroutines.ExperimentalCoroutinesApi
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import org.junit.After
@@ -27,11 +29,14 @@ import org.mockito.kotlin.spy
 import org.robolectric.Shadows.shadowOf
 import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
 import java.security.KeyStore
+import java.util.concurrent.TimeoutException
 import javax.net.ssl.HttpsURLConnection
 import javax.net.ssl.KeyManagerFactory
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManagerFactory
 
+
+@OptIn(ExperimentalCoroutinesApi::class)
 open class AbstractValidationIntegrationTest {
 
     protected lateinit var context: Context
@@ -56,11 +61,13 @@ open class AbstractValidationIntegrationTest {
     private lateinit var cardBinServer: WireMockServer
 
     @Before
-    fun setUp() {
+    fun globalSetUp() {
         context = getInstrumentation().context
         cardBinServer = CardBinServiceMock.start()
         resetValidation()
-
+        //Ensure cache is cleared before each test
+        CardBinService.clearCache()
+        CardConfigurationProvider.reset()
     }
 
     @After
@@ -143,22 +150,26 @@ open class AbstractValidationIntegrationTest {
     }
 
     protected fun AccessCheckoutEditText.pressBackspaceAtIndex(selection: Int) {
-        this.editText!!.setSelection(selection)
-        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
-        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+        runAndWaitUntilIdle {
+            this.editText!!.setSelection(selection)
+            this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
+            this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+        }
     }
 
     protected fun AccessCheckoutEditText.pressBackspaceAtSelection(start: Int, end: Int) {
-        this.editText!!.setSelection(start, end)
-        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
-        this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+        runAndWaitUntilIdle {
+            this.editText!!.setSelection(start, end)
+            this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, KEYCODE_DEL, 0))
+            this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
+        }
     }
 
     protected fun AccessCheckoutEditText.typeAtIndex(selection: Int, text: String) {
-        this.editText!!.setSelection(selection)
-        this.editText.text.insert(selection, text)
-//        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
-//        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
+        runAndWaitUntilIdle {
+            this.editText!!.setSelection(selection)
+            this.editText.text.insert(selection, text)
+        }
     }
 
     protected fun AccessCheckoutEditText.paste(
@@ -170,7 +181,20 @@ open class AbstractValidationIntegrationTest {
     }
 
     fun AccessCheckoutEditText.setTextAndWait(text: String) {
-        this.setText(text)
-        shadowOf(getMainLooper()).waitForQueueUntilIdle(5)
+        runAndWaitUntilIdle {
+            this.setText(text)
+        }
+    }
+
+    /**
+     * Executes the given action and waits until the main looper becomes idle or the timeout is reached.
+     *
+     * @param timeout The maximum time to wait for the main looper to become idle, in seconds. Defaults to 5 seconds.
+     * @param action The action to execute before waiting for the main looper to become idle.
+     * @throws TimeoutException If the main looper does not become idle within the specified timeout.
+     */
+    fun runAndWaitUntilIdle(action: () -> Unit) {
+        action()
+        shadowOf(Looper.getMainLooper()).idle()
     }
 }

@@ -94,7 +94,7 @@ class ValidationUtilTest {
 
         given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_NO_BRAND)
 
-        CardConfigurationProvider(
+        CardConfigurationProvider.initialize(
             cardConfigurationClient = cardConfigurationClient,
             observers = emptyList()
         )

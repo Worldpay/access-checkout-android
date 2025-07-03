@@ -36,6 +36,13 @@ tasks.register('jacocoTestReport', JacocoReport) {
     executionData.setFrom(execData)
     classDirectories.setFrom(classDirs)
     sourceDirectories.setFrom(sourceDirs)
+
+    reports {
+        html.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/html"))
+        xml.required.set(true)
+        xml.outputLocation.set(layout.buildDirectory.file("reports/jacoco/report.xml"))
+    }
 }
 tasks.named('jacocoTestReport') {
     dependsOn('testDebugUnitTest')

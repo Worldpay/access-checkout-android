@@ -7,7 +7,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -25,11 +25,12 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Before
     fun setup() {
         initialiseValidation()
+        reset(cardValidationListener)
     }
 
     @Test
     fun `should call each listener function as each input is filled and then finally call the onValidationSuccess function`() =
-        runBlocking {
+        runTest {
             pan.setTextAndWait(visaPan())
 
             verify(cardValidationListener).onPanValidated(true)
@@ -48,15 +49,15 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         }
 
     @Test
-    fun `should revalidate cvc when brand changes`() = runBlocking {
+    fun `should revalidate cvc when brand changes`() = runTest {
         val amexCardBrand = toCardBrand(AMEX_BRAND)
 
         cvc.setTextAndWait("123")
 
         verify(cardValidationListener).onCvcValidated(true)
 
-        pan.setTextAndWait(AMEX_PAN)
 
+        pan.setTextAndWait(AMEX_PAN)
         verify(cardValidationListener).onCvcValidated(false)
         verify(cardValidationListener).onBrandsChange(listOf(amexCardBrand))
 
@@ -72,5 +73,6 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         assertNotEquals(amexCardBrand, capturedBrands[0])
 
         verify(cardValidationListener).onCvcValidated(true)
+
     }
 }
