@@ -32,6 +32,10 @@ internal class TextWatcherFactory(
             BaseUrlProvider.instance.CARD_BIN_SERVICE
         }
 
+        println("=====================")
+        println("DEBUG: Running against $baseUrl")
+        println("=====================")
+
         return PanTextWatcher(
             panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),

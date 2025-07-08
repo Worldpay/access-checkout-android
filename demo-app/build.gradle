@@ -25,6 +25,10 @@ android {
         minSdkVersion 26
         targetSdkVersion 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        // The following argument makes tAndroidManifest.xml:he Android Test Orchestrator run its
+        // "pm clear" command after each test invocation. This command ensures
+        // that the app's state is completely cleared between tests.
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     flavorDimensions = ["environment"]
@@ -40,10 +44,24 @@ android {
     }
 
     applicationVariants.configureEach { variant ->
-        variant.buildConfigField "String", "CHECKOUT_ID", checkoutId
+
+        if (variant.name.contains("mock")) {
+            variant.buildConfigField "String", "CHECKOUT_ID", "\"YOUR-CHECKOUT-ID\""
+        } else if (variant.name.contains("prod")) {
+            variant.buildConfigField "String", "CHECKOUT_ID", checkoutId
+        }
+    }
+
+    tasks.withType(Test).configureEach {
+        def forks = Math.max((int)(Runtime.getRuntime().availableProcessors() / 2), 1)
+        maxParallelForks = forks
+        forkEvery = 50
+        println("Setting maxParallelForks to $forks")
+//    maxHeapSize = "1g" //For roboelectric
     }
 
     testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
         animationsDisabled = true
         unitTests {
             includeAndroidResources = true
@@ -59,35 +77,39 @@ dependencies {
     implementation 'com.google.android.gms:play-services-vision:20.1.3'
 
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21"
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
+    implementation 'com.google.guava:listenablefuture:9999.0-empty-to-avoid-conflict-with-guava'
+
+    implementation 'androidx.appcompat:appcompat:1.7.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
+    implementation 'androidx.navigation:navigation-fragment-ktx:2.9.1'
+    implementation 'androidx.navigation:navigation-ui-ktx:2.9.1'
+    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
     implementation 'org.conscrypt:conscrypt-android:2.5.1'
     implementation 'com.caverock:androidsvg-aar:1.4'
 
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation 'com.google.android.material:material:1.12.0'
 
+
+    mockImplementation "androidx.test.espresso:espresso-core:3.6.1"
     mockImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
-    mockImplementation 'com.google.code.gson:gson:2.8.5'
+    mockImplementation 'com.google.code.gson:gson:2.13.1'
     mockImplementation("com.github.tomakehurst:wiremock:2.22.0") {
         //Allows us to use the Android version of Apache httpclient instead
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
 
-    testImplementation 'junit:junit:4.13'
+    testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.github.java-json-tools:json-schema-validator:2.2.10'
     testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test:rules:1.5.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
+    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
+    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
+    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.6.1'
+    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0'
     androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
+
+    androidTestUtil 'androidx.test:orchestrator:1.5.1'
 }
