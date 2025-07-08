@@ -78,19 +78,16 @@ class SVGImageLoader @JvmOverloads constructor(
             return
         }
 
-        var appliedBrandImage = false
         for (image in cardBrand.images) {
             if (image.type != IMAGE_TYPE) {
                 continue
             }
 
             applyBrandImage(cardBrand.name, image, target)
-            appliedBrandImage = true
+            return // Stop looping after applying the first valid image
         }
 
-        if (!appliedBrandImage) {
-            setUnknownCardBrand(target)
-        }
+        setUnknownCardBrand(target) // Fallback if no valid image is found
     }
 
     private fun applyBrandImage(brandName: String, image: CardBrandImage, target: ImageView) {
@@ -115,10 +112,12 @@ class SVGImageLoader @JvmOverloads constructor(
     }
 
     private fun setUnknownCardBrand(target: ImageView) {
-        Log.d("SVGImageLoader", "Applying card unknown logo to target view")
-        target.setImageResource(R.drawable.card_unknown_logo)
-        val resourceEntryName =
-            target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
-        target.setTag(R.integer.card_tag, resourceEntryName)
+        runOnUiThreadFunc {
+            Log.d("SVGImageLoader", "Applying card unknown logo to target view")
+            target.setImageResource(R.drawable.card_unknown_logo)
+            val resourceEntryName =
+                target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
+            target.setTag(R.integer.card_tag, resourceEntryName)
+        }
     }
 }

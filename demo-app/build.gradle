@@ -25,10 +25,6 @@ android {
         minSdkVersion 26
         targetSdkVersion 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
-        // The following argument makes tAndroidManifest.xml:he Android Test Orchestrator run its
-        // "pm clear" command after each test invocation. This command ensures
-        // that the app's state is completely cleared between tests.
-        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
 
     flavorDimensions = ["environment"]
@@ -50,14 +46,6 @@ android {
         } else if (variant.name.contains("prod")) {
             variant.buildConfigField "String", "CHECKOUT_ID", checkoutId
         }
-    }
-
-    tasks.withType(Test).configureEach {
-        def forks = Math.max((int)(Runtime.getRuntime().availableProcessors() / 2), 1)
-        maxParallelForks = forks
-        forkEvery = 50
-        println("Setting maxParallelForks to $forks")
-//    maxHeapSize = "1g" //For roboelectric
     }
 
     testOptions {
