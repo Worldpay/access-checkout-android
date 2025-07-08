@@ -86,7 +86,7 @@ internal class CardBinService(
             } catch (e: Exception) {
                 Log.d(
                     this::class.java.simpleName,
-                    "Could not retrieve card bin information using API client: ${e.message}"
+                    "Could not retrieve card bin information using API client: ${e.message}", e
                 )
             }
         }
