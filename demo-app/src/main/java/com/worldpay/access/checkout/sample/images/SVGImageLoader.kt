@@ -112,12 +112,10 @@ class SVGImageLoader @JvmOverloads constructor(
     }
 
     private fun setUnknownCardBrand(target: ImageView) {
-        runOnUiThreadFunc {
-            Log.d("SVGImageLoader", "Applying card unknown logo to target view")
-            target.setImageResource(R.drawable.card_unknown_logo)
-            val resourceEntryName =
-                target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
-            target.setTag(R.integer.card_tag, resourceEntryName)
-        }
+        Log.d("SVGImageLoader", "Applying card unknown logo to target view")
+        target.setImageResource(R.drawable.card_unknown_logo)
+        val resourceEntryName =
+            target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
+        target.setTag(R.integer.card_tag, resourceEntryName)
     }
 }
