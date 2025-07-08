@@ -33,7 +33,7 @@ internal class CardBinService(
     private val client: CardBinClient = CardBinClient(URL(baseUrl)),
     private val dispatcherProvider: IDispatchersProvider = DispatchersProvider.instance
 ) {
-    private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.immediate)
+    private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.main)
     internal var currentJob: Job? = null
 
     /**
