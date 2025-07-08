@@ -14,6 +14,7 @@ import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.reset
+import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.robolectric.RobolectricTestRunner
@@ -30,9 +31,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should validate pan as false when partial unknown pan is entered`() = runTest {
         initialiseValidation(enablePanFormatting = false)
-
-        pan.setTextAndWait("00000")
-
+        setText(pan, "00000")
         verify(cardValidationListener, never()).onPanValidated(any())
         verify(cardValidationListener, never()).onBrandsChange(any())
     }
@@ -40,35 +39,33 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should validate pan as false when partial visa pan is entered`() = runTest {
         initialiseValidation(enablePanFormatting = false)
-
-        pan.setTextAndWait(PARTIAL_VISA)
+        setText(pan, PARTIAL_VISA)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
+        verify(cardValidationListener, timeout(500)).onBrandsChange(toCardBrandList(VISA_BRAND))
     }
 
     @Test
     fun `should validate pan as true when full visa pan is entered`() = runTest {
         initialiseValidation(enablePanFormatting = false)
-
         val validVisaPan = visaPan()
-
-        pan.setTextAndWait(validVisaPan)
-
-        verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
+        setText(pan, validVisaPan)
+        verify(cardValidationListener, timeout(500)).onPanValidated(true)
+        verify(cardValidationListener, timeout(500)).onBrandsChange(toCardBrandList(VISA_BRAND))
     }
 
     @Test
     fun `should trim and not revalidate pan when pan is over max length`() = runTest {
         initialiseValidation(enablePanFormatting = true)
+        setText(pan, visaPan(19, true))
+        verify(
+            cardValidationListener,
+            timeout(500)
+        ).onBrandsChange(toCardBrandList(VISA_BRAND))
+        verify(cardValidationListener, timeout(500)).onPanValidated(true)
 
-        pan.setTextAndWait(visaPan(19, true))
 
-        verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
         reset(cardValidationListener)
-
-        pan.typeAtIndex(23, "5")
+        typeAtIndex(pan, 23, "5")
         verifyNoInteractions(cardValidationListener) // Ensure no interactions with the listener
         assertEquals(visaPan(19, true), pan.text.toString())
     }
@@ -77,20 +74,20 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should validate pan as true when visa pan is entered and visa pan is an accepted card brand`() =
         runTest {
             initialiseValidation(enablePanFormatting = false)
-
-            pan.setTextAndWait(visaPan())
-
+            setText(pan, visaPan())
             verify(cardValidationListener).onPanValidated(true)
-            verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
+            verify(cardValidationListener, timeout(500)).onBrandsChange(
+                toCardBrandList(
+                    VISA_BRAND
+                )
+            )
         }
 
     @Test
     fun `should validate pan as true when unknown valid luhn pan is entered and there are some accepted cards specified`() =
         runTest {
             initialiseValidation(enablePanFormatting = false)
-
-            pan.setTextAndWait(VALID_UNKNOWN_LUHN)
-
+            setText(pan, VALID_UNKNOWN_LUHN)
             verify(cardValidationListener).onPanValidated(true)
             verify(cardValidationListener, never()).onBrandsChange(any())
         }
@@ -99,11 +96,13 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should validate pan as false when visa pan is entered and visa is not an accepted card brand and force notify`() =
         runTest {
             initialiseValidation(enablePanFormatting = false)
-
-            pan.setTextAndWait(visaPan())
-
+            setText(pan, visaPan())
             verify(cardValidationListener).onPanValidated(true)
-            verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
+            verify(cardValidationListener, timeout(500)).onBrandsChange(
+                toCardBrandList(
+                    VISA_BRAND
+                )
+            )
         }
 
     @Test
@@ -111,7 +110,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         runTest {
             initialiseValidation(enablePanFormatting = false)
 
-            pan.setTextAndWait(VALID_UNKNOWN_LUHN)
+            setText(pan, VALID_UNKNOWN_LUHN)
 
             verify(cardValidationListener).onPanValidated(true)
             verify(cardValidationListener, never()).onBrandsChange(any())
@@ -121,9 +120,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     fun `should validate pan as true when 19 character unknown invalid luhn is entered`() =
         runTest {
             initialiseValidation(enablePanFormatting = false)
-
-            pan.setTextAndWait(INVALID_UNKNOWN_LUHN)
-
+            setText(pan, INVALID_UNKNOWN_LUHN)
             verify(cardValidationListener, never()).onPanValidated(any())
             verify(cardValidationListener, never()).onBrandsChange(any())
         }
@@ -131,11 +128,9 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should not validate cvc when pan brand is recognised and cvc is empty`() = runTest {
         initialiseValidation(enablePanFormatting = false)
-
-        pan.setTextAndWait(visaPan())
-
+        setText(pan, visaPan())
         verify(cardValidationListener, never()).onCvcValidated(any())
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
+        verify(cardValidationListener, timeout(500)).onBrandsChange(toCardBrandList(VISA_BRAND))
     }
 }

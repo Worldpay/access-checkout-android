@@ -7,18 +7,18 @@
       {
         "matchesJsonPath": {
           "expression": "$.cardNumber",
-          "matches": "3841001111222233330"
+          "matches": "099900807399.*"
         }
       }
     ]
   },
   "response": {
-    "status": 200,
+    "status": 404,
     "headers": {
       "Content-Type": "application/json",
       "WP-CorrelationId": "4c195ce9-3dbd-4bc8-9c94-3d3393842323",
       "WP-Api-Version": "1"
     },
-    "body": "{\n  \"type\": \"pan\",\n  \"brand\": [\n    \"mastercard\"\n  ],\n  \"bin\": \"555555\",\n  \"binLength\": 6,\n  \"fundingType\": \"debit\",\n  \"issuerName\": \"Bank of America\",\n  \"countryCode\": \"US\",\n  \"currency\": \"USD\",\n  \"dccAllowed\": true,\n  \"anonymousPrepaid\": \"notPrepaidOrNonAnonomous\",\n  \"category\": \"consumer\",\n  \"multipleAccountAccess\": \"managed\",\n \"luhnCompliant\": true\n}"
+    "body": "{\n\t\"errorName\": \"cardNotFound\",\n\t\"message\": \"The card number cannot be found in any BIN ranges.\"\n}"
   }
 }

@@ -4,51 +4,60 @@ import android.util.Log
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.runBlocking
+import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
+import com.worldpay.access.checkout.util.coroutine.IDispatchersProvider
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-internal object CardConfigurationProvider {
+internal class CardConfigurationProvider private constructor(){
 
-    private lateinit var cardConfigurationClient: CardConfigurationClient
-    private var observers: List<CardConfigurationObserver> = emptyList()
-    private var cardConfiguration: CardConfiguration? = null
+    companion object {
+        private lateinit var cardConfigurationClient: CardConfigurationClient
 
-    fun initialize(
-        cardConfigurationClient: CardConfigurationClient,
-        observers: List<CardConfigurationObserver>
-    ) {
-        this.cardConfigurationClient = cardConfigurationClient
-        this.observers = observers
+        val DEFAULT_CONFIG = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+        var savedCardConfiguration = DEFAULT_CONFIG
 
-        runBlocking(Dispatchers.IO) {
-            cardConfiguration = fetchCardConfiguration(cardConfigurationClient)
+        fun initialise(
+            cardConfigurationClient: CardConfigurationClient,
+            observers: List<CardConfigurationObserver>,
+            dispatcherProvider: IDispatchersProvider = DispatchersProvider.instance,
+            onInitialized: () -> Unit = {}
+        ) {
+            savedCardConfiguration = DEFAULT_CONFIG
+            this.cardConfigurationClient = cardConfigurationClient
 
-            for (observer in observers) {
-                observer.update()
+            CoroutineScope(SupervisorJob() + dispatcherProvider.immediate).launch {
+                try {
+                    val response = withContext(dispatcherProvider.io) {
+                        cardConfigurationClient.getCardConfiguration()
+                    }
+                    savedCardConfiguration = response
+                } catch (ex: Exception) {
+                    Log.d(
+                        javaClass.simpleName,
+                        "Error while fetching card configuration (setting defaults): ${ex.message}"
+                    )
+                    savedCardConfiguration = DEFAULT_CONFIG
+                } finally {
+                    for (observer in observers) {
+                        try {
+                            observer.update() // Notify observers regardless of success or failure
+                        } catch (ex: Exception) {
+                            Log.d(
+                                javaClass.simpleName,
+                                "Error while updating observer: ${ex.message}"
+                            )
+                        }
+                    }
+                    onInitialized()
+                }
             }
         }
-    }
 
-    fun getCardConfiguration(): CardConfiguration {
-        return cardConfiguration ?: CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
-    }
-
-    private suspend fun fetchCardConfiguration(cardConfigurationClient: CardConfigurationClient): CardConfiguration {
-        return try {
-            cardConfigurationClient.getCardConfiguration()
-        } catch (ex: Exception) {
-            Log.d(
-                javaClass.simpleName,
-                "Error while fetching card configuration (setting defaults): $ex", ex
-            )
-            CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
+        fun getCardConfiguration(): CardConfiguration {
+            return savedCardConfiguration
         }
     }
-
-    //For testing purposes
-    internal fun reset() {
-        cardConfiguration = null
-        observers = emptyList()
-    }
-
 }

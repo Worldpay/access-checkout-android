@@ -96,7 +96,7 @@ internal class PanTextWatcher(
 
         var listOfBrands = emptyList<RemoteCardBrand>()
 
-        if (globalBrand != null){
+        if (globalBrand != null) {
             listOfBrands = listOfBrands.plus(globalBrand)
         }
 
@@ -106,10 +106,6 @@ internal class PanTextWatcher(
             cardBinService.getCardBrands(globalBrand, rawPanText) { fetchedBrands ->
                 handleCardBrandChange(fetchedBrands)
             }
-        } else {
-//            var brandsList =
-//                if (globalBrand === null) emptyList<RemoteCardBrand>() else listOf(globalBrand)
-//            handleCardBrandChange(brandsList)
         }
 
         validate(formattedPanText, cardValidationRule, globalBrand)
@@ -240,7 +236,6 @@ internal class PanTextWatcher(
 
         // Use the first card brand from the list else pass null if the list is empty
         cvcValidationRuleManager.updateRule(getCvcValidationRule(cardBrands.firstOrNull()))
-
         val cvcText = cvcAccessEditText.text.toString()
         if (cvcText.isNotBlank()) {
             cvcValidator.validate(cvcText)
@@ -261,7 +256,9 @@ internal class PanTextWatcher(
         // guard against outOfBounds exception in an occasional case
         // where cursorPosition is beyond the text length
         val selection = min(cursorPosition, text.length)
-        panEditText.setSelection(selection)
+        if (selection != panEditText.selectionEnd) {
+            panEditText.setSelection(selection)
+        }
     }
 
     private fun isRequiredPanLengthForCardBrands(): Boolean {

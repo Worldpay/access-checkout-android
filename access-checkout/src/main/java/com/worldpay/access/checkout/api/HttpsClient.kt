@@ -6,6 +6,7 @@ import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
+import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.InputStream
@@ -15,12 +16,11 @@ import java.io.Serializable
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 
 internal class HttpsClient(
-    private val dispatcher: CoroutineDispatcher = Dispatchers.IO,
+    private val dispatcher: CoroutineDispatcher = DispatchersProvider.instance.io,
     private val urlFactory: URLFactory = URLFactoryImpl(),
     private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer()
 ) {

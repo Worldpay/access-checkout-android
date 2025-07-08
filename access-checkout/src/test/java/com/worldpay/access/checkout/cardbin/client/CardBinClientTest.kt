@@ -1,7 +1,9 @@
 package com.worldpay.access.checkout.cardbin.client
 
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
+import com.worldpay.access.checkout.cardbin.api.client.CardBinCacheManager
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION_VALUE
@@ -15,29 +17,28 @@ import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSeri
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.Mockito.mock
 import org.mockito.junit.MockitoJUnitRunner
+import org.mockito.kotlin.any
+import org.mockito.kotlin.times
 import org.mockito.kotlin.verify
 import java.net.URL
 import kotlin.test.assertNotEquals
+import kotlin.test.assertNotNull
 
 @ExperimentalCoroutinesApi
 @RunWith(MockitoJUnitRunner::class)
-class CardBinClientTest {
+class CardBinClientTest : BaseCoroutineTest() {
 
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
     private val baseUrl = URL("https://some-base-url")
     private val cardBinEndpoint = "public/card/bindetails"
     private val cardBinUrl = URL("$baseUrl/$cardBinEndpoint")
@@ -52,6 +53,7 @@ class CardBinClientTest {
     private lateinit var serializer: CardBinRequestSerializer
     private lateinit var deserializer: CardBinResponseDeserializer
     private lateinit var cardBinRequest: CardBinRequest
+    private lateinit var cacheManager: CardBinCacheManager
 
     @Before
     fun setUp() {
@@ -65,18 +67,12 @@ class CardBinClientTest {
     }
 
     @Test
-    fun `should use default urlFactory`() = runTest {
-        //Added this tests just to cover the line to initialise the URLFactory when not provided
+    fun `should construct CardBinClient with minimum required args`() = runTest {
+        //Added this tests to cover default arguments
         val client = CardBinClient(
             baseUrl = baseUrl,
-            httpsClient = httpsClient,
-            deserializer = deserializer,
-            serializer = serializer
         )
-
-        val actualResponse = client.fetchCardBinResponseWithRetry(cardBinRequest)
-
-        assertEquals(null, actualResponse)
+        assertNotNull(client)
     }
 
     @Test
@@ -92,34 +88,23 @@ class CardBinClientTest {
     }
 
     @Test
-    fun `should cancel previous job if new request is made`() = runTest {
-        val mockJob = mock(Job::class.java)
-        val client = createCardBinClient(mockJob)
+    fun `should use cached response on subsequent calls with same pan number`() = runTest {
 
-        val response1 = mock(CardBinResponse::class.java)
-        val response2 = mock(CardBinResponse::class.java)
+        val client = createCardBinClient()
+
+        val cardBinResponse = mock(CardBinResponse::class.java)
         given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
-            .willReturn(response1, response2)
+            .willReturn(cardBinResponse)
 
+        val firstCall = client.fetchCardBinResponseWithRetry(cardBinRequest)
+        assertEquals(cardBinResponse, firstCall)
 
-        // Launch first request (will be cancelled)
-        client.fetchCardBinResponseWithRetry(cardBinRequest)
+        val secondCall = client.fetchCardBinResponseWithRetry(cardBinRequest)
+        //Response should match
+        assertEquals(cardBinResponse, secondCall)
 
-        // Launch second request (should complete)
-        val result = client.fetchCardBinResponseWithRetry(cardBinRequest)
-
-        verify(mockJob).cancel() // Verify the first job was canceled
-        assertEquals(response2, result)
-    }
-
-    @Test
-    fun `should call cancel on currentJob to ensure previous jobs are cancelled`() = runTest {
-        val mockJob = mock(Job::class.java)
-        val client = createCardBinClient(mockJob)
-
-        client.fetchCardBinResponseWithRetry(cardBinRequest)
-
-        verify(mockJob).cancel()
+        //HTTP call was only issued once because of cache
+        verify(httpsClient, times(1)).doPost(any(), any(), any(), any(), any())
     }
 
     @Test
@@ -173,7 +158,12 @@ class CardBinClientTest {
             val client = createCardBinClient()
 
             given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
-                .willThrow(AccessCheckoutException("HTTP response code: 400", ClientErrorException(errorCode=400)))
+                .willThrow(
+                    AccessCheckoutException(
+                        "HTTP response code: 400",
+                        ClientErrorException(errorCode = 400)
+                    )
+                )
 
             val ex = runCatching {
                 client.fetchCardBinResponseWithRetry(cardBinRequest)
@@ -185,7 +175,35 @@ class CardBinClientTest {
             assertNotEquals("Failed after 3 attempts", ex?.message)
         }
 
-    private fun createCardBinClient(currentJob: Job? = null): CardBinClient {
-        return CardBinClient(baseUrl, urlFactory, httpsClient, deserializer, serializer, currentJob)
+    @Test
+    fun `should re throw CancellationException if CancellationException occurs`() =
+        runTest {
+            val client = createCardBinClient()
+
+            given(httpsClient.doPost(cardBinUrl, cardBinRequest, headers, serializer, deserializer))
+                .willThrow(
+                    CancellationException(
+                        "cancelled co-routine",
+                    )
+                )
+
+            val ex = runCatching {
+                client.fetchCardBinResponseWithRetry(cardBinRequest)
+            }.exceptionOrNull()
+
+            assertTrue(ex is CancellationException)
+        }
+
+
+    private fun createCardBinClient(): CardBinClient {
+        cacheManager = CardBinCacheManager()
+        return CardBinClient(
+            baseUrl = baseUrl,
+            urlFactory = urlFactory,
+            httpsClient = httpsClient,
+            deserializer = deserializer,
+            serializer = serializer,
+            cacheManager = cacheManager
+        )
     }
 }

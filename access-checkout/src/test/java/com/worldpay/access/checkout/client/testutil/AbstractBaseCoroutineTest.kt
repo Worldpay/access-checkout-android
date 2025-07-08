@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout
+package com.worldpay.access.checkout.client.testutil
 
 import com.worldpay.access.checkout.util.coroutine.CoroutineDispatchers
 import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
@@ -12,10 +12,6 @@ import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestScope
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
-import org.junit.After
-import org.junit.Before
-import org.mockito.MockitoAnnotations
-
 
 class TestDispatchersProvider(
     testDispatcher: CoroutineDispatcher
@@ -29,34 +25,23 @@ class TestDispatchersProvider(
 
 
 @OptIn(ExperimentalCoroutinesApi::class)
-open class BaseCoroutineTest {
-    private lateinit var closeable: AutoCloseable
-    val testScheduler = TestCoroutineScheduler()
-    val testDispatcher = StandardTestDispatcher(testScheduler)
-    val testScope = TestScope(testDispatcher)
+class AbstractBaseCoroutineTest {
+    companion object {
+        val testScheduler = TestCoroutineScheduler()
+        val testDispatcher = StandardTestDispatcher(testScheduler)
+        val testScope = TestScope(testDispatcher)
 
 
-    @Before
-    fun baseCoroutineSetUp() {
-        closeable = MockitoAnnotations.openMocks(this)
-        coroutineSetup()
+        fun coroutineSetup() {
+            val testDispatchersProvider = TestDispatchersProvider(testDispatcher)
+            DispatchersProvider.instance = testDispatchersProvider;
+            Dispatchers.setMain(testDispatcher)
+        }
 
-    }
-
-    @After
-    fun baseCoroutineTearDown() {
-        coroutineTearDown()
-    }
-
-    private fun coroutineSetup() {
-        val testDispatchersProvider = TestDispatchersProvider(testDispatcher)
-        DispatchersProvider.instance = testDispatchersProvider;
-        Dispatchers.setMain(testDispatcher)
-    }
-
-    private fun coroutineTearDown() {
-        testScope.cancel()
-        Dispatchers.resetMain()
-        DispatchersProvider.instance = CoroutineDispatchers()
+        fun coroutineTearDown() {
+            testScope.cancel()
+            Dispatchers.resetMain()
+            DispatchersProvider.instance = CoroutineDispatchers()
+        }
     }
 }

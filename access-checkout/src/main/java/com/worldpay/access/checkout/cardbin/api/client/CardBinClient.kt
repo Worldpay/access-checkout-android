@@ -11,10 +11,7 @@ import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSeri
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
-import kotlinx.coroutines.*
 import java.net.URL
-import kotlin.coroutines.resume
-import kotlin.coroutines.resumeWithException
 
 /**
  * Client for retrieving card scheme details using a card BIN.
@@ -27,6 +24,7 @@ import kotlin.coroutines.resumeWithException
  * @property httpsClient HTTP client to perform the network request.
  * @property deserializer Deserializes the response from the API.
  * @property serializer Serializes the request to the API.
+ * @property cacheManager handles cache actions.
  */
 internal class CardBinClient(
     baseUrl: URL,
@@ -34,86 +32,99 @@ internal class CardBinClient(
     private val httpsClient: HttpsClient = HttpsClient(),
     private val deserializer: Deserializer<CardBinResponse> = CardBinResponseDeserializer(),
     private val serializer: Serializer<CardBinRequest> = CardBinRequestSerializer(),
-    private var currentJob: Job? = null
+    private val cacheManager: CardBinCacheManager = CardBinCacheManager()
 ) {
-
-    internal companion object {
-        private const val CARD_BIN_ENDPOINT = "public/card/bindetails"
-
-        // Header constants
-        internal const val WP_API_VERSION = "WP-Api-Version"
-        internal const val WP_API_VERSION_VALUE = "1"
-        internal const val WP_CALLER_ID = "WP-CallerId"
-        internal const val WP_CALLER_ID_VALUE = "checkoutandroid"
-        internal const val WP_CONTENT_TYPE = "Content-Type"
-        internal const val WP_CONTENT_TYPE_VALUE = "application/json"
-
-        /** Maximum number of retry attempts for card bin requests */
-        internal const val MAX_ATTEMPTS = 3
+    companion object {
+        const val WP_API_VERSION = "WP-Api-Version"
+        const val WP_API_VERSION_VALUE = "1"
+        const val WP_CALLER_ID = "WP-CallerId"
+        const val WP_CALLER_ID_VALUE = "checkoutandroid"
+        const val WP_CONTENT_TYPE = "Content-Type"
+        const val WP_CONTENT_TYPE_VALUE = "application/json"
     }
 
-    // Coroutine scope for launching requests
-    private val scope = CoroutineScope(Dispatchers.IO)
+    private val CARD_BIN_ENDPOINT = "public/card/bindetails"
+
+    /** Maximum number of retry attempts for card bin requests */
+    private val MAX_ATTEMPTS = 3
 
     private val cardBinUrl = urlFactory.getURL("$baseUrl/$CARD_BIN_ENDPOINT")
 
     /**
      * Makes a network request to retrieve card scheme details for the given request.
      *
-     * If a previous request is still in progress, it will be cancelled before starting the new one.
-     * Only the latest request should complete and return a result.
+     * This method no longer handles coroutine cancellation. It simply performs the network request.
      *
      * @param request The card BIN request payload.
      * @return The card BIN response from the API.
-     * @throws Exception if the request fails or is cancelled.
+     * @throws Exception if the request fails.
      */
-    private suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
-        // Safe-guard: Cancel any previous in-flight request before starting a new one
-        currentJob?.cancel()
+    suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
+        val headers = hashMapOf(
+            WP_API_VERSION to WP_API_VERSION_VALUE,
+            WP_CALLER_ID to WP_CALLER_ID_VALUE,
+            WP_CONTENT_TYPE to WP_CONTENT_TYPE_VALUE
+        )
 
-        return suspendCancellableCoroutine { continuation ->
-            // Launch a new coroutine for the call to card-bin service and keep track of its Job
-            currentJob = scope.launch {
-                try {
-
-                    val headers = hashMapOf(
-                        WP_API_VERSION to WP_API_VERSION_VALUE,
-                        WP_CALLER_ID to WP_CALLER_ID_VALUE,
-                        WP_CONTENT_TYPE to WP_CONTENT_TYPE_VALUE
-                    )
-
-                    val response =
-                        httpsClient.doPost(cardBinUrl, request, headers, serializer, deserializer)
-
-                    // Resume the coroutine with the response
-                    continuation.resume(response)
-                } catch (e: Exception) {
-                    //Otherwise raise new exception
-                    continuation.resumeWithException(e)
-                }
-            }
-        }
+        return httpsClient.doPost(cardBinUrl, request, headers, serializer, deserializer)
     }
 
-    suspend fun fetchCardBinResponseWithRetry(
-        request: CardBinRequest // The request to fetch card BIN details
-    ): CardBinResponse {
-        var attempt = 0 // Tracks the current number of attempts
-        var lastException: Exception? = null //stores the last encountered exception
+    /**
+     * Fetches card BIN details with a retry mechanism.
+     *
+     * @param request The request to fetch card BIN details.
+     * @return The card BIN response from the API.
+     */
+    suspend fun fetchCardBinResponseWithRetry(request: CardBinRequest): CardBinResponse {
 
-        while (attempt < MAX_ATTEMPTS) { // Loops until max attempts are reached
+        // Generate the cache key using the first 12 digits of the PAN
+        val cacheKey = cacheManager.getCacheKey(request.cardNumber)
+
+
+        // Return cached response if available
+        cacheManager.getCachedResponse(cacheKey)?.let { cachedResponse ->
+            return cachedResponse
+        }
+
+        val response = withRetry<CardBinResponse>(
+            MAX_ATTEMPTS,
+            action = { getCardBinResponse(request) },
+            onError = { e -> if (e.cause is ClientErrorException) throw e }
+        )
+
+        // Only save to cache if the response is not null
+        cacheManager.putInCache(cacheKey, response)
+
+        return response
+    }
+
+    /**
+     * Executes the given action with a retry mechanism.
+     *
+     * @param maxAttempts The maximum number of retry attempts.
+     * @param onError A callback invoked when an exception occurs during an attempt.
+     * @param action The action to execute, which may throw an exception.
+     * @return The result of the action if it succeeds within the allowed attempts.
+     * @throws AccessCheckoutException If all retry attempts are exhausted, wrapping the last exception encountered.
+     */
+    private suspend fun <T> withRetry(
+        maxAttempts: Int,
+        onError: (Exception) -> Unit,
+        action: suspend () -> T
+    ): T {
+        var attempt = 0
+        var lastException: Exception? = null
+
+        while (attempt < maxAttempts) {
             try {
-                return getCardBinResponse(request)
-                // Attempts to get the card BIN response
+                return action()
             } catch (e: Exception) {
-                lastException = e // Stores the exception if the previous attempt fails
-                if (e.cause is ClientErrorException) { // client error is 400-499
-                    throw e
-                } else {
-                    attempt++ // Increments the number of attempts
-                }
+                if (e is kotlinx.coroutines.CancellationException) throw e // Stop retries on coroutine cancellation
+                lastException = e
+                onError(e)
+                attempt++
             }
         }
-        throw AccessCheckoutException("Failed after $MAX_ATTEMPTS attempts", lastException)
+        throw AccessCheckoutException("Failed after $maxAttempts attempts", lastException)
     }
 }

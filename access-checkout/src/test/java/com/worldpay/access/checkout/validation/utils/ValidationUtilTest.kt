@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.validation.utils
 
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
@@ -8,7 +9,6 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValidationRule
@@ -20,7 +20,6 @@ import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
@@ -28,10 +27,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNull
 
 @ExperimentalCoroutinesApi
-class ValidationUtilTest {
-
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
+class ValidationUtilTest: BaseCoroutineTest() {
 
     @Before
     fun setup() = runTest {
@@ -94,7 +90,7 @@ class ValidationUtilTest {
 
         given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_NO_BRAND)
 
-        CardConfigurationProvider.initialize(
+        CardConfigurationProvider.initialise(
             cardConfigurationClient = cardConfigurationClient,
             observers = emptyList()
         )

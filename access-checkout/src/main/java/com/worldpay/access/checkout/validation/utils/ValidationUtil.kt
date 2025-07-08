@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.validation.utils
 
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider.getCardConfiguration
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider.Companion.getCardConfiguration
 
 internal object ValidationUtil {
 
@@ -26,7 +26,8 @@ internal object ValidationUtil {
         cardValidationRule.validLengths.maxOrNull() ?: defaultMaxLength
 
     fun findBrandForPan(pan: String): RemoteCardBrand? {
-        for (brand in getCardConfiguration().brands) {
+        var brands = getCardConfiguration().brands
+        for (brand in brands) {
             val unformattedPan = pan.replace("\\s+".toRegex(), "")
             if (brand.pan.matcher.toPattern().matcher(unformattedPan).find()) {
                 return brand

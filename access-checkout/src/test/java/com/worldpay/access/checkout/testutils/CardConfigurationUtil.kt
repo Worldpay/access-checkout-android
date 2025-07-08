@@ -234,13 +234,13 @@ internal object CardConfigurationUtil {
     suspend fun mockSuccessfulCardConfiguration() {
         val cardConfigurationClient = mock<CardConfigurationClient>()
         given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
-        CardConfigurationProvider.initialize(cardConfigurationClient, emptyList())
+        CardConfigurationProvider.initialise(cardConfigurationClient, emptyList())
     }
 
     suspend fun mockUnsuccessfulCardConfiguration() {
         val cardConfigurationClient = mock<CardConfigurationClient>()
         given(cardConfigurationClient.getCardConfiguration()).willReturn(null)
-        CardConfigurationProvider.initialize(cardConfigurationClient, emptyList())
+        CardConfigurationProvider.initialise(cardConfigurationClient, emptyList())
     }
 
     fun toCardBrand(remoteCardBrand: RemoteCardBrand): CardBrand {

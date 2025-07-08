@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.client.validation
 
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
@@ -21,17 +22,11 @@ import org.robolectric.shadows.ShadowInstrumentation
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-class AccessCheckoutValidationInitialiserTest {
-
-    private val context = ShadowInstrumentation.getInstrumentation().context
-
-    private val expiryDate = AccessCheckoutEditText(context)
-    private val cvc = AccessCheckoutEditText(context)
-    private val pan = AccessCheckoutEditText(context)
+class AccessCheckoutValidationInitialiserTest: AbstractValidationIntegrationTest() {
+    
     private val acceptedCardBrands = arrayOf("VISA")
 
     private val baseUrl = "https://localhost:8443"
-    private val cardValidationListener: AccessCheckoutCardValidationListener = mock()
     private val cvcValidationListener: AccessCheckoutCvcValidationListener = mock()
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()

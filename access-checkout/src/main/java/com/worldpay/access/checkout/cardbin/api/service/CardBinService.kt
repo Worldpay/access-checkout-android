@@ -7,14 +7,17 @@ import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
+import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
+import com.worldpay.access.checkout.util.coroutine.IDispatchersProvider
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.net.URL
-import java.util.concurrent.ConcurrentHashMap
 
 /**
  * Service for retrieving card brand schemes using the card BIN (Bank Identification Number).
@@ -27,36 +30,16 @@ import java.util.concurrent.ConcurrentHashMap
 internal class CardBinService(
     private val checkoutId: String,
     private val baseUrl: String,
-    private val client: CardBinClient = CardBinClient(
-        URL(baseUrl)
-    ),
-    private val scope: CoroutineScope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+    private val client: CardBinClient = CardBinClient(URL(baseUrl)),
+    private val dispatcherProvider: IDispatchersProvider = DispatchersProvider.instance
 ) {
-
-    companion object {
-        // only stores value in cache of required length (12 digits)
-        private const val CACHE_KEY_LENGTH = 12
-
-        // Creates concurrent hash map to store API response by card number prefix (12 digits)
-        private val cache = ConcurrentHashMap<String, List<RemoteCardBrand>>()
-
-        // Generates a cache key by extracting the first 12 digits of the provided PAN.
-        fun getCacheKey(pan: String): String = pan.take(CACHE_KEY_LENGTH)
-
-        // Function to manually clear the cache
-        fun clearCache() {
-            cache.clear()
-        }
-    }
-
+    private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.immediate)
+    internal var currentJob: Job? = null
 
     /**
      * Retrieves card brands based on the provided card PAN.
      *
-     * This method first checks the cache for a response associated with the PAN prefix. If a cached response exists,
-     * it transforms the response into a list of card brands and returns it.
-     * If no cached response is found, it launches a coroutine to fetch the card brands from the API asynchronously.
-     * Once a response is received it calls the callback with the additional card brands response.
+     * This method cancels any in-flight request before starting a new one.
      *
      * @param globalBrand The global card brand to be returned immediately if no cached response is found.
      * @param pan The card PAN (Primary Account Number) used to identify the card brand.
@@ -67,58 +50,45 @@ internal class CardBinService(
         pan: String,
         callback: ((List<RemoteCardBrand>) -> Unit)
     ) {
-        //Safe-guard: ensure pan has no spaces to be able to compute cache keys and request correctly
+        // Safe-guard: ensure pan has no spaces to be able to compute cache keys and request correctly
         val panValue = pan.replace(" ", "")
 
-        // Generate the cache key using the first 12 digits of the PAN
-        val cacheKey = getCacheKey(panValue)
-        // Return cached response if available
-        cache[cacheKey]?.let { cachedResponse ->
-            callback.invoke(cachedResponse)
-            //Return if the cache is hit, so the coroutine (and thus the API call) is not launched.
-            return
+        // Cancel any previous in-flight request before starting a new one
+        currentJob?.let {
+            if (it.isActive) {
+                it.cancel()
+            }
         }
 
-        val coroutineExceptionHandler =
-            CoroutineExceptionHandler { _, throwable ->
-                Log.d(
-                    this::class.java.simpleName,
-                    "Could not retrieve card bin information using API client: ${throwable.message}"
-                )
-            }
-
-        // Launch a coroutine to fetch the card brands from the API asynchronously
-        launchCancellableCoroutineRequest(
-            {
+        // Launch a new coroutine to fetch the card brands from the API asynchronously
+        currentJob = scope.launch() {
+            try {
                 val response =
-                    client.fetchCardBinResponseWithRetry(request = CardBinRequest(panValue, checkoutId))
+                    withContext(dispatcherProvider.io) {
+                        client.fetchCardBinResponseWithRetry(
+                            request = CardBinRequest(
+                                panValue.take(12),
+                                checkoutId
+                            )
+                        )
+                    }
                 // Transform the API response into a list of card brands
                 val brands = transform(globalBrand, response)
-                cache[cacheKey] = brands
 
                 // Invoke the callback with the transformed card brands
                 callback.invoke(brands)
-            },
-            coroutineExceptionHandler
-        )
-    }
 
-    /**
-     * Launches a cancellable coroutine to execute the provided suspendable request.
-     *
-     * This method ensures that any previous in-flight request is canceled before starting a new one.
-     * It handles exceptions raised during the execution of the request and wraps them in an `AccessCheckoutException`.
-     *
-     * @param request A suspendable lambda representing the request to be executed.
-     */
-    private fun launchCancellableCoroutineRequest(
-        request: suspend () -> Unit,
-        coroutineExceptionHandler: CoroutineExceptionHandler
-    ) {
-        // Launch a new coroutine to execute the request
-        scope.launch(coroutineExceptionHandler) {
-            // Execute the provided request
-            request()
+            } catch (_: CancellationException) {
+                Log.d(
+                    javaClass.simpleName,
+                    "Coroutine was cancelled cleanly"
+                )
+            } catch (e: Exception) {
+                Log.d(
+                    this::class.java.simpleName,
+                    "Could not retrieve card bin information using API client: ${e.message}"
+                )
+            }
         }
     }
 
@@ -126,7 +96,7 @@ internal class CardBinService(
         globalBrand: RemoteCardBrand?,
         response: CardBinResponse
     ): List<RemoteCardBrand> {
-        // SAfe-guard: If globalBrand is null and response is empty, return an empty list
+        // Safe-guard: If globalBrand is null and response is empty, return an empty list
         if (globalBrand == null && response.brand.isEmpty()) {
             return emptyList()
         }

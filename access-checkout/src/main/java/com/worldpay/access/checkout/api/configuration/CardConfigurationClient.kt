@@ -21,10 +21,9 @@ internal class CardConfigurationClient(
     private val cardConfigUrl = urlFactory.getURL("$baseUrl/$CARD_CONFIGURATION_RESOURCE")
 
     suspend fun getCardConfiguration(): CardConfiguration {
-        return try {
+        try {
             val cardConfiguration = httpsClient.doGet(cardConfigUrl, cardConfigurationParser)
-            Log.d(javaClass.simpleName, "Received card configuration: $cardConfiguration")
-            cardConfiguration
+            return cardConfiguration
         } catch (ex: Exception) {
             val message = "There was an error when trying to fetch the card configuration"
             Log.d(javaClass.simpleName, "$message: $ex")
