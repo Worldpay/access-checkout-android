@@ -26,7 +26,7 @@ internal class TextWatcherFactory(
     ): PanTextWatcher {
 
         //TODO: Temporary workaround for testing until service discovery
-        val baseUrl = if (checkoutId === "YOUR-CHECKOUT-ID") {
+        val baseUrl = if (checkoutId === "AUTOMATED-TEST") {
             "https://localhost:3003"
         } else {
             BaseUrlProvider.instance.CARD_BIN_SERVICE

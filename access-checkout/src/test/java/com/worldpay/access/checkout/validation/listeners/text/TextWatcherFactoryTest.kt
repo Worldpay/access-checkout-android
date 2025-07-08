@@ -45,7 +45,7 @@ class TextWatcherFactoryTest {
     }
 
     @Test
-    fun `should use CARD_BIN_SERVICE baseUrl when checkoutId is not YOUR-CHECKOUT-ID`() {
+    fun `should use CARD_BIN_SERVICE baseUrl when checkoutId is not AUTOMATED-TEST`() {
         given(resultHandlerFactory.getPanValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getBrandsChangedHandler()).willReturn(mock())
@@ -65,7 +65,7 @@ class TextWatcherFactoryTest {
     }
 
     @Test
-    fun `should use default CARD_BIN_SERVICE baseUrl when checkoutId is YOUR-CHECKOUT-ID`() {
+    fun `should use default CARD_BIN_SERVICE baseUrl when checkoutId is AUTOMATED-TEST`() {
         given(resultHandlerFactory.getPanValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getBrandsChangedHandler()).willReturn(mock())
@@ -78,7 +78,7 @@ class TextWatcherFactoryTest {
             cvcEditText = cvcEditText,
             acceptedCardBrands = emptyArray(),
             enablePanFormatting = false,
-            checkoutId = "YOUR-CHECKOUT-ID"
+            checkoutId = "AUTOMATED-TEST"
         )
         assertNotNull(textWatcher)
         verifyNoInteractions(baseUrlProviderSpy)

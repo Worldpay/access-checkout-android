@@ -42,7 +42,7 @@ android {
     applicationVariants.configureEach { variant ->
 
         if (variant.name.contains("mock")) {
-            variant.buildConfigField "String", "CHECKOUT_ID", "\"YOUR-CHECKOUT-ID\""
+            variant.buildConfigField "String", "CHECKOUT_ID", "\"AUTOMATED-TEST\""
         } else if (variant.name.contains("prod")) {
             variant.buildConfigField "String", "CHECKOUT_ID", checkoutId
         }
