@@ -33,7 +33,7 @@ internal class CardBinService(
     private val client: CardBinClient = CardBinClient(URL(baseUrl)),
     private val dispatcherProvider: IDispatchersProvider = DispatchersProvider.instance
 ) {
-    private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.main)
+    private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.io)
     internal var currentJob: Job? = null
 
     /**
@@ -61,7 +61,7 @@ internal class CardBinService(
         }
 
         // Launch a new coroutine to fetch the card brands from the API asynchronously
-        currentJob = scope.launch() {
+        currentJob = scope.launch {
             try {
                 val response =
                     withContext(dispatcherProvider.io) {
