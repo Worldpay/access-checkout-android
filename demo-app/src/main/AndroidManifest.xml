@@ -3,7 +3,7 @@
     package="com.worldpay.access.checkout.sample"
     android:versionCode="1"
     android:versionName="1.0">
-
+    <uses-permission android:name="android.permission.INTERNET" />
     <application
         android:name=".DemoApplication"
         android:allowBackup="false"
@@ -31,5 +31,4 @@
             </intent-filter>
         </activity>
     </application>
-
 </manifest>
