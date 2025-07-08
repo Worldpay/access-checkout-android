@@ -11,7 +11,6 @@ import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
 import com.worldpay.access.checkout.util.coroutine.IDispatchersProvider
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import kotlinx.coroutines.CancellationException
-import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
@@ -33,7 +32,7 @@ internal class CardBinService(
     private val client: CardBinClient = CardBinClient(URL(baseUrl)),
     private val dispatcherProvider: IDispatchersProvider = DispatchersProvider.instance
 ) {
-    private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.io)
+    private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.main)
     internal var currentJob: Job? = null
 
     /**

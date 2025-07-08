@@ -15,7 +15,6 @@ import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import java.util.stream.Collectors
 import java.util.stream.Collectors.toSet
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
