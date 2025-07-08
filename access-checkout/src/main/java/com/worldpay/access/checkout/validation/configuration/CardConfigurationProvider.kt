@@ -11,7 +11,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-internal class CardConfigurationProvider private constructor(){
+internal class CardConfigurationProvider private constructor() {
 
     companion object {
         private lateinit var cardConfigurationClient: CardConfigurationClient
@@ -30,9 +30,11 @@ internal class CardConfigurationProvider private constructor(){
 
             CoroutineScope(SupervisorJob() + dispatcherProvider.main).launch {
                 try {
+                    Log.d(javaClass.simpleName, "Fetching card configuration from client...")
                     val response = withContext(dispatcherProvider.io) {
                         cardConfigurationClient.getCardConfiguration()
                     }
+                    Log.d(javaClass.simpleName, "Card configuration fetched successfully.")
                     savedCardConfiguration = response
                 } catch (ex: Exception) {
                     Log.d(

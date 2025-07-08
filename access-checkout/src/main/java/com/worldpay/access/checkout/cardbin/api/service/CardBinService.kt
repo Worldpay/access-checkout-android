@@ -62,6 +62,7 @@ internal class CardBinService(
         // Launch a new coroutine to fetch the card brands from the API asynchronously
         currentJob = scope.launch {
             try {
+                Log.d(javaClass.simpleName, "Fetching card bin data from client...")
                 val response =
                     withContext(dispatcherProvider.io) {
                         client.fetchCardBinResponseWithRetry(
@@ -71,6 +72,7 @@ internal class CardBinService(
                             )
                         )
                     }
+                Log.d(javaClass.simpleName, "Card bin data fetched successfully.")
                 // Transform the API response into a list of card brands
                 val brands = transform(globalBrand, response)
 

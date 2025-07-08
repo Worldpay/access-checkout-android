@@ -26,7 +26,7 @@ internal class CardConfigurationClient(
             return cardConfiguration
         } catch (ex: Exception) {
             val message = "There was an error when trying to fetch the card configuration"
-            Log.d(javaClass.simpleName, "$message: $ex")
+            Log.d(javaClass.simpleName, "$message:", ex)
             throw AccessCheckoutException(message, ex)
         }
     }
