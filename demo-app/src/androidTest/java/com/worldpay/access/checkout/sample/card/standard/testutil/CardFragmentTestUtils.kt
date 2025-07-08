@@ -261,7 +261,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasCheckoutId(checkoutId: String): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 30000) {
+        wait(maxWaitTimeInMillis = 10000) {
             assertEquals(
                 checkoutId,
                 "checkout-id",
@@ -272,7 +272,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 30000) {
+        wait(maxWaitTimeInMillis = 10000) {
             assertEquals(
                 cardBrand.cardBrandName,
                 brandLogo().getTag(R.integer.card_tag)
@@ -282,7 +282,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasBrandNames(vararg cardBrandsNames: String): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 30000) {
+        wait(maxWaitTimeInMillis = 10000) {
             val expectedCardBrandNames = cardBrandsNames.toSet()
             val actualBrandNames = brandName().text.split(",")
                 .stream()
