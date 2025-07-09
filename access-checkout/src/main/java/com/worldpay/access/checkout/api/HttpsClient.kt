@@ -164,7 +164,6 @@ internal class HttpsClient(
         headers: Map<String, String>
     ) {
         headers.forEach { HttpsURLConnection.setRequestProperty(it.key, it.value) }
-        HttpsURLConnection.setRequestProperty("Content-Type", "application/json")
         // Connection header is "keep-alive" by default. We explicitly set it to "close" to instruct
         // the http library to close connections after receiving the response. This in return
         // ensures that the details of requests (headers, body) made to the backend do not
