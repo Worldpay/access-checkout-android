@@ -28,7 +28,7 @@ internal class CardConfigurationProvider private constructor() {
             savedCardConfiguration = DEFAULT_CONFIG
             this.cardConfigurationClient = cardConfigurationClient
 
-            CoroutineScope(SupervisorJob() + dispatcherProvider.io).launch {
+            CoroutineScope(SupervisorJob() + dispatcherProvider.main).launch {
                 try {
                     Log.d(javaClass.simpleName, "Fetching card configuration from client...")
                     val response = withContext(dispatcherProvider.io) {
