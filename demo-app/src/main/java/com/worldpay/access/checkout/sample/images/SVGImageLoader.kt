@@ -97,14 +97,19 @@ class SVGImageLoader @JvmOverloads constructor(
         val newCall = client.newCall(request)
 
         newCall.enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {}
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("SVGImageLoader", "Failed to fetch image for brand $brandName", e)
+            }
 
-            @Throws(IOException::class)
             override fun onResponse(call: Call, response: Response) {
                 response.body?.let { responseBody ->
-                    run {
-                        Log.d("SVGImageLoader", "Received image for brand $brandName")
-                        svgImageRenderer.renderImage(responseBody.byteStream(), target, brandName)
+                    runOnUiThreadFunc {
+                        try {
+                            Log.d("SVGImageLoader", "Received image for brand $brandName")
+                            svgImageRenderer.renderImage(responseBody.byteStream(), target, brandName)
+                        } catch (e: Exception) {
+                            Log.e("SVGImageLoader", "Error rendering image for brand $brandName", e)
+                        }
                     }
                 }
             }
