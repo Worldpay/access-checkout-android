@@ -8,7 +8,6 @@ import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
-import com.worldpay.access.checkout.util.coroutine.IDispatchersProvider
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
@@ -30,9 +29,9 @@ internal class CardBinService(
     private val checkoutId: String,
     private val baseUrl: String,
     private val client: CardBinClient = CardBinClient(URL(baseUrl)),
-    private val dispatcherProvider: IDispatchersProvider = DispatchersProvider.instance
 ) {
-    private val scope = CoroutineScope(SupervisorJob() + dispatcherProvider.main)
+    val scope: CoroutineScope = CoroutineScope(SupervisorJob() + DispatchersProvider.instance.main)
+
     internal var currentJob: Job? = null
 
     /**
@@ -64,7 +63,7 @@ internal class CardBinService(
             try {
                 Log.d(javaClass.simpleName, "Fetching card bin data from client...")
                 val response =
-                    withContext(dispatcherProvider.io) {
+                    withContext(DispatchersProvider.instance.io) {
                         client.fetchCardBinResponseWithRetry(
                             request = CardBinRequest(
                                 panValue.take(12),

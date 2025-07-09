@@ -29,13 +29,16 @@ android {
 
     flavorDimensions = ["environment"]
     productFlavors {
-        mock {
+        register("mock") {
             dimension = "environment"
             applicationIdSuffix = ".mock"
+            manifestPlaceholders = [displayName:"Access Checkout - Mock Demo App"]
         }
 
-        prod {
+        register("prod") {
             dimension = "environment"
+            applicationIdSuffix = ".prod"
+            manifestPlaceholders = [displayName:"Access Checkout - Prod Demo App"]
         }
     }
 
@@ -44,7 +47,7 @@ android {
         if (variant.name.contains("mock")) {
             variant.buildConfigField "String", "CHECKOUT_ID", "\"AUTOMATED-TEST\""
         } else if (variant.name.contains("prod")) {
-            variant.buildConfigField "String", "CHECKOUT_ID", checkoutId
+            variant.buildConfigField "String", "CHECKOUT_ID", "${project.checkoutId}"
         }
     }
 
@@ -84,7 +87,7 @@ dependencies {
     mockImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     mockImplementation 'com.google.code.gson:gson:2.13.1'
     mockImplementation("com.github.tomakehurst:wiremock:2.22.0") {
-        //Allows us to use the Android version of Apache httpclient instead
+//        Allows us to use the Android version of Apache httpclient instead
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
     }
 
