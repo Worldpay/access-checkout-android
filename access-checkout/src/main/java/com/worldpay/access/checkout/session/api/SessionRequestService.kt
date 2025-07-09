@@ -14,25 +14,32 @@ import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
+import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) :
-    Service(), CoroutineScope by MainScope() {
+    Service() {
 
     internal companion object {
         const val REQUEST_KEY = "request"
     }
 
     private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender()
-    private val localBroadcastManagerFactory: LocalBroadcastManagerFactory = factory.getLocalBroadcastManagerFactory(this)
+    private val localBroadcastManagerFactory: LocalBroadcastManagerFactory =
+        factory.getLocalBroadcastManagerFactory(this)
+    private val scope: CoroutineScope =
+        CoroutineScope(SupervisorJob() + DispatchersProvider.instance.main)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
-            launch {
+            scope.launch {
                 try {
-                    val sessionResponseInfo = fetchSessionResponseInfo(intent)
+                    val sessionResponseInfo = withContext(DispatchersProvider.instance.io) {
+                        fetchSessionResponseInfo(intent)
+                    }
                     broadcastResult(sessionResponseInfo, null)
                 } catch (ex: Exception) {
                     Log.e(javaClass.simpleName, "Failed to retrieve session", ex)
@@ -57,8 +64,8 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) :
         Log.d(
             javaClass.simpleName,
             "session response received: " +
-                "resp:${sessionResponseInfo.responseBody} " +
-                "for session type:${sessionResponseInfo.sessionType}"
+                    "resp:${sessionResponseInfo.responseBody} " +
+                    "for session type:${sessionResponseInfo.sessionType}"
         )
         return sessionResponseInfo
     }

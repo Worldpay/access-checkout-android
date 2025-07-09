@@ -7,6 +7,9 @@ import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
+import kotlinx.coroutines.CoroutineDispatcher
+import kotlinx.coroutines.async
+import kotlinx.coroutines.coroutineScope
 import java.io.BufferedOutputStream
 import java.io.BufferedReader
 import java.io.InputStream
@@ -15,9 +18,6 @@ import java.io.OutputStreamWriter
 import java.io.Serializable
 import java.net.URL
 import javax.net.ssl.HttpsURLConnection
-import kotlinx.coroutines.CoroutineDispatcher
-import kotlinx.coroutines.async
-import kotlinx.coroutines.coroutineScope
 
 internal class HttpsClient(
     private val dispatcher: CoroutineDispatcher = DispatchersProvider.instance.io,
@@ -62,6 +62,7 @@ internal class HttpsClient(
                                     in successfulHttpRange -> httpsUrlConn.inputStream.use { inputStream ->
                                         getResponseData(inputStream)
                                     }
+
                                     in redirectHttpRange -> return@async handleRedirect(
                                         httpsUrlConn,
                                         request,
@@ -69,6 +70,7 @@ internal class HttpsClient(
                                         serializer,
                                         deserializer
                                     )
+
                                     in clientErrorHttpRange -> throw getClientError(httpsUrlConn)
                                     else -> throw getServerError(httpsUrlConn)
                                 }
@@ -97,36 +99,49 @@ internal class HttpsClient(
         deserializer: Deserializer<Response>,
         headers: Map<String, String> = mapOf()
     ): Response {
+        println("doGet: Entered function")
         return coroutineScope {
+            println("doGet: Entered coroutineScope")
             async(dispatcher) {
+                println("doGet: Started async block on dispatcher $dispatcher")
                 var httpsUrlConn: HttpsURLConnection? = null
                 try {
+                    println("doGet: Creating HttpsURLConnection for $url")
                     httpsUrlConn = createHttpsURLConnection(url)
 
                     httpsUrlConn.requestMethod = GET_METHOD
                     setRequestProperties(httpsUrlConn, headers)
+                    println("doGet: Connection properties set, about to get response code")
+                    val responseCode = httpsUrlConn.responseCode
+                    println("doGet: Response code is $responseCode")
 
-                    val responseData = when (httpsUrlConn.responseCode) {
+                    val responseData = when (responseCode) {
                         in successfulHttpRange -> httpsUrlConn.inputStream.use { inputStream ->
                             getResponseData(inputStream)
                         }
+
                         in redirectHttpRange -> return@async handleRedirect(
                             httpsUrlConn,
                             deserializer
                         )
+
                         in clientErrorHttpRange -> throw getClientError(httpsUrlConn)
                         else -> throw getServerError(httpsUrlConn)
                     }
 
+                    println("doGet: Deserializing response data")
                     return@async deserializer.deserialize(responseData)
                 } catch (ex: AccessCheckoutException) {
+                    println("doGet: Caught AccessCheckoutException: ${ex.message}")
                     throw ex
                 } catch (ex: Exception) {
                     val message =
                         ex.message
                             ?: "An exception was thrown when trying to establish a connection"
+                    println("doGet: Caught Exception: $message")
                     throw AccessCheckoutException(message, ex)
                 } finally {
+                    println("doGet: Disconnecting connection")
                     httpsUrlConn?.disconnect()
                 }
             }
@@ -171,7 +186,10 @@ internal class HttpsClient(
         }
 
         clientException?.cause = clientErrorException
-        return clientException ?: AccessCheckoutException(getMessage(conn, errorData), clientErrorException)
+        return clientException ?: AccessCheckoutException(
+            getMessage(conn, errorData),
+            clientErrorException
+        )
     }
 
     private fun getServerError(conn: HttpsURLConnection): AccessCheckoutException {
@@ -199,9 +217,9 @@ internal class HttpsClient(
                 var currentLine: String?
 
                 while (run {
-                    currentLine = reader.readLine()
-                    currentLine
-                } != null
+                        currentLine = reader.readLine()
+                        currentLine
+                    } != null
                 )
                     response.append(currentLine)
 
