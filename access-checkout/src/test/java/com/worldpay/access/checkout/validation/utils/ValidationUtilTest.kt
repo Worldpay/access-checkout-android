@@ -16,6 +16,7 @@ import com.worldpay.access.checkout.validation.utils.ValidationUtil.getMaxLength
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
@@ -32,6 +33,7 @@ class ValidationUtilTest: BaseCoroutineTest() {
     @Before
     fun setup() = runTest {
         mockSuccessfulCardConfiguration()
+        advanceUntilIdle()
     }
 
     @Test

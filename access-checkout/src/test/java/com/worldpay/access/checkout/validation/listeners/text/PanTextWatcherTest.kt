@@ -88,6 +88,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
         given(panEditable.toString()).willReturn(visaPan())
 
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(panValidator).validate(visaPan(), VISA_BRAND.pan, VISA_BRAND)
     }
@@ -98,6 +99,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             mockPan(visaPan(), VALID)
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
             verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
         }
@@ -109,6 +111,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             given(panFormatter.format("", null)).willReturn("")
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
             verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
         }
@@ -119,6 +122,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             mockPan(visaPan(), CARD_BRAND_NOT_ACCEPTED)
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
             verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = true)
         }
@@ -130,6 +134,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
             verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
         }
@@ -149,6 +154,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             }
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
             verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
             reset(brandsChangedHandler)
@@ -168,6 +174,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             }
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
             verify(brandsChangedHandler).handle(emptyList())
         }
 
@@ -182,6 +189,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
                 callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
             }
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
             verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
             mockPan(INVALID_UNKNOWN_LUHN, CARD_BRAND_NOT_ACCEPTED)
@@ -197,6 +205,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             }
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
             verify(brandsChangedHandler).handle(emptyList())
         }
 
@@ -210,6 +219,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
                 callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
             }
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
             verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
             mockPan(INVALID_UNKNOWN_LUHN, INVALID_LUHN)
@@ -225,6 +235,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
             verify(brandsChangedHandler).handle(emptyList())
         }
 
@@ -240,6 +251,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             ).willReturn(VALID_UNKNOWN_LUHN_FORMATTED)
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
             verifyNoInteractions(brandsChangedHandler)
         }
@@ -254,6 +266,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
                 callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
             }
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
             verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
             reset(brandsChangedHandler)
@@ -261,6 +274,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             // set the visa pan again so that the brand changed handler is no longer called
             mockPan(visaPan(), VALID)
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
             verifyNoInteractions(brandsChangedHandler)
         }
 
@@ -273,6 +287,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
         }
 
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
         verify(cvcValidationRuleManager).updateRule(VISA_BRAND.cvc)
@@ -287,6 +302,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
         }
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
         verify(cvcValidator).validate("123")
@@ -302,6 +318,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
                 callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
             }
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
             verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
 
             reset(brandsChangedHandler)
@@ -309,6 +326,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             // set the visa pan again so that the brand changed handler is no longer called
             mockPan(visaPan(), VALID)
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
             verifyNoInteractions(brandsChangedHandler)
             verifyNoInteractions(cvcValidator)
         }
@@ -322,6 +340,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
         }
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
         verifyNoInteractions(cvcValidator)
@@ -343,7 +362,9 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             given(panFormatter.format(any(), any())).willReturn(reformattedPan)
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
+            advanceUntilIdle()
             verify(panEditText, never()).setText(anyString())
             verify(panEditable).replace(
                 0,
@@ -371,6 +392,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             given(panEditable.toString()).willReturn(panUsedForOnTextChanged)
             given(panEditable.length).willReturn(panUsedForOnTextChanged.length)
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
             verify(panEditText).setSelection(1)
 
@@ -389,6 +411,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
         mockPan("44443333222", INVALID)
 
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verifyNoInteractions(cardBinService)
     }
@@ -400,6 +423,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
         mockPan(pan, INVALID)
 
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(cardBinService).getCardBrands(eq(VISA_BRAND), eq(pan), any())
     }
@@ -412,6 +436,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             mockPan(pan, INVALID)
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
             //getCardBrands is called with null
             verify(cardBinService).getCardBrands(eq(null), eq(pan), any())
@@ -427,6 +452,7 @@ class PanTextWatcherTest : BaseCoroutineTest() {
             advanceUntilIdle()
 
             panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
             verifyNoInteractions(brandsChangedHandler)
         }

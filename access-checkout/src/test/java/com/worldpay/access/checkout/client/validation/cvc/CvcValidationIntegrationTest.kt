@@ -67,7 +67,7 @@ class CvcValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should validate cvc as true given 3 digit cvc is entered and visa pan is entered`() =
         runTest {
-            pan.setText(visaPan())
+            setText(pan,visaPan())
             setText(cvc, "123")
 
             verify(cardValidationListener).onCvcValidated(true)
@@ -76,7 +76,7 @@ class CvcValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should limit cvc to 3 digits and validate cvc as true given 4 digit cvc is entered and visa pan is entered`() =
         runTest {
-            pan.setText(visaPan())
+            setText(pan,visaPan())
             setText(cvc, "1234")
 
             verify(cardValidationListener).onCvcValidated(true)
@@ -86,7 +86,7 @@ class CvcValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should validate cvc as true given 4 digit cvc is entered and amex pan is entered`() =
         runTest {
-            pan.setText(AMEX_PAN)
+            setText(pan,AMEX_PAN)
             setText(cvc, "1234")
 
             verify(cardValidationListener).onCvcValidated(true)
@@ -95,7 +95,7 @@ class CvcValidationIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should limit cvc to 3 digits and validate cvc as true given 4 digit cvc is entered and amex pan is entered`() =
         runTest {
-            pan.setText(AMEX_PAN)
+            setText(pan,AMEX_PAN)
             setText(cvc, "12345")
 
             verify(cardValidationListener).onCvcValidated(true)

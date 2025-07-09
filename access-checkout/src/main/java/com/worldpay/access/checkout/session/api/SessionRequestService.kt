@@ -14,32 +14,25 @@ import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
-import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 
 internal class SessionRequestService(factory: Factory = DefaultFactory()) :
-    Service() {
+    Service(), CoroutineScope by MainScope() {
 
     internal companion object {
         const val REQUEST_KEY = "request"
     }
 
     private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender()
-    private val localBroadcastManagerFactory: LocalBroadcastManagerFactory =
-        factory.getLocalBroadcastManagerFactory(this)
-    private val scope: CoroutineScope =
-        CoroutineScope(SupervisorJob() + DispatchersProvider.instance.main)
+    private val localBroadcastManagerFactory: LocalBroadcastManagerFactory = factory.getLocalBroadcastManagerFactory(this)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
-            scope.launch {
+            launch {
                 try {
-                    val sessionResponseInfo = withContext(DispatchersProvider.instance.io) {
-                        fetchSessionResponseInfo(intent)
-                    }
+                    val sessionResponseInfo = fetchSessionResponseInfo(intent)
                     broadcastResult(sessionResponseInfo, null)
                 } catch (ex: Exception) {
                     Log.e(javaClass.simpleName, "Failed to retrieve session", ex)

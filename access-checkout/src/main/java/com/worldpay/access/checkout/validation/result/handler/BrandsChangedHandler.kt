@@ -11,6 +11,7 @@ internal class BrandsChangedHandler(
 
     fun handle(remoteCardBrands: List<RemoteCardBrand>) {
         val cardBrands = remoteCardBrands.mapNotNull { toCardBrandTransformer.transform(it)}
+        println("called")
         validationListener.onBrandsChange(cardBrands)
     }
 }

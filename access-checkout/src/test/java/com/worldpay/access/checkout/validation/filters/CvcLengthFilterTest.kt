@@ -56,19 +56,22 @@ class CvcLengthFilterTest: BaseCoroutineTest() {
     @Test
     fun `should change the max length depending on the pan detected`() = runTest {
         pan.setText("")
-
+        advanceUntilIdle()
         cvc.setText("123456")
+        advanceUntilIdle()
         assertEquals("1234", cvc.text.toString())
 
         pan.setText(visaPan())
 
         cvc.setText("123456")
+        advanceUntilIdle()
         assertEquals("123", cvc.text.toString())
     }
 
     @Test
     fun `should ignore pan if no pan edit text is passed to filter`() = runTest {
         cvc.filters = arrayOf(CvcLengthFilter(null))
+        advanceUntilIdle()
 
         pan.setText("")
 

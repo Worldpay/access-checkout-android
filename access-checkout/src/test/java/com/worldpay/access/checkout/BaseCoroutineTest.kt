@@ -40,7 +40,6 @@ open class BaseCoroutineTest {
     fun baseCoroutineSetUp() {
         closeable = MockitoAnnotations.openMocks(this)
         coroutineSetup()
-
     }
 
     @After
@@ -56,6 +55,7 @@ open class BaseCoroutineTest {
 
     private fun coroutineTearDown() {
         testScope.cancel()
+        testDispatcher.cancel()
         Dispatchers.resetMain()
         DispatchersProvider.instance = CoroutineDispatchers()
     }

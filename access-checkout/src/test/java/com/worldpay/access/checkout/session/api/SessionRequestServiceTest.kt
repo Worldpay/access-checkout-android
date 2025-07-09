@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.session.api
 
 import android.content.Intent
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
-import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.model.SessionType
@@ -33,11 +32,10 @@ import java.net.URL
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
-import kotlin.text.get
 
 @RunWith(RobolectricTestRunner::class)
 @ExperimentalCoroutinesApi
-class SessionRequestServiceTest: BaseCoroutineTest() {
+class SessionRequestServiceTest {
 
     private val factory = mock<Factory>()
     private val sessionRequestSender = mock<SessionRequestSender>()
@@ -48,8 +46,8 @@ class SessionRequestServiceTest: BaseCoroutineTest() {
 
     private lateinit var sessionRequestService: SessionRequestService
 
-//    @get:Rule
-//    var coroutinesTestRule = CoroutineTestRule()
+    @get:Rule
+    var coroutinesTestRule = CoroutineTestRule()
 
     @Before
     fun setup() {
@@ -137,9 +135,8 @@ class SessionRequestServiceTest: BaseCoroutineTest() {
         assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
         assertEquals(2, broadcastIntent.extras!!.size())
         assertEquals(null, broadcastIntent.extras!!.get(RESPONSE_KEY))
-        val error = broadcastIntent.extras!!.get(ERROR_KEY) as Throwable
-        assertEquals(exception::class, error::class)
-        assertEquals(exception.message, error.message)
+        assertEquals(exception, broadcastIntent.extras!!.get(ERROR_KEY))
+
         verify(sessionRequestService).stopSelf()
     }
 
