@@ -1,7 +1,5 @@
 package com.worldpay.access.checkout.api
 
-import android.os.Build
-import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.api.NoWeakCipherSSLSocketFactory.Companion.noWeakCipherSSLSocketFactory
 import com.worldpay.access.checkout.api.serialization.ClientErrorDeserializer
 import com.worldpay.access.checkout.api.serialization.Deserializer
@@ -164,6 +162,9 @@ internal class HttpsClient(
         headers: Map<String, String>
     ) {
         headers.forEach { HttpsURLConnection.setRequestProperty(it.key, it.value) }
+        if (!headers.containsKey("Content-Type")) {
+            HttpsURLConnection.setRequestProperty("Content-Type", "application/json")
+        }
         // Connection header is "keep-alive" by default. We explicitly set it to "close" to instruct
         // the http library to close connections after receiving the response. This in return
         // ensures that the details of requests (headers, body) made to the backend do not
