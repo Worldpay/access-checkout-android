@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.sample.testutil
 
 import android.content.pm.ActivityInfo
-import android.os.Build
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -15,7 +14,8 @@ import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice.getInstance
@@ -24,8 +24,8 @@ import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import java.util.concurrent.TimeUnit
 import org.awaitility.Awaitility.await
+import java.util.concurrent.TimeUnit
 
 object UITestUtils {
 
@@ -95,18 +95,11 @@ object UITestUtils {
     }
 
     fun reopenApp() {
-        pressRecentApps()
+        val uiDevice = getInstance(getInstrumentation())
+        pressRecentApps() // Open recent apps
+        pressRecentApps() // Return to the app
 
-        Thread.sleep(1000)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val uiDevice = getInstance(getInstrumentation())
-            uiDevice.click(uiDevice.displayWidth / 2, uiDevice.displayHeight / 2)
-        } else {
-            pressRecentApps()
-        }
-
-        await().atMost(60, TimeUnit.SECONDS).until {
+        await().atMost(10, TimeUnit.SECONDS).until {
             try {
                 onView(withId(R.id.drawer_layout))
                     .check(matches(isDisplayed()))
@@ -127,13 +120,13 @@ object UITestUtils {
 
     private fun pressRecentApps(currentRetryCount: Int = 1, maxTimes: Int = 3) {
         val uiDevice = getInstance(getInstrumentation())
-        val pressedOnce = uiDevice.pressRecentApps()
+        var pressedOnce = uiDevice.pressRecentApps()
 
         if (pressedOnce) {
+            Thread.sleep(1000)
             return
         } else {
             if (currentRetryCount < maxTimes) {
-                Thread.sleep(1000)
                 pressRecentApps(currentRetryCount = currentRetryCount + 1)
             } else {
                 throw RuntimeException("Could not press recent apps button")

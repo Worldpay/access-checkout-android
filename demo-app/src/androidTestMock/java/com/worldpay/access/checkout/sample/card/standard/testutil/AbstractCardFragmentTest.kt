@@ -21,8 +21,8 @@ abstract class AbstractCardFragmentTest {
     fun setup() {
         cardFragmentTestUtils = CardFragmentTestUtils(activityRule)
         defaultStubMappings(activityRule.activity)
-        closeSoftKeyboard()
-        rotatePortrait(activityRule)
+//        closeSoftKeyboard()
+//        rotatePortrait(activityRule)
     }
 
     fun clearPan() {

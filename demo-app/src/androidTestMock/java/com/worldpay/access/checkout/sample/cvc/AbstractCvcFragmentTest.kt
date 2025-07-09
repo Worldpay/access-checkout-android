@@ -24,8 +24,8 @@ abstract class AbstractCvcFragmentTest {
         cvcFragmentTestUtils = CvcFragmentTestUtils(activityRule)
         defaultStubMappings(activityRule.activity)
         navigateTo(R.id.nav_cvc_flow)
-        closeSoftKeyboard()
-        rotatePortrait(activityRule)
+//        closeSoftKeyboard()
+//        rotatePortrait(activityRule)
     }
 
     fun restartApp() {

@@ -21,7 +21,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestRule<MainActivity>) {
+abstract class AbstractFragmentTestUtils(internal val activityRule: ActivityTestRule<MainActivity>) {
 
     private fun progressBar() = UITestUtils.uiObjectWithId(R.id.loading_bar)
 
