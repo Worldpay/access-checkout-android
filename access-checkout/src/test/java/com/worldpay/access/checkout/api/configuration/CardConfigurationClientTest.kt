@@ -4,9 +4,12 @@ import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.BDDMockito.given
+import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import java.net.URL
 import kotlin.test.assertEquals
@@ -27,7 +30,7 @@ class CardConfigurationClientTest {
         val cardConfiguration = CardConfiguration(emptyList(), DefaultCardRules.CARD_DEFAULTS)
 
         given(urlFactory.getURL("$baseUrl/$cardConfigResource")).willReturn(cardConfigUrl)
-        given(httpsClient.doGet(cardConfigUrl, cardConfigurationParser)).willReturn(cardConfiguration)
+        given(httpsClient.doGet(eq(cardConfigUrl), eq(cardConfigurationParser), any())).willReturn(cardConfiguration)
 
         val cardConfigurationClient = CardConfigurationClient(
             baseUrl = baseUrl,
@@ -48,7 +51,7 @@ class CardConfigurationClientTest {
         val cardConfigurationParser = mock<CardConfigurationParser>()
 
         given(urlFactory.getURL("$baseUrl/$cardConfigResource")).willReturn(cardConfigUrl)
-        given(httpsClient.doGet(cardConfigUrl, cardConfigurationParser)).willThrow(RuntimeException("run time exception"))
+        given(httpsClient.doGet(eq(cardConfigUrl), eq(cardConfigurationParser), any())).willThrow(RuntimeException("run time exception"))
 
         val cardConfigurationClient = CardConfigurationClient(
             baseUrl = baseUrl,
