@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.api
 
+import android.os.Build
+import com.worldpay.access.checkout.BuildConfig
 import com.worldpay.access.checkout.api.NoWeakCipherSSLSocketFactory.Companion.noWeakCipherSSLSocketFactory
 import com.worldpay.access.checkout.api.serialization.ClientErrorDeserializer
 import com.worldpay.access.checkout.api.serialization.Deserializer
@@ -147,10 +149,9 @@ internal class HttpsClient(
     }
 
     private fun createHttpsURLConnection(url: URL): HttpsURLConnection {
-        val connection = url.openConnection()!! as HttpsURLConnection
+        val connection = url.openConnection() as HttpsURLConnection
         connection.connectTimeout = CONNECT_TIMEOUT
         connection.readTimeout = READ_TIMEOUT
-
         // Using a custom SSLSocketFactory that removes weak cipher suites from
         // enabled and supported cipher suites
         connection.sslSocketFactory = noWeakCipherSSLSocketFactory()
@@ -163,7 +164,7 @@ internal class HttpsClient(
         headers: Map<String, String>
     ) {
         headers.forEach { HttpsURLConnection.setRequestProperty(it.key, it.value) }
-
+        HttpsURLConnection.setRequestProperty("Content-Type", "application/json")
         // Connection header is "keep-alive" by default. We explicitly set it to "close" to instruct
         // the http library to close connections after receiving the response. This in return
         // ensures that the details of requests (headers, body) made to the backend do not
@@ -256,7 +257,7 @@ internal class HttpsClient(
         private const val GET_METHOD = "GET"
         private const val LOCATION = "Location"
 
-        private const val CONNECT_TIMEOUT = 30000
+        private const val CONNECT_TIMEOUT = 10000
         private const val READ_TIMEOUT = 30000
 
         private val successfulHttpRange = 200..299
