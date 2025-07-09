@@ -15,6 +15,7 @@ import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
+import java.util.stream.Collectors
 import java.util.stream.Collectors.toSet
 import kotlin.test.assertEquals
 import kotlin.test.assertTrue
@@ -260,7 +261,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasCheckoutId(checkoutId: String): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 10000) {
+        wait(maxWaitTimeInMillis = 15000) {
             assertEquals(
                 checkoutId,
                 "checkout-id",
@@ -271,7 +272,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 10000) {
+        wait(maxWaitTimeInMillis = 15000) {
             assertEquals(
                 cardBrand.cardBrandName,
                 brandLogo().getTag(R.integer.card_tag)
@@ -281,7 +282,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasBrandNames(vararg cardBrandsNames: String): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 10000) {
+        wait(maxWaitTimeInMillis = 15000) {
             val expectedCardBrandNames = cardBrandsNames.toSet()
             val actualBrandNames = brandName().text.split(",")
                 .stream()

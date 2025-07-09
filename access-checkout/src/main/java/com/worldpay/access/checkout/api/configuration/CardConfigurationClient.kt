@@ -6,6 +6,7 @@ import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.api.URLFactoryImpl
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import java.net.URL
+import java.util.UUID
 
 internal class CardConfigurationClient(
     baseUrl: URL,
@@ -22,7 +23,10 @@ internal class CardConfigurationClient(
 
     suspend fun getCardConfiguration(): CardConfiguration {
         try {
-            val cardConfiguration = httpsClient.doGet(cardConfigUrl, cardConfigurationParser)
+            var reqID = UUID.randomUUID().toString()
+            println("doGet: Using correlation id $reqID")
+            var headers = mapOf("WP-CorrelationId" to reqID)
+            val cardConfiguration = httpsClient.doGet(cardConfigUrl, cardConfigurationParser, headers)
             return cardConfiguration
         } catch (ex: Exception) {
             val message = "There was an error when trying to fetch the card configuration"
