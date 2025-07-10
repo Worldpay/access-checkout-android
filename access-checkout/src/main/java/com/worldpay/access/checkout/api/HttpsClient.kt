@@ -154,16 +154,16 @@ internal class HttpsClient(
     }
 
     private fun setRequestProperties(
-        HttpsURLConnection: HttpsURLConnection,
+        httpsURLConnection: HttpsURLConnection,
         headers: Map<String, String>
     ) {
-        headers.forEach { HttpsURLConnection.setRequestProperty(it.key, it.value) }
+        headers.forEach { httpsURLConnection.setRequestProperty(it.key, it.value) }
 
         // Connection header is "keep-alive" by default. We explicitly set it to "close" to instruct
         // the http library to close connections after receiving the response. This in return
         // ensures that the details of requests (headers, body) made to the backend do not
         // stay in memory
-        HttpsURLConnection.setRequestProperty("Connection", "close")
+        httpsURLConnection.setRequestProperty("Connection", "close")
     }
 
     private fun getClientError(conn: HttpsURLConnection): AccessCheckoutException {
@@ -251,7 +251,7 @@ internal class HttpsClient(
         private const val GET_METHOD = "GET"
         private const val LOCATION = "Location"
 
-        private const val CONNECT_TIMEOUT = 10000
+        private const val CONNECT_TIMEOUT = 5000
         private const val READ_TIMEOUT = 30000
 
         private val successfulHttpRange = 200..299
@@ -259,7 +259,6 @@ internal class HttpsClient(
         private val clientErrorHttpRange = 400..499
     }
 }
-
 internal interface URLFactory {
     fun getURL(url: String): URL
 }
