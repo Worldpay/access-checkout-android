@@ -17,6 +17,9 @@ import okhttp3.ResponseBody
 import java.io.File
 import java.io.IOException
 import java.io.InputStream
+import java.util.WeakHashMap
+import kotlin.text.get
+import kotlin.text.set
 
 /**
  * This class is responsible for fetching a remote SVG file and applying it to a target view
@@ -32,9 +35,7 @@ class SVGImageLoader @JvmOverloads constructor(
     )
 ) {
     companion object {
-        @JvmStatic
-        @Volatile
-        private var INSTANCE: SVGImageLoader? = null
+        private val instances = WeakHashMap<Activity, SVGImageLoader>()
 
         /**
          * @param activity the current activity
@@ -42,12 +43,11 @@ class SVGImageLoader @JvmOverloads constructor(
          */
         @JvmStatic
         fun getInstance(activity: Activity): SVGImageLoader {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                    ?: SVGImageLoader(
-                        activity::runOnUiThread,
-                        activity.cacheDir
-                    ).also { INSTANCE = it }
+            return synchronized(this) {
+                instances[activity] ?: SVGImageLoader(
+                    runOnUiThreadFunc = activity::runOnUiThread,
+                    cacheDir = activity.cacheDir
+                ).also { instances[activity] = it }
             }
         }
 
