@@ -42,10 +42,7 @@ object SessionsMockStub {
                 )
                 .withRequestBody(MatchesJsonPathPattern("cardNumber", matching("^[\\d]+$")))
                 .willReturn(
-                    validResponseWithDelay(
-                        context,
-                        2000
-                    )
+                    validResponseWithDelay(context)
                 )
         )
     }
@@ -60,7 +57,7 @@ object SessionsMockStub {
                     matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$")
                 )
                 .withRequestBody(AnythingPattern())
-                .willReturn(validResponseWithDelay(context, 2000))
+                .willReturn(validResponseWithDelay(context))
         )
     }
 
@@ -88,10 +85,7 @@ object SessionsMockStub {
                 )
                 .withRequestBody(AnythingPattern())
                 .willReturn(
-                    validResponseWithDelay(
-                        context,
-                        2000
-                    )
+                    validResponseWithDelay(context)
                 )
         )
     }
@@ -111,7 +105,7 @@ object SessionsMockStub {
                       } 
                     ] 
                   }
-                }"""".trimMargin()
+                }""".trimMargin()
 
         private const val sessionsResourceResponse = """
                 {
@@ -143,11 +137,11 @@ object SessionsMockStub {
                 .withTransformers(ResponseTemplateTransformer.NAME)
         }
 
-        fun validResponseWithDelay(context: Context, delay: Int): ResponseDefinitionBuilder? {
+        fun validResponseWithDelay(context: Context, delay: Int = 0): ResponseDefinitionBuilder? {
             return aResponse()
                 .withFixedDelay(delay)
                 .withStatus(201)
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
                 .withHeader("Location", context.getString(R.string.cvc_session_reference))
                 .withBody(
                     sessionsResourceResponse(

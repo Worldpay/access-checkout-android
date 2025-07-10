@@ -157,27 +157,22 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
 
     @Test
     fun shouldContinueWithServiceCall_whenAppIsReopened_afterSubmission() {
-        restartApp()
 
-        try {
-            simulateDelayedResponse(activityRule.activity, amexCard)
+        simulateDelayedResponse(activityRule.activity, amexCard)
 
-            CardFragmentTestUtils(activityRule)
-                .isInInitialState()
-                .enterCardDetails(pan = amexCard, cvc = amexCvc, expiryDate = "1299")
-                .clickSubmitButton()
+        CardFragmentTestUtils(activityRule)
+            .isInInitialState()
+            .enterCardDetails(pan = amexCard, cvc = amexCvc, expiryDate = "1299")
+            .clickSubmitButton()
 
-            reopenApp()
+        reopenApp()
 
-            CardFragmentTestUtils(activityRule)
-                .hasResponseDialogWithMessage(
-                    mapOf(CARD to activityRule.activity.getString(R.string.card_session_reference)).toString()
-                )
-                .closeDialog()
-                .isInInitialState()
-        } finally {
-            restartApp()
-        }
+        CardFragmentTestUtils(activityRule)
+            .hasResponseDialogWithMessage(
+                mapOf(CARD to activityRule.activity.getString(R.string.card_session_reference)).toString()
+            )
+            .closeDialog()
+            .isInInitialState()
     }
 
     @Test

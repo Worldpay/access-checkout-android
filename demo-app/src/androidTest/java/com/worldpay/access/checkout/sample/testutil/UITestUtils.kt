@@ -95,7 +95,6 @@ object UITestUtils {
     }
 
     fun reopenApp() {
-        val uiDevice = getInstance(getInstrumentation())
         pressRecentApps() // Open recent apps
         pressRecentApps() // Return to the app
 

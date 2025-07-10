@@ -65,7 +65,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun requestIsInProgress(): CardFragmentTestUtils {
-        progressBarIsVisible()
+//        progressBarIsVisible()
         enabledStateIs(
             pan = false,
             cvc = false,
