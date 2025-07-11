@@ -19,6 +19,7 @@ import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsResponses.defaultResponse
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsResponses.validResponseWithDelay
+import kotlin.ranges.random
 
 object SessionsMockStub {
 
@@ -137,7 +138,13 @@ object SessionsMockStub {
                 .withTransformers(ResponseTemplateTransformer.NAME)
         }
 
-        fun validResponseWithDelay(context: Context, delay: Int = 0): ResponseDefinitionBuilder? {
+        fun validResponseWithDelay(context: Context, fixedDelay:Int = 0, minDelay: Int = 100, maxDelay: Int = 500): ResponseDefinitionBuilder? {
+            var delay = fixedDelay
+            if (fixedDelay == 0){
+                //Introduce a random delay to simulate real network conditions
+                delay = (minDelay..maxDelay).random()
+            }
+
             return aResponse()
                 .withFixedDelay(delay)
                 .withStatus(201)
