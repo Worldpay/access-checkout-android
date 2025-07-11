@@ -6,14 +6,12 @@ import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.testutils.removeWhitespace
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.any
 import org.mockito.BDDMockito.anyInt

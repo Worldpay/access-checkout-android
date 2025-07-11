@@ -16,7 +16,6 @@ import com.worldpay.access.checkout.client.testutil.mocks.AccessWPServiceMock
 import com.worldpay.access.checkout.client.testutil.mocks.CardBinServiceMock
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
-import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.util.BaseUrlProvider
 import com.worldpay.access.checkout.util.IBaseUrlProvider
