@@ -9,13 +9,13 @@
       {
         "matchesJsonPath": {
           "expression": "$.cardNumber",
-          "matches": "3841001111222235555"
+          "matches": "516361361361"
         }
       }
     ]
   },
   "response": {
     "status": 504,
-    "body": "{}"
+    "body": "{\"error\": \"Timeout\"}"
   }
 }

@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.cardbin.api.client
 
+import android.util.Log
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.api.URLFactoryImpl
@@ -66,6 +67,9 @@ internal class CardBinClient(
             WP_CONTENT_TYPE to WP_CONTENT_TYPE_VALUE
         )
 
+
+        println(cardBinUrl)
+        println(request)
         return httpsClient.doPost(cardBinUrl, request, headers, serializer, deserializer)
     }
 
@@ -123,6 +127,7 @@ internal class CardBinClient(
                 lastException = e
                 onError(e)
                 attempt++
+                Log.d(javaClass.simpleName, "[${attempt}/$maxAttempts] Could not retrieve response Retrying...", e)
             }
         }
         throw AccessCheckoutException("Failed after $maxAttempts attempts", lastException)
