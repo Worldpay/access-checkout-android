@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.client.validation.pan
 
-import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
@@ -8,8 +7,6 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrandL
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN_FORMATTED
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -17,7 +14,6 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)

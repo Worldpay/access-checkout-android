@@ -1,9 +1,8 @@
 package com.worldpay.access.checkout.client.testutil.mocks
 
-import HealthChecker
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.client.testutil.TrustAllSSLSocketFactory
-import com.worldpay.access.checkout.client.testutil.mocks.CardBinServiceMock.isRunning
+import com.worldpay.access.checkout.util.HealthChecker
 import okhttp3.mockwebserver.MockResponse
 import okhttp3.mockwebserver.MockWebServer
 import java.security.KeyStore

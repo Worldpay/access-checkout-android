@@ -10,7 +10,6 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.spy
 import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
-import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 
 class TextWatcherFactoryTest {

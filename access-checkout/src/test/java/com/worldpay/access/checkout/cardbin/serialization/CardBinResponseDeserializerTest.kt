@@ -3,13 +3,9 @@ package com.worldpay.access.checkout.cardbin.serialization
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import com.worldpay.access.checkout.session.api.response.SessionResponse
-import com.worldpay.access.checkout.session.api.response.SessionResponse.Links
-import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.Curies
-import com.worldpay.access.checkout.session.api.response.SessionResponse.Links.Endpoints
-import kotlin.test.assertFailsWith
 import org.junit.Assert.assertEquals
 import org.junit.Test
+import kotlin.test.assertFailsWith
 
 class CardBinResponseDeserializerTest {
 

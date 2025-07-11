@@ -5,20 +5,17 @@ import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
-import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
-import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.validation.filters.CvcLengthFilter
 import com.worldpay.access.checkout.validation.filters.ExpiryDateLengthFilter
 import com.worldpay.access.checkout.validation.filters.PanNumericFilter
-import kotlin.test.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.BDDMockito.given
 import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.shadows.ShadowInstrumentation
+import kotlin.test.assertEquals
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)

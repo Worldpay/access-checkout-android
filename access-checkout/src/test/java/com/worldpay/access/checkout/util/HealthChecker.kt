@@ -1,5 +1,8 @@
+package com.worldpay.access.checkout.util
+
 import okhttp3.OkHttpClient
 import okhttp3.Request
+import java.security.SecureRandom
 import java.security.cert.X509Certificate
 import javax.net.ssl.SSLContext
 import javax.net.ssl.TrustManager
@@ -17,7 +20,7 @@ object HealthChecker {
         })
 
         val sslContext = SSLContext.getInstance("TLSv1.3") // Explicitly use TLSv1.3
-        sslContext.init(null, trustAllCerts, java.security.SecureRandom())
+        sslContext.init(null, trustAllCerts, SecureRandom())
 
         val sslSocketFactory = sslContext.socketFactory
 

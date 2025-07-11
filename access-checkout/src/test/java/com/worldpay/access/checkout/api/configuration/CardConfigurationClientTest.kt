@@ -3,8 +3,6 @@ package com.worldpay.access.checkout.api.configuration
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.mockito.BDDMockito.given

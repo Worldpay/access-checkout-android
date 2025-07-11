@@ -1,8 +1,8 @@
 package com.worldpay.access.checkout.client.testutil.mocks
 
-import HealthChecker
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+import com.worldpay.access.checkout.util.HealthChecker
 
 object CardBinServiceMock {
     private var server: WireMockServer? = null;
