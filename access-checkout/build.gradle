@@ -63,9 +63,8 @@ dependencies {
 }
 
 tasks.withType(Test).configureEach {
-    def forks = Math.max((int)(Runtime.getRuntime().availableProcessors() / 2), 1)
+    def forks = Math.max((int) (Runtime.getRuntime().availableProcessors() / 2), 1)
     maxParallelForks = forks
     forkEvery = 50
     println("Setting maxParallelForks to $forks")
-//    maxHeapSize = "1g" //For roboelectric
 }

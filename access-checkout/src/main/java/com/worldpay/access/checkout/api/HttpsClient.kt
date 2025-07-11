@@ -5,7 +5,6 @@ import com.worldpay.access.checkout.api.serialization.ClientErrorDeserializer
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
 import com.worldpay.access.checkout.util.coroutine.IDispatchersProvider
 import kotlinx.coroutines.withContext
@@ -22,7 +21,7 @@ internal class HttpsClient(
     private val urlFactory: URLFactory = URLFactoryImpl(),
     private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer(),
     private val dispatcher: IDispatchersProvider = DispatchersProvider.instance,
-    ) {
+) {
 
     @Throws(AccessCheckoutException::class)
     suspend fun <Request : Serializable, Response> doPost(
@@ -96,19 +95,14 @@ internal class HttpsClient(
         deserializer: Deserializer<Response>,
         headers: Map<String, String> = mapOf()
     ): Response {
-        println("doGet: Entered function")
         return withContext(dispatcher.io) {
-            println("doGet: Started block on dispatcher.io $dispatcher.io")
             var httpsUrlConn: HttpsURLConnection? = null
             try {
-                println("doGet: Creating HttpsURLConnection for $url")
                 httpsUrlConn = createHttpsURLConnection(url)
 
                 httpsUrlConn.requestMethod = GET_METHOD
                 setRequestProperties(httpsUrlConn, headers)
-                println("doGet: Connection properties set, about to get response code")
                 val responseCode = httpsUrlConn.responseCode
-                println("doGet: Response code is $responseCode")
 
                 val responseData = when (responseCode) {
                     in successfulHttpRange -> httpsUrlConn.inputStream.use { inputStream ->
@@ -124,19 +118,15 @@ internal class HttpsClient(
                     else -> throw getServerError(httpsUrlConn)
                 }
 
-                println("doGet: Deserializing response data")
                 deserializer.deserialize(responseData)
             } catch (ex: AccessCheckoutException) {
-                println("doGet: Caught AccessCheckoutException: ${ex.message}")
                 throw ex
             } catch (ex: Exception) {
                 val message =
                     ex.message
                         ?: "An exception was thrown when trying to establish a connection"
-                println("doGet: Caught Exception: $message")
                 throw AccessCheckoutException(message, ex)
             } finally {
-                println("doGet: Disconnecting connection")
                 httpsUrlConn?.disconnect()
             }
         }
@@ -169,20 +159,13 @@ internal class HttpsClient(
     private fun getClientError(conn: HttpsURLConnection): AccessCheckoutException {
         var clientException: AccessCheckoutException? = null
         var errorData: String? = null
-        val clientErrorException = ClientErrorException(
-            errorCode = conn.responseCode,
-        )
 
         conn.errorStream?.use { errorStream ->
             errorData = getResponseData(errorStream)
             clientException = clientErrorDeserializer.deserialize(errorData!!)
         }
 
-        clientException?.cause = clientErrorException
-        return clientException ?: AccessCheckoutException(
-            getMessage(conn, errorData),
-            clientErrorException
-        )
+        return clientException ?: AccessCheckoutException(getMessage(conn, errorData))
     }
 
     private fun getServerError(conn: HttpsURLConnection): AccessCheckoutException {
@@ -251,7 +234,7 @@ internal class HttpsClient(
         private const val GET_METHOD = "GET"
         private const val LOCATION = "Location"
 
-        private const val CONNECT_TIMEOUT = 5000
+        private const val CONNECT_TIMEOUT = 30000
         private const val READ_TIMEOUT = 30000
 
         private val successfulHttpRange = 200..299

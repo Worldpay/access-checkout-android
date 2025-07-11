@@ -7,7 +7,6 @@ import com.worldpay.access.checkout.api.configuration.DefaultCardRules
 import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
 import com.worldpay.access.checkout.util.coroutine.IDispatchersProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
@@ -28,7 +27,7 @@ internal class CardConfigurationProvider private constructor() {
             savedCardConfiguration = DEFAULT_CONFIG
             this.cardConfigurationClient = cardConfigurationClient
 
-            CoroutineScope(dispatcherProvider.main + SupervisorJob()).launch {
+            CoroutineScope(dispatcherProvider.main).launch {
                 try {
                     Log.d(javaClass.simpleName, "Fetching card configuration from client...")
                     val response = withContext(dispatcherProvider.io) {

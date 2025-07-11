@@ -41,10 +41,12 @@ object CardBinServiceMock {
     }
 
     fun shutdown() {
+        println("Initiating Mock card-bin-service shutdown")
         if (isRunning()) {
-            println("Stopping Mock card-bin-service")
+            println("Mocker server was healthy, Stopping Mock card-bin-service")
             server?.shutdown() // Ensures all resources and ports are released
             server = null      // Allow fresh start and port reuse
+            println("card-bin-service shut down successfully")
         } else {
             println("Mock card-bin-service is not running")
         }
