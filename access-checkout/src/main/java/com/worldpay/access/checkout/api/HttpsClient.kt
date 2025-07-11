@@ -19,10 +19,10 @@ import java.net.URL
 import javax.net.ssl.HttpsURLConnection
 
 internal class HttpsClient(
-    private val dispatcher: IDispatchersProvider = DispatchersProvider.instance,
     private val urlFactory: URLFactory = URLFactoryImpl(),
-    private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer()
-) {
+    private val clientErrorDeserializer: Deserializer<AccessCheckoutException> = ClientErrorDeserializer(),
+    private val dispatcher: IDispatchersProvider = DispatchersProvider.instance,
+    ) {
 
     @Throws(AccessCheckoutException::class)
     suspend fun <Request : Serializable, Response> doPost(
@@ -259,6 +259,7 @@ internal class HttpsClient(
         private val clientErrorHttpRange = 400..499
     }
 }
+
 internal interface URLFactory {
     fun getURL(url: String): URL
 }
