@@ -7,21 +7,14 @@ import androidx.test.espresso.contrib.DrawerActions.close
 import androidx.test.espresso.contrib.DrawerActions.open
 import androidx.test.espresso.contrib.DrawerMatchers.isClosed
 import androidx.test.espresso.contrib.DrawerMatchers.isOpen
-import androidx.test.espresso.matcher.ViewMatchers.hasSibling
-import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
-import androidx.test.espresso.matcher.ViewMatchers.withId
-import androidx.test.espresso.matcher.ViewMatchers.withParent
-import androidx.test.espresso.matcher.ViewMatchers.withTagKey
-import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.espresso.matcher.ViewMatchers.*
 import androidx.test.ext.junit.rules.ActivityScenarioRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.sample.testutil.matchers.EspressoTestMatchers.withDrawable
-import org.hamcrest.CoreMatchers.allOf
-import org.hamcrest.CoreMatchers.instanceOf
-import org.hamcrest.CoreMatchers.not
+import org.hamcrest.CoreMatchers.*
 import org.junit.After
 import org.junit.Rule
 import org.junit.Test
@@ -43,7 +36,7 @@ class NavigationUITest {
      * This is to fix a major flakiness issue with this test suite
      * This practice is not documented but shown on this page https://github.com/operando/NavigationViewActionsSample
      */
-    private val pauseAfterNavigate = 2000L
+    private val pauseAfterNavigate = 1500L
 
     @After
     fun cleanUp() {
@@ -112,11 +105,6 @@ class NavigationUITest {
 
     @Test
     fun shouldBeAbleToNavigateBackToCardFlow_fromRestrictedCardFlow() {
-        // Open the navigation drawer and ensure it is open
-        onView(withId(R.id.drawer_layout))
-            .perform(open())
-            .check(matches(isOpen()))
-        // Navigate to the restricted card flow
         navigateTo(R.id.nav_restricted_card_flow)
         waitFor(pauseAfterNavigate)
 
@@ -125,11 +113,6 @@ class NavigationUITest {
 
         assertToolbarTitle(restrictedCardFlowTitle)
 
-        // Open the navigation drawer again
-        onView(withId(R.id.drawer_layout))
-            .perform(open())
-            .check(matches(isOpen()))
-        // Navigate back to the card flow
         navigateTo(R.id.nav_card_flow)
         waitFor(pauseAfterNavigate)
 
