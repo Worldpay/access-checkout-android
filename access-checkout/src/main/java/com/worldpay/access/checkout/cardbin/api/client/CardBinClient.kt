@@ -67,9 +67,6 @@ internal class CardBinClient(
             WP_CONTENT_TYPE to WP_CONTENT_TYPE_VALUE
         )
 
-
-        println(cardBinUrl)
-        println(request)
         return httpsClient.doPost(cardBinUrl, request, headers, serializer, deserializer)
     }
 
