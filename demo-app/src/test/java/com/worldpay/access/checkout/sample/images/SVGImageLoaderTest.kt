@@ -31,7 +31,7 @@ class SVGImageLoaderTest {
             images = listOf(
                 CardBrandImage(
                     type = "image/svg+xml",
-                    url = "https://localhost:8443/test.svg"
+                    url = "https://localhost:8084/test.svg"
                 )
             )
         )
@@ -106,7 +106,7 @@ class SVGImageLoaderTest {
                 images = listOf(
                     CardBrandImage(
                         type = "image/png",
-                        url = "https://localhost:8443/test.png"
+                        url = "https://localhost:8084/test.png"
                     )
                 )
             )

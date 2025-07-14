@@ -12,7 +12,6 @@ import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.client.session.model.SessionType.CVC
 import com.worldpay.access.checkout.sample.MockServer.Paths.SESSIONS_CARD_PATH
-import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand
@@ -22,6 +21,7 @@ import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsRespons
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.simulateHttpRedirect
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotateLandscape
+import com.worldpay.access.checkout.test.mocks.AccessWPServiceWiremock
 import org.junit.Test
 import org.junit.runner.RunWith
 
@@ -197,7 +197,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
     }
 
     private fun simulateDelayedResponse(context: Context, pan: String, delay: Int = 10000) {
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             post(urlEqualTo("/$SESSIONS_CARD_PATH"))
                 .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
@@ -207,7 +207,7 @@ class CardFlowIntegrationTest : AbstractCardFragmentTest() {
     }
 
     private fun simulateErrorResponse(pan: String) {
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             post(urlEqualTo("/$SESSIONS_CARD_PATH"))
                 .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))

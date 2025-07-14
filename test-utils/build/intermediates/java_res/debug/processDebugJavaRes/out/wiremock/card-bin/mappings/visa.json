@@ -1,0 +1,23 @@
+{
+  "request": {
+    "method": "POST",
+    "url": "/public/card/bindetails",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": {
+          "expression": "$.cardNumber",
+          "matches": "^(?!^493698\\d*$)4\\d*$"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 200,
+    "headers": {
+      "Content-Type": "application/json",
+      "WP-CorrelationId": "4c195ce9-3dbd-4bc8-9c94-3d3393842323",
+      "WP-Api-Version": "1"
+    },
+    "body": "{\n  \"type\": \"pan\",\n  \"brand\": [\n    \"visa\"\n  ],\n  \"bin\": \"444433\",\n  \"binLength\": 6,\n  \"fundingType\": \"debit\",\n  \"issuerName\": \"Bank of America\",\n  \"countryCode\": \"US\",\n  \"currency\": \"USD\",\n  \"dccAllowed\": true,\n  \"anonymousPrepaid\": \"notPrepaidOrNonAnonomous\",\n  \"category\": \"consumer\",\n  \"multipleAccountAccess\": \"managed\",\n  \"luhnCompliant\": true\n}"
+  }
+}

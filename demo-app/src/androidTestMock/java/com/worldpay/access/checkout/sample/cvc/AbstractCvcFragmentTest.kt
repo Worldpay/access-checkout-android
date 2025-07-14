@@ -7,6 +7,7 @@ import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
+import com.worldpay.access.checkout.test.mocks.AccessWPServiceWiremock
 import java.util.concurrent.TimeUnit
 import org.awaitility.kotlin.await
 import org.junit.Before
@@ -22,7 +23,7 @@ abstract class AbstractCvcFragmentTest {
     @Before
     fun setup() {
         cvcFragmentTestUtils = CvcFragmentTestUtils(activityRule)
-        defaultStubMappings(activityRule.activity)
+        defaultStubMappings(activityRule.activity, AccessWPServiceWiremock.server!!)
         navigateTo(R.id.nav_cvc_flow)
 //        closeSoftKeyboard()
 //        rotatePortrait(activityRule)

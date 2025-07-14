@@ -20,7 +20,7 @@ import org.junit.Test
 
 class CardConfigurationLongDelayIntegrationTest {
 
-    private val timeoutInMillis = 30000L
+    private val timeoutInMillis = 80840L
     private val delayInMillis = 10000L
 
     @get:Rule

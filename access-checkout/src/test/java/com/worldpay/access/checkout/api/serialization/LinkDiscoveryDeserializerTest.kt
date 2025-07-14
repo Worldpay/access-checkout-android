@@ -70,20 +70,20 @@ class LinkDiscoveryDeserializerTest {
             """{
                     "_links": {
                         "payments:authorize": {
-                            "href": "https://localhost:8443/payments/authorizations"
+                            "href": "https://localhost:8084/payments/authorizations"
                         },
                         "service:payments": {
-                            "href": "https://localhost:8443/payments"
+                            "href": "https://localhost:8084/payments"
                         },
                         "service:tokens": {
-                            "href": "https://localhost:8443/tokens"
+                            "href": "https://localhost:8084/tokens"
                         },
                         "service:sessions": {
-                            "href": "https://localhost:8443/sessions"
+                            "href": "https://localhost:8084/sessions"
                         },
                         "curies": [
                             {
-                                "href": "https://localhost:8443/rels/payments/{rel}",
+                                "href": "https://localhost:8084/rels/payments/{rel}",
                                 "name": "payments",
                                 "templated": true
                             }
@@ -93,7 +93,7 @@ class LinkDiscoveryDeserializerTest {
 
         val deserializedResponse = LinkDiscoveryDeserializer("service:sessions").deserialize(rootResponse)
 
-        assertEquals("https://localhost:8443/sessions", deserializedResponse)
+        assertEquals("https://localhost:8084/sessions", deserializedResponse)
     }
 
     @Test
@@ -101,16 +101,16 @@ class LinkDiscoveryDeserializerTest {
         val topLevelServiceResourceResponse = """{
             "_links": {
                 "sessions:card": {
-                    "href": "https://localhost:8443/sessions/card"
+                    "href": "https://localhost:8084/sessions/card"
                 },
                 "sessions:paymentsCvc": {
-                    "href": "https://localhost:8443/sessions/payments/cvc"
+                    "href": "https://localhost:8084/sessions/payments/cvc"
                 },
                 "resourceTree": {
-                    "href": "https://localhost:8443/rels/sessions/resourceTree.json"
+                    "href": "https://localhost:8084/rels/sessions/resourceTree.json"
                 },
                 "curies": [{
-                    "href": "https://localhost:8443/rels/sessions/{rel}.json",
+                    "href": "https://localhost:8084/rels/sessions/{rel}.json",
                     "name": "sessions",
                     "templated": true
                 }]
@@ -120,6 +120,6 @@ class LinkDiscoveryDeserializerTest {
         val deserializedResponse =
             LinkDiscoveryDeserializer("sessions:card").deserialize(topLevelServiceResourceResponse)
 
-        assertEquals("https://localhost:8443/sessions/card", deserializedResponse)
+        assertEquals("https://localhost:8084/sessions/card", deserializedResponse)
     }
 }

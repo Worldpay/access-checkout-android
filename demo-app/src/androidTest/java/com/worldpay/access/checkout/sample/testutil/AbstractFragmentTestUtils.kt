@@ -17,21 +17,21 @@ import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.closeKeyboard
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import kotlin.test.assertEquals
-import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertTrue
 
 abstract class AbstractFragmentTestUtils(internal val activityRule: ActivityTestRule<MainActivity>) {
 
     private fun progressBar() = UITestUtils.uiObjectWithId(R.id.loading_bar)
 
     protected fun progressBarIsVisible() {
-        wait { assertTrue(progressBar().waitForExists(3000)) }
+        wait { assertTrue(progressBar().waitForExists(8084)) }
         closeKeyboard()
     }
 
     protected fun progressBarNotVisible() {
-        wait { assertTrue(progressBar().waitUntilGone(3000)) }
+        wait { assertTrue(progressBar().waitUntilGone(8084)) }
     }
 
     protected fun checkValidationState(
@@ -42,31 +42,42 @@ abstract class AbstractFragmentTestUtils(internal val activityRule: ActivityTest
         if (isValid) {
             wait {
                 assertEquals(
+                    "$field field expected to be valid",
                     color(R.color.SUCCESS),
                     accessCheckoutEditText.currentTextColor,
-                    "$field field expected to be valid"
                 )
             }
         } else {
             wait {
                 assertEquals(
+                    "$field field expected to be invalid",
                     color(R.color.FAIL),
                     accessCheckoutEditText.currentTextColor,
-                    "$field field expected to be invalid"
-                )
+
+                    )
             }
         }
     }
 
     protected fun enterText(accessCheckoutEditText: AccessCheckoutEditText, text: String) {
-        wait { assertTrue("${accessCheckoutEditText.id} - visibility state") { accessCheckoutEditText.isVisible } }
-        wait { assertTrue("${accessCheckoutEditText.id} - enabled state") { accessCheckoutEditText.isEnabled } }
+        wait {
+            assertTrue(
+                "${accessCheckoutEditText.id} - visibility state",
+                accessCheckoutEditText.isVisible
+            )
+        }
+        wait {
+            assertTrue(
+                "${accessCheckoutEditText.id} - enabled state",
+                accessCheckoutEditText.isEnabled
+            )
+        }
         wait {
             assertEquals(
+                "${accessCheckoutEditText.id} - alpha state",
                 1.0f,
                 accessCheckoutEditText.alpha,
-                "${accessCheckoutEditText.id} - alpha state"
-            )
+                )
         }
 
         val editTextUI = UITestUtils.uiObjectWithId(accessCheckoutEditText.id)
@@ -82,19 +93,30 @@ abstract class AbstractFragmentTestUtils(internal val activityRule: ActivityTest
         }
 
         // Wait for the keyboard to be fully hidden
-        wait { assertTrue("Keyboard should be hidden") { !accessCheckoutEditText.isFocused } }
+        wait { assertTrue("Keyboard should be hidden", !accessCheckoutEditText.isFocused) }
 
     }
 
     protected fun clearText(accessCheckoutEditText: AccessCheckoutEditText) {
-        wait { assertTrue("${accessCheckoutEditText.id} - visibility state") { accessCheckoutEditText.isVisible } }
-        wait { assertTrue("${accessCheckoutEditText.id} - enabled state") { accessCheckoutEditText.isEnabled } }
+        wait {
+            assertTrue(
+                "${accessCheckoutEditText.id} - visibility state",
+                accessCheckoutEditText.isVisible
+            )
+        }
+        wait {
+            assertTrue(
+                "${accessCheckoutEditText.id} - enabled state",
+                accessCheckoutEditText.isEnabled
+            )
+        }
         wait {
             assertEquals(
+                "${accessCheckoutEditText.id} - alpha state",
                 1.0f,
                 accessCheckoutEditText.alpha,
-                "${accessCheckoutEditText.id} - alpha state"
-            )
+
+                )
         }
 
         val editTextUI = UITestUtils.uiObjectWithId(accessCheckoutEditText.id)

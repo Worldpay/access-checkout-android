@@ -1,0 +1,45 @@
+apply plugin: 'com.android.library'
+apply plugin: 'kotlin-android'
+
+android {
+    compileSdk 35
+
+    namespace = "com.worldpay.access.checkout.test"
+
+    buildFeatures {
+        buildConfig = true
+    }
+
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_11
+        targetCompatibility = JavaVersion.VERSION_11
+    }
+
+    kotlinOptions {
+        jvmTarget = JavaVersion.VERSION_11
+    }
+
+    testOptions {
+        unitTests {
+            includeAndroidResources = true
+            returnDefaultValues = true
+        }
+    }
+
+    sourceSets {
+        getByName("main").assets.srcDirs("src/main/resources")
+    }
+
+}
+
+dependencies {
+    // We use api instead of implementation in Gradle when we want to expose a dependency to other modules that depend on the current module.
+    // This ensures that the dependency is available for use in downstream modules, promoting reusability and reducing the need to declare the same dependency multiple times.
+    api 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
+    api("com.squareup.okhttp3:okhttp:4.9.3"){
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+    api("com.github.tomakehurst:wiremock:2.22.0"){
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+}

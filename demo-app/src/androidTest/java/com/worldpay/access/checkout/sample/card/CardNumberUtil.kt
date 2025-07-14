@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.sample.card
 object CardNumberUtil {
 
     const val VISA_PAN = "4111111111111111"
-    const val VISA_PAN_13_DIGITS = "4911830000000"
+    const val VISA_PAN_13_DIGITS = "4911880840000"
 
     const val MASTERCARD_PAN = "5292892193835234"
     const val MASTERCARD_PAN_FORMATTED = "5292 8921 9383 5234"

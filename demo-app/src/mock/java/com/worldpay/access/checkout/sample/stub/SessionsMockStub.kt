@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.sample.stub
 
 import android.content.Context
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.ResponseDefinitionBuilder
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
 import com.github.tomakehurst.wiremock.client.WireMock.containing
@@ -15,10 +16,10 @@ import com.github.tomakehurst.wiremock.matching.MatchesJsonPathPattern
 import com.worldpay.access.checkout.sample.MockServer
 import com.worldpay.access.checkout.sample.MockServer.Paths.SESSIONS_PAYMENTS_CVC_PATH
 import com.worldpay.access.checkout.sample.MockServer.Paths.SESSIONS_ROOT_PATH
-import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsResponses.defaultResponse
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsResponses.validResponseWithDelay
+import com.worldpay.access.checkout.test.mocks.AccessWPServiceWiremock
 import kotlin.ranges.random
 
 object SessionsMockStub {
@@ -26,14 +27,14 @@ object SessionsMockStub {
     const val SESSIONS_MEDIA_TYPE = "application/vnd.worldpay.sessions-v1.hal+json"
 
     fun stubSessionsTokenRootRequest() {
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             get("/$SESSIONS_ROOT_PATH")
                 .willReturn(defaultResponse())
         )
     }
 
     fun stubSessionsCardRequest(context: Context) {
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             post(urlEqualTo("/${MockServer.Paths.SESSIONS_CARD_PATH}"))
                 .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
@@ -49,7 +50,7 @@ object SessionsMockStub {
     }
 
     fun stubSessionsPaymentCvcRequest(context: Context) {
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             post(urlEqualTo("/$SESSIONS_PAYMENTS_CVC_PATH"))
                 .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
@@ -64,7 +65,7 @@ object SessionsMockStub {
 
     fun simulateHttpRedirect(context: Context) {
         val newLocation = "newSessionsLocation/sessions"
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             post(urlEqualTo("/${MockServer.Paths.SESSIONS_CARD_PATH}"))
                 .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))
@@ -72,11 +73,11 @@ object SessionsMockStub {
                     aResponse()
                         .withFixedDelay(2000)
                         .withStatus(308)
-                        .withHeader("Location", "${MockServer.getBaseUrl()}/$newLocation")
+                        .withHeader("Location", "${AccessWPServiceWiremock.server!!.url("/")}$newLocation")
                 )
         )
 
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             post(urlEqualTo("/$newLocation"))
                 .withHeader("Accept", equalTo(SESSIONS_MEDIA_TYPE))
                 .withHeader("Content-Type", containing(SESSIONS_MEDIA_TYPE))

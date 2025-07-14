@@ -24,6 +24,7 @@ import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.MAST
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.navigateTo
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.rotatePortrait
+import com.worldpay.access.checkout.test.mocks.AccessWPServiceWiremock
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -40,7 +41,7 @@ class RestrictedCardFragmentTest {
     @Before
     fun setup() {
         restrictedCardFragmentTestUtils = RestrictedCardFragmentTestUtils(activityRule)
-        defaultStubMappings(activityRule.activity)
+        defaultStubMappings(activityRule.activity, AccessWPServiceWiremock.server!!)
         navigateTo(R.id.nav_restricted_card_flow)
         closeSoftKeyboard()
         rotatePortrait(activityRule)

@@ -61,8 +61,11 @@ android {
     }
 }
 
+
 dependencies {
     implementation project(':access-checkout')
+    mockImplementation project(':test-utils')
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     debugImplementation("androidx.tracing:tracing:1.1.0")
@@ -85,12 +88,9 @@ dependencies {
 
 
     mockImplementation "androidx.test.espresso:espresso-core:3.6.1"
+    mockImplementation "androidx.test.espresso:espresso-core:3.6.1"
     mockImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     mockImplementation 'com.google.code.gson:gson:2.13.1'
-    mockImplementation("com.github.tomakehurst:wiremock:2.22.0") {
-//        Allows us to use the Android version of Apache httpclient instead
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
 
     testImplementation 'junit:junit:4.13.2'
     testImplementation 'com.github.java-json-tools:json-schema-validator:2.2.10'
@@ -108,7 +108,9 @@ dependencies {
     androidTestImplementation "androidx.test.espresso:espresso-web:3.6.1"
     androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:3.6.1"
 
-    androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
+    androidTestImplementation 'org.awaitility:awaitility-kotlin:4.0.3'
 
     androidTestUtil 'androidx.test:orchestrator:1.5.1'
+    androidTestImplementation "org.jetbrains.kotlin:kotlin-test:1.8.20"
+
 }

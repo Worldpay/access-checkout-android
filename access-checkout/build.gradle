@@ -8,6 +8,9 @@ apply from: './gradle/upload.gradle'
 
 
 dependencies {
+    testImplementation project(':test-utils')
+    androidTestImplementation project(':test-utils')
+
     implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation 'androidx.appcompat:appcompat:1.3.1'
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.8.20"
@@ -20,20 +23,6 @@ dependencies {
 
     androidTestImplementation 'org.mockito:mockito-android:3.12.4'
 
-    androidTestImplementation("com.github.tomakehurst:wiremock:2.22.0") {
-        //Allows us to use the Android version of Apache httpclient instead
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-
-        //Resolves the Duplicate Class Exception
-        //duplicate entry: org/objectweb/asm/AnnotationVisitor.class
-        exclude group: 'asm', module: 'asm'
-
-        //Fixes Warning conflict with Android's version of org.json
-        //org.json:json:20090211 is ignored for debugAndroidTest as it may be conflicting with the internal version provided by Android.
-        exclude group: 'org.json', module: 'json'
-    }
-
-    androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
     androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
     androidTestImplementation 'com.google.android.gms:play-services-vision:20.1.3'
     androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3'
@@ -46,19 +35,9 @@ dependencies {
     testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.7.3")
 
     // override the version of bcprov-jdk15on to avoid the ssl internal errors
-    testImplementation('org.robolectric:robolectric:4.7') {
-        //Allows us to use the Android version of Apache httpclient instead
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
+    testImplementation('org.robolectric:robolectric:4.15.1')
 
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
     testImplementation 'au.com.dius:pact-jvm-consumer-junit:4.0.10'
-
-
-    testImplementation("org.wiremock:wiremock:3.13.0") {
-        //Allows us to use the Android version of Apache httpclient instead
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
-    }
 
 }
 

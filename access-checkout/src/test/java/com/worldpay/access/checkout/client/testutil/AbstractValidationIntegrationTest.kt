@@ -12,16 +12,15 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.test.core.app.ApplicationProvider
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.worldpay.access.checkout.BaseCoroutineTest
-import com.worldpay.access.checkout.client.testutil.mocks.AccessWPServiceMock
-import com.worldpay.access.checkout.client.testutil.mocks.CardBinServiceMock
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
+import com.worldpay.access.checkout.test.mocks.AccessWPServiceWiremock
+import com.worldpay.access.checkout.test.mocks.CardBinServiceMock
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.util.BaseUrlProvider
 import com.worldpay.access.checkout.util.IBaseUrlProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
-import okhttp3.mockwebserver.MockWebServer
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
@@ -47,7 +46,7 @@ open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
 
     private val defaultSSLSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
 
-    private lateinit var accessMockServer: MockWebServer
+    private lateinit var accessMockServer: WireMockServer
     private lateinit var cardBinServer: WireMockServer
 
     @BeforeTest
@@ -64,8 +63,8 @@ open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
         BaseUrlProvider.instance = TestBaseUrlProviders()
     }
 
-    private fun setupMockServices(): Pair<MockWebServer, WireMockServer> {
-        this.accessMockServer = AccessWPServiceMock.start()
+    private fun setupMockServices(): Pair<WireMockServer, WireMockServer> {
+        this.accessMockServer = AccessWPServiceWiremock.start()
         this.cardBinServer = CardBinServiceMock.start()
         return Pair(accessMockServer, cardBinServer)
     }
@@ -78,7 +77,7 @@ open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
     }
 
     fun tearDownMockServers() {
-        AccessWPServiceMock.shutdown()
+        AccessWPServiceWiremock.shutdown()
         CardBinServiceMock.shutdown()
     }
 

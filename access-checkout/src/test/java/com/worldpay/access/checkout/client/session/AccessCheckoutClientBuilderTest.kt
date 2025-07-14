@@ -20,7 +20,7 @@ class AccessCheckoutClientBuilderTest {
     private val sessionResponseListener = mock(SessionResponseListener::class.java)
     private val lifecycleOwner = mock(LifecycleOwner::class.java)
     private val checkoutId = "checkout-id-123"
-    private val baseUrl = "https://localhost:8443"
+    private val baseUrl = "https://localhost:8084"
 
     @Before
     fun setUp() {

@@ -93,7 +93,7 @@ class CardConfigurationIntegrationTest {
 
     @Before
     fun setUp() {
-        MockServer.startWiremock(applicationContext, 8443)
+        MockServer.startWiremock(applicationContext, 8084)
     }
 
     @After

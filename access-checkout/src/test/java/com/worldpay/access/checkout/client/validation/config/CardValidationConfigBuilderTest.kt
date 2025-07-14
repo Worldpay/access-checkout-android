@@ -23,7 +23,7 @@ class CardValidationConfigBuilderTest {
 
     private val acceptedCardBrands =
         arrayOf("AMEX", "DINERS", "DISCOVER", "JCB", "MAESTRO", "MASTERCARD", "VISA")
-    private val baseUrl = "https://localhost:8443"
+    private val baseUrl = "https://localhost:8084"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val checkoutId = "checkout id"

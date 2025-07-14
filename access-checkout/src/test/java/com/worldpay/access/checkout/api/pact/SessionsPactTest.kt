@@ -45,7 +45,7 @@ import kotlin.test.fail
 
 @ExperimentalCoroutinesApi
 class SessionsPactTest: BaseCoroutineTest() {
-    
+
     companion object {
         private const val provider = "sessions"
         private const val consumer = "access-checkout-android-sdk"

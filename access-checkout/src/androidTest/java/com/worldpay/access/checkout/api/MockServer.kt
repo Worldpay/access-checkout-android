@@ -23,7 +23,7 @@ object MockServer {
 
     private var hasStarted = false
 
-    fun startWiremock(context: Context, port: Int = 8443) {
+    fun startWiremock(context: Context, port: Int = 8084) {
         ProviderInstaller.installIfNeeded(context)
 
         Log.d("MockServer", "Starting WireMock server!")

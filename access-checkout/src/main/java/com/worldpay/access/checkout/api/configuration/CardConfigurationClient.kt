@@ -22,6 +22,7 @@ internal class CardConfigurationClient(
 
     suspend fun getCardConfiguration(): CardConfiguration {
         try {
+            println(cardConfigUrl)
             val cardConfiguration = httpsClient.doGet(cardConfigUrl, cardConfigurationParser)
             Log.d(javaClass.simpleName, "Received card configuration: $cardConfiguration")
             return cardConfiguration

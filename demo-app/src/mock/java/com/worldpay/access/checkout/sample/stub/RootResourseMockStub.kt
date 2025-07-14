@@ -5,7 +5,7 @@ import com.github.tomakehurst.wiremock.client.MappingBuilder
 import com.github.tomakehurst.wiremock.client.WireMock
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.github.tomakehurst.wiremock.stubbing.Scenario
-import com.worldpay.access.checkout.sample.MockServer.stubFor
+import com.worldpay.access.checkout.test.mocks.AccessWPServiceWiremock
 
 object RootResourseMockStub {
 
@@ -37,7 +37,7 @@ object RootResourseMockStub {
     fun simulateRootResourceTemporaryServerError() {
         Log.d("MockServer", "Stubbing root endpoint with 500 error")
         val serviceAvailableState = "SERVICE_AVAILABLE"
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             WireMock.get("/")
                 .inScenario("service re-discovery")
                 .whenScenarioStateIs(Scenario.STARTED)
@@ -45,7 +45,7 @@ object RootResourseMockStub {
                 .willReturn(WireMock.aResponse().withStatus(500))
         )
 
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             rootResourceMapping()
                 .inScenario("service re-discovery")
                 .whenScenarioStateIs(serviceAvailableState)

@@ -1,1 +1,1 @@
-include ':demo-app', ':access-checkout'
+include ':demo-app', ':access-checkout', ':test-utils'

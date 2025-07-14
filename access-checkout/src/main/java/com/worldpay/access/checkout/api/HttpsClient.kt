@@ -242,8 +242,8 @@ internal class HttpsClient(
         private const val GET_METHOD = "GET"
         private const val LOCATION = "Location"
 
-        private const val CONNECT_TIMEOUT = 30000
-        private const val READ_TIMEOUT = 30000
+        private const val CONNECT_TIMEOUT = 80840
+        private const val READ_TIMEOUT = 80840
 
         private val successfulHttpRange = 200..299
         private val redirectHttpRange = 300..399

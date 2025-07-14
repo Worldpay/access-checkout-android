@@ -393,7 +393,7 @@ class HttpsClientTest : BaseCoroutineTest() {
 
         val testResponse = TestResponse("abcdef")
 
-        val relocatedUrl = "https://localhost:8443/someotherURL"
+        val relocatedUrl = "https://localhost:8084/someotherURL"
         val relocatedUrlMock: URL = mock()
         given(urlFactory.getURL(relocatedUrl)).willReturn(relocatedUrlMock)
 
@@ -727,7 +727,7 @@ class HttpsClientTest : BaseCoroutineTest() {
                 }"""
         )
         val testResponse = TestResponse("abcdef")
-        val redirectToUrl = "https://localhost:8443/someotherURL"
+        val redirectToUrl = "https://localhost:8084/someotherURL"
         val redirectToUrlMock = mock<URL>()
 
         given(url.openConnection()).willReturn(httpsUrlConnection)

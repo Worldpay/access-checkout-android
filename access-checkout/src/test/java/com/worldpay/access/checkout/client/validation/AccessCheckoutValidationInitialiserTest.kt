@@ -23,7 +23,7 @@ class AccessCheckoutValidationInitialiserTest: AbstractValidationIntegrationTest
     
     private val acceptedCardBrands = arrayOf("VISA")
 
-    private val baseUrl = "https://localhost:8443"
+    private val baseUrl = "https://localhost:8084"
     private val cvcValidationListener: AccessCheckoutCvcValidationListener = mock()
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()

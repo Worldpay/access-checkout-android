@@ -1,4 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="endpoint">https://localhost:8443</string>
+    <string name="endpoint">https://localhost:8084</string>
 </resources>

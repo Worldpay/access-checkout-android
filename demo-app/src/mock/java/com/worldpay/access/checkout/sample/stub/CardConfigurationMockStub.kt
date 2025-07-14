@@ -6,19 +6,22 @@ import com.github.tomakehurst.wiremock.client.WireMock.get
 import com.github.tomakehurst.wiremock.extension.responsetemplating.ResponseTemplateTransformer
 import com.worldpay.access.checkout.sample.MockServer
 import com.worldpay.access.checkout.sample.MockServer.Paths.CARD_CONFIGURATION_PATH
-import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
+import com.worldpay.access.checkout.test.mocks.AccessWPServiceWiremock
 
 object CardConfigurationMockStub {
 
     fun stubCardConfiguration(context: Context) {
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             get("/$CARD_CONFIGURATION_PATH")
                 .willReturn(
                     aResponse()
                         .withStatus(200)
                         .withHeader("Content-Type", "application/json")
-                        .withBody(context.resources.openRawResource(R.raw.card_types).reader(Charsets.UTF_8).readText())
+                        .withBody(
+                            context.resources.openRawResource(R.raw.card_types)
+                                .reader(Charsets.UTF_8).readText()
+                        )
                         .withTransformers(ResponseTemplateTransformer.NAME)
                 )
         )
@@ -37,14 +40,14 @@ object CardConfigurationMockStub {
                         "images": [
                           {
                             "type": "image/svg+xml",
-                            "url": "${MockServer.getBaseUrl()}/access-checkout/assets/mastercard.svg"
+                            "url": "${AccessWPServiceWiremock.server!!.url("/")}access-checkout/assets/mastercard.svg"
                           }
                         ]
                       }
                 ]
         """.trimIndent()
 
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             get("/$CARD_CONFIGURATION_PATH")
                 .willReturn(
                     aResponse()
@@ -57,7 +60,7 @@ object CardConfigurationMockStub {
     }
 
     fun simulateCardConfigurationServerError() {
-        stubFor(
+        AccessWPServiceWiremock.server!!.stubFor(
             get("/$CARD_CONFIGURATION_PATH")
                 .willReturn(
                     aResponse()

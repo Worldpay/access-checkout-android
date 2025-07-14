@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.sample.card.standard.testutil
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
+import com.worldpay.access.checkout.test.mocks.AccessWPServiceWiremock
 import java.util.concurrent.TimeUnit
 import org.awaitility.kotlin.await
 import org.junit.Before
@@ -18,7 +19,7 @@ abstract class AbstractCardFragmentTest {
     @Before
     fun setup() {
         cardFragmentTestUtils = CardFragmentTestUtils(activityRule)
-        defaultStubMappings(activityRule.activity)
+        defaultStubMappings(activityRule.activity, AccessWPServiceWiremock.server!!)
 //        closeSoftKeyboard()
 //        rotatePortrait(activityRule)
     }

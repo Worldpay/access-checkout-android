@@ -48,7 +48,7 @@ class CardBinClientIntegrationTest {
 
     @Before
     fun setup() {
-        startWiremock(applicationContext, 8443)
+        startWiremock(applicationContext, 8084)
         cardBinClient = CardBinClient(
             URL(getStringBaseUrl()),
             URLFactoryImpl(), HttpsClient(),

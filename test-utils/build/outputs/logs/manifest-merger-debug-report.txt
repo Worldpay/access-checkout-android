@@ -1,0 +1,16 @@
+-- Merging decision tree log ---
+manifest
+ADDED from /Users/e5697436/Documents/Github/github.com/Worldpay/access-checkout-android/test-utils/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11079818258549238163.xml:2:13-83
+INJECTED from /Users/e5697436/Documents/Github/github.com/Worldpay/access-checkout-android/test-utils/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11079818258549238163.xml:2:13-83
+	package
+		INJECTED from /Users/e5697436/Documents/Github/github.com/Worldpay/access-checkout-android/test-utils/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11079818258549238163.xml
+	xmlns:android
+		ADDED from /Users/e5697436/Documents/Github/github.com/Worldpay/access-checkout-android/test-utils/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11079818258549238163.xml:2:23-81
+uses-sdk
+INJECTED from /Users/e5697436/Documents/Github/github.com/Worldpay/access-checkout-android/test-utils/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11079818258549238163.xml reason: use-sdk injection requested
+INJECTED from /Users/e5697436/Documents/Github/github.com/Worldpay/access-checkout-android/test-utils/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11079818258549238163.xml
+INJECTED from /Users/e5697436/Documents/Github/github.com/Worldpay/access-checkout-android/test-utils/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11079818258549238163.xml
+	android:targetSdkVersion
+		INJECTED from /Users/e5697436/Documents/Github/github.com/Worldpay/access-checkout-android/test-utils/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11079818258549238163.xml
+	android:minSdkVersion
+		INJECTED from /Users/e5697436/Documents/Github/github.com/Worldpay/access-checkout-android/test-utils/build/intermediates/tmp/ProcessLibraryManifest/debug/tempAndroidManifest11079818258549238163.xml

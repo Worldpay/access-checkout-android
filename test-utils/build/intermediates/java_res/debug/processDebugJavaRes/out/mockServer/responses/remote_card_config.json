@@ -1,0 +1,143 @@
+[
+  {
+    "name": "visa",
+    "pattern": "^(?!^493698\\d*$)4\\d*$",
+    "panLengths": [
+      16,
+      18,
+      19
+    ],
+    "cvvLength": 3,
+    "images": [
+      {
+        "type": "image/png",
+        "url": "https://example.com/access-checkout/assets/visa.png"
+      },
+      {
+        "type": "image/svg+xml",
+        "url": "https://example.com/access-checkout/assets/visa.svg"
+      }
+    ]
+  },
+  {
+    "name": "mastercard",
+    "pattern": "^(5[1-5]|2[2-7])\\d*$",
+    "panLengths": [
+      16
+    ],
+    "cvvLength": 3,
+    "images": [
+      {
+        "type": "image/png",
+        "url": "https://example.com/access-checkout/assets/mastercard.png"
+      },
+      {
+        "type": "image/svg+xml",
+        "url": "https://example.com/access-checkout/assets/mastercard.svg"
+      }
+    ]
+  },
+  {
+    "name": "amex",
+    "pattern": "^3[47]\\d*$",
+    "panLengths": [
+      15
+    ],
+    "cvvLength": 4,
+    "images": [
+      {
+        "type": "image/png",
+        "url": "https://example.com/access-checkout/assets/amex.png"
+      },
+      {
+        "type": "image/svg+xml",
+        "url": "https://example.com/access-checkout/assets/amex.svg"
+      }
+    ]
+  },
+  {
+    "name": "jcb",
+    "pattern": "^(35[2-8]|2131|1800)\\d*$",
+    "panLengths": [
+      16,
+      17,
+      18,
+      19
+    ],
+    "cvvLength": 3,
+    "images": [
+      {
+        "type": "image/png",
+        "url": "https://example.com/access-checkout/assets/jcb.png"
+      },
+      {
+        "type": "image/svg+xml",
+        "url": "https://example.com/access-checkout/assets/jcb.svg"
+      }
+    ]
+  },
+  {
+    "name": "discover",
+    "pattern": "^(6011|64[4-9]|65)\\d*$",
+    "panLengths": [
+      16,
+      19
+    ],
+    "cvvLength": 3,
+    "images": [
+      {
+        "type": "image/png",
+        "url": "https://example.com/access-checkout/assets/discover.png"
+      },
+      {
+        "type": "image/svg+xml",
+        "url": "https://example.com/access-checkout/assets/discover.svg"
+      }
+    ]
+  },
+  {
+    "name": "diners",
+    "pattern": "^(30[0-5]|36|38|39)\\d*$",
+    "panLengths": [
+      14,
+      16,
+      19
+    ],
+    "cvvLength": 3,
+    "images": [
+      {
+        "type": "image/png",
+        "url": "https://example.com/access-checkout/assets/diners.png"
+      },
+      {
+        "type": "image/svg+xml",
+        "url": "https://example.com/access-checkout/assets/diners.svg"
+      }
+    ]
+  },
+  {
+    "name": "maestro",
+    "pattern": "^(493698|(50[0-5][0-9]{2}|506[0-5][0-9]|5066[0-9])|(5067[7-9]|506[89][0-9]|50[78][0-9]{2})|5[6-9]|63|67)\\d*$",
+    "panLengths": [
+      12,
+      13,
+      14,
+      15,
+      16,
+      17,
+      18,
+      19
+    ],
+    "cvvLength": 3,
+    "images": [
+      {
+        "type": "image/png",
+        "url": "https://example.com/access-checkout/assets/maestro.png"
+      },
+      {
+        "type": "image/svg+xml",
+        "url": "https://example.com/access-checkout/assets/maestro.svg"
+      }
+    ]
+  }
+]
