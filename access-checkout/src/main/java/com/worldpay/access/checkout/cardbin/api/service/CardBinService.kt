@@ -54,6 +54,7 @@ internal class CardBinService(
         // Cancel any previous in-flight request before starting a new one
         currentJob?.let {
             if (it.isActive) {
+                Log.d(javaClass.simpleName, "Found in-flight card-bin request, aborting in-flight request...")
                 it.cancel()
             }
         }
