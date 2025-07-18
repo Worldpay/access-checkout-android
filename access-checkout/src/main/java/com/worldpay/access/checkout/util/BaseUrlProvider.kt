@@ -9,6 +9,6 @@ class BaseUrlProviders : IBaseUrlProvider {
         get() = "https://hpp-sandbox.worldpay.com"
 }
 
-object BaseUrlProvider {
+internal object BaseUrlProvider {
     var instance: IBaseUrlProvider = BaseUrlProviders()
 }

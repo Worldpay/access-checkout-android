@@ -3,10 +3,10 @@ package com.worldpay.access.checkout.sample.card.standard.testutil
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.MockServer.defaultStubMappings
-import java.util.concurrent.TimeUnit
 import org.awaitility.kotlin.await
 import org.junit.Before
 import org.junit.Rule
+import java.util.concurrent.TimeUnit
 
 abstract class AbstractCardFragmentTest {
 
@@ -19,8 +19,11 @@ abstract class AbstractCardFragmentTest {
     fun setup() {
         cardFragmentTestUtils = CardFragmentTestUtils(activityRule)
         defaultStubMappings(activityRule.activity)
-//        closeSoftKeyboard()
-//        rotatePortrait(activityRule)
+
+        // When starting a new tests the below introduce unnecessary delays therefore I have left them commented out for now in case we ever need to do this.
+        // But it would be better to test this behaviour only when necessary on a per test-case basis
+        // closeSoftKeyboard()
+        // rotatePortrait(activityRule)
     }
 
     fun clearPan() {

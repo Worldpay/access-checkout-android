@@ -19,6 +19,6 @@ class CoroutineDispatchers : IDispatchersProvider {
     override val unconfined: CoroutineDispatcher = Dispatchers.Unconfined
 }
 
-object DispatchersProvider {
+internal object DispatchersProvider {
     var instance: IDispatchersProvider = CoroutineDispatchers()
 }
