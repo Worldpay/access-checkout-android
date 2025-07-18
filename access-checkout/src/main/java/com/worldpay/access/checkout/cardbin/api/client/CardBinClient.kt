@@ -60,7 +60,7 @@ internal class CardBinClient(
      * @return The card BIN response from the API.
      * @throws Exception if the request fails.
      */
-    suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
+    private suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
         val headers = hashMapOf(
             WP_API_VERSION to WP_API_VERSION_VALUE,
             WP_CALLER_ID to WP_CALLER_ID_VALUE,
