@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.text.Editable
 import android.widget.EditText
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
@@ -10,7 +11,6 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.INVALID_UNKNOWN_LUH
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN_FORMATTED
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandsChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler
@@ -18,21 +18,28 @@ import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManag
 import com.worldpay.access.checkout.validation.validators.CvcValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator
 import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult
-import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.*
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.CARD_BRAND_NOT_ACCEPTED
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.INVALID_LUHN
+import com.worldpay.access.checkout.validation.validators.PanValidator.PanValidationResult.VALID
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.ArgumentMatchers.anyString
 import org.mockito.Mockito.never
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.argumentCaptor
+import org.mockito.kotlin.eq
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 
-@ExperimentalCoroutinesApi
-class PanTextWatcherTest {
-
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
+@OptIn(ExperimentalCoroutinesApi::class)
+class PanTextWatcherTest : BaseCoroutineTest() {
 
     private val cvcValidationRuleManager = mock<CVCValidationRuleManager>()
     private val panValidator = mock<PanValidator>()
@@ -72,170 +79,222 @@ class PanTextWatcherTest {
         given(cvcEditable.toString()).willReturn("")
         given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
         given(panEditText.editableText).willReturn(panEditable)
+
+        advanceUntilIdle()
     }
 
     @Test
-    fun `should call the pan validator with the correct validation rule and brand`() {
+    fun `should call the pan validator with the correct validation rule and brand`() = runTest {
         given(panEditable.toString()).willReturn(visaPan())
 
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(panValidator).validate(visaPan(), VISA_BRAND.pan, VISA_BRAND)
     }
 
     @Test
-    fun `should call the pan result handler with valid result and not force notify when the pan validator returns VALID`() {
+    fun `should call the pan result handler with valid result and not force notify when the pan validator returns VALID`() =
+        runTest {
+            mockPan(visaPan(), VALID)
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+
+            verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
+        }
+
+    @Test
+    fun `should call the pan result handler with invalid result and not force notify when the pan validator returns INVALID`() =
+        runTest {
+            mockPan("", INVALID)
+            given(panFormatter.format("", null)).willReturn("")
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+
+            verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
+        }
+
+    @Test
+    fun `should call the pan result handler with invalid result and force notify when the pan validator returns CARD_BRAND_NOT_ACCEPTED`() =
+        runTest {
+            mockPan(visaPan(), CARD_BRAND_NOT_ACCEPTED)
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+
+            verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = true)
+        }
+
+    @Test
+    fun `should call the pan result handler with invalid result and not force notify when the pan validator returns INVALID_LUHN`() =
+        runTest {
+            mockPan(INVALID_UNKNOWN_LUHN, INVALID_LUHN)
+            given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+
+            verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
+        }
+
+    @Test
+    fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID`() =
+        runTest {
+            var callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
+
+            // First case: valid pan, expect VISA_BRAND
+            mockPan(visaPan(), VALID)
+            given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
+
+            // Capture the callback and simulate the async response
+            given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
+                callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
+            }
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+
+            verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
+            reset(brandsChangedHandler)
+
+            // Second case: invalid pan, expect empty list
+            mockPan(INVALID_UNKNOWN_LUHN, INVALID)
+            given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
+
+            given(
+                cardBinService.getCardBrands(
+                    eq(null),
+                    any(),
+                    callbackCaptor.capture()
+                )
+            ).willAnswer {
+                callbackCaptor.firstValue.invoke(emptyList())
+            }
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+            verify(brandsChangedHandler).handle(emptyList())
+        }
+
+    @Test
+    fun `should call the brand changed handler with visa brand regardless of the pan validation result being CARD_BRAND_NOT_ACCEPTED`() =
+        runTest {
+            mockPan(visaPan(), VALID)
+            given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
+
+            val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
+            given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
+                callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
+            }
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+            verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
+
+            mockPan(INVALID_UNKNOWN_LUHN, CARD_BRAND_NOT_ACCEPTED)
+            given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
+            given(
+                cardBinService.getCardBrands(
+                    eq(null),
+                    any(),
+                    callbackCaptor.capture()
+                )
+            ).willAnswer {
+                callbackCaptor.firstValue.invoke(emptyList())
+            }
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+            verify(brandsChangedHandler).handle(emptyList())
+        }
+
+    @Test
+    fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID_LUHN`() =
+        runTest {
+            mockPan(visaPan(), VALID)
+            given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
+            val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
+            given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
+                callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
+            }
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+            verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
+
+            mockPan(INVALID_UNKNOWN_LUHN, INVALID_LUHN)
+            given(
+                cardBinService.getCardBrands(
+                    eq(null),
+                    any(),
+                    callbackCaptor.capture()
+                )
+            ).willAnswer {
+                callbackCaptor.firstValue.invoke(emptyList())
+            }
+            given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+            verify(brandsChangedHandler).handle(emptyList())
+        }
+
+    @Test
+    fun `should not call the brand changed handler when unknown pan is entered for the first time`() =
+        runTest {
+            mockPan(VALID_UNKNOWN_LUHN, VALID)
+            given(
+                panFormatter.format(
+                    VALID_UNKNOWN_LUHN,
+                    null
+                )
+            ).willReturn(VALID_UNKNOWN_LUHN_FORMATTED)
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+
+            verifyNoInteractions(brandsChangedHandler)
+        }
+
+    @Test
+    fun `should not call the brand changed handler if the brand has not actually changed from the previous one`() =
+        runTest {
+            // set the visa pan so that the brand changed handler is called with visa
+            mockPan(visaPan(), VALID)
+            val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
+            given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
+                callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
+            }
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+            verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
+
+            reset(brandsChangedHandler)
+
+            // set the visa pan again so that the brand changed handler is no longer called
+            mockPan(visaPan(), VALID)
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+            verifyNoInteractions(brandsChangedHandler)
+        }
+
+    @Test
+    fun `should update the cvc validation rule when the brand changes`() = runTest {
         mockPan(visaPan(), VALID)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panValidationResultHandler).handleResult(isValid = true, forceNotify = false)
-    }
-
-    @Test
-    fun `should call the pan result handler with invalid result and not force notify when the pan validator returns INVALID`() {
-        mockPan("", INVALID)
-        given(panFormatter.format("", null)).willReturn("")
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
-    }
-
-    @Test
-    fun `should call the pan result handler with invalid result and force notify when the pan validator returns CARD_BRAND_NOT_ACCEPTED`() {
-        mockPan(visaPan(), CARD_BRAND_NOT_ACCEPTED)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = true)
-    }
-
-    @Test
-    fun `should call the pan result handler with invalid result and not force notify when the pan validator returns INVALID_LUHN`() {
-        mockPan(INVALID_UNKNOWN_LUHN, INVALID_LUHN)
-        given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panValidationResultHandler).handleResult(isValid = false, forceNotify = false)
-    }
-
-    @Test
-    fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID`() {
-        // First case: valid pan, expect VISA_BRAND
-        mockPan(visaPan(), VALID)
-        given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
-
         val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
-        // Capture the callback and simulate the async response
         given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
             callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
         }
 
         panTextWatcher.afterTextChanged(panEditable)
-        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
-
-        reset(brandsChangedHandler)
-
-        // Second case: invalid pan, expect empty list
-        mockPan(INVALID_UNKNOWN_LUHN, INVALID)
-        given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
-        given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
-            callbackCaptor.firstValue.invoke(emptyList())
-        }
-
-        panTextWatcher.afterTextChanged(panEditable)
-        verify(brandsChangedHandler).handle(emptyList())
-    }
-
-    @Test
-    fun `should call the brand changed handler with visa brand regardless of the pan validation result being CARD_BRAND_NOT_ACCEPTED`() {
-        mockPan(visaPan(), VALID)
-        given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
-
-        val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
-        given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
-            callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
-        }
-        panTextWatcher.afterTextChanged(panEditable)
-        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
-
-        mockPan(INVALID_UNKNOWN_LUHN, CARD_BRAND_NOT_ACCEPTED)
-        given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
-
-        panTextWatcher.afterTextChanged(panEditable)
-        verify(brandsChangedHandler).handle(emptyList())
-    }
-
-    @Test
-    fun `should call the brand changed handler with visa brand regardless of the pan validation result being INVALID_LUHN`() {
-        mockPan(visaPan(), VALID)
-        given(panFormatter.format(visaPan(), VISA_BRAND)).willReturn(visaPan())
-        val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
-        given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
-            callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
-        }
-        panTextWatcher.afterTextChanged(panEditable)
-        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
-
-        mockPan(INVALID_UNKNOWN_LUHN, INVALID_LUHN)
-        given(panFormatter.format(INVALID_UNKNOWN_LUHN, null)).willReturn(INVALID_UNKNOWN_LUHN)
-
-        panTextWatcher.afterTextChanged(panEditable)
-        verify(brandsChangedHandler).handle(emptyList())
-    }
-
-    @Test
-    fun `should not call the brand changed handler when unknown pan is entered for the first time`() {
-        mockPan(VALID_UNKNOWN_LUHN, VALID)
-        given(
-            panFormatter.format(
-                VALID_UNKNOWN_LUHN,
-                null
-            )
-        ).willReturn(VALID_UNKNOWN_LUHN_FORMATTED)
-
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verifyNoInteractions(brandsChangedHandler)
-    }
-
-    @Test
-    fun `should not call the brand changed handler if the brand has not actually changed from the previous one`() {
-        // set the visa pan so that the brand changed handler is called with visa
-        mockPan(visaPan(), VALID)
-        val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
-        given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
-            callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
-        }
-        panTextWatcher.afterTextChanged(panEditable)
-        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
-
-        reset(brandsChangedHandler)
-
-        // set the visa pan again so that the brand changed handler is no longer called
-        mockPan(visaPan(), VALID)
-        panTextWatcher.afterTextChanged(panEditable)
-        verifyNoInteractions(brandsChangedHandler)
-    }
-
-    @Test
-    fun `should update the cvc validation rule when the brand changes`() {
-        mockPan(visaPan(), VALID)
-        val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
-        given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
-            callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
-        }
-
-        panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
         verify(cvcValidationRuleManager).updateRule(VISA_BRAND.cvc)
     }
 
     @Test
-    fun `should re-validate the cvc when the brand changes`() {
+    fun `should re-validate the cvc when the brand changes`() = runTest {
         mockPan(visaPan(), VALID)
         given(cvcEditable.toString()).willReturn("123")
         val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
@@ -243,33 +302,37 @@ class PanTextWatcherTest {
             callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
         }
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
         verify(cvcValidator).validate("123")
     }
 
     @Test
-    fun `should not interact with the cvc validator at all if the brand has not changed`() {
-        // set the visa pan so that the brand changed handler is called with visa
-        mockPan(visaPan(), VALID)
-        val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
-        given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
-            callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
+    fun `should not interact with the cvc validator at all if the brand has not changed`() =
+        runTest {
+            // set the visa pan so that the brand changed handler is called with visa
+            mockPan(visaPan(), VALID)
+            val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
+            given(cardBinService.getCardBrands(any(), any(), callbackCaptor.capture())).willAnswer {
+                callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
+            }
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+            verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
+
+            reset(brandsChangedHandler)
+
+            // set the visa pan again so that the brand changed handler is no longer called
+            mockPan(visaPan(), VALID)
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+            verifyNoInteractions(brandsChangedHandler)
+            verifyNoInteractions(cvcValidator)
         }
-        panTextWatcher.afterTextChanged(panEditable)
-        verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
-
-        reset(brandsChangedHandler)
-
-        // set the visa pan again so that the brand changed handler is no longer called
-        mockPan(visaPan(), VALID)
-        panTextWatcher.afterTextChanged(panEditable)
-        verifyNoInteractions(brandsChangedHandler)
-        verifyNoInteractions(cvcValidator)
-    }
 
     @Test
-    fun `should not interact with the cvc validator at all if the cvc is empty`() {
+    fun `should not interact with the cvc validator at all if the cvc is empty`() = runTest {
         mockPan(visaPan(), VALID)
         given(cvcEditable.toString()).willReturn("")
         val callbackCaptor = argumentCaptor<(List<Any>) -> Unit>()
@@ -277,6 +340,7 @@ class PanTextWatcherTest {
             callbackCaptor.firstValue.invoke(listOf(VISA_BRAND))
         }
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(brandsChangedHandler).handle(listOf(VISA_BRAND))
         verifyNoInteractions(cvcValidator)
@@ -288,86 +352,110 @@ class PanTextWatcherTest {
     // keyboard events
     // This is fixed by using the EditText editableText property to manipulate the text
     @Test
-    fun `should reformat the EditText text using the EditText editableText and not using setText()`() {
-        val unformattedPan = "44  44   333 3  "
-        val reformattedPan = "4444 3333"
-        given(panEditable.toString()).willReturn(unformattedPan)
-        given(panEditable.length).willReturn(unformattedPan.length)
-        given(panFormatter.isFormattingEnabled()).willReturn(true)
-        given(panFormatter.format(any(), any())).willReturn(reformattedPan)
+    fun `should reformat the EditText text using the EditText editableText and not using setText()`() =
+        runTest {
+            val unformattedPan = "44  44   333 3  "
+            val reformattedPan = "4444 3333"
+            given(panEditable.toString()).willReturn(unformattedPan)
+            given(panEditable.length).willReturn(unformattedPan.length)
+            given(panFormatter.isFormattingEnabled()).willReturn(true)
+            given(panFormatter.format(any(), any())).willReturn(reformattedPan)
 
-        panTextWatcher.afterTextChanged(panEditable)
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
 
-        verify(panEditText, never()).setText(anyString())
-        verify(panEditable).replace(
-            0,
-            unformattedPan.length,
-            reformattedPan,
-            0,
-            reformattedPan.length
-        )
-    }
-
-    @Test
-    fun `should trim to max length and move caret when inserting a new character in pan already as long as max length`() {
-        // this pan is already as long as the max length allowed
-        val panUsedForBeforeTextChanged = "5354335345423423"
-        val maxLength = panUsedForBeforeTextChanged.length
-        // inserting '2' at the start of a pan that's already at max length
-        val panUsedForOnTextChanged = "2$panUsedForBeforeTextChanged"
-
-        given(panFormatter.isFormattingEnabled()).willReturn(false)
-
-        panTextWatcher.beforeTextChanged(panUsedForBeforeTextChanged, 1, 0, 0)
-        panTextWatcher.onTextChanged(panUsedForOnTextChanged, 0, 0, 1)
-
-        given(panEditable.toString()).willReturn(panUsedForOnTextChanged)
-        given(panEditable.length).willReturn(panUsedForOnTextChanged.length)
-        panTextWatcher.afterTextChanged(panEditable)
-
-        verify(panEditText).setSelection(1)
-
-        val panUsedForReplacement = panUsedForOnTextChanged.substring(0, maxLength)
-        verify(panEditable).replace(
-            0,
-            panUsedForOnTextChanged.length,
-            panUsedForReplacement,
-            0,
-            maxLength
-        )
-    }
+            advanceUntilIdle()
+            verify(panEditText, never()).setText(anyString())
+            verify(panEditable).replace(
+                0,
+                unformattedPan.length,
+                reformattedPan,
+                0,
+                reformattedPan.length
+            )
+        }
 
     @Test
-    fun `should not call brand service when pan is less than 12 digits`() {
+    fun `should trim to max length and move caret when inserting a new character in pan already as long as max length`() =
+        runTest {
+            // this pan is already as long as the max length allowed
+            val panUsedForBeforeTextChanged = "5354335345423423"
+            val maxLength = panUsedForBeforeTextChanged.length
+            // inserting '2' at the start of a pan that's already at max length
+            val panUsedForOnTextChanged = "2$panUsedForBeforeTextChanged"
+
+            given(panFormatter.isFormattingEnabled()).willReturn(false)
+
+            panTextWatcher.beforeTextChanged(panUsedForBeforeTextChanged, 1, 0, 0)
+            panTextWatcher.onTextChanged(panUsedForOnTextChanged, 0, 0, 1)
+
+            given(panEditable.toString()).willReturn(panUsedForOnTextChanged)
+            given(panEditable.length).willReturn(panUsedForOnTextChanged.length)
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+
+            verify(panEditText).setSelection(1)
+
+            val panUsedForReplacement = panUsedForOnTextChanged.substring(0, maxLength)
+            verify(panEditable).replace(
+                0,
+                panUsedForOnTextChanged.length,
+                panUsedForReplacement,
+                0,
+                maxLength
+            )
+        }
+
+    @Test
+    fun `should not call brand service when pan is less than 12 digits`() = runTest {
         mockPan("44443333222", INVALID)
 
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verifyNoInteractions(cardBinService)
     }
 
     @Test
-    fun `should call brand service when pan is greater than or equal to 12 digits`() {
+    fun `should call brand service when pan is greater than or equal to 12 digits`() = runTest {
         val pan = "444433332222"
 
         mockPan(pan, INVALID)
 
         panTextWatcher.afterTextChanged(panEditable)
+        advanceUntilIdle()
 
         verify(cardBinService).getCardBrands(eq(VISA_BRAND), eq(pan), any())
     }
 
     @Test
-    fun `should call the brand changed handler with list of brand when able to detect global brand`() = runTest {
-        mockUnsuccessfulCardConfiguration()
+    fun `should call brand service when pan is greater than or equal to 12 digits and globalBrand is not recognized`() =
+        runTest {
+            val pan = "111111111111"
 
-        mockPan(visaPan(), VALID)
+            mockPan(pan, INVALID)
+
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+
+            //getCardBrands is called with null
+            verify(cardBinService).getCardBrands(eq(null), eq(pan), any())
+        }
 
 
-        panTextWatcher.afterTextChanged(panEditable)
+    @Test
+    fun `should call the brand changed handler with list of brand when able to detect global brand`() =
+        runTest {
+            mockUnsuccessfulCardConfiguration()
+            advanceUntilIdle()
+            mockPan(visaPan(), VALID)
+            advanceUntilIdle()
 
-        verifyNoInteractions(brandsChangedHandler)
-    }
+            panTextWatcher.afterTextChanged(panEditable)
+            advanceUntilIdle()
+
+            verifyNoInteractions(brandsChangedHandler)
+        }
 
     private fun mockPan(pan: String, isValid: PanValidationResult) {
         given(panEditable.toString()).willReturn(pan)

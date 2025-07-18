@@ -26,7 +26,9 @@ object AccessCheckoutValidationInitialiser {
      * @param[validationConfig] [ValidationConfig] represents the configuration that should be used to initialise validation
      */
     @JvmStatic
-    fun initialise(validationConfig: ValidationConfig) {
+    fun initialise(
+        validationConfig: ValidationConfig,
+    ) {
         if (validationConfig is CardValidationConfig) {
             initialiseCardValidation(validationConfig)
         } else {
@@ -34,10 +36,16 @@ object AccessCheckoutValidationInitialiser {
         }
     }
 
-    private fun initialiseCardValidation(validationConfig: CardValidationConfig) {
+    private fun initialiseCardValidation(
+        validationConfig: CardValidationConfig,
+    ) {
         val resultHandlerFactory = ResultHandlerFactory(
             accessCheckoutValidationListener = validationConfig.validationListener,
-            fieldValidationStateManager = CardValidationStateManager(validationConfig.pan, validationConfig.expiryDate, validationConfig.cvc),
+            fieldValidationStateManager = CardValidationStateManager(
+                validationConfig.pan,
+                validationConfig.expiryDate,
+                validationConfig.cvc
+            ),
             lifecycleOwner = validationConfig.lifecycleOwner
         )
 
@@ -59,14 +67,16 @@ object AccessCheckoutValidationInitialiser {
             validationConfig.checkoutId,
         )
 
-        val expiryDateFieldDecorator = fieldDecoratorFactory.getExpiryDateDecorator(validationConfig.expiryDate)
-        val cvcFieldDecorator = fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, validationConfig.pan)
+        val expiryDateFieldDecorator =
+            fieldDecoratorFactory.getExpiryDateDecorator(validationConfig.expiryDate)
+        val cvcFieldDecorator =
+            fieldDecoratorFactory.getCvcDecorator(validationConfig.cvc, validationConfig.pan)
 
-        CardConfigurationProvider(
+
+        CardConfigurationProvider.initialise(
             cardConfigurationClient = CardConfigurationClient(URL(validationConfig.baseUrl)),
             observers = listOf(panFieldDecorator, expiryDateFieldDecorator, cvcFieldDecorator)
         )
-
         panFieldDecorator.decorate()
         expiryDateFieldDecorator.decorate()
         cvcFieldDecorator.decorate()

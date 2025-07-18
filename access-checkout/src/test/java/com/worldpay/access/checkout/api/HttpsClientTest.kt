@@ -1,18 +1,17 @@
 package com.worldpay.access.checkout.api
 
 import com.google.common.collect.Maps.newHashMap
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.testutils.removeWhitespace
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.any
 import org.mockito.BDDMockito.anyInt
@@ -30,7 +29,7 @@ import javax.net.ssl.HttpsURLConnection
 import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
-class HttpsClientTest {
+class HttpsClientTest : BaseCoroutineTest() {
 
     private lateinit var urlFactory: URLFactory
     private lateinit var httpsClient: HttpsClient
@@ -45,9 +44,6 @@ class HttpsClientTest {
     @Mock
     private lateinit var url: URL
 
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
-
     @Before
     fun setup() = runTest {
         urlFactory = mock()
@@ -56,7 +52,7 @@ class HttpsClientTest {
         clientErrorDeserializer = mock()
         url = mock()
         httpsClient =
-            HttpsClient(coroutinesTestRule.testDispatcher, urlFactory, clientErrorDeserializer)
+            HttpsClient(urlFactory, clientErrorDeserializer)
         httpsUrlConnection = mock()
     }
 

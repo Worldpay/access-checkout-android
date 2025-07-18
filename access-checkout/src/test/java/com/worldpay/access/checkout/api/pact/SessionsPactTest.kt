@@ -7,6 +7,7 @@ import au.com.dius.pact.consumer.junit.PactVerification
 import au.com.dius.pact.core.model.PactSpecVersion
 import au.com.dius.pact.core.model.RequestResponsePact
 import au.com.dius.pact.core.model.annotations.Pact
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
@@ -16,7 +17,11 @@ import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.client.testutil.TrustAllSSLSocketFactory
-import com.worldpay.access.checkout.session.api.client.*
+import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
+import com.worldpay.access.checkout.session.api.client.CONTENT_TYPE_HEADER
+import com.worldpay.access.checkout.session.api.client.CardSessionClient
+import com.worldpay.access.checkout.session.api.client.CvcSessionClient
+import com.worldpay.access.checkout.session.api.client.SESSIONS_MEDIA_TYPE
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.response.SessionResponse
@@ -24,7 +29,6 @@ import com.worldpay.access.checkout.session.api.serialization.CardSessionRequest
 import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
 import com.worldpay.access.checkout.session.api.serialization.CvcSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CvcSessionResponseDeserializer
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Assert
@@ -40,11 +44,8 @@ import kotlin.test.assertEquals
 import kotlin.test.fail
 
 @ExperimentalCoroutinesApi
-class SessionsPactTest {
-
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
-
+class SessionsPactTest: BaseCoroutineTest() {
+    
     companion object {
         private const val provider = "sessions"
         private const val consumer = "access-checkout-android-sdk"
@@ -136,18 +137,18 @@ class SessionsPactTest {
             CardSessionClient(
                 CardSessionResponseDeserializer(),
                 CardSessionRequestSerializer(),
-                HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+                HttpsClient()
             )
 
         cvcSessionClient =
             CvcSessionClient(
                 CvcSessionResponseDeserializer(),
                 CvcSessionRequestSerializer(),
-                HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+                HttpsClient()
             )
 
         discoveryClient = ApiDiscoveryClient(
-            httpsClient = HttpsClient(dispatcher = coroutinesTestRule.testDispatcher),
+            httpsClient = HttpsClient(),
             discoveryCache = DiscoveryCache
         )
     }
@@ -174,7 +175,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "createSuccessfulGetRequestInteraction")
     fun `should receive a valid response when a valid GET request is sent`() = runTest {
-        val httpClient = HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+        val httpClient = HttpsClient()
         val headers = mapOf(ACCEPT_HEADER to SESSIONS_MEDIA_TYPE, CONTENT_TYPE_HEADER to SESSIONS_MEDIA_TYPE)
 
         val deserializer = DiscoverLinks.cvcSessions.endpoints[1].getDeserializer()
@@ -370,7 +371,7 @@ class SessionsPactTest {
                 CvcSessionClient(
                     CvcSessionResponseDeserializer(),
                     mockEmptySerializer,
-                    HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+                    HttpsClient()
                 )
 
             try {
@@ -894,7 +895,7 @@ class SessionsPactTest {
             CardSessionClient(
                 CardSessionResponseDeserializer(),
                 mockEmptySerializer,
-                HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+                HttpsClient()
             )
 
         try {

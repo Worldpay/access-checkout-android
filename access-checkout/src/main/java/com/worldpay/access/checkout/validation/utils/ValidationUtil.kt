@@ -26,7 +26,8 @@ internal object ValidationUtil {
         cardValidationRule.validLengths.maxOrNull() ?: defaultMaxLength
 
     fun findBrandForPan(pan: String): RemoteCardBrand? {
-        for (brand in getCardConfiguration().brands) {
+        var brands = getCardConfiguration().brands
+        for (brand in brands) {
             val unformattedPan = pan.replace("\\s+".toRegex(), "")
             if (brand.pan.matcher.toPattern().matcher(unformattedPan).find()) {
                 return brand

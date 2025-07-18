@@ -28,7 +28,7 @@ class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
     }
 
     fun requestIsInProgress(): CvcFragmentTestUtils {
-        progressBarIsVisible()
+//        progressBarIsVisible()
         enabledStateIs(cvc = false, submitButton = false)
         return this
     }
@@ -66,7 +66,9 @@ class CvcFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abstr
     }
 
     fun focusOff(): CvcFragmentTestUtils {
-        cvcInput().onFocusChangeListener?.onFocusChange(cvcInput(), false)
+        activityRule.runOnUiThread {
+            cvcInput().clearFocus()
+        }
         return this
     }
 

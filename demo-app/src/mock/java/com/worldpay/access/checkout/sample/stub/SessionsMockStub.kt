@@ -19,6 +19,7 @@ import com.worldpay.access.checkout.sample.MockServer.stubFor
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsResponses.defaultResponse
 import com.worldpay.access.checkout.sample.stub.SessionsMockStub.SessionsResponses.validResponseWithDelay
+import kotlin.ranges.random
 
 object SessionsMockStub {
 
@@ -42,10 +43,7 @@ object SessionsMockStub {
                 )
                 .withRequestBody(MatchesJsonPathPattern("cardNumber", matching("^[\\d]+$")))
                 .willReturn(
-                    validResponseWithDelay(
-                        context,
-                        2000
-                    )
+                    validResponseWithDelay(context)
                 )
         )
     }
@@ -60,7 +58,7 @@ object SessionsMockStub {
                     matching("^access-checkout-android/[\\d]+.[\\d]+.[\\d]+(-SNAPSHOT)?\$")
                 )
                 .withRequestBody(AnythingPattern())
-                .willReturn(validResponseWithDelay(context, 2000))
+                .willReturn(validResponseWithDelay(context))
         )
     }
 
@@ -88,10 +86,7 @@ object SessionsMockStub {
                 )
                 .withRequestBody(AnythingPattern())
                 .willReturn(
-                    validResponseWithDelay(
-                        context,
-                        2000
-                    )
+                    validResponseWithDelay(context)
                 )
         )
     }
@@ -111,7 +106,7 @@ object SessionsMockStub {
                       } 
                     ] 
                   }
-                }"""".trimMargin()
+                }""".trimMargin()
 
         private const val sessionsResourceResponse = """
                 {
@@ -143,11 +138,17 @@ object SessionsMockStub {
                 .withTransformers(ResponseTemplateTransformer.NAME)
         }
 
-        fun validResponseWithDelay(context: Context, delay: Int): ResponseDefinitionBuilder? {
+        fun validResponseWithDelay(context: Context, fixedDelay:Int = 0, minDelay: Int = 100, maxDelay: Int = 500): ResponseDefinitionBuilder? {
+            var delay = fixedDelay
+            if (fixedDelay == 0){
+                //Introduce a random delay to simulate real network conditions
+                delay = (minDelay..maxDelay).random()
+            }
+
             return aResponse()
                 .withFixedDelay(delay)
                 .withStatus(201)
-                .withHeader("Content-Type", "application/json")
+                .withHeader("Content-Type", "application/vnd.worldpay.sessions-v1.hal+json")
                 .withHeader("Location", context.getString(R.string.cvc_session_reference))
                 .withBody(
                     sessionsResourceResponse(

@@ -4,8 +4,6 @@ import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegratio
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrandList
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
@@ -27,14 +25,14 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - pan`() =
         runTest {
-            pan.setTextAndWait(visaPan())
+            // Set the PAN and wait for any asynchronous operations to complete
+            setText(pan, visaPan())
 
+            // Verify the expected interactions
             verify(cardValidationListener).onPanValidated(true)
-
             verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
 
             pan.requestFocus()
-
             if (pan.hasFocus()) {
                 pan.clearFocus()
             } else {
@@ -47,7 +45,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - cvc`() =
         runTest {
-            cvc.setTextAndWait("123")
+            setText(cvc, "123")
             verify(cardValidationListener).onCvcValidated(true)
 
             cvc.requestFocus()
@@ -64,7 +62,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should not notify validation result on focus lost where notification has already been sent - expiry date`() =
         runTest {
-            expiryDate.setTextAndWait("12/99")
+            setText(expiryDate, "12/99")
             verify(cardValidationListener).onExpiryDateValidated(true)
 
             expiryDate.requestFocus()
@@ -81,7 +79,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should notify validation result on focus lost where notification has not already been sent - pan`() =
         runTest {
-            pan.setTextAndWait("0000")
+            setText(pan, "0000")
             verifyNoInteractions(cardValidationListener)
 
             pan.requestFocus()
@@ -98,7 +96,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should notify validation result on focus lost where notification has not already been sent - cvc`() =
         runTest {
-            cvc.setTextAndWait("")
+            setText(cvc, "")
             verifyNoInteractions(cardValidationListener)
 
             cvc.requestFocus()
@@ -115,7 +113,7 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     @Test
     fun `should notify validation result on focus lost where notification has not already been sent - expiry date`() =
         runTest {
-            expiryDate.setTextAndWait("01/19")
+            setText(expiryDate, "01/19")
             verifyNoInteractions(cardValidationListener)
 
             expiryDate.requestFocus()

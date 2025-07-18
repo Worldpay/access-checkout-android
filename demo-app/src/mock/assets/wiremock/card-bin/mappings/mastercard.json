@@ -6,6 +6,18 @@
       {
         "matchesJsonPath": {
           "expression": "$.cardNumber",
+          "doesNotMatch": "513107245440"
+        }
+      },
+      {
+        "matchesJsonPath": {
+          "expression": "$.cardNumber",
+          "doesNotMatch": "516361361361"
+        }
+      },
+      {
+        "matchesJsonPath": {
+          "expression": "$.cardNumber",
           "matches": "^(5[1-5]|2[2-7])\\d*$"
         }
       }

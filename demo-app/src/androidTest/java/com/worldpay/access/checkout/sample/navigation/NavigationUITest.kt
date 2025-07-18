@@ -36,7 +36,7 @@ class NavigationUITest {
      * This is to fix a major flakiness issue with this test suite
      * This practice is not documented but shown on this page https://github.com/operando/NavigationViewActionsSample
      */
-    private val pauseAfterNavigate = 500L
+    private val pauseAfterNavigate = 1500L
 
     @After
     fun cleanUp() {

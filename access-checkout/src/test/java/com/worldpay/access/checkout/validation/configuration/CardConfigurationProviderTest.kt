@@ -1,109 +1,140 @@
 package com.worldpay.access.checkout.validation.configuration
 
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_BASIC
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceUntilIdle
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.never
+import org.mockito.kotlin.timeout
 import org.mockito.kotlin.verify
 import kotlin.test.assertEquals
 
-@ExperimentalCoroutinesApi
-class CardConfigurationProviderTest {
-
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
+@OptIn(ExperimentalCoroutinesApi::class)
+class CardConfigurationProviderTest : BaseCoroutineTest() {
 
     private val cardConfigurationClient = mock<CardConfigurationClient>()
 
-    private lateinit var cardConfigurationProvider: CardConfigurationProvider
-
     @Before
     fun setup() = runTest {
-        given(cardConfigurationClient.getCardConfiguration()).willThrow(RuntimeException())
-        cardConfigurationProvider = CardConfigurationProvider(
-            cardConfigurationClient = cardConfigurationClient,
-            observers = emptyList()
-        )
+        // Reset to default configuration before each test
+        CardConfigurationProvider.savedCardConfiguration = CARD_CONFIG_NO_BRAND
     }
 
     @Test
-    fun `should be getting default card configuration initially`() {
+    fun `should return default card configuration initially`() {
         assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
     }
 
     @Test
-    fun `should reset back to default card configuration each time a provider is created despite having remote card configuration before`() =
-        runTest {
-            assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
+    fun `should fetch and update card configuration successfully`() = runTest {
+        // Mock successful card configuration fetch
+        given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
 
-            mockSuccessfulCardConfiguration()
+        CardConfigurationProvider.initialise(cardConfigurationClient, emptyList())
+        advanceUntilIdle()
 
-            advanceUntilIdle()
+        // Verify the configuration is updated to the expected value
+        assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
+    }
 
-            assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
+    @Test
+    fun `should reset to default card configuration when reinitialized`() = runTest {
+        // Mock successful card configuration fetch
+        given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
 
-            CardConfigurationProvider(
-                cardConfigurationClient = cardConfigurationClient,
-                observers = emptyList()
-            )
+        CardConfigurationProvider.initialise(cardConfigurationClient, emptyList())
+        advanceUntilIdle()
 
-            assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
+        assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
+
+        // Reinitialize and verify reset to default
+        CardConfigurationProvider.initialise(cardConfigurationClient, emptyList())
+
+        assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
+    }
+
+    @Test
+    fun `should notify observers with updated card configuration`() = runTest {
+        val observer = mock<CardConfigurationObserver>()
+        given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
+
+        CardConfigurationProvider.initialise(cardConfigurationClient, listOf(observer))
+        advanceUntilIdle()
+
+        verify(observer, timeout(500)).update()
+        assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
+    }
+
+    @Test
+    fun `should notify observers with default card configuration on failure`() = runTest {
+        val observer = mock<CardConfigurationObserver>()
+        given(cardConfigurationClient.getCardConfiguration()).willThrow(RuntimeException())
+
+        CardConfigurationProvider.initialise(cardConfigurationClient, listOf(observer))
+        advanceUntilIdle()
+
+        verify(observer, timeout(500)).update()
+        assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
+    }
+
+    @Test
+    fun `should handle multiple observers`() = runTest {
+        val observer1 = mock<CardConfigurationObserver>()
+        val observer2 = mock<CardConfigurationObserver>()
+        given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
+
+        CardConfigurationProvider.initialise(cardConfigurationClient, listOf(observer1, observer2))
+        advanceUntilIdle()
+
+        verify(observer1, timeout(500)).update()
+        verify(observer2, timeout(500)).update()
+        assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
+    }
+
+    @Test
+    fun `should handle empty observer list`() = runTest {
+        given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
+
+        CardConfigurationProvider.initialise(cardConfigurationClient, emptyList())
+        advanceUntilIdle()
+
+        assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
+    }
+
+    @Test
+    fun `should log error and fallback to default configuration on exception`() = runTest {
+        given(cardConfigurationClient.getCardConfiguration()).willThrow(RuntimeException("Test exception"))
+
+        CardConfigurationProvider.initialise(cardConfigurationClient, emptyList())
+        advanceUntilIdle()
+
+        assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
+    }
+
+    @Test
+    fun `should handle exceptions in observer update gracefully`() = runTest {
+        val failingObserver = mock<CardConfigurationObserver> {
+            on { update() }.thenThrow(RuntimeException("Observer update failed"))
         }
-
-    @Test
-    fun `should be getting remote card configuration once loaded`() = runTest {
-        assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
-
-        val cardConfigurationClient = mock<CardConfigurationClient>()
+        val successfulObserver = mock<CardConfigurationObserver>()
 
         given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
 
-        CardConfigurationProvider(cardConfigurationClient, emptyList())
-
+        CardConfigurationProvider.initialise(
+            cardConfigurationClient,
+            listOf(failingObserver, successfulObserver)
+        )
         advanceUntilIdle()
 
+        verify(failingObserver).update()
+        verify(successfulObserver).update()
         assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
     }
 
-    @Test
-    fun `should be calling all observers once remote card configuration is retrieved`() = runTest {
-        assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
-
-        val cardConfigObserver = mock<CardConfigurationObserver>()
-        val cardConfigurationClient = mock<CardConfigurationClient>()
-
-        given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
-
-        CardConfigurationProvider(cardConfigurationClient, listOf(cardConfigObserver))
-
-        advanceUntilIdle()
-
-        assertEquals(CARD_CONFIG_BASIC, CardConfigurationProvider.getCardConfiguration())
-        verify(cardConfigObserver).update()
-    }
-
-    @Test
-    fun `should do nothing when remote card configuration call fails`() = runTest {
-        assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
-
-        val cardConfigObserver = mock<CardConfigurationObserver>()
-        val cardConfigurationClient = mock<CardConfigurationClient>()
-
-        given(cardConfigurationClient.getCardConfiguration()).willThrow(RuntimeException())
-
-        CardConfigurationProvider(cardConfigurationClient, listOf(cardConfigObserver))
-
-        assertEquals(CARD_CONFIG_NO_BRAND, CardConfigurationProvider.getCardConfiguration())
-        verify(cardConfigObserver, never()).update()
-    }
 }

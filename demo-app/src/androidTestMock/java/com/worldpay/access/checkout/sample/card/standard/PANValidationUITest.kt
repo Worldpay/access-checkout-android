@@ -18,8 +18,6 @@ import java.util.Arrays
 @LargeTest
 class PANValidationUITest : AbstractCardFragmentTest() {
 
-    private lateinit var cardBinServer: WireMockServer
-
     @Test
     fun shouldValidateValidGlobalBrandAsGreenTextWithGlobalBrandIcon() {
         cardFragmentTestUtils

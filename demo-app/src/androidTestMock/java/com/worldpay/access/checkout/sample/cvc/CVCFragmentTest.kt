@@ -90,24 +90,18 @@ class CVCFragmentTest : AbstractCvcFragmentTest() {
 
     @Test
     fun shouldKeepValidationStateOnFieldsWhenAppIsReopened() {
-        restartApp()
+        cvcFragmentTestUtils
+            .isInInitialState()
+            .enterCardDetails(cvc = "12")
+            .focusOff()
+            .validationStateIs(false)
+            .enabledStateIs(submitButton = false)
 
-        try {
-            cvcFragmentTestUtils
-                .isInInitialState()
-                .enterCardDetails(cvc = "12")
-                .focusOff()
-                .validationStateIs(false)
-                .enabledStateIs(submitButton = false)
+        reopenApp()
 
-            reopenApp()
-
-            cvcFragmentTestUtils
-                .validationStateIs(false)
-                .enabledStateIs(submitButton = false)
-        } finally {
-            restartApp()
-        }
+        cvcFragmentTestUtils
+            .validationStateIs(false)
+            .enabledStateIs(submitButton = false)
     }
 
     @Test

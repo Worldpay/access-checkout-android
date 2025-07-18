@@ -8,7 +8,7 @@
       {
         "matchesJsonPath": {
           "expression": "$.cardNumber",
-          "matches": "3841001111222235555"
+          "matches": "516361361361"
         }
       }
     ]

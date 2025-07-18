@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.widget.EditText
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
+import com.worldpay.access.checkout.util.BaseUrlProvider
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
@@ -23,11 +24,14 @@ internal class TextWatcherFactory(
         enablePanFormatting: Boolean,
         checkoutId: String
     ): PanTextWatcher {
-        val baseUrl = if (checkoutId === "YOUR-CHECKOUT-ID") {
+
+        //TODO: Temporary workaround for testing until service discovery
+        val baseUrl = if (checkoutId === "AUTOMATED-TEST") {
             "https://localhost:3003"
         } else {
-            "https://hpp-sandbox.worldpay.com"
+            BaseUrlProvider.instance.CARD_BIN_SERVICE
         }
+
         return PanTextWatcher(
             panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),

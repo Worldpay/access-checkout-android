@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.client.testutil.mocks
 
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.core.WireMockConfiguration
+import com.worldpay.access.checkout.util.HealthChecker
 
 object CardBinServiceMock {
     private var server: WireMockServer? = null;
@@ -12,7 +13,7 @@ object CardBinServiceMock {
         return WireMockServer(
             WireMockConfiguration.options()
                 .port(0)
-                .httpsPort(3003)
+                .dynamicHttpsPort()
                 .usingFilesUnderDirectory("src/test/resources/wiremock/card-bin")
                 .keystorePath(selfSignedJks!!.toString())
                 .keystorePassword("changeit")
@@ -22,29 +23,39 @@ object CardBinServiceMock {
     }
 
     fun start(): WireMockServer {
-        if (server == null) {
-            server = createSelfSignedServer()
-        }
-
-        if (server?.isRunning == false) {
-            println("Starting Mock card-bin-service")
-            try {
-                server?.start()
-            } catch (ex: Exception) {
-                println("card-bin-service was already running")
+        if (!isRunning()) {
+            if (server == null) {
+                server = createSelfSignedServer()
             }
-
+            println("Starting Mock card-bin-service")
+            server?.start()
+            val isHealthy = isRunning()
+            if (!isHealthy) {
+                println("Mock card-bin-service health check failed after starting.")
+                throw Exception("Could not start Mock card-bin-service")
+            }
+        } else {
+            println("Mock card-bin-service is already running at: ${server?.url("/")}")
         }
-
         return server!!
     }
 
-    fun stop() {
-        if (server?.isRunning == true) {
-            println("Stopping Mock card-bin-service")
-            server?.stop()
+    fun shutdown() {
+        println("Initiating Mock card-bin-service shutdown")
+        if (isRunning()) {
+            println("Mocker server was healthy, Stopping Mock card-bin-service")
             server?.shutdown() // Ensures all resources and ports are released
             server = null      // Allow fresh start and port reuse
+            println("card-bin-service shut down successfully")
+        } else {
+            println("Mock card-bin-service is not running")
         }
+    }
+
+    fun isRunning(): Boolean {
+        if (server != null) {
+            return HealthChecker.checkHealth(server!!.url("/health").toString(), "Card Bin Server")
+        }
+        return false
     }
 }
