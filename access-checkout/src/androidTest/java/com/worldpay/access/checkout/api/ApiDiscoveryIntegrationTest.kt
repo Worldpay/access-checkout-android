@@ -19,9 +19,6 @@ import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import java.util.concurrent.TimeUnit
-import kotlin.test.assertEquals
-import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.awaitility.Awaitility.await
@@ -30,6 +27,9 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.concurrent.TimeUnit
+import kotlin.test.assertEquals
+import kotlin.test.fail
 
 @ExperimentalCoroutinesApi
 @RunWith(AndroidJUnit4::class)
@@ -38,7 +38,8 @@ class ApiDiscoveryIntegrationTest {
     @get:Rule
     var coroutinesTestRule = CoroutineTestRule()
 
-    private val applicationContext = InstrumentationRegistry.getInstrumentation().context.applicationContext
+    private val applicationContext =
+        InstrumentationRegistry.getInstrumentation().context.applicationContext
 
     @Before
     fun setUp() {
@@ -68,9 +69,12 @@ class ApiDiscoveryIntegrationTest {
         stubServiceDiscoveryResponses()
 
         val client = ApiDiscoveryClient()
-        val cardSessionsEndpoint1 = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
-        val cardSessionsEndpoint2 = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
-        val cardSessionsEndpoint3 = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
+        val cardSessionsEndpoint1 =
+            client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
+        val cardSessionsEndpoint2 =
+            client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
+        val cardSessionsEndpoint3 =
+            client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             cardSessionsEndpoint1.toString() == "${getBaseUrl()}/sessions/card"
@@ -146,11 +150,11 @@ class ApiDiscoveryIntegrationTest {
         }
     }
 
-    private fun assertNumberRequestsToPath(numberOfTimes:Int, path:String): Boolean {
+    private fun assertNumberRequestsToPath(numberOfTimes: Int, path: String): Boolean {
         try {
             verify(exactly(numberOfTimes), getRequestedFor(urlEqualTo(path)))
             return true
-        } catch (e: VerificationException){
+        } catch (e: VerificationException) {
             return false
         }
     }

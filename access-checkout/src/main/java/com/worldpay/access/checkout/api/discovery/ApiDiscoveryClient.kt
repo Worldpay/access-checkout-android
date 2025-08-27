@@ -77,7 +77,8 @@ internal class ApiDiscoveryClient(
             }
 
             if (response == null) {
-                response = httpsClient.doGet(resourceUrl, PlainResponseDeserializer, endpoint.headers)
+                response =
+                    httpsClient.doGet(resourceUrl, PlainResponseDeserializer, endpoint.headers)
                 discoveryCache.saveResponse(resourceUrl, response)
             }
 

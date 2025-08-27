@@ -43,9 +43,15 @@ object AccessCheckoutValidationInitialiser {
                 val apiDiscoveryClient = ApiDiscoveryClient()
 
                 try {
-                    apiDiscoveryClient.discoverEndpoint(URL(validationConfig.baseUrl), discoverLinks = DiscoverLinks.cardSessions)
-                    apiDiscoveryClient.discoverEndpoint(URL(validationConfig.baseUrl), discoverLinks = DiscoverLinks.cvcSessions)
-                } catch (e:AccessCheckoutException) {
+                    apiDiscoveryClient.discoverEndpoint(
+                        URL(validationConfig.baseUrl),
+                        discoverLinks = DiscoverLinks.cardSessions
+                    )
+                    apiDiscoveryClient.discoverEndpoint(
+                        URL(validationConfig.baseUrl),
+                        discoverLinks = DiscoverLinks.cvcSessions
+                    )
+                } catch (e: AccessCheckoutException) {
                     Log.w(javaClass.simpleName, "Failed to discover services")
                 }
             }

@@ -4,8 +4,6 @@ import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.serialization.PlainResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
-import java.net.URL
-import kotlin.test.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
 import org.junit.Before
@@ -16,6 +14,12 @@ import org.mockito.BDDMockito.verify
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
+import java.net.URL
+import kotlin.test.assertEquals
+import kotlin.test.assertFalse
+import kotlin.test.assertNotNull
+import kotlin.test.assertTrue
+import kotlin.test.fail
 
 @ExperimentalCoroutinesApi
 class ApiDiscoveryClientTest {
@@ -94,7 +98,11 @@ class ApiDiscoveryClientTest {
         ).willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+            httpsClient.doGet(
+                eq(serviceSessionsUrl),
+                eq(PlainResponseDeserializer),
+                eq(discoverLinks.endpoints[1].headers)
+            )
         ).willReturn(response2)
 
         assertTrue { DiscoveryCache.results.isEmpty() }
@@ -114,7 +122,11 @@ class ApiDiscoveryClientTest {
         ).willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+            httpsClient.doGet(
+                eq(serviceSessionsUrl),
+                eq(PlainResponseDeserializer),
+                eq(discoverLinks.endpoints[1].headers)
+            )
         ).willReturn(response2)
 
         val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
@@ -131,15 +143,27 @@ class ApiDiscoveryClientTest {
             .willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+            httpsClient.doGet(
+                eq(serviceSessionsUrl),
+                eq(PlainResponseDeserializer),
+                eq(discoverLinks.endpoints[1].headers)
+            )
         ).willReturn(response2)
 
         val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
         assertEquals(sessionsCardUrl, endpoint)
 
-        verify(httpsClient, times(2)).doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
-        verify(httpsClient).doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+        verify(httpsClient, times(2)).doGet(
+            eq(baseUrl),
+            eq(PlainResponseDeserializer),
+            eq(emptyMap())
+        )
+        verify(httpsClient).doGet(
+            eq(serviceSessionsUrl),
+            eq(PlainResponseDeserializer),
+            eq(discoverLinks.endpoints[1].headers)
+        )
     }
 
     @Test
@@ -152,7 +176,11 @@ class ApiDiscoveryClientTest {
             .willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+            httpsClient.doGet(
+                eq(serviceSessionsUrl),
+                eq(PlainResponseDeserializer),
+                eq(discoverLinks.endpoints[1].headers)
+            )
         ).willReturn(response2)
 
         try {
@@ -173,7 +201,11 @@ class ApiDiscoveryClientTest {
         ).willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+            httpsClient.doGet(
+                eq(serviceSessionsUrl),
+                eq(PlainResponseDeserializer),
+                eq(discoverLinks.endpoints[1].headers)
+            )
         ).willReturn(response2)
 
         assertTrue { DiscoveryCache.results.isEmpty() }
@@ -192,19 +224,29 @@ class ApiDiscoveryClientTest {
         ).willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+            httpsClient.doGet(
+                eq(serviceSessionsUrl),
+                eq(PlainResponseDeserializer),
+                eq(discoverLinks.endpoints[1].headers)
+            )
         ).willReturn(response2)
 
         assertTrue { DiscoveryCache.results.isEmpty() }
 
-        val url1Discovered = apiDiscoveryClient.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
+        val url1Discovered =
+            apiDiscoveryClient.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
         val url2Discovered = apiDiscoveryClient.discoverEndpoint(baseUrl, DiscoverLinks.cvcSessions)
 
         assertEquals(url1Discovered, sessionsCardUrl)
         assertEquals(url2Discovered, sessionsPaymentsCvcUrl)
 
-        verify(httpsClient, times(1)).doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
-        verify(httpsClient, times(1)).doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer),
+        verify(httpsClient, times(1)).doGet(
+            eq(baseUrl),
+            eq(PlainResponseDeserializer),
+            eq(emptyMap())
+        )
+        verify(httpsClient, times(1)).doGet(
+            eq(serviceSessionsUrl), eq(PlainResponseDeserializer),
             eq(DiscoverLinks.cardSessions.endpoints[1].headers)
         )
     }
