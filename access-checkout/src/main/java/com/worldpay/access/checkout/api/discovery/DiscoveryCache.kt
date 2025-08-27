@@ -10,6 +10,7 @@ import java.util.stream.Collectors
 internal object DiscoveryCache {
 
     val results: ConcurrentHashMap<String, URL> = ConcurrentHashMap()
+    val responses: ConcurrentHashMap<String, String> = ConcurrentHashMap()
 
     /**
      * Retrieves a stored [URL] endpoint with a [URL] generic type from the cache
@@ -32,12 +33,23 @@ internal object DiscoveryCache {
     }
 
     /**
-     * Clears a given [discoverLinks] key from the cache
+     * Retrieves a stored response as [String] from the cache
      *
-     * @param[discoverLinks] A [DiscoverLinks] object as the key to be cleared
+     * @param[requestURL] A [URL] object which String representation will be used as the key for the stored response
+     * @return [String] response that is stored in cache for the requested URL or null if nothing was found in cache
      */
-    fun clearResult(discoverLinks: DiscoverLinks) {
-        results.remove(convertToKey(discoverLinks))
+    fun getResponse(requestURL: URL): String? {
+        return responses[requestURL.toString()]
+    }
+
+    /**
+     * Saves a response into the cache, mapping the [URL] to the [response]
+     *
+     * @param[requestURL] A [URL] object which String representation will be used as the key to store the response
+     * @param[response] A [String] containing the response cached for the requested URL
+     */
+    fun saveResponse(requestURL: URL, response: String) {
+        responses[requestURL.toString()] = response
     }
 
     /**
@@ -46,6 +58,6 @@ internal object DiscoveryCache {
      */
     private fun convertToKey(discoverLinks: DiscoverLinks) =
         discoverLinks.endpoints.stream()
-            .map { it.endpoint }
+            .map { it.key }
             .collect(Collectors.joining(","))
 }

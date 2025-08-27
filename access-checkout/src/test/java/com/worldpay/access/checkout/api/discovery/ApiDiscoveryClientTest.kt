@@ -1,7 +1,7 @@
 package com.worldpay.access.checkout.api.discovery
 
 import com.worldpay.access.checkout.api.HttpsClient
-import com.worldpay.access.checkout.api.serialization.Deserializer
+import com.worldpay.access.checkout.api.serialization.PlainResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import java.net.URL
@@ -13,7 +13,6 @@ import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.verify
-import org.mockito.kotlin.any
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
@@ -27,15 +26,49 @@ class ApiDiscoveryClientTest {
     private val httpsClient = mock<HttpsClient>()
     private var discoverLinks: DiscoverLinks = DiscoverLinks.cardSessions
 
-    private val baseUrl = URL("https://base.url.com")
-    private val firstEndpoint = URL("https://endpoint.1.com")
-    private val expectedEndpoint = URL("http://expected.endpoint.url")
+    private val baseUrl = URL("https://base.url")
+    private val serviceSessionsUrl = URL("https://sessions.url")
+    private val sessionsCardUrl = URL("http://sessions-card.url")
+    private val sessionsPaymentsCvcUrl = URL("http://sessions-payments-cvc.url")
+
+    private val response1 = """
+        {
+            "_links": {
+                "service:payments": {
+                  "href": "https://access.worldpay.com/payments"
+                },
+                "service:sessions": {
+                  "href": "$serviceSessionsUrl"
+                },
+                "service:payouts": {
+                  "href": "https://access.worldpay.com/payouts"
+                }
+            }
+        }
+    """
+
+    private val response2 = """
+        {
+          "_links": {
+            "sessions:card": {
+              "href": "$sessionsCardUrl"
+            },
+            "sessions:apm": {
+              "href": "https://access.worldpay.com/sessions/apm"
+            },
+            "sessions:paymentsCvc": {
+              "href": "$sessionsPaymentsCvcUrl"
+            }
+          }
+        }
+    """
 
     private lateinit var apiDiscoveryClient: ApiDiscoveryClient
 
     @Before
     fun setUp() {
         DiscoveryCache.results.clear()
+        DiscoveryCache.responses.clear()
         apiDiscoveryClient = ApiDiscoveryClient(httpsClient)
     }
 
@@ -46,81 +79,81 @@ class ApiDiscoveryClientTest {
 
     @Test
     fun `should retrieve endpoint from cache when one exists`() = runTest {
-        val cacheKey = "${discoverLinks.endpoints[0].endpoint},${discoverLinks.endpoints[1].endpoint}"
-        DiscoveryCache.results[cacheKey] = expectedEndpoint
+        val cacheKey = "${discoverLinks.endpoints[0].key},${discoverLinks.endpoints[1].key}"
+        DiscoveryCache.results[cacheKey] = sessionsCardUrl
 
         val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
-        assertEquals(expectedEndpoint, endpoint)
+        assertEquals(sessionsCardUrl, endpoint)
     }
 
     @Test
     fun `should save endpoint to cache when endpoint discovery is successful`() = runTest {
         given(
-            httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
-        ).willReturn(firstEndpoint.toString())
+            httpsClient.doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
+        ).willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
-        ).willReturn(expectedEndpoint.toString())
+            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(response2)
 
         assertTrue { DiscoveryCache.results.isEmpty() }
 
         val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
-        assertEquals(expectedEndpoint, endpoint)
+        assertEquals(sessionsCardUrl, endpoint)
 
         assertFalse { DiscoveryCache.results.isEmpty() }
-        assertEquals(expectedEndpoint, DiscoveryCache.getResult(discoverLinks))
+        assertEquals(sessionsCardUrl, DiscoveryCache.getResult(discoverLinks))
     }
 
     @Test
     fun `should be able to return endpoint on first attempt`() = runTest {
         given(
-            httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
-        ).willReturn(firstEndpoint.toString())
+            httpsClient.doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
+        ).willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
-        ).willReturn(expectedEndpoint.toString())
+            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(response2)
 
         val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
-        assertEquals(expectedEndpoint, endpoint)
+        assertEquals(sessionsCardUrl, endpoint)
     }
 
     @Test
     fun `should be able to return endpoint on second attempt`() = runTest {
         given(
-            httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
+            httpsClient.doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
         )
             .willThrow(RuntimeException("some exception"))
-            .willReturn(firstEndpoint.toString())
+            .willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
-        ).willReturn(expectedEndpoint.toString())
+            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(response2)
 
         val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
 
-        assertEquals(expectedEndpoint, endpoint)
+        assertEquals(sessionsCardUrl, endpoint)
 
-        verify(httpsClient, times(2)).doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
-        verify(httpsClient).doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
+        verify(httpsClient, times(2)).doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
+        verify(httpsClient).doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
     }
 
     @Test
     fun `should throw exception when unable to return endpoint after second attempt`() = runTest {
         given(
-            httpsClient.doGet(eq(baseUrl), any<Deserializer<String>>(), eq(emptyMap()))
+            httpsClient.doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
         )
             .willThrow(RuntimeException("some exception 1"))
             .willThrow(RuntimeException("some exception 2"))
-            .willReturn(firstEndpoint.toString())
+            .willReturn(response1)
 
         given(
-            httpsClient.doGet(eq(firstEndpoint), any<Deserializer<String>>(), eq(discoverLinks.endpoints[1].headers))
-        ).willReturn(expectedEndpoint.toString())
+            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(response2)
 
         try {
             apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
@@ -131,5 +164,48 @@ class ApiDiscoveryClientTest {
         } catch (ex: Exception) {
             fail("expected to get AccessCheckoutException but did not")
         }
+    }
+
+    @Test
+    fun `should cache responses received during service discovery`() = runTest {
+        given(
+            httpsClient.doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
+        ).willReturn(response1)
+
+        given(
+            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(response2)
+
+        assertTrue { DiscoveryCache.results.isEmpty() }
+
+        apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
+
+        assertFalse { DiscoveryCache.results.isEmpty() }
+        assertEquals(response1, DiscoveryCache.getResponse(baseUrl))
+        assertEquals(response2, DiscoveryCache.getResponse(serviceSessionsUrl))
+    }
+
+    @Test
+    fun `should use responses cached across multiple end points discoveries`() = runTest {
+        given(
+            httpsClient.doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
+        ).willReturn(response1)
+
+        given(
+            httpsClient.doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer), eq(discoverLinks.endpoints[1].headers))
+        ).willReturn(response2)
+
+        assertTrue { DiscoveryCache.results.isEmpty() }
+
+        val url1Discovered = apiDiscoveryClient.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
+        val url2Discovered = apiDiscoveryClient.discoverEndpoint(baseUrl, DiscoverLinks.cvcSessions)
+
+        assertEquals(url1Discovered, sessionsCardUrl)
+        assertEquals(url2Discovered, sessionsPaymentsCvcUrl)
+
+        verify(httpsClient, times(1)).doGet(eq(baseUrl), eq(PlainResponseDeserializer), eq(emptyMap()))
+        verify(httpsClient, times(1)).doGet(eq(serviceSessionsUrl), eq(PlainResponseDeserializer),
+            eq(DiscoverLinks.cardSessions.endpoints[1].headers)
+        )
     }
 }

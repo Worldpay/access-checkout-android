@@ -2,9 +2,14 @@ package com.worldpay.access.checkout.api
 
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.platform.app.InstrumentationRegistry
+import com.github.tomakehurst.wiremock.client.VerificationException
 import com.github.tomakehurst.wiremock.client.WireMock.aResponse
+import com.github.tomakehurst.wiremock.client.WireMock.exactly
 import com.github.tomakehurst.wiremock.client.WireMock.get
+import com.github.tomakehurst.wiremock.client.WireMock.getRequestedFor
 import com.github.tomakehurst.wiremock.client.WireMock.stubFor
+import com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo
+import com.github.tomakehurst.wiremock.client.WireMock.verify
 import com.github.tomakehurst.wiremock.stubbing.Scenario
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.cardSessionsMapping
 import com.worldpay.access.checkout.api.ApiDiscoveryStubs.rootResponseMapping
@@ -59,6 +64,40 @@ class ApiDiscoveryIntegrationTest {
     }
 
     @Test
+    fun shouldUseCachedResultsWhenDiscoveringSameEndpointsMultipleTimes() = runBlocking {
+        stubServiceDiscoveryResponses()
+
+        val client = ApiDiscoveryClient()
+        val cardSessionsEndpoint1 = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
+        val cardSessionsEndpoint2 = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
+        val cardSessionsEndpoint3 = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
+
+        await().atMost(5, TimeUnit.SECONDS).until {
+            cardSessionsEndpoint1.toString() == "${getBaseUrl()}/sessions/card"
+                    && cardSessionsEndpoint2.toString() == "${getBaseUrl()}/sessions/card"
+                    && cardSessionsEndpoint3.toString() == "${getBaseUrl()}/sessions/card"
+                    && assertNumberRequestsToPath(1, "/")
+                    && assertNumberRequestsToPath(1, "/sessions")
+        }
+    }
+
+    @Test
+    fun shouldUseCachedResponsesWhenDiscoveringDifferentEndpointsOnSameURL() = runBlocking {
+        stubServiceDiscoveryResponses()
+
+        val client = ApiDiscoveryClient()
+        val cardEndpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cardSessions)
+        val cvcEndpoint = client.discoverEndpoint(getBaseUrl(), DiscoverLinks.cvcSessions)
+
+        await().atMost(5, TimeUnit.SECONDS).until {
+            cardEndpoint.toString() == "${getBaseUrl()}/sessions/card"
+                    && cvcEndpoint.toString() == "${getBaseUrl()}/sessions/payments/cvc"
+                    && assertNumberRequestsToPath(1, "/")
+                    && assertNumberRequestsToPath(1, "/sessions")
+        }
+    }
+
+    @Test
     fun shouldReturnExceptionWhenDiscoveryFails() = runBlocking {
         stubFor(
             get("/")
@@ -104,6 +143,15 @@ class ApiDiscoveryIntegrationTest {
 
         await().atMost(5, TimeUnit.SECONDS).until {
             endpoint.toString() == "${getBaseUrl()}/sessions/card"
+        }
+    }
+
+    private fun assertNumberRequestsToPath(numberOfTimes:Int, path:String): Boolean {
+        try {
+            verify(exactly(numberOfTimes), getRequestedFor(urlEqualTo(path)))
+            return true
+        } catch (e: VerificationException){
+            return false
         }
     }
 }

@@ -11,8 +11,8 @@ class DiscoverLinksTest {
         val expectedService = "service:sessions"
         val expectedEndpoint = "sessions:paymentsCvc"
 
-        assertEquals(DiscoverLinks.cvcSessions.endpoints[0].endpoint, expectedService)
-        assertEquals(DiscoverLinks.cvcSessions.endpoints[1].endpoint, expectedEndpoint)
+        assertEquals(DiscoverLinks.cvcSessions.endpoints[0].key, expectedService)
+        assertEquals(DiscoverLinks.cvcSessions.endpoints[1].key, expectedEndpoint)
     }
 
     @Test
@@ -26,8 +26,8 @@ class DiscoverLinksTest {
         val expectedService = "service:sessions"
         val expectedEndpoint = "sessions:card"
 
-        assertEquals(DiscoverLinks.cardSessions.endpoints[0].endpoint, expectedService)
-        assertEquals(DiscoverLinks.cardSessions.endpoints[1].endpoint, expectedEndpoint)
+        assertEquals(DiscoverLinks.cardSessions.endpoints[0].key, expectedService)
+        assertEquals(DiscoverLinks.cardSessions.endpoints[1].key, expectedEndpoint)
     }
 
     @Test

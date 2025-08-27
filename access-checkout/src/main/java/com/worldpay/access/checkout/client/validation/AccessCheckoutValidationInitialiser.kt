@@ -1,8 +1,10 @@
 package com.worldpay.access.checkout.client.validation
 
+import android.util.Log
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.config.ValidationConfig
@@ -39,7 +41,13 @@ object AccessCheckoutValidationInitialiser {
 
             CoroutineScope(Dispatchers.IO).launch {
                 val apiDiscoveryClient = ApiDiscoveryClient()
-                apiDiscoveryClient.discoverEndpoint(URL(validationConfig.baseUrl), discoverLinks = DiscoverLinks.cardSessions)
+
+                try {
+                    apiDiscoveryClient.discoverEndpoint(URL(validationConfig.baseUrl), discoverLinks = DiscoverLinks.cardSessions)
+                    apiDiscoveryClient.discoverEndpoint(URL(validationConfig.baseUrl), discoverLinks = DiscoverLinks.cvcSessions)
+                } catch (e:AccessCheckoutException) {
+                    Log.w(javaClass.simpleName, "Failed to discover services")
+                }
             }
         } else {
             initialiseCvcValidation(validationConfig as CvcValidationConfig)
