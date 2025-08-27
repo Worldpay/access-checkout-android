@@ -25,10 +25,18 @@ def fileFilter = [
 
 def classDirs = files([
         fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/intermediates/classes/debug", excludes: fileFilter) +
-        fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/tmp/kotlin-classes/debug", excludes: fileFilter)
+                fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/tmp/kotlin-classes/debug", excludes: fileFilter)
 ])
 
-def execData = files("${layout.buildDirectory.dir('.').get().asFile}/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec")
+def execData = files(
+        // Unit test execution data
+        "${layout.buildDirectory.dir('.').get().asFile}/outputs/unit_test_code_coverage/debugUnitTest/testDebugUnitTest.exec",
+        // Android instrumented tests execution data
+        fileTree(
+                dir: "${layout.buildDirectory.dir('.').get().asFile}/outputs/code_coverage/debugAndroidTest/connected/",
+                includes: ["**/*.ec"]
+        )
+)
 
 def sourceDirs = files(["${project.projectDir}/src/main/java"])
 
@@ -38,9 +46,9 @@ tasks.register('jacocoTestReport', JacocoReport) {
     sourceDirectories.setFrom(sourceDirs)
 }
 tasks.named('jacocoTestReport') {
+    dependsOn('connectedDebugAndroidTest')
     dependsOn('testDebugUnitTest')
 }
-
 
 tasks.register('jacocoTestCoverageVerification', JacocoCoverageVerification) {
     dependsOn 'jacocoTestReport'
