@@ -52,7 +52,7 @@ object AccessCheckoutValidationInitialiser {
                         discoverLinks = DiscoverLinks.cvcSessions
                     )
                 } catch (e: AccessCheckoutException) {
-                    Log.w(javaClass.simpleName, "Failed to discover services")
+                    Log.w(javaClass.simpleName, "Failed to discover services", e)
                 }
             }
         } else {
