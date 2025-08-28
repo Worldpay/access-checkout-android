@@ -55,6 +55,7 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
     @Before
     fun setUp() {
         DiscoveryCache.results.clear()
+        DiscoveryCache.responses.clear()
         startWiremock(applicationContext, wireMockPort)
     }
 
