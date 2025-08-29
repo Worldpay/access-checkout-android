@@ -42,7 +42,7 @@ object AccessCheckoutValidationInitialiser {
             CoroutineScope(Dispatchers.IO).launch {
                 val apiDiscoveryClient = ApiDiscoveryClient()
 
-//                try {
+                try {
                     apiDiscoveryClient.discoverEndpoint(
                         URL(validationConfig.baseUrl),
                         discoverLinks = DiscoverLinks.cardSessions
@@ -51,9 +51,9 @@ object AccessCheckoutValidationInitialiser {
                         URL(validationConfig.baseUrl),
                         discoverLinks = DiscoverLinks.cvcSessions
                     )
-//                } catch (e: AccessCheckoutException) {
-//                    Log.w(javaClass.simpleName, "Failed to discover services", e)
-//                }
+                } catch (e: AccessCheckoutException) {
+                    Log.w(javaClass.simpleName, "Failed to discover services", e)
+                }
             }
         } else {
             initialiseCvcValidation(validationConfig as CvcValidationConfig)
