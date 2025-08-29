@@ -16,7 +16,7 @@ class EndpointTest {
     }
 
     @Test
-    fun `should be able to return a string value for endpoint`() {
-        assertEquals(endpoint.endpoint, expectedEndpoint)
+    fun `should return a string value when getting value for key`() {
+        assertEquals(endpoint.key, expectedEndpoint)
     }
 }

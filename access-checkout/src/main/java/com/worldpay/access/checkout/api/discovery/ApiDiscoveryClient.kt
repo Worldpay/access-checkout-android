@@ -4,6 +4,7 @@ import android.util.Log
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.api.URLFactoryImpl
+import com.worldpay.access.checkout.api.serialization.PlainResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import java.net.URL
 import java.util.concurrent.atomic.AtomicInteger
@@ -70,8 +71,17 @@ internal class ApiDiscoveryClient(
 
         var resourceUrl = baseUrl
         for (endpoint in endpoints) {
-            val response = httpsClient.doGet(resourceUrl, endpoint.getDeserializer(), endpoint.headers)
-            resourceUrl = urlFactory.getURL(response)
+            var response = discoveryCache.getResponse(resourceUrl)
+            response?.let {
+                Log.d(javaClass.simpleName, "Retrieved response from cache for $resourceUrl")
+            }
+
+            if (response == null) {
+                response = httpsClient.doGet(resourceUrl, PlainResponseDeserializer, endpoint.headers)
+                discoveryCache.saveResponse(resourceUrl, response)
+            }
+
+            resourceUrl = urlFactory.getURL(endpoint.getDeserializer().deserialize(response))
         }
 
         Log.d(javaClass.simpleName, "Received response from service discovery endpoint")

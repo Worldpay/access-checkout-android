@@ -21,7 +21,6 @@ import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.W
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
-import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.After

@@ -1,6 +1,10 @@
 package com.worldpay.access.checkout.client.validation
 
+import android.util.Log
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.client.validation.config.ValidationConfig
@@ -12,6 +16,9 @@ import com.worldpay.access.checkout.validation.listeners.text.TextWatcherFactory
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.result.state.CardValidationStateManager
 import com.worldpay.access.checkout.validation.result.state.CvcValidationStateManager
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.net.URL
 
 /**
@@ -31,6 +38,23 @@ object AccessCheckoutValidationInitialiser {
     ) {
         if (validationConfig is CardValidationConfig) {
             initialiseCardValidation(validationConfig)
+
+            CoroutineScope(Dispatchers.IO).launch {
+                val apiDiscoveryClient = ApiDiscoveryClient()
+
+//                try {
+                    apiDiscoveryClient.discoverEndpoint(
+                        URL(validationConfig.baseUrl),
+                        discoverLinks = DiscoverLinks.cardSessions
+                    )
+                    apiDiscoveryClient.discoverEndpoint(
+                        URL(validationConfig.baseUrl),
+                        discoverLinks = DiscoverLinks.cvcSessions
+                    )
+//                } catch (e: AccessCheckoutException) {
+//                    Log.w(javaClass.simpleName, "Failed to discover services", e)
+//                }
+            }
         } else {
             initialiseCvcValidation(validationConfig as CvcValidationConfig)
         }

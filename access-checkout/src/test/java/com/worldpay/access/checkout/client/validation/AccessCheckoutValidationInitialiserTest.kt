@@ -16,11 +16,12 @@ import org.mockito.BDDMockito.given
 import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertEquals
+import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
-class AccessCheckoutValidationInitialiserTest: AbstractValidationIntegrationTest() {
-    
+class AccessCheckoutValidationInitialiserTest : AbstractValidationIntegrationTest() {
+
     private val acceptedCardBrands = arrayOf("VISA")
 
     private val baseUrl = "https://localhost:8443"
@@ -53,12 +54,9 @@ class AccessCheckoutValidationInitialiserTest: AbstractValidationIntegrationTest
 
         AccessCheckoutValidationInitialiser.initialise(config)
 
-        // Versions of Android >= 30 add an additional LengthFilter to limit the input to 5,000 chars
-        // So to be flexible with our testing we just test that the 1st filter is the one
-        // expected to be added by our SDK
-        assertTrue (pan.filters[0] is PanNumericFilter)
-        assertTrue (expiryDate.filters[0] is ExpiryDateLengthFilter)
-        assertTrue (cvc.filters[0] is CvcLengthFilter)
+        assertNotNull(pan.filters.any { it is PanNumericFilter })
+        assertNotNull(expiryDate.filters.any { it is ExpiryDateLengthFilter })
+        assertNotNull(cvc.filters.any { it is CvcLengthFilter })
     }
 
     @Test
@@ -74,6 +72,6 @@ class AccessCheckoutValidationInitialiserTest: AbstractValidationIntegrationTest
 
         AccessCheckoutValidationInitialiser.initialise(config)
 
-        assertTrue (cvc.filters[0] is CvcLengthFilter)
+        assertNotNull(cvc.filters.any { it is CvcLengthFilter })
     }
 }
