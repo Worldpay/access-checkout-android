@@ -51,6 +51,10 @@ object AccessCheckoutValidationInitialiser {
                         URL(validationConfig.baseUrl),
                         discoverLinks = DiscoverLinks.cvcSessions
                     )
+                    apiDiscoveryClient.discoverEndpoint(
+                        URL(validationConfig.baseUrl),
+                        discoverLinks = DiscoverLinks.cardBinDetails
+                    )
                 } catch (e: AccessCheckoutException) {
                     Log.w(javaClass.simpleName, "Failed to discover services", e)
                 }

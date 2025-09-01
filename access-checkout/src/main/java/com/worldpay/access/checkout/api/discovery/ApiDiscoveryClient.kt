@@ -67,10 +67,10 @@ internal class ApiDiscoveryClient(
     }
 
     private suspend fun discover(baseUrl: URL, endpoints: List<Endpoint>): URL {
-        Log.d(javaClass.simpleName, "Sending request to service discovery endpoint")
-
         var resourceUrl = baseUrl
         for (endpoint in endpoints) {
+            Log.d(javaClass.simpleName, "Discovering endpoint for ${endpoint.key}")
+
             var response = discoveryCache.getResponse(resourceUrl)
             response?.let {
                 Log.d(javaClass.simpleName, "Retrieved response from cache for $resourceUrl")
@@ -82,9 +82,9 @@ internal class ApiDiscoveryClient(
             }
 
             resourceUrl = urlFactory.getURL(endpoint.getDeserializer().deserialize(response))
+            Log.d(javaClass.simpleName, "Success. Found: $resourceUrl")
         }
 
-        Log.d(javaClass.simpleName, "Received response from service discovery endpoint")
         return resourceUrl
     }
 }
