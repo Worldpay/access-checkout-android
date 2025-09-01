@@ -65,16 +65,18 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
     }
 
     @Test
-    fun shouldDiscoverCardSessionsAndCvcSessionsEndPointsWhenInitialisingCardValidation() {
+    fun shouldDiscover_CardSessions_CvcSessions_CardBinDetails_endPointsWhenInitialisingCardValidation() {
         val expectedKey1InDiscoveryCache = "service:sessions,sessions:card"
         val expectedKey2InDiscoveryCache = "service:sessions,sessions:paymentsCvc"
+        val expectedKey3InDiscoveryCache = "cardBinPublic:binDetails"
 
         AccessCheckoutValidationInitialiser.initialise(cardValidationConfig())
 
         await().atMost(timeout, SECONDS).until {
-            DiscoveryCache.results.size == 2
+            DiscoveryCache.results.size == 3
                     && DiscoveryCache.results.containsKey(expectedKey1InDiscoveryCache)
                     && DiscoveryCache.results.containsKey(expectedKey2InDiscoveryCache)
+                    && DiscoveryCache.results.containsKey(expectedKey3InDiscoveryCache)
         }
     }
 
