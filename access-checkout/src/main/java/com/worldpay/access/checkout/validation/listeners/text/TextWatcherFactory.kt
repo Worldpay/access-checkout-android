@@ -25,13 +25,6 @@ internal class TextWatcherFactory(
         checkoutId: String
     ): PanTextWatcher {
 
-        //TODO: Temporary workaround for testing until service discovery
-        val baseUrl = if (checkoutId === "AUTOMATED-TEST") {
-            "https://localhost:3003"
-        } else {
-            BaseUrlProvider.instance.CARD_BIN_SERVICE
-        }
-
         return PanTextWatcher(
             panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),
@@ -44,10 +37,7 @@ internal class TextWatcherFactory(
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
             brandsChangedHandler = resultHandlerFactory.getBrandsChangedHandler(),
             cvcValidationRuleManager = cvcValidationRuleManager,
-            cardBinService = CardBinService(
-                checkoutId = checkoutId,
-                baseUrl = baseUrl,
-            )
+            cardBinService = CardBinService(checkoutId = checkoutId)
         )
     }
 

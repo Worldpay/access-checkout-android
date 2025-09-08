@@ -24,6 +24,9 @@ object RootResourseMockStub {
                         "service:tokens": {
                             "href": "{{request.requestLine.baseUrl}}/tokens"
                         },
+                        "cardBinPublic:binDetails": {
+                            "href": "https://localhost:3003/public/card/bindetails"
+                        },
                         "curies": [
                             {
                                 "href": "{{request.requestLine.baseUrl}}/rels/payments/{rel}",

@@ -118,7 +118,7 @@ class ApiDiscoveryIntegrationTest {
             ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
             fail("Expected exception but got none")
         } catch (ace: AccessCheckoutException) {
-            assertEquals("Could not discover session endpoint", ace.message)
+            assertEquals("Could not discover endpoint", ace.message)
         } catch (ex: Exception) {
             fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }

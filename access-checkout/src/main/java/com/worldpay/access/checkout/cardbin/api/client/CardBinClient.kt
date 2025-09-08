@@ -2,8 +2,8 @@ package com.worldpay.access.checkout.cardbin.api.client
 
 import android.util.Log
 import com.worldpay.access.checkout.api.HttpsClient
-import com.worldpay.access.checkout.api.URLFactory
-import com.worldpay.access.checkout.api.URLFactoryImpl
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
@@ -12,7 +12,6 @@ import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSeri
 import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
-import java.net.URL
 
 /**
  * Client for retrieving card scheme details using a card BIN.
@@ -20,16 +19,12 @@ import java.net.URL
  * This class manages a single in-flight request at a time. If a new request is made while another is in progress,
  * the previous request is cancelled and only the latest request will complete.
  *
- * @property baseUrl The base URL for the API endpoint.
- * @property urlFactory Factory to build the full endpoint URL.
  * @property httpsClient HTTP client to perform the network request.
  * @property deserializer Deserializes the response from the API.
  * @property serializer Serializes the request to the API.
  * @property cacheManager handles cache actions.
  */
 internal class CardBinClient(
-    baseUrl: URL,
-    urlFactory: URLFactory = URLFactoryImpl(),
     private val httpsClient: HttpsClient = HttpsClient(),
     private val deserializer: Deserializer<CardBinResponse> = CardBinResponseDeserializer(),
     private val serializer: Serializer<CardBinRequest> = CardBinRequestSerializer(),
@@ -42,32 +37,8 @@ internal class CardBinClient(
         const val WP_CALLER_ID_VALUE = "checkoutandroid"
         const val WP_CONTENT_TYPE = "Content-Type"
         const val WP_CONTENT_TYPE_VALUE = "application/json"
-    }
 
-    private val CARD_BIN_ENDPOINT = "public/card/bindetails"
-
-    /** Maximum number of retry attempts for card bin requests */
-    private val MAX_ATTEMPTS = 3
-
-    private val cardBinUrl = urlFactory.getURL("$baseUrl/$CARD_BIN_ENDPOINT")
-
-    /**
-     * Makes a network request to retrieve card scheme details for the given request.
-     *
-     * This method no longer handles coroutine cancellation. It simply performs the network request.
-     *
-     * @param request The card BIN request payload.
-     * @return The card BIN response from the API.
-     * @throws Exception if the request fails.
-     */
-    private suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
-        val headers = hashMapOf(
-            WP_API_VERSION to WP_API_VERSION_VALUE,
-            WP_CALLER_ID to WP_CALLER_ID_VALUE,
-            WP_CONTENT_TYPE to WP_CONTENT_TYPE_VALUE
-        )
-
-        return httpsClient.doPost(cardBinUrl, request, headers, serializer, deserializer)
+        private const val MAX_ATTEMPTS = 3
     }
 
     /**
@@ -100,6 +71,26 @@ internal class CardBinClient(
     }
 
     /**
+     * Makes a network request to retrieve card scheme details for the given request.
+     *
+     * This method no longer handles coroutine cancellation. It simply performs the network request.
+     *
+     * @param request The card BIN request payload.
+     * @return The card BIN response from the API.
+     * @throws Exception if the request fails.
+     */
+    private suspend fun getCardBinResponse(request: CardBinRequest): CardBinResponse {
+        val headers = hashMapOf(
+            WP_API_VERSION to WP_API_VERSION_VALUE,
+            WP_CALLER_ID to WP_CALLER_ID_VALUE,
+            WP_CONTENT_TYPE to WP_CONTENT_TYPE_VALUE
+        )
+
+        val cardBinUrl = ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardBinDetails)
+        return httpsClient.doPost(cardBinUrl, request, headers, serializer, deserializer)
+    }
+
+    /**
      * Executes the given action with a retry mechanism.
      *
      * @param maxAttempts The maximum number of retry attempts.
@@ -124,7 +115,11 @@ internal class CardBinClient(
                 lastException = e
                 onError(e)
                 attempt++
-                Log.d(javaClass.simpleName, "[${attempt}/$maxAttempts] Could not retrieve response Retrying...", e)
+                Log.d(
+                    javaClass.simpleName,
+                    "[${attempt}/$maxAttempts] Could not retrieve response Retrying...",
+                    e
+                )
             }
         }
         throw AccessCheckoutException("Failed after $maxAttempts attempts", lastException)

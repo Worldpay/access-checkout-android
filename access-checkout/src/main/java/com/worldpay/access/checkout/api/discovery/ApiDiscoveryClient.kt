@@ -37,17 +37,19 @@ internal class ApiDiscoveryClient(
         internal fun initialise(baseUrlAsString: String, httpsClient: HttpsClient = HttpsClient()) {
             try {
                 instance = ApiDiscoveryClient(URL(baseUrlAsString), httpsClient)
-            } catch (e:MalformedURLException) {
+            } catch (e: MalformedURLException) {
                 throw MalformedURLException("The base URL passed to the SDK is not a valid URL ($baseUrlAsString)")
             }
         }
+
+        internal val isInitialised get() = instance != null
 
         internal fun reset() {
             instance = null
         }
 
         internal suspend fun discoverEndpoint(discoverLinks: DiscoverLinks): URL {
-            if (instance == null) {
+            if (!isInitialised) {
                 throw IllegalStateException("ApiDiscoveryClient must be initialised before using it")
             }
 
@@ -90,7 +92,7 @@ internal class ApiDiscoveryClient(
             if (currentAttempts.get() < MAX_ATTEMPTS) {
                 discoverEndpoint(discoverLinks)
             } else {
-                throw AccessCheckoutException("Could not discover session endpoint", ex)
+                throw AccessCheckoutException("Could not discover endpoint", ex)
             }
         }
     }

@@ -208,7 +208,7 @@ class ApiDiscoveryClientTest {
             ApiDiscoveryClient.discoverEndpoint(discoverLinks)
             fail("Expected exception but got none")
         } catch (ace: AccessCheckoutException) {
-            assertEquals("Could not discover session endpoint", ace.message)
+            assertEquals("Could not discover endpoint", ace.message)
             assertEquals("some exception 2", ace.cause?.message)
         } catch (ex: Exception) {
             fail("expected to get AccessCheckoutException but did not")

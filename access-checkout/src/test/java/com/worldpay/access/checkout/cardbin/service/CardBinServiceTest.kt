@@ -43,17 +43,13 @@ class CardBinServiceTest : BaseCoroutineTest() {
         // use the primary constructor to inject mocked dependencies
         cardBinService = CardBinService(
             checkoutId = checkoutId,
-            baseUrl = baseUrl,
             client = cardBinClient,
         )
     }
 
     @Test
     fun `should instantiate CardBinService with default client`() {
-        val service = CardBinService(
-            checkoutId = "testCheckoutId",
-            baseUrl = "https://localhost"
-        )
+        val service = CardBinService(checkoutId = "testCheckoutId")
         assertNotNull(service)
     }
 
@@ -62,7 +58,6 @@ class CardBinServiceTest : BaseCoroutineTest() {
         val mockClient = mock<CardBinClient>()
         val service = CardBinService(
             checkoutId = "testCheckoutId",
-            baseUrl = "https://localhost",
             client = mockClient
         )
         assertNotNull(service)
@@ -272,7 +267,6 @@ class CardBinServiceTest : BaseCoroutineTest() {
             whenever(mockJob.isActive).thenReturn(true)
             val cardBinService = CardBinService(
                 checkoutId = checkoutId,
-                baseUrl = baseUrl,
                 client = mockClient
             )
             cardBinService.currentJob = mockJob // Set the current job to the mocked job
@@ -327,7 +321,6 @@ class CardBinServiceTest : BaseCoroutineTest() {
             whenever(mockJob.isActive).thenReturn(true)
             val cardBinService = CardBinService(
                 checkoutId = checkoutId,
-                baseUrl = baseUrl,
                 client = mockClient
             )
             cardBinService.currentJob = mockJob // Set the current job to the mocked job
@@ -348,7 +341,6 @@ class CardBinServiceTest : BaseCoroutineTest() {
         whenever(mockJob.isActive).thenReturn(false)
         val cardBinService = CardBinService(
             checkoutId = checkoutId,
-            baseUrl = baseUrl,
             client = mockClient
         )
         cardBinService.currentJob = mockJob // Set the current job to the mocked job
@@ -397,7 +389,6 @@ class CardBinServiceTest : BaseCoroutineTest() {
             val mockJob = mock<Job>()
             val cardBinService = CardBinService(
                 checkoutId = checkoutId,
-                baseUrl = baseUrl,
                 client = mockClient
             )
             cardBinService.currentJob = mockJob // Set the current job to the mocked job

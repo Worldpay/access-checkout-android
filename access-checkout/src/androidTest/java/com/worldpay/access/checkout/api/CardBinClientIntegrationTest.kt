@@ -13,6 +13,7 @@ import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.MockServer.getStringBaseUrl
 import com.worldpay.access.checkout.api.MockServer.startWiremock
 import com.worldpay.access.checkout.api.MockServer.stopWiremock
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION_VALUE
@@ -29,7 +30,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.net.URL
 import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
@@ -49,10 +49,10 @@ class CardBinClientIntegrationTest {
     fun setup() {
         startWiremock(applicationContext, 8443)
         cardBinClient = CardBinClient(
-            URL(getStringBaseUrl()),
-            URLFactoryImpl(), HttpsClient(),
+            HttpsClient(),
             CardBinResponseDeserializer(), CardBinRequestSerializer()
         )
+        ApiDiscoveryClient.initialise(getStringBaseUrl())
     }
 
     @After

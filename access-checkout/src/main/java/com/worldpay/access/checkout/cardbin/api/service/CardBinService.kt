@@ -15,20 +15,17 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.URL
 
 /**
  * Service for retrieving card brand schemes using the card BIN (Bank Identification Number).
  *
  * @property[checkoutId] The checkout session identifier used for API requests.
- * @property[baseUrl] The base URL for the card bin API endpoint.
  * @property[client] The client responsible for making card bin API requests.
  */
 
 internal class CardBinService(
     private val checkoutId: String,
-    private val baseUrl: String,
-    private val client: CardBinClient = CardBinClient(URL(baseUrl)),
+    private val client: CardBinClient = CardBinClient(),
     private val dispatcherProvider: IDispatchersProvider = DispatchersProvider.instance
 ) {
     private val scope = CoroutineScope(dispatcherProvider.main)
@@ -54,7 +51,10 @@ internal class CardBinService(
         // Cancel any previous in-flight request before starting a new one
         currentJob?.let {
             if (it.isActive) {
-                Log.d(javaClass.simpleName, "Found in-flight card-bin request, aborting in-flight request...")
+                Log.d(
+                    javaClass.simpleName,
+                    "Found in-flight card-bin request, aborting in-flight request..."
+                )
                 it.cancel()
             }
         }
@@ -129,7 +129,7 @@ internal class CardBinService(
             .distinctBy { it.name.lowercase() }
     }
 
-    fun findBrandByName(brandName: String, default: RemoteCardBrand?): RemoteCardBrand? {
+    private fun findBrandByName(brandName: String, default: RemoteCardBrand?): RemoteCardBrand? {
         if (brandName === default?.name) {
             return default
         }

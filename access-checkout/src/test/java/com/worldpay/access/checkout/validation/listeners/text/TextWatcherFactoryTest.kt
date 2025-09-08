@@ -44,47 +44,6 @@ class TextWatcherFactoryTest {
     }
 
     @Test
-    fun `should use CARD_BIN_SERVICE baseUrl when checkoutId is not AUTOMATED-TEST`() {
-        given(resultHandlerFactory.getPanValidationResultHandler()).willReturn(mock())
-        given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
-        given(resultHandlerFactory.getBrandsChangedHandler()).willReturn(mock())
-
-        val baseUrlProviderSpy = spy(BaseUrlProvider.instance)
-        BaseUrlProvider.instance = baseUrlProviderSpy
-
-        val textWatcher = textWatcherFactory.createPanTextWatcher(
-            panEditText = panEditText,
-            cvcEditText = cvcEditText,
-            acceptedCardBrands = emptyArray(),
-            enablePanFormatting = false,
-            checkoutId = "testCheckoutId"
-        )
-        assertNotNull(textWatcher)
-        verify(baseUrlProviderSpy).CARD_BIN_SERVICE
-    }
-
-    @Test
-    fun `should use default CARD_BIN_SERVICE baseUrl when checkoutId is AUTOMATED-TEST`() {
-        given(resultHandlerFactory.getPanValidationResultHandler()).willReturn(mock())
-        given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
-        given(resultHandlerFactory.getBrandsChangedHandler()).willReturn(mock())
-
-        val baseUrlProviderSpy = spy(BaseUrlProvider.instance)
-        BaseUrlProvider.instance = baseUrlProviderSpy
-
-        val textWatcher = textWatcherFactory.createPanTextWatcher(
-            panEditText = panEditText,
-            cvcEditText = cvcEditText,
-            acceptedCardBrands = emptyArray(),
-            enablePanFormatting = false,
-            checkoutId = "AUTOMATED-TEST"
-        )
-        assertNotNull(textWatcher)
-        verifyNoInteractions(baseUrlProviderSpy)
-    }
-
-
-    @Test
     fun `should get expiry date text watcher`() {
         given(resultHandlerFactory.getExpiryDateValidationResultHandler()).willReturn(mock())
 
