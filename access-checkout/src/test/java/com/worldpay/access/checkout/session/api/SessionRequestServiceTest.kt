@@ -40,7 +40,7 @@ import kotlin.test.assertNull
 
 @RunWith(RobolectricTestRunner::class)
 @ExperimentalCoroutinesApi
-class SessionRequestServiceTest: BaseCoroutineTest() {
+class SessionRequestServiceTest : BaseCoroutineTest() {
 
     private val factory = mock<Factory>()
     private val sessionRequestSender = mock<SessionRequestSender>()
@@ -55,7 +55,9 @@ class SessionRequestServiceTest: BaseCoroutineTest() {
     fun setup() {
         inLifeCycleState = false
         given(factory.getSessionRequestSender()).willReturn(sessionRequestSender)
-        given(factory.getLocalBroadcastManagerFactory(any())).willReturn(localBroadcastManagerFactory)
+        given(factory.getLocalBroadcastManagerFactory(any())).willReturn(
+            localBroadcastManagerFactory
+        )
         given(localBroadcastManagerFactory.createInstance()).willReturn(localBroadcastManager)
         sessionRequestService = spy(SessionRequestService(factory))
     }
@@ -83,36 +85,39 @@ class SessionRequestServiceTest: BaseCoroutineTest() {
     }
 
     @Test
-    fun `should send a session request when the intent is not null and broadcast the response`() = runTest {
-        val intent = mock<Intent>()
+    fun `should send a session request when the intent is not null and broadcast the response`() =
+        runTest {
+            val intent = mock<Intent>()
 
-        val sessionRequestInfo = getSessionRequestInfo()
-        val sessionResponseInfo = getSessionResponseInfo()
+            val sessionRequestInfo = getSessionRequestInfo()
+            val sessionResponseInfo = getSessionResponseInfo()
 
-        given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(sessionRequestInfo)
-        given(sessionRequestSender.sendSessionRequest(sessionRequestInfo)).willReturn(sessionResponseInfo)
+            given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(sessionRequestInfo)
+            given(sessionRequestSender.sendSessionRequest(sessionRequestInfo)).willReturn(
+                sessionResponseInfo
+            )
 
-        var response = sessionRequestService.onStartCommand(intent, 1, 1)
-        advanceUntilIdle()
-        assertEquals(1, response)
+            var response = sessionRequestService.onStartCommand(intent, 1, 1)
+            advanceUntilIdle()
+            assertEquals(1, response)
 
-        val intentCaptor = argumentCaptor<Intent>()
+            val intentCaptor = argumentCaptor<Intent>()
 
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo)
-        verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
+            verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo)
+            verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
 
-        val broadcastIntent = intentCaptor.firstValue
+            val broadcastIntent = intentCaptor.firstValue
 
-        assertNotNull(broadcastIntent)
-        assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
-        assertEquals(2, broadcastIntent.extras!!.size())
-        assertEquals(sessionResponseInfo, broadcastIntent.extras!!.get(RESPONSE_KEY))
-        assertEquals(null, broadcastIntent.extras!!.get(ERROR_KEY))
+            assertNotNull(broadcastIntent)
+            assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
+            assertEquals(2, broadcastIntent.extras!!.size())
+            assertEquals(sessionResponseInfo, broadcastIntent.extras!!.get(RESPONSE_KEY))
+            assertEquals(null, broadcastIntent.extras!!.get(ERROR_KEY))
 
-        verify(sessionRequestService).stopSelf()
-    }
+            verify(sessionRequestService).stopSelf()
+        }
 
     @Test
     fun `should have exception in error key on broadcast when session request fails`() = runTest {
@@ -141,80 +146,88 @@ class SessionRequestServiceTest: BaseCoroutineTest() {
         assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
         assertEquals(2, broadcastIntent.extras!!.size())
         assertEquals(null, broadcastIntent.extras!!.get(RESPONSE_KEY))
-        assertEquals(exception.message, (broadcastIntent.extras!!.get(ERROR_KEY) as RuntimeException).message)
+        assertEquals(
+            exception.message,
+            (broadcastIntent.extras!!.get(ERROR_KEY) as RuntimeException).message
+        )
 
         verify(sessionRequestService).stopSelf()
     }
 
     @Test
-    fun `should throw exception when no request key is found for session request in the intent`() = runTest {
-        val intent = mock<Intent>()
+    fun `should throw exception when no request key is found for session request in the intent`() =
+        runTest {
+            val intent = mock<Intent>()
 
-        val exception = AccessCheckoutException("Failed to parse request key for sending the session request")
+            val exception =
+                AccessCheckoutException("Failed to parse request key for sending the session request")
 
-        given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(null)
+            given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(null)
 
-        var response = sessionRequestService.onStartCommand(intent, 1, 1)
-        advanceUntilIdle()
-        assertEquals(1, response)
+            var response = sessionRequestService.onStartCommand(intent, 1, 1)
+            advanceUntilIdle()
+            assertEquals(1, response)
 
-        val intentCaptor = argumentCaptor<Intent>()
+            val intentCaptor = argumentCaptor<Intent>()
 
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        verifyNoInteractions(sessionRequestSender)
-        verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
+            verifyNoInteractions(sessionRequestSender)
+            verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
 
-        val broadcastIntent = intentCaptor.firstValue
+            val broadcastIntent = intentCaptor.firstValue
 
-        assertNotNull(broadcastIntent)
-        assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
-        assertEquals(2, broadcastIntent.extras!!.size())
-        assertEquals(null, broadcastIntent.extras!!.get(RESPONSE_KEY))
-        assertEquals(exception, broadcastIntent.extras!!.get(ERROR_KEY))
+            assertNotNull(broadcastIntent)
+            assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
+            assertEquals(2, broadcastIntent.extras!!.size())
+            assertEquals(null, broadcastIntent.extras!!.get(RESPONSE_KEY))
+            assertEquals(exception, broadcastIntent.extras!!.get(ERROR_KEY))
 
-        verify(sessionRequestService).stopSelf()
-    }
+            verify(sessionRequestService).stopSelf()
+        }
 
     @Test
-    fun `should post the broadcast function to the message queue when in lifecycle state`() = runTest {
-        inLifeCycleState = true
-        val intent = mock<Intent>()
+    fun `should post the broadcast function to the message queue when in lifecycle state`() =
+        runTest {
+            inLifeCycleState = true
+            val intent = mock<Intent>()
 
-        val sessionRequestInfo = getSessionRequestInfo()
+            val sessionRequestInfo = getSessionRequestInfo()
 
-        val sessionResponseInfo = getSessionResponseInfo()
+            val sessionResponseInfo = getSessionResponseInfo()
 
-        given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(sessionRequestInfo)
-        given(sessionRequestSender.sendSessionRequest(sessionRequestInfo)).willReturn(sessionResponseInfo)
+            given(intent.getSerializableExtra(REQUEST_KEY)).willReturn(sessionRequestInfo)
+            given(sessionRequestSender.sendSessionRequest(sessionRequestInfo)).willReturn(
+                sessionResponseInfo
+            )
 
-        assertEquals(0, messageQueue.size)
+            assertEquals(0, messageQueue.size)
 
-        var response = sessionRequestService.onStartCommand(intent, 1, 1)
-        advanceUntilIdle()
-        assertEquals(1, response)
+            var response = sessionRequestService.onStartCommand(intent, 1, 1)
+            advanceUntilIdle()
+            assertEquals(1, response)
 
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        assertEquals(1, messageQueue.size)
-        processMessageQueue()
-        assertEquals(0, messageQueue.size)
+            assertEquals(1, messageQueue.size)
+            processMessageQueue()
+            assertEquals(0, messageQueue.size)
 
-        val intentCaptor = argumentCaptor<Intent>()
+            val intentCaptor = argumentCaptor<Intent>()
 
-        verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo)
-        verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
+            verify(sessionRequestSender).sendSessionRequest(sessionRequestInfo)
+            verify(localBroadcastManager).sendBroadcast(intentCaptor.capture())
 
-        val broadcastIntent = intentCaptor.firstValue
+            val broadcastIntent = intentCaptor.firstValue
 
-        assertNotNull(broadcastIntent)
-        assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
-        assertEquals(2, broadcastIntent.extras!!.size())
-        assertEquals(sessionResponseInfo, broadcastIntent.extras!!.get(RESPONSE_KEY))
-        assertEquals(null, broadcastIntent.extras!!.get(ERROR_KEY))
+            assertNotNull(broadcastIntent)
+            assertEquals(COMPLETED_SESSION_REQUEST, intentCaptor.firstValue.action)
+            assertEquals(2, broadcastIntent.extras!!.size())
+            assertEquals(sessionResponseInfo, broadcastIntent.extras!!.get(RESPONSE_KEY))
+            assertEquals(null, broadcastIntent.extras!!.get(ERROR_KEY))
 
-        verify(sessionRequestService).stopSelf()
-    }
+            verify(sessionRequestService).stopSelf()
+        }
 
     private fun getSessionRequestInfo(): SessionRequestInfo {
         val sessionRequest =
@@ -229,7 +242,6 @@ class SessionRequestServiceTest: BaseCoroutineTest() {
             )
 
         return SessionRequestInfo.Builder()
-            .baseUrl(baseUrl)
             .requestBody(sessionRequest)
             .sessionType(SessionType.CARD)
             .discoverLinks(DiscoverLinks.cardSessions)
