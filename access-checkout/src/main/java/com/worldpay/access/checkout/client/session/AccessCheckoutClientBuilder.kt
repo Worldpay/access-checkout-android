@@ -98,7 +98,6 @@ class AccessCheckoutClientBuilder {
         val sessionRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
             .checkoutId(checkoutId!!)
             .context(context!!)
-            .externalSessionResponseListener(externalSessionResponseListener!!)
             .build()
 
         val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context!!)

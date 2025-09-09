@@ -39,7 +39,6 @@ class CvcSessionRequestHandlerTest {
                 SessionRequestHandlerConfig.Builder()
                     .checkoutId("checkout-id")
                     .context(context)
-                    .externalSessionResponseListener(externalSessionResponseListener)
                     .build()
             )
     }

@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.session.handlers
 
 import android.content.Context
-import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import org.junit.Test
 import org.mockito.Mockito
 import kotlin.test.assertEquals
@@ -14,7 +13,6 @@ class SessionRequestHandlerFactoryTest {
         val config = SessionRequestHandlerConfig.Builder()
             .checkoutId("checkout-id")
             .context(Mockito.mock(Context::class.java))
-            .externalSessionResponseListener(Mockito.mock(SessionResponseListener::class.java))
             .build()
 
         val tokenRequestHandlerFactory =

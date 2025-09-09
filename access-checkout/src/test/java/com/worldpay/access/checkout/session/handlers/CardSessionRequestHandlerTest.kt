@@ -39,7 +39,6 @@ class CardSessionRequestHandlerTest {
                 SessionRequestHandlerConfig.Builder()
                     .checkoutId("checkout-id")
                     .context(context)
-                    .externalSessionResponseListener(externalSessionResponseListener)
                     .build()
             )
     }

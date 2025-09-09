@@ -19,15 +19,10 @@ class SessionRequestHandlerConfigTest {
         val sessionRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
             .checkoutId(checkoutId)
             .context(context)
-            .externalSessionResponseListener(externalSessionResponseListener)
             .build()
 
         assertEquals(checkoutId, sessionRequestHandlerConfig.getCheckoutId())
         assertEquals(context, sessionRequestHandlerConfig.getContext())
-        assertEquals(
-            externalSessionResponseListener,
-            sessionRequestHandlerConfig.getExternalSessionResponseListener()
-        )
     }
 
     @Test
@@ -35,7 +30,6 @@ class SessionRequestHandlerConfigTest {
         val exception = assertFailsWith<AccessCheckoutException> {
             SessionRequestHandlerConfig.Builder()
                 .context(mock(Context::class.java))
-                .externalSessionResponseListener(mock(SessionResponseListener::class.java))
                 .build()
         }
         assertEquals("Expected merchant id to be provided but was not", exception.message)
@@ -46,23 +40,8 @@ class SessionRequestHandlerConfigTest {
         val exception = assertFailsWith<AccessCheckoutException> {
             SessionRequestHandlerConfig.Builder()
                 .checkoutId("checkout-id")
-                .externalSessionResponseListener(mock(SessionResponseListener::class.java))
                 .build()
         }
         assertEquals("Expected context to be provided but was not", exception.message)
-    }
-
-    @Test
-    fun `should throw an AccessCheckoutException when no external session response listener is passed to builder`() {
-        val exception = assertFailsWith<AccessCheckoutException> {
-            SessionRequestHandlerConfig.Builder()
-                .checkoutId("checkout-id")
-                .context(mock(Context::class.java))
-                .build()
-        }
-        assertEquals(
-            "Expected session response listener to be provided but was not",
-            exception.message
-        )
     }
 }
