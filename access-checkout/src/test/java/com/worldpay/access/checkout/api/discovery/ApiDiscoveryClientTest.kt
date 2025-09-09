@@ -82,7 +82,7 @@ class ApiDiscoveryClientTest {
         try {
             ApiDiscoveryClient.initialise("something-else")
             fail("Expected exception but got none")
-        } catch (e: MalformedURLException) {
+        } catch (e: AccessCheckoutException) {
             assertEquals("The base URL passed to the SDK is not a valid URL (something-else)", e.message)
         }
     }

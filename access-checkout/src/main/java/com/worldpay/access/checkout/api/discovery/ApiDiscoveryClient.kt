@@ -38,7 +38,7 @@ internal class ApiDiscoveryClient(
             try {
                 instance = ApiDiscoveryClient(URL(baseUrlAsString), httpsClient)
             } catch (e: MalformedURLException) {
-                throw MalformedURLException("The base URL passed to the SDK is not a valid URL ($baseUrlAsString)")
+                throw AccessCheckoutException("The base URL passed to the SDK is not a valid URL ($baseUrlAsString)", e)
             }
         }
 
