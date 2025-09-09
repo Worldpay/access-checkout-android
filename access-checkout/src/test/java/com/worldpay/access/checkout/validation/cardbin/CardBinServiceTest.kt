@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.cardbin.service
+package com.worldpay.access.checkout.validation.cardbin
 
 import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.configuration.CardConfiguration
@@ -6,9 +6,8 @@ import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrandImage
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
-import com.worldpay.access.checkout.cardbin.api.service.CardBinService
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinResponse
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.BASE_PATH
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DISCOVER_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND

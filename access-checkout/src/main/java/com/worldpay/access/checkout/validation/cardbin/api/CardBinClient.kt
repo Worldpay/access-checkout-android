@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.cardbin.api.client
+package com.worldpay.access.checkout.validation.cardbin.api
 
 import android.util.Log
 import com.worldpay.access.checkout.api.HttpsClient
@@ -6,10 +6,6 @@ import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
-import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 

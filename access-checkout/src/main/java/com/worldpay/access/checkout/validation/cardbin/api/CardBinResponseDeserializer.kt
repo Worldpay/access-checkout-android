@@ -1,7 +1,6 @@
-package com.worldpay.access.checkout.cardbin.api.serialization
+package com.worldpay.access.checkout.validation.cardbin.api
 
 import com.worldpay.access.checkout.api.serialization.Deserializer
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import org.json.JSONObject
 
 /**

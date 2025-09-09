@@ -1,6 +1,5 @@
-package com.worldpay.access.checkout.cardbin.api.client
+package com.worldpay.access.checkout.validation.cardbin.api
 
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import java.util.concurrent.ConcurrentHashMap
 
 internal class CardBinCacheManager {

@@ -4,7 +4,7 @@ import android.text.Editable
 import android.widget.EditText
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.cardbin.api.service.CardBinService
+import com.worldpay.access.checkout.validation.cardbin.CardBinService
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.BrandsChangedHandler
 import com.worldpay.access.checkout.validation.result.handler.PanValidationResultHandler

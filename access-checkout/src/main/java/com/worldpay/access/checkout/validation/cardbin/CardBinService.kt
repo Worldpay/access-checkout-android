@@ -1,14 +1,14 @@
-package com.worldpay.access.checkout.cardbin.api.service
+package com.worldpay.access.checkout.validation.cardbin
 
 import android.util.Log
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
 import com.worldpay.access.checkout.util.coroutine.IDispatchersProvider
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinRequest
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinResponse
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope

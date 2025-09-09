@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.cardbin.client
+package com.worldpay.access.checkout.validation.cardbin.api
 
 import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.HttpsClient
@@ -6,18 +6,12 @@ import com.worldpay.access.checkout.api.URLFactory
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
 import com.worldpay.access.checkout.api.discovery.DiscoveryCache
-import com.worldpay.access.checkout.cardbin.api.client.CardBinCacheManager
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CONTENT_TYPE
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CONTENT_TYPE_VALUE
-import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_API_VERSION
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_API_VERSION_VALUE
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CALLER_ID
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CALLER_ID_VALUE
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CONTENT_TYPE
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CONTENT_TYPE_VALUE
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import kotlinx.coroutines.CancellationException
