@@ -62,7 +62,10 @@ internal class CardBinService(
         // Launch a new coroutine to fetch the card brands from the API asynchronously
         currentJob = scope.launch {
             try {
-                Log.d(CardBinService::class.java.simpleName, "Fetching card bin data from client...")
+                Log.d(
+                    CardBinService::class.java.simpleName,
+                    "Fetching card bin data from client..."
+                )
                 val response =
                     withContext(dispatcherProvider.io) {
                         client.fetchCardBinResponseWithRetry(
@@ -133,7 +136,7 @@ internal class CardBinService(
         if (brandName === default?.name) {
             return default
         }
-        var cardConfiguration = CardConfigurationProvider.getCardConfiguration()
+        val cardConfiguration = CardConfigurationProvider.getCardConfiguration()
         return cardConfiguration.brands.firstOrNull { it.name.equals(brandName, ignoreCase = true) }
     }
 

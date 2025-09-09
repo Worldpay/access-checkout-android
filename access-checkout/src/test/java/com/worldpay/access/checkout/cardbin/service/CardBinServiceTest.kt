@@ -1,13 +1,20 @@
 package com.worldpay.access.checkout.cardbin.service
 
 import com.worldpay.access.checkout.BaseCoroutineTest
+import com.worldpay.access.checkout.api.configuration.CardConfiguration
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
+import com.worldpay.access.checkout.api.configuration.DefaultCardRules
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
+import com.worldpay.access.checkout.api.configuration.RemoteCardBrandImage
 import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
 import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.BASE_PATH
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DISCOVER_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.CARD_DEFAULTS
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Defaults.MATCHER
+import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.test.runTest
@@ -32,7 +39,6 @@ class CardBinServiceTest : BaseCoroutineTest() {
     private lateinit var cardBinService: CardBinService
 
     private val checkoutId = "testCheckoutId"
-    private val baseUrl = "https://localhost"
 
     private val visaTestPan = "444433332222"
     private val discoverDinersTestPan = "601100040000"
@@ -44,6 +50,10 @@ class CardBinServiceTest : BaseCoroutineTest() {
         cardBinService = CardBinService(
             checkoutId = checkoutId,
             client = cardBinClient,
+        )
+
+        CardConfigurationProvider.savedCardConfiguration = CardConfiguration(
+            emptyList(), DefaultCardRules.CARD_DEFAULTS
         )
     }
 
@@ -212,6 +222,38 @@ class CardBinServiceTest : BaseCoroutineTest() {
             assertNotNull(result)
             assertEquals(1, result.size)
             assertEquals("discovery", result[0].name)
+        }
+
+    @Test
+    fun `should return brand from card configuration plus global brand when response contains brand different from global brand in argument`() =
+        runTest {
+            val amexRemoteCardBrand = amexRemoteCardBrand()
+            val cardConfiguration = CardConfiguration(
+                brands = listOf(amexRemoteCardBrand()),
+                defaults = CARD_DEFAULTS
+            )
+            CardConfigurationProvider.savedCardConfiguration = cardConfiguration
+
+            val callbackResult = CompletableDeferred<List<RemoteCardBrand>>()
+
+            whenever(cardBinClient.fetchCardBinResponseWithRetry(any())).thenReturn(
+                CardBinResponse(
+                    brand = listOf("amex"),
+                    fundingType = "debit",
+                    luhnCompliant = true
+                )
+            )
+
+            val globalBrand = visaRemoteCardBrand()
+            cardBinService.getCardBrands(globalBrand, visaTestPan) { result ->
+                callbackResult.complete(result)
+            }
+
+            val result = callbackResult.await()
+            assertNotNull(result)
+            assertEquals(2, result.size)
+            assertEquals(globalBrand, result[0])
+            assertEquals(amexRemoteCardBrand, result[1])
         }
 
     @Test
@@ -395,4 +437,26 @@ class CardBinServiceTest : BaseCoroutineTest() {
 
             assertEquals(mockJob, cardBinService.currentJob)
         }
+
+    private fun visaRemoteCardBrand(): RemoteCardBrand {
+        return RemoteCardBrand(
+            name = "visa",
+            images = listOf(
+                RemoteCardBrandImage("image/png", "$BASE_PATH/visa.png")
+            ),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("", listOf(15))
+        )
+    }
+
+    private fun amexRemoteCardBrand(): RemoteCardBrand {
+        return RemoteCardBrand(
+            name = "amex",
+            images = listOf(
+                RemoteCardBrandImage("image/png", "$BASE_PATH/amex.png")
+            ),
+            cvc = CardValidationRule(MATCHER, listOf(4)),
+            pan = CardValidationRule("", listOf(15))
+        )
+    }
 }
