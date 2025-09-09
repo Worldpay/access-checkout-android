@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.widget.EditText
 import com.worldpay.access.checkout.cardbin.api.service.CardBinService
-import com.worldpay.access.checkout.util.BaseUrlProvider
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager

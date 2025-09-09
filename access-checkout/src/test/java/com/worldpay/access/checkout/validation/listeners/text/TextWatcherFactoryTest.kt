@@ -1,15 +1,11 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.widget.EditText
-import com.worldpay.access.checkout.util.BaseUrlProvider
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
-import org.mockito.kotlin.spy
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
 import kotlin.test.assertNotNull
 
 class TextWatcherFactoryTest {

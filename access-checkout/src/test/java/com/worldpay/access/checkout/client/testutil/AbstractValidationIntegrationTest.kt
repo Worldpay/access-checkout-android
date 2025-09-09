@@ -17,8 +17,6 @@ import com.worldpay.access.checkout.client.testutil.mocks.CardBinServiceMock
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import com.worldpay.access.checkout.util.BaseUrlProvider
-import com.worldpay.access.checkout.util.IBaseUrlProvider
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestScope
 import okhttp3.mockwebserver.MockWebServer
@@ -56,12 +54,6 @@ open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
         resetValidation()
         HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
         setupMockServices()
-
-        class TestBaseUrlProviders : IBaseUrlProvider {
-            override val CARD_BIN_SERVICE: String
-                get() = cardBinServer.baseUrl()
-        }
-        BaseUrlProvider.instance = TestBaseUrlProviders()
     }
 
     private fun setupMockServices(): Pair<MockWebServer, WireMockServer> {
