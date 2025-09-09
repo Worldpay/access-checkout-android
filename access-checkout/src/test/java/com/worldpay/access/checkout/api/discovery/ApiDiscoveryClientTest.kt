@@ -14,9 +14,9 @@ import org.mockito.BDDMockito.verify
 import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
-import java.net.MalformedURLException
 import java.net.URL
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 import kotlin.test.fail
@@ -70,32 +70,47 @@ class ApiDiscoveryClientTest {
 
     @Before
     fun setUp() {
-        DiscoveryCache.results.clear()
-        DiscoveryCache.responses.clear()
-
-        // Resets the singleton instance stored statically on the class
+        // Resets the singleton instance stored statically on the class and its DiscoveryCache
         ApiDiscoveryClient.reset()
     }
 
     @Test
-    fun `should throw exception when initialising discovery with a malformed URL`() = runTest {
-        try {
-            ApiDiscoveryClient.initialise("something-else")
-            fail("Expected exception but got none")
-        } catch (e: AccessCheckoutException) {
-            assertEquals("The base URL passed to the SDK is not a valid URL (something-else)", e.message)
-        }
+    fun `reset() should mark the ApiDiscoveryClient as not initialised and reset the discovery cache`() {
+        ApiDiscoveryClient.initialise("http://localhost")
+        assertTrue(ApiDiscoveryClient.isInitialised)
+
+        DiscoveryCache.responses["responses key 1"] = "response 1"
+        DiscoveryCache.results["results key 1"] = URL("http://example.com")
+
+        ApiDiscoveryClient.reset()
+
+        assertFalse(ApiDiscoveryClient.isInitialised)
+        assertTrue(DiscoveryCache.responses.isEmpty())
+        assertTrue(DiscoveryCache.results.isEmpty())
     }
 
     @Test
-    fun `should throw exception when attempting to use discovery without initialising it`() = runTest {
-        try {
-            ApiDiscoveryClient.discoverEndpoint(discoverLinks)
-            fail("Expected exception but got none")
-        } catch (ace: IllegalStateException) {
-            assertEquals("ApiDiscoveryClient must be initialised before using it", ace.message)
+    fun `should throw exception when initialising discovery with a malformed URL`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
+            ApiDiscoveryClient.initialise("something-else")
         }
+
+        assertEquals(
+            "The base URL passed to the SDK is not a valid URL (something-else)",
+            exception.message
+        )
     }
+
+    @Test
+    fun `should throw exception when attempting to use discovery without initialising it`() =
+        runTest {
+            try {
+                ApiDiscoveryClient.discoverEndpoint(discoverLinks)
+                fail("Expected exception but got none")
+            } catch (ace: IllegalStateException) {
+                assertEquals("ApiDiscoveryClient must be initialised before using it", ace.message)
+            }
+        }
 
     @Test
     fun `should retrieve endpoint from cache when one exists`() = runTest {

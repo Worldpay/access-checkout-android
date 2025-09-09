@@ -38,7 +38,10 @@ internal class ApiDiscoveryClient(
             try {
                 instance = ApiDiscoveryClient(URL(baseUrlAsString), httpsClient)
             } catch (e: MalformedURLException) {
-                throw AccessCheckoutException("The base URL passed to the SDK is not a valid URL ($baseUrlAsString)", e)
+                throw AccessCheckoutException(
+                    "The base URL passed to the SDK is not a valid URL ($baseUrlAsString)",
+                    e
+                )
             }
         }
 
@@ -46,6 +49,8 @@ internal class ApiDiscoveryClient(
 
         internal fun reset() {
             instance = null
+            discoveryCache.results.clear()
+            discoveryCache.responses.clear()
         }
 
         internal suspend fun discoverEndpoint(discoverLinks: DiscoverLinks): URL {
