@@ -3,14 +3,23 @@ package com.worldpay.access.checkout.util
 import android.os.Build
 import androidx.annotation.ChecksSdkIntAtLeast
 
-class BuildVersionProvider {
-    private fun sdkVersion() = Build.VERSION.SDK_INT
+interface IBuildVersionProvider {
+    val sdkInt: Int
+    fun isAtLeastO(): Boolean
+    fun isAtLeastM(): Boolean
+}
+
+class BuildVersionProvider : IBuildVersionProvider {
+    override val sdkInt: Int
+        get() = Build.VERSION.SDK_INT
 
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.O)
-    fun isAtLeastO() = sdkVersion() >= Build.VERSION_CODES.O
+    override fun isAtLeastO(): Boolean = sdkInt >= Build.VERSION_CODES.O
 
     @ChecksSdkIntAtLeast(api = Build.VERSION_CODES.M)
-    fun isAtLeastM() = sdkVersion() >= Build.VERSION_CODES.M
+    override fun isAtLeastM(): Boolean = sdkInt >= Build.VERSION_CODES.M
+}
 
-    fun currentVersion(): Int = Build.VERSION.SDK_INT
+internal object BuildVersionProviderHolder {
+    var instance: IBuildVersionProvider = BuildVersionProvider()
 }

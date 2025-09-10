@@ -11,7 +11,6 @@ import android.text.InputFilter
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
@@ -21,7 +20,7 @@ import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.util.BuildVersionProvider
+import com.worldpay.access.checkout.util.BuildVersionProviderHolder
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -32,8 +31,7 @@ class AccessCheckoutEditText internal constructor(
     context: Context,
     attrs: AttributeSet?,
     defStyle: Int,
-    internal val editText: EditText?,
-    internal var sdk: BuildVersionProvider = BuildVersionProvider(),
+    internal val editText: EditText?
 ) : FrameLayout(context, attrs, defStyle) {
     private var externalOnFocusChangeListener: OnFocusChangeListener? = null
 
@@ -59,7 +57,8 @@ class AccessCheckoutEditText internal constructor(
                 val styledAttributes: TypedArray =
                     context.obtainStyledAttributes(attrs, R.styleable.AccessCheckoutEditText, 0, 0)
 
-                val attributeValues = AttributeValues(styledAttributes, sdk)
+                val attributeValues =
+                    AttributeValues(styledAttributes, BuildVersionProviderHolder.instance)
                 attributeValues.setAttributesOnEditText(editText)
 
                 styledAttributes.recycle()
@@ -277,7 +276,9 @@ class AccessCheckoutEditText internal constructor(
      */
     @RequiresApi(Build.VERSION_CODES.O)
     fun setAutoSizeTextTypeWithDefaults(@TextViewCompat.AutoSizeTextType autoSizeTextType: Int) {
-        if (sdk.isAtLeastO()) editText!!.setAutoSizeTextTypeWithDefaults(autoSizeTextType)
+        if (BuildVersionProviderHolder.instance.isAtLeastO()) editText!!.setAutoSizeTextTypeWithDefaults(
+            autoSizeTextType
+        )
     }
 
     /**
@@ -287,7 +288,9 @@ class AccessCheckoutEditText internal constructor(
      */
     @RequiresApi(Build.VERSION_CODES.M)
     fun setTextAppearance(@StyleRes resId: Int) {
-        if (sdk.isAtLeastM()) editText!!.setTextAppearance(resId)
+        if (BuildVersionProviderHolder.instance.isAtLeastM()) editText!!.setTextAppearance(
+            resId
+        )
     }
 
     internal fun length(): Int = editText!!.length()
@@ -334,12 +337,13 @@ class AccessCheckoutEditText internal constructor(
      */
     @RequiresApi(Build.VERSION_CODES.O)
     override fun setAutofillHints(vararg hints: String?) {
-        if (sdk.isAtLeastO()) editText?.setAutofillHints(*hints)
+        if (BuildVersionProviderHolder.instance.isAtLeastO()) editText?.setAutofillHints(*hints)
     }
+
 
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAutofillHints(): Array<String>? {
-        return if (sdk.isAtLeastO()) {
+        return if (BuildVersionProviderHolder.instance.isAtLeastO()) {
             editText?.autofillHints
         } else {
             null

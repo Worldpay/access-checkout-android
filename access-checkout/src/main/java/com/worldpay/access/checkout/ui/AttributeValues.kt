@@ -5,11 +5,12 @@ import android.os.Build
 import android.widget.EditText
 import androidx.annotation.RequiresApi
 import com.worldpay.access.checkout.R
-import com.worldpay.access.checkout.util.BuildVersionProvider
+import com.worldpay.access.checkout.util.BuildVersionProviderHolder
+import com.worldpay.access.checkout.util.IBuildVersionProvider
 
 internal class AttributeValues(
     private val styledAttributes: TypedArray,
-    private val buildVersionProvider: BuildVersionProvider
+    private val buildVersionProvider: IBuildVersionProvider
 ) {
 
     internal fun setAttributesOnEditText(editText: EditText) {
@@ -17,7 +18,7 @@ internal class AttributeValues(
 
         setHintAttribute(editText)
 
-        if (buildVersionProvider.isAtLeastO()) setAutofillAttribute(editText)
+        if (BuildVersionProviderHolder.instance.isAtLeastO()) setAutofillAttribute(editText)
 
         setHintTextColourAttribute(editText)
 
@@ -31,7 +32,7 @@ internal class AttributeValues(
 
         setPaddingAttribute(editText)
 
-        if (buildVersionProvider.isAtLeastO()) setFontAttribute(editText)
+        if (BuildVersionProviderHolder.instance.isAtLeastO()) setFontAttribute(editText)
 
         setEnabledAttribute(editText)
     }
