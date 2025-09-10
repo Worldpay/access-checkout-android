@@ -4,21 +4,24 @@ import android.content.Context
 import android.content.res.TypedArray
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import android.text.InputFilter
 import android.text.SpannableStringBuilder
 import android.text.method.KeyListener
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import android.widget.FrameLayout
 import androidx.annotation.ColorInt
+import androidx.annotation.RequiresApi
 import androidx.annotation.StyleRes
 import androidx.core.widget.TextViewCompat
 import com.worldpay.access.checkout.R
-import java.util.Optional
+import com.worldpay.access.checkout.util.BuildVersionProvider
 import java.util.concurrent.ConcurrentHashMap
 
 /**
@@ -30,6 +33,7 @@ class AccessCheckoutEditText internal constructor(
     attrs: AttributeSet?,
     defStyle: Int,
     internal val editText: EditText?,
+    internal var sdk: BuildVersionProvider = BuildVersionProvider(),
 ) : FrameLayout(context, attrs, defStyle) {
     private var externalOnFocusChangeListener: OnFocusChangeListener? = null
 
@@ -42,7 +46,7 @@ class AccessCheckoutEditText internal constructor(
         fun editTextIdOf(accessCheckoutEditTextId: Int): Int {
             val newId = View.generateViewId()
             val editTextId = allEditTextIds.putIfAbsent(accessCheckoutEditTextId, newId)
-            return Optional.ofNullable(editTextId).orElse(newId)
+            return editTextId ?: newId
         }
     }
 
@@ -55,7 +59,7 @@ class AccessCheckoutEditText internal constructor(
                 val styledAttributes: TypedArray =
                     context.obtainStyledAttributes(attrs, R.styleable.AccessCheckoutEditText, 0, 0)
 
-                val attributeValues = AttributeValues(styledAttributes)
+                val attributeValues = AttributeValues(styledAttributes, sdk)
                 attributeValues.setAttributesOnEditText(editText)
 
                 styledAttributes.recycle()
@@ -271,8 +275,9 @@ class AccessCheckoutEditText internal constructor(
      *
      * @param autoSizeTextType the type of auto-size
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     fun setAutoSizeTextTypeWithDefaults(@TextViewCompat.AutoSizeTextType autoSizeTextType: Int) {
-        editText!!.setAutoSizeTextTypeWithDefaults(autoSizeTextType)
+        if (sdk.isAtLeastO()) editText!!.setAutoSizeTextTypeWithDefaults(autoSizeTextType)
     }
 
     /**
@@ -280,8 +285,9 @@ class AccessCheckoutEditText internal constructor(
      *
      * @param resId the resource identifier of the style to apply
      */
+    @RequiresApi(Build.VERSION_CODES.M)
     fun setTextAppearance(@StyleRes resId: Int) {
-        editText!!.setTextAppearance(resId)
+        if (sdk.isAtLeastM()) editText!!.setTextAppearance(resId)
     }
 
     internal fun length(): Int = editText!!.length()
@@ -326,12 +332,18 @@ class AccessCheckoutEditText internal constructor(
      * Delegates the call to the EditText instance
      * This supports the autofill within this component
      */
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun setAutofillHints(vararg hints: String?) {
-        editText?.setAutofillHints(*hints)
+        if (sdk.isAtLeastO()) editText?.setAutofillHints(*hints)
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun getAutofillHints(): Array<String>? {
-        return editText?.getAutofillHints()
+        return if (sdk.isAtLeastO()) {
+            editText?.autofillHints
+        } else {
+            null
+        }
     }
 
     public override fun onSaveInstanceState(): Parcelable? {

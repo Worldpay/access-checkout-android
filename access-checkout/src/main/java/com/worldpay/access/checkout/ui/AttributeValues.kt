@@ -1,11 +1,15 @@
 package com.worldpay.access.checkout.ui
 
 import android.content.res.TypedArray
+import android.os.Build
 import android.widget.EditText
+import androidx.annotation.RequiresApi
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.util.BuildVersionProvider
 
 internal class AttributeValues(
-    private val styledAttributes: TypedArray
+    private val styledAttributes: TypedArray,
+    private val buildVersionProvider: BuildVersionProvider
 ) {
 
     internal fun setAttributesOnEditText(editText: EditText) {
@@ -13,7 +17,7 @@ internal class AttributeValues(
 
         setHintAttribute(editText)
 
-        setAutofillAttribute(editText)
+        if (buildVersionProvider.isAtLeastO()) setAutofillAttribute(editText)
 
         setHintTextColourAttribute(editText)
 
@@ -27,7 +31,7 @@ internal class AttributeValues(
 
         setPaddingAttribute(editText)
 
-        setFontAttribute(editText)
+        if (buildVersionProvider.isAtLeastO()) setFontAttribute(editText)
 
         setEnabledAttribute(editText)
     }
@@ -75,6 +79,7 @@ internal class AttributeValues(
         }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setAutofillAttribute(editText: EditText) {
         val autofill = getAutofillAttribute()
         autofill?.let {
@@ -102,6 +107,7 @@ internal class AttributeValues(
         textColor.takeIf { it != 0 }?.let { editText.setTextColor(textColor) }
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun setFontAttribute(editText: EditText) {
         val font = getFontAttribute()
         font?.let { editText.typeface = font }
@@ -169,6 +175,7 @@ internal class AttributeValues(
     private fun getTextColorAttribute() =
         styledAttributes.getColor(R.styleable.AccessCheckoutEditText_android_textColor, 0)
 
+    @RequiresApi(Build.VERSION_CODES.O)
     private fun getFontAttribute() =
         styledAttributes.getFont(R.styleable.AccessCheckoutEditText_android_font)
 
