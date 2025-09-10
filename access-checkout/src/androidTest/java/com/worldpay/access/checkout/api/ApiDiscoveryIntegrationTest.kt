@@ -47,22 +47,25 @@ class ApiDiscoveryIntegrationTest {
     fun setUp() {
         DiscoveryCache.results.clear()
         DiscoveryCache.responses.clear()
-        
+
         MockServer.startWiremock(applicationContext, 8443)
         baseUrl = getBaseUrl()
+
+        ApiDiscoveryClient.initialise(baseUrl.toString())
     }
 
     @After
     fun tearDown() {
         MockServer.stopWiremock()
+
+        ApiDiscoveryClient.reset()
     }
 
     @Test
     fun shouldBeAbleToDiscoverCardSessionsFromRoot() = runBlocking {
         stubServiceDiscoveryResponses()
 
-        val client = ApiDiscoveryClient()
-        val endpoint = client.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
+        val endpoint = ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             endpoint.toString() == "${baseUrl}/sessions/card"
@@ -73,13 +76,9 @@ class ApiDiscoveryIntegrationTest {
     fun shouldUseCachedResultsWhenDiscoveringSameEndpointsMultipleTimes() = runBlocking {
         stubServiceDiscoveryResponses()
 
-        val client = ApiDiscoveryClient()
-        val cardSessionsEndpoint1 =
-            client.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
-        val cardSessionsEndpoint2 =
-            client.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
-        val cardSessionsEndpoint3 =
-            client.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
+        val cardSessionsEndpoint1 = ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
+        val cardSessionsEndpoint2 = ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
+        val cardSessionsEndpoint3 = ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             cardSessionsEndpoint1.toString() == "${baseUrl}/sessions/card"
@@ -94,9 +93,8 @@ class ApiDiscoveryIntegrationTest {
     fun shouldUseCachedResponsesWhenDiscoveringDifferentEndpointsOnSameURL() = runBlocking {
         stubServiceDiscoveryResponses()
 
-        val client = ApiDiscoveryClient()
-        val cardEndpoint = client.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
-        val cvcEndpoint = client.discoverEndpoint(baseUrl, DiscoverLinks.cvcSessions)
+        val cardEndpoint = ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
+        val cvcEndpoint = ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cvcSessions)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             cardEndpoint.toString() == "${baseUrl}/sessions/card"
@@ -117,11 +115,10 @@ class ApiDiscoveryIntegrationTest {
         )
 
         try {
-            val client = ApiDiscoveryClient()
-            client.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
+            ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
             fail("Expected exception but got none")
         } catch (ace: AccessCheckoutException) {
-            assertEquals("Could not discover session endpoint", ace.message)
+            assertEquals("Could not discover endpoint", ace.message)
         } catch (ex: Exception) {
             fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
         }
@@ -147,8 +144,7 @@ class ApiDiscoveryIntegrationTest {
 
         stubFor(cardSessionsMapping())
 
-        val client = ApiDiscoveryClient()
-        val endpoint = client.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
+        val endpoint = ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
 
         await().atMost(5, TimeUnit.SECONDS).until {
             endpoint.toString() == "${baseUrl}/sessions/card"

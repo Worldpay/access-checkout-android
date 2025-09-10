@@ -1,4 +1,4 @@
-package com.worldpay.access.checkout.cardbin.api.response
+package com.worldpay.access.checkout.validation.cardbin.api
 
 import java.io.Serializable
 

@@ -13,14 +13,15 @@ import com.github.tomakehurst.wiremock.matching.EqualToJsonPattern
 import com.worldpay.access.checkout.api.MockServer.getStringBaseUrl
 import com.worldpay.access.checkout.api.MockServer.startWiremock
 import com.worldpay.access.checkout.api.MockServer.stopWiremock
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID_VALUE
-import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_API_VERSION
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_API_VERSION_VALUE
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CALLER_ID
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CALLER_ID_VALUE
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinRequest
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinRequestSerializer
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinResponseDeserializer
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.runBlocking
 import org.junit.After
@@ -29,7 +30,6 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
-import java.net.URL
 import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
@@ -49,10 +49,10 @@ class CardBinClientIntegrationTest {
     fun setup() {
         startWiremock(applicationContext, 8443)
         cardBinClient = CardBinClient(
-            URL(getStringBaseUrl()),
-            URLFactoryImpl(), HttpsClient(),
+            HttpsClient(),
             CardBinResponseDeserializer(), CardBinRequestSerializer()
         )
+        ApiDiscoveryClient.initialise(getStringBaseUrl())
     }
 
     @After

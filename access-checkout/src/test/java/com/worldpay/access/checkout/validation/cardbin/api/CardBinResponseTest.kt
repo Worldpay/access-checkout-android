@@ -1,6 +1,5 @@
-package com.worldpay.access.checkout.cardbin.response
+package com.worldpay.access.checkout.validation.cardbin.api
 
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import org.junit.Test
 import kotlin.test.assertEquals
 

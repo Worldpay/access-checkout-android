@@ -1,20 +1,17 @@
-package com.worldpay.access.checkout.cardbin.client
+package com.worldpay.access.checkout.validation.cardbin.api
 
 import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.URLFactory
-import com.worldpay.access.checkout.cardbin.api.client.CardBinCacheManager
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_API_VERSION_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CALLER_ID_VALUE
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CONTENT_TYPE
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient.Companion.WP_CONTENT_TYPE_VALUE
-import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinResponseDeserializer
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
+import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.api.discovery.DiscoveryCache
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_API_VERSION
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_API_VERSION_VALUE
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CALLER_ID
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CALLER_ID_VALUE
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CONTENT_TYPE
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient.Companion.WP_CONTENT_TYPE_VALUE
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import kotlinx.coroutines.CancellationException
@@ -63,15 +60,19 @@ class CardBinClientTest : BaseCoroutineTest() {
         deserializer = mock(CardBinResponseDeserializer::class.java)
         cardBinRequest = CardBinRequest("1111222233334444", "some-id")
 
-        given(urlFactory.getURL("$baseUrl/$cardBinEndpoint")).willReturn(cardBinUrl)
+        // This is used to set up the behaviour of the service discovery so that the
+        // HttpsClient mock can use that URL to perform calls
+        val cacheKey = DiscoverLinks.cardBinDetails.endpoints[0].key
+        DiscoveryCache.results[cacheKey] = cardBinUrl
+
+        ApiDiscoveryClient.initialise("http://localhost")
     }
 
     @Test
     fun `should construct CardBinClient with minimum required args`() = runTest {
         //Added this tests to cover default arguments
-        val client = CardBinClient(
-            baseUrl = baseUrl,
-        )
+        val client = CardBinClient()
+
         assertNotNull(client)
     }
 
@@ -198,8 +199,6 @@ class CardBinClientTest : BaseCoroutineTest() {
     private fun createCardBinClient(): CardBinClient {
         cacheManager = CardBinCacheManager()
         return CardBinClient(
-            baseUrl = baseUrl,
-            urlFactory = urlFactory,
             httpsClient = httpsClient,
             deserializer = deserializer,
             serializer = serializer,

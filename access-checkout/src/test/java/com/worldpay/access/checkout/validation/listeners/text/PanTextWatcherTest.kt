@@ -3,7 +3,7 @@ package com.worldpay.access.checkout.validation.listeners.text
 import android.text.Editable
 import android.widget.EditText
 import com.worldpay.access.checkout.BaseCoroutineTest
-import com.worldpay.access.checkout.cardbin.api.service.CardBinService
+import com.worldpay.access.checkout.validation.cardbin.CardBinService
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockUnsuccessfulCardConfiguration

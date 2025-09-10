@@ -152,7 +152,4 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .removeLastPanDigit()
             .hasBrandNames("visa")
     }
-
-
-
 }

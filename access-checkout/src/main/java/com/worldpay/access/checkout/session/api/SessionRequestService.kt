@@ -42,10 +42,10 @@ internal class SessionRequestService(
                         withContext(dispatchers.io) { fetchSessionResponseInfo(intent) }
                     broadcastResult(sessionResponseInfo, null)
                 } catch (ex: Exception) {
-                    Log.e(javaClass.simpleName, "Failed to retrieve session", ex)
+                    Log.e(SessionRequestService::class.java.simpleName, "Failed to retrieve session", ex)
                     broadcastResult(null, ex)
                 } finally {
-                    Log.d(javaClass.simpleName, "service stopped self")
+                    Log.d(SessionRequestService::class.java.simpleName, "service stopped self")
                     stopSelf()
                 }
 

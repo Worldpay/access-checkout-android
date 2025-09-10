@@ -42,10 +42,10 @@ internal class CvcSessionRequestHandler(
                 sessionRequestHandlerConfig.getCheckoutId()
             )
 
-        val serviceIntent = Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
+        val serviceIntent =
+            Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
-            .baseUrl(sessionRequestHandlerConfig.getBaseUrl())
             .requestBody(cvcSessionRequest)
             .sessionType(CVC)
             .discoverLinks(DiscoverLinks.cvcSessions)

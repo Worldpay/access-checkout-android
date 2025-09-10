@@ -31,10 +31,10 @@ internal class CardSessionRequestHandler(
         validateNotNull(cardDetails.expiryDate, "expiry date")
         validateNotNull(cardDetails.cvc, "cvc")
 
-        val serviceIntent = Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
+        val serviceIntent =
+            Intent(sessionRequestHandlerConfig.getContext(), SessionRequestService::class.java)
 
         val sessionRequestInfo = SessionRequestInfo.Builder()
-            .baseUrl(sessionRequestHandlerConfig.getBaseUrl())
             .requestBody(createCardSessionRequest(cardDetails))
             .sessionType(CARD)
             .discoverLinks(DiscoverLinks.cardSessions)
@@ -46,7 +46,8 @@ internal class CardSessionRequestHandler(
     }
 
     private fun createCardSessionRequest(cardDetails: CardDetails): CardSessionRequest {
-        val cardExpiryDate = CardExpiryDate(cardDetails.expiryDate!!.month, cardDetails.expiryDate.year)
+        val cardExpiryDate =
+            CardExpiryDate(cardDetails.expiryDate!!.month, cardDetails.expiryDate.year)
 
         return CardSessionRequest(
             cardDetails.pan!!,

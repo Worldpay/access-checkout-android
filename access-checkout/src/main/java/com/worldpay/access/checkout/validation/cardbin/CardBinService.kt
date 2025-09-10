@@ -1,34 +1,31 @@
-package com.worldpay.access.checkout.cardbin.api.service
+package com.worldpay.access.checkout.validation.cardbin
 
 import android.util.Log
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.PAN_DEFAULTS
 import com.worldpay.access.checkout.api.configuration.RemoteCardBrand
-import com.worldpay.access.checkout.cardbin.api.client.CardBinClient
-import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
-import com.worldpay.access.checkout.cardbin.api.response.CardBinResponse
 import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
 import com.worldpay.access.checkout.util.coroutine.IDispatchersProvider
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinClient
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinRequest
+import com.worldpay.access.checkout.validation.cardbin.api.CardBinResponse
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.net.URL
 
 /**
  * Service for retrieving card brand schemes using the card BIN (Bank Identification Number).
  *
  * @property[checkoutId] The checkout session identifier used for API requests.
- * @property[baseUrl] The base URL for the card bin API endpoint.
  * @property[client] The client responsible for making card bin API requests.
  */
 
 internal class CardBinService(
     private val checkoutId: String,
-    private val baseUrl: String,
-    private val client: CardBinClient = CardBinClient(URL(baseUrl)),
+    private val client: CardBinClient = CardBinClient(),
     private val dispatcherProvider: IDispatchersProvider = DispatchersProvider.instance
 ) {
     private val scope = CoroutineScope(dispatcherProvider.main)
@@ -54,7 +51,10 @@ internal class CardBinService(
         // Cancel any previous in-flight request before starting a new one
         currentJob?.let {
             if (it.isActive) {
-                Log.d(javaClass.simpleName, "Found in-flight card-bin request, aborting in-flight request...")
+                Log.d(
+                    javaClass.simpleName,
+                    "Found in-flight card-bin request, aborting in-flight request..."
+                )
                 it.cancel()
             }
         }
@@ -62,7 +62,10 @@ internal class CardBinService(
         // Launch a new coroutine to fetch the card brands from the API asynchronously
         currentJob = scope.launch {
             try {
-                Log.d(javaClass.simpleName, "Fetching card bin data from client...")
+                Log.d(
+                    CardBinService::class.java.simpleName,
+                    "Fetching card bin data from client..."
+                )
                 val response =
                     withContext(dispatcherProvider.io) {
                         client.fetchCardBinResponseWithRetry(
@@ -72,7 +75,7 @@ internal class CardBinService(
                             )
                         )
                     }
-                Log.d(javaClass.simpleName, "Card bin data fetched successfully.")
+                Log.d(CardBinService::class.java.simpleName, "Card bin data fetched successfully.")
                 // Transform the API response into a list of card brands
                 val brands = transform(globalBrand, response)
 
@@ -81,12 +84,12 @@ internal class CardBinService(
 
             } catch (_: CancellationException) {
                 Log.d(
-                    javaClass.simpleName,
+                    CardBinService::class.java.simpleName,
                     "Coroutine was cancelled cleanly"
                 )
             } catch (e: Exception) {
                 Log.d(
-                    this::class.java.simpleName,
+                    CardBinService::class.java.simpleName,
                     "Could not retrieve card bin information using API client: ${e.message}", e
                 )
             }
@@ -129,11 +132,11 @@ internal class CardBinService(
             .distinctBy { it.name.lowercase() }
     }
 
-    fun findBrandByName(brandName: String, default: RemoteCardBrand?): RemoteCardBrand? {
+    private fun findBrandByName(brandName: String, default: RemoteCardBrand?): RemoteCardBrand? {
         if (brandName === default?.name) {
             return default
         }
-        var cardConfiguration = CardConfigurationProvider.getCardConfiguration()
+        val cardConfiguration = CardConfigurationProvider.getCardConfiguration()
         return cardConfiguration.brands.firstOrNull { it.name.equals(brandName, ignoreCase = true) }
     }
 

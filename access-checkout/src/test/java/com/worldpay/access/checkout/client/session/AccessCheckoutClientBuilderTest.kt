@@ -3,16 +3,19 @@ package com.worldpay.access.checkout.client.session
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
-import java.lang.reflect.Field
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.BDDMockito.mock
+import java.lang.reflect.Field
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 class AccessCheckoutClientBuilderTest {
 
@@ -57,6 +60,25 @@ class AccessCheckoutClientBuilderTest {
         val baseUrlValueInBuilder = builderPrivateField[accessCheckoutClientBuilder] as String
 
         assertEquals(baseUrlValueInBuilder, baseUrl)
+    }
+
+    @Test
+    fun `should initialise service discovery`() {
+        given(context.applicationContext).willReturn(context)
+
+        // Resets static state of ApiDiscoveryClient
+        ApiDiscoveryClient.reset()
+        assertFalse(ApiDiscoveryClient.isInitialised)
+
+        AccessCheckoutClientBuilder()
+            .baseUrl(baseUrl)
+            .checkoutId(checkoutId)
+            .context(context)
+            .sessionResponseListener(sessionResponseListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertTrue(ApiDiscoveryClient.isInitialised)
     }
 
     @Test

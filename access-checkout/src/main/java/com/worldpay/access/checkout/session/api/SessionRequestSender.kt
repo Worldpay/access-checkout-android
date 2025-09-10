@@ -8,7 +8,6 @@ import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 
 internal class SessionRequestSender(
     private val sessionClientFactory: SessionClientFactory,
-    private val apiDiscoveryClient: ApiDiscoveryClient = ApiDiscoveryClient()
 ) {
 
     suspend fun sendSessionRequest(
@@ -16,15 +15,15 @@ internal class SessionRequestSender(
     ): SessionResponseInfo {
         Log.d("SessionRequestSender", "Making session request")
 
-        val endpoint = apiDiscoveryClient.discoverEndpoint(
-            sessionRequestInfo.baseUrl,
+        val endpoint = ApiDiscoveryClient.discoverEndpoint(
             sessionRequestInfo.discoverLinks
         )
 
         val sessionClient = sessionClientFactory.createClient(sessionRequestInfo.requestBody)
 
         try {
-            val responseBody = sessionClient.getSessionResponse(endpoint, sessionRequestInfo.requestBody)
+            val responseBody =
+                sessionClient.getSessionResponse(endpoint, sessionRequestInfo.requestBody)
             return SessionResponseInfo.Builder()
                 .responseBody(responseBody)
                 .sessionType(sessionRequestInfo.sessionType)

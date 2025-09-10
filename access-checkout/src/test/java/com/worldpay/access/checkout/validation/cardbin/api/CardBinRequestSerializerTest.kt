@@ -1,8 +1,6 @@
-package com.worldpay.access.checkout.cardbin.serialization
+package com.worldpay.access.checkout.validation.cardbin.api
 
 import com.worldpay.access.checkout.api.serialization.Serializer
-import com.worldpay.access.checkout.cardbin.api.request.CardBinRequest
-import com.worldpay.access.checkout.cardbin.api.serialization.CardBinRequestSerializer
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import org.junit.Assert.assertEquals
 import org.junit.Test

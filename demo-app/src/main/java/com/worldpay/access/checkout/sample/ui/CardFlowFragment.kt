@@ -37,8 +37,6 @@ class CardFlowFragment : Fragment() {
 
     private lateinit var cardValidationListener: CardValidationListener
 
-    private lateinit var accessCheckoutClientBuilder: AccessCheckoutClientBuilder
-
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,

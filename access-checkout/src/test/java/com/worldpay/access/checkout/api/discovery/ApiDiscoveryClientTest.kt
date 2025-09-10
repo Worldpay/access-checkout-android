@@ -16,8 +16,8 @@ import org.mockito.kotlin.mock
 import org.mockito.kotlin.times
 import java.net.URL
 import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
-import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import kotlin.test.fail
 
@@ -30,7 +30,8 @@ class ApiDiscoveryClientTest {
     private val httpsClient = mock<HttpsClient>()
     private var discoverLinks: DiscoverLinks = DiscoverLinks.cardSessions
 
-    private val baseUrl = URL("https://base.url")
+    private val baseUrlAsString = "https://base.url"
+    private val baseUrl = URL(baseUrlAsString)
     private val serviceSessionsUrl = URL("https://sessions.url")
     private val sessionsCardUrl = URL("http://sessions-card.url")
     private val sessionsPaymentsCvcUrl = URL("http://sessions-payments-cvc.url")
@@ -67,26 +68,57 @@ class ApiDiscoveryClientTest {
         }
     """
 
-    private lateinit var apiDiscoveryClient: ApiDiscoveryClient
-
     @Before
     fun setUp() {
-        DiscoveryCache.results.clear()
-        DiscoveryCache.responses.clear()
-        apiDiscoveryClient = ApiDiscoveryClient(httpsClient)
+        // Resets the singleton instance stored statically on the class and its DiscoveryCache
+        ApiDiscoveryClient.reset()
     }
 
     @Test
-    fun `should obtain an instance when using the default constructor`() {
-        assertNotNull(ApiDiscoveryClient())
+    fun `reset() should mark the ApiDiscoveryClient as not initialised and reset the discovery cache`() {
+        ApiDiscoveryClient.initialise("http://localhost")
+        assertTrue(ApiDiscoveryClient.isInitialised)
+
+        DiscoveryCache.responses["responses key 1"] = "response 1"
+        DiscoveryCache.results["results key 1"] = URL("http://example.com")
+
+        ApiDiscoveryClient.reset()
+
+        assertFalse(ApiDiscoveryClient.isInitialised)
+        assertTrue(DiscoveryCache.responses.isEmpty())
+        assertTrue(DiscoveryCache.results.isEmpty())
     }
+
+    @Test
+    fun `should throw exception when initialising discovery with a malformed URL`() {
+        val exception = assertFailsWith<AccessCheckoutException> {
+            ApiDiscoveryClient.initialise("something-else")
+        }
+
+        assertEquals(
+            "The base URL passed to the SDK is not a valid URL (something-else)",
+            exception.message
+        )
+    }
+
+    @Test
+    fun `should throw exception when attempting to use discovery without initialising it`() =
+        runTest {
+            try {
+                ApiDiscoveryClient.discoverEndpoint(discoverLinks)
+                fail("Expected exception but got none")
+            } catch (ace: IllegalStateException) {
+                assertEquals("ApiDiscoveryClient must be initialised before using it", ace.message)
+            }
+        }
 
     @Test
     fun `should retrieve endpoint from cache when one exists`() = runTest {
         val cacheKey = "${discoverLinks.endpoints[0].key},${discoverLinks.endpoints[1].key}"
         DiscoveryCache.results[cacheKey] = sessionsCardUrl
 
-        val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
+        ApiDiscoveryClient.initialise(baseUrlAsString, httpsClient)
+        val endpoint = ApiDiscoveryClient.discoverEndpoint(discoverLinks)
 
         assertEquals(sessionsCardUrl, endpoint)
     }
@@ -107,7 +139,8 @@ class ApiDiscoveryClientTest {
 
         assertTrue { DiscoveryCache.results.isEmpty() }
 
-        val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
+        ApiDiscoveryClient.initialise(baseUrlAsString, httpsClient)
+        val endpoint = ApiDiscoveryClient.discoverEndpoint(discoverLinks)
 
         assertEquals(sessionsCardUrl, endpoint)
 
@@ -129,7 +162,8 @@ class ApiDiscoveryClientTest {
             )
         ).willReturn(response2)
 
-        val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
+        ApiDiscoveryClient.initialise(baseUrlAsString, httpsClient)
+        val endpoint = ApiDiscoveryClient.discoverEndpoint(discoverLinks)
 
         assertEquals(sessionsCardUrl, endpoint)
     }
@@ -150,7 +184,8 @@ class ApiDiscoveryClientTest {
             )
         ).willReturn(response2)
 
-        val endpoint = apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
+        ApiDiscoveryClient.initialise(baseUrlAsString, httpsClient)
+        val endpoint = ApiDiscoveryClient.discoverEndpoint(discoverLinks)
 
         assertEquals(sessionsCardUrl, endpoint)
 
@@ -184,10 +219,11 @@ class ApiDiscoveryClientTest {
         ).willReturn(response2)
 
         try {
-            apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
+            ApiDiscoveryClient.initialise(baseUrlAsString, httpsClient)
+            ApiDiscoveryClient.discoverEndpoint(discoverLinks)
             fail("Expected exception but got none")
         } catch (ace: AccessCheckoutException) {
-            assertEquals("Could not discover session endpoint", ace.message)
+            assertEquals("Could not discover endpoint", ace.message)
             assertEquals("some exception 2", ace.cause?.message)
         } catch (ex: Exception) {
             fail("expected to get AccessCheckoutException but did not")
@@ -210,7 +246,8 @@ class ApiDiscoveryClientTest {
 
         assertTrue { DiscoveryCache.results.isEmpty() }
 
-        apiDiscoveryClient.discoverEndpoint(baseUrl, discoverLinks)
+        ApiDiscoveryClient.initialise(baseUrlAsString, httpsClient)
+        ApiDiscoveryClient.discoverEndpoint(discoverLinks)
 
         assertFalse { DiscoveryCache.results.isEmpty() }
         assertEquals(response1, DiscoveryCache.getResponse(baseUrl))
@@ -233,9 +270,10 @@ class ApiDiscoveryClientTest {
 
         assertTrue { DiscoveryCache.results.isEmpty() }
 
+        ApiDiscoveryClient.initialise(baseUrlAsString, httpsClient)
         val url1Discovered =
-            apiDiscoveryClient.discoverEndpoint(baseUrl, DiscoverLinks.cardSessions)
-        val url2Discovered = apiDiscoveryClient.discoverEndpoint(baseUrl, DiscoverLinks.cvcSessions)
+            ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
+        val url2Discovered = ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cvcSessions)
 
         assertEquals(url1Discovered, sessionsCardUrl)
         assertEquals(url2Discovered, sessionsPaymentsCvcUrl)
