@@ -30,14 +30,8 @@ import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mockito.never
+import org.mockito.kotlin.*
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.given
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
-import org.mockito.kotlin.whenever
-import java.lang.reflect.Field
-import java.lang.reflect.Modifier
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -214,6 +208,8 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `setAutofillHints() should not call EditText setAutofillHints()`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(true)
+
         val contextMock = mock<Context>()
         val attributeSetMock = mock<AttributeSet>()
 
