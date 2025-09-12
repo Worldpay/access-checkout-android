@@ -2,8 +2,6 @@ package com.worldpay.access.checkout.api
 
 import java.net.InetAddress
 import java.net.Socket
-import java.util.Arrays
-import java.util.stream.Collectors.toList
 import javax.net.ssl.HttpsURLConnection.getDefaultSSLSocketFactory
 import javax.net.ssl.SSLSocket
 import javax.net.ssl.SSLSocketFactory
@@ -12,10 +10,8 @@ internal class NoWeakCipherSSLSocketFactory constructor(
     private val defaultSSLSocketFactory: SSLSocketFactory
 ) : SSLSocketFactory() {
 
-    private val enabledCipherSuites: Array<String> = Arrays
-        .stream(defaultSSLSocketFactory.defaultCipherSuites)
-        .filter { !it.endsWith("SHA", ignoreCase = true) }
-        .collect(toList())
+    private val enabledCipherSuites: Array<String> = defaultSSLSocketFactory.defaultCipherSuites
+        .mapNotNull { it.takeIf { cipher -> !cipher.endsWith("SHA", ignoreCase = true) } }
         .toTypedArray()
 
     companion object {

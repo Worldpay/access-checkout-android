@@ -20,6 +20,8 @@ import android.view.KeyEvent
 import android.view.View
 import android.widget.EditText
 import com.worldpay.access.checkout.R
+import com.worldpay.access.checkout.util.BuildVersionProvider
+import com.worldpay.access.checkout.util.BuildVersionProviderHolder
 import org.junit.Assert.assertArrayEquals
 import org.junit.Before
 import org.junit.Test
@@ -27,12 +29,9 @@ import org.mockito.ArgumentCaptor
 import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.ArgumentMatchers.anyInt
+import org.mockito.Mockito.never
+import org.mockito.kotlin.*
 import org.mockito.kotlin.eq
-import org.mockito.kotlin.given
-import org.mockito.kotlin.mock
-import org.mockito.kotlin.verify
-import org.mockito.kotlin.verifyNoInteractions
-import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -44,9 +43,12 @@ class AccessCheckoutEditTextTest {
     private var editTextMock: EditText = mock()
     private var attributeSetMock: AttributeSet = mock()
     private var typedArrayMock: TypedArray = mock()
+    private var buildProviderMock: BuildVersionProvider = mock()
 
     @Before
     fun setUp() {
+        BuildVersionProviderHolder.instance = buildProviderMock
+
         given(
             contextMock.obtainStyledAttributes(
                 attributeSetMock,
@@ -100,8 +102,13 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `should set autofill hint from attribute set`() {
-        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_autofillHints, "some-credit-card")
+    fun `should set autofill hint from attribute set when sdk version is 26 or higher`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(true)
+
+        mockAttributeValue(
+            R.styleable.AccessCheckoutEditText_android_autofillHints,
+            "some-credit-card"
+        )
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
@@ -109,22 +116,63 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `should set autofill hint from hint constants set`() {
-        val field = AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+    fun `should not set autofill hint from attribute set when sdk version is lower than 26`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(false)
+
+        mockAttributeValue(
+            R.styleable.AccessCheckoutEditText_android_autofillHints,
+            "some-credit-card"
+        )
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock, never()).setAutofillHints("some-credit-card")
+    }
+
+    @Test
+    fun `should set autofill hint from hint constants set when sdk version is 26 or higher`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(true)
+
+        val field =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
         field.setAutofillHints(View.AUTOFILL_HINT_CREDIT_CARD_NUMBER)
 
         verify(editTextMock).setAutofillHints("creditCardNumber")
     }
 
     @Test
-    fun `setAutofillHints() should call EditText setAutofillHints()`() {
+    fun `should not set autofill hint from hint constants set when sdk version is lower than 26`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(false)
+
+        val field =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+        field.setAutofillHints(View.AUTOFILL_HINT_CREDIT_CARD_NUMBER)
+
+        verify(editTextMock, never()).setAutofillHints("creditCardNumber")
+    }
+
+    @Test
+    fun `setAutofillHints() should call EditText setAutofillHints() when sdk version is 26 or higher`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(true)
+
         accessCheckoutEditText.setAutofillHints("some-credit-card")
 
         verify(editTextMock).setAutofillHints("some-credit-card")
     }
 
     @Test
-    fun `getAutofillHints() should call EditText getAutofillHints()`() {
+    fun `setAutofillHints() should call EditText setAutofillHints() when sdk version is lower than 26`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(false)
+
+        accessCheckoutEditText.setAutofillHints("some-credit-card")
+
+        verify(editTextMock, never()).setAutofillHints("some-credit-card")
+    }
+
+    @Test
+    fun `getAutofillHints() should call EditText getAutofillHints() when sdk version is 26 or higher`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(true)
+
         val autofillHints = arrayOf("creditCardNumber", "creditCardExpirationDate")
         whenever(editTextMock.autofillHints).thenReturn(autofillHints)
         accessCheckoutEditText.setAutofillHints("creditCardNumber", "creditCardExpirationDate")
@@ -136,11 +184,22 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
+    fun `getAutofillHints() not should call EditText getAutofillHints() when sdk version is lower than 26`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(false)
+
+        val result = accessCheckoutEditText.autofillHints
+
+        verify(editTextMock, never()).autofillHints
+        assertNull(result)
+    }
+
+    @Test
     fun `getAutofillHints() should not call EditText getAutofillHints()`() {
         val contextMock = mock<Context>()
         val attributeSetMock = mock<AttributeSet>()
 
-        val accessCheckoutEditTextOptional = AccessCheckoutEditText(contextMock, attributeSetMock, 0, null)
+        val accessCheckoutEditTextOptional =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, null)
 
         val result = accessCheckoutEditTextOptional.autofillHints
 
@@ -149,10 +208,13 @@ class AccessCheckoutEditTextTest {
 
     @Test
     fun `setAutofillHints() should not call EditText setAutofillHints()`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(true)
+
         val contextMock = mock<Context>()
         val attributeSetMock = mock<AttributeSet>()
 
-        val accessCheckoutEditTextOptional = AccessCheckoutEditText(contextMock, attributeSetMock, 0, null)
+        val accessCheckoutEditTextOptional =
+            AccessCheckoutEditText(contextMock, attributeSetMock, 0, null)
 
         accessCheckoutEditTextOptional.setAutofillHints("patata")
 
@@ -373,13 +435,27 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `should set font from attribute set`() {
+    fun `should set font from attribute set when sdk version is 26 or higher`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(true)
+
         val typefaceMock: Typeface = mock()
         mockAttributeValue(R.styleable.AccessCheckoutEditText_android_font, typefaceMock)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
         verify(editTextMock).typeface = typefaceMock
+    }
+
+    @Test
+    fun `should not set font from attribute set when sdk version is lower than 26`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(false)
+
+        val typefaceMock: Typeface = mock()
+        mockAttributeValue(R.styleable.AccessCheckoutEditText_android_font, typefaceMock)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock, never()).typeface = typefaceMock
     }
 
     @Test
@@ -710,17 +786,41 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `setAutoSizeTextTypeWithDefaults should call EditText setAutoSizeTextTypeWithDefaults()`() {
+    fun `setAutoSizeTextTypeWithDefaults should call EditText setAutoSizeTextTypeWithDefaults() when sdk version is 26 or higher`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(true)
+
         accessCheckoutEditText.setAutoSizeTextTypeWithDefaults(123)
 
         verify(editTextMock).setAutoSizeTextTypeWithDefaults(123)
     }
 
     @Test
-    fun `setTextAppearance should call EditText setTextAppearance()`() {
+    fun `setAutoSizeTextTypeWithDefaults should not call EditText setAutoSizeTextTypeWithDefaults() when sdk versions is lower than 26`() {
+        whenever(buildProviderMock.isAtLeastO()).thenReturn(false)
+
+        BuildVersionProviderHolder.instance = buildProviderMock
+
+        accessCheckoutEditText.setAutoSizeTextTypeWithDefaults(123)
+
+        verify(editTextMock, never()).setAutoSizeTextTypeWithDefaults(123)
+    }
+
+    @Test
+    fun `setTextAppearance should call EditText setTextAppearance() when sdk version is 23 or higher`() {
+        whenever(buildProviderMock.isAtLeastM()).thenReturn(true)
+
         accessCheckoutEditText.setTextAppearance(123)
 
         verify(editTextMock).setTextAppearance(123)
+    }
+
+    @Test
+    fun `setTextAppearance should not call EditText setTextAppearance() when sdk version is lower than 23`() {
+        whenever(buildProviderMock.isAtLeastM()).thenReturn(false)
+
+        accessCheckoutEditText.setTextAppearance(123)
+
+        verify(editTextMock, never()).setTextAppearance(123)
     }
 
     @Test
