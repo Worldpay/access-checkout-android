@@ -8,7 +8,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.client.session.model.SessionType.CVC
-import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
+import com.worldpay.access.checkout.client.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory

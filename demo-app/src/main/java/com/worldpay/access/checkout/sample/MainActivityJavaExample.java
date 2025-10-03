@@ -11,8 +11,8 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
 
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException;
-import com.worldpay.access.checkout.client.session.AccessCheckoutClient;
-import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder;
+import com.worldpay.access.checkout.client.AccessCheckoutClient;
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder;
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener;
 import com.worldpay.access.checkout.client.session.model.CardDetails;
 import com.worldpay.access.checkout.client.session.model.SessionType;

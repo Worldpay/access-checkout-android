@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.session
 
+import com.worldpay.access.checkout.client.AccessCheckoutClientImpl
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify

@@ -10,7 +10,7 @@ import android.widget.ImageView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD

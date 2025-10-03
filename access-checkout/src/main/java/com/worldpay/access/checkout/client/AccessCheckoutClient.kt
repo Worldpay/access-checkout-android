@@ -1,7 +1,8 @@
-package com.worldpay.access.checkout.client.session
+package com.worldpay.access.checkout.client
 
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
+import com.worldpay.access.checkout.client.validation.config.ValidationConfig
 
 /**
  * This interface is the entry point to the session generate for Access Worldpay Services.
@@ -21,8 +22,11 @@ interface AccessCheckoutClient {
      * The response of this function is asynchronous and will use a callback to respond back to the
      * client
      *
-     * @param[cardDetails] Represents the [CardDetails] that is provided by the customer
-     * @param[sessionTypes] Represents a [List] of [SessionType] that the client would like to retrieve
+     * @param[cardDetails] Represents the [com.worldpay.access.checkout.client.session.model.CardDetails] that is provided by the customer
+     * @param[sessionTypes] Represents a [List] of [com.worldpay.access.checkout.client.session.model.SessionType] that the client would like to retrieve
      */
     fun generateSessions(cardDetails: CardDetails, sessionTypes: List<SessionType>)
+    fun initialiseValidation(validationConfiguration: ValidationConfig)
+    fun dispose()
+
 }
