@@ -4,6 +4,9 @@ import android.content.Context
 import android.content.Intent
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
+import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
+import com.worldpay.access.checkout.client.validation.config.ValidationConfig
+import com.worldpay.access.checkout.client.AccessCheckoutClientDisposer
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
@@ -32,14 +35,19 @@ internal class AccessCheckoutClientImpl(
         }
     }
 
+    override fun initialiseValidation(validationConfiguration: ValidationConfig) {
+        AccessCheckoutValidationInitialiser.initialise(validationConfiguration)
+    }
+
+    override fun dispose() {
+        AccessCheckoutClientDisposer().initialise(this)
+//        activityLifecycleObserver.onStop()
+    }
+
     private fun broadcastSessionTypeInfo(sessionTypes: List<SessionType>) {
         val broadcastIntent = Intent(context, SessionBroadcastReceiver::class.java)
         broadcastIntent.putExtra(SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY, sessionTypes.size)
         broadcastIntent.action = NUM_OF_SESSION_TYPES_REQUESTED
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
-    }
-
-    internal fun dispose() {
-        activityLifecycleObserver.onStop()
     }
 }

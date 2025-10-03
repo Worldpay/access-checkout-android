@@ -26,7 +26,25 @@ interface AccessCheckoutClient {
      * @param[sessionTypes] Represents a [List] of [com.worldpay.access.checkout.client.session.model.SessionType] that the client would like to retrieve
      */
     fun generateSessions(cardDetails: CardDetails, sessionTypes: List<SessionType>)
+
+
+    /**
+     * Initialises the card details input validation using the provided [ValidationConfig].
+     *
+     * This method sets up validation rules and logic for card input fields, ensuring that
+     * user input is checked according to the configuration specified. It should be called
+     * before any card details are processed to guarantee correct validation behaviour.
+     *
+     * @param validationConfiguration The [ValidationConfig] containing validation rules and settings.
+     */
     fun initialiseValidation(validationConfiguration: ValidationConfig)
+
+    /**
+     * Releases resources and cleans up any state held by the client.
+     *
+     * This method should be called when the client is no longer needed to prevent memory leaks
+     * and ensure proper shutdown of internal processes.
+     */
     fun dispose()
 
 }

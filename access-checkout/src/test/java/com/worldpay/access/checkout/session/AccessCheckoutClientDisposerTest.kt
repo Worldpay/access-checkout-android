@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.session
 
+import com.worldpay.access.checkout.client.AccessCheckoutClientDisposer
 import com.worldpay.access.checkout.client.AccessCheckoutClientImpl
 import org.junit.Test
 import org.mockito.Mockito.mock
@@ -11,7 +12,7 @@ class AccessCheckoutClientDisposerTest {
         val accessCheckoutClient = mock(AccessCheckoutClientImpl::class.java)
         val accessCheckoutClientDisposer = AccessCheckoutClientDisposer()
 
-        accessCheckoutClientDisposer.dispose(accessCheckoutClient)
+        accessCheckoutClientDisposer.initialise(accessCheckoutClient)
 
         verify(accessCheckoutClient).dispose()
     }
