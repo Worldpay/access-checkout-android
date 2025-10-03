@@ -12,7 +12,7 @@ class AccessCheckoutClientDisposerTest {
         val accessCheckoutClient = mock(AccessCheckoutClientImpl::class.java)
         val accessCheckoutClientDisposer = AccessCheckoutClientDisposer()
 
-        accessCheckoutClientDisposer.initialise(accessCheckoutClient)
+        accessCheckoutClientDisposer.dispose(accessCheckoutClient)
 
         verify(accessCheckoutClient).dispose()
     }

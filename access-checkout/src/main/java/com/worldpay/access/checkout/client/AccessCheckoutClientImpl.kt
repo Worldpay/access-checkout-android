@@ -6,7 +6,6 @@ import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.ValidationConfig
-import com.worldpay.access.checkout.client.AccessCheckoutClientDisposer
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
@@ -18,7 +17,9 @@ internal class AccessCheckoutClientImpl(
     private val sessionHandlerFactory: SessionRequestHandlerFactory,
     activityLifecycleObserverInitialiser: ActivityLifecycleObserverInitialiser,
     private val localBroadcastManagerFactory: LocalBroadcastManagerFactory,
-    private val context: Context
+    private val context: Context,
+    override val checkoutId: String,
+    override val baseUrl: String,
 ) : AccessCheckoutClient {
 
     private val activityLifecycleObserver: ActivityLifecycleObserver =
@@ -36,12 +37,12 @@ internal class AccessCheckoutClientImpl(
     }
 
     override fun initialiseValidation(validationConfiguration: ValidationConfig) {
-        AccessCheckoutValidationInitialiser.initialise(validationConfiguration)
+        AccessCheckoutValidationInitialiser.initialise(this, validationConfiguration)
     }
 
     override fun dispose() {
-        AccessCheckoutClientDisposer().initialise(this)
-//        activityLifecycleObserver.onStop()
+        AccessCheckoutClientDisposer().dispose(this)
+        activityLifecycleObserver.onStop()
     }
 
     private fun broadcastSessionTypeInfo(sessionTypes: List<SessionType>) {

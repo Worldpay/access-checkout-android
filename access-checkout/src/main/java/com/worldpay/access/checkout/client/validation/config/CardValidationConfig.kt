@@ -2,7 +2,6 @@ package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
 import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
@@ -18,11 +17,9 @@ class CardValidationConfig private constructor(
     val expiryDate: EditText,
     val cvc: EditText,
     val acceptedCardBrands: Array<String>,
-    val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener,
     val lifecycleOwner: LifecycleOwner,
     val enablePanFormatting: Boolean,
-    val checkoutId: String
 ) : ValidationConfig {
 
     /**
@@ -35,11 +32,9 @@ class CardValidationConfig private constructor(
         private var cvc: EditText? = null
 
         private var acceptedCardBrands: Array<String> = emptyArray()
-        private var baseUrl: String? = null
         private var validationListener: AccessCheckoutCardValidationListener? = null
         private var lifecycleOwner: LifecycleOwner? = null
         private var enablePanFormatting: Boolean = false
-        private var checkoutId: String? = null
 
         /**
          * Sets the pan ui element to be validated
@@ -81,15 +76,6 @@ class CardValidationConfig private constructor(
             return this
         }
 
-        /**
-         * Sets the base url to use when calling Worldpay services
-         *
-         * @param[baseUrl] [String] that represents the base url
-         */
-        fun baseUrl(baseUrl: String): Builder {
-            this.baseUrl = baseUrl
-            return this
-        }
 
         /**
          * Sets the validation listener that should be notified on validation changes
@@ -120,16 +106,6 @@ class CardValidationConfig private constructor(
         }
 
         /**
-         * Sets the checkoutId to use
-         *
-         * @param[checkoutId] [String] that represents the checkoutId
-         */
-        fun checkoutId(checkoutId: String): Builder {
-            this.checkoutId = checkoutId
-            return this
-        }
-
-        /**
          * Builds the validation configuration by returning an instance of the [CardValidationConfig]
          *
          * @return [CardValidationConfig] implementation that can be used to initialise validation
@@ -139,23 +115,18 @@ class CardValidationConfig private constructor(
             validateNotNull(pan, "pan component")
             validateNotNull(expiryDate, "expiry date component")
             validateNotNull(cvc, "cvc component")
-            validateNotNull(baseUrl, "base url")
             validateNotNull(validationListener, "validation listener")
             validateNotNull(lifecycleOwner, "lifecycle owner")
-            validateNotNull(checkoutId, "Checkout Id")
 
-            val sanitisedBaseUrl = sanitise(baseUrl)!!
 
             return CardValidationConfig(
                 pan = pan!!,
                 expiryDate = expiryDate!!,
                 cvc = cvc!!,
                 acceptedCardBrands = acceptedCardBrands,
-                baseUrl = sanitisedBaseUrl,
                 validationListener = validationListener!!,
                 lifecycleOwner = lifecycleOwner!!,
                 enablePanFormatting = enablePanFormatting,
-                checkoutId = checkoutId!!,
             )
         }
     }

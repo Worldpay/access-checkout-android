@@ -14,7 +14,8 @@ import com.worldpay.access.checkout.client.validation.config.ValidationConfig
  * This is the only way to create the instance of the implementation class.
  */
 interface AccessCheckoutClient {
-
+    val checkoutId: String
+    val baseUrl: String
     /**
      * This function allows the generation of a new session for the client to use in the next phase
      * of the payment flow or other supported flow.
@@ -26,7 +27,6 @@ interface AccessCheckoutClient {
      * @param[sessionTypes] Represents a [List] of [com.worldpay.access.checkout.client.session.model.SessionType] that the client would like to retrieve
      */
     fun generateSessions(cardDetails: CardDetails, sessionTypes: List<SessionType>)
-
 
     /**
      * Initialises the card details input validation using the provided [ValidationConfig].
@@ -46,5 +46,4 @@ interface AccessCheckoutClient {
      * and ensure proper shutdown of internal processes.
      */
     fun dispose()
-
 }

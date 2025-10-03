@@ -111,7 +111,9 @@ class AccessCheckoutClientBuilder {
             SessionRequestHandlerFactory(sessionRequestHandlerConfig),
             activityLifecycleObserverInitialiser,
             localBroadcastManagerFactory,
-            context!!
+            context!!,
+            checkoutId!!,
+            baseUrl!!
         )
     }
 
