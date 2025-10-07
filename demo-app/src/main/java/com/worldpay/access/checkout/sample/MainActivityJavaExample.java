@@ -5,22 +5,18 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ProgressBar;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-
-import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException;
 import com.worldpay.access.checkout.client.AccessCheckoutClient;
 import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder;
+import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException;
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener;
 import com.worldpay.access.checkout.client.session.model.CardDetails;
 import com.worldpay.access.checkout.client.session.model.SessionType;
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser;
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig;
 import com.worldpay.access.checkout.sample.card.CardValidationListener;
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText;
-
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -39,6 +35,14 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
     private Button submit;
     private ConstraintLayout contentLayout;
     private ProgressBar loadingBar;
+
+    private final AccessCheckoutClient accessCheckoutClient = new AccessCheckoutClientBuilder()
+            .baseUrl(getBaseUrl())
+            .checkoutId(getCheckoutId())
+            .sessionResponseListener(this)
+            .context(getApplicationContext())
+            .lifecycleOwner(this)
+            .build();
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,7 +64,6 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
 
         initialisePaymentFlow();
     }
-
 
     @Override
     public void onSuccess(@NotNull Map<SessionType, String> sessionResponseMap) {
@@ -124,26 +127,16 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
         CardValidationListener cardValidationListener = new CardValidationListener(this);
 
         CardValidationConfig cardValidationConfig = new CardValidationConfig.Builder()
-                .baseUrl(getBaseUrl())
-                .checkoutId(getCheckoutId())
                 .pan(panText)
                 .expiryDate(expiryText)
                 .cvc(cvcText)
                 .validationListener(cardValidationListener)
                 .build();
 
-        AccessCheckoutValidationInitialiser.initialise(cardValidationConfig);
+        accessCheckoutClient.initialiseValidation(cardValidationConfig);
     }
 
     private void initialisePaymentFlow() {
-        final AccessCheckoutClient accessCheckoutClient = new AccessCheckoutClientBuilder()
-                .baseUrl(getBaseUrl())
-                .checkoutId(getCheckoutId())
-                .sessionResponseListener(this)
-                .context(getApplicationContext())
-                .lifecycleOwner(this)
-                .build();
-
         submit.setOnClickListener(view -> {
             Log.d("MainActivityJavaExample", "Started request");
             loading = true;
@@ -177,5 +170,4 @@ public class MainActivityJavaExample extends AppCompatActivity implements Sessio
             contentLayout.setAlpha(1.0f);
         }
     }
-
 }
