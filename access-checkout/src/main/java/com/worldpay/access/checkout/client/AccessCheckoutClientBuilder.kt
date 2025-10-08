@@ -3,15 +3,15 @@ package com.worldpay.access.checkout.client
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
-import com.worldpay.access.checkout.client.session.BaseUrlSanitiser
+import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
-import com.worldpay.access.checkout.client.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactory
 import com.worldpay.access.checkout.util.PropertyValidationUtil
+import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
  * A builder that returns an [AccessCheckoutClient] for the client to use for session generation
@@ -32,7 +32,7 @@ class AccessCheckoutClientBuilder {
      * @param[baseUrl] [String] that represents the base url
      */
     fun baseUrl(baseUrl: String): AccessCheckoutClientBuilder {
-        this.baseUrl = BaseUrlSanitiser.sanitise(baseUrl)
+        this.baseUrl = sanitise(baseUrl)
         return this
     }
 
@@ -87,13 +87,13 @@ class AccessCheckoutClientBuilder {
      * @throws [AccessCheckoutException] is thrown when a property is missing
      */
     fun build(): AccessCheckoutClient {
-        PropertyValidationUtil.validateNotNull(baseUrl, "base url")
-        PropertyValidationUtil.validateNotNull(checkoutId, "checkout id")
-        PropertyValidationUtil.validateNotNull(context, "context")
-        PropertyValidationUtil.validateNotNull(externalSessionResponseListener, "session response listener")
-        PropertyValidationUtil.validateNotNull(lifecycleOwner, "lifecycle owner")
+        validateNotNull(baseUrl, "base url")
+        validateNotNull(checkoutId, "checkout id")
+        validateNotNull(context, "context")
+        validateNotNull(externalSessionResponseListener, "session response listener")
+        validateNotNull(lifecycleOwner, "lifecycle owner")
 
-        ApiDiscoveryClient.Companion.initialise(baseUrl!!)
+        ApiDiscoveryClient.initialise(baseUrl!!)
 
         val sessionRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
             .checkoutId(checkoutId!!)
