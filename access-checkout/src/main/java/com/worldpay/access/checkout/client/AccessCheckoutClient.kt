@@ -14,8 +14,6 @@ import com.worldpay.access.checkout.client.validation.config.ValidationConfig
  * This is the only way to create the instance of the implementation class.
  */
 interface AccessCheckoutClient {
-    val checkoutId: String
-    val baseUrl: String
     /**
      * This function allows the generation of a new session for the client to use in the next phase
      * of the payment flow or other supported flow.

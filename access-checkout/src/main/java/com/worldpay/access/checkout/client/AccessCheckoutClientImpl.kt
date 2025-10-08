@@ -18,8 +18,8 @@ internal class AccessCheckoutClientImpl(
     activityLifecycleObserverInitialiser: ActivityLifecycleObserverInitialiser,
     private val localBroadcastManagerFactory: LocalBroadcastManagerFactory,
     private val context: Context,
-    override val checkoutId: String,
-    override val baseUrl: String,
+    private val checkoutId: String,
+    private val baseUrl: String,
 ) : AccessCheckoutClient {
 
     private val activityLifecycleObserver: ActivityLifecycleObserver =
@@ -37,12 +37,11 @@ internal class AccessCheckoutClientImpl(
     }
 
     override fun initialiseValidation(validationConfiguration: ValidationConfig) {
-        AccessCheckoutValidationInitialiser.initialise(this, validationConfiguration)
+        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, validationConfiguration)
     }
 
     override fun dispose() {
         AccessCheckoutClientDisposer().dispose(this)
-        activityLifecycleObserver.onStop()
     }
 
     private fun broadcastSessionTypeInfo(sessionTypes: List<SessionType>) {
@@ -50,5 +49,9 @@ internal class AccessCheckoutClientImpl(
         broadcastIntent.putExtra(SessionBroadcastReceiver.Companion.NUMBER_OF_SESSION_TYPE_KEY, sessionTypes.size)
         broadcastIntent.action = NUM_OF_SESSION_TYPES_REQUESTED
         localBroadcastManagerFactory.createInstance().sendBroadcast(broadcastIntent)
+    }
+
+    internal fun disposeInternal() {
+        activityLifecycleObserver.onStop()
     }
 }

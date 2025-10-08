@@ -40,6 +40,8 @@ class AccessCheckoutClientImplTest {
     private val tokenHandlerFactoryMock = mock<SessionRequestHandlerFactory>()
     private val activityLifecycleObserverInitialiser =
         mock<ActivityLifecycleObserverInitialiser>()
+    private val baseUrl = "base url"
+    private val checkoutId = "checkout id"
 
     @Before
     fun setup() {
@@ -58,7 +60,9 @@ class AccessCheckoutClientImplTest {
                 tokenHandlerFactoryMock,
                 activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
-                contextMock
+                contextMock,
+                checkoutId,
+                baseUrl,
             )
         assertNotNull(accessCheckoutClient)
     }
@@ -74,7 +78,9 @@ class AccessCheckoutClientImplTest {
                 tokenHandlerFactoryMock,
                 activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
-                contextMock
+                contextMock,
+                checkoutId,
+                baseUrl,
             )
 
         val cardDetails = CardDetails.Builder()
@@ -101,7 +107,9 @@ class AccessCheckoutClientImplTest {
             tokenHandlerFactoryMock,
             activityLifecycleObserverInitialiser,
             localBroadcastManagerFactoryMock,
-            contextMock
+            contextMock,
+            checkoutId,
+            baseUrl,
         )
 
         verify(activityLifecycleObserverInitialiser).initialise()
@@ -126,7 +134,9 @@ class AccessCheckoutClientImplTest {
                 tokenHandlerFactoryMock,
                 activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
-                contextMock
+                contextMock,
+                checkoutId,
+                baseUrl,
             )
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
@@ -151,7 +161,9 @@ class AccessCheckoutClientImplTest {
                 tokenHandlerFactoryMock,
                 activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
-                contextMock
+                contextMock,
+                checkoutId,
+                baseUrl,
             )
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
@@ -181,7 +193,9 @@ class AccessCheckoutClientImplTest {
                 tokenHandlerFactoryMock,
                 activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
-                contextMock
+                contextMock,
+                checkoutId,
+                baseUrl,
             )
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
@@ -208,7 +222,9 @@ class AccessCheckoutClientImplTest {
                 tokenHandlerFactoryMock,
                 activityLifecycleObserverInitialiser,
                 localBroadcastManagerFactoryMock,
-                contextMock
+                contextMock,
+                checkoutId,
+                baseUrl,
             )
 
         accessCheckoutClient.generateSessions(cardDetails, emptyList())
@@ -227,7 +243,9 @@ class AccessCheckoutClientImplTest {
             tokenHandlerFactoryMock,
             activityLifecycleObserverInitialiser,
             localBroadcastManagerFactoryMock,
-            contextMock
+            contextMock,
+            checkoutId,
+            baseUrl,
         )
 
         accessCheckoutClient.dispose()

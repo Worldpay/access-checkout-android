@@ -14,6 +14,6 @@ class AccessCheckoutClientDisposerTest {
 
         accessCheckoutClientDisposer.dispose(accessCheckoutClient)
 
-        verify(accessCheckoutClient).dispose()
+        verify(accessCheckoutClient).disposeInternal()
     }
 }

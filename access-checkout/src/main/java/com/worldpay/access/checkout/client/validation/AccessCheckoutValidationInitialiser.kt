@@ -35,19 +35,20 @@ internal object AccessCheckoutValidationInitialiser {
      */
     @JvmStatic
     internal fun initialise(
-        accessCheckoutClient: AccessCheckoutClient,
+        checkoutId: String,
+        baseUrl: String,
         validationConfig: ValidationConfig,
     ) {
 
         if (validationConfig is CardValidationConfig) {
             initialiseCardValidation(
                 validationConfig,
-                accessCheckoutClient.checkoutId,
-                accessCheckoutClient.baseUrl
+                checkoutId,
+                baseUrl
             )
 
             CoroutineScope(Dispatchers.IO).launch {
-                ApiDiscoveryClient.initialise(accessCheckoutClient.baseUrl)
+                ApiDiscoveryClient.initialise(baseUrl)
 
                 try {
                     ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
