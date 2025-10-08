@@ -20,6 +20,7 @@ internal class AccessCheckoutClientImpl(
     private val context: Context,
     private val checkoutId: String,
     private val baseUrl: String,
+    private val accessCheckoutClientDisposer: AccessCheckoutClientDisposer
 ) : AccessCheckoutClient {
 
     private val activityLifecycleObserver: ActivityLifecycleObserver =
@@ -41,7 +42,7 @@ internal class AccessCheckoutClientImpl(
     }
 
     override fun dispose() {
-        AccessCheckoutClientDisposer().dispose(this)
+        accessCheckoutClientDisposer.dispose(this)
     }
 
     private fun broadcastSessionTypeInfo(sessionTypes: List<SessionType>) {

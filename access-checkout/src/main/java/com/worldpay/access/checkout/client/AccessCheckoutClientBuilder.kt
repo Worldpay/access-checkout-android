@@ -107,13 +107,16 @@ class AccessCheckoutClientBuilder {
             externalSessionResponseListener!!
         )
 
+        val accessCheckoutClientDisposer = AccessCheckoutClientDisposer()
+
         return AccessCheckoutClientImpl(
             SessionRequestHandlerFactory(sessionRequestHandlerConfig),
             activityLifecycleObserverInitialiser,
             localBroadcastManagerFactory,
             context!!,
             checkoutId!!,
-            baseUrl!!
+            baseUrl!!,
+            accessCheckoutClientDisposer
         )
     }
 

@@ -70,7 +70,7 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
         val expectedKey2InDiscoveryCache = "service:sessions,sessions:paymentsCvc"
         val expectedKey3InDiscoveryCache = "cardBinPublic:binDetails"
 
-        AccessCheckoutValidationInitialiser.initialise(cardValidationConfig())
+        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, cardValidationConfig())
 
         await().atMost(timeout, SECONDS).until {
             DiscoveryCache.results.size == 3
@@ -85,7 +85,7 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
         // we do not stub the service discovery responses to simulate a failure to discover services
         WireMock.removeAllMappings()
 
-        AccessCheckoutValidationInitialiser.initialise(cardValidationConfig())
+        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, cardValidationConfig())
 
         await()
             // waits for 1 second (at which point the service discovery has already
@@ -100,11 +100,11 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
     }
 
     private fun cardValidationConfig(): CardValidationConfig {
-        return CardValidationConfig.Builder().baseUrl(baseUrl)
+        return CardValidationConfig.Builder()
             .pan(pan)
             .expiryDate(expiryDate)
             .cvc(cvc)
             .validationListener(TestValidationListener()).lifecycleOwner(TestLifecycleOwner())
-            .checkoutId(checkoutId).build()
+            .build()
     }
 }

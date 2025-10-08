@@ -5,26 +5,32 @@ import android.content.Intent
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
+import com.worldpay.access.checkout.client.AccessCheckoutClientDisposer
+import com.worldpay.access.checkout.client.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.client.session.model.SessionType.CVC
-import com.worldpay.access.checkout.client.AccessCheckoutClientImpl
+import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
+import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
+import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.session.ActivityLifecycleObserver
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.NUM_OF_SESSION_TYPES_REQUESTED
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import com.worldpay.access.checkout.testutils.createAccessCheckoutEditTextMock
-import kotlin.test.assertEquals
+import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import org.junit.Assert.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
+import org.mockito.Mockito
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
+import kotlin.test.assertEquals
 
 @RunWith(PlainRobolectricTestRunner::class)
 class AccessCheckoutClientImplTest {
@@ -42,6 +48,7 @@ class AccessCheckoutClientImplTest {
         mock<ActivityLifecycleObserverInitialiser>()
     private val baseUrl = "base url"
     private val checkoutId = "checkout id"
+    private val accessCheckoutClientDisposer = mock<AccessCheckoutClientDisposer>()
 
     @Before
     fun setup() {
@@ -63,6 +70,7 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
+                accessCheckoutClientDisposer
             )
         assertNotNull(accessCheckoutClient)
     }
@@ -81,6 +89,7 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
+                accessCheckoutClientDisposer
             )
 
         val cardDetails = CardDetails.Builder()
@@ -110,6 +119,7 @@ class AccessCheckoutClientImplTest {
             contextMock,
             checkoutId,
             baseUrl,
+            accessCheckoutClientDisposer
         )
 
         verify(activityLifecycleObserverInitialiser).initialise()
@@ -137,6 +147,7 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
+                accessCheckoutClientDisposer
             )
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
@@ -164,6 +175,7 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
+                accessCheckoutClientDisposer
             )
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
@@ -196,6 +208,7 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
+                accessCheckoutClientDisposer
             )
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
@@ -225,6 +238,7 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
+                accessCheckoutClientDisposer
             )
 
         accessCheckoutClient.generateSessions(cardDetails, emptyList())
@@ -234,7 +248,29 @@ class AccessCheckoutClientImplTest {
     }
 
     @Test
-    fun `should call activityLifeCycleObserver onStop() when dispose() is called`() {
+    fun `should call activityLifeCycleObserver onStop() when disposeInternal() is called`() {
+        val activityLifecycleObserver = mock<ActivityLifecycleObserver>()
+        given(activityLifecycleObserverInitialiser.initialise()).willReturn(
+            activityLifecycleObserver
+        )
+
+        val accessCheckoutClient = AccessCheckoutClientImpl(
+            tokenHandlerFactoryMock,
+            activityLifecycleObserverInitialiser,
+            localBroadcastManagerFactoryMock,
+            contextMock,
+            checkoutId,
+            baseUrl,
+            accessCheckoutClientDisposer
+        )
+
+        accessCheckoutClient.disposeInternal()
+
+        verify(activityLifecycleObserver).onStop()
+    }
+
+    @Test
+    fun `should call accessCheckoutClientDisposer dispose() when dispose() is called`() {
         val activityLifecycleObserver = mock<ActivityLifecycleObserver>()
         given(activityLifecycleObserverInitialiser.initialise()).willReturn(
             activityLifecycleObserver
@@ -246,10 +282,35 @@ class AccessCheckoutClientImplTest {
             contextMock,
             checkoutId,
             baseUrl,
+            accessCheckoutClientDisposer
         )
 
         accessCheckoutClient.dispose()
 
-        verify(activityLifecycleObserver).onStop()
+        verify(accessCheckoutClientDisposer).dispose(accessCheckoutClient)
+    }
+
+    @Test
+    fun `should call AccessCheckoutValidationInitialiser initialise with checkout, base url and config when initialiseValidation is called`() {
+        val mockValidation = Mockito.mockStatic(AccessCheckoutValidationInitialiser::class.java)
+
+        val mockConfig = mock<CardValidationConfig>()
+        val accessCheckoutClient = AccessCheckoutClientImpl(
+            tokenHandlerFactoryMock,
+            activityLifecycleObserverInitialiser,
+            localBroadcastManagerFactoryMock,
+            contextMock,
+            checkoutId,
+            baseUrl,
+            accessCheckoutClientDisposer
+        )
+
+        accessCheckoutClient.initialiseValidation(mockConfig)
+
+        mockValidation.use {
+            it.verify {
+                AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, mockConfig)
+            }
+        }
     }
 }
