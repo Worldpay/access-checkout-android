@@ -17,18 +17,19 @@ import org.mockito.kotlin.mock
 import org.robolectric.RobolectricTestRunner
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
-import kotlin.test.assertTrue
 
 @RunWith(RobolectricTestRunner::class)
 class AccessCheckoutValidationInitialiserTest : AbstractValidationIntegrationTest() {
 
     private val acceptedCardBrands = arrayOf("VISA")
 
-    private val baseUrl = "https://localhost:8443"
     private val cvcValidationListener: AccessCheckoutCvcValidationListener = mock()
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
+
+    private val baseUrl = "https://localhost:8443"
     private val checkoutId = "checkout id"
+
 
     @Before
     fun setUp() {
@@ -38,21 +39,19 @@ class AccessCheckoutValidationInitialiserTest : AbstractValidationIntegrationTes
     @Test
     fun `should be able to initialise the validation for card validation`() {
         val config = CardValidationConfig.Builder()
-            .baseUrl(baseUrl)
             .pan(pan)
             .expiryDate(expiryDate)
             .cvc(cvc)
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(cardValidationListener)
             .lifecycleOwner(lifecycleOwner)
-            .checkoutId(checkoutId)
             .build()
 
         assertEquals(0, pan.filters.size)
         assertEquals(0, expiryDate.filters.size)
         assertEquals(0, cvc.filters.size)
 
-        AccessCheckoutValidationInitialiser.initialise(config)
+        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, config)
 
         assertNotNull(pan.filters.any { it is PanNumericFilter })
         assertNotNull(expiryDate.filters.any { it is ExpiryDateLengthFilter })
@@ -70,7 +69,7 @@ class AccessCheckoutValidationInitialiserTest : AbstractValidationIntegrationTes
 
         assertEquals(0, cvc.filters.size)
 
-        AccessCheckoutValidationInitialiser.initialise(config)
+        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, config)
 
         assertNotNull(cvc.filters.any { it is CvcLengthFilter })
     }

@@ -12,9 +12,11 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.test.core.app.ApplicationProvider
 import com.github.tomakehurst.wiremock.WireMockServer
 import com.worldpay.access.checkout.BaseCoroutineTest
+import com.worldpay.access.checkout.client.AccessCheckoutClient
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
 import com.worldpay.access.checkout.client.testutil.mocks.AccessWPServiceMock
 import com.worldpay.access.checkout.client.testutil.mocks.CardBinServiceMock
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -48,12 +50,16 @@ open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
     private lateinit var accessMockServer: MockWebServer
     private lateinit var cardBinServer: WireMockServer
 
+    private val sessionResponseListener = mock<SessionResponseListener>()
+    protected lateinit var accessCheckoutClient: AccessCheckoutClient
+
     @BeforeTest
     fun baseSetUp() {
         context = ApplicationProvider.getApplicationContext<Context>()
         resetValidation()
         HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
         setupMockServices()
+        createAccessCheckoutClient(context)
     }
 
     private fun setupMockServices(): Pair<MockWebServer, WireMockServer> {
@@ -80,16 +86,12 @@ open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
     ) {
         resetValidation()
 
-        val url = accessMockServer.url("/")
-
         val cardValidationConfig = CardValidationConfig.Builder()
             .pan(pan)
             .cvc(cvc)
             .expiryDate(expiryDate)
             .validationListener(cardValidationListener)
-            .baseUrl(url.toString())
             .lifecycleOwner(lifecycleOwner)
-            .checkoutId("INTEGRATION-TEST")
 
         if (enablePanFormatting) {
             cardValidationConfig.enablePanFormatting()
@@ -99,9 +101,7 @@ open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
             cardValidationConfig.acceptedCardBrands(acceptedCardBrands)
         }
 
-        AccessCheckoutValidationInitialiser.initialise(
-            cardValidationConfig.build()
-        )
+        accessCheckoutClient.initialiseValidation(cardValidationConfig.build())
     }
 
     private fun resetValidation() {
@@ -180,5 +180,17 @@ open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
         editAction()
         testScheduler.advanceUntilIdle() //Complete edit action co-routines
         shadowOf(getMainLooper()).idle() //Execute all tasks in main looper
+    }
+
+    private fun createAccessCheckoutClient(context: Context) {
+        val baseUrl = accessMockServer.url("/").toString()
+
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(baseUrl)
+            .checkoutId("INTEGRATION-TEST")
+            .sessionResponseListener(sessionResponseListener)
+            .context(context)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
     }
 }

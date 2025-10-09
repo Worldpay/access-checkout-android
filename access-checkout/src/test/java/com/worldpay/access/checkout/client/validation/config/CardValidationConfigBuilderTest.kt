@@ -23,10 +23,8 @@ class CardValidationConfigBuilderTest {
 
     private val acceptedCardBrands =
         arrayOf("AMEX", "DINERS", "DISCOVER", "JCB", "MAESTRO", "MASTERCARD", "VISA")
-    private val baseUrl = "https://localhost:8443"
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
     private val lifecycleOwner = mock<LifecycleOwner>()
-    private val checkoutId = "checkout id"
 
     @Before
     fun setUp() {
@@ -38,18 +36,15 @@ class CardValidationConfigBuilderTest {
     @Test
     fun `should build card validation config with pan formatting disabled by default`() {
         val config = CardValidationConfig.Builder()
-            .baseUrl(baseUrl)
             .pan(pan)
             .expiryDate(expiryDate)
             .cvc(cvc)
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
-            .checkoutId(checkoutId)
             .build()
 
         assertNotNull(config)
-        assertEquals(baseUrl, config.baseUrl)
         assertEquals(panInternalEditText, config.pan)
         assertEquals(expiryDateInternalEditText, config.expiryDate)
         assertEquals(cvcInternalEditText, config.cvc)
@@ -59,35 +54,16 @@ class CardValidationConfigBuilderTest {
     }
 
     @Test
-    fun `should build card validation config while sanitising baseurl`() {
-        val baseUrlWithTrailingSlash = "$baseUrl/"
-        val config = CardValidationConfig.Builder()
-            .baseUrl(baseUrlWithTrailingSlash)
-            .pan(pan)
-            .expiryDate(expiryDate)
-            .cvc(cvc)
-            .validationListener(validationListener)
-            .lifecycleOwner(lifecycleOwner)
-            .checkoutId(checkoutId)
-            .build()
-
-        assertEquals(baseUrl, config.baseUrl)
-    }
-
-    @Test
     fun `should not throw any exceptions if accepted card brands is not called in the builder and defaults to empty array`() {
         val config = CardValidationConfig.Builder()
-            .baseUrl(baseUrl)
             .pan(pan)
             .expiryDate(expiryDate)
             .cvc(cvc)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
-            .checkoutId(checkoutId)
             .build()
 
         assertNotNull(config)
-        assertEquals(baseUrl, config.baseUrl)
         assertEquals(panInternalEditText, config.pan)
         assertEquals(expiryDateInternalEditText, config.expiryDate)
         assertEquals(cvcInternalEditText, config.cvc)
@@ -96,27 +72,9 @@ class CardValidationConfigBuilderTest {
     }
 
     @Test
-    fun `should throw exception where base url is not provided`() {
-        val exception = assertFailsWith<AccessCheckoutException> {
-            CardValidationConfig.Builder()
-                .pan(pan)
-                .expiryDate(expiryDate)
-                .cvc(cvc)
-                .acceptedCardBrands(acceptedCardBrands)
-                .validationListener(validationListener)
-                .lifecycleOwner(lifecycleOwner)
-                .checkoutId(checkoutId)
-                .build()
-        }
-
-        assertEquals("Expected base url to be provided but was not", exception.message)
-    }
-
-    @Test
     fun `should throw exception where pan is not provided`() {
         val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
-                .baseUrl(baseUrl)
                 .expiryDate(expiryDate)
                 .cvc(cvc)
                 .acceptedCardBrands(acceptedCardBrands)
@@ -132,7 +90,6 @@ class CardValidationConfigBuilderTest {
     fun `should throw exception where expiry date is not provided`() {
         val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
-                .baseUrl(baseUrl)
                 .pan(pan)
                 .cvc(cvc)
                 .acceptedCardBrands(acceptedCardBrands)
@@ -148,7 +105,6 @@ class CardValidationConfigBuilderTest {
     fun `should throw exception where cvc is not provided`() {
         val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
-                .baseUrl(baseUrl)
                 .pan(pan)
                 .expiryDate(expiryDate)
                 .acceptedCardBrands(acceptedCardBrands)
@@ -164,7 +120,6 @@ class CardValidationConfigBuilderTest {
     fun `should throw exception where validation listener is not provided`() {
         val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
-                .baseUrl(baseUrl)
                 .pan(pan)
                 .expiryDate(expiryDate)
                 .cvc(cvc)
@@ -180,7 +135,6 @@ class CardValidationConfigBuilderTest {
     fun `should throw exception where lifecycle owner is not provided`() {
         val exception = assertFailsWith<AccessCheckoutException> {
             CardValidationConfig.Builder()
-                .baseUrl(baseUrl)
                 .pan(pan)
                 .expiryDate(expiryDate)
                 .cvc(cvc)
@@ -195,19 +149,16 @@ class CardValidationConfigBuilderTest {
     @Test
     fun `should be able to call enable pan number formatting`() {
         val config = CardValidationConfig.Builder()
-            .baseUrl(baseUrl)
             .pan(pan)
             .expiryDate(expiryDate)
             .cvc(cvc)
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(validationListener)
             .lifecycleOwner(lifecycleOwner)
-            .checkoutId(checkoutId)
             .enablePanFormatting()
             .build()
 
         assertNotNull(config)
-        assertEquals(baseUrl, config.baseUrl)
         assertEquals(panInternalEditText, config.pan)
         assertEquals(expiryDateInternalEditText, config.expiryDate)
         assertEquals(cvcInternalEditText, config.cvc)

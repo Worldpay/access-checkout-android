@@ -6,12 +6,15 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.fragment.app.Fragment
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
+import androidx.fragment.app.FragmentActivity
+import com.worldpay.access.checkout.client.AccessCheckoutClient
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.RestrictedCardValidationListener
+import com.worldpay.access.checkout.sample.card.SessionResponseListenerImpl
 import com.worldpay.access.checkout.sample.images.SVGImageLoader
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 
@@ -23,6 +26,8 @@ class RestrictedCardFlowFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
 
     private lateinit var cardValidationListener: AccessCheckoutCardValidationListener
+
+    private lateinit var accessCheckoutClient: AccessCheckoutClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,6 +50,8 @@ class RestrictedCardFlowFragment : Fragment() {
             val brandImageView = view.findViewById<ImageView>(R.id.restricted_card_flow_brand_logo)
             SVGImageLoader.getInstance(activity).fetchAndApplyCardLogo(null, brandImageView)
 
+            createAccessCheckoutClient(activity)
+
             cardValidationListener = RestrictedCardValidationListener(activity)
         }
     }
@@ -62,19 +69,27 @@ class RestrictedCardFlowFragment : Fragment() {
         cardValidationListener: AccessCheckoutCardValidationListener
     ) {
         val cardValidationConfig = CardValidationConfig.Builder()
-            .baseUrl(getBaseUrl())
             .pan(panText)
             .expiryDate(expiryText)
             .cvc(cvcText)
             .acceptedCardBrands(arrayOf("visa", "mastercard", "amex"))
             .validationListener(cardValidationListener)
             .lifecycleOwner(this)
-            .checkoutId(getCheckoutId())
             .build()
 
-        AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
+        accessCheckoutClient.initialiseValidation(cardValidationConfig)
     }
 
     private fun getBaseUrl() = getString(R.string.endpoint)
     private fun getCheckoutId() = BuildConfig.CHECKOUT_ID
+    
+    private fun createAccessCheckoutClient(activity: FragmentActivity) {
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(getBaseUrl())
+            .checkoutId(getCheckoutId())
+            .sessionResponseListener(SessionResponseListenerImpl(activity, progressBar))
+            .context(activity.applicationContext)
+            .lifecycleOwner(this)
+            .build()
+    }
 }

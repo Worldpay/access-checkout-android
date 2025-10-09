@@ -1,16 +1,16 @@
-package com.worldpay.access.checkout.client.session
+package com.worldpay.access.checkout.client
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
-import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactory
+import com.worldpay.access.checkout.util.PropertyValidationUtil
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
@@ -107,11 +107,16 @@ class AccessCheckoutClientBuilder {
             externalSessionResponseListener!!
         )
 
+        val accessCheckoutClientDisposer = AccessCheckoutClientDisposer()
+
         return AccessCheckoutClientImpl(
             SessionRequestHandlerFactory(sessionRequestHandlerConfig),
             activityLifecycleObserverInitialiser,
             localBroadcastManagerFactory,
-            context!!
+            context!!,
+            checkoutId!!,
+            baseUrl!!,
+            accessCheckoutClientDisposer
         )
     }
 

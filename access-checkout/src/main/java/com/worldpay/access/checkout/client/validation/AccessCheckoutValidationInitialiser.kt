@@ -4,6 +4,7 @@ import android.util.Log
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
+import com.worldpay.access.checkout.client.AccessCheckoutClient
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
@@ -24,7 +25,7 @@ import java.net.URL
 /**
  * Class that is responsible for initialising validation using a given [ValidationConfig]
  */
-object AccessCheckoutValidationInitialiser {
+internal object AccessCheckoutValidationInitialiser {
 
     /**
      * This function should be used when wanting to initialise the validation using the [ValidationConfig]
@@ -33,14 +34,21 @@ object AccessCheckoutValidationInitialiser {
      * @param[validationConfig] [ValidationConfig] represents the configuration that should be used to initialise validation
      */
     @JvmStatic
-    fun initialise(
+    internal fun initialise(
+        checkoutId: String,
+        baseUrl: String,
         validationConfig: ValidationConfig,
     ) {
+
         if (validationConfig is CardValidationConfig) {
-            initialiseCardValidation(validationConfig)
+            initialiseCardValidation(
+                validationConfig,
+                checkoutId,
+                baseUrl
+            )
 
             CoroutineScope(Dispatchers.IO).launch {
-                ApiDiscoveryClient.initialise(validationConfig.baseUrl)
+                ApiDiscoveryClient.initialise(baseUrl)
 
                 try {
                     ApiDiscoveryClient.discoverEndpoint(DiscoverLinks.cardSessions)
@@ -57,6 +65,8 @@ object AccessCheckoutValidationInitialiser {
 
     private fun initialiseCardValidation(
         validationConfig: CardValidationConfig,
+        checkoutId: String,
+        baseUrl: String,
     ) {
         val resultHandlerFactory = ResultHandlerFactory(
             accessCheckoutValidationListener = validationConfig.validationListener,
@@ -83,7 +93,7 @@ object AccessCheckoutValidationInitialiser {
             validationConfig.cvc,
             validationConfig.acceptedCardBrands,
             validationConfig.enablePanFormatting,
-            validationConfig.checkoutId,
+            checkoutId,
         )
 
         val expiryDateFieldDecorator =
@@ -93,7 +103,7 @@ object AccessCheckoutValidationInitialiser {
 
 
         CardConfigurationProvider.initialise(
-            cardConfigurationClient = CardConfigurationClient(URL(validationConfig.baseUrl)),
+            cardConfigurationClient = CardConfigurationClient(URL(baseUrl)),
             observers = listOf(panFieldDecorator, expiryDateFieldDecorator, cvcFieldDecorator)
         )
         panFieldDecorator.decorate()

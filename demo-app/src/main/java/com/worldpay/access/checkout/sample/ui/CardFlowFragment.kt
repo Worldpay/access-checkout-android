@@ -10,12 +10,12 @@ import android.widget.ImageView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.AccessCheckoutClient
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.session.model.SessionType.CARD
 import com.worldpay.access.checkout.client.session.model.SessionType.CVC
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
@@ -36,6 +36,8 @@ class CardFlowFragment : Fragment() {
     private lateinit var sessionTypes: List<SessionType>
 
     private lateinit var cardValidationListener: CardValidationListener
+
+    private lateinit var accessCheckoutClient: AccessCheckoutClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -64,7 +66,9 @@ class CardFlowFragment : Fragment() {
 
             cardValidationListener = CardValidationListener(activity)
 
-            initialisePaymentFlow(activity, view)
+            createAccessCheckoutClient(activity)
+
+            initialisePaymentFlow(view)
         }
     }
 
@@ -93,15 +97,7 @@ class CardFlowFragment : Fragment() {
         }
     }
 
-    private fun initialisePaymentFlow(activity: FragmentActivity, view: View) {
-        val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(getBaseUrl())
-            .checkoutId(getCheckoutId())
-            .sessionResponseListener(SessionResponseListenerImpl(activity, progressBar))
-            .context(activity.applicationContext)
-            .lifecycleOwner(this)
-            .build()
-
+    private fun initialisePaymentFlow(view: View) {
         view.findViewById<Button>(R.id.card_flow_btn_submit).setOnClickListener {
             Log.d(javaClass.simpleName, "Started request")
             this.progressBar.beginLoading()
@@ -120,17 +116,15 @@ class CardFlowFragment : Fragment() {
 
     private fun initialiseCardValidation(cardValidationListener: CardValidationListener) {
         val cardValidationConfig = CardValidationConfig.Builder()
-            .baseUrl(getBaseUrl())
             .pan(panText)
             .expiryDate(expiryText)
             .cvc(cvcText)
             .validationListener(cardValidationListener)
             .lifecycleOwner(this)
-            .checkoutId(getCheckoutId())
             .enablePanFormatting()
             .build()
 
-        AccessCheckoutValidationInitialiser.initialise(cardValidationConfig)
+        accessCheckoutClient.initialiseValidation(cardValidationConfig)
     }
 
     private fun disableFields() {
@@ -143,4 +137,14 @@ class CardFlowFragment : Fragment() {
     private fun getCheckoutId() = BuildConfig.CHECKOUT_ID
 
     private fun getBaseUrl() = getString(R.string.endpoint)
+
+    private fun createAccessCheckoutClient(activity: FragmentActivity) {
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(getBaseUrl())
+            .checkoutId(getCheckoutId())
+            .sessionResponseListener(SessionResponseListenerImpl(activity, progressBar))
+            .context(activity.applicationContext)
+            .lifecycleOwner(this)
+            .build()
+    }
 }
