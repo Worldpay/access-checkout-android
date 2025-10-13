@@ -35,7 +35,7 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
         runTest {
             setText(pan, visaPan())
             verify(cardValidationListener, timeout(1000)).onPanValidated(true)
-            verify(cardValidationListener, timeout(1000)).onBrandsChange(listOf(visaCard))
+            verify(cardValidationListener, timeout(1000)).onCardBrandsChanged(listOf(visaCard))
 
             setText(cvc, "1234")
             verify(cardValidationListener).onCvcValidated(true)
@@ -53,11 +53,11 @@ class ValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
         setText(pan, AMEX_PAN)
         verify(cardValidationListener).onCvcValidated(false)
-        verify(cardValidationListener).onBrandsChange(listOf(amexCardBrand))
+        verify(cardValidationListener).onCardBrandsChanged(listOf(amexCardBrand))
 
         reset(cardValidationListener)
         setText(pan, visaPan())
-        verify(cardValidationListener).onBrandsChange(listOf(toCardBrand(VISA_BRAND)))
+        verify(cardValidationListener).onCardBrandsChanged(listOf(toCardBrand(VISA_BRAND)))
         verify(cardValidationListener).onCvcValidated(true)
 
     }

@@ -31,7 +31,7 @@ class CardValidationListener(private val activity: FragmentActivity) :
         if (!isValid) submitButton.disable()
     }
 
-    override fun onBrandsChange(cardBrands: List<CardBrand>) {
+    override fun onCardBrandsChanged(cardBrands: List<CardBrand>) {
         // Set the text of the list of card brands to the text view
         val cardBrandList = cardBrands.joinToString(", ") { it.name }
         setCardBrandText(cardBrandList)

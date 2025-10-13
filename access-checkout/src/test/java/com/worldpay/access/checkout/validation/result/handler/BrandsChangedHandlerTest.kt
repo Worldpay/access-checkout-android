@@ -30,7 +30,7 @@ class BrandsChangedHandlerTest {
     @Test
     fun `should notify brand changed when emptylist is passed`() {
         brandsChangedHandler.handle(emptyList())
-        verify(validationListener).onBrandsChange(emptyList())
+        verify(validationListener).onCardBrandsChanged(emptyList())
     }
 
     @Test
@@ -42,7 +42,7 @@ class BrandsChangedHandlerTest {
         val remoteBrands = listOf(remoteCardBrand)
         brandsChangedHandler.handle(remoteBrands)
 
-        verify(validationListener).onBrandsChange(listOf(cardBrand))
+        verify(validationListener).onCardBrandsChanged(listOf(cardBrand))
     }
 
     @Test
@@ -53,6 +53,6 @@ class BrandsChangedHandlerTest {
         val remoteBrands = listOf(remoteCardBrand)
         brandsChangedHandler.handle(remoteBrands)
 
-        verify(validationListener).onBrandsChange(emptyList())
+        verify(validationListener).onCardBrandsChanged(emptyList())
     }
 }

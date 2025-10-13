@@ -39,7 +39,7 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
 
             override fun onExpiryDateValidated(isValid: Boolean) {}
 
-            override fun onBrandsChange(cardBrands: List<CardBrand>) {}
+            override fun onCardBrandsChanged(cardBrands: List<CardBrand>) {}
         }
     }
 
