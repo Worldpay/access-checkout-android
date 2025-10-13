@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.ui
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -363,5 +364,16 @@ class AccessCheckoutEditText internal constructor(
 
         super.onRestoreInstanceState(bundledState.getParcelable(SUPER_STATE_KEY))
         editText!!.onRestoreInstanceState(bundledState.getParcelable(EDIT_TEXT_STATE_KEY))
+    }
+
+    override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
+        return editText?.requestFocus(direction, previouslyFocusedRect) ?: super.requestFocus(
+            direction,
+            previouslyFocusedRect
+        )
+    }
+
+    override fun focusSearch(direction: Int): View? {
+        return editText?.focusSearch(direction) ?: super.focusSearch(direction)
     }
 }
