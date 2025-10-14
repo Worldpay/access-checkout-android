@@ -52,6 +52,8 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
     private val baseUrl = "https://localhost:${wireMockPort}"
     private val checkoutId = "checkout id"
 
+    private val lifecycleOwner = TestLifecycleOwner()
+
     @Before
     fun setUp() {
         DiscoveryCache.results.clear()
@@ -70,7 +72,12 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
         val expectedKey2InDiscoveryCache = "service:sessions,sessions:paymentsCvc"
         val expectedKey3InDiscoveryCache = "cardBinPublic:binDetails"
 
-        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, cardValidationConfig())
+        AccessCheckoutValidationInitialiser.initialise(
+            checkoutId,
+            baseUrl,
+            cardValidationConfig(),
+            lifecycleOwner
+        )
 
         await().atMost(timeout, SECONDS).until {
             DiscoveryCache.results.size == 3
@@ -85,7 +92,12 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
         // we do not stub the service discovery responses to simulate a failure to discover services
         WireMock.removeAllMappings()
 
-        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, cardValidationConfig())
+        AccessCheckoutValidationInitialiser.initialise(
+            checkoutId,
+            baseUrl,
+            cardValidationConfig(),
+            lifecycleOwner
+        )
 
         await()
             // waits for 1 second (at which point the service discovery has already
@@ -104,7 +116,7 @@ class AccessCheckoutValidationInitialiserIntegrationTest {
             .pan(pan)
             .expiryDate(expiryDate)
             .cvc(cvc)
-            .validationListener(TestValidationListener()).lifecycleOwner(TestLifecycleOwner())
+            .validationListener(TestValidationListener())
             .build()
     }
 }

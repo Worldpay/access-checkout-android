@@ -44,14 +44,18 @@ class AccessCheckoutValidationInitialiserTest : AbstractValidationIntegrationTes
             .cvc(cvc)
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(cardValidationListener)
-            .lifecycleOwner(lifecycleOwner)
             .build()
 
         assertEquals(0, pan.filters.size)
         assertEquals(0, expiryDate.filters.size)
         assertEquals(0, cvc.filters.size)
 
-        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, config)
+        AccessCheckoutValidationInitialiser.initialise(
+            checkoutId,
+            baseUrl,
+            config,
+            lifecycleOwner
+        )
 
         assertNotNull(pan.filters.any { it is PanNumericFilter })
         assertNotNull(expiryDate.filters.any { it is ExpiryDateLengthFilter })
@@ -64,12 +68,16 @@ class AccessCheckoutValidationInitialiserTest : AbstractValidationIntegrationTes
             .cvc(cvc)
             .validationListener(cardValidationListener)
             .validationListener(cvcValidationListener)
-            .lifecycleOwner(lifecycleOwner)
             .build()
 
         assertEquals(0, cvc.filters.size)
 
-        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, config)
+        AccessCheckoutValidationInitialiser.initialise(
+            checkoutId,
+            baseUrl,
+            config,
+            lifecycleOwner
+        )
 
         assertNotNull(cvc.filters.any { it is CvcLengthFilter })
     }

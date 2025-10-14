@@ -1,15 +1,14 @@
 package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
-import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import kotlin.test.*
 import org.junit.Before
 import org.junit.Test
 import org.mockito.BDDMockito.given
 import org.mockito.kotlin.mock
+import kotlin.test.*
 
 class CardValidationConfigBuilderTest {
 
@@ -24,7 +23,6 @@ class CardValidationConfigBuilderTest {
     private val acceptedCardBrands =
         arrayOf("AMEX", "DINERS", "DISCOVER", "JCB", "MAESTRO", "MASTERCARD", "VISA")
     private val validationListener = mock<AccessCheckoutCardValidationListener>()
-    private val lifecycleOwner = mock<LifecycleOwner>()
 
     @Before
     fun setUp() {
@@ -41,7 +39,6 @@ class CardValidationConfigBuilderTest {
             .cvc(cvc)
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(validationListener)
-            .lifecycleOwner(lifecycleOwner)
             .build()
 
         assertNotNull(config)
@@ -60,7 +57,6 @@ class CardValidationConfigBuilderTest {
             .expiryDate(expiryDate)
             .cvc(cvc)
             .validationListener(validationListener)
-            .lifecycleOwner(lifecycleOwner)
             .build()
 
         assertNotNull(config)
@@ -79,7 +75,6 @@ class CardValidationConfigBuilderTest {
                 .cvc(cvc)
                 .acceptedCardBrands(acceptedCardBrands)
                 .validationListener(validationListener)
-                .lifecycleOwner(lifecycleOwner)
                 .build()
         }
 
@@ -94,7 +89,6 @@ class CardValidationConfigBuilderTest {
                 .cvc(cvc)
                 .acceptedCardBrands(acceptedCardBrands)
                 .validationListener(validationListener)
-                .lifecycleOwner(lifecycleOwner)
                 .build()
         }
 
@@ -109,7 +103,6 @@ class CardValidationConfigBuilderTest {
                 .expiryDate(expiryDate)
                 .acceptedCardBrands(acceptedCardBrands)
                 .validationListener(validationListener)
-                .lifecycleOwner(lifecycleOwner)
                 .build()
         }
 
@@ -124,26 +117,10 @@ class CardValidationConfigBuilderTest {
                 .expiryDate(expiryDate)
                 .cvc(cvc)
                 .acceptedCardBrands(acceptedCardBrands)
-                .lifecycleOwner(lifecycleOwner)
                 .build()
         }
 
         assertEquals("Expected validation listener to be provided but was not", exception.message)
-    }
-
-    @Test
-    fun `should throw exception where lifecycle owner is not provided`() {
-        val exception = assertFailsWith<AccessCheckoutException> {
-            CardValidationConfig.Builder()
-                .pan(pan)
-                .expiryDate(expiryDate)
-                .cvc(cvc)
-                .acceptedCardBrands(acceptedCardBrands)
-                .validationListener(validationListener)
-                .build()
-        }
-
-        assertEquals("Expected lifecycle owner to be provided but was not", exception.message)
     }
 
     @Test
@@ -154,7 +131,6 @@ class CardValidationConfigBuilderTest {
             .cvc(cvc)
             .acceptedCardBrands(acceptedCardBrands)
             .validationListener(validationListener)
-            .lifecycleOwner(lifecycleOwner)
             .enablePanFormatting()
             .build()
 

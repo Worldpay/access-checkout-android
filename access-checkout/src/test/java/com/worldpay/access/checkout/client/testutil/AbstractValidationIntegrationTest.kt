@@ -91,7 +91,6 @@ open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
             .cvc(cvc)
             .expiryDate(expiryDate)
             .validationListener(cardValidationListener)
-            .lifecycleOwner(lifecycleOwner)
 
         if (enablePanFormatting) {
             cardValidationConfig.enablePanFormatting()
