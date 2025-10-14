@@ -33,7 +33,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         initialiseValidation(enablePanFormatting = false)
         setText(pan, "00000")
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener, never()).onBrandsChange(any())
+        verify(cardValidationListener, never()).onCardBrandsChanged(any())
     }
 
     @Test
@@ -41,7 +41,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         initialiseValidation(enablePanFormatting = false)
         setText(pan, PARTIAL_VISA)
         verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener, timeout(500)).onBrandsChange(toCardBrandList(VISA_BRAND))
+        verify(cardValidationListener, timeout(500)).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
     }
 
     @Test
@@ -50,7 +50,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         val validVisaPan = visaPan()
         setText(pan, validVisaPan)
         verify(cardValidationListener, timeout(500)).onPanValidated(true)
-        verify(cardValidationListener, timeout(500)).onBrandsChange(toCardBrandList(VISA_BRAND))
+        verify(cardValidationListener, timeout(500)).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
     }
 
     @Test
@@ -60,7 +60,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         verify(
             cardValidationListener,
             timeout(500)
-        ).onBrandsChange(toCardBrandList(VISA_BRAND))
+        ).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
         verify(cardValidationListener, timeout(500)).onPanValidated(true)
 
 
@@ -76,7 +76,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
             initialiseValidation(enablePanFormatting = false)
             setText(pan, visaPan())
             verify(cardValidationListener).onPanValidated(true)
-            verify(cardValidationListener, timeout(500)).onBrandsChange(
+            verify(cardValidationListener, timeout(500)).onCardBrandsChanged(
                 toCardBrandList(
                     VISA_BRAND
                 )
@@ -89,7 +89,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
             initialiseValidation(enablePanFormatting = false)
             setText(pan, VALID_UNKNOWN_LUHN)
             verify(cardValidationListener).onPanValidated(true)
-            verify(cardValidationListener, never()).onBrandsChange(any())
+            verify(cardValidationListener, never()).onCardBrandsChanged(any())
         }
 
     @Test
@@ -98,7 +98,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
             initialiseValidation(enablePanFormatting = false)
             setText(pan, visaPan())
             verify(cardValidationListener).onPanValidated(true)
-            verify(cardValidationListener, timeout(500)).onBrandsChange(
+            verify(cardValidationListener, timeout(500)).onCardBrandsChanged(
                 toCardBrandList(
                     VISA_BRAND
                 )
@@ -113,7 +113,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
             setText(pan, VALID_UNKNOWN_LUHN)
 
             verify(cardValidationListener).onPanValidated(true)
-            verify(cardValidationListener, never()).onBrandsChange(any())
+            verify(cardValidationListener, never()).onCardBrandsChanged(any())
         }
 
     @Test
@@ -122,7 +122,7 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
             initialiseValidation(enablePanFormatting = false)
             setText(pan, INVALID_UNKNOWN_LUHN)
             verify(cardValidationListener, never()).onPanValidated(any())
-            verify(cardValidationListener, never()).onBrandsChange(any())
+            verify(cardValidationListener, never()).onCardBrandsChanged(any())
         }
 
     @Test
@@ -131,6 +131,6 @@ class PanValidationIntegrationTest : AbstractValidationIntegrationTest() {
         setText(pan, visaPan())
         verify(cardValidationListener, never()).onCvcValidated(any())
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener, timeout(500)).onBrandsChange(toCardBrandList(VISA_BRAND))
+        verify(cardValidationListener, timeout(500)).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
     }
 }

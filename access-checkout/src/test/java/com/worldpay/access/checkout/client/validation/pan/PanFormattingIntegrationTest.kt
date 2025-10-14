@@ -27,7 +27,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
 
             assertEquals("4111 1111 1111 1111", pan.text)
-            verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
             verify(cardValidationListener).onPanValidated(true)
         }
 
@@ -40,7 +40,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
 
             assertEquals("3427 931789 31249", pan.text)
-            verify(cardValidationListener).onBrandsChange(toCardBrandList(AMEX_BRAND))
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(AMEX_BRAND))
             verify(cardValidationListener).onPanValidated(true)
         }
 
@@ -52,7 +52,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
 
         assertEquals("4111111111111111", pan.text)
-        verify(cardValidationListener).onBrandsChange(toCardBrandList(VISA_BRAND))
+        verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
 
@@ -249,7 +249,7 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
         initialiseValidation(enablePanFormatting = true)
         setText(pan, "")
 
-        verify(cardValidationListener, never()).onBrandsChange(any())
+        verify(cardValidationListener, never()).onCardBrandsChanged(any())
         verify(cardValidationListener, never()).onPanValidated(any())
 
         assertEquals("", pan.text)

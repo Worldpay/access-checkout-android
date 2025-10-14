@@ -25,7 +25,7 @@ class RestrictedCardValidationListener(private val activity: FragmentActivity) :
         changeFont(pan, isValid)
     }
 
-    override fun onBrandsChange(cardBrands: List<CardBrand>) {
+    override fun onCardBrandsChanged(cardBrands: List<CardBrand>) {
         val brandLogo = activity.findViewById<ImageView>(R.id.restricted_card_flow_brand_logo)
         if (brandLogo != null) {
             // currently just applying first card logo returned in list
