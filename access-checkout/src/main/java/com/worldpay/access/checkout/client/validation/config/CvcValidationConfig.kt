@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
-import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCvcValidationListener
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
@@ -16,7 +15,6 @@ import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 class CvcValidationConfig private constructor(
     val cvc: EditText,
     val validationListener: AccessCheckoutCvcValidationListener,
-    val lifecycleOwner: LifecycleOwner
 ) : ValidationConfig {
 
     /**
@@ -26,7 +24,6 @@ class CvcValidationConfig private constructor(
 
         private var cvc: EditText? = null
         private var validationListener: AccessCheckoutCvcValidationListener? = null
-        private var lifecycleOwner: LifecycleOwner? = null
 
         /**
          * Sets the cvc ui element to be validated
@@ -49,16 +46,6 @@ class CvcValidationConfig private constructor(
         }
 
         /**
-         * Sets the lifecycle owner of the application so that validation state can be handled during lifecycle changes
-         *
-         * @param[lifecycleOwner] [LifecycleOwner] that represents the lifecycle owner of the application
-         */
-        fun lifecycleOwner(lifecycleOwner: LifecycleOwner): Builder {
-            this.lifecycleOwner = lifecycleOwner
-            return this
-        }
-
-        /**
          * Builds the validation configuration by returning an instance of the [CvcValidationConfig]
          *
          * @return [CvcValidationConfig] implementation that can be used to initialise validation
@@ -67,12 +54,10 @@ class CvcValidationConfig private constructor(
         fun build(): CvcValidationConfig {
             validateNotNull(cvc, "cvc component")
             validateNotNull(validationListener, "validation listener")
-            validateNotNull(lifecycleOwner, "lifecycle owner")
 
             return CvcValidationConfig(
                 cvc = cvc!!,
                 validationListener = validationListener!!,
-                lifecycleOwner = lifecycleOwner!!
             )
         }
     }
