@@ -70,7 +70,8 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
-                accessCheckoutClientDisposer
+                accessCheckoutClientDisposer,
+                lifecycleOwnerMock
             )
         assertNotNull(accessCheckoutClient)
     }
@@ -89,7 +90,8 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
-                accessCheckoutClientDisposer
+                accessCheckoutClientDisposer,
+                lifecycleOwnerMock
             )
 
         val cardDetails = CardDetails.Builder()
@@ -119,7 +121,8 @@ class AccessCheckoutClientImplTest {
             contextMock,
             checkoutId,
             baseUrl,
-            accessCheckoutClientDisposer
+            accessCheckoutClientDisposer,
+            lifecycleOwnerMock
         )
 
         verify(activityLifecycleObserverInitialiser).initialise()
@@ -147,7 +150,8 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
-                accessCheckoutClientDisposer
+                accessCheckoutClientDisposer,
+                lifecycleOwnerMock
             )
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
@@ -175,7 +179,8 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
-                accessCheckoutClientDisposer
+                accessCheckoutClientDisposer,
+                lifecycleOwnerMock
             )
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
@@ -208,7 +213,8 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
-                accessCheckoutClientDisposer
+                accessCheckoutClientDisposer,
+                lifecycleOwnerMock
             )
 
         accessCheckoutClient.generateSessions(cardDetails, tokenRequests)
@@ -238,7 +244,8 @@ class AccessCheckoutClientImplTest {
                 contextMock,
                 checkoutId,
                 baseUrl,
-                accessCheckoutClientDisposer
+                accessCheckoutClientDisposer,
+                lifecycleOwnerMock
             )
 
         accessCheckoutClient.generateSessions(cardDetails, emptyList())
@@ -261,7 +268,8 @@ class AccessCheckoutClientImplTest {
             contextMock,
             checkoutId,
             baseUrl,
-            accessCheckoutClientDisposer
+            accessCheckoutClientDisposer,
+            lifecycleOwnerMock
         )
 
         accessCheckoutClient.disposeInternal()
@@ -282,7 +290,8 @@ class AccessCheckoutClientImplTest {
             contextMock,
             checkoutId,
             baseUrl,
-            accessCheckoutClientDisposer
+            accessCheckoutClientDisposer,
+            lifecycleOwnerMock
         )
 
         accessCheckoutClient.dispose()
@@ -302,14 +311,15 @@ class AccessCheckoutClientImplTest {
             contextMock,
             checkoutId,
             baseUrl,
-            accessCheckoutClientDisposer
+            accessCheckoutClientDisposer,
+            lifecycleOwnerMock
         )
 
         accessCheckoutClient.initialiseValidation(mockConfig)
 
         mockValidation.use {
             it.verify {
-                AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, mockConfig)
+                AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, mockConfig, lifecycleOwnerMock)
             }
         }
     }

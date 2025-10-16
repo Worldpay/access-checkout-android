@@ -74,7 +74,6 @@ class RestrictedCardFlowFragment : Fragment() {
             .cvc(cvcText)
             .acceptedCardBrands(arrayOf("visa", "mastercard", "amex"))
             .validationListener(cardValidationListener)
-            .lifecycleOwner(this)
             .build()
 
         accessCheckoutClient.initialiseValidation(cardValidationConfig)

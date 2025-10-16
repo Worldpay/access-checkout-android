@@ -1,10 +1,10 @@
 package com.worldpay.access.checkout.client.validation
 
 import android.util.Log
+import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.client.AccessCheckoutClient
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
@@ -38,13 +38,15 @@ internal object AccessCheckoutValidationInitialiser {
         checkoutId: String,
         baseUrl: String,
         validationConfig: ValidationConfig,
+        lifecycleOwner: LifecycleOwner,
     ) {
 
         if (validationConfig is CardValidationConfig) {
             initialiseCardValidation(
                 validationConfig,
                 checkoutId,
-                baseUrl
+                baseUrl,
+                lifecycleOwner
             )
 
             CoroutineScope(Dispatchers.IO).launch {
@@ -59,7 +61,7 @@ internal object AccessCheckoutValidationInitialiser {
                 }
             }
         } else {
-            initialiseCvcValidation(validationConfig as CvcValidationConfig)
+            initialiseCvcValidation(validationConfig as CvcValidationConfig, lifecycleOwner)
         }
     }
 
@@ -67,6 +69,7 @@ internal object AccessCheckoutValidationInitialiser {
         validationConfig: CardValidationConfig,
         checkoutId: String,
         baseUrl: String,
+        lifecycleOwner: LifecycleOwner
     ) {
         val resultHandlerFactory = ResultHandlerFactory(
             accessCheckoutValidationListener = validationConfig.validationListener,
@@ -75,7 +78,7 @@ internal object AccessCheckoutValidationInitialiser {
                 validationConfig.expiryDate,
                 validationConfig.cvc
             ),
-            lifecycleOwner = validationConfig.lifecycleOwner
+            lifecycleOwner = lifecycleOwner
         )
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)
@@ -111,11 +114,11 @@ internal object AccessCheckoutValidationInitialiser {
         cvcFieldDecorator.decorate()
     }
 
-    private fun initialiseCvcValidation(validationConfig: CvcValidationConfig) {
+    private fun initialiseCvcValidation(validationConfig: CvcValidationConfig, lifecycleOwner: LifecycleOwner) {
         val resultHandlerFactory = ResultHandlerFactory(
             accessCheckoutValidationListener = validationConfig.validationListener,
             fieldValidationStateManager = CvcValidationStateManager(validationConfig.cvc),
-            lifecycleOwner = validationConfig.lifecycleOwner
+            lifecycleOwner = lifecycleOwner
         )
 
         val textWatcherFactory = TextWatcherFactory(resultHandlerFactory)

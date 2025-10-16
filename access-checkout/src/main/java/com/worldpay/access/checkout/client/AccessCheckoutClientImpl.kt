@@ -2,7 +2,7 @@ package com.worldpay.access.checkout.client
 
 import android.content.Context
 import android.content.Intent
-import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
+import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
 import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
@@ -22,7 +22,8 @@ internal class AccessCheckoutClientImpl(
     private val context: Context,
     private val checkoutId: String,
     private val baseUrl: String,
-    private val accessCheckoutClientDisposer: AccessCheckoutClientDisposer
+    private val accessCheckoutClientDisposer: AccessCheckoutClientDisposer,
+    private val lifecycleOwner: LifecycleOwner,
 ) : AccessCheckoutClient {
 
     private val activityLifecycleObserver: ActivityLifecycleObserver =
@@ -40,7 +41,7 @@ internal class AccessCheckoutClientImpl(
     }
 
     override fun initialiseValidation(validationConfiguration: ValidationConfig) {
-        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, validationConfiguration)
+        AccessCheckoutValidationInitialiser.initialise(checkoutId, baseUrl, validationConfiguration, lifecycleOwner)
     }
 
     override fun dispose() {

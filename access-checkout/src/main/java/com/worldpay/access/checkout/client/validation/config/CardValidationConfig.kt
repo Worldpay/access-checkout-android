@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
-import androidx.lifecycle.LifecycleOwner
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
@@ -18,7 +17,6 @@ class CardValidationConfig private constructor(
     val cvc: EditText,
     val acceptedCardBrands: Array<String>,
     val validationListener: AccessCheckoutCardValidationListener,
-    val lifecycleOwner: LifecycleOwner,
     val enablePanFormatting: Boolean,
 ) : ValidationConfig {
 
@@ -33,7 +31,6 @@ class CardValidationConfig private constructor(
 
         private var acceptedCardBrands: Array<String> = emptyArray()
         private var validationListener: AccessCheckoutCardValidationListener? = null
-        private var lifecycleOwner: LifecycleOwner? = null
         private var enablePanFormatting: Boolean = false
 
         /**
@@ -88,16 +85,6 @@ class CardValidationConfig private constructor(
         }
 
         /**
-         * Sets the lifecycle owner of the application so that validation state can be handled during lifecycle changes
-         *
-         * @param[lifecycleOwner] [LifecycleOwner] that represents the lifecycle owner of the application
-         */
-        fun lifecycleOwner(lifecycleOwner: LifecycleOwner): Builder {
-            this.lifecycleOwner = lifecycleOwner
-            return this
-        }
-
-        /**
          * Enables the pan formatting on the view
          */
         fun enablePanFormatting(): Builder {
@@ -116,7 +103,6 @@ class CardValidationConfig private constructor(
             validateNotNull(expiryDate, "expiry date component")
             validateNotNull(cvc, "cvc component")
             validateNotNull(validationListener, "validation listener")
-            validateNotNull(lifecycleOwner, "lifecycle owner")
 
 
             return CardValidationConfig(
@@ -125,7 +111,6 @@ class CardValidationConfig private constructor(
                 cvc = cvc!!,
                 acceptedCardBrands = acceptedCardBrands,
                 validationListener = validationListener!!,
-                lifecycleOwner = lifecycleOwner!!,
                 enablePanFormatting = enablePanFormatting,
             )
         }

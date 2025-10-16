@@ -116,7 +116,8 @@ class AccessCheckoutClientBuilder {
             context!!,
             checkoutId!!,
             baseUrl!!,
-            accessCheckoutClientDisposer
+            accessCheckoutClientDisposer,
+            lifecycleOwner!!
         )
     }
 
