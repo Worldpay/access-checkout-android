@@ -15,7 +15,7 @@ To learn how to integrate with the latest version of the Access Checkout Android
 
 ## Integration
 
-For full integration instructions and code examples visit [Worldpay Developers](https://developer.worldpay.com/docs/access-worldpay/checkout/android)
+For full integration instructions and code examples visit [Worldpay Developers](https://developer.worldpay.com/products/checkout/android)
 
 ## Developers
 
