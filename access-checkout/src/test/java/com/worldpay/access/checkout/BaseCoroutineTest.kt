@@ -10,6 +10,7 @@ import kotlinx.coroutines.cancel
 import kotlinx.coroutines.test.StandardTestDispatcher
 import kotlinx.coroutines.test.TestCoroutineScheduler
 import kotlinx.coroutines.test.TestScope
+import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -35,10 +36,10 @@ open class BaseCoroutineTest {
     val testDispatcher = StandardTestDispatcher(testScheduler)
     val testScope = TestScope(testDispatcher)
 
-
     @Before
     fun baseCoroutineSetUp() {
         closeable = MockitoAnnotations.openMocks(this)
+
         coroutineSetup()
     }
 
@@ -48,6 +49,11 @@ open class BaseCoroutineTest {
     }
 
     private fun coroutineSetup() {
+        // We require to set a test dispatcher before setting our TestDispatchersProvider
+        // as main dispatcher - this is following to a kotlinx coroutines upgrade
+        // see https://github.com/Kotlin/kotlinx.coroutines/issues/4397
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+
         val testDispatchersProvider = TestDispatchersProvider(testDispatcher)
         DispatchersProvider.instance = testDispatchersProvider;
         Dispatchers.setMain(testDispatcher)
@@ -57,6 +63,12 @@ open class BaseCoroutineTest {
         testScope.cancel()
         testDispatcher.cancel()
         Dispatchers.resetMain()
+
+        // We require to set a test dispatcher before setting our TestDispatchersProvider
+        // as main dispatcher - this is following to a kotlinx coroutines upgrade
+        // see https://github.com/Kotlin/kotlinx.coroutines/issues/4397
+        Dispatchers.setMain(UnconfinedTestDispatcher())
+
         DispatchersProvider.instance = CoroutineDispatchers()
     }
 }

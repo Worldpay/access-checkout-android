@@ -1,5 +1,5 @@
 android {
-    compileSdk 35
+    compileSdk = 35
 
     namespace = "com.worldpay.access.checkout"
 
