@@ -60,50 +60,50 @@ dependencies {
     implementation project(':access-checkout')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    debugImplementation("androidx.tracing:tracing:1.1.0")
+    debugImplementation "androidx.tracing:tracing:${versions['tracing']}"
 
-    implementation 'com.google.android.gms:play-services-vision:20.1.3'
+    implementation "com.google.android.gms:play-services-vision:${versions['play-services-vision']}"
 
-    implementation 'com.google.guava:guava:27.0.1-android'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21"
+    implementation "com.google.guava:guava:${versions['guava']}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions['kotlin']}"
 
-    implementation 'androidx.appcompat:appcompat:1.7.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.2.1'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.9.1'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.9.1'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
-    implementation 'com.squareup.okhttp3:okhttp:4.12.0'
-    implementation 'org.conscrypt:conscrypt-android:2.5.1'
-    implementation 'com.caverock:androidsvg-aar:1.4'
+    implementation "androidx.appcompat:appcompat:${versions['appcompat']}"
+    implementation "androidx.constraintlayout:constraintlayout:${versions['constraintlayout']}"
+    implementation "androidx.navigation:navigation-fragment-ktx:${versions['navigation-fragment-ktx']}"
+    implementation "androidx.navigation:navigation-ui-ktx:${versions['navigation-ui-ktx']}"
+    implementation "androidx.lifecycle:lifecycle-extensions:${versions['lifecycle-extensions']}"
+    implementation "com.squareup.okhttp3:okhttp:${versions['okhttp3']}"
+    implementation "org.conscrypt:conscrypt-android:${versions['conscrypt-android']}"
+    implementation "com.caverock:androidsvg-aar:${versions['androidsvg-aar']}"
 
-    implementation 'com.google.android.material:material:1.12.0'
+    implementation "com.google.android.material:material:${versions['material']}"
 
-
-    mockImplementation "androidx.test.espresso:espresso-core:3.6.1"
-    mockImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
-    mockImplementation 'com.google.code.gson:gson:2.13.1'
-    mockImplementation("com.github.tomakehurst:wiremock:2.22.0") {
-//        Allows us to use the Android version of Apache httpclient instead
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    mockImplementation "androidx.test.espresso:espresso-core:${versions['espresso']}"
+    mockImplementation "org.apache.httpcomponents:httpclient-android:${versions['httpclient-android']}"
+    mockImplementation "com.google.code.gson:gson:${versions['gson']}"
+    mockImplementation("com.github.tomakehurst:wiremock:${versions['com.github.tomakehurst:wiremock']}") {
+        // Allows us to use the Android version of Apache httpclient instead
+        exclude group: "org.apache.httpcomponents", module: "httpclient"
     }
 
-    testImplementation 'junit:junit:4.13.2'
-    testImplementation 'com.github.java-json-tools:json-schema-validator:2.2.10'
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
+    testImplementation "junit:junit:${versions['junit']}"
+    testImplementation "com.github.java-json-tools:json-schema-validator:${versions['json-schema-validator']}"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:${versions['mockito-kotlin']}"
 
-    androidTestImplementation 'androidx.test.ext:junit:1.2.1'
-    androidTestImplementation 'androidx.test:rules:1.6.1'
+    androidTestImplementation "org.jetbrains.kotlin:kotlin-test:${versions['kotlin']}"
+    androidTestImplementation "androidx.test.ext:junit:${versions['androidx.test.ext:junit']}"
+    androidTestImplementation "androidx.test:rules:${versions['test-rules']}"
 
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.3.0'
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:${versions['uiautomator']}"
 
-    androidTestImplementation "androidx.test.espresso:espresso-core:3.6.1"
-    androidTestImplementation "androidx.test.espresso:espresso-contrib:3.6.1"
-    androidTestImplementation "androidx.test.espresso:espresso-intents:3.6.1"
-    androidTestImplementation "androidx.test.espresso:espresso-accessibility:3.6.1"
-    androidTestImplementation "androidx.test.espresso:espresso-web:3.6.1"
-    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:3.6.1"
+    androidTestImplementation "androidx.test.espresso:espresso-accessibility:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso:espresso-web:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:${versions['espresso']}"
 
-    androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
+    androidTestImplementation "org.awaitility:awaitility-kotlin:${versions['awaitility-kotlin']}"
 
-    androidTestUtil 'androidx.test:orchestrator:1.5.1'
+    androidTestUtil "androidx.test:orchestrator:${versions['orchestrator']}"
 }

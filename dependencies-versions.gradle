@@ -1,0 +1,39 @@
+rootProject.ext.versions = [
+        // Kotlin related dependencies
+        'kotlin'                              : project.kotlinVersion,
+        'kotlinx-coroutines'                  : '1.10.2',
+        'mockito-kotlin'                      : '6.1.0', // pulls mockito-core
+        'mockito-android'                     : '5.20.0', // must use the same version as the mockito-core version pulled by mockito-kotlin
+
+        // other dependencies
+        'androidsvg-aar'                      : '1.4',
+        'androidx.test.ext:junit'             : '1.3.0',
+        'androidx.test:rules'                 : '1.6.1',
+        'androidx.tracing:tracing'            : '1.3.0',
+        'appcompat'                           : '1.7.1',
+        'awaitility-kotlin'                   : '3.1.6', // must remain on v3 for now because v2 pulls hamcrest v2 which is incompatible with Espresso that uses hamcrest v1
+        'com.github.tomakehurst:wiremock'     : '2.22.0',
+        'conscrypt-android'                   : '2.5.3',
+        'constraintlayout'                    : '2.2.1',
+        'espresso'                            : '3.6.1',
+        'guava'                               : '33.5.0-android',
+        'gson'                                : '2.13.2',
+        'httpclient-android'                  : '4.3.5.1',
+        'json-schema-validator'               : '2.2.14',
+        'junit'                               : '4.13.2',
+        'lifecycle-extensions'                : '2.2.0',
+        'lifecycle-runtime-testing'           : '2.9.4',
+        'listenablefuture'                    : '9999.0-empty-to-avoid-conflict-with-guava',
+        'localbroadcastmanager'               : '1.0.0',
+        'material'                            : '1.13.0',
+        'mockwebserver'                       : '4.7.2',
+        'navigation-fragment-ktx'             : '2.9.5',
+        'navigation-ui-ktx'                   : '2.9.5',
+        'okhttp3'                             : '4.12.0',
+        'orchestrator'                        : '1.6.1',
+        'org.wiremock:wiremock'               : '3.13.1',
+        'pact-jvm-consumer-junit'             : '4.0.10',
+        'play-services-vision'                : '20.1.3',
+        'robolectric'                         : '4.7',
+        'uiautomator'                         : '2.3.0',
+]

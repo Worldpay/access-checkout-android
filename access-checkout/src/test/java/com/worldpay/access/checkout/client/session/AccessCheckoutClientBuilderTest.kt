@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.client.session
 import android.content.Context
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
@@ -18,7 +19,7 @@ import kotlin.test.assertFailsWith
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class AccessCheckoutClientBuilderTest {
+class AccessCheckoutClientBuilderTest : BaseCoroutineTest() {
 
     private val context = mock(Context::class.java)
     private val sessionResponseListener = mock(SessionResponseListener::class.java)

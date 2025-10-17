@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.session.api.client
 
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
 import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
@@ -9,7 +10,7 @@ import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 import org.junit.Test
 
-class SessionClientFactoryTest {
+class SessionClientFactoryTest : BaseCoroutineTest() {
 
     private val sessionClientFactory: SessionClientFactory = SessionClientFactory()
 

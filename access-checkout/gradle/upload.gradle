@@ -34,6 +34,12 @@ artifacts {
     archives javadocJar, sourcesJar
 }
 
+android {
+    publishing {
+        singleVariant('release') {}
+    }
+}
+
 afterEvaluate {
     publishing {
         publications {
