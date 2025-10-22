@@ -53,7 +53,7 @@ internal object DiscoveryCache {
     }
 
     /**
-     * Converts a DiscoverLinks into a comma-separate String made of each EndPoint endpoint
+     * Converts a DiscoverLinks into a comma-separate String made of each endpoint
      * This String is used to store or lookup a result in the results Map
      */
     private fun convertToKey(discoverLinks: DiscoverLinks) =
