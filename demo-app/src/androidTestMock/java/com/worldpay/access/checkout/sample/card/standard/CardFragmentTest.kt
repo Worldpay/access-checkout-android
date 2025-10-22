@@ -1,10 +1,14 @@
 package com.worldpay.access.checkout.sample.card.standard
 
+import androidx.test.espresso.action.ViewActions.pressImeActionButton
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.card.standard.testutil.AbstractCardFragmentTest
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardBrand.VISA
-import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.CVC
+import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.*
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.onCardPanView
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.onCvcView
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.onExpiryDateView
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.reopenApp
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -36,6 +40,29 @@ class CardFragmentTest : AbstractCardFragmentTest() {
             .hasAutofillHints(R.id.card_flow_text_pan, arrayOf("creditCardNumber"))
             .hasAutofillHints(R.id.card_flow_text_cvc, arrayOf("creditCardSecurityCode"))
             .hasAutofillHints(R.id.card_flow_expiry_date, arrayOf("creditCardExpirationDate"))
+    }
+
+    @Test
+    fun shouldMoveFocusToNextField() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .enterCardDetail(PAN, "4111111111111111", false)
+
+        onCardPanView().perform(pressImeActionButton())
+
+        cardFragmentTestUtils
+            .hasFocus(EXPIRY_DATE)
+            .enterCardDetail(EXPIRY_DATE, "1140", false)
+
+        onExpiryDateView().perform(pressImeActionButton())
+
+        cardFragmentTestUtils
+            .hasFocus(CVC)
+            .enterCardDetail(CVC, "123", false)
+
+        onCvcView().perform(pressImeActionButton())
+
+        cardFragmentTestUtils.keyboardIsClosed()
     }
 
     @Test
