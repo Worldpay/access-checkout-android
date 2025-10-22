@@ -18,5 +18,7 @@
         <attr name="android:font"/>
         <attr name="android:background"/>
         <attr name="android:enabled"/>
+        <attr name="android:nextFocusDown"/>
+        <attr name="android:nextFocusForward"/>
     </declare-styleable>
 </resources>

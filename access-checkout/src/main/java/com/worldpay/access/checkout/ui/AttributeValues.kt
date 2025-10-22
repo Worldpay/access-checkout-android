@@ -35,6 +35,10 @@ internal class AttributeValues(
         if (BuildVersionProviderHolder.instance.isAtLeastO()) setFontAttribute(editText)
 
         setEnabledAttribute(editText)
+
+        setNextFocusDown(editText)
+
+        setNextFocusForward(editText)
     }
 
     private fun setPaddingAttribute(editText: EditText) {
@@ -127,6 +131,16 @@ internal class AttributeValues(
         editText.isEnabled = enabled
     }
 
+    private fun setNextFocusDown(editText: EditText) {
+        val nextFocusDown = getNextFocusDown()
+        nextFocusDown.takeIf { it != 0 }?.let { editText.nextFocusDownId = nextFocusDown }
+    }
+
+    private fun setNextFocusForward(editText: EditText) {
+        val nextFocusForward = getNextFocusForward()
+        nextFocusForward.takeIf { it != 0 }?.let { editText.nextFocusForwardId = nextFocusForward }
+    }
+
     private fun getPaddingBottomAttribute(): Int? =
         getDimensionAttribute(R.styleable.AccessCheckoutEditText_android_paddingBottom)
 
@@ -185,4 +199,12 @@ internal class AttributeValues(
 
     private fun getEnabledAttribute() =
         styledAttributes.getBoolean(R.styleable.AccessCheckoutEditText_android_enabled, true)
+
+    private fun getNextFocusDown() =
+        styledAttributes.getResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusDown, 0)
+
+    private fun getNextFocusForward() = styledAttributes.getResourceId(
+        R.styleable.AccessCheckoutEditText_android_nextFocusForward,
+        0
+    )
 }

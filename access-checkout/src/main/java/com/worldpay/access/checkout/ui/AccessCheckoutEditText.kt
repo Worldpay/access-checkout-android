@@ -260,6 +260,39 @@ class AccessCheckoutEditText internal constructor(
     }
 
     /**
+     * Returns the next focus down id for this component.
+     *
+     * @return the next focus down id
+     */
+    override fun getNextFocusDownId() = this.editText!!.nextFocusDownId
+
+    /**
+     * Sets the next focus down id for this component.
+     *
+     * @param nextFocusDownId id of the next view to focus when navigating down
+     */
+    override fun setNextFocusDownId(nextFocusDownId: Int) {
+        this.editText!!.nextFocusDownId = nextFocusDownId
+    }
+
+    /**
+     * Returns the next focus forward id for this component.
+     *
+     * @return the next focus forward id
+     */
+    override fun getNextFocusForwardId() = this.editText!!.nextFocusForwardId
+
+    /**
+     * Sets the next focus forward id for this component.
+     *
+     * @param nextFocusForwardId id of the next view to focus when navigating forward
+     */
+    override fun setNextFocusForwardId(nextFocusForwardId: Int) {
+        this.editText!!.nextFocusForwardId = nextFocusForwardId
+    }
+
+
+    /**
      * Methods
      */
 
@@ -351,14 +384,11 @@ class AccessCheckoutEditText internal constructor(
     }
 
     override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
-        return editText?.requestFocus(direction, previouslyFocusedRect) ?: super.requestFocus(
-            direction,
-            previouslyFocusedRect
-        )
+        return editText!!.requestFocus(direction, previouslyFocusedRect)
     }
 
     override fun focusSearch(direction: Int): View? {
-        return editText?.focusSearch(direction) ?: super.focusSearch(direction)
+        return editText!!.focusSearch(direction)
     }
 
     public override fun onSaveInstanceState(): Parcelable? {

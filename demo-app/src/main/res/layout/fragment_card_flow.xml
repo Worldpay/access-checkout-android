@@ -30,17 +30,19 @@
                     android:orientation="horizontal">
 
                 <com.worldpay.access.checkout.ui.AccessCheckoutEditText
-                        android:id="@+id/card_flow_text_pan"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginEnd="8dp"
-                        android:layout_weight="4"
-                        android:clickable="true"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:hint="@string/card_number_hint"
-                        android:autofillHints="creditCardNumber"
-                        android:imeOptions="actionNext"/>
+                    android:id="@+id/card_flow_text_pan"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="8dp"
+                    android:layout_weight="4"
+                    android:autofillHints="creditCardNumber"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/card_number_hint"
+                    android:imeOptions="actionNext"
+                    android:nextFocusDown="@+id/card_flow_expiry_date"
+                    android:nextFocusForward="@+id/card_flow_expiry_date" />
 
                 <ImageView
                         android:id="@+id/card_flow_brand_logo"
@@ -59,36 +61,40 @@
                     android:orientation="horizontal">
 
                 <com.worldpay.access.checkout.ui.AccessCheckoutEditText
-                        android:id="@+id/card_flow_expiry_date"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="3"
-                        android:ems="4"
-                        android:hint="@string/card_expiry_date_hint"
-                        android:autofillHints="creditCardExpirationDate"
-                        android:imeOptions="actionNext"
-                        android:inputType="text"
-                        android:textColor="@color/DEFAULT"
-                        android:descendantFocusability="beforeDescendants"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        tools:ignore="TextFields"/>
+                    android:id="@+id/card_flow_expiry_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="3"
+                    android:autofillHints="creditCardExpirationDate"
+                    android:descendantFocusability="beforeDescendants"
+                    android:ems="4"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/card_expiry_date_hint"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusDown="@+id/card_flow_text_cvc"
+                    android:nextFocusForward="@+id/card_flow_text_cvc"
+                    android:textColor="@color/DEFAULT"
+                    tools:ignore="TextFields" />
 
                 <com.worldpay.access.checkout.ui.AccessCheckoutEditText
-                        android:id="@+id/card_flow_text_cvc"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="2"
-                        android:ems="4"
-                        android:hint="@string/card_cvc_hint"
-                        android:autofillHints="creditCardSecurityCode"
-                        android:imeOptions="actionDone|flagNoFullscreen"
-                        android:inputType="text"
-                        android:textColor="@color/DEFAULT"
-                        android:descendantFocusability="beforeDescendants"
-                        android:focusable="true"
-                        android:focusableInTouchMode="true"
-                        android:clickable="true"/>
+                    android:id="@+id/card_flow_text_cvc"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="2"
+                    android:autofillHints="creditCardSecurityCode"
+                    android:clickable="true"
+                    android:descendantFocusability="beforeDescendants"
+                    android:ems="4"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/card_cvc_hint"
+                    android:imeOptions="actionDone"
+                    android:inputType="text"
+                    android:nextFocusDown="@+id/card_flow_text_cvc"
+                    android:nextFocusForward="@+id/card_flow_text_cvc"
+                    android:textColor="@color/DEFAULT" />
 
             </LinearLayout>
         </LinearLayout>
