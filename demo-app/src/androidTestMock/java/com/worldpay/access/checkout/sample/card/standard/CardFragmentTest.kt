@@ -66,6 +66,62 @@ class CardFragmentTest : AbstractCardFragmentTest() {
     }
 
     @Test
+    fun shouldMoveFocusToNextFieldWithoutEnteringDetails() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasFocus(PAN)
+
+        onCardPanView().perform(pressImeActionButton())
+
+        cardFragmentTestUtils
+            .hasFocus(EXPIRY_DATE)
+
+        onExpiryDateView().perform(pressImeActionButton())
+
+        cardFragmentTestUtils
+            .hasFocus(CVC)
+
+        onCvcView().perform(pressImeActionButton())
+
+        cardFragmentTestUtils.keyboardIsClosed()
+    }
+
+    @Test
+    fun shouldMoveFocusToNextFieldWhenPartialDetailsAreEntered() {
+        // enter partial details in PAN field
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasFocus(PAN)
+            .enterCardDetail(PAN, "4111111", false)
+
+        // move to expiry date field via next action button
+        onCardPanView().perform(pressImeActionButton())
+
+        // verify focus is now on expiry date field and PAN field retains partial details
+        cardFragmentTestUtils
+            .validationStateIs(pan = false)
+            .hasFocus(EXPIRY_DATE)
+            .focusOn(PAN)
+
+        // move to expiry date field via next action button again
+        onCardPanView().perform(pressImeActionButton())
+
+        // verify focus is now on expiry date field
+        cardFragmentTestUtils
+            .hasFocus(EXPIRY_DATE)
+
+        // continue to CVC field without entering expiry date details
+        onExpiryDateView().perform(pressImeActionButton())
+
+        cardFragmentTestUtils
+            .hasFocus(CVC)
+
+        onCvcView().perform(pressImeActionButton())
+
+        cardFragmentTestUtils.keyboardIsClosed()
+    }
+
+    @Test
     fun shouldDisableSubmitButton_onInvalidCardData() {
         // invalid expiry month
         cardFragmentTestUtils
