@@ -90,7 +90,7 @@
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="@string/card_cvc_hint"
-                    android:imeOptions="actionDone"
+                    android:imeOptions="actionDone|flagNoFullscreen"
                     android:inputType="text"
                     android:nextFocusDown="@+id/card_flow_text_cvc"
                     android:nextFocusForward="@+id/card_flow_text_cvc"
