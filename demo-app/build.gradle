@@ -3,7 +3,7 @@ apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-parcelize'
 
 android {
-    compileSdk 35
+    compileSdk = 35
 
     namespace = "com.worldpay.access.checkout.sample"
 
@@ -22,7 +22,7 @@ android {
 
     defaultConfig {
         applicationId "com.worldpay.access.checkout.sample"
-        minSdkVersion 21
+        minSdkVersion 24
         targetSdkVersion 35
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
