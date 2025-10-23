@@ -474,6 +474,28 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
+    fun `should set nextFocusForward from attribute set`() {
+        val viewId = 123
+
+        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusForward, viewId)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).nextFocusForwardId = viewId
+    }
+
+    @Test
+    fun `should set nextFocusUp from attribute set`() {
+        val viewId = 123
+
+        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusUp, viewId)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).nextFocusUpId = viewId
+    }
+
+    @Test
     fun `should set nextFocusDown from attribute set`() {
         val viewId = 123
 
@@ -485,14 +507,25 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `should set nextFocusForward from attribute set`() {
+    fun `should set nextFocusLeft from attribute set`() {
         val viewId = 123
 
-        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusForward, viewId)
+        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusLeft, viewId)
 
         AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
 
-        verify(editTextMock).nextFocusForwardId = viewId
+        verify(editTextMock).nextFocusLeftId = viewId
+    }
+
+    @Test
+    fun `should set nextFocusRight from attribute set`() {
+        val viewId = 123
+
+        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusRight, viewId)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).nextFocusRightId = viewId
     }
 
     /**
@@ -738,6 +771,34 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
+    fun `nextFocusForwardId getter should return EditText nextFocusForwardId`() {
+        given(editTextMock.nextFocusForwardId).willReturn(123)
+
+        assertEquals(123, accessCheckoutEditText.nextFocusForwardId)
+    }
+
+    @Test
+    fun `nextFocusForwardId setter should set EditText nextFocusForwardId`() {
+        accessCheckoutEditText.nextFocusForwardId = 123
+
+        verify(editTextMock).nextFocusForwardId = 123
+    }
+
+    @Test
+    fun `nextFocusUpId getter should return EditText nextFocusUpId`() {
+        given(editTextMock.nextFocusUpId).willReturn(123)
+
+        assertEquals(123, accessCheckoutEditText.nextFocusUpId)
+    }
+
+    @Test
+    fun `nextFocusUpId setter should set EditText nextFocusUpId`() {
+        accessCheckoutEditText.nextFocusUpId = 123
+
+        verify(editTextMock).nextFocusUpId = 123
+    }
+
+    @Test
     fun `nextFocusDownId getter should return EditText nextFocusDownId`() {
         given(editTextMock.nextFocusDownId).willReturn(123)
 
@@ -752,17 +813,31 @@ class AccessCheckoutEditTextTest {
     }
 
     @Test
-    fun `nextFocusForwardId getter should return EditText nextFocusForwardId`() {
-        given(editTextMock.nextFocusForwardId).willReturn(123)
+    fun `nextFocusLeftId getter should return EditText nextFocusLeftId`() {
+        given(editTextMock.nextFocusLeftId).willReturn(123)
 
-        assertEquals(123, accessCheckoutEditText.nextFocusForwardId)
+        assertEquals(123, accessCheckoutEditText.nextFocusLeftId)
     }
 
     @Test
-    fun `nextFocusForwardId setter should set EditText nextFocusForwardId`() {
-        accessCheckoutEditText.nextFocusForwardId = 123
+    fun `nextFocusLeftId setter should set EditText nextFocusLeftId`() {
+        accessCheckoutEditText.nextFocusLeftId = 123
 
-        verify(editTextMock).nextFocusForwardId = 123
+        verify(editTextMock).nextFocusLeftId = 123
+    }
+
+    @Test
+    fun `nextFocusRightId getter should return EditText nextFocusRightId`() {
+        given(editTextMock.nextFocusRightId).willReturn(123)
+
+        assertEquals(123, accessCheckoutEditText.nextFocusRightId)
+    }
+
+    @Test
+    fun `nextFocusRightId setter should set EditText nextFocusRightId`() {
+        accessCheckoutEditText.nextFocusRightId = 123
+
+        verify(editTextMock).nextFocusRightId = 123
     }
 
     /**

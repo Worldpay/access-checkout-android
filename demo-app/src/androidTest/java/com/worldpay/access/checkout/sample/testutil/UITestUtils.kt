@@ -175,4 +175,10 @@ object UITestUtils {
     fun onCvcOnlyCvcView(): ViewInteraction {
         return onView(ViewMatchers.withParent(withId(R.id.cvc_flow_text_cvc)))
     }
+
+    fun repeatAction(times: Int, action: () -> Unit) {
+        for (i in 1..times) {
+            action()
+        }
+    }
 }

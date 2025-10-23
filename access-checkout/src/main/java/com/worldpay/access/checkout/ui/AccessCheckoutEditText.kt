@@ -260,6 +260,38 @@ class AccessCheckoutEditText internal constructor(
     }
 
     /**
+     * Returns the next focus forward id for this component.
+     *
+     * @return the next focus forward id
+     */
+    override fun getNextFocusForwardId() = this.editText!!.nextFocusForwardId
+
+    /**
+     * Sets the next focus forward id for this component.
+     *
+     * @param nextFocusForwardId id of the next view to focus when navigating forward
+     */
+    override fun setNextFocusForwardId(nextFocusForwardId: Int) {
+        this.editText!!.nextFocusForwardId = nextFocusForwardId
+    }
+
+    /**
+     * Returns the next focus up id for this component.
+     *
+     * @return the next focus up id
+     */
+    override fun getNextFocusUpId() = this.editText!!.nextFocusUpId
+
+    /**
+     * Sets the next focus up id for this component.
+     *
+     * @param nextFocusUpId id of the next view to focus when navigating up
+     */
+    override fun setNextFocusUpId(nextFocusUpId: Int) {
+        this.editText!!.nextFocusUpId = nextFocusUpId
+    }
+
+    /**
      * Returns the next focus down id for this component.
      *
      * @return the next focus down id
@@ -276,19 +308,35 @@ class AccessCheckoutEditText internal constructor(
     }
 
     /**
-     * Returns the next focus forward id for this component.
+     * Returns the next focus left id for this component.
      *
-     * @return the next focus forward id
+     * @return the next focus left id
      */
-    override fun getNextFocusForwardId() = this.editText!!.nextFocusForwardId
+    override fun getNextFocusLeftId() = this.editText!!.nextFocusLeftId
 
     /**
-     * Sets the next focus forward id for this component.
+     * Sets the next focus left id for this component.
      *
-     * @param nextFocusForwardId id of the next view to focus when navigating forward
+     * @param nextFocusLeftId id of the next view to focus when navigating left
      */
-    override fun setNextFocusForwardId(nextFocusForwardId: Int) {
-        this.editText!!.nextFocusForwardId = nextFocusForwardId
+    override fun setNextFocusLeftId(nextFocusLeftId: Int) {
+        this.editText!!.nextFocusLeftId = nextFocusLeftId
+    }
+
+    /**
+     * Returns the next focus right id for this component.
+     *
+     * @return the next focus right id
+     */
+    override fun getNextFocusRightId() = this.editText!!.nextFocusRightId
+
+    /**
+     * Sets the next focus right id for this component.
+     *
+     * @param nextFocusRightId id of the next view to focus when navigating right
+     */
+    override fun setNextFocusRightId(nextFocusRightId: Int) {
+        this.editText!!.nextFocusRightId = nextFocusRightId
     }
 
 

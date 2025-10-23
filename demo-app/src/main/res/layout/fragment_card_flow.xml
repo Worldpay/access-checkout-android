@@ -1,33 +1,33 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                                                   xmlns:tools="http://schemas.android.com/tools"
-                                                   android:id="@+id/fragment_card_flow"
-                                                   android:layout_width="match_parent"
-                                                   android:layout_height="match_parent"
-                                                   android:focusable="auto"
-                                                   tools:context=".sample.ui.CardFlowFragment">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/fragment_card_flow"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:focusable="auto"
+    tools:context=".sample.ui.CardFlowFragment">
 
     <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:divider="@android:color/transparent"
-            android:dividerPadding="24dp"
-            android:orientation="vertical"
-            android:padding="24dp"
-            android:showDividers="middle"
-            tools:layout_editor_absoluteY="39dp"
-            tools:layout_editor_absoluteX="123dp">
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@android:color/transparent"
+        android:dividerPadding="24dp"
+        android:orientation="vertical"
+        android:padding="24dp"
+        android:showDividers="middle"
+        tools:layout_editor_absoluteX="123dp"
+        tools:layout_editor_absoluteY="39dp">
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="24dp"
-                android:orientation="vertical">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="24dp"
+            android:orientation="vertical">
 
             <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <com.worldpay.access.checkout.ui.AccessCheckoutEditText
                     android:id="@+id/card_flow_text_pan"
@@ -41,24 +41,24 @@
                     android:focusableInTouchMode="true"
                     android:hint="@string/card_number_hint"
                     android:imeOptions="actionNext"
-                    android:nextFocusDown="@+id/card_flow_expiry_date"
+                    android:nextFocusRight="@+id/card_flow_expiry_date"
                     android:nextFocusForward="@+id/card_flow_expiry_date" />
 
                 <ImageView
-                        android:id="@+id/card_flow_brand_logo"
-                        android:layout_width="55dp"
-                        android:layout_height="45dp"
-                        android:layout_weight="1"
-                        android:contentDescription="@string/card_brand_icon"
-                        android:scaleType="centerInside"
-                        android:src="@drawable/card_unknown_logo"/>
+                    android:id="@+id/card_flow_brand_logo"
+                    android:layout_width="55dp"
+                    android:layout_height="45dp"
+                    android:layout_weight="1"
+                    android:contentDescription="@string/card_brand_icon"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/card_unknown_logo" />
 
             </LinearLayout>
 
             <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:orientation="horizontal">
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
 
                 <com.worldpay.access.checkout.ui.AccessCheckoutEditText
                     android:id="@+id/card_flow_expiry_date"
@@ -73,6 +73,7 @@
                     android:hint="@string/card_expiry_date_hint"
                     android:imeOptions="actionNext"
                     android:inputType="text"
+                    android:nextFocusRight="@+id/card_flow_text_cvc"
                     android:nextFocusDown="@+id/card_flow_text_cvc"
                     android:nextFocusForward="@+id/card_flow_text_cvc"
                     android:textColor="@color/DEFAULT"
@@ -92,62 +93,62 @@
                     android:hint="@string/card_cvc_hint"
                     android:imeOptions="actionDone|flagNoFullscreen"
                     android:inputType="text"
+                    android:nextFocusLeft="@+id/card_flow_expiry_date"
+                    android:nextFocusUp="@+id/card_flow_text_pan"
                     android:nextFocusDown="@+id/card_flow_text_cvc"
-                    android:nextFocusForward="@+id/card_flow_text_cvc"
+                    android:nextFocusForward="@+id/card_flow_text_pan"
                     android:textColor="@color/DEFAULT" />
 
             </LinearLayout>
         </LinearLayout>
 
         <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:focusable="false"
-                android:focusableInTouchMode="false">
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
+            android:orientation="horizontal">
 
             <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:orientation="vertical">
+
+                <TextView
+                    android:id="@+id/card_flow_multi_session_switch_title"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_height="match_parent"
+                    android:text="@string/enable_multi_token_title"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Medium" />
 
                 <TextView
-                        android:id="@+id/card_flow_multi_session_switch_title"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/enable_multi_token_title"
-                        android:textAppearance="@style/TextAppearance.AppCompat.Medium"/>
-
-                <TextView
-                        android:id="@+id/card_flow_multi_session_switch_desc"
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:text="@string/enable_multi_token_desc"
-                        android:textSize="12sp"
-                        android:focusable="false"
-                        android:focusableInTouchMode="false"/>
+                    android:id="@+id/card_flow_multi_session_switch_desc"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="@string/enable_multi_token_desc"
+                    android:textSize="12sp" />
             </LinearLayout>
 
             <androidx.appcompat.widget.SwitchCompat
-                    android:id="@+id/card_flow_payments_cvc_switch"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_weight="4"
-                    android:focusable="false"
-                    android:focusableInTouchMode="false"/>
+                android:id="@+id/card_flow_payments_cvc_switch"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="4"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
 
         </LinearLayout>
 
         <Button
-                android:id="@+id/card_flow_btn_submit"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:background="@android:color/darker_gray"
-                android:enabled="false"
-                android:text="@string/submit_text"
-                android:textColor="@android:color/white"/>
+            android:id="@+id/card_flow_btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@android:color/darker_gray"
+            android:enabled="false"
+            android:text="@string/submit_text"
+            android:textColor="@android:color/white" />
     </LinearLayout>
 
 

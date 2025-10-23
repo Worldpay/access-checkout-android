@@ -36,9 +36,15 @@ internal class AttributeValues(
 
         setEnabledAttribute(editText)
 
+        setNextFocusForward(editText)
+        
+        setNextFocusUp(editText)
+
         setNextFocusDown(editText)
 
-        setNextFocusForward(editText)
+        setNextFocusLeft(editText)
+
+        setNextFocusRight(editText)
     }
 
     private fun setPaddingAttribute(editText: EditText) {
@@ -131,14 +137,29 @@ internal class AttributeValues(
         editText.isEnabled = enabled
     }
 
+    private fun setNextFocusForward(editText: EditText) {
+        val nextFocusForward = getNextFocusForward()
+        nextFocusForward.takeIf { it != 0 }?.let { editText.nextFocusForwardId = nextFocusForward }
+    }
+
+    private fun setNextFocusUp(editText: EditText) {
+        val nextFocusUp = getNextFocusUp()
+        nextFocusUp.takeIf { it != 0 }?.let { editText.nextFocusUpId = nextFocusUp }
+    }
+
     private fun setNextFocusDown(editText: EditText) {
         val nextFocusDown = getNextFocusDown()
         nextFocusDown.takeIf { it != 0 }?.let { editText.nextFocusDownId = nextFocusDown }
     }
 
-    private fun setNextFocusForward(editText: EditText) {
-        val nextFocusForward = getNextFocusForward()
-        nextFocusForward.takeIf { it != 0 }?.let { editText.nextFocusForwardId = nextFocusForward }
+    private fun setNextFocusLeft(editText: EditText) {
+        val nextFocusLeft = getNextFocusLeft()
+        nextFocusLeft.takeIf { it != 0 }?.let { editText.nextFocusLeftId = nextFocusLeft }
+    }
+
+    private fun setNextFocusRight(editText: EditText) {
+        val nextFocusRight = getNextFocusRight()
+        nextFocusRight.takeIf { it != 0 }?.let { editText.nextFocusRightId = nextFocusRight }
     }
 
     private fun getPaddingBottomAttribute(): Int? =
@@ -200,11 +221,20 @@ internal class AttributeValues(
     private fun getEnabledAttribute() =
         styledAttributes.getBoolean(R.styleable.AccessCheckoutEditText_android_enabled, true)
 
-    private fun getNextFocusDown() =
-        styledAttributes.getResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusDown, 0)
-
     private fun getNextFocusForward() = styledAttributes.getResourceId(
         R.styleable.AccessCheckoutEditText_android_nextFocusForward,
         0
     )
+    private fun getNextFocusUp() =
+        styledAttributes.getResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusUp, 0)
+
+    private fun getNextFocusDown() =
+        styledAttributes.getResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusDown, 0)
+
+    private fun getNextFocusLeft() =
+        styledAttributes.getResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusLeft, 0)
+
+    private fun getNextFocusRight() =
+        styledAttributes.getResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusRight, 0)
+
 }
