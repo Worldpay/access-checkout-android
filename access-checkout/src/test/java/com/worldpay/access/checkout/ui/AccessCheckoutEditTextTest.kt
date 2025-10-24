@@ -5,6 +5,7 @@ import android.content.res.TypedArray
 import android.graphics.Color
 import android.graphics.Color.GREEN
 import android.graphics.Color.RED
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Bundle
@@ -30,8 +31,12 @@ import org.mockito.ArgumentMatchers.anyBoolean
 import org.mockito.ArgumentMatchers.anyFloat
 import org.mockito.ArgumentMatchers.anyInt
 import org.mockito.Mockito.never
-import org.mockito.kotlin.*
 import org.mockito.kotlin.eq
+import org.mockito.kotlin.given
+import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
+import org.mockito.kotlin.whenever
 import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertNull
@@ -468,6 +473,61 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).background = drawable
     }
 
+    @Test
+    fun `should set nextFocusForward from attribute set`() {
+        val viewId = 123
+
+        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusForward, viewId)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).nextFocusForwardId = viewId
+    }
+
+    @Test
+    fun `should set nextFocusUp from attribute set`() {
+        val viewId = 123
+
+        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusUp, viewId)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).nextFocusUpId = viewId
+    }
+
+    @Test
+    fun `should set nextFocusDown from attribute set`() {
+        val viewId = 123
+
+        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusDown, viewId)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).nextFocusDownId = viewId
+    }
+
+    @Test
+    fun `should set nextFocusLeft from attribute set`() {
+        val viewId = 123
+
+        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusLeft, viewId)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).nextFocusLeftId = viewId
+    }
+
+    @Test
+    fun `should set nextFocusRight from attribute set`() {
+        val viewId = 123
+
+        mockResourceId(R.styleable.AccessCheckoutEditText_android_nextFocusRight, viewId)
+
+        AccessCheckoutEditText(contextMock, attributeSetMock, 0, editTextMock)
+
+        verify(editTextMock).nextFocusRightId = viewId
+    }
+
     /**
      * Properties tests
      */
@@ -710,6 +770,76 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).isEnabled = true
     }
 
+    @Test
+    fun `nextFocusForwardId getter should return EditText nextFocusForwardId`() {
+        given(editTextMock.nextFocusForwardId).willReturn(123)
+
+        assertEquals(123, accessCheckoutEditText.nextFocusForwardId)
+    }
+
+    @Test
+    fun `nextFocusForwardId setter should set EditText nextFocusForwardId`() {
+        accessCheckoutEditText.nextFocusForwardId = 123
+
+        verify(editTextMock).nextFocusForwardId = 123
+    }
+
+    @Test
+    fun `nextFocusUpId getter should return EditText nextFocusUpId`() {
+        given(editTextMock.nextFocusUpId).willReturn(123)
+
+        assertEquals(123, accessCheckoutEditText.nextFocusUpId)
+    }
+
+    @Test
+    fun `nextFocusUpId setter should set EditText nextFocusUpId`() {
+        accessCheckoutEditText.nextFocusUpId = 123
+
+        verify(editTextMock).nextFocusUpId = 123
+    }
+
+    @Test
+    fun `nextFocusDownId getter should return EditText nextFocusDownId`() {
+        given(editTextMock.nextFocusDownId).willReturn(123)
+
+        assertEquals(123, accessCheckoutEditText.nextFocusDownId)
+    }
+
+    @Test
+    fun `nextFocusDownId setter should set EditText nextFocusDownId`() {
+        accessCheckoutEditText.nextFocusDownId = 123
+
+        verify(editTextMock).nextFocusDownId = 123
+    }
+
+    @Test
+    fun `nextFocusLeftId getter should return EditText nextFocusLeftId`() {
+        given(editTextMock.nextFocusLeftId).willReturn(123)
+
+        assertEquals(123, accessCheckoutEditText.nextFocusLeftId)
+    }
+
+    @Test
+    fun `nextFocusLeftId setter should set EditText nextFocusLeftId`() {
+        accessCheckoutEditText.nextFocusLeftId = 123
+
+        verify(editTextMock).nextFocusLeftId = 123
+    }
+
+    @Test
+    fun `nextFocusRightId getter should return EditText nextFocusRightId`() {
+        given(editTextMock.nextFocusRightId).willReturn(123)
+
+        assertEquals(123, accessCheckoutEditText.nextFocusRightId)
+    }
+
+    @Test
+    fun `nextFocusRightId setter should set EditText nextFocusRightId`() {
+        accessCheckoutEditText.nextFocusRightId = 123
+
+        verify(editTextMock).nextFocusRightId = 123
+    }
+
     /**
     Methods tests
      */
@@ -855,6 +985,22 @@ class AccessCheckoutEditTextTest {
         verify(editTextMock).setBackgroundResource(123)
     }
 
+    @Test
+    fun `requestFocus should call EditText requestFocus()`() {
+        val mockRect = mock<Rect>()
+
+        accessCheckoutEditText.requestFocus(View.FOCUS_DOWN, mockRect)
+
+        verify(editTextMock).requestFocus(View.FOCUS_DOWN, mockRect)
+    }
+
+    @Test
+    fun `focusSearch should call EditText focusSearch()`() {
+        accessCheckoutEditText.focusSearch(View.FOCUS_DOWN)
+
+        verify(editTextMock).focusSearch(View.FOCUS_DOWN)
+    }
+
     private fun assertParentPaddingValue(accessCheckoutEditText: AccessCheckoutEditText) {
         assertEquals(accessCheckoutEditText.paddingLeft, 0)
         assertEquals(accessCheckoutEditText.paddingTop, 0)
@@ -902,4 +1048,9 @@ class AccessCheckoutEditTextTest {
         // Value -1F, as per production code, is a default value to indicate attribute is not set
         mockAttributeValue(attributeId, -1F)
     }
+
+    private fun mockResourceId(attributeId: Int, value: Int) {
+        given(typedArrayMock.getResourceId(eq(attributeId), anyInt())).willReturn(value)
+    }
+
 }

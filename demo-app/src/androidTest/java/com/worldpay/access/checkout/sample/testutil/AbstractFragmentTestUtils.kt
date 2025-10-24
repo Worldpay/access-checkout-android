@@ -57,7 +57,11 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         }
     }
 
-    protected fun enterText(accessCheckoutEditText: AccessCheckoutEditText, text: String) {
+    protected fun enterText(
+        accessCheckoutEditText: AccessCheckoutEditText,
+        text: String,
+        hideKeyboard: Boolean = true
+    ) {
         wait { assertTrue("${accessCheckoutEditText.id} - visibility state") { accessCheckoutEditText.isVisible } }
         wait { assertTrue("${accessCheckoutEditText.id} - enabled state") { accessCheckoutEditText.isEnabled } }
         wait { assertEquals(1.0f, accessCheckoutEditText.alpha, "${accessCheckoutEditText.id} - alpha state") }
@@ -66,8 +70,10 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         editTextUI.click()
         activityRule.activity.runOnUiThread { accessCheckoutEditText.setText(text) }
 
-        val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        im.hideSoftInputFromWindow(accessCheckoutEditText.windowToken, 0)
+        if (hideKeyboard) {
+            val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            im.hideSoftInputFromWindow(accessCheckoutEditText.windowToken, 0)
+        }
     }
 
     protected fun clearText(accessCheckoutEditText: AccessCheckoutEditText) {

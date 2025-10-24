@@ -15,7 +15,8 @@ import androidx.test.espresso.contrib.DrawerMatchers.isOpen
 import androidx.test.espresso.contrib.NavigationViewActions
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.espresso.matcher.ViewMatchers.*
+import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
+import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
 import androidx.test.rule.ActivityTestRule
 import androidx.test.uiautomator.UiDevice.getInstance
@@ -24,8 +25,8 @@ import androidx.test.uiautomator.UiSelector
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import java.util.concurrent.TimeUnit
 import org.awaitility.Awaitility.await
+import java.util.concurrent.TimeUnit
 
 object UITestUtils {
 
@@ -35,7 +36,7 @@ object UITestUtils {
         return getInstance(getInstrumentation()).findObject(selector)
     }
 
-    private fun isKeyboardOpened(): Boolean {
+    fun isKeyboardOpened(): Boolean {
         for (window in getInstrumentation().uiAutomation.windows) {
             if (window.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD) {
                 return true
@@ -163,7 +164,21 @@ object UITestUtils {
         return onView(ViewMatchers.withParent(withId(R.id.card_flow_text_pan)))
     }
 
+    fun onExpiryDateView(): ViewInteraction {
+        return onView(ViewMatchers.withParent(withId(R.id.card_flow_expiry_date)))
+    }
+
+    fun onCvcView(): ViewInteraction {
+        return onView(ViewMatchers.withParent(withId(R.id.card_flow_text_cvc)))
+    }
+
     fun onCvcOnlyCvcView(): ViewInteraction {
         return onView(ViewMatchers.withParent(withId(R.id.cvc_flow_text_cvc)))
+    }
+
+    fun repeatAction(times: Int, action: () -> Unit) {
+        for (i in 1..times) {
+            action()
+        }
     }
 }
