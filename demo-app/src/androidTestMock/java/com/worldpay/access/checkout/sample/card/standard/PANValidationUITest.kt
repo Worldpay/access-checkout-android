@@ -1,7 +1,6 @@
-package com.worldpay.access.checkout.sample.card.standard
-
 import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.test.filters.LargeTest
+import com.github.tomakehurst.wiremock.WireMockServer
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.INVALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.sample.card.CardNumberUtil.VISA_PAN
@@ -13,13 +12,14 @@ import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTe
 import com.worldpay.access.checkout.sample.card.standard.testutil.CardFragmentTestUtils.Input.EXPIRY_DATE
 import org.junit.Test
 import org.junit.runner.RunWith
+import java.util.Arrays
 
 @RunWith(AndroidJUnit4::class)
 @LargeTest
 class PANValidationUITest : AbstractCardFragmentTest() {
 
     @Test
-    fun shouldValidateValidVisaAsGreenTextWithVisaBrandIcon() {
+    fun shouldValidateValidGlobalBrandAsGreenTextWithGlobalBrandIcon() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
@@ -29,7 +29,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
     }
 
     @Test
-    fun shouldValidateInvalidVisaAsRedTextWithVisaBrandIcon() {
+    fun shouldValidateInvalidPanAsRedTextWithGlobalBrandIcon() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
@@ -62,7 +62,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
     }
 
     @Test
-    fun shouldValidatePanWhenFocusIsLostAndDisplayBrandImage() {
+    fun shouldValidatePanWhenFocusIsLostAndDisplayGlobalBrandImage() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
@@ -73,7 +73,44 @@ class PANValidationUITest : AbstractCardFragmentTest() {
     }
 
     @Test
-    fun shouldValidatePanWhenFocusIsLostAndDisplayBrandImage_unknownInvalidLuhn() {
+    fun shouldDisplayGlobalBrandNameWhenPanIsValidated() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "4444333322221111")
+            .hasBrand(VISA)
+            .hasBrandNames("visa")
+    }
+
+    @Test
+    fun shouldDisplayOneGlobalBrandNameWhenOneDigitFromValidPanIsRemoved() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "444433332222")
+            .hasBrand(VISA)
+            .hasBrandNames("visa")
+            .setCursorPositionOnPan(11)
+            .removeLastPanDigit()
+            .hasBrandNames("visa")
+    }
+
+    @Test
+    fun shouldShowNoGlobalBrandsWhenValidPanIsCleared() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails(pan = "4111111111111111")
+            .hasBrand(VISA)
+            .hasBrandNames("visa")
+        clearPan()
+        cardFragmentTestUtils
+            .hasNoBrand()
+            .hasBrandNames("")
+    }
+
+    @Test
+    fun shouldValidatePanWhenFocusIsLostAndDisplayGlobalBrandImage_unknownInvalidLuhn() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
@@ -84,7 +121,7 @@ class PANValidationUITest : AbstractCardFragmentTest() {
     }
 
     @Test
-    fun shouldValidatePanAsFalseWhenPartialVisaEnteredAndFocusIsLost() {
+    fun shouldValidatePanAsFalseWhenPartialGlobalBrandEnteredAndFocusIsLost() {
         cardFragmentTestUtils
             .isInInitialState()
             .hasNoBrand()
@@ -93,5 +130,26 @@ class PANValidationUITest : AbstractCardFragmentTest() {
             .focusOn(EXPIRY_DATE)
             .validationStateIs(pan = false)
             .hasBrand(VISA)
+    }
+
+    @Test
+    fun shouldValidateValidCobrandedPanWhenEntered() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails("4150580996517927")
+            .hasBrandNames("cartesBancaires", "visa")
+            .validationStateIs(pan = true)
+    }
+
+    @Test
+    fun shouldDisplayOneGlobalBrandNameWhenOneDigitFromValidCoBrandedPanIsRemoved() {
+        cardFragmentTestUtils
+            .isInInitialState()
+            .hasNoBrand()
+            .enterCardDetails("415058099651")
+            .hasBrandNames("cartesBancaires", "visa")
+            .removeLastPanDigit()
+            .hasBrandNames("visa")
     }
 }

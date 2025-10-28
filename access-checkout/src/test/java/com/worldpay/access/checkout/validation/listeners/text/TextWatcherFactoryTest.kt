@@ -2,11 +2,11 @@ package com.worldpay.access.checkout.validation.listeners.text
 
 import android.widget.EditText
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
-import kotlin.test.assertNotNull
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
+import kotlin.test.assertNotNull
 
 class TextWatcherFactoryTest {
 
@@ -27,13 +27,14 @@ class TextWatcherFactoryTest {
     fun `should get pan text watcher`() {
         given(resultHandlerFactory.getPanValidationResultHandler()).willReturn(mock())
         given(resultHandlerFactory.getCvcValidationResultHandler()).willReturn(mock())
-        given(resultHandlerFactory.getBrandChangedHandler()).willReturn(mock())
+        given(resultHandlerFactory.getBrandsChangedHandler()).willReturn(mock())
 
         val textWatcher: PanTextWatcher = textWatcherFactory.createPanTextWatcher(
             panEditText = panEditText,
             cvcEditText = cvcEditText,
             acceptedCardBrands = emptyArray(),
-            enablePanFormatting = false
+            enablePanFormatting = false,
+            checkoutId = "testCheckoutId"
         )
         assertNotNull(textWatcher)
     }
@@ -54,4 +55,5 @@ class TextWatcherFactoryTest {
         val textWatcher: CvcTextWatcher = textWatcherFactory.createCvcTextWatcher()
         assertNotNull(textWatcher)
     }
+
 }

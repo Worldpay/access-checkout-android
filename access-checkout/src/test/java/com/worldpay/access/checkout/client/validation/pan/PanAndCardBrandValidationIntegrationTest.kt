@@ -1,6 +1,5 @@
 package com.worldpay.access.checkout.client.validation.pan
 
-import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.DINERS_BRAND
@@ -9,7 +8,7 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.JCB_B
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MAESTRO_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.MASTERCARD_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrandList
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.DINERS_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.DISCOVER_PAN
@@ -20,32 +19,31 @@ import com.worldpay.access.checkout.testutils.CardNumberUtil.MASTERCARD_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.PARTIAL_VISA
 import com.worldpay.access.checkout.testutils.CardNumberUtil.VALID_UNKNOWN_LUHN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
-import org.junit.Before
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
-import org.mockito.kotlin.*
+import org.mockito.kotlin.any
+import org.mockito.kotlin.never
+import org.mockito.kotlin.reset
+import org.mockito.kotlin.verify
+import org.mockito.kotlin.verifyNoInteractions
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
 
 @RunWith(RobolectricTestRunner::class)
 class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
-    @Before
-    fun setup() {
-        initialiseValidation()
-    }
+    @Test
+    fun `should accept an unknown valid luhn pan when no accepted cards have been specified`() =
+        runTest {
+            initialiseValidation()
+            setText(pan, VALID_UNKNOWN_LUHN)
+
+            verify(cardValidationListener).onPanValidated(true)
+            verify(cardValidationListener, never()).onCardBrandsChanged(any())
+        }
 
     @Test
-    fun `should accept an unknown valid luhn pan when no accepted cards have been specified`() {
-        pan.setText(VALID_UNKNOWN_LUHN)
-
-        verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener, never()).onBrandChange(any())
-    }
-
-    @Test
-    fun `should accept an unknown valid luhn pan when all cards are accepted`() {
+    fun `should accept an unknown valid luhn pan when all cards are accepted`() = runTest {
         initialiseValidation(
             acceptedCardBrands = arrayOf(
                 "AMEX",
@@ -58,176 +56,202 @@ class PanAndCardBrandValidationIntegrationTest : AbstractValidationIntegrationTe
             )
         )
 
-        pan.setText(VALID_UNKNOWN_LUHN)
+        setText(pan, VALID_UNKNOWN_LUHN)
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener, never()).onBrandChange(any())
+        verify(cardValidationListener, never()).onCardBrandsChanged(any())
     }
 
     @Test
-    fun `should not call listener at all when pan is complete but invalid and unrecognised`() {
-        pan.setText(INVALID_UNKNOWN_LUHN)
-        verifyNoInteractions(cardValidationListener)
-    }
+    fun `should not call listener at all when pan is complete but invalid and unrecognised`() =
+        runTest {
+            initialiseValidation()
+            setText(pan, INVALID_UNKNOWN_LUHN)
+            verifyNoInteractions(cardValidationListener)
+        }
 
     @Test
-    fun `should not call listener at all when pan is partial but invalid and unrecognised`() {
-        pan.setText("000")
-        verifyNoInteractions(cardValidationListener)
-    }
+    fun `should not call listener at all when pan is partial but invalid and unrecognised`() =
+        runTest {
+            initialiseValidation()
+            setText(pan, "000")
+            verifyNoInteractions(cardValidationListener)
+        }
 
     @Test
-    fun `should not validate pan for partial visa pan but should call brand changed with visa brand`() {
-        pan.setText(PARTIAL_VISA)
+    fun `should not validate pan for partial visa pan but should call brand changed with visa brand`() =
+        runTest {
+            initialiseValidation()
+            setText(pan, PARTIAL_VISA)
 
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
-
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
-    }
-
-    @Test
-    fun `should only notify pan validated on validation state change and notify brand change each time the brand changes - without accepted card brands`() {
-        pan.setText(visaPan())
-
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
-
-        verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
-
-        reset(cardValidationListener)
-
-        pan.setText(MASTERCARD_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(MASTERCARD_BRAND))
-
-        reset(cardValidationListener)
-
-        pan.setText(AMEX_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
-
-        reset(cardValidationListener)
-
-        pan.setText(JCB_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(JCB_BRAND))
-
-        reset(cardValidationListener)
-
-        pan.setText(DISCOVER_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(DISCOVER_BRAND))
-
-        reset(cardValidationListener)
-
-        pan.setText(DINERS_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(DINERS_BRAND))
-
-        reset(cardValidationListener)
-
-        pan.setText(MAESTRO_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(MAESTRO_BRAND))
-
-        reset(cardValidationListener)
-
-        pan.setText("")
-        verify(cardValidationListener).onPanValidated(false)
-        verify(cardValidationListener).onBrandChange(null)
-    }
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
+        }
 
     @Test
-    fun `should only notify pan validated on validation state change and notify brand change each time the brand changes - with empty array of accepted card brands`() {
-        initialiseValidation(acceptedCardBrands = emptyArray())
+    fun `should only notify pan validated on validation state change and notify brand change each time the brand changes - without accepted card brands`() =
+        runTest {
+            initialiseValidation()
+            setText(pan, visaPan())
 
-        pan.setText(visaPan())
+            verify(cardValidationListener).onPanValidated(true)
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
 
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+            reset(cardValidationListener)
 
-        verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+            setText(pan, MASTERCARD_PAN)
 
-        reset(cardValidationListener)
 
-        pan.setText(MASTERCARD_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(MASTERCARD_BRAND))
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(MASTERCARD_BRAND))
 
-        reset(cardValidationListener)
+            reset(cardValidationListener)
 
-        pan.setText(AMEX_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
+            setText(pan, AMEX_PAN)
 
-        reset(cardValidationListener)
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(AMEX_BRAND))
 
-        pan.setText(JCB_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(JCB_BRAND))
+            reset(cardValidationListener)
 
-        reset(cardValidationListener)
+            setText(pan, JCB_PAN)
 
-        pan.setText(DISCOVER_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(DISCOVER_BRAND))
 
-        reset(cardValidationListener)
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(JCB_BRAND))
 
-        pan.setText(DINERS_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(DINERS_BRAND))
+            reset(cardValidationListener)
 
-        reset(cardValidationListener)
+            setText(pan, DISCOVER_PAN)
 
-        pan.setText(MAESTRO_PAN)
-        verify(cardValidationListener, never()).onPanValidated(any())
-        verify(cardValidationListener).onBrandChange(toCardBrand(MAESTRO_BRAND))
 
-        reset(cardValidationListener)
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(DISCOVER_BRAND))
 
-        pan.setText("")
-        verify(cardValidationListener).onPanValidated(false)
-        verify(cardValidationListener).onBrandChange(null)
-    }
+            reset(cardValidationListener)
 
-    @Test
-    fun `should invalidate the cvc after the pan has been validated with a brand and the cvc is now incorrect`() {
-        cvc.setText("1234")
-        verify(cardValidationListener).onCvcValidated(true)
+            setText(pan, DINERS_PAN)
 
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
-        pan.setText(visaPan())
-        verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
-        verify(cardValidationListener).onCvcValidated(false)
-    }
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(DINERS_BRAND))
+
+            reset(cardValidationListener)
+
+            setText(pan, MAESTRO_PAN)
+
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(MAESTRO_BRAND))
+
+            reset(cardValidationListener)
+
+            setText(pan, "")
+
+            verify(cardValidationListener).onPanValidated(false)
+            verify(cardValidationListener).onCardBrandsChanged(emptyList())
+        }
 
     @Test
-    fun `should accept amex card when amex is the only accepted card brand`() {
+    fun `should only notify pan validated on validation state change and notify brand change each time the brand changes - with empty array of accepted card brands`() =
+        runTest {
+            initialiseValidation(acceptedCardBrands = emptyArray())
+
+            setText(pan, visaPan())
+
+
+            verify(cardValidationListener).onPanValidated(true)
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
+
+            reset(cardValidationListener)
+
+            setText(pan, MASTERCARD_PAN)
+
+
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(MASTERCARD_BRAND))
+
+            reset(cardValidationListener)
+
+            setText(pan, AMEX_PAN)
+
+
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(AMEX_BRAND))
+
+            reset(cardValidationListener)
+
+            setText(pan, JCB_PAN)
+
+
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(JCB_BRAND))
+
+            reset(cardValidationListener)
+
+            setText(pan, DISCOVER_PAN)
+
+
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(DISCOVER_BRAND))
+
+            reset(cardValidationListener)
+
+            setText(pan, DINERS_PAN)
+
+
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(DINERS_BRAND))
+
+            reset(cardValidationListener)
+
+            setText(pan, MAESTRO_PAN)
+
+
+            verify(cardValidationListener, never()).onPanValidated(any())
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(MAESTRO_BRAND))
+
+            reset(cardValidationListener)
+
+            setText(pan, "")
+
+
+            verify(cardValidationListener).onPanValidated(false)
+            verify(cardValidationListener).onCardBrandsChanged(emptyList())
+        }
+
+    @Test
+    fun `should invalidate the cvc after the pan has been validated with a brand and the cvc is now incorrect`() =
+        runTest {
+            initialiseValidation()
+            setText(cvc, "1234")
+            verify(cardValidationListener).onCvcValidated(true)
+
+            setText(pan, visaPan())
+
+            verify(cardValidationListener).onPanValidated(true)
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
+            verify(cardValidationListener).onCvcValidated(false)
+        }
+
+    @Test
+    fun `should accept amex card when amex is the only accepted card brand`() = runTest {
         initialiseValidation(acceptedCardBrands = arrayOf("AMEX"))
 
-        pan.setText(AMEX_PAN)
-
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+        setText(pan, AMEX_PAN)
 
         verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
+        verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(AMEX_BRAND))
     }
 
     @Test
-    fun `should not accept diners card when diners is not accepted`() {
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+    fun `should not accept diners card when diners is not accepted`() = runTest {
 
         initialiseValidation(acceptedCardBrands = arrayOf("AMEX"))
 
-        pan.setText(DINERS_PAN)
+        setText(pan, DINERS_PAN)
 
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         verify(cardValidationListener).onPanValidated(false)
-        verify(cardValidationListener).onBrandChange(toCardBrand(DINERS_BRAND))
+        verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(DINERS_BRAND))
     }
 }

@@ -1,11 +1,11 @@
 package com.worldpay.access.checkout.client.validation.cvc
 
-import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
-import kotlin.test.assertEquals
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -13,47 +13,51 @@ import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
+import kotlin.test.assertEquals
 
+@OptIn(ExperimentalCoroutinesApi::class)
 @RunWith(RobolectricTestRunner::class)
 class CvcValidationIntegrationTest : AbstractValidationIntegrationTest() {
 
     @Before
-    fun setup() {
+    fun setup() = runTest {
         initialiseValidation()
+        advanceUntilIdle()
     }
 
     @Test
-    fun `should never call validation listener given 1 digit cvc is entered and no pan`() {
-        cvc.setText("1")
+    fun `should never call validation listener given 1 digit cvc is entered and no pan`() =
+        runTest {
+            setText(cvc, "1")
 
-        verify(cardValidationListener, never()).onCvcValidated(any())
-    }
-
-    @Test
-    fun `should never call validation listener given 2 digit cvc is entered and no pan`() {
-        cvc.setText("12")
-
-        verify(cardValidationListener, never()).onCvcValidated(any())
-    }
+            verify(cardValidationListener, never()).onCvcValidated(any())
+        }
 
     @Test
-    fun `should validate cvc as true given 3 digit cvc is entered and no pan`() {
-        cvc.setText("123")
+    fun `should never call validation listener given 2 digit cvc is entered and no pan`() =
+        runTest {
+            setText(cvc, "12")
+
+            verify(cardValidationListener, never()).onCvcValidated(any())
+        }
+
+    @Test
+    fun `should validate cvc as true given 3 digit cvc is entered and no pan`() = runTest {
+        setText(cvc, "123")
 
         verify(cardValidationListener).onCvcValidated(true)
     }
 
     @Test
-    fun `should validate cvc as true given 4 digit cvc is entered and no pan`() {
-        cvc.setText("1234")
+    fun `should validate cvc as true given 4 digit cvc is entered and no pan`() = runTest {
+        setText(cvc, "1234")
 
         verify(cardValidationListener).onCvcValidated(true)
     }
 
     @Test
-    fun `should limit to 4 digits and validate cvc as true given no pan is entered`() {
-        cvc.setText("12345")
+    fun `should limit to 4 digits and validate cvc as true given no pan is entered`() = runTest {
+        setText(cvc, "12345")
 
         verify(cardValidationListener).onCvcValidated(true)
         assertEquals("1234", cvc.text.toString())
@@ -61,38 +65,40 @@ class CvcValidationIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should validate cvc as true given 3 digit cvc is entered and visa pan is entered`() {
-        pan.setText(visaPan())
-        cvc.setText("123")
+    fun `should validate cvc as true given 3 digit cvc is entered and visa pan is entered`() =
+        runTest {
+            setText(pan,visaPan())
+            setText(cvc, "123")
 
-        verify(cardValidationListener).onCvcValidated(true)
-    }
-
-    @Test
-    fun `should limit cvc to 3 digits and validate cvc as true given 4 digit cvc is entered and visa pan is entered`() {
-        pan.setText(visaPan())
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
-
-        cvc.setText("1234")
-
-        verify(cardValidationListener).onCvcValidated(true)
-        assertEquals("123", cvc.text.toString())
-    }
+            verify(cardValidationListener).onCvcValidated(true)
+        }
 
     @Test
-    fun `should validate cvc as true given 4 digit cvc is entered and amex pan is entered`() {
-        pan.setText(AMEX_PAN)
-        cvc.setText("1234")
+    fun `should limit cvc to 3 digits and validate cvc as true given 4 digit cvc is entered and visa pan is entered`() =
+        runTest {
+            setText(pan,visaPan())
+            setText(cvc, "1234")
 
-        verify(cardValidationListener).onCvcValidated(true)
-    }
+            verify(cardValidationListener).onCvcValidated(true)
+            assertEquals("123", cvc.text.toString())
+        }
 
     @Test
-    fun `should limit cvc to 3 digits and validate cvc as true given 4 digit cvc is entered and amex pan is entered`() {
-        pan.setText(AMEX_PAN)
-        cvc.setText("12345")
+    fun `should validate cvc as true given 4 digit cvc is entered and amex pan is entered`() =
+        runTest {
+            setText(pan,AMEX_PAN)
+            setText(cvc, "1234")
 
-        verify(cardValidationListener).onCvcValidated(true)
-        assertEquals("1234", cvc.text.toString())
-    }
+            verify(cardValidationListener).onCvcValidated(true)
+        }
+
+    @Test
+    fun `should limit cvc to 3 digits and validate cvc as true given 4 digit cvc is entered and amex pan is entered`() =
+        runTest {
+            setText(pan,AMEX_PAN)
+            setText(cvc, "12345")
+
+            verify(cardValidationListener).onCvcValidated(true)
+            assertEquals("1234", cvc.text.toString())
+        }
 }

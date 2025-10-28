@@ -79,12 +79,16 @@ class SVGImageLoaderTest {
         captor.firstValue.onResponse(mockHttpCall, response)
         verify(svgImageRenderer).renderImage(inputStream, targetImageView, "visa")
     }
-
     @Test
     fun shouldNotAttemptToFetchRemoteCardLogoForUnidentifiedBrandAndShouldSetUnknownCardLogo() {
         val resources = mock(Resources::class.java)
         given(resources.getResourceEntryName(R.drawable.card_unknown_logo)).willReturn("card_unknown_logo")
         given(targetImageView.resources).willReturn(resources)
+
+        // Mock the UI runner to execute the Runnable immediately
+        given(uiRunner.invoke(any())).willAnswer { invocation ->
+            (invocation.arguments[0] as Runnable).run()
+        }
 
         svgImageLoader.fetchAndApplyCardLogo(null, targetImageView)
 
@@ -107,18 +111,14 @@ class SVGImageLoaderTest {
                 )
             )
 
-        val mockHttpCall = mock(Call::class.java)
-        given(client.newCall(any())).willReturn(mockHttpCall)
-
         val resources = mock(Resources::class.java)
         given(resources.getResourceEntryName(R.drawable.card_unknown_logo)).willReturn("card_unknown_logo")
         given(targetImageView.resources).willReturn(resources)
 
-        val response = mock(Response::class.java)
-        val responseBody = mock(ResponseBody::class.java)
-        val inputStream = mock(InputStream::class.java)
-        given(responseBody.byteStream()).willReturn(inputStream)
-        given(response.body).willReturn(responseBody)
+        // Mock the UI runner to execute the Runnable immediately
+        given(uiRunner.invoke(any())).willAnswer { invocation ->
+            (invocation.arguments[0] as Runnable).run()
+        }
 
         svgImageLoader.fetchAndApplyCardLogo(cardBrandWithNoSVG, targetImageView)
 
@@ -149,4 +149,5 @@ class SVGImageLoaderTest {
         verifyNoInteractions(svgImageRenderer)
         verifyNoInteractions(targetImageView)
     }
+
 }

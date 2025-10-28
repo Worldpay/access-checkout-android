@@ -1,37 +1,40 @@
 package com.worldpay.access.checkout.client.testutil
 
 import android.content.Context
+import android.os.Looper.getMainLooper
 import android.text.method.DigitsKeyListener
 import android.view.KeyEvent
-import android.view.KeyEvent.*
+import android.view.KeyEvent.ACTION_DOWN
+import android.view.KeyEvent.ACTION_UP
+import android.view.KeyEvent.KEYCODE_DEL
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.api.configuration.CardConfiguration
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
+import androidx.test.core.app.ApplicationProvider
+import com.github.tomakehurst.wiremock.WireMockServer
+import com.worldpay.access.checkout.BaseCoroutineTest
+import com.worldpay.access.checkout.client.AccessCheckoutClient
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
+import com.worldpay.access.checkout.client.testutil.mocks.AccessWPServiceMock
+import com.worldpay.access.checkout.client.testutil.mocks.CardBinServiceMock
 import com.worldpay.access.checkout.client.validation.config.CardValidationConfig
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import java.security.KeyStore
-import javax.net.ssl.HttpsURLConnection
-import javax.net.ssl.KeyManagerFactory
-import javax.net.ssl.SSLContext
-import javax.net.ssl.TrustManagerFactory
-import okhttp3.mockwebserver.MockResponse
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestScope
 import okhttp3.mockwebserver.MockWebServer
-import org.junit.After
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
 import org.mockito.kotlin.reset
 import org.mockito.kotlin.spy
-import org.robolectric.shadows.ShadowInstrumentation.getInstrumentation
+import org.robolectric.Shadows.shadowOf
+import javax.net.ssl.HttpsURLConnection
+import kotlin.test.AfterTest
+import kotlin.test.BeforeTest
 
-open class AbstractValidationIntegrationTest {
+@OptIn(ExperimentalCoroutinesApi::class)
+open class AbstractValidationIntegrationTest : BaseCoroutineTest() {
 
-    protected val context: Context = getInstrumentation().context
-
-    private val cardConfigurationEndpoint = "/access-checkout/cardTypes.json"
-
-    private val cardConfigJson =
-        CardConfiguration::class.java.getResource("remote_card_config.json")?.readText()!!
+    protected lateinit var context: Context
 
     protected lateinit var pan: AccessCheckoutEditText
     protected lateinit var cvc: AccessCheckoutEditText
@@ -40,16 +43,41 @@ open class AbstractValidationIntegrationTest {
     private val lifecycleOwner = mock<LifecycleOwner>()
     private val lifecycle = mock<Lifecycle>()
 
-    private lateinit var server: MockWebServer
-
     protected lateinit var cardValidationListener: CardValidationListener
 
     private val defaultSSLSocketFactory = HttpsURLConnection.getDefaultSSLSocketFactory()
 
-    @After
-    fun tearDown() {
-        server.shutdown()
+    private lateinit var accessMockServer: MockWebServer
+    private lateinit var cardBinServer: WireMockServer
+
+    private val sessionResponseListener = mock<SessionResponseListener>()
+    protected lateinit var accessCheckoutClient: AccessCheckoutClient
+
+    @BeforeTest
+    fun baseSetUp() {
+        context = ApplicationProvider.getApplicationContext<Context>()
+        resetValidation()
+        HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
+        setupMockServices()
+        createAccessCheckoutClient(context)
+    }
+
+    private fun setupMockServices(): Pair<MockWebServer, WireMockServer> {
+        this.accessMockServer = AccessWPServiceMock.start()
+        this.cardBinServer = CardBinServiceMock.start()
+        return Pair(accessMockServer, cardBinServer)
+    }
+
+
+    @AfterTest
+    fun baseTearDown() {
+        tearDownMockServers()
         HttpsURLConnection.setDefaultSSLSocketFactory(defaultSSLSocketFactory)
+    }
+
+    fun tearDownMockServers() {
+        AccessWPServiceMock.shutdown()
+        CardBinServiceMock.shutdown()
     }
 
     protected fun initialiseValidation(
@@ -58,15 +86,11 @@ open class AbstractValidationIntegrationTest {
     ) {
         resetValidation()
 
-        val url = server.url(cardConfigurationEndpoint)
-
         val cardValidationConfig = CardValidationConfig.Builder()
             .pan(pan)
             .cvc(cvc)
             .expiryDate(expiryDate)
             .validationListener(cardValidationListener)
-            .baseUrl("${url.scheme}://${url.host}:${url.port}/")
-            .lifecycleOwner(lifecycleOwner)
 
         if (enablePanFormatting) {
             cardValidationConfig.enablePanFormatting()
@@ -76,9 +100,7 @@ open class AbstractValidationIntegrationTest {
             cardValidationConfig.acceptedCardBrands(acceptedCardBrands)
         }
 
-        AccessCheckoutValidationInitialiser.initialise(
-            cardValidationConfig.build()
-        )
+        accessCheckoutClient.initialiseValidation(cardValidationConfig.build())
     }
 
     private fun resetValidation() {
@@ -95,30 +117,6 @@ open class AbstractValidationIntegrationTest {
 
         reset(lifecycle, lifecycleOwner)
         given(lifecycleOwner.lifecycle).willReturn(lifecycle)
-
-        HttpsURLConnection.setDefaultSSLSocketFactory(TrustAllSSLSocketFactory())
-
-        server = MockWebServer()
-        server.enqueue(MockResponse().setBody(cardConfigJson))
-        server.useHttps(getSslContext().socketFactory, false)
-        server.start()
-    }
-
-    private fun getSslContext(): SSLContext {
-        val stream = TrustAllSSLSocketFactory::class.java.getResource("wiremock.bks")?.openStream()
-        val serverKeyStore = KeyStore.getInstance("BKS")
-        serverKeyStore.load(stream, "".toCharArray())
-
-        val kmfAlgorithm = KeyManagerFactory.getDefaultAlgorithm()
-        val kmf = KeyManagerFactory.getInstance(kmfAlgorithm)
-        kmf.init(serverKeyStore, "password".toCharArray())
-
-        val trustManagerFactory = TrustManagerFactory.getInstance(kmfAlgorithm)
-        trustManagerFactory.init(serverKeyStore)
-
-        val sslContext = SSLContext.getInstance("SSL")
-        sslContext.init(kmf.keyManagers, trustManagerFactory.trustManagers, null)
-        return sslContext
     }
 
     protected fun AccessCheckoutEditText.pressBackspaceAtIndex(selection: Int) {
@@ -133,14 +131,65 @@ open class AbstractValidationIntegrationTest {
         this.editText.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, KEYCODE_DEL, 0))
     }
 
-    protected fun AccessCheckoutEditText.typeAtIndex(selection: Int, text: String) {
+    private fun AccessCheckoutEditText.typeAtIndex(selection: Int, text: String) {
         this.editText!!.setSelection(selection)
         this.editText.text.insert(selection, text)
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_DOWN, code, 0))
 //        this.dispatchKeyEvent(KeyEvent(0, 0, ACTION_UP, code, 0))
     }
 
-    protected fun AccessCheckoutEditText.paste(selectionStart: Int, selectionEnd: Int, text: String) {
+    private fun AccessCheckoutEditText.paste(
+        selectionStart: Int,
+        selectionEnd: Int,
+        text: String
+    ) {
         this.editText!!.text.replace(selectionStart, selectionEnd, text)
+    }
+
+    fun TestScope.typeAtIndex(
+        editText: AccessCheckoutEditText,
+        selection: Int,
+        text: String
+    ) {
+        performSafeUiAction {
+            editText.typeAtIndex(selection, text)
+        }
+    }
+
+    fun TestScope.paste(
+        editText: AccessCheckoutEditText, selectionStart: Int,
+        selectionEnd: Int,
+        text: String
+    ) {
+        performSafeUiAction {
+            editText.paste(selectionStart, selectionEnd, text)
+        }
+    }
+
+    fun TestScope.setText(editText: AccessCheckoutEditText, text: String) {
+        performSafeUiAction {
+            editText.setText(text)
+        }
+    }
+
+    private fun TestScope.performSafeUiAction(
+        editAction: () -> Unit
+    ) {
+        testScheduler.advanceUntilIdle() //Complete any pending co-routines
+        editAction()
+        testScheduler.advanceUntilIdle() //Complete edit action co-routines
+        shadowOf(getMainLooper()).idle() //Execute all tasks in main looper
+    }
+
+    private fun createAccessCheckoutClient(context: Context) {
+        val baseUrl = accessMockServer.url("/").toString()
+
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(baseUrl)
+            .checkoutId("INTEGRATION-TEST")
+            .sessionResponseListener(sessionResponseListener)
+            .context(context)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
     }
 }

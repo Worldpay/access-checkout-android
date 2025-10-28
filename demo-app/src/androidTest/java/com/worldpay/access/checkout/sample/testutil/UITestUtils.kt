@@ -1,7 +1,6 @@
 package com.worldpay.access.checkout.sample.testutil
 
 import android.content.pm.ActivityInfo
-import android.os.Build
 import android.view.accessibility.AccessibilityWindowInfo
 import android.widget.EditText
 import android.widget.ProgressBar
@@ -96,18 +95,10 @@ object UITestUtils {
     }
 
     fun reopenApp() {
-        pressRecentApps()
+        pressRecentApps() // Open recent apps
+        pressRecentApps() // Return to the app
 
-        Thread.sleep(1000)
-
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
-            val uiDevice = getInstance(getInstrumentation())
-            uiDevice.click(uiDevice.displayWidth / 2, uiDevice.displayHeight / 2)
-        } else {
-            pressRecentApps()
-        }
-
-        await().atMost(60, TimeUnit.SECONDS).until {
+        await().atMost(10, TimeUnit.SECONDS).until {
             try {
                 onView(withId(R.id.drawer_layout))
                     .check(matches(isDisplayed()))
@@ -128,13 +119,13 @@ object UITestUtils {
 
     private fun pressRecentApps(currentRetryCount: Int = 1, maxTimes: Int = 3) {
         val uiDevice = getInstance(getInstrumentation())
-        val pressedOnce = uiDevice.pressRecentApps()
+        var pressedOnce = uiDevice.pressRecentApps()
 
         if (pressedOnce) {
+            Thread.sleep(1000)
             return
         } else {
             if (currentRetryCount < maxTimes) {
-                Thread.sleep(1000)
                 pressRecentApps(currentRetryCount = currentRetryCount + 1)
             } else {
                 throw RuntimeException("Could not press recent apps button")

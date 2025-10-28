@@ -1,0 +1,21 @@
+{
+  "scenarioName": "RETRY Scenario 2: Exhausted Retries",
+  "requiredScenarioState": "RetryScenario2.1",
+  "newScenarioState": "RetryScenario2.3",
+  "request": {
+    "method": "POST",
+    "url": "/public/card/bindetails",
+    "bodyPatterns": [
+      {
+        "matchesJsonPath": {
+          "expression": "$.cardNumber",
+          "matches": "513107245440"
+        }
+      }
+    ]
+  },
+  "response": {
+    "status": 504,
+    "body": "{\"error\": \"Timeout\"}"
+  }
+}

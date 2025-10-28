@@ -13,17 +13,16 @@ import com.worldpay.access.checkout.session.api.request.CardSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import com.worldpay.access.checkout.testutils.createAccessCheckoutEditTextMock
-import java.net.URL
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(PlainRobolectricTestRunner::class)
 class CardSessionRequestHandlerTest {
@@ -33,17 +32,13 @@ class CardSessionRequestHandlerTest {
 
     private lateinit var cardSessionRequestHandler: CardSessionRequestHandler
 
-    private val baseUrl = URL("http://base-url.com")
-
     @Before
     fun setup() {
         cardSessionRequestHandler =
             CardSessionRequestHandler(
                 SessionRequestHandlerConfig.Builder()
-                    .baseUrl(baseUrl)
                     .checkoutId("checkout-id")
                     .context(context)
-                    .externalSessionResponseListener(externalSessionResponseListener)
                     .build()
             )
     }
@@ -127,16 +122,21 @@ class CardSessionRequestHandlerTest {
 
         verify(context).startService(argument.capture())
 
-        val sessionRequestInfo = argument.value.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
+        val sessionRequestInfo =
+            argument.value.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
         sessionRequestInfo.requestBody as CardSessionRequest
 
         assertEquals(cardDetails.pan, sessionRequestInfo.requestBody.cardNumber)
         assertEquals("checkout-id", sessionRequestInfo.requestBody.identity)
         assertEquals(cardDetails.cvc, sessionRequestInfo.requestBody.cvc)
-        assertEquals(cardDetails.expiryDate?.month, sessionRequestInfo.requestBody.cardExpiryDate.month)
-        assertEquals(cardDetails.expiryDate?.year, sessionRequestInfo.requestBody.cardExpiryDate.year)
-
-        assertEquals(baseUrl, sessionRequestInfo.baseUrl)
+        assertEquals(
+            cardDetails.expiryDate?.month,
+            sessionRequestInfo.requestBody.cardExpiryDate.month
+        )
+        assertEquals(
+            cardDetails.expiryDate?.year,
+            sessionRequestInfo.requestBody.cardExpiryDate.year
+        )
 
         assertEquals(DiscoverLinks.cardSessions, sessionRequestInfo.discoverLinks)
         assertEquals(CARD, sessionRequestInfo.sessionType)

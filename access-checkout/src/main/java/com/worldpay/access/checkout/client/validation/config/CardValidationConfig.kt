@@ -1,8 +1,6 @@
 package com.worldpay.access.checkout.client.validation.config
 
 import android.widget.EditText
-import androidx.lifecycle.LifecycleOwner
-import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.validation.listener.AccessCheckoutCardValidationListener
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
@@ -18,10 +16,8 @@ class CardValidationConfig private constructor(
     val expiryDate: EditText,
     val cvc: EditText,
     val acceptedCardBrands: Array<String>,
-    val baseUrl: String,
     val validationListener: AccessCheckoutCardValidationListener,
-    val lifecycleOwner: LifecycleOwner,
-    val enablePanFormatting: Boolean
+    val enablePanFormatting: Boolean,
 ) : ValidationConfig {
 
     /**
@@ -34,9 +30,7 @@ class CardValidationConfig private constructor(
         private var cvc: EditText? = null
 
         private var acceptedCardBrands: Array<String> = emptyArray()
-        private var baseUrl: String? = null
         private var validationListener: AccessCheckoutCardValidationListener? = null
-        private var lifecycleOwner: LifecycleOwner? = null
         private var enablePanFormatting: Boolean = false
 
         /**
@@ -79,15 +73,6 @@ class CardValidationConfig private constructor(
             return this
         }
 
-        /**
-         * Sets the base url to use when calling Worldpay services
-         *
-         * @param[baseUrl] [String] that represents the base url
-         */
-        fun baseUrl(baseUrl: String): Builder {
-            this.baseUrl = baseUrl
-            return this
-        }
 
         /**
          * Sets the validation listener that should be notified on validation changes
@@ -96,16 +81,6 @@ class CardValidationConfig private constructor(
          */
         fun validationListener(validationListener: AccessCheckoutCardValidationListener): Builder {
             this.validationListener = validationListener
-            return this
-        }
-
-        /**
-         * Sets the lifecycle owner of the application so that validation state can be handled during lifecycle changes
-         *
-         * @param[lifecycleOwner] [LifecycleOwner] that represents the lifecycle owner of the application
-         */
-        fun lifecycleOwner(lifecycleOwner: LifecycleOwner): Builder {
-            this.lifecycleOwner = lifecycleOwner
             return this
         }
 
@@ -127,21 +102,16 @@ class CardValidationConfig private constructor(
             validateNotNull(pan, "pan component")
             validateNotNull(expiryDate, "expiry date component")
             validateNotNull(cvc, "cvc component")
-            validateNotNull(baseUrl, "base url")
             validateNotNull(validationListener, "validation listener")
-            validateNotNull(lifecycleOwner, "lifecycle owner")
 
-            val sanitisedBaseUrl = sanitise(baseUrl)!!
 
             return CardValidationConfig(
                 pan = pan!!,
                 expiryDate = expiryDate!!,
                 cvc = cvc!!,
                 acceptedCardBrands = acceptedCardBrands,
-                baseUrl = sanitisedBaseUrl,
                 validationListener = validationListener!!,
-                lifecycleOwner = lifecycleOwner!!,
-                enablePanFormatting = enablePanFormatting
+                enablePanFormatting = enablePanFormatting,
             )
         }
     }

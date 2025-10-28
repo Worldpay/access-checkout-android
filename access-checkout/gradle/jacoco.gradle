@@ -25,7 +25,7 @@ def fileFilter = [
 
 def classDirs = files([
         fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/intermediates/classes/debug", excludes: fileFilter) +
-        fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/tmp/kotlin-classes/debug", excludes: fileFilter)
+                fileTree(dir: "${layout.buildDirectory.dir('.').get().asFile}/tmp/kotlin-classes/debug", excludes: fileFilter)
 ])
 
 def execData = files(

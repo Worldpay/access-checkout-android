@@ -19,8 +19,8 @@ abstract class AbstractCardFragmentTestProd {
     @Before
     fun setup() {
         cardFragmentTestUtils = CardFragmentTestUtils(activityRule)
-        closeSoftKeyboard()
-        rotatePortrait(activityRule)
+//        closeSoftKeyboard()
+//        rotatePortrait(activityRule)
     }
 
     fun clearPan() {

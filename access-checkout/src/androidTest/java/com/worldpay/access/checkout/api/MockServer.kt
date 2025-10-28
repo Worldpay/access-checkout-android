@@ -67,6 +67,10 @@ object MockServer {
         return URL(baseUrl)
     }
 
+    fun getStringBaseUrl(): String {
+        return baseUrl
+    }
+
     private fun waitForWiremock() {
         do {
             Thread.sleep(1000)

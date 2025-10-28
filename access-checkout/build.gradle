@@ -8,19 +8,18 @@ apply from: './gradle/upload.gradle'
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21"
-    implementation "org.jetbrains.kotlin:kotlin-reflect:1.6.21"
-    implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-android:1.5.2'
-    implementation 'androidx.localbroadcastmanager:localbroadcastmanager:1.0.0'
+    implementation "androidx.appcompat:appcompat:${versions['appcompat']}"
+    implementation "org.jetbrains.kotlin:kotlin-reflect:${versions['kotlin']}"
+    implementation "org.jetbrains.kotlinx:kotlinx-coroutines-android:${versions['kotlinx-coroutines']}"
+    implementation "androidx.localbroadcastmanager:localbroadcastmanager:${versions['localbroadcastmanager']}"
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.3'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
+    androidTestImplementation "androidx.test.ext:junit:${versions['androidx.test.ext:junit']}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${versions['espresso']}"
 
-    testImplementation 'org.mockito:mockito-core:3.12.4'
-    androidTestImplementation 'org.mockito:mockito-android:3.12.4'
+    androidTestImplementation "org.mockito.kotlin:mockito-kotlin:${versions['mockito-kotlin']}"
+    androidTestImplementation "org.mockito:mockito-android:${versions['mockito-android']}"
 
-    androidTestImplementation("com.github.tomakehurst:wiremock:2.22.0") {
+    androidTestImplementation("com.github.tomakehurst:wiremock:${versions['com.github.tomakehurst:wiremock']}") {
         //Allows us to use the Android version of Apache httpclient instead
         exclude group: 'org.apache.httpcomponents', module: 'httpclient'
 
@@ -33,20 +32,43 @@ dependencies {
         exclude group: 'org.json', module: 'json'
     }
 
-    androidTestImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
-    androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
-    androidTestImplementation 'com.google.android.gms:play-services-vision:20.1.3'
-    androidTestImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
+    androidTestImplementation "org.apache.httpcomponents:httpclient-android:${versions['httpclient-android']}"
+    androidTestImplementation "org.awaitility:awaitility-kotlin:${versions['awaitility-kotlin']}"
+    androidTestImplementation "com.google.android.gms:play-services-vision:${versions['play-services-vision']}"
+    androidTestImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions['kotlinx-coroutines']}"
+    androidTestImplementation "androidx.lifecycle:lifecycle-runtime-testing:${versions['lifecycle-runtime-testing']}"
+    androidTestImplementation "org.jetbrains.kotlin:kotlin-test:${versions['kotlin']}"
+    // added to resolve an exception where the addition of the 'lifecycle-runtime-testing' library
+    // provokes a Duplicate class exception when building - See https://stackoverflow.com/questions/56639529
+    androidTestImplementation "com.google.guava:listenablefuture:${versions['listenablefuture']}"
 
-    testImplementation 'androidx.test.ext:junit:1.1.3'
-    testImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
-    testImplementation 'junit:junit:4.13.1'
-    testImplementation 'org.mockito.kotlin:mockito-kotlin:5.1.0'
-    testImplementation 'org.jetbrains.kotlinx:kotlinx-coroutines-test:1.5.2'
+    testImplementation "org.jetbrains.kotlinx:kotlinx-coroutines-test:${versions['kotlinx-coroutines']}"
+    testImplementation "org.jetbrains.kotlin:kotlin-test:${versions['kotlin']}"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:${versions['mockito-kotlin']}"
+    testImplementation "androidx.test.ext:junit:${versions['androidx.test.ext:junit']}"
+    testImplementation "org.awaitility:awaitility-kotlin:${versions['awaitility-kotlin']}"
+    testImplementation "junit:junit:${versions['junit']}"
 
     // override the version of bcprov-jdk15on to avoid the ssl internal errors
-    testImplementation('org.robolectric:robolectric:4.7')
+    testImplementation("org.robolectric:robolectric:${versions['robolectric']}") {
+        //Allows us to use the Android version of Apache httpclient instead
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
 
-    testImplementation 'com.squareup.okhttp3:mockwebserver:4.7.2'
-    testImplementation 'au.com.dius:pact-jvm-consumer-junit:4.0.10'
+    testImplementation "com.squareup.okhttp3:mockwebserver:${versions['mockwebserver']}"
+    testImplementation "au.com.dius:pact-jvm-consumer-junit:${versions['pact-jvm-consumer-junit']}"
+
+
+    testImplementation("org.wiremock:wiremock:${versions['org.wiremock:wiremock']}") {
+        //Allows us to use the Android version of Apache httpclient instead
+        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    }
+
+}
+
+tasks.withType(Test).configureEach {
+    def forks = Math.max((int) (Runtime.getRuntime().availableProcessors() / 2), 1)
+    maxParallelForks = forks
+    forkEvery = 50
+    println("Setting maxParallelForks to $forks on test task ${it.name}")
 }

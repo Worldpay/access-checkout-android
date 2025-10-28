@@ -33,5 +33,11 @@ internal class DiscoverLinks(val endpoints: List<Endpoint>) : Serializable {
                 )
             )
         )
+
+        val cardBinDetails = DiscoverLinks(
+            listOf(
+                Endpoint("cardBinPublic:binDetails")
+            )
+        )
     }
 }

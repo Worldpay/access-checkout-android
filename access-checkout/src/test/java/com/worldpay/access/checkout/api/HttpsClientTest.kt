@@ -1,24 +1,17 @@
 package com.worldpay.access.checkout.api
 
 import com.google.common.collect.Maps.newHashMap
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.serialization.Deserializer
 import com.worldpay.access.checkout.api.serialization.Serializer
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
+import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import com.worldpay.access.checkout.testutils.removeWhitespace
-import java.io.ByteArrayOutputStream
-import java.io.InputStream
-import java.io.Serializable
-import java.net.ConnectException
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
-import kotlin.test.assertTrue
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertEquals
 import org.junit.Assert.fail
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.BDDMockito.any
 import org.mockito.BDDMockito.anyInt
@@ -27,9 +20,16 @@ import org.mockito.BDDMockito.verify
 import org.mockito.Mock
 import org.mockito.Mockito
 import org.mockito.kotlin.mock
+import java.io.ByteArrayOutputStream
+import java.io.InputStream
+import java.io.Serializable
+import java.net.ConnectException
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlin.test.assertTrue
 
 @ExperimentalCoroutinesApi
-class HttpsClientTest {
+class HttpsClientTest : BaseCoroutineTest() {
 
     private lateinit var urlFactory: URLFactory
     private lateinit var httpsClient: HttpsClient
@@ -44,18 +44,15 @@ class HttpsClientTest {
     @Mock
     private lateinit var url: URL
 
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
-
     @Before
-    fun setup() = runAsBlockingTest {
+    fun setup() = runTest {
         urlFactory = mock()
         deserializer = mock()
         serializer = mock()
         clientErrorDeserializer = mock()
         url = mock()
         httpsClient =
-            HttpsClient(coroutinesTestRule.testDispatcher, urlFactory, clientErrorDeserializer)
+            HttpsClient(urlFactory, clientErrorDeserializer)
         httpsUrlConnection = mock()
     }
 
@@ -63,7 +60,7 @@ class HttpsClientTest {
      * doPost() tests
      */
     @Test
-    fun givenValidRequest_doPost_shouldReturnSuccessfulResponse() = runAsBlockingTest {
+    fun givenValidRequest_doPost_shouldReturnSuccessfulResponse() = runTest {
         val testResponseAsString = removeWhitespace(
             """{
                 "property": "abcdef"
@@ -92,7 +89,7 @@ class HttpsClientTest {
     }
 
     @Test
-    fun givenValidRequest_doPost_shouldNotUseWeakCiphers() = runAsBlockingTest {
+    fun givenValidRequest_doPost_shouldNotUseWeakCiphers() = runTest {
         val testResponseAsString = removeWhitespace("{}")
 
         stubResponse(responseCode = 201, responseBody = testResponseAsString)
@@ -109,7 +106,7 @@ class HttpsClientTest {
 
     @Test
     fun givenValidRequestAndHttp201AndDeserializationException_doPost_shouldThrowAccessCheckoutExceptionWithCauseAndMessage() =
-        runAsBlockingTest {
+        runTest {
             val responseBody = "{}"
             stubResponse(responseCode = 201, responseBody = responseBody)
 
@@ -132,7 +129,7 @@ class HttpsClientTest {
 
     @Test
     fun givenErrorWhenReadingResponseBody_doPost_shouldThrowAccessCheckoutException() =
-        runAsBlockingTest {
+        runTest {
             val errorMessage = "Some message"
 
             val inputStream = Mockito.mock(InputStream::class.java) {
@@ -157,7 +154,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp500ErrorAndNoResponseBody_doPost_shouldThrowAccessCheckoutErrorWithDefaultMessage() =
-        runAsBlockingTest {
+        runTest {
             val errorMessage = "A server error occurred when trying to make the request"
 
             stubErrorResponse(responseCode = 500, message = "")
@@ -176,7 +173,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp500ErrorAndBodyInResponse_doPost_shouldThrowAccessCheckoutErrorWithMessageFromServer() =
-        runAsBlockingTest {
+        runTest {
             stubErrorResponse(
                 responseCode = 500,
                 responseBody = "Some exception occurred",
@@ -200,7 +197,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp500ErrorWithResponseBody_doPost_shouldThrowAccessCheckoutExceptionWithErrorResponseFromServer() =
-        runAsBlockingTest {
+        runTest {
             val errorMessage = "some error message"
             stubErrorResponse(responseCode = 500, responseBody = "", message = errorMessage)
             given(serializer.serialize(testRequest)).willReturn(testRequestString)
@@ -217,7 +214,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp500ErrorAndExceptionIsThrownWhenReadingErrorStream_doPost_shouldThrowAccessCheckoutExceptionWithThatErrorResponseFromServer() =
-        runAsBlockingTest {
+        runTest {
             val expectedException = RuntimeException("some unhandled exception")
             given(serializer.serialize(testRequest)).willReturn(testRequestString)
 
@@ -241,7 +238,7 @@ class HttpsClientTest {
         }
 
     @Test
-    fun givenHttpStatusCodeBelow200_doPost_shouldThrowException() = runAsBlockingTest {
+    fun givenHttpStatusCodeBelow200_doPost_shouldThrowException() = runTest {
         val errorMessage = "A server error occurred when trying to make the request"
 
         stubErrorResponse(responseCode = 100, message = "")
@@ -260,7 +257,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp400ErrorWithResponseBody_doPost_shouldThrowAccessCheckoutExceptionWithErrorResponseFromServer() =
-        runAsBlockingTest {
+        runTest {
             val errorMessage =
                 "bodyDoesNotMatchSchema : The json body provided does not match the expected schema"
             val responseBody =
@@ -301,7 +298,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp400ErrorWithNoResponseBody_doPost_shouldThrowAccessCheckoutExceptionWithoutAnyErrorResponseBody() =
-        runAsBlockingTest {
+        runTest {
             val errorMessage = "bodyIsEmpty : The body within the request is empty"
             val expectedException = AccessCheckoutException(errorMessage)
 
@@ -326,6 +323,7 @@ class HttpsClientTest {
                 fail("Expected exception but got none")
             } catch (ace: AccessCheckoutException) {
                 assertEquals(errorMessage, ace.message)
+                assertEquals(ClientErrorException(400), ace.cause)
             } catch (ex: Exception) {
                 fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
             }
@@ -333,7 +331,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp400ErrorWithEmptyResponseData_doPost_shouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBody() =
-        runAsBlockingTest {
+        runTest {
             stubErrorResponse(responseCode = 400, message = "Some Client Error")
             val errorMessage = "Error message was: Some Client Error"
 
@@ -344,6 +342,7 @@ class HttpsClientTest {
                 fail("Expected exception but got none")
             } catch (ace: AccessCheckoutException) {
                 assertEquals(errorMessage, ace.message)
+                assertEquals(ClientErrorException(400), ace.cause)
             } catch (ex: Exception) {
                 fail("Expected AccessCheckoutException but got " + ex.javaClass.simpleName)
             }
@@ -351,7 +350,7 @@ class HttpsClientTest {
 
     @Test
     fun givenServerCannotBeReached_doPost_shouldThrowAccessCheckoutExceptionWithCause() =
-        runAsBlockingTest {
+        runTest {
             given(serializer.serialize(testRequest)).willReturn(testRequestString)
             given(url.openConnection()).willThrow(ConnectException())
 
@@ -367,7 +366,7 @@ class HttpsClientTest {
 
     @Test
     fun givenSerializationException_doPost_shouldThrowAccessCheckoutExceptionWithCauseAndMessage() =
-        runAsBlockingTest {
+        runTest {
             given(serializer.serialize(testRequest)).willThrow(RuntimeException())
 
             try {
@@ -385,7 +384,7 @@ class HttpsClientTest {
         }
 
     @Test
-    fun givenRedirectSentByServer_doPost_shouldFollowRedirect() = runAsBlockingTest {
+    fun givenRedirectSentByServer_doPost_shouldFollowRedirect() = runTest {
         val testResponseAsString = removeWhitespace(
             """{
                 "property": "abcdef"
@@ -426,7 +425,7 @@ class HttpsClientTest {
 
     @Test
     fun givenRedirectSentWithNoLocationHeaderByServer_doPost_shouldThrowAccessCheckoutHttpException() =
-        runAsBlockingTest {
+        runTest {
             stubResponse(responseCode = 301)
 
             given(serializer.serialize(testRequest)).willReturn(testRequestString)
@@ -452,7 +451,7 @@ class HttpsClientTest {
 
     @Test
     fun givenRedirectSentWithEmptyLocationHeaderByServer_doPost_shouldThrowAccessCheckoutHttpException() =
-        runAsBlockingTest {
+        runTest {
             val redirectResponseCode = 301
 
             given(url.openConnection()).willReturn(httpsUrlConnection)
@@ -488,7 +487,7 @@ class HttpsClientTest {
      * doGet() tests
      */
     @Test
-    fun givenValidRequest_doGet_shouldReturnSuccessfulResponse() = runAsBlockingTest {
+    fun givenValidRequest_doGet_shouldReturnSuccessfulResponse() = runTest {
 
         val testResponseAsString = removeWhitespace(
             """{
@@ -508,7 +507,7 @@ class HttpsClientTest {
     }
 
     @Test
-    fun givenValidRequest_doGet_shouldNotUseWeakCiphers() = runAsBlockingTest {
+    fun givenValidRequest_doGet_shouldNotUseWeakCiphers() = runTest {
 
         val testResponseAsString = removeWhitespace(
             """{
@@ -529,7 +528,7 @@ class HttpsClientTest {
 
     @Test
     fun givenErrorWhenReadingResponseBody_doGet_shouldThrowAccessCheckoutException() =
-        runAsBlockingTest {
+        runTest {
             val errorMessage = "Some message"
 
             val inputStream = Mockito.mock(InputStream::class.java) {
@@ -555,7 +554,7 @@ class HttpsClientTest {
         }
 
     @Test
-    fun givenHttpStatusCodeBelow200_doGet_shouldThrowException() = runAsBlockingTest {
+    fun givenHttpStatusCodeBelow200_doGet_shouldThrowException() = runTest {
         val errorMessage = "A server error occurred when trying to make the request"
 
         stubErrorResponse(responseCode = 100, message = "")
@@ -572,7 +571,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp500Error_doGet_shouldThrowAccessCheckoutErrorWithDefaultMessageWhenNoResponseBody() =
-        runAsBlockingTest {
+        runTest {
             stubErrorResponse(responseCode = 500)
 
             try {
@@ -587,7 +586,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp500Error_doGet_shouldThrowAccessCheckoutErrorWithMessageFromServerWhenBodyInResponse() =
-        runAsBlockingTest {
+        runTest {
             stubErrorResponse(
                 responseCode = 500,
                 responseBody = "Some exception occurred",
@@ -611,7 +610,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp400ErrorWithResponseBody_doGet_shouldThrowAccessCheckoutExceptionWithErrorResponseFromServer() =
-        runAsBlockingTest {
+        runTest {
             val errorMessage = "The json body provided does not match the expected schema"
             val responseBody = """{
                                 "errorName": "bodyDoesNotMatchSchema",
@@ -637,10 +636,10 @@ class HttpsClientTest {
             } catch (ace: AccessCheckoutException) {
                 assertEquals(
                     "Error message was: $errorMessage. Error response was: ${
-                    responseBody.replace(
-                        "\n",
-                        ""
-                    )
+                        responseBody.replace(
+                            "\n",
+                            ""
+                        )
                     }",
                     ace.message
                 )
@@ -651,7 +650,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp400ErrorWithNoResponseBody_doGet_shouldThrowAccessCheckoutExceptionWithoutAnyErrorResponseBody() =
-        runAsBlockingTest {
+        runTest {
             val errorMessage = "Cannot deserialize empty string"
 
             stubErrorResponse(responseCode = 400, responseBody = "", message = errorMessage)
@@ -668,7 +667,7 @@ class HttpsClientTest {
 
     @Test
     fun givenHttp400ErrorWithEmptyResponseData_doGet_shouldThrowAccessCheckoutHttpExceptionWithoutAnyErrorResponseBody() =
-        runAsBlockingTest {
+        runTest {
             stubErrorResponse(responseCode = 400, message = "Some Client Error")
 
             given(serializer.serialize(testRequest)).willReturn(testRequestString)
@@ -685,7 +684,7 @@ class HttpsClientTest {
 
     @Test
     fun givenServerCannotBeReached_doGet_shouldThrowAccessCheckoutExceptionWithCause() =
-        runAsBlockingTest {
+        runTest {
             given(url.openConnection()).willThrow(ConnectException())
 
             try {
@@ -700,7 +699,7 @@ class HttpsClientTest {
 
     @Test
     fun givenDeserializationException_doGet_shouldThrowAccessCheckoutExceptionWithCauseAndMessage() =
-        runAsBlockingTest {
+        runTest {
             val responseBody = "{}"
             stubResponse(responseCode = 201, responseBody = responseBody)
 
@@ -721,7 +720,7 @@ class HttpsClientTest {
         }
 
     @Test
-    fun givenRedirectSentByServer_ThenShouldFollowRedirectOnGet() = runAsBlockingTest {
+    fun givenRedirectSentByServer_ThenShouldFollowRedirectOnGet() = runTest {
         val testResponseAsString = removeWhitespace(
             """{
                 "property": "abcdef"
@@ -752,7 +751,7 @@ class HttpsClientTest {
 
     @Test
     fun givenRedirectSentWithNoLocationHeaderByServer_doGet_shouldThrowAccessCheckoutHttpException() =
-        runAsBlockingTest {
+        runTest {
             val redirectResponseCode = 301
 
             given(url.openConnection()).willReturn(httpsUrlConnection)
@@ -775,7 +774,7 @@ class HttpsClientTest {
 
     @Test
     fun givenRedirectSentWithEmptyLocationHeaderByServer_doGet_shouldThrowAccessCheckoutHttpException() =
-        coroutinesTestRule.testDispatcher.runAsBlockingTest {
+        runTest {
             stubResponse(responseCode = 301)
             given(httpsUrlConnection.getHeaderField("Location")).willReturn("")
 

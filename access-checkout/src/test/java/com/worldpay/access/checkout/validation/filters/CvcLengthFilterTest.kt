@@ -1,25 +1,22 @@
 package com.worldpay.access.checkout.validation.filters
 
 import android.widget.EditText
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
-import kotlin.test.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
 import org.robolectric.shadows.ShadowInstrumentation
+import kotlin.test.assertEquals
 
 @ExperimentalCoroutinesApi
 @RunWith(RobolectricTestRunner::class)
-class CvcLengthFilterTest {
-
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
+class CvcLengthFilterTest: BaseCoroutineTest() {
 
     private val context = ShadowInstrumentation.getInstrumentation().context
 
@@ -27,19 +24,20 @@ class CvcLengthFilterTest {
     private val pan = EditText(context)
 
     @Before
-    fun setup() = runAsBlockingTest {
+    fun setup() = runTest {
         mockSuccessfulCardConfiguration()
+        advanceUntilIdle()
         cvc.filters = arrayOf(CvcLengthFilter(pan))
     }
 
     @Test
-    fun `should limit to max length`() {
+    fun `should limit to max length`() = runTest {
         cvc.setText("123456")
         assertEquals("1234", cvc.text.toString())
     }
 
     @Test
-    fun `should allow text within limit`() {
+    fun `should allow text within limit`() = runTest {
         cvc.setText("1")
         assertEquals("1", cvc.text.toString())
 
@@ -54,21 +52,24 @@ class CvcLengthFilterTest {
     }
 
     @Test
-    fun `should change the max length depending on the pan detected`() {
+    fun `should change the max length depending on the pan detected`() = runTest {
         pan.setText("")
-
+        advanceUntilIdle()
         cvc.setText("123456")
+        advanceUntilIdle()
         assertEquals("1234", cvc.text.toString())
 
         pan.setText(visaPan())
 
         cvc.setText("123456")
+        advanceUntilIdle()
         assertEquals("123", cvc.text.toString())
     }
 
     @Test
-    fun `should ignore pan if no pan edit text is passed to filter`() {
+    fun `should ignore pan if no pan edit text is passed to filter`() = runTest {
         cvc.filters = arrayOf(CvcLengthFilter(null))
+        advanceUntilIdle()
 
         pan.setText("")
 

@@ -4,18 +4,22 @@ import android.app.Activity
 import android.util.Log
 import android.widget.ImageView
 import com.worldpay.access.checkout.client.validation.model.CardBrand
-import com.worldpay.access.checkout.client.validation.model.CardBrandImage
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory
 import com.worldpay.access.checkout.sample.ssl.client.TrustAllSSLSocketFactory.Companion.X509_TRUST_MANAGER
-import java.io.File
-import java.io.IOException
 import okhttp3.Cache
 import okhttp3.Call
 import okhttp3.Callback
 import okhttp3.OkHttpClient
 import okhttp3.Request
 import okhttp3.Response
+import okhttp3.ResponseBody
+import java.io.File
+import java.io.IOException
+import java.io.InputStream
+import java.util.WeakHashMap
+import kotlin.text.get
+import kotlin.text.set
 
 /**
  * This class is responsible for fetching a remote SVG file and applying it to a target view
@@ -31,9 +35,7 @@ class SVGImageLoader @JvmOverloads constructor(
     )
 ) {
     companion object {
-        @JvmStatic
-        @Volatile
-        private var INSTANCE: SVGImageLoader? = null
+        private val instances = WeakHashMap<Activity, SVGImageLoader>()
 
         /**
          * @param activity the current activity
@@ -41,12 +43,11 @@ class SVGImageLoader @JvmOverloads constructor(
          */
         @JvmStatic
         fun getInstance(activity: Activity): SVGImageLoader {
-            return INSTANCE ?: synchronized(this) {
-                INSTANCE
-                    ?: SVGImageLoader(
-                        activity::runOnUiThread,
-                        activity.cacheDir
-                    ).also { INSTANCE = it }
+            return synchronized(this) {
+                instances[activity] ?: SVGImageLoader(
+                    runOnUiThreadFunc = activity::runOnUiThread,
+                    cacheDir = activity.cacheDir
+                ).also { instances[activity] = it }
             }
         }
 
@@ -67,57 +68,81 @@ class SVGImageLoader @JvmOverloads constructor(
 
     /**
      * Fetches the appropriate SVG image for a [CardBrand] from a remotely hosted endpoint over HTTP,
-     * and applies it to a target [ImageView]
+     * and applies it to a target [ImageView].
      *
-     * @param cardBrand the [CardBrand] to which to fetch the image for
+     * @param cardBrand the [CardBrand] to fetch the image for
      * @param target the target [ImageView] to apply the image to
      */
     fun fetchAndApplyCardLogo(cardBrand: CardBrand?, target: ImageView) {
-        if (cardBrand == null) {
-            setUnknownCardBrand(target)
+        setCardBrandImage(cardBrand, target)
+    }
+
+    private fun setCardBrandImage(cardBrand: CardBrand?, target: ImageView) {
+        if (cardBrand == null || cardBrand.images.none { it.type == IMAGE_TYPE }) {
+            applyUnknownCardLogo(target)
             return
         }
 
-        var appliedBrandImage = false
-        for (image in cardBrand.images) {
-            if (image.type != IMAGE_TYPE) {
-                continue
-            }
-
-            applyBrandImage(cardBrand.name, image, target)
-            appliedBrandImage = true
-        }
-
-        if (!appliedBrandImage) {
-            setUnknownCardBrand(target)
-        }
-    }
-
-    private fun applyBrandImage(brandName: String, image: CardBrandImage, target: ImageView) {
+        val image = cardBrand.images.first { it.type == IMAGE_TYPE }
         Log.d("SVGImageLoader", "Requesting brand image: ${image.url}")
 
-        val request = Request.Builder().url(image.url).build()
-        val newCall = client.newCall(request)
+        downloadImage(
+            imageUrl = image.url,
+            onSuccess = { responseBody ->
+                try {
+                    Log.d("SVGImageLoader", "Received image for brand ${cardBrand.name}")
+                    val inputStream = responseBody.byteStream()
+                    renderImage(inputStream, target, cardBrand.name)
+                } catch (e: Exception) {
+                    Log.e("SVGImageLoader", "Error rendering image for brand ${cardBrand.name}", e)
+                    applyUnknownCardLogo(target)
+                }
+            },
+            onError = {
+                Log.e("SVGImageLoader", "Failed to fetch image for brand ${cardBrand.name}")
+                applyUnknownCardLogo(target)
+            }
+        )
+    }
 
-        newCall.enqueue(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {}
+    private fun renderImage(
+        stream: InputStream?,
+        view: ImageView,
+        brand: String
+    ) {
+        if (stream == null) {
+            applyUnknownCardLogo(view)
+        }
+        svgImageRenderer.renderImage(stream!!, view, brand)
+    }
 
-            @Throws(IOException::class)
+    private fun downloadImage(
+        imageUrl: String,
+        onSuccess: (responseBody: ResponseBody) -> Unit,
+        onError: () -> Unit
+    ) {
+        val request = Request.Builder().url(imageUrl).build()
+        client.newCall(request).enqueue(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("SVGImageLoader", "Failed to fetch image from $imageUrl", e)
+                onError()
+            }
+
             override fun onResponse(call: Call, response: Response) {
                 response.body?.let { responseBody ->
-                    run {
-                        Log.d("SVGImageLoader", "Received image for brand $brandName")
-                        svgImageRenderer.renderImage(responseBody.byteStream(), target, brandName)
-                    }
-                }
+                    onSuccess(responseBody)
+                } ?: onError()
             }
         })
     }
 
-    private fun setUnknownCardBrand(target: ImageView) {
-        Log.d("SVGImageLoader", "Applying card unknown logo to target view")
-        target.setImageResource(R.drawable.card_unknown_logo)
-        val resourceEntryName = target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
-        target.setTag(R.integer.card_tag, resourceEntryName)
+    private fun applyUnknownCardLogo(target: ImageView) {
+        runOnUiThreadFunc {
+            Log.d("SVGImageLoader", "Applying card unknown logo to target view")
+            target.setImageResource(R.drawable.card_unknown_logo)
+            val resourceEntryName =
+                target.resources.getResourceEntryName(R.drawable.card_unknown_logo)
+            target.setTag(R.integer.card_tag, resourceEntryName)
+        }
     }
 }

@@ -25,12 +25,9 @@ class ProgressBar(private val activity: Activity) {
         val progressBar = activity.findViewById<ProgressBar>(R.id.loading_bar)
         val rootLayout = activity.findViewById<ConstraintLayout>(R.id.root_layout)
 
-        if (showProgress) {
-            progressBar.visibility = View.VISIBLE
-            rootLayout.alpha = 0.5f
-        } else {
-            progressBar.visibility = View.INVISIBLE
-            rootLayout.alpha = 1.0f
+        if (progressBar.isVisible != showProgress) {
+            progressBar.visibility = if (showProgress) View.VISIBLE else View.INVISIBLE
+            rootLayout.alpha = if (showProgress) 0.5f else 1.0f
         }
     }
 }

@@ -1,17 +1,17 @@
-package com.worldpay.access.checkout.client.session
+package com.worldpay.access.checkout.client
 
 import android.content.Context
 import androidx.lifecycle.LifecycleOwner
+import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.client.session.BaseUrlSanitiser.sanitise
 import com.worldpay.access.checkout.client.session.listener.SessionResponseListener
-import com.worldpay.access.checkout.session.AccessCheckoutClientImpl
 import com.worldpay.access.checkout.session.ActivityLifecycleObserverInitialiser
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactory
+import com.worldpay.access.checkout.util.PropertyValidationUtil
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
-import java.net.URL
 
 /**
  * A builder that returns an [AccessCheckoutClient] for the client to use for session generation
@@ -93,11 +93,11 @@ class AccessCheckoutClientBuilder {
         validateNotNull(externalSessionResponseListener, "session response listener")
         validateNotNull(lifecycleOwner, "lifecycle owner")
 
-        val tokenRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
-            .baseUrl(URL(baseUrl!!))
+        ApiDiscoveryClient.initialise(baseUrl!!)
+
+        val sessionRequestHandlerConfig = SessionRequestHandlerConfig.Builder()
             .checkoutId(checkoutId!!)
             .context(context!!)
-            .externalSessionResponseListener(externalSessionResponseListener!!)
             .build()
 
         val localBroadcastManagerFactory = LocalBroadcastManagerFactory(context!!)
@@ -107,11 +107,17 @@ class AccessCheckoutClientBuilder {
             externalSessionResponseListener!!
         )
 
+        val accessCheckoutClientDisposer = AccessCheckoutClientDisposer()
+
         return AccessCheckoutClientImpl(
-            SessionRequestHandlerFactory(tokenRequestHandlerConfig),
+            SessionRequestHandlerFactory(sessionRequestHandlerConfig),
             activityLifecycleObserverInitialiser,
             localBroadcastManagerFactory,
-            context!!
+            context!!,
+            checkoutId!!,
+            baseUrl!!,
+            accessCheckoutClientDisposer,
+            lifecycleOwner!!
         )
     }
 
@@ -122,7 +128,10 @@ class AccessCheckoutClientBuilder {
         return ActivityLifecycleObserverInitialiser(
             javaClass.simpleName,
             lifecycleOwner!!,
-            SessionBroadcastManagerFactory(localBroadcastManagerFactory, externalSessionResponseListener)
+            SessionBroadcastManagerFactory(
+                localBroadcastManagerFactory,
+                externalSessionResponseListener
+            )
         )
     }
 }

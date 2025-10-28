@@ -16,7 +16,7 @@ import org.mockito.kotlin.mock
 
 internal object CardConfigurationUtil {
 
-    const val BASE_PATH = "https://local.com/access-checkout/assets"
+    const val BASE_PATH = "https://example.com/access-checkout/assets"
 
     object Configurations {
 
@@ -234,10 +234,21 @@ internal object CardConfigurationUtil {
     suspend fun mockSuccessfulCardConfiguration() {
         val cardConfigurationClient = mock<CardConfigurationClient>()
         given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_BASIC)
-        CardConfigurationProvider(cardConfigurationClient, emptyList())
+        CardConfigurationProvider.initialise(cardConfigurationClient, emptyList())
     }
 
-    fun toCardBrand(remoteCardBrand: RemoteCardBrand): CardBrand? {
-        return ToCardBrandTransformer().transform(remoteCardBrand)
+    suspend fun mockUnsuccessfulCardConfiguration() {
+        val cardConfigurationClient = mock<CardConfigurationClient>()
+        given(cardConfigurationClient.getCardConfiguration()).willReturn(null)
+        CardConfigurationProvider.initialise(cardConfigurationClient, emptyList())
+    }
+
+    fun toCardBrand(remoteCardBrand: RemoteCardBrand): CardBrand {
+        return ToCardBrandTransformer().transform(remoteCardBrand)!!
+    }
+
+    fun toCardBrandList(remoteCardBrand: RemoteCardBrand): List<CardBrand> {
+        val cardBrand = toCardBrand(remoteCardBrand)
+        return listOf(cardBrand)
     }
 }

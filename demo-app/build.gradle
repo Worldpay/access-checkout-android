@@ -29,13 +29,16 @@ android {
 
     flavorDimensions = ["environment"]
     productFlavors {
-        mock {
+        register("mock") {
             dimension = "environment"
             applicationIdSuffix = ".mock"
+            manifestPlaceholders = [displayName: "Access Checkout - Mock Demo App"]
         }
 
-        prod {
+        register("prod") {
             dimension = "environment"
+            applicationIdSuffix = ".prod"
+            manifestPlaceholders = [displayName: "Access Checkout - Prod Demo App"]
         }
     }
 
@@ -44,6 +47,8 @@ android {
     }
 
     testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+        animationsDisabled = true
         unitTests {
             includeAndroidResources = true
             returnDefaultValues = true
@@ -55,47 +60,50 @@ dependencies {
     implementation project(':access-checkout')
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
-    implementation 'com.google.android.gms:play-services-vision:20.1.3'
+    debugImplementation "androidx.tracing:tracing:${versions['tracing']}"
 
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.6.21"
-    implementation 'androidx.appcompat:appcompat:1.3.1'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
-    implementation 'com.squareup.okhttp3:okhttp:4.7.2'
-    implementation 'org.conscrypt:conscrypt-android:2.5.1'
-    implementation 'com.caverock:androidsvg-aar:1.4'
+    implementation "com.google.android.gms:play-services-vision:${versions['play-services-vision']}"
 
-    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.navigation:navigation-fragment-ktx:2.3.5'
-    implementation 'androidx.navigation:navigation-ui-ktx:2.3.5'
-    implementation 'androidx.lifecycle:lifecycle-extensions:2.2.0'
+    implementation "com.google.guava:guava:${versions['guava']}"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${versions['kotlin']}"
 
-    mockImplementation 'org.apache.httpcomponents:httpclient-android:4.3.5.1'
-    mockImplementation 'com.google.code.gson:gson:2.8.5'
-    mockImplementation("com.github.tomakehurst:wiremock:2.22.0") {
-        //Allows us to use the Android version of Apache httpclient instead
-        exclude group: 'org.apache.httpcomponents', module: 'httpclient'
+    implementation "androidx.appcompat:appcompat:${versions['appcompat']}"
+    implementation "androidx.constraintlayout:constraintlayout:${versions['constraintlayout']}"
+    implementation "androidx.navigation:navigation-fragment-ktx:${versions['navigation-fragment-ktx']}"
+    implementation "androidx.navigation:navigation-ui-ktx:${versions['navigation-ui-ktx']}"
+    implementation "androidx.lifecycle:lifecycle-extensions:${versions['lifecycle-extensions']}"
+    implementation "com.squareup.okhttp3:okhttp:${versions['okhttp3']}"
+    implementation "org.conscrypt:conscrypt-android:${versions['conscrypt-android']}"
+    implementation "com.caverock:androidsvg-aar:${versions['androidsvg-aar']}"
 
-        //Resolves the Duplicate Class Exception
-        //duplicate entry: org/objectweb/asm/AnnotationVisitor.class
-        exclude group: 'asm', module: 'asm'
+    implementation "com.google.android.material:material:${versions['material']}"
 
-        //Fixes Warning conflict with Android's version of org.json
-        //org.json:json:20090211 is ignored for debugAndroidTest as it may be conflicting with the internal version provided by Android.
-        exclude group: 'org.json', module: 'json'
+    mockImplementation "androidx.test.espresso:espresso-core:${versions['espresso']}"
+    mockImplementation "org.apache.httpcomponents:httpclient-android:${versions['httpclient-android']}"
+    mockImplementation "com.google.code.gson:gson:${versions['gson']}"
+    mockImplementation("com.github.tomakehurst:wiremock:${versions['com.github.tomakehurst:wiremock']}") {
+        // Allows us to use the Android version of Apache httpclient instead
+        exclude group: "org.apache.httpcomponents", module: "httpclient"
     }
 
-    testImplementation 'junit:junit:4.13'
-    testImplementation 'com.github.java-json-tools:json-schema-validator:2.2.10'
-    testImplementation "org.mockito.kotlin:mockito-kotlin:4.1.0"
+    testImplementation "junit:junit:${versions['junit']}"
+    testImplementation "com.github.java-json-tools:json-schema-validator:${versions['json-schema-validator']}"
+    testImplementation "org.mockito.kotlin:mockito-kotlin:${versions['mockito-kotlin']}"
 
-    androidTestImplementation 'androidx.test.ext:junit:1.1.5'
-    androidTestImplementation 'androidx.test:rules:1.5.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-core:3.4.0'
-    androidTestImplementation 'androidx.test.espresso:espresso-contrib:3.2.0'
-    androidTestImplementation 'androidx.test.uiautomator:uiautomator:2.2.0'
-    androidTestImplementation 'org.awaitility:awaitility-kotlin:3.1.6'
+    androidTestImplementation "org.jetbrains.kotlin:kotlin-test:${versions['kotlin']}"
+    androidTestImplementation "androidx.test.ext:junit:${versions['androidx.test.ext:junit']}"
+    androidTestImplementation "androidx.test:rules:${versions['test-rules']}"
 
+    androidTestImplementation "androidx.test.uiautomator:uiautomator:${versions['uiautomator']}"
+
+    androidTestImplementation "androidx.test.espresso:espresso-accessibility:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso:espresso-core:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso:espresso-contrib:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso:espresso-intents:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso:espresso-web:${versions['espresso']}"
+    androidTestImplementation "androidx.test.espresso.idling:idling-concurrent:${versions['espresso']}"
+
+    androidTestImplementation "org.awaitility:awaitility-kotlin:${versions['awaitility-kotlin']}"
+
+    androidTestUtil "androidx.test:orchestrator:${versions['orchestrator']}"
 }

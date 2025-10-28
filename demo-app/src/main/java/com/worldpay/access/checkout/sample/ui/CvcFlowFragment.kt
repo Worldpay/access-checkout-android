@@ -8,10 +8,10 @@ import android.view.ViewGroup
 import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
-import com.worldpay.access.checkout.client.session.AccessCheckoutClientBuilder
+import com.worldpay.access.checkout.client.AccessCheckoutClient
+import com.worldpay.access.checkout.client.AccessCheckoutClientBuilder
 import com.worldpay.access.checkout.client.session.model.CardDetails
 import com.worldpay.access.checkout.client.session.model.SessionType
-import com.worldpay.access.checkout.client.validation.AccessCheckoutValidationInitialiser
 import com.worldpay.access.checkout.client.validation.config.CvcValidationConfig
 import com.worldpay.access.checkout.sample.BuildConfig
 import com.worldpay.access.checkout.sample.R
@@ -26,6 +26,8 @@ class CvcFlowFragment : Fragment() {
     private lateinit var progressBar: ProgressBar
 
     private lateinit var cvcValidationListener: CvcValidationListener
+
+    private lateinit var accessCheckoutClient: AccessCheckoutClient
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,7 +48,9 @@ class CvcFlowFragment : Fragment() {
 
             cvcValidationListener = CvcValidationListener(activity)
 
-            initialisePaymentFlow(activity, view)
+            createAccessCheckoutClient(activity)
+
+            initialisePaymentFlow(view)
         }
     }
 
@@ -60,15 +64,7 @@ class CvcFlowFragment : Fragment() {
         }
     }
 
-    private fun initialisePaymentFlow(activity: FragmentActivity, view: View) {
-        val accessCheckoutClient = AccessCheckoutClientBuilder()
-            .baseUrl(getBaseUrl())
-            .checkoutId(getCheckoutId())
-            .sessionResponseListener(SessionResponseListenerImpl(activity, progressBar))
-            .context(activity.applicationContext)
-            .lifecycleOwner(this)
-            .build()
-
+    private fun initialisePaymentFlow(view: View) {
         view.findViewById<Button>(R.id.cvc_flow_btn_submit).setOnClickListener {
             Log.d(javaClass.simpleName, "Started request")
             progressBar.beginLoading()
@@ -84,10 +80,9 @@ class CvcFlowFragment : Fragment() {
         val cvcValidationConfig = CvcValidationConfig.Builder()
             .cvc(cvcText)
             .validationListener(cvcValidationListener)
-            .lifecycleOwner(this)
             .build()
 
-        AccessCheckoutValidationInitialiser.initialise(cvcValidationConfig)
+        accessCheckoutClient.initialiseValidation(cvcValidationConfig)
     }
 
     private fun disableFields() {
@@ -97,4 +92,14 @@ class CvcFlowFragment : Fragment() {
     private fun getCheckoutId() = BuildConfig.CHECKOUT_ID
 
     private fun getBaseUrl() = getString(R.string.endpoint)
+
+    private fun createAccessCheckoutClient(activity: FragmentActivity) {
+        accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl(getBaseUrl())
+            .checkoutId(getCheckoutId())
+            .sessionResponseListener(SessionResponseListenerImpl(activity, progressBar))
+            .context(activity.applicationContext)
+            .lifecycleOwner(this)
+            .build()
+    }
 }

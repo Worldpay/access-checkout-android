@@ -1,70 +1,67 @@
 package com.worldpay.access.checkout.client.validation.pan
 
-import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.AMEX_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrandList
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN
 import com.worldpay.access.checkout.testutils.CardNumberUtil.AMEX_PAN_FORMATTED
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
-import kotlin.test.assertEquals
-import org.junit.Before
+import kotlinx.coroutines.test.runTest
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.kotlin.any
 import org.mockito.kotlin.never
 import org.mockito.kotlin.verify
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
+import kotlin.test.assertEquals
 
 @RunWith(RobolectricTestRunner::class)
 class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
 
-    @Before
-    fun setup() {
-        initialiseValidation(enablePanFormatting = true)
-    }
+    @Test
+    fun `should be formatting pan with a space between every 4 digits and detecting correct brand - visa`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
+            setText(pan, "4111111111111111")
+
+
+            assertEquals("4111 1111 1111 1111", pan.text)
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
+            verify(cardValidationListener).onPanValidated(true)
+        }
 
     @Test
-    fun `should be formatting pan with a space between every 4 digits and detecting correct brand - visa`() {
-        pan.setText("4111111111111111")
+    fun `should be formatting pan with a space between after 4, 6 and 5 digits and detected correct brand`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
 
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+            setText(pan, "342793178931249")
 
-        assertEquals("4111 1111 1111 1111", pan.text)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
-        verify(cardValidationListener).onPanValidated(true)
-    }
 
-    @Test
-    fun `should be formatting pan with a space between after 4, 6 and 5 digits and detected correct brand`() {
-        shadowOf(getMainLooper()).waitForQueueUntilIdle(1)
-
-        pan.setText("342793178931249")
-
-        assertEquals("3427 931789 31249", pan.text)
-        verify(cardValidationListener).onBrandChange(toCardBrand(AMEX_BRAND))
-        verify(cardValidationListener).onPanValidated(true)
-    }
+            assertEquals("3427 931789 31249", pan.text)
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(AMEX_BRAND))
+            verify(cardValidationListener).onPanValidated(true)
+        }
 
     @Test
-    fun `should not be formatting pan when formatting is disabled`() {
+    fun `should not be formatting pan when formatting is disabled`() = runTest {
         initialiseValidation(enablePanFormatting = false)
 
-        pan.setText("4111111111111111")
+        setText(pan, "4111111111111111")
 
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
 
         assertEquals("4111111111111111", pan.text)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+        verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
         verify(cardValidationListener).onPanValidated(true)
     }
 
     @Test
-    fun `should delete character before space when deleting space in pan`() {
-        pan.setText("1234 5678 9012")
+    fun `should delete character before space when deleting space in pan`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+
+        setText(pan, "1234 5678 9012")
+
         pan.pressBackspaceAtIndex(5)
 
         assertEquals("1235 6789 012", pan.text)
@@ -72,8 +69,12 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should delete previous digit when selecting space and pressing backspace`() {
-        pan.setText("1234 5678 90")
+    fun `should delete previous digit when selecting space and pressing backspace`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+
+        setText(pan, "1234 5678 90")
+
+
         pan.pressBackspaceAtSelection(4, 5)
 
         assertEquals("1235 6789 0", pan.text)
@@ -81,17 +82,24 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should not delete anymore characters when deleting space and a character in pan`() {
-        pan.setText("1234 5678 9012")
-        pan.pressBackspaceAtSelection(4, 6)
+    fun `should not delete anymore characters when deleting space and a character in pan`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
 
-        assertEquals("1234 6789 012", pan.text)
-        assertEquals(4, pan.selectionEnd)
-    }
+            setText(pan, "1234 5678 9012")
+
+
+            pan.pressBackspaceAtSelection(4, 6)
+
+            assertEquals("1234 6789 012", pan.text)
+            assertEquals(4, pan.selectionEnd)
+        }
 
     @Test
-    fun `should be able to delete character that is not a space in pan`() {
-        pan.setText("1234 5678 9012")
+    fun `should be able to delete character that is not a space in pan`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "1234 5678 9012")
+
         pan.pressBackspaceAtIndex(2)
 
         assertEquals("1345 6789 012", pan.text)
@@ -99,8 +107,11 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should be able to delete digit, space and a digit together`() {
-        pan.setText("1234 5678 90")
+    fun `should be able to delete digit, space and a digit together`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "1234 5678 90")
+
+
         pan.pressBackspaceAtSelection(3, 6)
 
         assertEquals("1236 7890", pan.text)
@@ -108,8 +119,11 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should be able to delete space and a digit together`() {
-        pan.setText("1234 5678 90")
+    fun `should be able to delete space and a digit together`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "1234 5678 90")
+
+
         pan.pressBackspaceAtSelection(4, 6)
 
         assertEquals("1234 6789 0", pan.text)
@@ -117,236 +131,267 @@ class PanFormattingIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should update the pan and set cursor position when formatted`() {
+    fun `should update the pan and set cursor position when formatted`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
         val visaPan = visaPan(formatted = true)
 
-        pan.setText(visaPan())
+        setText(pan, visaPan())
+
 
         assertEquals(visaPan, pan.text)
         assertEquals(19, pan.selectionEnd)
     }
 
     @Test
-    fun `should switch from amex format to visa format when different pan is pasted over`() {
-        shadowOf(getMainLooper()).waitForQueueUntilIdle(1)
+    fun `should switch from amex format to visa format when different pan is pasted over`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
 
-        pan.setText(AMEX_PAN_FORMATTED)
+            setText(pan, AMEX_PAN_FORMATTED)
 
-        assertEquals(AMEX_PAN_FORMATTED, pan.text)
 
-        pan.setText("3528 0007 0000 0000 267")
+            assertEquals(AMEX_PAN_FORMATTED, pan.text)
 
-        assertEquals("3528 0007 0000 0000 267", pan.text)
-        assertEquals(23, pan.selectionEnd)
-    }
+            setText(pan, "3528 0007 0000 0000 267")
 
-    @Test
-    fun `should switch from visa format to amex format when different pan is pasted over`() {
-        val visaPan = visaPan(formatted = true)
-
-        pan.setText(visaPan)
-
-        assertEquals(visaPan, pan.text)
-
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
-
-        pan.setText(AMEX_PAN_FORMATTED)
-
-        assertEquals(AMEX_PAN_FORMATTED, pan.text)
-        assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
-    }
+            assertEquals("3528 0007 0000 0000 267", pan.text)
+            assertEquals(23, pan.selectionEnd)
+        }
 
     @Test
-    fun `should be able to paste in an entire pan into a blank pan field and cursor goes to the end of the pan`() {
-        shadowOf(getMainLooper()).waitForQueueUntilIdle(1)
+    fun `should switch from visa format to amex format when different pan is pasted over`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
+            val visaPan = visaPan(formatted = true)
 
-        pan.setText(AMEX_PAN_FORMATTED)
+            setText(pan, visaPan)
 
-        assertEquals(AMEX_PAN_FORMATTED, pan.text)
-        assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
-    }
 
-    @Test
-    fun `should move the cursor to after space and digit if a digit has been entered in pan immediately before a space`() {
-        pan.setText("1234 5678 90")
-        pan.typeAtIndex(4, "1")
+            assertEquals(visaPan, pan.text)
 
-        assertEquals("1234 1567 890", pan.text)
-        assertEquals(6, pan.selectionEnd)
-    }
 
-    @Test
-    fun `should move the cursor to after space if digit is entered in pan that forces a space after newly entered digit`() {
-        pan.setText("1234 5678 90")
-        pan.typeAtIndex(3, "1")
+            setText(pan, AMEX_PAN_FORMATTED)
 
-        assertEquals("1231 4567 890", pan.text)
-        assertEquals(5, pan.selectionEnd)
-    }
+
+            assertEquals(AMEX_PAN_FORMATTED, pan.text)
+            assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
+        }
 
     @Test
-    fun `should not allow entering any more digits at the end of pan when limit is reached`() {
-        pan.setText("1234 5678 9012 3456 789")
+    fun `should be able to paste in an entire pan into a blank pan field and cursor goes to the end of the pan`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
 
-        pan.typeAtIndex(23, "1")
+            setText(pan, AMEX_PAN_FORMATTED)
 
-        assertEquals("1234 5678 9012 3456 789", pan.text)
-        assertEquals(23, pan.selectionEnd)
-    }
 
-    @Test
-    fun `should move the cursor to the end of the pan when pan is pasted over and reduces the max length`() {
-        val visaPan = visaPan(formatted = true)
-
-        pan.setText(visaPan(formatted = false))
-
-        assertEquals(visaPan, pan.text)
-        assertEquals(19, pan.selectionEnd)
-
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
-
-        pan.setText(AMEX_PAN)
-
-        assertEquals(AMEX_PAN_FORMATTED, pan.text)
-        assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
-    }
+            assertEquals(AMEX_PAN_FORMATTED, pan.text)
+            assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
+        }
 
     @Test
-    fun `should do nothing when text is empty`() {
-        pan.setText("")
+    fun `should move the cursor to after space and digit if a digit has been entered in pan immediately before a space`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
+            setText(pan, "1234 5678 90")
+            typeAtIndex(pan, 4, "1")
 
-        verify(cardValidationListener, never()).onBrandChange(any())
+            assertEquals("1234 1567 890", pan.text)
+            assertEquals(6, pan.selectionEnd)
+        }
+
+    @Test
+    fun `should move the cursor to after space if digit is entered in pan that forces a space after newly entered digit`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
+            setText(pan, "1234 5678 90")
+            typeAtIndex(pan, 3, "1")
+
+            assertEquals("1231 4567 890", pan.text)
+            assertEquals(5, pan.selectionEnd)
+        }
+
+    @Test
+    fun `should not allow entering any more digits at the end of pan when limit is reached`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
+            setText(pan, "1234 5678 9012 3456 789")
+
+
+            typeAtIndex(pan, 23, "1")
+
+            assertEquals("1234 5678 9012 3456 789", pan.text)
+            assertEquals(23, pan.selectionEnd)
+        }
+
+    @Test
+    fun `should move the cursor to the end of the pan when pan is pasted over and reduces the max length`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
+
+            val visaPan = visaPan(formatted = true)
+
+            setText(pan, visaPan(formatted = false))
+
+
+            assertEquals(visaPan, pan.text)
+            assertEquals(19, pan.selectionEnd)
+
+            setText(pan, AMEX_PAN)
+
+
+            assertEquals(AMEX_PAN_FORMATTED, pan.text)
+            assertEquals(AMEX_PAN_FORMATTED.length, pan.selectionEnd)
+        }
+
+    @Test
+    fun `should do nothing when text is empty`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "")
+
+        verify(cardValidationListener, never()).onCardBrandsChanged(any())
         verify(cardValidationListener, never()).onPanValidated(any())
 
         assertEquals("", pan.text)
     }
 
     @Test
-    fun `should shift digits to right by the number of pasted digits`() {
-        pan.setText("4444 3333 2222 1111 000")
+    fun `should shift digits to right by the number of pasted digits`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "4444 3333 2222 1111 000")
+
+
         assertEquals(23, pan.selectionEnd)
 
         pan.setSelection(8, 9)
         assertEquals(8, pan.selectionStart)
         assertEquals(9, pan.selectionEnd)
 
-        pan.paste(pan.selectionStart, pan.selectionEnd, "8888")
+        paste(pan, pan.selectionStart, pan.selectionEnd, "8888")
 
         assertEquals("4444 3338 8882 2221 111", pan.text)
         assertEquals(13, pan.selectionEnd)
     }
 
     @Test
-    fun `should shift digits and trim if pasted characters change brand type`() {
-        pan.setText("4444 3333 2222 1111 000")
+    fun `should shift digits and trim if pasted characters change brand type`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "4444 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
 
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
-
-        pan.paste(0, 14, "3434 3434 3434")
-
+        paste(pan, 0, 14, "3434 3434 3434")
         assertEquals("3434 343434 34111", pan.text)
         assertEquals(14, pan.selectionEnd)
     }
 
     @Test
-    fun `should be able to add extra character at the end of valid pan`() {
-        pan.setText("4444 3333 2222 1111")
+    fun `should be able to add extra character at the end of valid pan`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "4444 3333 2222 1111")
         assertEquals(19, pan.selectionEnd)
-        pan.typeAtIndex(19, "1")
+        typeAtIndex(pan, 19, "1")
 
         assertEquals("4444 3333 2222 1111 1", pan.text)
         assertEquals(21, pan.selectionEnd)
     }
 
     @Test
-    fun `should be able to add two characters at the end of valid pan`() {
-        pan.setText("4444 3333 2222 1111")
-        assertEquals(19, pan.selectionEnd)
-        pan.typeAtIndex(19, "1")
+    fun `should be able to add two characters at the end of valid pan`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
 
-        pan.typeAtIndex(21, "8")
+        setText(pan, "4444 3333 2222 1111")
+        assertEquals(19, pan.selectionEnd)
+        typeAtIndex(pan, 19, "1")
+
+        typeAtIndex(pan, 21, "8")
 
         assertEquals("4444 3333 2222 1111 18", pan.text)
         assertEquals(22, pan.selectionEnd)
     }
 
     @Test
-    fun `should be able to add three characters at the end of valid pan`() {
-        pan.setText("4444 3333 2222 1111")
+    fun `should be able to add three characters at the end of valid pan`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "4444 3333 2222 1111")
         assertEquals(19, pan.selectionEnd)
-        pan.typeAtIndex(19, "1")
-        pan.typeAtIndex(21, "8")
-        pan.typeAtIndex(22, "2")
+        typeAtIndex(pan, 19, "1")
+        typeAtIndex(pan, 21, "8")
+        typeAtIndex(pan, 22, "2")
 
         assertEquals("4444 3333 2222 1111 182", pan.text)
         assertEquals(23, pan.selectionEnd)
     }
 
     @Test
-    fun `should trim one character if we reach the max number of characters in pan`() {
-        pan.setText("4444 3333 2222 1111")
+    fun `should trim one character if we reach the max number of characters in pan`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "4444 3333 2222 1111")
         assertEquals(19, pan.selectionEnd)
-        pan.typeAtIndex(19, "1")
-        pan.typeAtIndex(21, "8")
-        pan.typeAtIndex(22, "2")
-        pan.typeAtIndex(23, "3")
+        typeAtIndex(pan, 19, "1")
+        typeAtIndex(pan, 21, "8")
+        typeAtIndex(pan, 22, "2")
+        typeAtIndex(pan, 23, "3")
 
         assertEquals("4444 3333 2222 1111 182", pan.text)
         assertEquals(23, pan.selectionEnd)
     }
 
     @Test
-    fun `should not be able to insert anything else than digits`() {
-        pan.setText("4554 3333 2222 1111 000")
+    fun `should not be able to insert anything else than digits`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "4554 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
-        pan.typeAtIndex(23, " ")
+        typeAtIndex(pan, 23, " ")
 
         assertEquals("4554 3333 2222 1111 000", pan.text)
         assertEquals(23, pan.selectionEnd)
     }
 
     @Test
-    fun `should not be able to insert non-digit`() {
-        pan.setText("4554 3333 2222 1111 000")
+    fun `should not be able to insert non-digit`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "4554 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
-        pan.typeAtIndex(4, "d")
+        typeAtIndex(pan, 4, "d")
 
         assertEquals("4554 3333 2222 1111 000", pan.text)
         assertEquals(4, pan.selectionEnd)
     }
 
     @Test
-    fun `should not be able to insert space`() {
-        pan.setText("4554 3333 2222 1111 000")
+    fun `should not be able to insert space`() = runTest {
+        initialiseValidation(enablePanFormatting = true)
+        setText(pan, "4554 3333 2222 1111 000")
         assertEquals(23, pan.selectionEnd)
-        pan.typeAtIndex(3, " ")
+        typeAtIndex(pan, 3, " ")
 
         assertEquals("4554 3333 2222 1111 000", pan.text)
         assertEquals(3, pan.selectionEnd)
     }
 
     @Test
-    fun `should allow to insert the 8 and shifts the rest of the pan to the right by 1 digit`() {
-        pan.setText("4444 3333 2222 1111 000")
-        assertEquals(23, pan.selectionEnd)
-        pan.typeAtIndex(5, "8")
+    fun `should allow to insert the 8 and shifts the rest of the pan to the right by 1 digit`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
+            setText(pan, "4444 3333 2222 1111 000")
+            assertEquals(23, pan.selectionEnd)
+            typeAtIndex(pan, 5, "8")
 
-        assertEquals("4444 8333 3222 2111 100", pan.text)
-        assertEquals(6, pan.selectionEnd)
-    }
+            assertEquals("4444 8333 3222 2111 100", pan.text)
+            assertEquals(6, pan.selectionEnd)
+        }
 
     // This test is to cover an issue where the caret position was incorrectly set
     // after the end of the text
     @Test
-    fun `should move cursor at the end of the pan when appending pan which would exceed max length`() {
-        pan.setText("4444")
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+    fun `should move cursor at the end of the pan when appending pan which would exceed max length`() =
+        runTest {
+            initialiseValidation(enablePanFormatting = true)
+            setText(pan, "4444")
 
-        pan.editText!!.append("3333222211110000")
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+            pan.editText!!.append("3333222211110000")
 
-        assertEquals("4444 3333 2222 1111 000", pan.text)
-        assertEquals(23, pan.selectionStart)
-    }
+            assertEquals("4444 3333 2222 1111 000", pan.text)
+            assertEquals(23, pan.selectionStart)
+        }
 }

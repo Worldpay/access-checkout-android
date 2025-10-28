@@ -1,5 +1,7 @@
 package com.worldpay.access.checkout.session
 
+import com.worldpay.access.checkout.client.AccessCheckoutClientDisposer
+import com.worldpay.access.checkout.client.AccessCheckoutClientImpl
 import org.junit.Test
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
@@ -12,6 +14,6 @@ class AccessCheckoutClientDisposerTest {
 
         accessCheckoutClientDisposer.dispose(accessCheckoutClient)
 
-        verify(accessCheckoutClient).dispose()
+        verify(accessCheckoutClient).disposeInternal()
     }
 }

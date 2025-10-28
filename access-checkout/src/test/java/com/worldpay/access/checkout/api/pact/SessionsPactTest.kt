@@ -7,12 +7,13 @@ import au.com.dius.pact.consumer.junit.PactVerification
 import au.com.dius.pact.core.model.PactSpecVersion
 import au.com.dius.pact.core.model.RequestResponsePact
 import au.com.dius.pact.core.model.annotations.Pact
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.HttpsClient
 import com.worldpay.access.checkout.api.discovery.ApiDiscoveryClient
 import com.worldpay.access.checkout.api.discovery.DiscoverLinks
-import com.worldpay.access.checkout.api.discovery.DiscoveryCache
 import com.worldpay.access.checkout.api.pact.PactUtils.Companion.escapeColonsInMatchingRules
 import com.worldpay.access.checkout.client.api.exception.AccessCheckoutException
+import com.worldpay.access.checkout.client.api.exception.ClientErrorException
 import com.worldpay.access.checkout.client.api.exception.ValidationRule
 import com.worldpay.access.checkout.client.testutil.TrustAllSSLSocketFactory
 import com.worldpay.access.checkout.session.api.client.ACCEPT_HEADER
@@ -27,13 +28,8 @@ import com.worldpay.access.checkout.session.api.serialization.CardSessionRequest
 import com.worldpay.access.checkout.session.api.serialization.CardSessionResponseDeserializer
 import com.worldpay.access.checkout.session.api.serialization.CvcSessionRequestSerializer
 import com.worldpay.access.checkout.session.api.serialization.CvcSessionResponseDeserializer
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
-import java.net.URL
-import javax.net.ssl.HttpsURLConnection
-import kotlin.test.assertEquals
-import kotlin.test.fail
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
@@ -41,12 +37,13 @@ import org.junit.Test
 import org.mockito.BDDMockito
 import org.mockito.Mockito
 import org.mockito.kotlin.given
+import java.net.URL
+import javax.net.ssl.HttpsURLConnection
+import kotlin.test.assertEquals
+import kotlin.test.fail
 
 @ExperimentalCoroutinesApi
-class SessionsPactTest {
-
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
+class SessionsPactTest : BaseCoroutineTest() {
 
     companion object {
         private const val provider = "sessions"
@@ -55,7 +52,8 @@ class SessionsPactTest {
         private const val POST = "POST"
         private const val GET = "GET"
 
-        private val SESSIONS_CONTENT_TYPE_HEADER = mapOf(Pair(CONTENT_TYPE_HEADER, SESSIONS_MEDIA_TYPE))
+        private val SESSIONS_CONTENT_TYPE_HEADER =
+            mapOf(Pair(CONTENT_TYPE_HEADER, SESSIONS_MEDIA_TYPE))
         private val SESSIONS_ACCEPT_HEADER = mapOf(Pair(ACCEPT_HEADER, SESSIONS_MEDIA_TYPE))
     }
 
@@ -64,7 +62,8 @@ class SessionsPactTest {
     private lateinit var discoveryClient: ApiDiscoveryClient
 
     @get:Rule
-    var mockProvider = PactHttpsProviderRule(provider, "localhost", 8443, true, PactSpecVersion.V3, this)
+    var mockProvider =
+        PactHttpsProviderRule(provider, "localhost", 8443, true, PactSpecVersion.V3, this)
 
     private val cvcSessionsPath = "/sessions/payments/cvc"
     private val cardSessionsPath = "/sessions/card"
@@ -139,20 +138,15 @@ class SessionsPactTest {
             CardSessionClient(
                 CardSessionResponseDeserializer(),
                 CardSessionRequestSerializer(),
-                HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+                HttpsClient()
             )
 
         cvcSessionClient =
             CvcSessionClient(
                 CvcSessionResponseDeserializer(),
                 CvcSessionRequestSerializer(),
-                HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+                HttpsClient()
             )
-
-        discoveryClient = ApiDiscoveryClient(
-            httpsClient = HttpsClient(dispatcher = coroutinesTestRule.testDispatcher),
-            discoveryCache = DiscoveryCache
-        )
     }
 
     /**
@@ -176,9 +170,10 @@ class SessionsPactTest {
 
     @Test
     @PactVerification("sessions", fragment = "createSuccessfulGetRequestInteraction")
-    fun `should receive a valid response when a valid GET request is sent`() = runAsBlockingTest {
-        val httpClient = HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
-        val headers = mapOf(ACCEPT_HEADER to SESSIONS_MEDIA_TYPE, CONTENT_TYPE_HEADER to SESSIONS_MEDIA_TYPE)
+    fun `should receive a valid response when a valid GET request is sent`() = runTest {
+        val httpClient = HttpsClient()
+        val headers =
+            mapOf(ACCEPT_HEADER to SESSIONS_MEDIA_TYPE, CONTENT_TYPE_HEADER to SESSIONS_MEDIA_TYPE)
 
         val deserializer = DiscoverLinks.cvcSessions.endpoints[1].getDeserializer()
 
@@ -270,7 +265,7 @@ class SessionsPactTest {
 
     @Test
     @PactVerification("sessions", fragment = "cvcSessionCreateSuccessfulRequestInteraction")
-    fun `should receive a valid response when a valid request is sent`() = runAsBlockingTest {
+    fun `should receive a valid response when a valid request is sent`() = runTest {
         val sessionRequest =
             CvcSessionRequest(
                 cvc,
@@ -298,7 +293,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cvcSessionCreateInvalidIdentityRequestInteraction")
     fun `should receive a 400 response when a Cvc session request is sent with an invalid identity`() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CvcSessionRequest(
                     cvc,
@@ -316,7 +311,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutClientError = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 assertEquals(accessCheckoutClientError, ex)
             } catch (ex: Exception) {
@@ -325,37 +321,45 @@ class SessionsPactTest {
         }
 
     @Test
-    @PactVerification("sessions", fragment = "cvcSessionCreateStringNonNumericalCvcRequestInteraction")
-    fun `should receive an error when Cvc session request has a non-numeric cvc is provided`() = runAsBlockingTest {
-        val sessionRequest =
-            CvcSessionRequest(
-                cvcNonNumerical,
-                identity
-            )
+    @PactVerification(
+        "sessions",
+        fragment = "cvcSessionCreateStringNonNumericalCvcRequestInteraction"
+    )
+    fun `should receive an error when Cvc session request has a non-numeric cvc is provided`() =
+        runTest {
+            val sessionRequest =
+                CvcSessionRequest(
+                    cvcNonNumerical,
+                    identity
+                )
 
-        try {
-            cvcSessionClient.getSessionResponse(cvcSessionsEndpoint, sessionRequest)
-            fail("Should not have reached here!")
-        } catch (ex: AccessCheckoutException) {
-            val validationRule = ValidationRule(
-                "fieldMustBeNumber",
-                "CVC must be numeric",
-                "\$.cvc"
-            )
-            val accessCheckoutClientError = AccessCheckoutException(
-                message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                validationRules = listOf(validationRule)
-            )
-            assertEquals(accessCheckoutClientError, ex)
-        } catch (ex: Exception) {
-            fail("Should not have reached here!")
+            try {
+                cvcSessionClient.getSessionResponse(cvcSessionsEndpoint, sessionRequest)
+                fail("Should not have reached here!")
+            } catch (ex: AccessCheckoutException) {
+                val validationRule = ValidationRule(
+                    "fieldMustBeNumber",
+                    "CVC must be numeric",
+                    "\$.cvc"
+                )
+                val accessCheckoutClientError = AccessCheckoutException(
+                    message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
+                )
+                assertEquals(accessCheckoutClientError, ex)
+            } catch (ex: Exception) {
+                fail("Should not have reached here!")
+            }
         }
-    }
 
     @Test
-    @PactVerification("sessions", fragment = "cvcSessionCreateEmptyBodyErrorInteractionRequestInteraction")
+    @PactVerification(
+        "sessions",
+        fragment = "cvcSessionCreateEmptyBodyErrorInteractionRequestInteraction"
+    )
     fun `should receive a 400 response with error when body of Cvc session request is empty`() =
-        runAsBlockingTest {
+        runTest {
             val mockEmptySerializer = Mockito.mock(CvcSessionRequestSerializer::class.java)
 
             val emptyString = ""
@@ -371,14 +375,17 @@ class SessionsPactTest {
                 CvcSessionClient(
                     CvcSessionResponseDeserializer(),
                     mockEmptySerializer,
-                    HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+                    HttpsClient()
                 )
 
             try {
                 cvcSessionClient.getSessionResponse(cvcSessionsEndpoint, sessionRequest)
                 fail("Should not have reached here!")
             } catch (ex: AccessCheckoutException) {
-                val accessCheckoutClientError = AccessCheckoutException("bodyIsEmpty : The body within the request is empty")
+                val accessCheckoutClientError = AccessCheckoutException(
+                    "bodyIsEmpty : The body within the request is empty",
+                    cause = ClientErrorException(errorCode = 400)
+                )
                 assertEquals(accessCheckoutClientError, ex)
             } catch (ex: Exception) {
                 fail("Should not have reached here!")
@@ -594,7 +601,7 @@ class SessionsPactTest {
 
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateSuccessfulRequestInteraction")
-    fun givenValidCardSessionRequestThenShouldReceiveValidResponse() = runAsBlockingTest {
+    fun givenValidCardSessionRequestThenShouldReceiveValidResponse() = runTest {
         val sessionRequest =
             CardSessionRequest(
                 cardNumber,
@@ -631,7 +638,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateInvalidIdentityRequestInteraction")
     fun givenInvalidIdentityInCardSessionRequestThenShouldReceiveA400ResponseWithIdentityAsReason() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardNumber,
@@ -647,10 +654,12 @@ class SessionsPactTest {
                 cardSessionClient.getSessionResponse(cardSessionsEndpoint, sessionRequest)
                 fail("Should not have reached here!")
             } catch (ex: AccessCheckoutException) {
-                val validationRule = ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
+                val validationRule =
+                    ValidationRule("fieldHasInvalidValue", "Identity is invalid", "\$.identity")
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -661,7 +670,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateInvalidLuhnRequestInteraction")
     fun givenLuhnInvalidCardInCardSessionRequestThenShouldReceiveA400ResponseWithPANFailedLuhnError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     invalidLuhn,
@@ -684,7 +693,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -695,7 +705,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateStringTooShortRequestInteraction")
     fun givenStringTooShortCardInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardStringTooShort,
@@ -718,7 +728,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -729,7 +740,7 @@ class SessionsPactTest {
     @Test
     @PactVerification("sessions", fragment = "cardSessionCreateStringTooLongRequestInteraction")
     fun givenStringTooLongCardInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardStringTooLong,
@@ -752,18 +763,23 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
+                println(ex)
                 fail("Should not have reached here!")
             }
         }
 
     @Test
-    @PactVerification("sessions", fragment = "cardSessionCreateIntegerMonthTooSmallRequestInteraction")
+    @PactVerification(
+        "sessions",
+        fragment = "cardSessionCreateIntegerMonthTooSmallRequestInteraction"
+    )
     fun givenIntegerMonthTooSmallInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardNumber,
@@ -786,7 +802,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -795,9 +812,12 @@ class SessionsPactTest {
         }
 
     @Test
-    @PactVerification("sessions", fragment = "cardSessionCreateIntegerMonthTooLargeRequestInteraction")
+    @PactVerification(
+        "sessions",
+        fragment = "cardSessionCreateIntegerMonthTooLargeRequestInteraction"
+    )
     fun givenIntegerMonthTooLargeInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardNumber,
@@ -820,7 +840,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -829,9 +850,12 @@ class SessionsPactTest {
         }
 
     @Test
-    @PactVerification("sessions", fragment = "cardSessionCreateStringNonNumericalCvcRequestInteraction")
+    @PactVerification(
+        "sessions",
+        fragment = "cardSessionCreateStringNonNumericalCvcRequestInteraction"
+    )
     fun givenStringNonNumericalInCardSessionRequestThenShouldReceiveA400ResponseWithCorrectError() =
-        runAsBlockingTest {
+        runTest {
             val sessionRequest =
                 CardSessionRequest(
                     cardNumber,
@@ -854,7 +878,8 @@ class SessionsPactTest {
                 )
                 val accessCheckoutException = AccessCheckoutException(
                     message = "bodyDoesNotMatchSchema : The json body provided does not match the expected schema",
-                    validationRules = listOf(validationRule)
+                    validationRules = listOf(validationRule),
+                    cause = ClientErrorException(errorCode = 400)
                 )
                 Assert.assertEquals(accessCheckoutException, ex)
             } catch (ex: Exception) {
@@ -863,8 +888,11 @@ class SessionsPactTest {
         }
 
     @Test
-    @PactVerification("sessions", fragment = "cardSessionCreateEmptyBodyErrorInteractionRequestInteraction")
-    fun givenEmptyBodyInTheRequestThenShouldReceiveA400ResponseWithCorrectError() = runAsBlockingTest {
+    @PactVerification(
+        "sessions",
+        fragment = "cardSessionCreateEmptyBodyErrorInteractionRequestInteraction"
+    )
+    fun givenEmptyBodyInTheRequestThenShouldReceiveA400ResponseWithCorrectError() = runTest {
         val mockEmptySerializer = Mockito.mock(CardSessionRequestSerializer::class.java)
 
         val emptyString = ""
@@ -885,7 +913,7 @@ class SessionsPactTest {
             CardSessionClient(
                 CardSessionResponseDeserializer(),
                 mockEmptySerializer,
-                HttpsClient(dispatcher = coroutinesTestRule.testDispatcher)
+                HttpsClient()
             )
 
         try {

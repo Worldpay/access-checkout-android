@@ -13,17 +13,16 @@ import com.worldpay.access.checkout.session.api.request.CvcSessionRequest
 import com.worldpay.access.checkout.session.api.request.SessionRequestInfo
 import com.worldpay.access.checkout.testutils.PlainRobolectricTestRunner
 import com.worldpay.access.checkout.testutils.createAccessCheckoutEditTextMock
-import java.net.URL
-import kotlin.test.assertEquals
-import kotlin.test.assertFailsWith
-import kotlin.test.assertFalse
-import kotlin.test.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.mockito.ArgumentCaptor
 import org.mockito.Mockito.mock
 import org.mockito.Mockito.verify
+import kotlin.test.assertEquals
+import kotlin.test.assertFailsWith
+import kotlin.test.assertFalse
+import kotlin.test.assertTrue
 
 @RunWith(PlainRobolectricTestRunner::class)
 class CvcSessionRequestHandlerTest {
@@ -33,17 +32,13 @@ class CvcSessionRequestHandlerTest {
 
     private lateinit var cvcSessionRequestHandler: CvcSessionRequestHandler
 
-    private val baseUrl = URL("http://base-url.com")
-
     @Before
     fun setup() {
         cvcSessionRequestHandler =
             CvcSessionRequestHandler(
                 SessionRequestHandlerConfig.Builder()
-                    .baseUrl(baseUrl)
                     .checkoutId("checkout-id")
                     .context(context)
-                    .externalSessionResponseListener(externalSessionResponseListener)
                     .build()
             )
     }
@@ -107,14 +102,13 @@ class CvcSessionRequestHandlerTest {
 
         verify(context).startService(argument.capture())
 
-        val sessionRequestInfo = argument.value.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
+        val sessionRequestInfo =
+            argument.value.getSerializableExtra(REQUEST_KEY) as SessionRequestInfo
 
         sessionRequestInfo.requestBody as CvcSessionRequest
 
         assertEquals("checkout-id", sessionRequestInfo.requestBody.identity)
         assertEquals(cardDetails.cvc, sessionRequestInfo.requestBody.cvc)
-
-        assertEquals(baseUrl, sessionRequestInfo.baseUrl)
 
         assertEquals(DiscoverLinks.cvcSessions, sessionRequestInfo.discoverLinks)
         assertEquals(CVC, sessionRequestInfo.sessionType)

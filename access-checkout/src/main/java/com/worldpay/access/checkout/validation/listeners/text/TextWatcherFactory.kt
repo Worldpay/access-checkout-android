@@ -1,6 +1,7 @@
 package com.worldpay.access.checkout.validation.listeners.text
 
 import android.widget.EditText
+import com.worldpay.access.checkout.validation.cardbin.CardBinService
 import com.worldpay.access.checkout.validation.formatter.PanFormatter
 import com.worldpay.access.checkout.validation.result.handler.ResultHandlerFactory
 import com.worldpay.access.checkout.validation.validators.CVCValidationRuleManager
@@ -19,8 +20,10 @@ internal class TextWatcherFactory(
         panEditText: EditText,
         cvcEditText: EditText,
         acceptedCardBrands: Array<String>,
-        enablePanFormatting: Boolean
+        enablePanFormatting: Boolean,
+        checkoutId: String
     ): PanTextWatcher {
+
         return PanTextWatcher(
             panEditText = panEditText,
             panValidator = PanValidator(acceptedCardBrands),
@@ -31,8 +34,9 @@ internal class TextWatcherFactory(
             ),
             cvcAccessEditText = cvcEditText,
             panValidationResultHandler = resultHandlerFactory.getPanValidationResultHandler(),
-            brandChangedHandler = resultHandlerFactory.getBrandChangedHandler(),
-            cvcValidationRuleManager = cvcValidationRuleManager
+            brandsChangedHandler = resultHandlerFactory.getBrandsChangedHandler(),
+            cvcValidationRuleManager = cvcValidationRuleManager,
+            cardBinService = CardBinService(checkoutId = checkoutId)
         )
     }
 

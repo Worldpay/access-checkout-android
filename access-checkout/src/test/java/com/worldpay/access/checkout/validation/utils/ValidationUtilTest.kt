@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.validation.utils
 
+import com.worldpay.access.checkout.BaseCoroutineTest
 import com.worldpay.access.checkout.api.configuration.CardConfigurationClient
 import com.worldpay.access.checkout.api.configuration.CardValidationRule
 import com.worldpay.access.checkout.api.configuration.DefaultCardRules.CVC_DEFAULTS
@@ -8,34 +9,31 @@ import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Configurations.CARD_CONFIG_NO_BRAND
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.mockSuccessfulCardConfiguration
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.CoroutineTestRule
 import com.worldpay.access.checkout.validation.configuration.CardConfigurationProvider
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.findBrandForPan
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getCvcValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getMaxLength
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.getPanValidationRule
 import com.worldpay.access.checkout.validation.utils.ValidationUtil.isNumeric
-import kotlin.test.assertEquals
-import kotlin.test.assertNull
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.test.runBlockingTest as runAsBlockingTest
+import kotlinx.coroutines.test.advanceUntilIdle
+import kotlinx.coroutines.test.runTest
 import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 import org.mockito.kotlin.given
 import org.mockito.kotlin.mock
+import kotlin.test.assertEquals
+import kotlin.test.assertNull
 
 @ExperimentalCoroutinesApi
-class ValidationUtilTest {
-
-    @get:Rule
-    var coroutinesTestRule = CoroutineTestRule()
+class ValidationUtilTest: BaseCoroutineTest() {
 
     @Before
-    fun setup() = runAsBlockingTest {
+    fun setup() = runTest {
         mockSuccessfulCardConfiguration()
+        advanceUntilIdle()
     }
 
     @Test
@@ -69,14 +67,12 @@ class ValidationUtilTest {
     }
 
     @Test
-    fun `should be able to find brand for pan`() = runAsBlockingTest {
-        mockSuccessfulCardConfiguration()
+    fun `should be able to find brand for pan`() = runTest {
         assertEquals(VISA_BRAND, findBrandForPan(visaPan()))
     }
 
     @Test
-    fun `should be able to find brand for formatted pan`() = runAsBlockingTest {
-        mockSuccessfulCardConfiguration()
+    fun `should be able to find brand for formatted pan`() = runTest {
         assertEquals(VISA_BRAND, findBrandForPan("4111 1111 1111 1111"))
     }
 
@@ -91,12 +87,12 @@ class ValidationUtilTest {
     }
 
     @Test
-    fun `should be able to find null brand for visa pan but where card config has no brands`() = runAsBlockingTest {
+    fun `should be able to find null brand for visa pan but where card config has no brands`() = runTest {
         val cardConfigurationClient = mock<CardConfigurationClient>()
 
         given(cardConfigurationClient.getCardConfiguration()).willReturn(CARD_CONFIG_NO_BRAND)
 
-        CardConfigurationProvider(
+        CardConfigurationProvider.initialise(
             cardConfigurationClient = cardConfigurationClient,
             observers = emptyList()
         )

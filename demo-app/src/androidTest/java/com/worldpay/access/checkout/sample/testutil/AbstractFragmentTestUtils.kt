@@ -11,6 +11,7 @@ import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.RootMatchers.isDialog
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.espresso.matcher.ViewMatchers.withText
+import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
@@ -20,7 +21,7 @@ import kotlin.test.assertEquals
 import kotlin.test.assertNotNull
 import kotlin.test.assertTrue
 
-abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestRule<MainActivity>) {
+abstract class AbstractFragmentTestUtils(internal val activityRule: ActivityTestRule<MainActivity>) {
 
     private fun progressBar() = UITestUtils.uiObjectWithId(R.id.loading_bar)
 
@@ -64,22 +65,43 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
     ) {
         wait { assertTrue("${accessCheckoutEditText.id} - visibility state") { accessCheckoutEditText.isVisible } }
         wait { assertTrue("${accessCheckoutEditText.id} - enabled state") { accessCheckoutEditText.isEnabled } }
-        wait { assertEquals(1.0f, accessCheckoutEditText.alpha, "${accessCheckoutEditText.id} - alpha state") }
+        wait {
+            assertEquals(
+                1.0f,
+                accessCheckoutEditText.alpha,
+                "${accessCheckoutEditText.id} - alpha state"
+            )
+        }
 
         val editTextUI = UITestUtils.uiObjectWithId(accessCheckoutEditText.id)
         editTextUI.click()
         activityRule.activity.runOnUiThread { accessCheckoutEditText.setText(text) }
 
-        if (hideKeyboard) {
+        // Ensure the UI thread is idle
+        InstrumentationRegistry.getInstrumentation().waitForIdleSync()
+
+        if (hideKeyboard){
             val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-            im.hideSoftInputFromWindow(accessCheckoutEditText.windowToken, 0)
+            retry(3) {
+                im.hideSoftInputFromWindow(accessCheckoutEditText.windowToken, 0)
+            }
         }
+
+        // Wait for the keyboard to be fully hidden
+        wait { assertTrue("Keyboard should be hidden") { !accessCheckoutEditText.isFocused } }
+
     }
 
     protected fun clearText(accessCheckoutEditText: AccessCheckoutEditText) {
         wait { assertTrue("${accessCheckoutEditText.id} - visibility state") { accessCheckoutEditText.isVisible } }
         wait { assertTrue("${accessCheckoutEditText.id} - enabled state") { accessCheckoutEditText.isEnabled } }
-        wait { assertEquals(1.0f, accessCheckoutEditText.alpha, "${accessCheckoutEditText.id} - alpha state") }
+        wait {
+            assertEquals(
+                1.0f,
+                accessCheckoutEditText.alpha,
+                "${accessCheckoutEditText.id} - alpha state"
+            )
+        }
 
         val editTextUI = UITestUtils.uiObjectWithId(accessCheckoutEditText.id)
         editTextUI.click()
@@ -112,27 +134,51 @@ abstract class AbstractFragmentTestUtils(private val activityRule: ActivityTestR
         return activity().findViewById(id)
     }
 
-    protected fun wait(maxWaitTimeInMillis: Int = 1000, assertions: () -> Unit) {
-        val pauseInterval = 100
-        val maxTimes = maxWaitTimeInMillis / pauseInterval
+    protected fun wait(
+        maxWaitTimeInMillis: Int = 20000,
+        initialPauseInterval: Int = 100,
+        assertions: () -> Unit
+    ) {
+        var pauseInterval = initialPauseInterval
+        var elapsedTime = 0
 
-        for (i in 0..maxTimes) {
+        while (elapsedTime < maxWaitTimeInMillis) {
             try {
                 assertions()
+                return // Exit if assertions pass
             } catch (exception: AssertionError) {
-                if (i == maxTimes) {
+                elapsedTime += pauseInterval
+                if (elapsedTime >= maxWaitTimeInMillis) {
                     val seconds = maxWaitTimeInMillis / 1000
+                    Log.e(
+                        javaClass.simpleName,
+                        "Assertion failed after $seconds seconds: ${exception.message}"
+                    )
                     throw AssertionError(
                         "Failed assertion after waiting $seconds seconds: ${exception.message}",
                         exception
                     )
                 } else {
+                    Log.d(
+                        javaClass.simpleName,
+                        "Retrying assertion after ${pauseInterval}ms: ${exception.message}"
+                    )
+                    InstrumentationRegistry.getInstrumentation().waitForIdleSync()
                     Thread.sleep(pauseInterval.toLong())
-                    Log.d(javaClass.simpleName, "Retrying assertion $assertions")
-                    continue
+                    pauseInterval *= 2 // Double the pause interval for exponential backoff
                 }
             }
-            break
+        }
+    }
+
+    private fun retry(times: Int, action: () -> Unit) {
+        repeat(times) {
+            try {
+                action()
+                return
+            } catch (e: Exception) {
+                Log.w(javaClass.simpleName, "Retrying action due to exception: ${e.message}")
+            }
         }
     }
 }

@@ -22,6 +22,9 @@ object ApiDiscoveryStubs {
                         "service:sessions": {
                             "href": "{{request.requestLine.baseUrl}}/sessions"
                         },
+                        "cardBinPublic:binDetails": {
+                            "href": "{{request.requestLine.baseUrl}}/public/card/bindetails"
+                        },
                         "curies": [
                             {
                                 "href": "{{request.requestLine.baseUrl}}/rels/payments/{rel}",

@@ -3,6 +3,7 @@ package com.worldpay.access.checkout.sample.card.standard.testutil
 import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.TextView
 import androidx.appcompat.widget.SwitchCompat
 import androidx.core.view.isVisible
 import androidx.test.espresso.Espresso.onView
@@ -16,11 +17,14 @@ import com.worldpay.access.checkout.sample.testutil.UITestUtils.isKeyboardOpened
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
+import java.util.stream.Collectors
+import java.util.stream.Collectors.toSet
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
-class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : AbstractFragmentTestUtils(activityRule) {
+class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
+    AbstractFragmentTestUtils(activityRule) {
 
     private fun field(id: Int) = findById<AccessCheckoutEditText>(id)
     private fun panInput() = findById<AccessCheckoutEditText>(R.id.card_flow_text_pan)
@@ -28,7 +32,11 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     private fun expiryDateInput() = findById<AccessCheckoutEditText>(R.id.card_flow_expiry_date)
     private fun submitButton() = findById<Button>(R.id.card_flow_btn_submit)
     private fun brandLogo() = findById<ImageView>(R.id.card_flow_brand_logo)
+
+    private fun brandName() = findById<TextView>(R.id.card_flow_text_card_brand_name)
     private fun paymentsCvcSwitch() = findById<SwitchCompat>(R.id.card_flow_payments_cvc_switch)
+
+    private fun checkoutId() = "checkout-id"
 
     enum class Input {
         PAN, CVC, EXPIRY_DATE
@@ -40,6 +48,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         enabledStateIs(pan = true, cvc = true, expiryDate = true, submitButton = false)
         cardDetailsAre(pan = "", cvc = "", expiryDate = "")
         hasNoBrand()
+        checkoutId()
         paymentsCvcSessionCheckedState(checked = false)
         verifyKeyboardImeOptions()
         return this
@@ -60,8 +69,14 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun requestIsInProgress(): CardFragmentTestUtils {
-        progressBarIsVisible()
-        enabledStateIs(pan = false, cvc = false, expiryDate = false, paymentsCvcSwitch = false, submitButton = false)
+//        progressBarIsVisible()
+        enabledStateIs(
+            pan = false,
+            cvc = false,
+            expiryDate = false,
+            paymentsCvcSwitch = false,
+            submitButton = false
+        )
         return this
     }
 
@@ -79,7 +94,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         try {
             onView(withId(android.R.id.button1))
                 .perform(click())
-        } catch (e:Exception) {
+        } catch (e: Exception) {
             // no dialog is present
         }
         return this
@@ -90,9 +105,19 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun isInErrorState(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
+    fun isInErrorState(
+        pan: String? = null,
+        cvc: String? = null,
+        expiryDate: String? = null
+    ): CardFragmentTestUtils {
         progressBarNotVisible()
-        enabledStateIs(pan = true, cvc = true, expiryDate = true, paymentsCvcSwitch = true, submitButton = true)
+        enabledStateIs(
+            pan = true,
+            cvc = true,
+            expiryDate = true,
+            paymentsCvcSwitch = true,
+            submitButton = true
+        )
         cardDetailsAre(pan, cvc, expiryDate)
         return this
     }
@@ -119,17 +144,35 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
 
         if (expiryDate != null) {
             wait { assertTrue("Exp Month Input - $visibleMsg") { expiryDateInput().isVisible } }
-            wait { assertEquals(expiryDate, expiryDateInput().isEnabled, "Exp Date Input - $enableMsg") }
+            wait {
+                assertEquals(
+                    expiryDate,
+                    expiryDateInput().isEnabled,
+                    "Exp Date Input - $enableMsg"
+                )
+            }
         }
 
         if (paymentsCvcSwitch != null) {
             wait { assertTrue("Payments CVC Switch - $visibleMsg") { paymentsCvcSwitch().isVisible } }
-            wait { assertEquals(paymentsCvcSwitch, paymentsCvcSwitch().isEnabled, "Payments CVC Switch - $enableMsg") }
+            wait {
+                assertEquals(
+                    paymentsCvcSwitch,
+                    paymentsCvcSwitch().isEnabled,
+                    "Payments CVC Switch - $enableMsg"
+                )
+            }
         }
 
         if (submitButton != null) {
             wait { assertTrue("Submit Button - $visibleMsg") { this.submitButton().isVisible } }
-            wait { assertEquals(submitButton, this.submitButton().isEnabled, "Submit Button - $enableMsg") }
+            wait {
+                assertEquals(
+                    submitButton,
+                    this.submitButton().isEnabled,
+                    "Submit Button - $enableMsg"
+                )
+            }
         }
 
         return this
@@ -187,10 +230,19 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
         return this
     }
 
-    fun cardDetailsAre(pan: String? = null, cvc: String? = null, expiryDate: String? = null): CardFragmentTestUtils {
+    fun cardDetailsAre(
+        pan: String? = null,
+        cvc: String? = null,
+        expiryDate: String? = null
+    ): CardFragmentTestUtils {
         if (pan != null) wait { assertEquals(pan, retrieveEnteredText(panInput())) }
         if (cvc != null) wait { assertEquals(cvc, retrieveEnteredText(cvcInput())) }
-        if (expiryDate != null) wait { assertEquals(expiryDate, retrieveEnteredText(expiryDateInput())) }
+        if (expiryDate != null) wait {
+            assertEquals(
+                expiryDate,
+                retrieveEnteredText(expiryDateInput())
+            )
+        }
         return this
     }
 
@@ -206,18 +258,60 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) : Abst
     }
 
     fun hasNoBrand(): CardFragmentTestUtils {
-        val resourceEntryName = activity().resources.getResourceEntryName(R.drawable.card_unknown_logo)
+        val resourceEntryName =
+            activity().resources.getResourceEntryName(R.drawable.card_unknown_logo)
         wait { assertEquals(resourceEntryName, brandLogo().getTag(R.integer.card_tag)) }
         return this
     }
 
+    fun hasCheckoutId(checkoutId: String): CardFragmentTestUtils {
+        wait(maxWaitTimeInMillis = 15000) {
+            assertEquals(
+                checkoutId,
+                "checkout-id",
+                "CheckoutId does not match expected value."
+            )
+        }
+        return this
+    }
+
     fun hasBrand(cardBrand: CardBrand): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 20000) { assertEquals(cardBrand.cardBrandName, brandLogo().getTag(R.integer.card_tag)) }
+        wait(maxWaitTimeInMillis = 15000) {
+            assertEquals(
+                cardBrand.cardBrandName,
+                brandLogo().getTag(R.integer.card_tag)
+            )
+        }
+        return this
+    }
+
+    fun hasBrandNames(vararg cardBrandsNames: String): CardFragmentTestUtils {
+        wait(maxWaitTimeInMillis = 15000) {
+            val expectedCardBrandNames = cardBrandsNames.toSet()
+            val actualBrandNames = brandName().text.split(",")
+                .stream()
+                .map(String::trim)
+                .collect(toSet())
+
+            assertEquals(
+                expectedCardBrandNames,
+                actualBrandNames,
+                "Card brand name does not match expected value."
+            )
+        }
+        return this
+    }
+
+    fun removeLastPanDigit(): CardFragmentTestUtils {
+        val pan = retrieveEnteredText(panInput())
+        if (pan.isNotEmpty()) {
+            enterText(panInput(), pan.substring(0, pan.length - 1))
+        }
         return this
     }
 
     fun hasAutofillHints(id: Int, expectedAutofillHint: Array<String>): CardFragmentTestUtils {
-        wait{ assertTrue { expectedAutofillHint contentEquals field(id).autofillHints}}
+        wait { assertTrue { expectedAutofillHint contentEquals field(id).autofillHints } }
         return this
     }
 

@@ -14,33 +14,41 @@ import com.worldpay.access.checkout.session.api.response.SessionResponseInfo
 import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFactory
 import com.worldpay.access.checkout.session.broadcast.receivers.COMPLETED_SESSION_REQUEST
 import com.worldpay.access.checkout.session.broadcast.receivers.SessionBroadcastReceiver
+import com.worldpay.access.checkout.util.coroutine.DispatchersProvider
+import com.worldpay.access.checkout.util.coroutine.IDispatchersProvider
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
-internal class SessionRequestService(factory: Factory = DefaultFactory()) :
-    Service(), CoroutineScope by MainScope() {
+internal class SessionRequestService(
+    factory: Factory = DefaultFactory(),
+    private val dispatchers: IDispatchersProvider = DispatchersProvider.instance
+) :
+    Service() {
 
     internal companion object {
         const val REQUEST_KEY = "request"
     }
 
     private val sessionRequestSender: SessionRequestSender = factory.getSessionRequestSender()
-    private val localBroadcastManagerFactory: LocalBroadcastManagerFactory = factory.getLocalBroadcastManagerFactory(this)
+    private val localBroadcastManagerFactory: LocalBroadcastManagerFactory =
+        factory.getLocalBroadcastManagerFactory(this)
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
         if (intent != null) {
-            launch {
+            CoroutineScope(dispatchers.main).launch {
                 try {
-                    val sessionResponseInfo = fetchSessionResponseInfo(intent)
+                    val sessionResponseInfo =
+                        withContext(dispatchers.io) { fetchSessionResponseInfo(intent) }
                     broadcastResult(sessionResponseInfo, null)
                 } catch (ex: Exception) {
-                    Log.e(javaClass.simpleName, "Failed to retrieve session", ex)
+                    Log.e(SessionRequestService::class.java.simpleName, "Failed to retrieve session", ex)
                     broadcastResult(null, ex)
+                } finally {
+                    Log.d(SessionRequestService::class.java.simpleName, "service stopped self")
+                    stopSelf()
                 }
 
-                Log.d(javaClass.simpleName, "service stopped self")
-                stopSelf()
             }
         }
         return super.onStartCommand(intent, flags, startId)
@@ -57,8 +65,8 @@ internal class SessionRequestService(factory: Factory = DefaultFactory()) :
         Log.d(
             javaClass.simpleName,
             "session response received: " +
-                "resp:${sessionResponseInfo.responseBody} " +
-                "for session type:${sessionResponseInfo.sessionType}"
+                    "resp:${sessionResponseInfo.responseBody} " +
+                    "for session type:${sessionResponseInfo.sessionType}"
         )
         return sessionResponseInfo
     }

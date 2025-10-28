@@ -1,12 +1,10 @@
 package com.worldpay.access.checkout.client.validation
 
-import android.os.Looper.getMainLooper
 import com.worldpay.access.checkout.client.testutil.AbstractValidationIntegrationTest
 import com.worldpay.access.checkout.testutils.CardConfigurationUtil.Brands.VISA_BRAND
-import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrand
+import com.worldpay.access.checkout.testutils.CardConfigurationUtil.toCardBrandList
 import com.worldpay.access.checkout.testutils.CardNumberUtil.visaPan
-import com.worldpay.access.checkout.testutils.waitForQueueUntilIdle
-import kotlin.test.fail
+import kotlinx.coroutines.test.runTest
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -14,7 +12,7 @@ import org.mockito.kotlin.verify
 import org.mockito.kotlin.verifyNoInteractions
 import org.mockito.kotlin.verifyNoMoreInteractions
 import org.robolectric.RobolectricTestRunner
-import org.robolectric.Shadows.shadowOf
+import kotlin.test.fail
 
 @RunWith(RobolectricTestRunner::class)
 class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
@@ -25,101 +23,107 @@ class FocusChangeIntegrationTest : AbstractValidationIntegrationTest() {
     }
 
     @Test
-    fun `should not notify validation result on focus lost where notification has already been sent - pan`() {
-        pan.setText(visaPan())
-        shadowOf(getMainLooper()).waitForQueueUntilIdle()
+    fun `should not notify validation result on focus lost where notification has already been sent - pan`() =
+        runTest {
+            // Set the PAN and wait for any asynchronous operations to complete
+            setText(pan, visaPan())
 
-        verify(cardValidationListener).onPanValidated(true)
-        verify(cardValidationListener).onBrandChange(toCardBrand(VISA_BRAND))
+            // Verify the expected interactions
+            verify(cardValidationListener).onPanValidated(true)
+            verify(cardValidationListener).onCardBrandsChanged(toCardBrandList(VISA_BRAND))
 
-        pan.requestFocus()
+            pan.requestFocus()
+            if (pan.hasFocus()) {
+                pan.clearFocus()
+            } else {
+                fail("could not gain focus")
+            }
 
-        if (pan.hasFocus()) {
-            pan.clearFocus()
-        } else {
-            fail("could not gain focus")
+            verifyNoMoreInteractions(cardValidationListener)
         }
-
-        verifyNoMoreInteractions(cardValidationListener)
-    }
 
     @Test
-    fun `should not notify validation result on focus lost where notification has already been sent - cvc`() {
-        cvc.setText("123")
-        verify(cardValidationListener).onCvcValidated(true)
+    fun `should not notify validation result on focus lost where notification has already been sent - cvc`() =
+        runTest {
+            setText(cvc, "123")
+            verify(cardValidationListener).onCvcValidated(true)
 
-        cvc.requestFocus()
+            cvc.requestFocus()
 
-        if (cvc.hasFocus()) {
-            cvc.clearFocus()
-        } else {
-            fail("could not gain focus")
+            if (cvc.hasFocus()) {
+                cvc.clearFocus()
+            } else {
+                fail("could not gain focus")
+            }
+
+            verifyNoMoreInteractions(cardValidationListener)
         }
-
-        verifyNoMoreInteractions(cardValidationListener)
-    }
 
     @Test
-    fun `should not notify validation result on focus lost where notification has already been sent - expiry date`() {
-        expiryDate.setText("12/99")
-        verify(cardValidationListener).onExpiryDateValidated(true)
+    fun `should not notify validation result on focus lost where notification has already been sent - expiry date`() =
+        runTest {
+            setText(expiryDate, "12/99")
+            verify(cardValidationListener).onExpiryDateValidated(true)
 
-        expiryDate.requestFocus()
+            expiryDate.requestFocus()
 
-        if (expiryDate.hasFocus()) {
-            expiryDate.clearFocus()
-        } else {
-            fail("could not gain focus")
+            if (expiryDate.hasFocus()) {
+                expiryDate.clearFocus()
+            } else {
+                fail("could not gain focus")
+            }
+
+            verifyNoMoreInteractions(cardValidationListener)
         }
-
-        verifyNoMoreInteractions(cardValidationListener)
-    }
 
     @Test
-    fun `should notify validation result on focus lost where notification has not already been sent - pan`() {
-        pan.setText("0000")
-        verifyNoInteractions(cardValidationListener)
+    fun `should notify validation result on focus lost where notification has not already been sent - pan`() =
+        runTest {
+            setText(pan, "0000")
+            verifyNoInteractions(cardValidationListener)
 
-        pan.requestFocus()
+            pan.requestFocus()
 
-        if (pan.hasFocus()) {
-            pan.clearFocus()
-        } else {
-            fail("could not gain focus")
+            if (pan.hasFocus()) {
+                pan.clearFocus()
+            } else {
+                fail("could not gain focus")
+            }
+
+            verify(cardValidationListener).onPanValidated(false)
         }
-
-        verify(cardValidationListener).onPanValidated(false)
-    }
 
     @Test
-    fun `should notify validation result on focus lost where notification has not already been sent - cvc`() {
-        cvc.setText("")
-        verifyNoInteractions(cardValidationListener)
+    fun `should notify validation result on focus lost where notification has not already been sent - cvc`() =
+        runTest {
+            setText(cvc, "")
+            verifyNoInteractions(cardValidationListener)
 
-        cvc.requestFocus()
+            cvc.requestFocus()
 
-        if (cvc.hasFocus()) {
-            cvc.clearFocus()
-        } else {
-            fail("could not gain focus")
+            if (cvc.hasFocus()) {
+                cvc.clearFocus()
+            } else {
+                fail("could not gain focus")
+            }
+
+            verify(cardValidationListener).onCvcValidated(false)
         }
-
-        verify(cardValidationListener).onCvcValidated(false)
-    }
 
     @Test
-    fun `should notify validation result on focus lost where notification has not already been sent - expiry date`() {
-        expiryDate.setText("01/19")
-        verifyNoInteractions(cardValidationListener)
+    fun `should notify validation result on focus lost where notification has not already been sent - expiry date`() =
+        runTest {
+            setText(expiryDate, "01/19")
+            verifyNoInteractions(cardValidationListener)
 
-        expiryDate.requestFocus()
+            expiryDate.requestFocus()
 
-        if (expiryDate.hasFocus()) {
-            expiryDate.clearFocus()
-        } else {
-            fail("could not gain focus")
+            if (expiryDate.hasFocus()) {
+                expiryDate.clearFocus()
+            } else {
+                fail("could not gain focus")
+            }
+
+            verify(cardValidationListener).onExpiryDateValidated(false)
         }
-
-        verify(cardValidationListener).onExpiryDateValidated(false)
-    }
 }
