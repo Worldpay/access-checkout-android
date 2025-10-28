@@ -2,6 +2,7 @@ package com.worldpay.access.checkout.ui
 
 import android.content.Context
 import android.content.res.TypedArray
+import android.graphics.Rect
 import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -259,6 +260,87 @@ class AccessCheckoutEditText internal constructor(
     }
 
     /**
+     * Returns the next focus forward id for this component.
+     *
+     * @return the next focus forward id
+     */
+    override fun getNextFocusForwardId() = this.editText!!.nextFocusForwardId
+
+    /**
+     * Sets the next focus forward id for this component.
+     *
+     * @param nextFocusForwardId id of the next view to focus when navigating forward
+     */
+    override fun setNextFocusForwardId(nextFocusForwardId: Int) {
+        this.editText!!.nextFocusForwardId = nextFocusForwardId
+    }
+
+    /**
+     * Returns the next focus up id for this component.
+     *
+     * @return the next focus up id
+     */
+    override fun getNextFocusUpId() = this.editText!!.nextFocusUpId
+
+    /**
+     * Sets the next focus up id for this component.
+     *
+     * @param nextFocusUpId id of the next view to focus when navigating up
+     */
+    override fun setNextFocusUpId(nextFocusUpId: Int) {
+        this.editText!!.nextFocusUpId = nextFocusUpId
+    }
+
+    /**
+     * Returns the next focus down id for this component.
+     *
+     * @return the next focus down id
+     */
+    override fun getNextFocusDownId() = this.editText!!.nextFocusDownId
+
+    /**
+     * Sets the next focus down id for this component.
+     *
+     * @param nextFocusDownId id of the next view to focus when navigating down
+     */
+    override fun setNextFocusDownId(nextFocusDownId: Int) {
+        this.editText!!.nextFocusDownId = nextFocusDownId
+    }
+
+    /**
+     * Returns the next focus left id for this component.
+     *
+     * @return the next focus left id
+     */
+    override fun getNextFocusLeftId() = this.editText!!.nextFocusLeftId
+
+    /**
+     * Sets the next focus left id for this component.
+     *
+     * @param nextFocusLeftId id of the next view to focus when navigating left
+     */
+    override fun setNextFocusLeftId(nextFocusLeftId: Int) {
+        this.editText!!.nextFocusLeftId = nextFocusLeftId
+    }
+
+    /**
+     * Returns the next focus right id for this component.
+     *
+     * @return the next focus right id
+     */
+    override fun getNextFocusRightId() = this.editText!!.nextFocusRightId
+
+    /**
+     * Sets the next focus right id for this component.
+     *
+     * @param nextFocusRightId id of the next view to focus when navigating right
+     */
+    override fun setNextFocusRightId(nextFocusRightId: Int) {
+        this.editText!!.nextFocusRightId = nextFocusRightId
+    }
+
+
+    /**
      * Methods
      */
 
@@ -340,7 +422,6 @@ class AccessCheckoutEditText internal constructor(
         if (BuildVersionProviderHolder.instance.isAtLeastO()) editText?.setAutofillHints(*hints)
     }
 
-
     @RequiresApi(Build.VERSION_CODES.O)
     override fun getAutofillHints(): Array<String>? {
         return if (BuildVersionProviderHolder.instance.isAtLeastO()) {
@@ -348,6 +429,14 @@ class AccessCheckoutEditText internal constructor(
         } else {
             null
         }
+    }
+
+    override fun requestFocus(direction: Int, previouslyFocusedRect: Rect?): Boolean {
+        return editText!!.requestFocus(direction, previouslyFocusedRect)
+    }
+
+    override fun focusSearch(direction: Int): View? {
+        return editText!!.focusSearch(direction)
     }
 
     public override fun onSaveInstanceState(): Parcelable? {

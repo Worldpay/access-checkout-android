@@ -14,7 +14,9 @@
         android:dividerPadding="24dp"
         android:orientation="vertical"
         android:padding="24dp"
-        android:showDividers="middle">
+        android:showDividers="middle"
+        tools:layout_editor_absoluteX="123dp"
+        tools:layout_editor_absoluteY="39dp">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -33,13 +35,14 @@
                     android:layout_height="wrap_content"
                     android:layout_marginEnd="8dp"
                     android:layout_weight="4"
+                    android:autofillHints="creditCardNumber"
                     android:clickable="true"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
                     android:hint="@string/card_number_hint"
-                    android:autofillHints="creditCardNumber">
-
-                </com.worldpay.access.checkout.ui.AccessCheckoutEditText>
+                    android:imeOptions="actionNext"
+                    android:nextFocusRight="@+id/card_flow_expiry_date"
+                    android:nextFocusForward="@+id/card_flow_expiry_date" />
 
                 <ImageView
                     android:id="@+id/card_flow_brand_logo"
@@ -79,15 +82,18 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="3"
-                    android:ems="4"
-                    android:hint="@string/card_expiry_date_hint"
                     android:autofillHints="creditCardExpirationDate"
-                    android:imeOptions="actionDone|flagNoFullscreen"
-                    android:inputType="text"
-                    android:textColor="@color/DEFAULT"
                     android:descendantFocusability="beforeDescendants"
+                    android:ems="4"
                     android:focusable="true"
                     android:focusableInTouchMode="true"
+                    android:hint="@string/card_expiry_date_hint"
+                    android:imeOptions="actionNext"
+                    android:inputType="text"
+                    android:nextFocusRight="@+id/card_flow_text_cvc"
+                    android:nextFocusDown="@+id/card_flow_text_cvc"
+                    android:nextFocusForward="@+id/card_flow_text_cvc"
+                    android:textColor="@color/DEFAULT"
                     tools:ignore="TextFields" />
 
                 <com.worldpay.access.checkout.ui.AccessCheckoutEditText
@@ -95,11 +101,19 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_weight="2"
-                    android:ems="4"
-                    android:hint="@string/card_cvc_hint"
                     android:autofillHints="creditCardSecurityCode"
+                    android:clickable="true"
+                    android:descendantFocusability="beforeDescendants"
+                    android:ems="4"
+                    android:focusable="true"
+                    android:focusableInTouchMode="true"
+                    android:hint="@string/card_cvc_hint"
                     android:imeOptions="actionDone|flagNoFullscreen"
                     android:inputType="text"
+                    android:nextFocusLeft="@+id/card_flow_expiry_date"
+                    android:nextFocusUp="@+id/card_flow_text_pan"
+                    android:nextFocusDown="@+id/card_flow_text_cvc"
+                    android:nextFocusForward="@+id/card_flow_text_pan"
                     android:textColor="@color/DEFAULT" />
 
             </LinearLayout>
@@ -108,6 +122,8 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:focusable="false"
+            android:focusableInTouchMode="false"
             android:orientation="horizontal">
 
             <LinearLayout
@@ -135,7 +151,9 @@
                 android:id="@+id/card_flow_payments_cvc_switch"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_weight="4" />
+                android:layout_weight="4"
+                android:focusable="false"
+                android:focusableInTouchMode="false" />
 
         </LinearLayout>
 

@@ -1,5 +1,6 @@
 package com.worldpay.access.checkout.sample.card.standard.testutil
 
+import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -12,12 +13,14 @@ import androidx.test.rule.ActivityTestRule
 import com.worldpay.access.checkout.sample.MainActivity
 import com.worldpay.access.checkout.sample.R
 import com.worldpay.access.checkout.sample.testutil.AbstractFragmentTestUtils
+import com.worldpay.access.checkout.sample.testutil.UITestUtils.isKeyboardOpened
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
 import java.util.stream.Collectors
 import java.util.stream.Collectors.toSet
 import kotlin.test.assertEquals
+import kotlin.test.assertFalse
 import kotlin.test.assertTrue
 
 class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
@@ -47,6 +50,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
         hasNoBrand()
         checkoutId()
         paymentsCvcSessionCheckedState(checked = false)
+        verifyKeyboardImeOptions()
         return this
     }
 
@@ -308,6 +312,39 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
 
     fun hasAutofillHints(id: Int, expectedAutofillHint: Array<String>): CardFragmentTestUtils {
         wait { assertTrue { expectedAutofillHint contentEquals field(id).autofillHints } }
+        return this
+    }
+
+    fun verifyKeyboardImeOptions(): CardFragmentTestUtils {
+        wait { assertEquals(EditorInfo.IME_ACTION_NEXT, panInput().imeOptions) }
+        wait { assertEquals(EditorInfo.IME_ACTION_NEXT, expiryDateInput().imeOptions) }
+        wait {
+            val imeOptions = EditorInfo.IME_ACTION_DONE + EditorInfo.IME_FLAG_NO_FULLSCREEN
+            assertEquals(imeOptions, cvcInput().imeOptions)
+        }
+        return this
+    }
+
+    fun hasFocus(input: Input): CardFragmentTestUtils {
+        when (input) {
+            Input.PAN -> wait { assertTrue(panInput().hasFocus()) }
+            Input.EXPIRY_DATE -> wait { assertTrue(expiryDateInput().hasFocus()) }
+            Input.CVC -> wait { assertTrue(cvcInput().hasFocus()) }
+        }
+        return this
+    }
+
+    fun enterCardDetail(input: Input, value: String, hideKeyboard: Boolean): CardFragmentTestUtils {
+        when (input) {
+            Input.PAN -> enterText(panInput(), value, hideKeyboard)
+            Input.EXPIRY_DATE -> enterText(expiryDateInput(), value, hideKeyboard)
+            Input.CVC -> enterText(cvcInput(), value, hideKeyboard)
+        }
+        return this
+    }
+
+    fun keyboardIsClosed(): CardFragmentTestUtils {
+        wait(10000) { assertFalse(isKeyboardOpened()) }
         return this
     }
 }

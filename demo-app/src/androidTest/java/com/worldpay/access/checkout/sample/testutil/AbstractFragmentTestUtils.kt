@@ -58,7 +58,11 @@ abstract class AbstractFragmentTestUtils(internal val activityRule: ActivityTest
         }
     }
 
-    protected fun enterText(accessCheckoutEditText: AccessCheckoutEditText, text: String) {
+    protected fun enterText(
+        accessCheckoutEditText: AccessCheckoutEditText,
+        text: String,
+        hideKeyboard: Boolean = true
+    ) {
         wait { assertTrue("${accessCheckoutEditText.id} - visibility state") { accessCheckoutEditText.isVisible } }
         wait { assertTrue("${accessCheckoutEditText.id} - enabled state") { accessCheckoutEditText.isEnabled } }
         wait {
@@ -76,9 +80,11 @@ abstract class AbstractFragmentTestUtils(internal val activityRule: ActivityTest
         // Ensure the UI thread is idle
         InstrumentationRegistry.getInstrumentation().waitForIdleSync()
 
-        val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
-        retry(3) {
-            im.hideSoftInputFromWindow(accessCheckoutEditText.windowToken, 0)
+        if (hideKeyboard){
+            val im = activity().getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            retry(3) {
+                im.hideSoftInputFromWindow(accessCheckoutEditText.windowToken, 0)
+            }
         }
 
         // Wait for the keyboard to be fully hidden

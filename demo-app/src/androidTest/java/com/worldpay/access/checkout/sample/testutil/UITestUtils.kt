@@ -35,7 +35,7 @@ object UITestUtils {
         return getInstance(getInstrumentation()).findObject(selector)
     }
 
-    private fun isKeyboardOpened(): Boolean {
+    fun isKeyboardOpened(): Boolean {
         for (window in getInstrumentation().uiAutomation.windows) {
             if (window.type == AccessibilityWindowInfo.TYPE_INPUT_METHOD) {
                 return true
@@ -155,7 +155,21 @@ object UITestUtils {
         return onView(ViewMatchers.withParent(withId(R.id.card_flow_text_pan)))
     }
 
+    fun onExpiryDateView(): ViewInteraction {
+        return onView(ViewMatchers.withParent(withId(R.id.card_flow_expiry_date)))
+    }
+
+    fun onCvcView(): ViewInteraction {
+        return onView(ViewMatchers.withParent(withId(R.id.card_flow_text_cvc)))
+    }
+
     fun onCvcOnlyCvcView(): ViewInteraction {
         return onView(ViewMatchers.withParent(withId(R.id.cvc_flow_text_cvc)))
+    }
+
+    fun repeatAction(times: Int, action: () -> Unit) {
+        for (i in 1..times) {
+            action()
+        }
     }
 }
