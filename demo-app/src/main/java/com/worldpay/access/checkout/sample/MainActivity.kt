@@ -9,8 +9,12 @@ import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.navigateUp
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.navigation.NavigationBarView
 import com.google.android.material.navigation.NavigationView
 import com.worldpay.access.checkout.sample.ui.ProgressBar
 
@@ -20,10 +24,8 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val toolbar = findViewById<Toolbar>(R.id.toolbar_main)
+        val toolbar = findViewById<MaterialToolbar>(R.id.toolbar_main)
         val navController = getNavController()
-        val navView: NavigationView = findViewById(R.id.nav_view)
-        val drawerLayout: DrawerLayout = findViewById(R.id.drawer_layout)
 
         setSupportActionBar(toolbar)
 
@@ -33,12 +35,14 @@ class MainActivity : AppCompatActivity() {
                 R.id.nav_restricted_card_flow,
                 R.id.nav_cvc_flow
             ),
-            drawerLayout
         )
 
         toolbar.setupWithNavController(navController, appBarConfiguration)
         setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)
+
+        val bottomNav = findViewById<BottomNavigationView>(R.id.nav_view)
+
+        bottomNav.setupWithNavController(navController)
     }
 
     override fun onPrepareOptionsMenu(menu: Menu?): Boolean {
@@ -47,8 +51,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onSupportNavigateUp(): Boolean {
-        val navController = findNavController(R.id.nav_host_fragment)
-        return navController.navigateUp() || super.onSupportNavigateUp()
+        return getNavController().navigateUp() || super.onSupportNavigateUp()
     }
 
     override fun onSaveInstanceState(outState: Bundle) {

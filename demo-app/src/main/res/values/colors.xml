@@ -7,4 +7,6 @@
     <color name="DEFAULT">@android:color/black</color>
     <color name="SUCCESS">@android:color/holo_green_dark</color>
     <color name="FAIL">@android:color/holo_red_light</color>
+    <color name="blue_selected">#1E88E5</color>
+    <color name="grey_unselected">#8A8A8A</color>
 </resources>

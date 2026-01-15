@@ -26,17 +26,16 @@
             android:inputType="text"
             android:textColor="@color/DEFAULT" />
 
-        <Button
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/cvc_flow_btn_submit"
-            android:layout_width="match_parent"
+            style="@style/Widget.Material3.Button"
+            android:layout_width="190dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="24dp"
-            android:background="@android:color/darker_gray"
+            android:layout_marginTop="24dp"
+            android:layout_marginStart="110dp"
             android:enabled="false"
-            android:text="@string/submit_text"
-            android:textColor="@android:color/white" />
+            android:minHeight="56dp"
+            android:text="@string/submit_text" />
 
     </LinearLayout>
 

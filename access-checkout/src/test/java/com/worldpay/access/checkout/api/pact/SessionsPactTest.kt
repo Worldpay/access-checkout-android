@@ -348,7 +348,7 @@ class SessionsPactTest : BaseCoroutineTest() {
                     cause = ClientErrorException(errorCode = 400)
                 )
                 assertEquals(accessCheckoutClientError, ex)
-            } catch (ex: Exception) {
+            } catch (_: Exception) {
                 fail("Should not have reached here!")
             }
         }
