@@ -17,7 +17,6 @@ import com.worldpay.access.checkout.sample.testutil.UITestUtils.isKeyboardOpened
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import java.util.stream.Collectors
 import java.util.stream.Collectors.toSet
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -199,9 +198,9 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
         expiryDate: String? = null,
         assertText: Boolean = false
     ): CardFragmentTestUtils {
-        if (pan != null) enterText(panInput(), pan)
-        if (cvc != null) enterText(cvcInput(), cvc)
-        if (expiryDate != null) enterText(expiryDateInput(), expiryDate)
+        if (pan != null) enterText(panInput(), pan, true)
+        if (cvc != null) enterText(cvcInput(), cvc, true)
+        if (expiryDate != null) enterText(expiryDateInput(), expiryDate, true)
 
         if (assertText) {
             cardDetailsAre(pan, cvc, expiryDate)
