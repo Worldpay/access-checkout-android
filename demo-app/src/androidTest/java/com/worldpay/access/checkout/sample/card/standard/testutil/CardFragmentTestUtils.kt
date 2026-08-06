@@ -80,7 +80,13 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasResponseDialogWithMessage(response: String): CardFragmentTestUtils {
-        wait { dialogHasText(response) }
+        // Wait for the dialog's OK button to appear using UiAutomator (avoids Espresso InputManager issue)
+        val okButton = UITestUtils.uiObjectWithId(android.R.id.button1)
+        assertTrue(
+            "Dialog did not appear within timeout"
+
+        ) { okButton.waitForExists(15000) }
+        dialogHasText(response)
         return this
     }
 
