@@ -124,6 +124,17 @@ abstract class AbstractFragmentTestUtils(internal val activityRule: ActivityTest
             .check(matches(isDisplayed()))
     }
 
+    protected fun dialogWithTextIsShown(text: String): Boolean {
+        return try {
+            onView(withText(text))
+                .inRoot(isDialog())
+                .check(matches(isDisplayed()))
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
     protected fun activity(): MainActivity = activityRule.activity
 
     private fun color(colorId: Int) =

@@ -50,7 +50,6 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
         checkoutId()
         paymentsCvcSessionCheckedState(checked = false)
         verifyKeyboardImeOptions()
-        wait(maxWaitTimeInMillis = 15000) {}
         return this
     }
 
@@ -81,7 +80,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasResponseDialogWithMessage(response: String): CardFragmentTestUtils {
-        dialogHasText(response)
+        wait(maxWaitTimeInMillis = 15000) { dialogWithTextIsShown(response) }
         return this
     }
 
