@@ -50,6 +50,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
         checkoutId()
         paymentsCvcSessionCheckedState(checked = false)
         verifyKeyboardImeOptions()
+        wait(maxWaitTimeInMillis = 15000) {}
         return this
     }
 
