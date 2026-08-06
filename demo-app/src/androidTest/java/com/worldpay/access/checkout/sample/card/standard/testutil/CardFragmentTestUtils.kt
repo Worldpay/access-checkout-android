@@ -80,7 +80,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasResponseDialogWithMessage(response: String): CardFragmentTestUtils {
-        wait(maxWaitTimeInMillis = 15000) { dialogWithTextIsShown(response) }
+        wait { dialogHasText(response) }
         return this
     }
 
@@ -179,7 +179,9 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
 
     fun clickSubmitButton(): CardFragmentTestUtils {
         enabledStateIs(submitButton = true)
+
         uiObjectWithId(R.id.card_flow_btn_submit).click()
+
         return this
     }
 
