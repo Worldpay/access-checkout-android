@@ -106,5 +106,4 @@ dependencies {
     androidTestImplementation "org.awaitility:awaitility-kotlin:${versions['awaitility-kotlin']}"
 
     androidTestUtil "androidx.test:orchestrator:${versions['orchestrator']}"
-    androidTestUtil "androidx.test.services:test-services:${versions['orchestrator']}"
 }
