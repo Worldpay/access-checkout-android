@@ -80,7 +80,6 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasResponseDialogWithMessage(response: String): CardFragmentTestUtils {
-        Thread.sleep(5000)
         // Wait for the dialog's OK button to appear using UiAutomator (avoids Espresso InputManager issue)
         val okButton = uiObjectWithId(android.R.id.button1)
         assertTrue(
@@ -186,9 +185,7 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
 
     fun clickSubmitButton(): CardFragmentTestUtils {
         enabledStateIs(submitButton = true)
-
         uiObjectWithId(R.id.card_flow_btn_submit).click()
-
         return this
     }
 
@@ -207,9 +204,9 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
         expiryDate: String? = null,
         assertText: Boolean = false
     ): CardFragmentTestUtils {
-        if (pan != null) enterText(panInput(), pan, true)
-        if (cvc != null) enterText(cvcInput(), cvc, true)
-        if (expiryDate != null) enterText(expiryDateInput(), expiryDate, true)
+        if (pan != null) enterText(panInput(), pan)
+        if (cvc != null) enterText(cvcInput(), cvc)
+        if (expiryDate != null) enterText(expiryDateInput(), expiryDate)
 
         if (assertText) {
             cardDetailsAre(pan, cvc, expiryDate)
