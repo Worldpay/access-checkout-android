@@ -53,44 +53,24 @@ object UITestUtils {
     fun rotateLandscape(activityRule: ActivityTestRule<MainActivity>) {
         activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE
 
-        await().atMost(10, TimeUnit.SECONDS).until {
-
-            val drawerIsVisible =
-                activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
-            val progressBarIsVisible =
-                activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
-
-            if (!drawerIsVisible && !progressBarIsVisible) {
-                onView(withId(android.R.id.button1))
-                    .inRoot(isDialog())
-                    .check(matches(isDisplayed()))
-            }
-
-            Thread.sleep(2000)
-
-            true
-        }
+        waitForActivityToRecreate()
     }
 
     fun rotatePortrait(activityRule: ActivityTestRule<MainActivity>) {
         activityRule.activity.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
 
+        waitForActivityToRecreate()
+    }
+
+    private fun waitForActivityToRecreate() {
+        val device = getInstance(getInstrumentation())
+        // Wait for the drawer_layout to be present in the new activity's window via UIAutomator
+        // UIAutomator is not tied to a specific activity instance, so it works after recreation
+        val resName = getInstrumentation().targetContext.resources.getResourceName(R.id.drawer_layout)
+        val selector = UiSelector().resourceId(resName)
+
         await().atMost(10, TimeUnit.SECONDS).until {
-
-            val drawerIsVisible =
-                activityRule.activity.findViewById<DrawerLayout>(R.id.drawer_layout).isVisible
-            val progressBarIsVisible =
-                activityRule.activity.findViewById<ProgressBar>(R.id.loading_bar).isVisible
-
-            if (!drawerIsVisible && !progressBarIsVisible) {
-                onView(withId(android.R.id.button1))
-                    .inRoot(isDialog())
-                    .check(matches(isDisplayed()))
-            }
-
-            Thread.sleep(2000)
-
-            true
+            device.findObject(selector).exists()
         }
     }
 

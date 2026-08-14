@@ -17,7 +17,6 @@ import com.worldpay.access.checkout.sample.testutil.UITestUtils.isKeyboardOpened
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.retrieveEnteredText
 import com.worldpay.access.checkout.sample.testutil.UITestUtils.uiObjectWithId
 import com.worldpay.access.checkout.ui.AccessCheckoutEditText
-import java.util.stream.Collectors
 import java.util.stream.Collectors.toSet
 import kotlin.test.assertEquals
 import kotlin.test.assertFalse
@@ -81,6 +80,12 @@ class CardFragmentTestUtils(activityRule: ActivityTestRule<MainActivity>) :
     }
 
     fun hasResponseDialogWithMessage(response: String): CardFragmentTestUtils {
+        // Wait for the dialog's OK button to appear using UiAutomator (avoids Espresso InputManager issue)
+        val okButton = uiObjectWithId(android.R.id.button1)
+        assertTrue(
+            "Dialog did not appear within timeout"
+
+        ) { okButton.waitForExists(15000) }
         dialogHasText(response)
         return this
     }

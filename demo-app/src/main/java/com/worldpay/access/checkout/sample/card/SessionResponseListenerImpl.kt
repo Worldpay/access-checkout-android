@@ -18,18 +18,14 @@ class SessionResponseListenerImpl(
 ) : SessionResponseListener {
 
     private val submitBtn = SubmitButton(activity, R.id.card_flow_btn_submit)
+    private var currentDialog: AlertDialog? = null
 
     override fun onSuccess(sessionResponseMap: Map<SessionType, String>) {
         Log.d(javaClass.simpleName, "Received session reference map: $sessionResponseMap")
 
         progressBar.stopLoading()
 
-        AlertDialog.Builder(activity)
-            .setTitle("Response")
-            .setMessage(sessionResponseMap.toString())
-            .setPositiveButton(android.R.string.ok, null)
-            .create()
-            .show()
+        showDialog("Response", sessionResponseMap.toString())
 
         resetFields()
         enableFields()
@@ -41,12 +37,7 @@ class SessionResponseListenerImpl(
 
         progressBar.stopLoading()
 
-        AlertDialog.Builder(activity)
-            .setTitle("Error")
-            .setMessage(error.message)
-            .setPositiveButton(android.R.string.ok, null)
-            .create()
-            .show()
+        showDialog("Error", error.message)
 
         enableFields()
         submitBtn.enable()
@@ -66,5 +57,20 @@ class SessionResponseListenerImpl(
         activity.findViewById<AccessCheckoutEditText>(R.id.card_flow_text_cvc).clear()
         activity.findViewById<AccessCheckoutEditText>(R.id.card_flow_expiry_date).clear()
         activity.findViewById<SwitchCompat>(R.id.card_flow_payments_cvc_switch).isChecked = false
+    }
+
+    fun dismissDialogIfShowing() {
+        currentDialog?.takeIf { it.isShowing }?.dismiss()
+        currentDialog = null
+    }
+
+    private fun showDialog(title: String, message: String?) {
+        dismissDialogIfShowing()
+        currentDialog = AlertDialog.Builder(activity)
+            .setTitle(title)
+            .setMessage(message)
+            .setPositiveButton(android.R.string.ok) { _, _ -> currentDialog = null }
+            .create()
+            .also { it.show() }
     }
 }

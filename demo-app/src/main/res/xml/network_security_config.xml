@@ -2,11 +2,22 @@
 <network-security-config>
     <base-config>
         <trust-anchors>
-            <certificates src="@raw/wiremock" />
-            <certificates src="system" />
+            <certificates src="@raw/wiremock"/>
+            <certificates src="system"/>
         </trust-anchors>
     </base-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="true">localhost</domain>
+        <trust-anchors>
+            <certificates src="@raw/wiremock"/>
+            <certificates src="system"/>
+        </trust-anchors>
+    </domain-config>
+    <domain-config>
+        <domain includeSubdomains="true">try.access.worldpay.com</domain>
+        <trust-anchors>
+            <certificates src="@raw/sectigo_chain"/>
+            <certificates src="system"/>
+        </trust-anchors>
     </domain-config>
 </network-security-config>
