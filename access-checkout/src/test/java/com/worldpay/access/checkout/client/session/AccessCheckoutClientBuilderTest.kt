@@ -150,4 +150,124 @@ class AccessCheckoutClientBuilderTest : BaseCoroutineTest() {
         }
         assertEquals("Expected lifecycle owner to be provided but was not", exception.message)
     }
+
+    @Test
+    fun `should throw an AccessCheckoutException when baseUrl is not on the whitelist`() {
+        val disallowedUrl = "https://unauthorised-url.com"
+        val exception = assertFailsWith<AccessCheckoutException> {
+            AccessCheckoutClientBuilder()
+                .baseUrl(disallowedUrl)
+                .checkoutId(checkoutId)
+                .context(context)
+                .sessionResponseListener(sessionResponseListener)
+                .lifecycleOwner(lifecycleOwner)
+                .build()
+        }
+        assertEquals("base url '$disallowedUrl' is not permitted", exception.message)
+    }
+
+    @Test
+    fun `should throw an AccessCheckoutException when baseUrl uses correct domain without TLS`() {
+        val disallowedUrl = "http://access.worldpay.com"
+        val exception = assertFailsWith<AccessCheckoutException> {
+            AccessCheckoutClientBuilder()
+                .baseUrl(disallowedUrl)
+                .checkoutId(checkoutId)
+                .context(context)
+                .sessionResponseListener(sessionResponseListener)
+                .lifecycleOwner(lifecycleOwner)
+                .build()
+        }
+        assertEquals("base url '$disallowedUrl' is not permitted", exception.message)
+    }
+
+    @Test
+    fun `should successfully build with a whitelisted worldpay dot com baseUrl`() {
+        given(context.applicationContext).willReturn(context)
+
+        val accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl("https://access.worldpay.com")
+            .checkoutId(checkoutId)
+            .context(context)
+            .sessionResponseListener(sessionResponseListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertNotNull(accessCheckoutClient)
+    }
+
+    @Test
+    fun `should successfully build with a whitelisted worldpay dot com baseUrl with a trailing slash`() {
+        given(context.applicationContext).willReturn(context)
+
+        val accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl("https://access.worldpay.com/")
+            .checkoutId(checkoutId)
+            .context(context)
+            .sessionResponseListener(sessionResponseListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertNotNull(accessCheckoutClient)
+    }
+
+    @Test
+    fun `should successfully build with http localhost baseUrl`() {
+        given(context.applicationContext).willReturn(context)
+
+        val accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl("http://localhost:8080")
+            .checkoutId(checkoutId)
+            .context(context)
+            .sessionResponseListener(sessionResponseListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertNotNull(accessCheckoutClient)
+    }
+
+    @Test
+    fun `should successfully build with 127 dot 0 dot 0 dot 1 baseUrl`() {
+        given(context.applicationContext).willReturn(context)
+
+        val accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl("http://127.0.0.1:8080")
+            .checkoutId(checkoutId)
+            .context(context)
+            .sessionResponseListener(sessionResponseListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertNotNull(accessCheckoutClient)
+    }
+
+    @Test
+    fun `should successfully build with localhost baseUrl using TLS`() {
+        given(context.applicationContext).willReturn(context)
+
+        val accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl("https://localhost:8080")
+            .checkoutId(checkoutId)
+            .context(context)
+            .sessionResponseListener(sessionResponseListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertNotNull(accessCheckoutClient)
+    }
+
+    @Test
+    fun `should successfully build with 127 dot 0 dot 0 dot 1 baseUrl using TLS`() {
+        given(context.applicationContext).willReturn(context)
+
+        val accessCheckoutClient = AccessCheckoutClientBuilder()
+            .baseUrl("https://127.0.0.1:8443")
+            .checkoutId(checkoutId)
+            .context(context)
+            .sessionResponseListener(sessionResponseListener)
+            .lifecycleOwner(lifecycleOwner)
+            .build()
+
+        assertNotNull(accessCheckoutClient)
+    }
 }

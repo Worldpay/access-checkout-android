@@ -10,7 +10,6 @@ import com.worldpay.access.checkout.session.broadcast.LocalBroadcastManagerFacto
 import com.worldpay.access.checkout.session.broadcast.SessionBroadcastManagerFactory
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerConfig
 import com.worldpay.access.checkout.session.handlers.SessionRequestHandlerFactory
-import com.worldpay.access.checkout.util.PropertyValidationUtil
 import com.worldpay.access.checkout.util.PropertyValidationUtil.validateNotNull
 
 /**
