@@ -57,7 +57,8 @@ android {
 }
 
 dependencies {
-    implementation project(':access-checkout')
+//    implementation project(':access-checkout')
+    implementation "com.worldpay.access:access-checkout-android:5.0.1"
     implementation fileTree(include: ['*.jar'], dir: 'libs')
 
     debugImplementation "androidx.tracing:tracing:${versions['tracing']}"
